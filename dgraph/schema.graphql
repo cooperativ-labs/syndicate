@@ -1,0 +1,766 @@
+
+
+"""
+DOCUMENT MODEL
+"""
+enum DocumentFormat {
+	GOOGLE_DRIVE
+	GOOGLE_DOC
+	GOOGLE_SHEET
+	GOOGLE_SLIDE
+	WORD_DOC
+	EXCEL
+	POWERPOINT
+	PDF
+	NOTION
+	GITHUB
+	MARKDOWN
+	VIDEO
+	OTHER
+}
+
+enum DocumentType {
+	GENERAL
+	SHARE_LINK
+	PPM
+	OPERATING_AGREEMENT
+	DISCLOSURE
+	REG_FILING
+	FINANCIAL_STATEMENT
+	AGREEMENT
+	OTHER
+	OFFERING_DOCUMENT
+}
+
+enum DocumentAccessType {
+	OWNER
+	SIGNATORY
+	TOKEN
+	PUBLIC
+}
+
+type DocumentSignatory  {
+	id: ID!
+	document: Document! @hasInverse(field:signatories) 
+	legalEntity: LegalEntity @hasInverse(field:documentsSigned) 
+	signerAddress: String
+	signature: String 
+	date: DateTime
+	archived: Boolean
+}
+
+type Document  {
+	id: ID!
+	title: String 
+	text: String
+	date: DateTime
+	format: DocumentFormat 
+	type: DocumentType
+	url: String
+	thumbnailImage: Image
+	owner: LegalEntity @hasInverse(field:documentsOwned)
+	signatories: [DocumentSignatory] @hasInverse(field:document) 
+	smartContract: SmartContract @hasInverse(field:document) 
+	creationDate: DateTime!
+	lastUpdate: DateTime! 
+	access: DocumentAccessType
+	offering: Offering @hasInverse(field:documents)
+	offeringUniqueId: String! @id
+}
+
+type Image {
+	id: ID!
+	label: String
+	url: String!
+}
+
+
+"""
+CRYPTO MODEL 
+"""
+
+enum CryptoAddressProtocol {
+	ETH
+	BTC
+	ADA
+	ALGO
+}
+
+enum CryptoAddressType {
+	WALLET
+	CONTRACT
+}
+
+type CryptoAddress @auth (
+  add: { rule:"""
+				query($user_id: String!) {
+					queryCryptoAddress { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+		update: { rule: """
+				query($user_id: String!) {
+					queryCryptoAddress { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+		delete: { rule: """
+				query($user_id: String!) {
+					queryCryptoAddress { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+)  {
+	id: ID!
+	name: String 
+	address: String! @id
+	description: String
+	protocol: CryptoAddressProtocol 
+	chainId: Int
+	type: CryptoAddressType 
+	isPublic: Boolean @search
+	owner: LegalEntity @hasInverse(field:walletAddresses) 
+}
+
+
+enum SmartContractType {
+	C2
+	C3
+	REVENUE_SHARES
+	EXCHANGE_MANAGER
+	OTHER
+}
+
+type SmartContract @auth (
+  add: { rule:"""
+				query($user_id: String!) {
+					querySmartContract { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+		update: { rule: """
+				query($user_id: String!) {
+					querySmartContract { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+		# delete: { rule: """
+		# 		query($user_id: String!) {
+		# 			querySmartContract { 
+		# 				owner { 
+		# 					users { 
+		# 							user(filter: { uuid: { eq: $user_id }}) {
+		# 														__typename
+		# 														id
+		# 										}
+		# 								}
+		# 							}
+		# 					}
+		# 			}"""} 
+) {
+	id: ID!
+	cryptoAddress: CryptoAddress!
+	type: SmartContractType!
+	numTokensAuthorized: Int64
+	backingToken: Currency
+	owner: LegalEntity @hasInverse(field:smartContracts)
+	name: String
+	document: Document
+	established: Boolean
+}
+
+
+"""
+OFFERING MODEL
+"""
+enum OfferingTabSection {
+	DETAILS
+	FINANCIALS
+	TERMS
+	OFFEROR_INFO
+	DISCLOSURES
+}
+
+type OfferingDescriptionText { 
+	id: ID!
+	section: OfferingTabSection!
+	title: String!
+	text: String!
+	order: Int!
+	offering:	Offering @hasInverse(field: profileDescriptions)
+	creationDate: DateTime! 
+	lastUpdate: DateTime! 
+}
+
+type OfferingInfoSharing {
+	image: Image
+	description: String
+}
+
+enum OfferingUserRole {
+	ADMIN
+	BOARD_MEMBER
+	PARTNER
+	TEAM
+	INVESTOR
+	ADVISOR
+	SUPPORTER
+}
+
+type OfferingUser {
+	id: ID!
+	offering: Offering! @hasInverse(field:offeringUsers) 
+	user: User! @hasInverse(field: offerings)
+	roles: [OfferingUserRole!] 
+	lastUpdate: DateTime!
+	archived: Boolean
+}
+
+type Offering  {
+	id: ID! 
+	creationDate: DateTime! 
+	lastUpdate: DateTime! 
+	name: String! @search(by:[fulltext]) 
+	image: String 
+	bannerImage: String
+	primaryVideo:	String
+	sharing: ProjectInfoSharing
+	brandColor: String 
+	lightBrand: Boolean
+	website: String 
+	shortDescription: String
+	offeringUsers: [OfferingUser!] @hasInverse(field:offering) 
+	offeringEntity: LegalEntity @hasInverse(field:offerings) 
+	smartContracts: [SmartContract]
+	details: OfferingDetails
+	profileDescriptions: [OfferingDescriptionText] @hasInverse(field:offering)
+	purchaseRequests: [PurchaseRequest] @hasInverse(field:relatedOffering)
+	sales: [OfferingSale] @hasInverse(field:relatedOffering)
+	participants: [OfferingParticipant] @hasInverse(field:offering)
+	distributions: [OfferingDistribution]
+	documents: [Document] @hasInverse(field:offering)
+	isPublic: Boolean
+	waitlistOn: Boolean
+	waitlistMembers: [WaitlistMember] @hasInverse(field:offering)
+	accessCode: String
+}
+
+enum OfferingDetailsType {
+	REAL_ESTATE
+	SELF_STORAGE
+}
+
+enum DistributionPeriodType {
+	DAY
+	WEEK
+	MONTH
+	QUARTER
+	YEAR
+	UNSPECIFIED
+	DESCRIBED
+	NONE
+}
+
+enum OfferingStage {
+	IDENTIFIED
+	IN_NEGOTIATION
+	DUE_DILIGENCE
+	SALE
+	LOCKED
+	CLOSED
+}
+
+type OfferingDetails {
+	id: ID!
+	type: OfferingDetailsType
+	stage: OfferingStage
+	investmentCurrency: Currency!
+	maxRaise: Int64
+	minRaise: Int64
+	numUnits: Int
+	minUnitsPerInvestor: Int
+	maxUnitsPerInvestor: Int
+	priceStart: Int
+	maxInvestors: Int
+	minInvestors: Int
+	raiseStart: DateTime
+	raisePeriod: Int
+	additionalInfo: String
+	distributionPeriod: DistributionPeriodType
+	distributionFrequency: Int
+	distributionCurrency: Currency
+	distributionDescription: String
+	adminExpense: Int
+ projectedIrr: Int
+	projectedIrrMax: Int
+	preferredReturn: Int
+	targetEquityMultiple: Int
+	targetEquityMultipleMax: Int
+ cocReturn: Int
+ projectedAppreciation: Int
+ capRate: Int
+}
+
+# TEMPORARY
+type WaitlistMember {
+	id: ID!
+	name: String
+	offering: Offering! @hasInverse(field:waitlistMembers)
+	walletAddress: String
+	minPledge: Int @dgraph(pred: "WaitlistMember.minBuy")
+	maxPledge: Int @dgraph(pred: "WaitlistMember.maxBuy")
+	investorApplication: InvestorApplication
+	nonUS: Boolean
+	lastUpdate: DateTime!
+}
+
+type OfferingParticipant {
+	id: ID!
+	addressOfferingId: String! @id
+	walletAddress: String! @search(by:[fulltext]) 
+	permitted: Boolean!
+	name: String
+	entity: LegalEntity
+	offering: Offering! @hasInverse(field:participants)
+	investorApplication: InvestorApplication
+	minPledge: Int
+	maxPledge: Int
+	nonUS: Boolean
+	paid: Boolean
+	externalId: String
+	lastUpdate: DateTime!
+}
+
+type InvestorApplication {
+	id: ID!
+	applicationDoc: Document!
+	creationDate: DateTime!
+}
+
+type PurchaseRequest {
+	id: ID!
+	numUnits: Int!
+	relatedOffering: Offering! @hasInverse(field:purchaseRequests) 
+	purchaser: LegalEntity!
+	purchaseDocument: Document!
+	purchaserWallet: String!
+	creationDate: DateTime!
+}
+
+type OfferingSale {
+	id: ID!
+	numShares: Int!
+	minUnits: Int
+	maxUnits: Int
+	price: Int!
+	relatedOffering: Offering! @hasInverse(field:sales) 
+	smartContractId: String
+	saleContractId: String
+	isBid: Boolean
+	initiator: String
+	creationDate: DateTime!
+	lastUpdate: DateTime
+	visible: Boolean
+}
+
+type OfferingDistribution {
+	id: ID!
+	date: DateTime!
+	amount: Int!
+	transactionId: String
+	hasClaimed: [String]
+}
+
+"""
+REAL ESTATE PROPERTY MODEL
+"""
+
+enum AssetStatus {
+	IDENTIFIED
+	IN_NEGOTIATION
+	DUE_DILIGENCE
+	UNDER_CONTRACT
+	CLOSED
+	FOR_SALE
+}
+
+enum RealEstatePropertyType {
+	SINGLE_FAMILY
+	MULTI_FAMILY
+	COMMERCIAL
+	LAND_ONLY
+	SELF_STORAGE
+}
+
+type RealEstateProperty {
+	id: ID!
+	propertyType: RealEstatePropertyType!
+	investmentStatus: AssetStatus
+	address: Address
+	amenitiesDescription: String
+	images: [Image]
+	description: String
+	loan: Int
+	downPayment: Int
+	assetValue: Int
+	assetValueNote: String
+	lenderFees: Int
+	closingCosts: Int
+	creationDate: DateTime!
+	lastUpdate: DateTime!
+	owner: LegalEntity @hasInverse(field: realEstateProperties)
+}
+
+
+"""
+PROJECT MODEL
+"""
+
+enum ProjectCategory {
+		BUSINESS
+}
+
+type ProjectInfoSharing {
+	image: Image
+	description: String
+}
+
+
+type ProjectInfo  {
+	id: ID!
+	creationDate: DateTime! 
+	logo: String 
+	sharing: ProjectInfoSharing
+	brandColor: String 
+	lightBrand: Boolean 
+	shortDescription: String 
+	generalDescription: String 
+	linkedAccounts: [LinkedAccount] @hasInverse(field:project) 
+	documents: [Document] 
+	website: String 
+	pitchDeck: String 
+	videoURL: String 
+	languages: [String] 
+	locations: [String] 
+	project: Project! @hasInverse(field:info) 
+}
+
+
+type Project  {
+	id: ID! 
+	name: String! @search(by:[fulltext]) 
+	slug: String
+	category: ProjectCategory 
+	info: ProjectInfo! 
+	projectUsers: [ProjectUser!] @hasInverse(field:project) 
+	projectEntity: LegalEntity @hasInverse(field:project) 
+	walletAddresses: [CryptoAddress] 
+	lastUpdate: DateTime 
+}
+
+
+enum ProjectUserRole {
+	ADMIN
+	BOARD_MEMBER
+	PARTNER
+	TEAM
+	INVESTOR
+	ADVISOR
+	SUPPORTER
+}
+
+type ProjectUser {
+	id: ID!
+	project: Project! @hasInverse(field:projectUsers) 
+	user: User! @hasInverse(field: projects)
+	title: String 
+	roles: [ProjectUserRole!] 
+	lastUpdate: DateTime!
+	archived: Boolean
+}
+
+"""
+USER MODEL 
+"""
+
+
+type Address {
+	id: ID!
+	label: String
+	line1: String
+	line2: String
+	line3: String
+	city: String!
+	stateProvince: String
+	postalCode: String
+	country: String!
+	lat: Float
+	lng: Float
+}
+
+
+type EmailAddress @auth (
+  add: { rule:"""
+				query($user_id: String!) {
+					queryEmailAddress { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+		update: { rule: """
+				query($user_id: String!) {
+					queryEmailAddress { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+		delete: { rule: """
+				query($user_id: String!) {
+					queryEmailAddress { 
+						owner { 
+							users { 
+									user(filter: { uuid: { eq: $user_id }}) {
+																__typename
+																id
+												}
+										}
+									}
+							}
+					}"""} 
+)  {
+	id: ID!
+	address: String! @id
+	name: String
+	description: String
+	isPublic: Boolean @search
+	owner: LegalEntity @hasInverse(field:emailAddresses)
+}
+
+
+enum LinkedAccountType  {
+	LINKEDIN
+	FACEBOOK
+	TWITTER
+	INSTAGRAM
+	DISCORD
+	TELEGRAM
+	MEDIUM
+	MIRROR
+	SUBSTACK
+	YOUTUBE
+	SOUNDCLOUD
+	DRIBBBLE
+	GITHUB
+	EMAIL
+	PHONE
+	WEBSITE
+	OTHER
+}
+
+type LinkedAccount  {
+	id: ID!
+	accountProvidedId: String
+	username: String @search(by:[term]) 
+	url: String!
+	type: LinkedAccountType 
+	verified: Boolean
+	hidden: Boolean
+	project: ProjectInfo @hasInverse(field:linkedAccounts)
+	owner: LegalEntity! @hasInverse(field:linkedAccounts) 
+}
+
+enum LegalEntityType {
+	INDIVIDUAL
+	CORPORATION
+	LLC
+	UNINCORPORATED_ASSOCIATION
+}
+
+enum LegalEntityPermissionType {
+	ADMIN
+	VIEWER
+}
+
+type LegalEntityUser  {
+	id: ID!
+	legalEntity: LegalEntity! @hasInverse(field:users)
+	user: User! @hasInverse(field:legalEntities) 
+	permissions: [LegalEntityPermissionType!]
+	title: String
+}
+
+type LegalEntity @auth (
+			add: { rule: """
+				query($user_id: String!) { 
+						queryLegalEntity {
+								users {
+										user(filter: { uuid: { eq: $user_id } }) { 
+										uuid 
+								}
+							}
+						}
+					}"""
+				}
+		update: { rule: """
+				query($user_id: String!) { 
+						queryLegalEntity {
+								users {
+										user(filter: { uuid: { eq: $user_id } }) { 
+										uuid 
+								}
+							}
+						}
+					}"""
+				}
+			delete: { rule: """
+							query($user_id: String!) { 
+						queryLegalEntity {
+								users {
+										user(filter: { uuid: { eq: $user_id } }) { 
+										uuid 
+								}
+							}
+						}
+					}"""
+				}
+) {
+	id: ID! 
+	type: LegalEntityType! 
+	taxId: String
+	publicFacing: Boolean @search
+	users: [LegalEntityUser] @hasInverse(field:legalEntity) 
+	owners: [LegalEntity] @hasInverse(field:subsidiaries) 
+	subsidiaries: [LegalEntity] @hasInverse(field:owners) 
+	phone: String
+	emailAddresses: [EmailAddress] @hasInverse(field:owner)
+	walletAddresses: [CryptoAddress] @hasInverse(field:owner) 
+	displayName: String! @search(by:[fulltext]) 
+	fullName: String! @search(by:[fulltext]) 
+	description: String 
+	profileImage: String 
+	bannerImage: String
+	website: String 
+	supplementaryLegalText: String
+	addresses: [Address]
+	country: String 
+	jurisdiction: String 
+	linkedAccounts: [LinkedAccount] @hasInverse(field:owner) 
+	expertise: [String] 
+	interests: [String] 
+	project: Project @hasInverse(field:projectEntity) 
+	documentsOwned: [Document] @hasInverse(field:owner) 
+	documentsSigned: [DocumentSignatory] @hasInverse(field:legalEntity) 
+	smartContracts: [SmartContract] @hasInverse(field:owner)
+	operatingCurrency: Currency
+	offerings: [Offering] @hasInverse(field:offeringEntity) 
+ realEstateProperties: [RealEstateProperty] @hasInverse(field:owner)
+	creationDate: DateTime!
+	lastUpdate: DateTime!
+}
+
+type User @auth (
+	 update: { rule: """
+				query($user_id: String!) { 
+						queryUser(filter: { uuid: { eq: $user_id } }) { 
+							uuid 
+						}
+					}"""
+				}
+		delete: { rule: """
+				query($user_id: String!) { 
+						queryUser(filter: { uuid: { eq: $user_id } }) { 
+							uuid 
+						}
+					}"""
+				}
+) {
+	id: ID! 
+	uuid: String! @id
+	projects: [ProjectUser] @hasInverse(field:user) 
+	legalEntities: [LegalEntityUser] @hasInverse(field:user) 
+	offerings: [OfferingUser] @hasInverse(field:user)
+	creationDate: DateTime
+}
+
+
+"""
+CURRENCY
+"""
+
+
+type Currency  {
+	code: CurrencyCode! 
+}
+
+
+enum CurrencyCode {
+	CC
+	USD
+	CAD
+	EUR
+	GBP
+	BTC
+	ETH
+	ADA
+	MATIC
+	USDC
+	ALGO_USDC 
+	PoS_USDC
+	DAI
+	PoS_DAI
+	USDC_TEST_
+	DAI_TEST_
+ ALGO_USDC_TEST_ 
+	USDC_MATIC_TEST_
+	DAI_MATIC_TEST_
+	REAL_SHARE
+}
+
+# Dgraph.Authorization {"Header":"X-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com","Audience":["cooperativ-staging","permissioned-exchange"]}
