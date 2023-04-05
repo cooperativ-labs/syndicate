@@ -12,7 +12,7 @@ const OfferingProfileCard: React.FC<OfferingProfileCardProps> = ({ offering }) =
       <div
         className="md:grid grid-cols-4 "
         onClick={() => {
-          router.push(`/app/offerings/${1}`);
+          router.push(`/offerings/${1}`);
         }}
       >
         <div className="font-bold md:font-base col-span-1 self-center">Cozy Apartments Inc.</div>

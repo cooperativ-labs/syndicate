@@ -1,10 +1,9 @@
 import cn from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useWeb3React } from '@web3-react/core';
 
 import Button from '@src/components/buttons/Button';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import { AlgoConnectors, EthConnectors, GetEthConnector } from '@src/web3/connectors';
+import { AlgoConnectors, EthConnectors } from '@src/web3/connectors';
 import { ApplicationStoreProps, store } from '@context/store';
 import { loadStdlib } from '@reach-sh/stdlib';
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
@@ -62,40 +61,40 @@ type WalletChoicesProps = {
   dispatchWalletModal: (action: { type: string; payload?: any }) => void;
 };
 
-const EthChoices: FC<WalletChoicesProps> = ({ selection, dispatchWalletModal }) => {
-  const { activate } = useWeb3React<Web3Provider>();
-  return (
-    <>
-      {EthConnectors.map((connector, i) => {
-        const selectedConnector = GetEthConnector(connector.id);
-        return (
-          <Button
-            key={i}
-            className="w-full"
-            onClick={() => {
-              selection?.setItem('CHOSEN_CONNECTOR', connector.id);
-              activate(selectedConnector).catch((err) => {
-                alert(WalletErrorCodes(err));
-              });
-              dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
-            }}
-          >
-            <Connector index={i} connector={connector} length={EthConnectors.length} />
-          </Button>
-        );
-      })}
+// const EthChoices: FC<WalletChoicesProps> = ({ selection, dispatchWalletModal }) => {
+//   const { activate } = useWeb3React<Web3Provider>();
+//   return (
+//     <>
+//       {EthConnectors.map((connector, i) => {
+//         const selectedConnector = GetEthConnector(connector.id);
+//         return (
+//           <Button
+//             key={i}
+//             className="w-full"
+//             onClick={() => {
+//               selection?.setItem('CHOSEN_CONNECTOR', connector.id);
+//               activate(selectedConnector).catch((err) => {
+//                 alert(WalletErrorCodes(err));
+//               });
+//               dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
+//             }}
+//           >
+//             <Connector index={i} connector={connector} length={EthConnectors.length} />
+//           </Button>
+//         );
+//       })}
 
-      <h2 className="text-lg font-medium text-center text-gray-600 my-6">
-        <span>{`Don't have a wallet?`}</span>{' '}
-        <span className="underline">
-          <a href="https://metamask.io/" target="_blank" rel="noreferrer">
-            Download Here
-          </a>
-        </span>
-      </h2>
-    </>
-  );
-};
+//       <h2 className="text-lg font-medium text-center text-gray-600 my-6">
+//         <span>{`Don't have a wallet?`}</span>{' '}
+//         <span className="underline">
+//           <a href="https://metamask.io/" target="_blank" rel="noreferrer">
+//             Download Here
+//           </a>
+//         </span>
+//       </h2>
+//     </>
+//   );
+// };
 
 const AlgoChoices: FC<WalletChoicesProps> = ({ selection, dispatchWalletModal }) => {
   const { reFetchWallet } = useContext(ReachContext);

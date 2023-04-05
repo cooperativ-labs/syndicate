@@ -2,22 +2,24 @@ import CompleteIndividualEntity from '@src/components/account/CompleteIndividual
 import CreateEntity from '@src/components/entity/CreateEntity';
 import FormCard from '@src/components/cards/FormCard';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import Loading from '@src/components/loading/Loading';
+
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import React, { FC, useContext } from 'react';
 import router from 'next/router';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getUserPersonalEntity } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
+import LoadingModal from '@src/components/loading/ModalLoading';
 
 const CreateEntityPage: FC = () => {
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
 
   const user = userData?.queryUser[0];
+
   if (!user) {
-    return <Loading />;
+    return <LoadingModal />;
   }
   const userInfo = getUserPersonalEntity(user);
   return (
@@ -31,7 +33,7 @@ const CreateEntityPage: FC = () => {
               <CreateEntity actionOnCompletion={() => router.back()} />
             </>
           ) : (
-            <CompleteIndividualEntity userInfo={userInfo} />
+            <CompleteIndividualEntity userInfo={userInfo} user={user} />
           )}
         </LimitedWidthSection>
       </ManagerWrapper>

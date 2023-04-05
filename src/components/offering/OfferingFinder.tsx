@@ -13,7 +13,7 @@ const OfferingFinder: FC = () => {
       validate={(values) => {}}
       onSubmit={(values, { setSubmitting }) => {
         setSubmitting(true);
-        router.push(`/app/offerings/${values.offeringId}`);
+        router.push(`/offerings/${values.offeringId}`);
         setSubmitting(false);
       }}
     >

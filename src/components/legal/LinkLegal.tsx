@@ -102,7 +102,6 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
                       bacId={bacId}
                       entityId={offeringEntity.id}
                       spvEntityName={offeringEntity.fullName}
-                      gpEntityName={offeringEntity.owners[0].fullName}
                       offeringId={offering.id}
                     />
                     {/* <FormChainWarning /> */}

@@ -85,7 +85,7 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
             { lat: 100, lng: 100 },
           ],
           componentRestrictions: {
-            country: ['us', 'ca', 'uk', 'de'],
+            country: ['us', 'ca', 'uk', 'de', 'ky', 'vg'],
           },
         }}
       />

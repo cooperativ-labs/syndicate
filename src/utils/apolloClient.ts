@@ -5,34 +5,6 @@ import { useMemo } from 'react';
 const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
 const stagingKey = process.env.NEXT_PUBLIC_STAGING1_DGRAPH_HEADER_KEY;
 
-export const setHeaders = (headers, token) => {
-  switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-    case 'production':
-      return {
-        headers: {
-          ...headers,
-          'X-Auth-Token': token ? token : '',
-          'DG-Auth': key,
-        },
-      };
-    case 'staging':
-      return {
-        headers: {
-          ...headers,
-          'X-Auth-Token': token ? token : '',
-          'DG-Auth': stagingKey,
-        },
-      };
-    default:
-      return {
-        headers: {
-          ...headers,
-          'X-Auth-Token': token ? token : '',
-        },
-      };
-  }
-};
-
 const publichttpLink = createHttpLink({
   uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
   credentials: 'same-origin',

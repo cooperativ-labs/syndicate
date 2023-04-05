@@ -51,9 +51,8 @@ import {
   faTwitter,
 } from '@fortawesome/free-brands-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
+import { SessionProvider } from 'next-auth/react';
 import { StateProvider } from '@context/store';
-import { Web3Provider } from '@ethersproject/providers';
-import { Web3ReactProvider } from '@web3-react/core';
 
 library.add(fas, faCog);
 library.add(fas, faCommentDots);
@@ -93,12 +92,6 @@ library.add(fas, faEnvelope);
 library.add(fas, faPhone);
 library.add(fas, faLink);
 
-// function getLibrary(provider: any): Web3Provider {
-//   const library = new Web3Provider(provider);
-//   library.pollingInterval = 12000;
-//   return library;
-// }
-
 export default function MyApp({ Component, pageProps: { session, ...pageProps } }): ReactElement {
   const [cookiesApproved, setCookiesApproved] = useState(undefined);
 
@@ -127,12 +120,12 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
   );
 
   return (
-    // <Web3ReactProvider getLibrary={getLibrary}>
-    <SetReachContext>
+    <SessionProvider session={session}>
+      {/* <SetReachContext> */}
       <SetAppContext>
         <StateProvider>{cookiesApproved === 'approved' ? withCookies : withoutCookies}</StateProvider>
       </SetAppContext>
-    </SetReachContext>
-    // </Web3ReactProvider>
+      {/* </SetReachContext> */}
+    </SessionProvider>
   );
 }

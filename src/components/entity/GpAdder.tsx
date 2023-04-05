@@ -9,7 +9,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { useMutation, useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 type GpAdderProps = {
   ownedEntityId: string;
@@ -17,8 +17,9 @@ type GpAdderProps = {
 };
 
 const GpAdder: FC<GpAdderProps> = ({ ownedEntityId, refetchOuter }) => {
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData, refetch } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData, refetch } = useQuery(GET_USER, { variables: { id: session.user.id } });
+
   const user = userData?.queryUser[0];
 
   const [addOwner, { data, error }] = useMutation(ADD_ENTITY_OWNER);

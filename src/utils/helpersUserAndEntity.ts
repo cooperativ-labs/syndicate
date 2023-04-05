@@ -2,7 +2,10 @@ import { LegalEntity, LegalEntityType, User } from 'types';
 
 export const getUserPersonalEntity = (user: User) => {
   const entityObject = user.legalEntities.find((entity) => entity.legalEntity.type === LegalEntityType.Individual);
-  return entityObject.legalEntity;
+  if (entityObject) {
+    return entityObject.legalEntity;
+  }
+  return null;
 };
 
 export const entityNotHuman = (entity: LegalEntity) => {

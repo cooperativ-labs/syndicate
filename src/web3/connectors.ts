@@ -1,10 +1,6 @@
-import { InjectedConnector } from '@web3-react/injected-connector';
-import { WalletConnectConnector } from '@web3-react/walletconnect-connector';
-import { WalletLinkConnector } from '@web3-react/walletlink-connector';
 import { CryptoAddressProtocol } from 'types';
 import { ALGO_MyAlgoConnect as MyAlgoConnect, loadStdlib } from '@reach-sh/stdlib';
 import { ALGO_MakeAlgoSignerConnect as MakeAlgoSignerConnect } from '@reach-sh/stdlib';
-import { PeraWalletConnect } from '@perawallet/connect';
 import { ALGO_MakePeraConnect as MakePeraConnect } from '@reach-sh/stdlib';
 declare let window: any;
 
@@ -136,24 +132,24 @@ export const RPC_URLS: { [chainId: number]: string } = {
   80001: 'https://polygon-mumbai.infura.io/v3/acfb1610d5514a998fb6c0baf20682c2',
 };
 
-const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42, 137, 80001] });
+// const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42, 137, 80001] });
 
-const walletconnect = new WalletConnectConnector({
-  rpc: {
-    1: RPC_URLS[1],
-    3: RPC_URLS[3],
-    137: RPC_URLS[137],
-    80001: RPC_URLS[80001],
-  },
-  qrcode: true,
-});
+// const walletconnect = new WalletConnectConnector({
+//   rpc: {
+//     1: RPC_URLS[1],
+//     3: RPC_URLS[3],
+//     137: RPC_URLS[137],
+//     80001: RPC_URLS[80001],
+//   },
+//   qrcode: true,
+// });
 
-const walletlink = new WalletLinkConnector({
-  url: RPC_URLS[1],
-  appName: 'Cooperativ',
-  darkMode: false,
-  appLogoUrl: 'https://www.cooperativ.io/assets/android-chrome-192x192.png',
-});
+// const walletlink = new WalletLinkConnector({
+//   url: RPC_URLS[1],
+//   appName: 'Cooperativ',
+//   darkMode: false,
+//   appLogoUrl: 'https://www.cooperativ.io/assets/android-chrome-192x192.png',
+// });
 
 export const EthConnectors = [
   {
@@ -180,32 +176,32 @@ export const EthConnectors = [
   },
 ];
 
-const useMyAlgo = async (providerEnv) => {
-  // We delete the wallet to guarantee we get MyAlgo
-  delete window.algorand;
-  // We load a fresh stdlib, to clear out any state from before
-  let reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
-  // We load MyAlgo
-  reachLib.setWalletFallback(
-    reachLib.walletFallback({
-      providerEnv,
-      MyAlgoConnect,
-    })
-  );
-  return reachLib;
-};
+// const useMyAlgo = async (providerEnv) => {
+//   // We delete the wallet to guarantee we get MyAlgo
+//   delete window.algorand;
+//   // We load a fresh stdlib, to clear out any state from before
+//   let reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
+//   // We load MyAlgo
+//   reachLib.setWalletFallback(
+//     reachLib.walletFallback({
+//       providerEnv,
+//       MyAlgoConnect,
+//     })
+//   );
+//   return reachLib;
+// };
 
-const usePeraConnect = async (providerEnv) => {
-  delete window.algorand;
-  let reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
-  reachLib.setWalletFallback(
-    reachLib.walletFallback({
-      providerEnv: providerEnv,
-      WalletConnect: MakePeraConnect(PeraWalletConnect),
-    })
-  );
-  return reachLib;
-};
+// const usePeraConnect = async (providerEnv) => {
+//   delete window.algorand;
+//   let reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
+//   reachLib.setWalletFallback(
+//     reachLib.walletFallback({
+//       providerEnv: providerEnv,
+//       WalletConnect: MakePeraConnect(PeraWalletConnect),
+//     })
+//   );
+//   return reachLib;
+// };
 
 export const disconnectWallet = async (callback?: () => void) => {
   await window.algorand?.disconnect();
@@ -246,27 +242,28 @@ export const AlgoConnectors = [
 
 // export type ConnectorIdType = 'injected' | 'walletlink' | 'walletconnect' | 'pera' | 'myAlgo' | 'algoSigner';
 
-export const GetEthConnector = (id) => {
-  switch (id) {
-    case 'injected':
-      return injected;
-    case 'walletconnect':
-      return walletconnect;
-    case 'walletlink':
-      return walletlink;
-    default:
-      return undefined;
-  }
-};
-export const GetAlgoConnector = (id, providerEnv) => {
-  switch (id) {
-    case 'pera':
-      return usePeraConnect(providerEnv);
-    case 'myAlgo':
-      return useMyAlgo(providerEnv);
-    // case 'algoSigner':
-    //   return AlgoSignerConnect;
-    default:
-      return undefined;
-  }
-};
+// export const GetEthConnector = (id) => {
+//   switch (id) {
+//     case 'injected':
+//       return injected;
+//     case 'walletconnect':
+//       return walletconnect;
+//     case 'walletlink':
+//       return walletlink;
+//     default:
+//       return undefined;
+//   }
+// };
+
+// export const GetAlgoConnector = (id, providerEnv) => {
+//   switch (id) {
+//     case 'pera':
+//       return usePeraConnect(providerEnv);
+//     case 'myAlgo':
+//       return useMyAlgo(providerEnv);
+//     // case 'algoSigner':
+//     //   return AlgoSignerConnect;
+//     default:
+//       return undefined;
+//   }
+// };

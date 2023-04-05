@@ -11,7 +11,6 @@ import { MatchSupportedChains, setChainId } from '@src/web3/connectors';
 import { REMOVE_ENTITY_WALLET } from '@src/utils/dGraphQueries/entity';
 import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/dGraphQueries/crypto';
 import { useMutation } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;

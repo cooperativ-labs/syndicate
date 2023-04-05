@@ -132,7 +132,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
   }) => {
     const { fullName, jurisdiction, operatingCurrency, taxId, description } = values;
     try {
-      await updateLegalEntity({
+      updateLegalEntity({
         variables: {
           currentDate: currentDate,
           entityId: id,

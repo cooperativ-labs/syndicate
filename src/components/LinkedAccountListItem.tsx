@@ -5,14 +5,12 @@ import { getSocialAccountOption } from '@src/utils/enumConverters';
 import { LinkedAccount } from 'types';
 import { REMOVE_ENTITY_SOCIAL_ACCOUNT } from '@src/utils/dGraphQueries/entity';
 import { useMutation } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
 
 type LinkedAccountListProps = {
   account: LinkedAccount;
 };
 
 const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account }) => {
-  const { uuid } = useContext(UserAccountContext);
   const { owner, id, url, type, hidden, verified } = account;
   const [alerted, setAlerted] = useState<Boolean>(false);
   const [deleteSocial, { error }] = useMutation(REMOVE_ENTITY_SOCIAL_ACCOUNT);

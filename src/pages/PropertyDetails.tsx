@@ -9,7 +9,6 @@ import {
 } from '@src/utils/dGraphQueries/reProperty';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { useMutation } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
 
 import Button from '@src/components/buttons/Button';
 import FormModal from '@src/containers/FormModal';
@@ -23,13 +22,15 @@ import { getPropertyTypeOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { RealEstateProperty } from 'types';
 import { UPDATE_ADDRESS } from '@src/utils/dGraphQueries/entity';
+import { useSession } from 'next-auth/react';
 
 type PropertyDetailsProps = {
   property: RealEstateProperty;
 };
 
 const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
-  const { uuid } = useContext(UserAccountContext);
+  const { data: session, status } = useSession();
+const userId = session?.user?.id;
   const [addImage, { error: imageError }] = useMutation(ADD_PROPERTY_IMAGE);
   const [updateAddress, { error: addressError }] = useMutation(UPDATE_ADDRESS);
   const [updateProperty, { error: propertyError }] = useMutation(UPDATE_RE_PROPERTY_INFO);
@@ -59,7 +60,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
   const entityUsers = owner.users;
 
   const entityOwner = entityUsers.find((u) => {
-    return u.user.uuid === uuid;
+    return u.user.id === userId;
   });
 
   const isEntityOwner = !!entityOwner;
@@ -146,7 +147,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
               uploaderText="Add Picture"
               urlToDatabase={addImageToDb}
               accept={['jpg', 'jpeg', 'png']}
-              baseUploadUrl={`/properties/${id}/${uuid}`}
+              baseUploadUrl={`/properties/${id}/${userId}`}
             />
           )}
         </div>

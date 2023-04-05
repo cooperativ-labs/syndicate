@@ -13,12 +13,12 @@ const EnsureProfileCompletion: FC<EnsureProfileCompletionProps> = ({ children, e
   const userInfo = getUserPersonalEntity(user);
   return (
     <>
-      {userInfo.addresses[0] ? (
+      {userInfo?.addresses[0] ? (
         <>{children}</>
       ) : (
         <>
           <div className="text-cLightBlue font-bold text-lg">{explainerText}</div>
-          <CompleteIndividualEntity userInfo={userInfo} />
+          <CompleteIndividualEntity userInfo={userInfo} user={user} />
         </>
       )}
     </>

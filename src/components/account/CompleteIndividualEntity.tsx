@@ -6,16 +6,19 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { LegalEntity } from 'types';
-import { UPDATE_ENTITY_WITH_ADDRESS } from '@src/utils/dGraphQueries/entity';
+import { CurrencyCode, LegalEntity, LegalEntityType, User } from 'types';
+import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
+import Select from '../form-components/Select';
+import { fiatOptions } from '@src/utils/enumConverters';
 
 type CompleteIndividualEntityProps = {
   userInfo: LegalEntity;
+  user: User;
 };
-const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo }) => {
-  const [updateEntity, { data, error }] = useMutation(UPDATE_ENTITY_WITH_ADDRESS);
+const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo, user }) => {
+  const [createEntity, { data, error, loading }] = useMutation(ADD_ENTITY);
   const [latLang, setLatLang] = useState({ lat: null, lng: null });
   const [autocompleteResults, setAutocompleteResults] = useState([null]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
@@ -27,7 +30,7 @@ const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo 
     setAlerted(true);
   }
 
-  if (data && !alerted) {
+  if (data) {
     setAlerted(true);
     router.reload();
   }
@@ -62,44 +65,43 @@ const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo 
   const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
 
   const onSubmit = async (values) => {
-    await updateEntity({
-      variables: {
-        currentDate: currentDate,
-        entityId: userInfo.id,
-        displayName: userInfo.displayName,
-        fullName: values.fullName,
-        profileImage: userInfo.profileImage ?? '/assets/images/user-images/placeholder.png',
-        addressLabel: 'Main Address',
-        addressLine1: CreateFirstAddressLine(street_number, street_name),
-        addressLine2: subpremise,
-        city: city ?? sublocality,
-        stateProvince: state,
-        postalCode: zip,
-        country: country,
-        lat: latLang.lat,
-        lng: latLang.lng,
-        jurisdiction: values.jurisdiction,
-      },
-    });
+    try {
+      await createEntity({
+        variables: {
+          currentDate: currentDate,
+          userId: user.id,
+          fullName: values.fullName,
+          displayName: values.displayName,
+          type: LegalEntityType.Individual,
+          image: userInfo?.profileImage ?? user?.image ?? '/assets/images/user-images/placeholder.png',
+          addressLabel: 'Main Address',
+          addressLine1: CreateFirstAddressLine(street_number, street_name),
+          addressLine2: subpremise,
+          city: city ?? sublocality,
+          stateProvince: state,
+          postalCode: zip,
+          country: country,
+          lat: latLang.lat,
+          lng: latLang.lng,
+          jurisdiction: values.jurisdiction,
+          operatingCurrency: values.currency,
+        },
+      });
+    } catch (err) {
+      console.log(err);
+    }
   };
 
   return (
     <Formik
       initialValues={{
-        fullName: userInfo.fullName,
-        addressLabel: '',
-        addressLine1: '',
-        addressLine2: '',
-        addressLine3: '',
-        city: '',
-        stateProvince: '',
-        postalCode: '',
-        country: '',
+        fullName: user?.name ?? '',
+        displayName: '',
         jurisdiction: '',
+        currency: CurrencyCode.Usd,
       }}
       validate={async (values) => {
         const errors: any = {}; /** @TODO : Shape */
-
         if (!values.fullName) {
           errors.fullName = 'Please include your full name';
         }
@@ -136,6 +138,7 @@ const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo 
               placeholder="e.g. Delaware"
             />
           </div>
+
           <CustomAddressAutocomplete
             name="addressAutocomplete"
             labelText="Full address"
@@ -150,6 +153,16 @@ const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo 
               </GoogleMap>
             </div>
           )}
+          <Select className={defaultFieldDiv} required labelText="Operating currency" name="currency">
+            <option value="">Select currency</option>
+            {fiatOptions.map((type, i) => {
+              return (
+                <option key={i} value={type.value}>
+                  {type.symbol}
+                </option>
+              );
+            })}
+          </Select>
           <MajorActionButton type="submit" disabled={isSubmitting}>
             Add personal information
           </MajorActionButton>

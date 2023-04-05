@@ -15,7 +15,7 @@ import { ReachContext } from '@src/SetReachContext';
 import { sendShares } from '@src/web3/reachCalls';
 import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
-import { useWeb3React } from '@web3-react/core';
+
 import { Web3Provider } from '@ethersproject/providers';
 
 export type SendSharesProps = {

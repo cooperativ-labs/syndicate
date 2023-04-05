@@ -24,7 +24,7 @@ const MarketingNav: FC = () => {
       <div className="flex justify-end items-center">
         <NavLink link="https://medium.com/cooperativ" external text="Blog" />
         <span className="flex items-center">
-          <Link href="/app">
+          <Link href="/">
             <div className={cn(standardClass, 'p-1 px-2 md:p-2 md:px-4 font-semibold rounded-full relative md:mr-2')}>
               Open App
             </div>

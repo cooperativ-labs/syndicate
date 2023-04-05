@@ -8,12 +8,14 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { NextPage } from 'next';
 import { useQuery } from '@apollo/client';
 import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 const CreatePpmPage: NextPage = () => {
   const offeringId = router.query.offeringId;
+  const { data: session, status } = useSession();
+
   const { data: offeringData } = useQuery(GET_OFFERING, { variables: { id: offeringId } });
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
 
   if (!offeringData || !userData) {
     return <LoadingModal />;

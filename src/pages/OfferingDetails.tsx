@@ -30,7 +30,7 @@ import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { ReachContext } from '@src/SetReachContext';
 import { setChainId } from '@src/web3/connectors';
 import { useAsyncFn } from 'react-use';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 type OfferingDetailsProps = {
   offering: Offering;
@@ -38,7 +38,9 @@ type OfferingDetailsProps = {
 };
 
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
-  const { uuid } = useContext(UserAccountContext);
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
+
   const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
   const chainId = setChainId;
   const {
@@ -83,7 +85,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   const hasContract = !!contractManager;
   const offeringOwner = offeringUsers.find((u) => {
-    return u.user.uuid === uuid;
+    return u.user.id === userId;
   });
   const isOfferingOwner = !!offeringOwner;
   const isContractOwner = contractManager && contractManager === userWalletAddress;
@@ -162,7 +164,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
       </RightSideBar>
       <RightSideBar formOpen={descriptionSettingsPanel} onClose={() => setDescriptionSettingsPanel(false)}>
         <>
-          <OfferingProfileSettings offering={offering} uuid={uuid} />
+          <OfferingProfileSettings offering={offering} userId={userId} />
           <hr className="my-4" />
           <OfferingDescriptionSettings offering={offering} />
         </>

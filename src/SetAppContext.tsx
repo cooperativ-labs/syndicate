@@ -1,80 +1,94 @@
 import React, { useEffect, useState } from 'react';
-import { ApolloClient, ApolloProvider, createHttpLink, InMemoryCache } from '@apollo/client';
-import { auth } from 'firebaseConfig/firebaseConfig';
+import { ApolloClient, ApolloProvider, createHttpLink, gql, InMemoryCache } from '@apollo/client';
 import { setContext } from '@apollo/client/link/context';
-import { setHeaders } from './utils/apolloClient';
+import { useSession } from 'next-auth/react';
+import { GET_USERS } from './utils/dGraphQueries/user';
 
 declare let window: any;
-
-export const UserAccountContext = React.createContext<{
-  uuid: string | undefined;
-  name: string | undefined;
-  email: string | undefined;
-  photo: string | undefined;
-}>({
-  uuid: undefined,
-  name: undefined,
-  email: undefined,
-  photo: undefined,
-});
 
 type SetAppContextProps = {
   children: React.ReactNode;
 };
 
 const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
-  const [currentUser, setCurrentUser] = useState(undefined);
-  const [userLoading, setUserLoading] = useState(true);
+  const { data: session, status } = useSession();
+  const [apolloClient, setApolloClient] = useState<ApolloClient<any> | null>(null);
 
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setCurrentUser(user);
-      }
-      setUserLoading(false);
-      return;
-    });
-  }, [currentUser]);
+  const token = session?.encodedJwt;
+  const productionKey = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
+  const stagingKey = process.env.NEXT_PUBLIC_STAGING_DGRAPH_HEADER_KEY;
 
-  if (userLoading) {
-    return <></>;
-  }
-
-  const getToken = async (): Promise<any> => {
-    if (currentUser) {
-      const token = await currentUser.getIdToken(true);
-      return token;
+  const setHeaders = (headers, token) => {
+    switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
+      case 'production':
+        return {
+          headers: {
+            ...headers,
+            'X-Auth-Token': token ? `bearer ${token}` : '',
+            'DG-Auth': productionKey,
+          },
+        };
+      case 'staging':
+        return {
+          headers: {
+            ...headers,
+            'X-Auth-Token': token ? `bearer ${token}` : '',
+            'DG-Auth': stagingKey,
+          },
+        };
+      default:
+        return {
+          headers: {
+            ...headers,
+            'X-Auth-Token': token ? `bearer ${token}` : '',
+          },
+        };
     }
-    return Promise.resolve();
   };
 
-  const asyncMiddleware = setContext((_, { headers }) => getToken().then((token) => setHeaders(headers, token)));
+  useEffect(() => {
+    if (status !== 'loading') {
+      const asyncMiddleware = setContext((_, { headers }) => setHeaders(headers, token));
+      const httpLink = createHttpLink({
+        uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+        credentials: 'same-origin',
+      });
 
-  const httpLink = createHttpLink({
-    uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
-    credentials: 'same-origin',
-  });
+      const createApolloClient = new ApolloClient({
+        link: asyncMiddleware.concat(httpLink),
+        cache: new InMemoryCache(),
+        ssrMode: typeof window === 'undefined',
+      });
 
-  const createApolloClient = new ApolloClient({
-    link: asyncMiddleware.concat(httpLink),
-    cache: new InMemoryCache(),
-    ssrMode: typeof window === 'undefined',
-  });
+      //========================
+      // createApolloClient
+      //   .query({
+      //     query: gql`
+      //       query {
+      //         queryUser {
+      //           id
+      //           name
+      //         }
+      //       }
+      //     `,
+      //   })
+      //   .then((response) => {
+      //     console.log(response.data);
+      //   })
+      //   .catch((error) => {
+      //     console.error('Error:', error);
+      //   });
+      //===================
 
-  return (
-    <ApolloProvider client={createApolloClient}>
-      <UserAccountContext.Provider
-        value={{
-          uuid: currentUser?.uid,
-          name: currentUser?.displayName,
-          email: currentUser?.email,
-          photo: currentUser?.photoURL,
-        }}
-      >
-        {children}{' '}
-      </UserAccountContext.Provider>
-    </ApolloProvider>
-  );
+      setApolloClient(createApolloClient);
+    }
+  }, [status, token]);
+
+  if (status === 'loading' || !apolloClient) {
+    return <div>loading...</div>;
+  }
+
+  return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;
 };
 
 export default SetAppContext;

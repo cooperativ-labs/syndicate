@@ -29,7 +29,7 @@ export const RealEstatePropertyCard: FC<RealEstatePropertyCardProps> = ({
         fullWidth ? 'w-full ' : 'md:w-96',
         'rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer'
       )}
-      onClick={() => router.push(`/app/businesses/${offeringEntityId}/properties/${id}`)}
+      onClick={() => router.push(`/businesses/${offeringEntityId}/properties/${id}`)}
     >
       <img src={images[0]?.url} className="object-cover w-full h-24 absolute" />
       <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />

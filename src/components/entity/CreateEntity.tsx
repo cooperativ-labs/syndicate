@@ -14,7 +14,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { useMutation, useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 export type CreateEntityType = {
   defaultLogo?: string;
@@ -22,8 +22,8 @@ export type CreateEntityType = {
 };
 
 const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion }) => {
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
   const [addOrganization, { data, error }] = useMutation(ADD_ENTITY);
   const [latLang, setLatLang] = useState({ lat: null, lng: null });

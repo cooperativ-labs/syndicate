@@ -4,13 +4,13 @@ import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import PresentLegalText from './PresentLegalText';
 import React, { FC, useContext, useState } from 'react';
 import router from 'next/router';
-import { ADD_LEGAL_SHARE_LINK } from '@src/utils/dGraphQueries/offering';
+import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { ReachContext } from '@src/SetReachContext';
 import { sha256 } from 'js-sha256';
-import { SmartContract } from 'types';
+import { LegalEntity, SmartContract } from 'types';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { useMutation } from '@apollo/client';
 
@@ -22,7 +22,6 @@ type LinkLegalFormProps = {
   bacId: string;
   agreement: string;
   spvEntityName: string;
-  gpEntityName: string;
   offeringId: string;
   entityId: string;
 };
@@ -35,7 +34,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   bacId,
   agreement,
   spvEntityName,
-  gpEntityName,
   offeringId,
   entityId,
 }) => {
@@ -43,6 +41,8 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   const [loadingModal, setLoadingModal] = useState<boolean>(false);
   const { reachAcc, userWalletAddress } = useContext(ReachContext);
   const [addLegalLink, { data: agreementData, error: agreementError }] = useMutation(ADD_LEGAL_SHARE_LINK);
+  const [addOfferingParticipant, { data: participantData, error: participantError }] =
+    useMutation(ADD_OFFERING_PARTICIPANT);
 
   const agreementHash = sha256(agreement);
 
@@ -74,8 +74,20 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
             signature: values.signature,
           },
         });
+        await addOfferingParticipant({
+          variables: {
+            currentDate: currentDate,
+            addressOfferingId: userWalletAddress + offeringId,
+            offeringId: offeringId,
+            name: spvEntityName,
+            applicantId: entityId,
+            walletAddress: userWalletAddress,
+            permitted: false,
+          },
+        });
+
         setButtonStep('confirmed');
-        router.push(`/app/offerings/${offeringId}`);
+        router.push(`/offerings/${offeringId}`);
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
       }

@@ -7,7 +7,6 @@ import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { CurrencyCode, LegalEntity } from 'types';
 import { useMutation } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
 
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import { ADD_ENTITY_EMAIL, REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
@@ -27,13 +26,16 @@ import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVi
 import SectionBlock from '@src/containers/SectionBlock';
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { useSession } from 'next-auth/react';
 
 type EntityDetailsProps = {
   entity: LegalEntity;
 };
 
 const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
-  const { uuid } = useContext(UserAccountContext);
+  const { data: session, status } = useSession();
+const userId = session?.user?.id;
+
   const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
     useMutation(UPDATE_ENTITY_INFORMATION);
   const [addEntityEmail, { data: dataEmail, error: errorEmail }] = useMutation(ADD_ENTITY_EMAIL);
@@ -187,7 +189,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
               uploaderText="Add profile image"
               urlToDatabase={addProfileImageToDb}
               accept={['jpg', 'jpeg', 'png', 'svg']}
-              baseUploadUrl={`/businesses/${entity.id}/${uuid}`}
+              baseUploadUrl={`/businesses/${entity.id}/${userId}`}
             />
           </div>
           <div className="col-span-2">
@@ -196,7 +198,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
               uploaderText="Add banner image"
               urlToDatabase={addBannerImageToDb}
               accept={['jpg', 'jpeg', 'png', 'svg']}
-              baseUploadUrl={`/businesses/${entity.id}/${uuid}`}
+              baseUploadUrl={`/businesses/${entity.id}/${userId}`}
             />
           </div>
         </div>

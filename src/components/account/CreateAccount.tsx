@@ -1,14 +1,11 @@
 import EmailPasswordForm from './CreateEmailPasswordAccountForm';
 import LogInWithEmailForm from './LogInWithEmail';
 import React, { FC, ReactNode, useContext, useEffect, useState } from 'react';
-import { ADD_USER_WITH_EMAIL, ADD_USER_WITH_TWITTER } from '@src/utils/dGraphQueries/user';
-import { ApplicationStoreProps, store } from '@context/store';
-import { auth, signInWithGoogle, signInWithTwitter } from 'firebaseConfig/firebaseConfig';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { ADD_USER_WITH_EMAIL } from '@src/utils/dGraphQueries/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
 import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/router';
+import { signIn } from 'next-auth/react';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-full bg-slate-50 border-2 border-cDarkBlue justify-center p-3 text-slate-700 font-bold w-full';
@@ -28,82 +25,22 @@ const SSOButton: FC<SSOButtonProps> = ({ onClick, iconPrefix, icon, text }) => {
 };
 
 const CreateAccount: FC = () => {
-  const router = useRouter();
   const [loading, setLoading] = useState<boolean>(false);
   const [loginInterface, setLoginInterface] = useState<'social' | 'email' | 'magic'>('social');
   const [addUserWithEmail, { error: errorEmail }] = useMutation(ADD_USER_WITH_EMAIL);
-  const [addUserWithTwitter, { error: errorTwitter }] = useMutation(ADD_USER_WITH_TWITTER);
-  const [currentUser, setCurrentUser] = useState(undefined);
   const [tried, setTried] = useState(false);
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: dispatchPageIsLoading } = applicationStore;
 
-  if (errorEmail || errorTwitter) {
-    const error = errorEmail || errorTwitter;
+  if (errorEmail && !tried) {
+    const error = errorEmail;
     alert(`Oops. Looks like something went wrong: ${error.message} (createAccount.tsx)`);
     setTried(true);
   }
-
-  //===== This crazy shit is necessary because of NextJS
-  //===== DB queries don't have the token when it's initially requested from Firebase
-
-  const addUserToDB = async () => {
-    if (currentUser && !tried) {
-      try {
-        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
-        setTried(true);
-        if (currentUser.providerData[0].providerId === 'twitter.com') {
-          await addUserWithTwitter({
-            variables: {
-              currentDate: currentDate,
-              uuid: currentUser.uid,
-              displayName: currentUser.displayName,
-              fullName: currentUser.displayName,
-              twitterId: currentUser.providerData[0].uid,
-              twitterUsername: currentUser.reloadUserInfo.screenName,
-              twitterURL: `https://twitter.com/${currentUser.reloadUserInfo.screenName}`,
-              profilePhoto: currentUser.photoURL,
-            },
-          });
-        } else {
-          await addUserWithEmail({
-            variables: {
-              currentDate: currentDate,
-              uuid: currentUser.uid,
-              displayName: currentUser.displayName ?? currentUser.email,
-              fullName: currentUser.displayName ?? currentUser.email,
-              emailAddress: currentUser.email,
-              profilePhoto: currentUser.photoURL,
-            },
-          });
-        }
-        router.reload();
-      } catch (e) {
-        router.reload();
-      }
-    }
-  };
-
-  useEffect(() => {
-    auth.onAuthStateChanged(async (user) => {
-      if (user) {
-        setCurrentUser(user);
-        addUserToDB();
-      }
-      return;
-    });
-  }, [currentUser]);
 
   //===========================================================================
 
   const handleGoogleLogin = async () => {
     setLoading(true);
-    await signInWithGoogle();
-  };
-
-  const handleTwitterLogin = async () => {
-    setLoading(true);
-    await signInWithTwitter();
+    signIn('google');
   };
 
   return (
@@ -128,12 +65,12 @@ const CreateAccount: FC = () => {
             <>
               <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Sign in with Google" />
               {/* <SSOButton onClick={handleTwitterLogin} iconPrefix="fab" icon="twitter" text="Sign in with Twitter" /> */}
-              <SSOButton
+              {/* <SSOButton
                 onClick={() => setLoginInterface('email')}
                 iconPrefix="fas"
                 icon="envelope"
                 text="Sign in with email address "
-              />
+              /> */}
               {/* <SSOButton
                 onClick={() => setLoginInterface('magic')}
                 iconPrefix="fas"

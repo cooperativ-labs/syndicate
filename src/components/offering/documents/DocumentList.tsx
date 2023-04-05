@@ -5,7 +5,7 @@ import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Document, DocumentFormat, DocumentType } from 'types';
 import { useMutation } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 type DocumentListProps = {
   documents: Document[];
@@ -16,7 +16,8 @@ type DocumentListProps = {
 };
 
 const DocumentList: FC<DocumentListProps> = ({ documents, isOfferingOwner, offeringId, hideUpload, ownerEntityId }) => {
-  const { uuid } = useContext(UserAccountContext);
+  const { data: session, status } = useSession();
+
   const [addFile, { data, error, loading }] = useMutation(ADD_OFFERING_DOCUMENT);
   const [alerted, setAlerted] = useState<boolean>(false);
 

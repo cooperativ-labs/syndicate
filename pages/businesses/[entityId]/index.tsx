@@ -20,7 +20,7 @@ const EntityPage: NextPage = () => {
 
   return (
     <div data-test="component-landing" className="h-full flex">
-      <ManagerWrapper homePage>
+      <ManagerWrapper>
         <EntityDetails entity={entity} />
       </ManagerWrapper>
     </div>

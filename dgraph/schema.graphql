@@ -93,11 +93,11 @@ enum CryptoAddressType {
 
 type CryptoAddress @auth (
   add: { rule:"""
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					queryCryptoAddress { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -106,11 +106,11 @@ type CryptoAddress @auth (
 							}
 					}"""} 
 		update: { rule: """
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					queryCryptoAddress { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -119,11 +119,11 @@ type CryptoAddress @auth (
 							}
 					}"""} 
 		delete: { rule: """
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					queryCryptoAddress { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -154,11 +154,11 @@ enum SmartContractType {
 
 type SmartContract @auth (
   add: { rule:"""
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					querySmartContract { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -167,11 +167,11 @@ type SmartContract @auth (
 							}
 					}"""} 
 		update: { rule: """
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					querySmartContract { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -180,11 +180,11 @@ type SmartContract @auth (
 							}
 					}"""} 
 		# delete: { rule: """
-		# 		query($user_id: String!) {
+		# 		query($userId: [ID!]) {
 		# 			querySmartContract { 
 		# 				owner { 
 		# 					users { 
-		# 							user(filter: { uuid: { eq: $user_id }}) {
+		# 							user(filter: { id: $userId }) {
 		# 														__typename
 		# 														id
 		# 										}
@@ -536,11 +536,11 @@ type Address {
 
 type EmailAddress @auth (
   add: { rule:"""
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					queryEmailAddress { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -549,11 +549,11 @@ type EmailAddress @auth (
 							}
 					}"""} 
 		update: { rule: """
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					queryEmailAddress { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -562,11 +562,11 @@ type EmailAddress @auth (
 							}
 					}"""} 
 		delete: { rule: """
-				query($user_id: String!) {
+				query($userId: [ID!]) {
 					queryEmailAddress { 
 						owner { 
 							users { 
-									user(filter: { uuid: { eq: $user_id }}) {
+									user(filter: { id: $userId }) {
 																__typename
 																id
 												}
@@ -637,39 +637,33 @@ type LegalEntityUser  {
 }
 
 type LegalEntity @auth (
-			add: { rule: """
-				query($user_id: String!) { 
-						queryLegalEntity {
-								users {
-										user(filter: { uuid: { eq: $user_id } }) { 
-										uuid 
-								}
-							}
-						}
-					}"""
+	add: { rule: """
+		query($userId: ID!) { 
+				queryLegalEntity {
+						users {
+							user(filter: { id: [$userId] }) { id }
+					}
 				}
-		update: { rule: """
-				query($user_id: String!) { 
-						queryLegalEntity {
-								users {
-										user(filter: { uuid: { eq: $user_id } }) { 
-										uuid 
+			}"""
+		}
+update:{rule: """
+						query($userId: ID!) { 
+								queryLegalEntity {
+										users {
+												user(filter: { id: [$userId] }) { id }
+									}
 								}
-							}
+							}"""
 						}
-					}"""
+	delete: { rule: """
+					query($userId: ID!) { 
+				queryLegalEntity {
+						users {
+								user(filter: { id: [$userId] }) { id }
+					}
 				}
-			delete: { rule: """
-							query($user_id: String!) { 
-						queryLegalEntity {
-								users {
-										user(filter: { uuid: { eq: $user_id } }) { 
-										uuid 
-								}
-							}
-						}
-					}"""
-				}
+			}"""
+		}
 ) {
 	id: ID! 
 	type: LegalEntityType! 
@@ -681,8 +675,8 @@ type LegalEntity @auth (
 	phone: String
 	emailAddresses: [EmailAddress] @hasInverse(field:owner)
 	walletAddresses: [CryptoAddress] @hasInverse(field:owner) 
-	displayName: String! @search(by:[fulltext]) 
-	fullName: String! @search(by:[fulltext]) 
+	displayName: String @search(by:[fulltext]) 
+	fullName: String @search(by:[fulltext]) 
 	description: String 
 	profileImage: String 
 	bannerImage: String
@@ -705,30 +699,96 @@ type LegalEntity @auth (
 	lastUpdate: DateTime!
 }
 
-type User @auth (
-	 update: { rule: """
-				query($user_id: String!) { 
-						queryUser(filter: { uuid: { eq: $user_id } }) { 
-							uuid 
-						}
-					}"""
-				}
-		delete: { rule: """
-				query($user_id: String!) { 
-						queryUser(filter: { uuid: { eq: $user_id } }) { 
-							uuid 
-						}
-					}"""
-				}
-) {
-	id: ID! 
-	uuid: String! @id
-	projects: [ProjectUser] @hasInverse(field:user) 
-	legalEntities: [LegalEntityUser] @hasInverse(field:user) 
-	offerings: [OfferingUser] @hasInverse(field:user)
-	creationDate: DateTime
+type User
+  @auth(
+    query: {
+      or: [
+        {
+          rule: """
+          query ($userId: [ID!]) {queryUser(filter: { id:  $userId } ) {id}}
+          """
+        }
+         { rule: "{$admin: { eq: true } }" }
+									{ rule: "{$nextAuth: { eq: true } }" }
+      ]
+    }
+    delete: { rule: "{$nextAuth: { eq: true } }" }
+    add: { rule: "{$nextAuth: { eq: true } }" }
+    update: {
+      or: [
+        {
+          rule: """
+          query ($userId: [ID!]) {queryUser(filter: { id:  $userId } ) {id}}
+          """
+        }
+   			 { rule: "{$admin: { eq: true } }" }
+      ]
+    }
+  ) 
+  {
+  id: ID
+  name: String
+  email: String @search(by: [hash])
+  emailVerified: DateTime
+  image: String
+  accounts: [Account] @hasInverse(field: "user")
+  sessions: [Session] @hasInverse(field: "user")
+  projects: [ProjectUser] @hasInverse(field:user) 
+		legalEntities: [LegalEntityUser] @hasInverse(field:user) 
+		offerings: [OfferingUser] @hasInverse(field:user)
+		creationDate: DateTime
 }
 
+type Account
+  @auth(
+    delete: { rule: "{$nextAuth: { eq: true } }" }
+    add: { rule: "{$nextAuth: { eq: true } }" }
+    query: { rule: "{$nextAuth: { eq: true } }" }
+    update: { rule: "{$nextAuth: { eq: true } }" }
+  ) 
+  {
+  id: ID
+  type: String
+  provider: String @search(by: [hash])
+  providerAccountId: String @search(by: [hash])
+  # refreshToken: String // removed to avoid type conflict with refresh_token
+  expires_at: Int64
+  # accessToken: String // removed to avoid type conflict with access_token
+  token_type: String
+  refresh_token: String
+  access_token: String
+  scope: String
+  id_token: String
+  session_state: String
+  user: User @hasInverse(field: "accounts")
+}
+type Session
+  @auth(
+    delete: { rule: "{$nextAuth: { eq: true } }" }
+    add: { rule: "{$nextAuth: { eq: true } }" }
+    query: { rule: "{$nextAuth: { eq: true } }" }
+    update: { rule: "{$nextAuth: { eq: true } }" }
+  ) 
+  {
+  id: ID
+  expires: DateTime
+  sessionToken: String @search(by: [hash])
+  user: User @hasInverse(field: "sessions")
+}
+
+type VerificationToken
+  @auth(
+    delete: { rule: "{$nextAuth: { eq: true } }" }
+    add: { rule: "{$nextAuth: { eq: true } }" }
+    query: { rule: "{$nextAuth: { eq: true } }" }
+    update: { rule: "{$nextAuth: { eq: true } }" }
+  ) 
+  {
+  id: ID
+  identifier: String @search(by: [hash])
+  token: String @search(by: [hash])
+  expires: DateTime
+}
 
 """
 CURRENCY
@@ -743,6 +803,8 @@ type Currency  {
 enum CurrencyCode {
 	CC
 	USD
+	KYD
+	AUD
 	CAD
 	EUR
 	GBP
@@ -763,4 +825,5 @@ enum CurrencyCode {
 	REAL_SHARE
 }
 
-# Dgraph.Authorization {"Header":"X-Auth-Token","Namespace":"https://dgraph.io/jwt/claims","JWKURL":"https://www.googleapis.com/service_accounts/v1/jwk/securetoken@system.gserviceaccount.com","Audience":["cooperativ-staging","permissioned-exchange"]}
+
+# Dgraph.Authorization {"VerificationKey":"b916c164e025f6901a3be022d8de4276aca4c0613290a1befc5109a98231748a","Header":"X-Auth-Token","Namespace":"https://cooperativ.io/jwt/claims","Algo":"HS256"}

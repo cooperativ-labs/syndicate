@@ -10,14 +10,19 @@ import router from 'next/router';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getNonHumanEntities } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 const EntityDashboard: FC = () => {
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
 
-  const entities = getNonHumanEntities(user);
+  if (!user) {
+    return <></>;
+  }
+  console.log(user);
+  const entities = user.legalEntities.map((x) => x.legalEntity);
+  // const entities = getNonHumanEntities(user);
 
   const hasEntities = entities.length > 0;
   return (

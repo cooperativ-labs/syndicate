@@ -3,28 +3,25 @@ import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
-import NeedAccount from './ModalNeedAccount';
 import React, { FC, useContext } from 'react';
-import RightSideBar from './sideBar/RightSidebar';
-import router from 'next/router';
 import WalletChooserModal from './wallet/WalletChooserModal';
 import { ApplicationStoreProps, store } from '@context/store';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
+import WithAuthentication from './WithAuthentication';
 import { useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { useSession } from 'next-auth/react';
 
 // const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
 
 type ManagerProps = {
   children: React.ReactNode;
-  homePage?: boolean;
 };
 
-const Manager: FC<ManagerProps> = ({ children, homePage }) => {
+const Manager: FC<ManagerProps> = ({ children }) => {
   return (
     <div className="flex">
-      <div className="flex z-30 md:z-10 min-h-full min-h-screen">
+      <div className="flex z-30 md:z-10 min-h-screen">
         <ManagerSideBar />
       </div>
       <div className="md:mx-6 w-full">
@@ -45,25 +42,9 @@ const Manager: FC<ManagerProps> = ({ children, homePage }) => {
 
 type ManagerWrapperProps = {
   children: React.ReactNode;
-  loadingComponent?: boolean;
-  homePage?: boolean;
 };
 
-const ManagerNavigationFrame: FC<ManagerWrapperProps> = ({ children, loadingComponent }) => {
-  const { uuid } = useContext(UserAccountContext);
-  const { loading: userLoading, data: userData, error } = useQuery(GET_USER, { variables: { uuid: uuid } });
-  const userInfo = userData?.queryUser[0]?.legalEntities[0].legalEntity;
-
-  if (loadingComponent || userLoading) {
-    return <LoadingModal />;
-  } else if (!userInfo?.fullName) {
-    return <NeedAccount />;
-  }
-
-  return <Manager>{children}</Manager>;
-};
-
-const ManagerWrapper: FC<ManagerWrapperProps> = ({ children, loadingComponent, homePage }) => {
+const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { PageIsLoading } = applicationStore;
 
@@ -71,12 +52,12 @@ const ManagerWrapper: FC<ManagerWrapperProps> = ({ children, loadingComponent, h
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'min-h-full w-screen min-h-screen')}>
         <WalletChooserModal />
-        {/* <WalletActionLockModel /> */}
-        {PageIsLoading && <LoadingModal />}
-        <AlertPopup text="This is an alpha version. Please use with caution." />
-        <ManagerNavigationFrame homePage={homePage} loadingComponent={loadingComponent}>
-          {children}
-        </ManagerNavigationFrame>
+        <WithAuthentication>
+          {/* <WalletActionLockModel /> */}
+          {PageIsLoading && <LoadingModal />}
+          <AlertPopup text="This is an alpha version. Please use with caution." />
+          <Manager>{children}</Manager>
+        </WithAuthentication>
       </div>
     </div>
   );

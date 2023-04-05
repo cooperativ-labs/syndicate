@@ -4,9 +4,9 @@
 const getEndpoint = () => {
   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
     case 'production':
-      return 'https://blue-surf-580085.us-east-1.aws.cloud.dgraph.io/graphql';
+      return '--';
     case 'staging':
-      return 'https://blue-surf-790026.us-east-1.aws.cloud.dgraph.io/graphql';
+      return '--';
     default:
       return 'http://localhost:8080/graphql';
   }

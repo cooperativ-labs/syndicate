@@ -17,7 +17,7 @@ const ManagerSideBar: FC = () => {
       <div className="hidden md:flex flex-col bg-gray-100 w-48 z-50 min-h-full">
         <div className="h-full bg-opacity-0 p-1 pr-2">
           <div className="mb-5 px-2 pr-4 md:mt-4 ">
-            <Link href="/app">
+            <Link href="/">
               <img
                 src={
                   windowSize.width < 768
@@ -47,7 +47,7 @@ const ManagerSideBar: FC = () => {
           <div className={'md:hidden h-full w-64 z-50 fixed left-0 top-0 p-3 bg-white shadow-xl'}>
             <div className="flex justify-between items-center mb-5">
               <div className="px-2 pr-4">
-                <Link href="/app">
+                <Link href="/">
                   <img
                     src="/assets/images/branding/symbol_dark_blue.svg"
                     alt="logo"

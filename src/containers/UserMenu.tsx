@@ -10,23 +10,21 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { ReachContext } from '@src/SetReachContext';
 import { setChainId } from '@src/web3/connectors';
 import { useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 type UserMenuProps = {
   authenticatedUser?: boolean;
 };
 
 const UserMenu: FC<UserMenuProps> = ({ authenticatedUser }) => {
-  const { uuid } = useContext(UserAccountContext);
+  const { data: session } = useSession();
   const { userWalletAddress, reFetchWallet } = useContext(ReachContext);
   const chainId = setChainId;
-
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
-  const userInfo = userData?.queryUser[0].legalEntities[0].legalEntity;
-
+  const { data: userData, error, loading } = useQuery(GET_USER, { variables: { id: session.user.id } });
+  const userInfo = userData?.queryUser[0];
   const [open, setOpen] = useState<boolean>(false);
 
-  const profileImg = userInfo?.profileImage ? userInfo.profileImage : '/assets/images/user-images/placeholder.png';
+  const profileImg = session.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
   return (
     <>
       {open && <div className="absolute top-0 bottom-0 left-0 right-0 z-40" onClick={() => setOpen(!open)} />}
@@ -86,10 +84,10 @@ const UserMenu: FC<UserMenuProps> = ({ authenticatedUser }) => {
               <hr className="my-5" />
               <div className="flex flex-col items-center mb-3">
                 <div className="mt-3" />
-                {userInfo?.fullName}
+                full name removed
               </div>
               <div className="flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
-                <Link href="/app/account/">Account Settings</Link>
+                <Link href="/account/">Account Settings</Link>
               </div>
 
               <div className="hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">

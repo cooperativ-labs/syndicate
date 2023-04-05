@@ -102,10 +102,9 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
   const router = useRouter();
   const chainId = setChainId;
   const { reachLib, userWalletAddress } = useContext(ReachContext);
-  // const { uuid } = useContext(UserAccountContext);
-  // const { data: userData, refetch } = useQuery(GET_USER, { variables: { uuid: uuid } });
+
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  // const user = userData?.queryUser[0];
+
   const [addOfferingParticipant, { data, error }] = useMutation(ADD_OFFERING_PARTICIPANT_WITH_APPLICATION);
   const [alerted, setAlerted] = useState<boolean>(false);
 
@@ -217,7 +216,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
   }
 
   if (data) {
-    router.push(`/app/offerings/${offering.id}`);
+    router.push(`/offerings/${offering.id}`);
   }
 
   const submitApplication = async (values) => {

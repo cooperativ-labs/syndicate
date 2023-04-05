@@ -8,7 +8,7 @@ import { NextPage } from 'next';
 const EntitiesPage: NextPage = () => {
   return (
     <div data-test="component-landing" className="h-full flex">
-      <ManagerWrapper homePage>
+      <ManagerWrapper>
         <EntityDashboard />
       </ManagerWrapper>
     </div>

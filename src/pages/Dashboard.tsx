@@ -8,28 +8,38 @@ import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { ReachContext } from '@src/SetReachContext';
 import { useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
+import { User } from 'types';
+
+// type DashboardProps = {
+//   user: User;
+// };
 
 const Dashboard: FC = () => {
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData, error } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
   const { userWalletAddress } = useContext(ReachContext);
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress },
   });
+  if (!user) {
+    return <></>;
+  }
   const participantOfferings = participantData?.queryOfferingParticipant.map((offeringParticipant) => {
     return offeringParticipant.offering;
   });
+
   const offerings = user.offerings.map((offeringUser) => {
     return offeringUser.offering;
   });
 
-  const hasOfferings = offerings.length > 0;
+  const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;
 
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
+      {/* <button onClick={handleClick}>Log User</button> */}
       {/* <div className="mx-auto"> */}
       <div className="p-4 bg-slate-300 rounded-md">
         <h2 className="text-lg mb-3 text-blue-900 font-semibold">Search for an offering by ID: </h2>

@@ -203,6 +203,8 @@ export const currencyOptions = [
   { type: currencyType.FIAT, value: CurrencyCode.Eur, symbol: 'EUR', decimals: 2 },
   { type: currencyType.FIAT, value: CurrencyCode.Gbp, symbol: 'GBP', decimals: 2 },
   { type: currencyType.FIAT, value: CurrencyCode.Cad, symbol: 'CAD', decimals: 2 },
+  { type: currencyType.FIAT, value: CurrencyCode.Aud, symbol: 'AUD', decimals: 2 },
+  { type: currencyType.FIAT, value: CurrencyCode.Kyd, symbol: 'KYD', decimals: 2 },
   {
     type: currencyType.CRYP,
     value: CurrencyCode.Btc,
@@ -361,6 +363,9 @@ export const bacOptions = currencyOptions.filter(
     (option.type === currencyType.CRYP && option.protocol === CryptoAddressProtocol.Eth) ||
     option.protocol === CryptoAddressProtocol.Algo
 );
+
+export const fiatOptions = currencyOptions.filter((option) => option.type === currencyType.FIAT);
+
 export const currencyOptionsExcludeCredits = currencyOptions.filter(
   (option) => option.type !== currencyType.COOP && option.chainId !== 3
 );

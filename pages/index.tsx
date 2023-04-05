@@ -1,38 +1,18 @@
-import Footer from '@src/Footer/Footer';
-import Head from 'next/head';
-import LandingHeader from '@src/marketingSite/LandingHeader';
-import PermissionedExchangeSection from '@src/marketingSite/PermissionedExchangeSection';
-import React from 'react';
+import React, { FC } from 'react';
+import { useSession } from 'next-auth/react';
+import ManagerWrapper from '@src/containers/ManagerWrapper';
+import Dashboard from '@src/pages/Dashboard';
 import { NextPage } from 'next';
+import { useQuery } from '@apollo/client';
+import { GET_USER } from '@src/utils/dGraphQueries/user';
 
-const Application: NextPage = () => {
+const DashboardPage: NextPage = () => {
   return (
-    <div data-test="component-landing" className="bg-white flex flex-col w-full h-full">
-      <Head>
-        <title>Real Asset Syndicator</title>
-        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta property="og:title" content="Permissioned Exchange" />
-        <meta property="og:type" content="website" />
-        <meta
-          property="og:description"
-          content="Give investors in your real estate syndications a Robinhood-like experience."
-        />
-        {/* <meta property="og:image" content="/assets/images/share.png" /> */}
-        <meta property="og:url" content="https://syndicate.cooperativ.io/" />
-        {/** Twitter */}
-        <meta name="twitter:title" content="Permissioned Exchange" />
-        <meta
-          name="twitter:description"
-          content="Give investors in your real estate syndications a Robinhood-like experience."
-        />
-        <meta name="twitter:image" content="/assets/images/share.png" />
-        <meta name="twitter:card" content="summary_large_image" />
-      </Head>
-      <LandingHeader />
-      <PermissionedExchangeSection />
-      <Footer />
+    <div data-test="component-landing" className="h-full flex">
+      <ManagerWrapper>
+        <Dashboard />
+      </ManagerWrapper>
     </div>
   );
 };
-
-export default Application;
+export default DashboardPage;

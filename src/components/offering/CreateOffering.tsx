@@ -15,19 +15,22 @@ import { investmentOfferingTypeOptions } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { ReachContext } from '@src/SetReachContext';
 import { useMutation, useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 const CreateOffering: FC = () => {
-  const { uuid } = useContext(UserAccountContext);
-  const { userWalletAddress } = useContext(ReachContext);
-  const { data: userData, refetch } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData, refetch } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
+
+  const { userWalletAddress } = useContext(ReachContext);
+
   const [entityModal, setEntityModal] = useState<boolean>(false);
   const [addOffering, { data, error }] = useMutation(ADD_OFFERING);
-  const [addOfferingParticipant, { data: participantData, error: participantError }] =
-    useMutation(ADD_OFFERING_PARTICIPANT);
+  // const [addOfferingParticipant, { data: participantData, error: participantError }] =
+  //   useMutation(ADD_OFFERING_PARTICIPANT);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
@@ -49,32 +52,32 @@ const CreateOffering: FC = () => {
     setAlerted(true);
   }
 
-  const addParticipant = async (offeringId, offeringEntity) => {
-    try {
-      await addOfferingParticipant({
-        variables: {
-          currentDate: currentDate,
-          addressOfferingId: userWalletAddress + offeringId,
-          offeringId: offeringId,
-          name: `${offeringEntity.fullName}`,
-          applicantId: offeringEntity.id,
-          walletAddress: userWalletAddress,
-          permitted: false,
-        },
-      });
-      router.push(`/app/offerings/${offeringId}`);
-    } catch (e) {
-      return;
-      // alert(`Oops. Looks like something went wrong with adding you as a participant: ${e.message}`);
-    }
-  };
+  // const addParticipant = async (offeringId, offeringEntity) => {
+  //   try {
+  //     await addOfferingParticipant({
+  //       variables: {
+  //         currentDate: currentDate,
+  //         addressOfferingId: userWalletAddress + offeringId,
+  //         offeringId: offeringId,
+  //         name: `${offeringEntity.fullName}`,
+  //         applicantId: offeringEntity.id,
+  //         walletAddress: userWalletAddress,
+  //         permitted: false,
+  //       },
+  //     });
+  //     router.push(`/offerings/${offeringId}`);
+  //   } catch (e) {
+  //     return;
+  //     // alert(`Oops. Looks like something went wrong with adding you as a participant: ${e.message}`);
+  //   }
+  // };
 
-  const offeringId = data?.addOffering.offering[0].id;
-  const offeringEntity = data?.addOffering.offering[0].offeringEntity;
+  // const offeringId = data?.addOffering.offering[0].id;
+  // const offeringEntity = data?.addOffering.offering[0].offeringEntity;
 
-  if (offeringId && offeringEntity && !alerted) {
-    addParticipant(offeringId, offeringEntity);
-  }
+  // if (offeringId && offeringEntity && !alerted) {
+  //   addParticipant(offeringId, offeringEntity);
+  // }
 
   const handleSubmit = async (values) => {
     try {

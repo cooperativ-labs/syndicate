@@ -17,7 +17,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ ...props }) => {
     <div
       onClick={() => {
         window.sessionStorage.setItem('CHOSEN_PROJECT', id);
-        router.push(`/app/syndications/${id}`);
+        router.push(`/syndications/${id}`);
       }}
     >
       <Card className="p-6 rounded-lg hover:shadow-xl cursor-pointer md:w-96">

@@ -26,7 +26,7 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
   return (
     <div
       onClick={() => {
-        router.push(`/app/businesses/${id}`);
+        router.push(`/businesses/${id}`);
       }}
     >
       <Card className="rounded-lg hover:shadow-xl cursor-pointer md:w-96">

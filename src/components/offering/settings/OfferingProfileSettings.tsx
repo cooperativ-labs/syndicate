@@ -14,10 +14,10 @@ const fieldDiv = 'my-2 bg-opacity-0';
 
 type OfferingProfileSettingsProps = {
   offering: Offering;
-  uuid: string;
+  userId: string;
 };
 
-const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, uuid }) => {
+const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, userId }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
@@ -169,7 +169,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
               uploaderText="Add Banner"
               urlToDatabase={addBannerImageToDb}
               accept={['jpg', 'jpeg', 'png']}
-              baseUploadUrl={`/offerings/${offering.id}/image/${uuid}`}
+              baseUploadUrl={`/offerings/${offering.id}/image/${userId}`}
             />
           </div>
           <div>
@@ -180,7 +180,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
               uploaderText="Add Logo"
               urlToDatabase={addLogoToDb}
               accept={['jpg', 'jpeg', 'png']}
-              baseUploadUrl={`/offerings/${offering.id}/image/${uuid}`}
+              baseUploadUrl={`/offerings/${offering.id}/image/${userId}`}
             />
           </div>
         </div>

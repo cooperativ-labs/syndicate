@@ -1,19 +1,16 @@
 import { useMutation } from '@apollo/client';
-
 import FileUpload from '@src/components/form-components/FileUpload';
 import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { UserAccountContext } from '@src/SetAppContext';
-
 import React, { FC, useContext, useState } from 'react';
 import { DocumentFormat, DocumentType } from 'types';
-
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
 import Input from '@src/components/form-components/Inputs';
 import SectionBlock from '@src/containers/SectionBlock';
 import { Form, Formik } from 'formik';
 import { getDocFormatOption } from '@src/utils/enumConverters';
+import { useSession } from 'next-auth/react';
 
 type DocumentAdderProps = {
   offeringId?: string;
@@ -21,7 +18,8 @@ type DocumentAdderProps = {
 };
 
 const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) => {
-  const { uuid } = useContext(UserAccountContext);
+  const { data: session, status } = useSession();
+  const userId = session?.user?.id;
   const [addFile, { data, error, loading }] = useMutation(ADD_OFFERING_DOCUMENT);
   const [alerted, setAlerted] = useState<boolean>(false);
   const [fileFormat, setFileFormat] = useState<DocumentFormat>(null);
@@ -53,7 +51,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) =>
           <hr className="mt-1 mb-2" />
           <FileUpload
             uploaderText="Add Offering Document"
-            baseUploadUrl={`/offerings/${offeringId}/docs/${uuid}/`}
+            baseUploadUrl={`/offerings/${offeringId}/docs/${userId}/`}
             urlToDatabase={addFileToDB}
             docType={DocumentType.OfferingDocument}
             accept={[

@@ -235,7 +235,7 @@ export const CORE_RE_PROPERTY_FIELDS = gql`
       }
       users {
         user {
-          uuid
+          id
         }
       }
     }
@@ -314,7 +314,7 @@ export const CORE_ENTITY_FIELDS = gql`
     users {
       title
       user {
-        uuid
+        id
         id
       }
     }
@@ -483,7 +483,7 @@ export const CORE_OFFERING_FIELDS = gql`
       id
       user {
         id
-        uuid
+        id
       }
     }
     purchaseRequests {
@@ -522,7 +522,7 @@ export const CORE_USER_FIELDS = gql`
   ${CORE_ENTITY_FIELDS}
   fragment userData on User {
     id
-    uuid
+    id
     legalEntities {
       legalEntity {
         ...entityData

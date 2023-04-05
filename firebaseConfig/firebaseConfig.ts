@@ -37,11 +37,11 @@ const firebaseConfig = {
 const getEndpoint = () => {
   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
     case 'production':
-      return 'https://syndicate.cooperativ.io/app';
+      return 'https://syndicate.cooperativ.io';
     case 'staging':
-      return 'https://staging.syndicate.cooperativ.io/app';
+      return 'https://staging.syndicate.cooperativ.io';
     default:
-      return 'http://localhost:3000/app';
+      return 'http://localhost:3000';
   }
 };
 

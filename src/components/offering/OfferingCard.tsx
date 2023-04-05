@@ -19,7 +19,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, gpId }) => {
   // const { investmentCurrency, projectedAppreciation, projectedIrr, projectedIrrMax, preferredReturn } = details;
   const currentPrice = details && getLowestSalePrice(offering.sales, offering.details?.priceStart);
 
-  const pushLink = gpId ? `/offerors/${gpId}/${id}` : `/app/offerings/${id}`;
+  const pushLink = gpId ? `/offerors/${gpId}/${id}` : `/offerings/${id}`;
   return (
     <div
       onClick={() => {

@@ -7,19 +7,14 @@ import {
   CORE_INVESTMENT_OFFERING_FIELDS,
 } from './fragments';
 
-export const GET_USERS = () => {
-  return gql`
-    query {
-      queryUser {
-        id
-        fullName
-        emailAddresses {
-          address
-        }
-      }
+export const GET_USERS = gql`
+  query {
+    queryUser {
+      id
+      name
     }
-  `;
-};
+  }
+`;
 
 export const CHECK_EMAIL_EXISTS = gql`
   query CheckEmailExists($emailAddress: String!) {
@@ -46,10 +41,10 @@ export const GET_USER = gql`
   ${SMART_CONTRACT_FIELDS}
   ${CORE_PROJECT_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
-  query GetUser($uuid: String!) {
-    queryUser(filter: { uuid: { eq: $uuid } }) {
+  query GetUser($id: ID!) {
+    queryUser(filter: { id: [$id] }) {
       id
-      uuid
+      name
       projects {
         id
         project {
@@ -84,7 +79,6 @@ export const ADD_USER_WITH_TWITTER = gql`
   ${CORE_USER_FIELDS}
   mutation AddUser(
     $currentDate: DateTime!
-    $uuid: String!
     $displayName: String!
     $fullName: String!
     $twitterId: String!
@@ -96,7 +90,6 @@ export const ADD_USER_WITH_TWITTER = gql`
       input: [
         {
           creationDate: $currentDate
-          uuid: $uuid
           legalEntities: {
             permissions: ADMIN
             legalEntity: {
@@ -129,7 +122,6 @@ export const ADD_USER_WITH_EMAIL = gql`
   ${CORE_USER_FIELDS}
   mutation AddUser(
     $currentDate: DateTime!
-    $uuid: String!
     $displayName: String!
     $fullName: String!
     $emailAddress: String!
@@ -139,7 +131,6 @@ export const ADD_USER_WITH_EMAIL = gql`
       input: [
         {
           creationDate: $currentDate
-          uuid: $uuid
           legalEntities: {
             permissions: ADMIN
             legalEntity: {
@@ -167,7 +158,6 @@ export const ADD_USER_WITH_WALLET = gql`
   ${CORE_USER_FIELDS}
   mutation AddUser(
     $currentDate: DateTime!
-    $uuid: String!
     $displayName: String!
     $fullName: String!
     $walletAddress: String!
@@ -180,7 +170,6 @@ export const ADD_USER_WITH_WALLET = gql`
       input: [
         {
           creationDate: $currentDate
-          uuid: $uuid
           legalEntities: {
             permissions: ADMIN
             legalEntity: {

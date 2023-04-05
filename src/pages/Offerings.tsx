@@ -6,11 +6,11 @@ import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC, useContext } from 'react';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 const Offerings: FC = () => {
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
 
   const offerings = user.offerings.map((offeringUser) => {

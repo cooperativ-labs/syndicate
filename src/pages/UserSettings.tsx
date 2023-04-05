@@ -13,12 +13,13 @@ import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import { ADD_ENTITY_EMAIL } from '@src/utils/dGraphQueries/entity';
 import { getUserPersonalEntity } from '@src/utils/helpersUserAndEntity';
 import { useMutation, useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useSession } from 'next-auth/react';
 
 const UserSettings: FC = () => {
-  const { uuid } = useContext(UserAccountContext);
-  const { data: userData } = useQuery(GET_USER, { variables: { uuid: uuid } });
+  const { data: session, status } = useSession();
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
+
   const userInfo = getUserPersonalEntity(user);
   const [alerted, setAlerted] = useState<boolean>(false);
 
