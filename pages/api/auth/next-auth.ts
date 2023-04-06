@@ -1,10 +1,18 @@
 import GithubProvider from 'next-auth/providers/github';
 import GoogleProvider from 'next-auth/providers/google';
-import TwitterProvider from 'next-auth/providers/twitter';
 import { DgraphAdapter } from '@next-auth/dgraph-adapter';
 import { AuthOptions, Session, User } from 'next-auth';
 import * as jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
+
+// const firebaseConfigStaging = {
+//   credential: firebaseAdmin.credential.cert({
+//     projectId: process.env.NEXT_PUBLIC_STAGING_FIREBASE_PROJECT_ID,
+//     clientEmail: process.env.NEXT_PUBLIC_STAGING_FIREBASE_CLIENT_EMAIL,
+//     privateKey: process.env.NEXT_PUBLIC_STAGING_FIREBASE_PRIVATE_KEY,
+//   }),
+//   storageBucket: process.env.NEXT_PUBLIC_STAGING_FIREBASE_STORAGE_BUCKET,
+// };
 
 const getEndpoint = () => {
   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
@@ -14,7 +22,7 @@ const getEndpoint = () => {
     //   return 'https://blue-surf-591466.us-east-1.aws.cloud.dgraph.io/graphql';
     default:
       // return 'http://localhost:8080/graphql';
-      return 'http://172.23.0.5:8080/graphql';
+      return 'http://172.27.0.38080/graphql';
   }
 };
 
@@ -28,6 +36,32 @@ export const getKey = () => {
       return 'nothing';
   }
 };
+
+// const getFirebaseConfig = () => {
+//   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
+//     case 'production':
+//     // return firebaseConfig;
+//     case 'staging':
+//       return firebaseConfigStaging;
+//     default:
+//       return firebaseConfigStaging;
+//   }
+// };
+
+// if (!firebaseAdmin.apps.length) {
+//   firebaseAdmin.initializeApp(getFirebaseConfig());
+// }
+
+// async function generateFirebaseToken(userId) {
+//   try {
+//     const uid = userId; // You can use email as the unique identifier (uid) for Firebase
+//     const customToken = await firebaseAdmin.auth().createCustomToken(uid);
+//     return customToken;
+//   } catch (error) {
+//     console.error('Error generating Firebase token:', error);
+//     return null;
+//   }
+// }
 
 const options: AuthOptions = {
   session: {
@@ -70,8 +104,19 @@ const options: AuthOptions = {
   // },
 
   callbacks: {
-    async jwt({ token, user, account, profile, isNewUser }) {
-      console.log(token);
+    async jwt({
+      token,
+      user,
+      account,
+      profile,
+      isNewUser,
+    }: {
+      token: JWT;
+      user: User;
+      account: any;
+      profile: any;
+      isNewUser: boolean;
+    }) {
       if (user) {
         token.id = user.id;
         const now = Math.floor(Date.now() / 1000);

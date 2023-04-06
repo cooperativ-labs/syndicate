@@ -14,8 +14,6 @@ const WithAuthentication: React.FC<WithAuthenticationProps> = ({ children, redir
   const isLoggedIn = !!session?.user;
   const [showLoginModal, setShowLoginModal] = useState(false);
 
-  console.log(session);
-
   useEffect(() => {
     if (!isLoading && !isLoggedIn) {
       setShowLoginModal(true);

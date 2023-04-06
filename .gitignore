@@ -38,5 +38,6 @@ yarn-error.log*
 types/
 
 /firebase-debug.log
+pages/api/file/syndicate-cloud-key-staging.json
 
 /ui-debug.log
