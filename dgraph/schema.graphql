@@ -57,6 +57,7 @@ type Document  {
 	format: DocumentFormat 
 	type: DocumentType
 	url: String
+	fileId: String
 	thumbnailImage: Image
 	owner: LegalEntity @hasInverse(field:documentsOwned)
 	signatories: [DocumentSignatory] @hasInverse(field:document) 
@@ -72,6 +73,7 @@ type Image {
 	id: ID!
 	label: String
 	url: String!
+	fileId: String
 }
 
 

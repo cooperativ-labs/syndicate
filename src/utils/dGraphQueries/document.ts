@@ -9,6 +9,7 @@ export const ADD_OFFERING_DOCUMENT = gql`
     $offeringUniqueId: String!
     $currentDate: DateTime!
     $title: String!
+    $fileId: String!
     $docUrl: String!
     $docType: DocumentType!
     $format: DocumentFormat!
@@ -17,6 +18,7 @@ export const ADD_OFFERING_DOCUMENT = gql`
       input: {
         title: $title
         url: $docUrl
+        fileId: $fileId
         creationDate: $currentDate
         lastUpdate: $currentDate
         type: $docType

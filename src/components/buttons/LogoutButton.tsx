@@ -4,18 +4,18 @@ import React, { FC, useContext } from 'react';
 import router from 'next/router';
 import { ApplicationStoreProps, store } from '@context/store';
 import { disconnectWallet } from '@src/web3/connectors';
-import { getAuth, signOut } from 'firebase/auth';
+import { signOut } from 'next-auth/react';
 
 const LogoutButton: FC = () => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
 
   const outlinedClass = `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white`;
-  const auth = getAuth();
+
   function handleDisconnect() {
     dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
     disconnectWallet();
-    signOut(auth)
+    signOut({ callbackUrl: '/' })
       .then(() => {
         router.reload();
       })

@@ -12,7 +12,8 @@ const handler = nextConnect<NextApiRequestWithFile, NextApiResponse>()
   .use(upload.single('file'))
   .post(async (req, res) => {
     try {
-      res.status(200).json({ url: req.file.path });
+      console.log(req.file);
+      res.status(200).json({ url: req.file.path, fileId: req.file.filename });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

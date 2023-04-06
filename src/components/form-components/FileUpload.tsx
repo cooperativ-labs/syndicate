@@ -27,9 +27,9 @@ const FileUpload: FC<FileUploadProps> = ({
   const [uploading, setUploading] = useState<boolean>(false);
 
   function handleUploadFile(file) {
-    const onUploadSuccess = (url: string) => {
+    const onUploadSuccess = (url: string, fileId: string) => {
       console.log('File uploaded and available at:', url);
-      urlToDatabase(url, file.name, docType, getFileFormat(file));
+      urlToDatabase(url, fileId, file.name, docType, getFileFormat(file));
       setProgressAmt(0);
       setUploading(false);
     };
@@ -57,8 +57,7 @@ const FileUpload: FC<FileUploadProps> = ({
         }
 
         const data = await response.json();
-        console.log(data);
-        onUploadSuccess?.(data.url);
+        onUploadSuccess?.(data.url, data.fileId);
       } catch (error) {
         console.error('Error details:', error);
         onUploadError?.(error.message);

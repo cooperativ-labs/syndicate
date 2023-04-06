@@ -217,9 +217,18 @@ export const REMOVE_PROPERTY_ADDRESS = gql`
 // --------------- Image ----------------
 
 export const ADD_PROPERTY_IMAGE = gql`
-  mutation AddPropertyImage($currentDate: DateTime!, $propertyId: [ID!], $url: String!, $label: String) {
+  mutation AddPropertyImage(
+    $currentDate: DateTime!
+    $propertyId: [ID!]
+    $url: String!
+    $label: String
+    $fileId: String
+  ) {
     updateRealEstateProperty(
-      input: { filter: { id: $propertyId }, set: { lastUpdate: $currentDate, images: { url: $url, label: $label } } }
+      input: {
+        filter: { id: $propertyId }
+        set: { lastUpdate: $currentDate, images: { url: $url, label: $label, fileId: $fileId } }
+      }
     ) {
       realEstateProperty {
         id
@@ -227,6 +236,7 @@ export const ADD_PROPERTY_IMAGE = gql`
           id
           label
           url
+          fileId
         }
       }
     }

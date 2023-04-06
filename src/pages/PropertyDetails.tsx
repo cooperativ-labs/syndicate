@@ -30,7 +30,7 @@ type PropertyDetailsProps = {
 
 const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
   const { data: session, status } = useSession();
-const userId = session?.user?.id;
+  const userId = session?.user?.id;
   const [addImage, { error: imageError }] = useMutation(ADD_PROPERTY_IMAGE);
   const [updateAddress, { error: addressError }] = useMutation(UPDATE_ADDRESS);
   const [updateProperty, { error: propertyError }] = useMutation(UPDATE_RE_PROPERTY_INFO);
@@ -75,13 +75,14 @@ const userId = session?.user?.id;
     router.back();
   }
 
-  const addImageToDb = (url: string, label: string) => {
+  const addImageToDb = (url: string, fileId: string, label: string) => {
     addImage({
       variables: {
         propertyId: property.id,
         currentDate: currentDate,
         label: label,
         url: url,
+        fileId: fileId,
       },
     });
   };

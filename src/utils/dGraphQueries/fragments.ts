@@ -38,6 +38,7 @@ export const CORE_DOCUMENT_FIELDS = gql`
   fragment documentData on Document {
     id
     title
+    fileId
     date
     format
     type
@@ -217,6 +218,7 @@ export const CORE_RE_PROPERTY_FIELDS = gql`
       id
       label
       url
+      fileId
     }
     description
     assetValue
@@ -460,6 +462,7 @@ export const CORE_OFFERING_FIELDS = gql`
         id
         url
         label
+        fileId
       }
       description
     }

@@ -1,6 +1,12 @@
 import { Document, DocumentFormat, DocumentType } from 'types';
 
-export type urlToDatabaseProps = (url: string, title: string, docType: DocumentType, format: DocumentFormat) => void;
+export type urlToDatabaseProps = (
+  url: string,
+  fileId: string,
+  title: string,
+  docType: DocumentType,
+  format: DocumentFormat
+) => void;
 
 export const getFileFormat = (file: File) => {
   const fileType = file.type;

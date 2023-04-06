@@ -21,7 +21,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
-  const addLogoToDb = (url: string, label: string) => {
+  const addLogoToDb = (url: string) => {
     updateOffering({
       variables: {
         offeringId: offering.id,
@@ -32,7 +32,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
     });
   };
 
-  const addBannerImageToDb = (url: string, label: string) => {
+  const addBannerImageToDb = (url: string) => {
     updateOffering({
       variables: {
         offeringId: offering.id,

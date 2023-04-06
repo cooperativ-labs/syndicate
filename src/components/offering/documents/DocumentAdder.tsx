@@ -29,7 +29,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) =>
     setAlerted(true);
   }
 
-  const addFileToDB = (url: string, title: string, docType: DocumentType, format: DocumentFormat) => {
+  const addFileToDB = (url: string, fileId: string, title: string, docType: DocumentType, format: DocumentFormat) => {
     addFile({
       variables: {
         offeringId: offeringId,
@@ -37,6 +37,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) =>
         currentDate: currentDate,
         title: title,
         docUrl: url,
+        fileId: fileId,
         docType: docType,
         format: format,
         offeringUniqueId: offeringId + title,
@@ -113,7 +114,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) =>
               onSubmit={(values, { setSubmitting }) => {
                 setAlerted(false);
                 setSubmitting(true);
-                addFileToDB(values.docUrl, values.title, DocumentType.OfferingDocument, fileFormat);
+                addFileToDB(values.docUrl, 'external', values.title, DocumentType.OfferingDocument, fileFormat);
                 setSubmitting(false);
               }}
             >

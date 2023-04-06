@@ -3,9 +3,6 @@ import React, { FC, useEffect, useState } from 'react';
 import router from 'next/router';
 import { ADD_ENTITY_EMAIL } from '@src/utils/dGraphQueries/entity';
 import { Form, Formik } from 'formik';
-import { handleAddEmailAddress } from 'firebaseConfig/firebaseConfig';
-import { LegalEntity } from 'types';
-import { useMutation } from '@apollo/client';
 
 const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';
 
@@ -30,7 +27,7 @@ const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        await handleAddEmailAddress(values.address, completionUrl);
+        // await handleAddEmailAddress(values.address, completionUrl);
         setSubmitting(false);
       }}
     >

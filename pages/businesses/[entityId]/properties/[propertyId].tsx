@@ -1,16 +1,10 @@
 import React from 'react';
 
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-
-import AddressDisplay from '@src/components/address/AddressDisplay';
-import fireApp from 'firebaseConfig/firebaseConfig';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import PropertyDetails from '@src/pages/PropertyDetails';
 import router from 'next/router';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { FileUploader } from 'react-drag-drop-files';
 import { GET_RE_PROPERTY } from '@src/utils/dGraphQueries/reProperty';
-import { getStorage } from 'firebase/storage';
 import { NextPage } from 'next';
 import { useQuery } from '@apollo/client';
 

@@ -1,13 +1,11 @@
 import DeleteButton from '../buttons/DeleteButton';
-import fireApp from 'firebaseConfig/firebaseConfig';
+
 import React, { FC } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { deleteObject, getStorage, ref } from 'firebase/storage';
+
 import { Image } from 'types';
 import { REMOVE_PROPERTY_IMAGE } from '@src/utils/dGraphQueries/reProperty';
 import { useMutation } from '@apollo/client';
-
-const storage = getStorage(fireApp);
 
 type PropertyImageProps = {
   image: Image;
@@ -21,15 +19,23 @@ const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) =
   if (deleteError) {
     alert(`from Firebase: ${deleteError}`);
   }
-  const handleDelete = () => {
-    const docRef = ref(storage, image.url);
-    deleteObject(docRef)
-      .then(() => {
-        deleteImage({ variables: { currentDate: currentDate, propertyId: propertyId, imageId: image.id } });
-      })
-      .catch((error) => {
-        alert(`from Firebase:  ${error.message}`);
+  const handleDelete = async () => {
+    try {
+      const response = await fetch(`/api/file/${image.fileId}`, {
+        method: 'DELETE',
       });
+
+      if (!response.ok) {
+        // if (error.includes('No such object')) {
+        //   deleteImage({ variables: { currentDate: currentDate, propertyId: propertyId, imageId: image.id } });
+        // }
+        const error = await response.text();
+        throw new Error(error);
+      }
+      deleteImage({ variables: { currentDate: currentDate, propertyId: propertyId, imageId: image.id } });
+    } catch (error) {
+      console.error('Error details:', error);
+    }
   };
   return (
     <div className="m-2 relative">

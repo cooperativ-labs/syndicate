@@ -1,6 +1,4 @@
-import fireApp from 'firebaseConfig/firebaseConfig';
 import React, { FC } from 'react';
-import { connectStorageEmulator, deleteObject, getStorage, ref } from 'firebase/storage';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Document } from 'types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -8,9 +6,6 @@ import { getDocFormatOption } from '@src/utils/enumConverters';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { useMutation } from '@apollo/client';
-
-const storage = getStorage(fireApp);
-// connectStorageEmulator(storage, 'localhost', 9199); Uncomment for Firebase Emulator
 
 const DocumentListItem: FC<{ document: Document; offeringId: string; deleteButton?: boolean }> = ({
   document,
@@ -20,18 +15,28 @@ const DocumentListItem: FC<{ document: Document; offeringId: string; deleteButto
   const [deleteDocument, { error: deleteError }] = useMutation(REMOVE_OFFERING_DOCUMENT);
 
   if (deleteError) {
-    alert(`from Firebase: ${deleteError}`);
+    alert(`from Cloud Storage: ${deleteError}`);
   }
-  const handleDelete = () => {
-    if (document.url.includes('firebasestorage')) {
-      const docRef = ref(storage, document.url);
-      deleteObject(docRef)
-        .then(() => {
-          deleteDocument({ variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id } });
-        })
-        .catch((error) => {
-          alert(`from Firebase:  ${error.message}`);
+  const handleDelete = async () => {
+    if (document.url.includes('cooperativ-filestore.storage.googleapis')) {
+      try {
+        const response = await fetch(`/api/file/${document.fileId}`, {
+          method: 'DELETE',
         });
+
+        if (!response.ok) {
+          // if (error.includes('No such object')) {
+          //   deleteDocument({
+          //     variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id },
+          //   });
+          // }
+          const error = await response.text();
+          throw new Error(error);
+        }
+        deleteDocument({ variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id } });
+      } catch (error) {
+        console.error('Error details:', error);
+      }
     } else {
       deleteDocument({ variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id } });
     }
