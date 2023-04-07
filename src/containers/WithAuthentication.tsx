@@ -1,7 +1,7 @@
+import NeedAccount from './ModalNeedAccount';
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import NeedAccount from './ModalNeedAccount';
 
 interface WithAuthenticationProps {
   redirectTo?: string;

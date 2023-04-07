@@ -1,11 +1,9 @@
-import EmailPasswordForm from './CreateEmailPasswordAccountForm';
-import LogInWithEmailForm from './LogInWithEmail';
 import React, { FC, ReactNode, useContext, useEffect, useState } from 'react';
 import { ADD_USER_WITH_EMAIL } from '@src/utils/dGraphQueries/user';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
-import { useMutation } from '@apollo/client';
 import { signIn } from 'next-auth/react';
+import { useMutation } from '@apollo/client';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-full bg-slate-50 border-2 border-cDarkBlue justify-center p-3 text-slate-700 font-bold w-full';
@@ -79,8 +77,6 @@ const CreateAccount: FC = () => {
               /> */}
             </>
           )}
-          {loginInterface === 'email' && <EmailPasswordForm setLoading={setLoading} />}
-          {/* {loginInterface === 'magic' && <LogInWithEmailForm setLoading={setLoading} />} */}
         </div>
       )}
     </div>

@@ -2,16 +2,16 @@ import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-compo
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC, useEffect, useState } from 'react';
+import Select from '../form-components/Select';
+import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
+import { CurrencyCode, LegalEntity, LegalEntityType, User } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { fiatOptions } from '@src/utils/enumConverters';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { CurrencyCode, LegalEntity, LegalEntityType, User } from 'types';
-import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
-import Select from '../form-components/Select';
-import { fiatOptions } from '@src/utils/enumConverters';
 
 type CompleteIndividualEntityProps = {
   userInfo: LegalEntity;

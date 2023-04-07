@@ -1,10 +1,10 @@
-import React, { FC } from 'react';
-import { useSession } from 'next-auth/react';
-import ManagerWrapper from '@src/containers/ManagerWrapper';
 import Dashboard from '@src/pages/Dashboard';
+import ManagerWrapper from '@src/containers/ManagerWrapper';
+import React, { FC } from 'react';
+import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { NextPage } from 'next';
 import { useQuery } from '@apollo/client';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { useSession } from 'next-auth/react';
 
 const DashboardPage: NextPage = () => {
   return (

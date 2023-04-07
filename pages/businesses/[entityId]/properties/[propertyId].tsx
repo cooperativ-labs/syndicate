@@ -1,7 +1,7 @@
 import React from 'react';
 
-import ManagerWrapper from '@src/containers/ManagerWrapper';
 import LoadingModal from '@src/components/loading/ModalLoading';
+import ManagerWrapper from '@src/containers/ManagerWrapper';
 import PropertyDetails from '@src/pages/PropertyDetails';
 import router from 'next/router';
 import { GET_RE_PROPERTY } from '@src/utils/dGraphQueries/reProperty';

@@ -1,15 +1,15 @@
-import { useMutation } from '@apollo/client';
-import FileUpload from '@src/components/form-components/FileUpload';
-import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import React, { FC, useContext, useState } from 'react';
-import { DocumentFormat, DocumentType } from 'types';
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
+import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
+import React, { FC, useContext, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
+import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
+import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { DocumentFormat, DocumentType } from 'types';
 import { Form, Formik } from 'formik';
 import { getDocFormatOption } from '@src/utils/enumConverters';
+import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 type DocumentAdderProps = {

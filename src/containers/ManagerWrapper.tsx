@@ -5,10 +5,10 @@ import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
 import React, { FC, useContext } from 'react';
 import WalletChooserModal from './wallet/WalletChooserModal';
-import { ApplicationStoreProps, store } from '@context/store';
 import WithAuthentication from './WithAuthentication';
-import { useQuery } from '@apollo/client';
+import { ApplicationStoreProps, store } from '@context/store';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 // const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';

@@ -3,6 +3,7 @@ import CreateEntity from '@src/components/entity/CreateEntity';
 import FormCard from '@src/components/cards/FormCard';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 
+import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import React, { FC, useContext } from 'react';
 import router from 'next/router';
@@ -10,7 +11,6 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getUserPersonalEntity } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import LoadingModal from '@src/components/loading/ModalLoading';
 
 const CreateEntityPage: FC = () => {
   const { data: session, status } = useSession();

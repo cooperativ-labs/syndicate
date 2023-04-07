@@ -7,10 +7,10 @@ import router from 'next/router';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
+import { LegalEntity, SmartContract } from 'types';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { ReachContext } from '@src/SetReachContext';
 import { sha256 } from 'js-sha256';
-import { LegalEntity, SmartContract } from 'types';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { useMutation } from '@apollo/client';
 

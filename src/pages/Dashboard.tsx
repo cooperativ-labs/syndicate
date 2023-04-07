@@ -8,8 +8,8 @@ import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { ReachContext } from '@src/SetReachContext';
 import { useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
 import { User } from 'types';
+import { useSession } from 'next-auth/react';
 
 // type DashboardProps = {
 //   user: User;

@@ -34,7 +34,7 @@ type EntityDetailsProps = {
 
 const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const { data: session, status } = useSession();
-const userId = session?.user?.id;
+  const userId = session?.user?.id;
 
   const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
     useMutation(UPDATE_ENTITY_INFORMATION);
