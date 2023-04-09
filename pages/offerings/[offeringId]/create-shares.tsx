@@ -7,7 +7,6 @@ import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { NextPage } from 'next';
 import { useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
 import { useSession } from 'next-auth/react';
 
 const CreatePpmPage: NextPage = () => {

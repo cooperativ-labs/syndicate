@@ -4,12 +4,12 @@ import DisconnectButton from '@src/components/buttons/DisconnectButton';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Link from 'next/link';
 import LogoutButton from '@src/components/buttons/LogoutButton';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
-import { useQuery } from '@apollo/client';
+
+import ChooseConnectorButton from './wallet/ChooseConnectorButton';
+import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
+import { useAccount, useNetwork } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 type UserMenuProps = {
@@ -17,12 +17,12 @@ type UserMenuProps = {
 };
 
 const UserMenu: FC<UserMenuProps> = ({ authenticatedUser }) => {
-  const { data: session } = useSession();
-  const { userWalletAddress, reFetchWallet } = useContext(ReachContext);
-  const chainId = setChainId;
-  const { data: userData, error, loading } = useQuery(GET_USER, { variables: { id: session.user.id } });
-  const userInfo = userData?.queryUser[0];
   const [open, setOpen] = useState<boolean>(false);
+  const { data: session } = useSession();
+  const { chain } = useNetwork();
+  const { address: userWalletAddress, connector: activeConnector, isConnected } = useAccount();
+
+  const networkImage = userWalletAddress && networkIcon(chain.id, userWalletAddress);
 
   const profileImg = session.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
   return (
@@ -37,14 +37,6 @@ const UserMenu: FC<UserMenuProps> = ({ authenticatedUser }) => {
             onClick={() => setOpen(!open)}
           >
             <div className="pr-2">
-              {/* {networkImage !== undefined ? (
-              <img src={networkImage} className="p-2 w-8 h-8 bg-gray-200 rounded-full" />
-            ) : (
-              <div className="py-2 pl-2">
-                <NetworkIndicatorDot chainId={chainId} walletAddress={walletAddress} />
-              </div>
-            )} */}
-
               <img
                 src={profileImg}
                 referrerPolicy="no-referrer"
@@ -67,25 +59,31 @@ const UserMenu: FC<UserMenuProps> = ({ authenticatedUser }) => {
 
         {open && (
           <div className="absolute top-0 bottom-0 left-0 right-0 z-40" onClick={() => setOpen(!open)}>
-            <Card className="absolute top-10 md:top-12 right-0 p-3 w-56 rounded-xl shadow-lg">
-              {userWalletAddress && (
+            <Card className="absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 rounded-xl shadow-lg">
+              {userWalletAddress ? (
                 <div className="flex flex-col justify-center">
-                  <div className="flex flex-col items-center">
-                    {/* <NetworkIndicator /> */}
-                    <div className="mt-3" />
-                    <FormattedCryptoAddress chainId={chainId} address={userWalletAddress} withCopy />
+                  <div className="flex items-center justify-center">
+                    {networkImage !== undefined ? (
+                      <img src={networkImage} className="p-2 w-8 h-8 bg-gray-200 rounded-full" />
+                    ) : (
+                      <div className="py-2 pl-2">
+                        <NetworkIndicatorDot chainId={chain.id} walletAddress={userWalletAddress} />
+                      </div>
+                    )}
+
+                    <div className="mx-1" />
+                    <FormattedCryptoAddress chainId={chain.id} address={userWalletAddress} withCopy />
                   </div>
                   <div className="hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
-                    <DisconnectButton refetchWallet={reFetchWallet} />
+                    <DisconnectButton />
                   </div>
                 </div>
+              ) : (
+                <ChooseConnectorButton buttonText={'Connect Wallet'} />
               )}
 
               <hr className="my-5" />
-              <div className="flex flex-col items-center mb-3">
-                <div className="mt-3" />
-                full name removed
-              </div>
+
               <div className="flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
                 <Link href="/account/">Account Settings</Link>
               </div>

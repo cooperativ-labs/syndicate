@@ -13,10 +13,10 @@ const Offerings: FC = () => {
   const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
 
-  const offerings = user.offerings.map((offeringUser) => {
+  const offerings = user?.offerings.map((offeringUser) => {
     return offeringUser.offering;
   });
-  const hasOfferings = offerings.length > 0;
+  const hasOfferings = offerings?.length > 0;
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
       <div className="flex">

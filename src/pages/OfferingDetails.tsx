@@ -26,9 +26,10 @@ import { DocumentType, Offering } from 'types';
 import { getContractParticipants } from '@src/web3/reachCalls';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { GetEstablishedContracts } from '@src/utils/helpersContracts';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
+import { loadStdlib, ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { ReachContext } from '@src/SetReachContext';
 import { setChainId } from '@src/web3/connectors';
+import { useAccount } from 'wagmi';
 import { useAsyncFn } from 'react-use';
 import { useSession } from 'next-auth/react';
 
@@ -40,8 +41,9 @@ type OfferingDetailsProps = {
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
+  const { address: userWalletAddress } = useAccount();
+  // const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
 
-  const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
   const chainId = setChainId;
   const {
     id,
@@ -98,10 +100,13 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   const [contractInfo, getContractInfo] = useAsyncFn(async () => {
     try {
+      const reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ETH' });
+
+      const acc = await reachLib.getDefaultAccount();
       const { formatAddress, formatCurrency, bigNumberToNumber } = reachLib;
-      const contractUserPubKey = await reachAcc.getAddress();
+      const contractUserPubKey = await acc.getAddress();
       //CONTRACT MANAGERS
-      const ctc = await reachAcc.contract(backendCtc, contractId);
+      const ctc = await acc.contract(backendCtc, contractId);
 
       const contractOfficers = await ctc.views.vCcCm();
       setContractManager(formatAddress(contractOfficers[1][1]));
@@ -117,7 +122,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
       const ctcVersion = await ctc.views.vcVersion();
       console.log('Contract version:', ctcVersion[1][0]);
       const btInfo = await ctc.views.vBtBal();
-      // const myTokens = await ctc.views.totSTBTDRec(reachAcc.getAddress());
+      // const myTokens = await ctc.views.totSTBTDRec(acc.getAddress());
       const myAvailableTokens = await ctc.views.claimSTBT(userWalletAddress);
       const hashes = await ctc.views.vHash();
       setContractHashes(hashes.slice(1));
@@ -127,7 +132,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
       const btBalance = parseInt(formatCurrency(btInfo[1][0], 6), 10);
       const myST = parseInt(formatCurrency(myAvailableTokens[1][0], 6), 10); // This shows just shares I hold on ALGO, but also shows tokens waiting to be claimed on ETH
       const btID = bigNumberToNumber(btInfo[1][1]).toString();
-      const myBacBalance = parseInt(formatCurrency(await reachAcc.balanceOf(btID), 6), 10);
+      const myBacBalance = parseInt(formatCurrency(await acc.balanceOf(btID), 6), 10);
       setSharesOutstanding(totST);
       setFundsDistributed(totAmountDistributed);
       setNumDistributions(numDistributions);
@@ -137,14 +142,12 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     } catch (e) {
       return e;
     }
-  }, [recallContract, contractId, reachLib, userWalletAddress, reachAcc]);
+  }, [recallContract, contractId, userWalletAddress]);
 
   useEffect(() => {
-    if (reachLib) {
-      getContractInfo();
-      // console.log(getContractParticipants(reachLib, reachAcc, contractId));
-    }
-  }, [recallContract, contractId, reachLib, userWalletAddress, reachAcc, getContractInfo]);
+    getContractInfo();
+    // console.log(getContractParticipants(reachLib, reachAcc, contractId));
+  }, [recallContract, contractId, userWalletAddress, getContractInfo]);
 
   const permittedEntity = participants.find((participant) => {
     return participant.addressOfferingId === userWalletAddress + id;

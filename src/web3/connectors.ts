@@ -1,178 +1,280 @@
 import { CryptoAddressProtocol } from 'types';
-import { ALGO_MyAlgoConnect as MyAlgoConnect, loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MakeAlgoSignerConnect as MakeAlgoSignerConnect } from '@reach-sh/stdlib';
-import { ALGO_MakePeraConnect as MakePeraConnect } from '@reach-sh/stdlib';
+import { Chain, configureChains, createClient } from 'wagmi';
+import { mainnet, goerli, polygon, polygonMumbai } from 'wagmi/chains';
+import { publicProvider } from 'wagmi/providers/public';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
+import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
+import { LedgerConnector } from 'wagmi/connectors/ledger';
+import { EthereumProvider } from '@walletconnect/ethereum-provider';
 declare let window: any;
 
+//OLD ------------------
 const TestingContract = '0x05840f9f';
 const TestBackingToken = 0x05716d2b;
 
 export const setChainId = 654321;
+//OLD ------------------
 
-export const liveChain = (chainId) => {
-  if (chainId === 12345678) {
-    return true;
-  }
-  return false;
-};
-export const SupportedChainIds = [
+// export const jupiterBlockChain = {
+//   id: 10001,
+//   name: 'Jupiter',
+//   network: 'jupiter',
+//   nativeCurrency: {
+//     decimals: 18,
+//     name: 'JupiterEth',
+//     symbol: 'ETH',
+//   },
+//   rpcUrls: {
+//     public: { http: ['https://api.avax.network/ext/bc/C/rpc'] },
+//     default: { http: ['https://api.avax.network/ext/bc/C/rpc'] },
+//   },
+//   blockExplorers: {
+//     etherscan: { name: 'SnowTrace', url: 'https://snowtrace.io' },
+//     default: { name: 'SnowTrace', url: 'https://snowtrace.io' },
+//   },
+//   contracts: {
+//     multicall3: {
+//       address: '0xca11bde05977b3631167028862be2a173976ca11',
+//       blockCreated: 11_907_934,
+//     },
+//   },
+// } as const satisfies Chain;
+
+// export const RPC_URLS: { [chainId: number]: string } = {
+//   1: 'https://mainnet.infura.io/v3/',
+//   3: 'https://ropsten.infura.io/v3/',
+//   137: 'https://polygon-mainnet.infura.io/v3/',
+//   80001: 'https://polygon-mumbai.infura.io/v3/',
+// };
+
+export const SupportedChains = [mainnet, goerli, polygon, polygonMumbai];
+
+const { chains, provider, webSocketProvider } = configureChains(SupportedChains, [
+  publicProvider(),
+  infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
+]);
+
+export const wagmiClient = createClient({
+  autoConnect: true,
+  provider,
+  webSocketProvider,
+});
+
+export const SupportedChainsAddendum = [
   {
-    id: 1,
-    name: 'Ethereum',
-    blockExplorer: 'https://etherscan.io',
+    id: mainnet.id,
+    name: mainnet.name,
+    blockExplorer: mainnet.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
     icon: 'assets/images/chain-icons/ethereum-eth-logo.svg',
     contractsSupported: true,
     color: 'emerald-600',
   },
   {
-    id: 3,
-    name: 'Ropsten',
-    blockExplorer: 'https://ropsten.etherscan.io',
-    faucet: 'https://faucet.dimensions.network/',
+    id: goerli.id,
+    name: goerli.name,
+    blockExplorer: goerli.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
     contractsSupported: true,
-    color: 'cYellow',
+    color: 'emerald-300',
   },
+  // {
+  //   id: 100001,
+  //   name: 'Jupiter',
+  //   blockExplorer: 'https://polygonscan.com',
+  //   protocol: CryptoAddressProtocol.Eth,
+  //   icon: 'assets/images/chain-icons/jupiter-logo.svg',
+  //   contractsSupported: true,
+  //   color: 'black',
+  // },
   {
-    id: 137,
-    name: 'Polygon',
-    blockExplorer: 'https://polygonscan.com',
+    id: polygon.id,
+    name: polygon.name,
+    blockExplorer: polygon.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
     icon: 'assets/images/chain-icons/polygon-matic-logo.svg',
     contractsSupported: true,
     color: 'purple-600',
   },
   {
-    id: 80001,
-    name: 'Polygon Mumbai',
-    blockExplorer: 'https://mumbai.polygonscan.com',
+    id: polygonMumbai.id,
+    name: polygonMumbai.name,
+    blockExplorer: polygonMumbai.blockExplorers.default.url,
     faucet: 'https://faucet.matic.network/',
     protocol: CryptoAddressProtocol.Eth,
     contractsSupported: true,
     color: 'purple-300',
   },
-  {
-    id: 43114,
-    name: 'Avalanche Mainnet',
-    blockExplorer: 'https://arbiscan.com',
-    protocol: CryptoAddressProtocol.Eth,
-    icon: 'assets/images/chain-icons/arbitrum.svg',
-    contractsSupported: false,
-  },
-  {
-    id: 56,
-    name: 'Binance Smart Chain',
-    blockExplorer: 'https://bscscan.com',
-    protocol: CryptoAddressProtocol.Eth,
-    icon: 'assets/images/chain-icons/binance-chain.svg',
-    contractsSupported: false,
-  },
-  {
-    id: 10,
-    name: 'Optimism',
-    blockExplorer: 'https://optimistic.etherscan.io',
-    protocol: CryptoAddressProtocol.Eth,
-    icon: 'assets/images/chain-icons/optomism.png',
-    contractsSupported: false,
-  },
-  {
-    id: 100,
-    name: 'xDAI',
-    blockExplorer: 'https://blockscout.com/xdai/mainnet',
-    protocol: CryptoAddressProtocol.Eth,
-    icon: 'assets/images/chain-icons/xdai.svg',
-    contractsSupported: false,
-  },
-  {
-    id: 4,
-    name: 'Rinkeby',
-    blockExplorer: 'https://rinkeby.etherscan.io',
-    protocol: CryptoAddressProtocol.Eth,
+  // {
+  //   id: 43114,
+  //   name: 'Avalanche Mainnet',
+  //   blockExplorer: 'https://arbiscan.com',
+  //   protocol: CryptoAddressProtocol.Eth,
+  //   icon: 'assets/images/chain-icons/arbitrum.svg',
+  //   contractsSupported: false,
+  // },
+  // {
+  //   id: 56,
+  //   name: 'Binance Smart Chain',
+  //   blockExplorer: 'https://bscscan.com',
+  //   protocol: CryptoAddressProtocol.Eth,
+  //   icon: 'assets/images/chain-icons/binance-chain.svg',
+  //   contractsSupported: false,
+  // },
+  // {
+  //   id: 10,
+  //   name: 'Optimism',
+  //   blockExplorer: 'https://optimistic.etherscan.io',
+  //   protocol: CryptoAddressProtocol.Eth,
+  //   icon: 'assets/images/chain-icons/optomism.png',
+  //   contractsSupported: false,
+  // },
+  // {
+  //   id: 100,
+  //   name: 'xDAI',
+  //   blockExplorer: 'https://blockscout.com/xdai/mainnet',
+  //   protocol: CryptoAddressProtocol.Eth,
+  //   icon: 'assets/images/chain-icons/xdai.svg',
+  //   contractsSupported: false,
+  // },
 
-    contractsSupported: false,
-  },
-  {
-    id: 5,
-    name: 'Görli',
-    blockExplorer: 'https://goerli.etherscan.io',
-    protocol: CryptoAddressProtocol.Eth,
-    contractsSupported: false,
-  },
-  {
-    id: 12345678,
-    name: 'Algo',
-    blockExplorer: 'https://algoexplorer.io',
-    protocol: CryptoAddressProtocol.Algo,
-    icon: 'assets/images/chain-icons/algorand-algo.svg',
-    contractsSupported: true,
-    color: 'grey-800',
-  },
-  {
-    id: 654321,
-    name: 'AlgoTest',
-    blockExplorer: 'https://testnet.algoexplorer.io',
-    protocol: CryptoAddressProtocol.Algo,
-    icon: 'assets/images/chain-icons/algorand-algo.svg',
-    contractsSupported: true,
-    color: 'grey-800',
-  },
+  // {
+  //   id: 12345678,
+  //   name: 'Algo',
+  //   blockExplorer: 'https://algoexplorer.io',
+  //   protocol: CryptoAddressProtocol.Algo,
+  //   icon: 'assets/images/chain-icons/algorand-algo.svg',
+  //   contractsSupported: true,
+  //   color: 'grey-800',
+  // },
+  // {
+  //   id: 654321,
+  //   name: 'AlgoTest',
+  //   blockExplorer: 'https://testnet.algoexplorer.io',
+  //   protocol: CryptoAddressProtocol.Algo,
+  //   icon: 'assets/images/chain-icons/algorand-algo.svg',
+  //   contractsSupported: true,
+  //   color: 'grey-800',
+  // },
 ];
 
 export const MatchSupportedChains = (chainId) => {
-  return SupportedChainIds.find((chain) => chain.id === chainId);
+  return SupportedChainsAddendum.find((chain) => chain.id === chainId);
 };
 
 export const isAlgorand = (chainId) => MatchSupportedChains(chainId).protocol === CryptoAddressProtocol.Algo;
 
-export const RPC_URLS: { [chainId: number]: string } = {
-  1: 'https://mainnet.infura.io/v3/acfb1610d5514a998fb6c0baf20682c2',
-  3: 'https://ropsten.infura.io/v3/acfb1610d5514a998fb6c0baf20682c2',
-  137: 'https://polygon-mainnet.infura.io/v3/acfb1610d5514a998fb6c0baf20682c2',
-  80001: 'https://polygon-mumbai.infura.io/v3/acfb1610d5514a998fb6c0baf20682c2',
+const supportedChainIds = chains.map((chain) => chain.id);
+
+export const CustomWalletConnectConnector = async () => {
+  return await EthereumProvider.init({
+    projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+    chains: supportedChainIds,
+    showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
+    // methods, // OPTIONAL ethereum methods
+    // events, // OPTIONAL ethereum events
+    // rpcMap, // OPTIONAL rpc urls for each chain
+    // metadata, // OPTIONAL metadata of your app
+    // qrModalOptions // OPTIONAL - `undefined` by default, see https://docs.walletconnect.com/2.0/web3modal/options
+  });
 };
 
-// const injected = new InjectedConnector({ supportedChainIds: [1, 3, 4, 5, 42, 137, 80001] });
-
-// const walletconnect = new WalletConnectConnector({
-//   rpc: {
-//     1: RPC_URLS[1],
-//     3: RPC_URLS[3],
-//     137: RPC_URLS[137],
-//     80001: RPC_URLS[80001],
-//   },
-//   qrcode: true,
-// });
-
-// const walletlink = new WalletLinkConnector({
-//   url: RPC_URLS[1],
-//   appName: 'Cooperativ',
-//   darkMode: false,
-//   appLogoUrl: 'https://www.cooperativ.io/assets/android-chrome-192x192.png',
-// });
-
-export const EthConnectors = [
+export const SupportedEthConnectors = [
   {
     id: 'injected',
     name: 'MetaMask',
     logo: '/assets/images/wallet-logos/metamask-fox.svg',
     experimental: false,
     description: 'Mobile app and extension',
+    connector: new InjectedConnector({
+      chains: SupportedChains,
+    }),
   },
   {
-    id: 'walletlink',
-    name: 'WalletLink',
-    logo: '/assets/images/wallet-logos/walletlink-logo.png',
+    id: 'coinbasewallet',
+    name: 'Coinbase Wallet',
+    logo: '/assets/images/wallet-logos/coinbasewallet-logo.png',
     isSquare: true,
     experimental: false,
     description: 'Link to Coinbase Wallet',
+    connector: new CoinbaseWalletConnector({
+      chains: SupportedChains,
+      options: {
+        appName: 'Syndicate by Cooperativ Labs',
+        jsonRpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+      },
+    }),
   },
   {
     id: 'walletconnect',
     name: 'WalletConnect',
     logo: '/assets/images/wallet-logos/walletconnect-logo.svg',
-    experimental: true,
+    experimental: false,
     description: 'Link wallet with a QR code',
+    connector: new WalletConnectConnector({
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+        isNewChainsStale: false,
+      },
+    }),
+  },
+  {
+    id: 'ledger',
+    name: 'Ledger Connect',
+    logo: '/assets/images/wallet-logos/ledgerconnect-alternative.webp',
+    experimental: false,
+    description: 'Connect to Ledger',
+    connector: new LedgerConnector({
+      chains: SupportedChains,
+    }),
+  },
+];
+
+export const GetEthConnector = (id) => {
+  switch (id) {
+    case 'injected':
+      return SupportedEthConnectors[0].connector;
+    case 'walletconnect':
+      return SupportedEthConnectors[2].connector;
+    case 'coinbase':
+      return SupportedEthConnectors[1].connector;
+    case 'ledger':
+      return SupportedEthConnectors[3].connector;
+    default:
+      return undefined;
+  }
+};
+
+export const disconnectWallet = async (callback?: () => void) => {
+  await window.algorand?.disconnect();
+
+  window.sessionStorage.removeItem('CHOSEN_CONNECTOR');
+  window.localStorage.removeItem('wc:session:');
+  window.localStorage.removeItem('wagmi.connected');
+  if (callback) {
+    callback();
+  }
+};
+
+// ================ ALGO ================
+
+export const SupportedAlgoConnectors = [
+  {
+    id: 'pera',
+    name: 'Pera Wallet',
+    logo: '/assets/images/wallet-logos/pera-logo.png',
+    experimental: false,
+    description: 'Connect to Pera app',
+  },
+  {
+    id: 'myAlgo',
+    name: 'MyAlgo',
+    logo: '/assets/images/wallet-logos/myalgo-logo.png',
+    isSquare: true,
+    experimental: false,
+    description: 'Connect to MyAlgo',
   },
 ];
 
@@ -203,57 +305,7 @@ export const EthConnectors = [
 //   return reachLib;
 // };
 
-export const disconnectWallet = async (callback?: () => void) => {
-  await window.algorand?.disconnect();
-  window.sessionStorage.removeItem('CHOSEN_CONNECTOR');
-  window.localStorage.removeItem('walletconnect');
-  window.localStorage.removeItem('PeraWallet.Wallet');
-
-  if (callback) {
-    callback();
-  }
-};
-
-export const AlgoConnectors = [
-  {
-    id: 'pera',
-    name: 'Pera Wallet',
-    logo: '/assets/images/wallet-logos/pera-logo.png',
-    experimental: false,
-    description: 'Connect to Pera app',
-  },
-  {
-    id: 'myAlgo',
-    name: 'MyAlgo',
-    logo: '/assets/images/wallet-logos/myalgo-logo.png',
-    isSquare: true,
-    experimental: false,
-    description: 'Connect to MyAlgo',
-  },
-  // {
-  //   id: 'algoSigner',
-  //   name: 'AlgoSigner',
-  //   logo: '/assets/images/wallet-logos/algoSigner-logo.jpg',
-  //   isSquare: true,
-  //   experimental: false,
-  //   description: 'Connect to AlgoSigner',
-  // },
-];
-
 // export type ConnectorIdType = 'injected' | 'walletlink' | 'walletconnect' | 'pera' | 'myAlgo' | 'algoSigner';
-
-// export const GetEthConnector = (id) => {
-//   switch (id) {
-//     case 'injected':
-//       return injected;
-//     case 'walletconnect':
-//       return walletconnect;
-//     case 'walletlink':
-//       return walletlink;
-//     default:
-//       return undefined;
-//   }
-// };
 
 // export const GetAlgoConnector = (id, providerEnv) => {
 //   switch (id) {

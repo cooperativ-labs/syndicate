@@ -1,21 +1,21 @@
+import * as backendCtc from '../../web3/index.main';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import FormButton from '../buttons/FormButton';
-import loadStdlib from '@reach-sh/stdlib';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
+import { ApplicationStoreProps, store } from '@context/store';
 import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/dGraphQueries/crypto';
 import { Currency, SmartContractType } from 'types';
+import { CustomWalletConnectConnector, MatchSupportedChains } from '@src/web3/connectors';
+import { ethers } from 'ethers';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { MatchSupportedChains, setChainId } from '@src/web3/connectors';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client';
-// import { ALGO_WalletConnect as WalletConnect } from '@reach-sh/stdlib';
-import * as backendCtc from '../../web3/index.main';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import { ApplicationStoreProps, store } from '@context/store';
+import { loadStdlib } from '@reach-sh/stdlib';
 import { ReachContext } from '@src/SetReachContext';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
+import { useAccount, useNetwork, useProvider, useSigner } from 'wagmi';
+import { useAsyncFn } from 'react-use';
+import { useMutation } from '@apollo/client';
 
 type CreateShareClassProps = {
   contractCreatorId: string;
@@ -26,27 +26,49 @@ type CreateShareClassProps = {
 const CreateShareClass: FC<CreateShareClassProps> = ({ contractCreatorId, entityName, investmentCurrency }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
-  const { reachLib, userWalletAddress } = useContext(ReachContext);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const chainId = setChainId;
+  const { address: userWalletAddress, connector } = useAccount();
+  const { chain } = useNetwork();
+
+  const chainId = chain?.id;
+
   const [addUnestablishedSmartContract, { data, error }] = useMutation(CREATE_UNESTABLISHED_SMART_CONTRACT);
   const chainBacs = bacOptions.filter((bac) => bac.chainId === chainId);
-
   const protocol = MatchSupportedChains(chainId)?.protocol;
   const chainName = MatchSupportedChains(chainId)?.name;
+
+  useEffect(() => {
+    // console.log(window.ethereum);
+    console.log(window.ethereum?.isMetaMask);
+    // console.log(window.ethereum?.isCoinbaseWallet);
+    // console.log(window.ethereum?.isBraveWallet);
+    console.log(window.ethereum?.isFrame);
+    // console.log(window.ethereum?.isRainbow);
+    // console.log(ethers.getDefaultProvider('homestead'));
+    // console.log(window.ethereum);
+  }, [window]);
 
   const [, deploy] = useAsyncFn(
     async (backingToken: any) => {
       const backingTokenAddress = getCurrencyOption(backingToken).address;
-      // const stdlib = loadStdlib.loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
+      const reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ETH' });
 
-      await reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
-      const accCreator = await reachLib.getDefaultAccount();
+      const getAccCreator = async () => {
+        if (connector.id === 'walletConnect') {
+          const provider = new ethers.providers.Web3Provider(await CustomWalletConnectConnector());
+          reachLib.setProvider(provider as any);
+          return await reachLib.connectAccount(provider.getSigner());
+        } else {
+          return await reachLib.getDefaultAccount();
+        }
+      };
+      const accCreator = await getAccCreator();
       const ctcCreator = accCreator.contract(backendCtc);
+
       dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
       try {
         await accCreator.tokenAccept(backingTokenAddress);
-        await backendCtc.Creator(ctcCreator, {
+        await backendCtc.Creator(await ctcCreator, {
           getParams: (msg) => {
             setButtonStep('submitting');
             return {

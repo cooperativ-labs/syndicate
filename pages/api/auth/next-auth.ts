@@ -13,7 +13,7 @@ const getEndpoint = () => {
     //   return 'https://blue-surf-591466.us-east-1.aws.cloud.dgraph.io/graphql';
     default:
       // return 'http://localhost:8080/graphql';
-      return 'http://172.27.0.3:8080/graphql';
+      return 'http://172.30.0.3:8080/graphql';
   }
 };
 
@@ -85,7 +85,7 @@ const options: AuthOptions = {
       if (user) {
         token.id = user.id;
         const now = Math.floor(Date.now() / 1000);
-        const expiresIn = 60 * 60; // 1 hour
+        const expiresIn = 60 * 60 * 160; // 1 hour
         token.exp = now + expiresIn;
       }
       return token;

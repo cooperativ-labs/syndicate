@@ -53,6 +53,8 @@ import {
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { SessionProvider } from 'next-auth/react';
 import { StateProvider } from '@context/store';
+import { wagmiClient } from '@src/web3/connectors';
+import { WagmiConfig } from 'wagmi';
 
 library.add(fas, faCog);
 library.add(fas, faCommentDots);
@@ -120,12 +122,14 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
   );
 
   return (
-    <SessionProvider session={session}>
-      {/* <SetReachContext> */}
-      <SetAppContext>
-        <StateProvider>{cookiesApproved === 'approved' ? withCookies : withoutCookies}</StateProvider>
-      </SetAppContext>
-      {/* </SetReachContext> */}
-    </SessionProvider>
+    <WagmiConfig client={wagmiClient}>
+      <SessionProvider session={session}>
+        {/* <SetReachContext> */}
+        <SetAppContext>
+          <StateProvider>{cookiesApproved === 'approved' ? withCookies : withoutCookies}</StateProvider>
+        </SetAppContext>
+        {/* </SetReachContext> */}
+      </SessionProvider>
+    </WagmiConfig>
   );
 }

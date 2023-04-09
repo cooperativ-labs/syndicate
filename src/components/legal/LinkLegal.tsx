@@ -11,6 +11,7 @@ import { GetAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains, setChainId } from '@src/web3/connectors';
 import { Offering, User } from 'types';
 import { useAsync } from 'react-use';
+import { useNetwork } from 'wagmi';
 
 export type AgreementContentType = {
   signature: string;
@@ -27,7 +28,8 @@ type LinkLegalProps = {
 };
 
 const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
-  const chainId = setChainId;
+  const { chain } = useNetwork();
+  const chainId = chain?.id;
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
     signature: '',
   });
@@ -60,7 +62,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
       spvEntityName: orgLegalName,
       gpEntityName: offerEntityGP.fullName,
       contractAddress: availableContract?.cryptoAddress.address,
-      chainName: MatchSupportedChains(chainId).name,
+      chainName: MatchSupportedChains(chainId)?.name,
       bacName: bacName,
       bacAddress: bacId,
       signature: signature,
