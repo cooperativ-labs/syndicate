@@ -3,11 +3,11 @@ import React, { FC, useState } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
-import { useAccount, useEnsName, useNetwork } from 'wagmi';
+import { useEnsName } from 'wagmi';
 
 type FormattedCryptoAddressProps = {
   chainId: number;
-  address: `0x${string}`;
+  address: string;
   label?: string;
   withCopy?: boolean;
   className?: string;
@@ -28,8 +28,9 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   userName,
   isYou,
 }) => {
+  const addressForEns: `0x${string}` = address as `0x${string}`;
   const [copied, setCopied] = useState<boolean>(false);
-  const { data: ensName } = useEnsName({ address });
+  const { data: ensName } = useEnsName({ address: addressForEns });
   const chain = chainId && MatchSupportedChains(chainId);
   const blockExplorer = chain?.blockExplorer;
   const windowSize = useWindowSize();

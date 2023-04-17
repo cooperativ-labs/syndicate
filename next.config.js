@@ -34,4 +34,25 @@ module.exports = {
     // }
     return config;
   },
+  async headers() {
+    return [
+      {
+        source: '/(.*)',
+        headers: [
+          {
+            key: 'Access-Control-Allow-Origin',
+            value: 'https://app.safe.global',
+          },
+          {
+            key: 'Access-Control-Allow-Methods',
+            value: 'GET, POST, PUT, DELETE',
+          },
+          {
+            key: 'Access-Control-Allow-Headers',
+            value: 'Content-Type, Authorization',
+          },
+        ],
+      },
+    ];
+  },
 };

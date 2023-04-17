@@ -72,6 +72,7 @@ const EthChoices: FC<WalletChoicesProps> = ({ selection, dispatchWalletModal }) 
               // selection?.setItem('CHOSEN_CONNECTOR', connector.id);
               () => {
                 connect({ connector });
+                error && alert(WalletErrorCodes(error));
                 dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
               }
             }

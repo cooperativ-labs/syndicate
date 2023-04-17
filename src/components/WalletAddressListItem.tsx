@@ -7,7 +7,7 @@ import { CryptoAddress, CryptoAddressType } from 'types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { MarkPublic } from './form-components/ListItemButtons';
-import { MatchSupportedChains, setChainId } from '@src/web3/connectors';
+import { MatchSupportedChains } from '@src/web3/connectors';
 import { REMOVE_ENTITY_WALLET } from '@src/utils/dGraphQueries/entity';
 import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/dGraphQueries/crypto';
 import { useMutation } from '@apollo/client';
@@ -19,7 +19,6 @@ type WalletAddressListItemProps = {
 
 const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdit }) => {
   const { owner, id, name, type, chainId, address, description, isPublic } = wallet;
-  const { uuid } = useContext(UserAccountContext);
   const [editOn, setEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
   const [updateCryptoAddress, { error }] = useMutation(UPDATE_CRYPTO_ADDRESS);
