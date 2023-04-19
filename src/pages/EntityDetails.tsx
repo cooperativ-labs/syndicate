@@ -6,7 +6,7 @@ import RoundedImage from '@src/components/RoundedImage';
 import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { CurrencyCode, LegalEntity } from 'types';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 
 import { ADD_ENTITY_EMAIL, REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -27,6 +27,8 @@ import SettingsSocial from '@src/components/account/SettingsSocial';
 import TeamMemberList from '@src/components/entity/TeamMemberList';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { useSession } from 'next-auth/react';
+import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { getEntityManagers, getIsAdmin } from '@src/utils/helpersUserAndEntity';
 
 type EntityDetailsProps = {
   entity: LegalEntity;
@@ -35,6 +37,15 @@ type EntityDetailsProps = {
 const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
+  const { data: userData, error: entityError } = useQuery(GET_USER, {
+    variables: {
+      id: userId,
+    },
+  });
+
+  const user = userData?.queryUser[0];
+
+  const isAdmin = getIsAdmin(userId, entity);
 
   const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
     useMutation(UPDATE_ENTITY_INFORMATION);
@@ -306,7 +317,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         </div> */}
         <>
           <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Team</h2>
-          <TeamMemberList teamMembers={entity.users} entityId={entity.id} />
+          <TeamMemberList teamMembers={entity.users} entityId={entity.id} currentUserId={userId} isAdmin={isAdmin} />
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
             <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
               <SettingsAddTeamMember entityId={entity.id} />

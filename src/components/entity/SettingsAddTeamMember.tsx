@@ -8,7 +8,7 @@ import { GET_USER_FROM_EMAIL } from '@src/utils/dGraphQueries/user';
 import { legalEntityPermissionOptions } from '@src/utils/enumConverters';
 import { LegalEntityPermissionType } from 'types';
 import { useApolloClient } from '@apollo/client';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 const fieldDiv = 'md:my-2 bg-opacity-0';
 
@@ -18,15 +18,21 @@ type SettingsAddTeamMemberProps = {
 
 const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => {
   const [addTeamMember, { data, error }] = useMutation(ADD_LEGAL_ENTITY_USER);
+  const [userDoesNotExist, setUserDoesNotExist] = React.useState(false);
   const client = useApolloClient();
 
   const handleAddTeamMemberAddress = async (emailAddress: string, permission: LegalEntityPermissionType) => {
+    setUserDoesNotExist(false);
     client
       .query({
         query: GET_USER_FROM_EMAIL,
         variables: { emailAddress: emailAddress },
       })
       .then((result) => {
+        if (result.data.queryUser.length === 0) {
+          setUserDoesNotExist(true);
+          return;
+        }
         addTeamMember({
           variables: {
             userId: result.data.queryUser[0].id,
@@ -35,6 +41,8 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => 
             emailAddress: emailAddress,
             permission: permission,
           },
+        }).catch((error) => {
+          throw new Error(error);
         });
       });
   };
@@ -48,9 +56,15 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => 
       validate={async (values) => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.emailAddress) {
-          errors.address = 'Please include an email address.';
+          errors.emailAddress = 'Please include an email address.';
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.emailAddress)) {
           errors.emailAddress = 'Invalid email address';
+        }
+        if (!values.permission) {
+          errors.permission = 'Please choose a role';
+        }
+        if (userDoesNotExist) {
+          errors.emailAddress = 'User does not exist';
         }
         return errors;
       }}
@@ -80,6 +94,7 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => 
               })}
             </Select>
           </div>
+
           <button
             type="submit"
             disabled={isSubmitting}

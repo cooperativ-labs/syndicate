@@ -98,17 +98,18 @@ export const ADD_LEGAL_ENTITY_USER = gql`
     $currentDate: DateTime!
     $entityId: ID!
     $title: String
-    $permissions: [LegalEntityPermissionType!]
+    $permission: [LegalEntityPermissionType!]
   ) {
     updateLegalEntity(
       input: {
         filter: { id: [$entityId] }
-        set: { lastUpdate: $currentDate, users: { permissions: $permissions, title: $title, user: { id: $userId } } }
+        set: { lastUpdate: $currentDate, users: { permissions: $permission, title: $title, user: { id: $userId } } }
       }
     ) {
       legalEntity {
         id
         users {
+          permissions
           user {
             id
           }

@@ -1,14 +1,10 @@
 import cn from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import Button from '@src/components/buttons/Button';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ReachContext } from '@src/SetReachContext';
 import { SupportedEthConnectors } from '@src/web3/connectors';
 import { useAccount, useConnect } from 'wagmi';
-import { useAsyncFn } from 'react-use';
 import { WalletErrorCodes } from '@src/web3/helpersChain';
 
 type ConnectorProps = {

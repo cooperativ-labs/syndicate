@@ -42,3 +42,7 @@ export const getEntityManagers = (entity: LegalEntity) => {
     user.permissions.includes(LegalEntityPermissionType.Admin || LegalEntityPermissionType.Editor)
   );
 };
+
+export const getIsAdmin = (userId: string, entity: LegalEntity) => {
+  return entity.users.find((u) => u.user.id === userId).permissions.includes(LegalEntityPermissionType.Admin);
+};

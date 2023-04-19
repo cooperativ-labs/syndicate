@@ -68,8 +68,8 @@ export const getEntityTypeOptions = (nonHuman: boolean) => {
 
 export const legalEntityPermissionOptions = [
   { value: LegalEntityPermissionType.Admin, name: 'Admin', color: 'blue-500' },
-  { value: LegalEntityPermissionType.Editor, name: 'Editor', color: 'emerald-500' },
-  { value: LegalEntityPermissionType.Viewer, name: 'Viewer', color: 'orange-500' },
+  { value: LegalEntityPermissionType.Editor, name: 'Editor', color: 'emerald-600' },
+  { value: LegalEntityPermissionType.Viewer, name: 'Viewer', color: 'orange-600' },
 ];
 
 export const getLegalEntityPermissionOption = (permission: LegalEntityPermissionType) => {
