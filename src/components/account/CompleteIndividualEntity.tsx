@@ -88,7 +88,7 @@ const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo,
         },
       });
     } catch (err) {
-      console.log(err);
+      throw new Error(err);
     }
   };
 

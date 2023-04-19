@@ -50,11 +50,10 @@ const Connector: FC<ConnectorProps> = ({ index, connector, length }) => {
 };
 
 type WalletChoicesProps = {
-  selection: any;
   dispatchWalletModal: (action: { type: string; payload?: any }) => void;
 };
 
-const EthChoices: FC<WalletChoicesProps> = ({ selection, dispatchWalletModal }) => {
+const EthChoices: FC<WalletChoicesProps> = ({ dispatchWalletModal }) => {
   const { connector: activeConnector, isConnected } = useAccount();
   const { connect, error } = useConnect();
 
@@ -68,14 +67,12 @@ const EthChoices: FC<WalletChoicesProps> = ({ selection, dispatchWalletModal }) 
             key={i}
             disabled={!connector.ready}
             className="w-full"
-            onClick={
-              // selection?.setItem('CHOSEN_CONNECTOR', connector.id);
-              () => {
-                connect({ connector });
-                error && alert(WalletErrorCodes(error));
-                dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
-              }
-            }
+            onClick={() => {
+              window?.sessionStorage.setItem('CHOSEN_CONNECTOR', supportedConnector.id);
+              connect({ connector });
+              error && alert(WalletErrorCodes(error));
+              dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
+            }}
           >
             <Connector index={i} connector={supportedConnector} length={SupportedEthConnectors.length} />
           </Button>
@@ -133,15 +130,10 @@ const ChooseConnector: FC = () => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletModal } = applicationStore;
 
-  const [selection, setSelection] = useState(undefined);
-  useEffect(() => {
-    setSelection(window.sessionStorage);
-  });
-
   return (
     <>
       <h2 className="text-lg font-bold text-center my-8">Connect Your Wallet</h2>
-      <EthChoices selection={selection} dispatchWalletModal={dispatchWalletModal} />
+      <EthChoices dispatchWalletModal={dispatchWalletModal} />
       {/* <AlgoChoices selection={selection} dispatchWalletModal={dispatchWalletModal} /> */}
     </>
   );

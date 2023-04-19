@@ -14,9 +14,9 @@ const SignOut: React.FC = () => {
         router.push('/');
       })
       .catch((error) => {
-        console.error('Error signing out:', error);
+        throw new Error('Error signing out:', error);
       });
-  }, [router]);
+  }, [router, disconnect]);
 
   return (
     <div>

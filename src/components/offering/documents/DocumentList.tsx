@@ -3,19 +3,25 @@ import DocumentListItem from './DocumentListItem';
 import React, { FC, useContext, useState } from 'react';
 import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { Document, DocumentFormat, DocumentType } from 'types';
+import { Document } from 'types';
 import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 type DocumentListProps = {
   documents: Document[];
-  isOfferingOwner: boolean;
+  isOfferingManager: boolean;
   offeringId?: string;
   ownerEntityId?: string;
   hideUpload?: boolean;
 };
 
-const DocumentList: FC<DocumentListProps> = ({ documents, isOfferingOwner, offeringId, hideUpload, ownerEntityId }) => {
+const DocumentList: FC<DocumentListProps> = ({
+  documents,
+  isOfferingManager,
+  offeringId,
+  hideUpload,
+  ownerEntityId,
+}) => {
   const { data: session, status } = useSession();
 
   const [addFile, { data, error, loading }] = useMutation(ADD_OFFERING_DOCUMENT);
@@ -32,12 +38,12 @@ const DocumentList: FC<DocumentListProps> = ({ documents, isOfferingOwner, offer
     <div className="col-span-2">
       <div className="flex flex-wrap">
         {offeringDocs.map((document, i) => (
-          <DocumentListItem key={i} document={document} offeringId={offeringId} deleteButton={isOfferingOwner} />
+          <DocumentListItem key={i} document={document} offeringId={offeringId} deleteButton={isOfferingManager} />
         ))}
       </div>
 
       {/* </div> */}
-      {!hideUpload && isOfferingOwner && !!offeringId && !!ownerEntityId && (
+      {!hideUpload && isOfferingManager && !!offeringId && !!ownerEntityId && (
         //SElECT FILE TYPE
         <DocumentAdder offeringId={offeringId} ownerEntityId={ownerEntityId} />
       )}

@@ -15,7 +15,7 @@ type OfferingActionsProps = ContractOwnerActionsProps &
     sales: OfferingSale[];
     hasContract: boolean;
     loading: boolean;
-    isOfferingOwner: boolean;
+    isOfferingManager: boolean;
     retrievalIssue: boolean;
     isContractOwner: boolean;
     myBacBalance: number;
@@ -27,7 +27,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   retrievalIssue,
   hasContract,
   loading,
-  isOfferingOwner,
+  isOfferingManager,
   offering,
   sharesOutstanding,
   sales,
@@ -43,7 +43,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   setRecallContract,
 }) => {
   if (!hasContract) {
-    return isOfferingOwner ? (
+    return isOfferingManager ? (
       <Button
         className="p-3 bg-cLightBlue rounded-md text-white"
         onClick={() => router.push(`./${offering.id}/create-shares`)}

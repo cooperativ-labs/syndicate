@@ -124,6 +124,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
             <NonInput className={`pt-3 col-span-1 pl-1`} labelText={'Total raise'}>
               <>
                 {values.numUnits &&
+                  values.investmentCurrencyCode &&
                   values.initialPrice &&
                   `${numberWithCommas(parseInt(values.numUnits, 10) * parseInt(values.initialPrice, 10))} ${
                     getCurrencyOption({ code: values.investmentCurrencyCode }).symbol

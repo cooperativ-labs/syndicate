@@ -12,7 +12,7 @@ import { useMutation } from '@apollo/client';
 
 type OfferingDashboardTitleProps = {
   profileVisibility: boolean;
-  isOfferingOwner: boolean;
+  isOfferingManager: boolean;
   offeringId: string;
   gpEntityId: string;
   accessCode: string;
@@ -22,7 +22,7 @@ type OfferingDashboardTitleProps = {
 const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   offeringName,
   profileVisibility,
-  isOfferingOwner,
+  isOfferingManager,
   offeringId,
   accessCode,
   gpEntityId,
@@ -102,7 +102,6 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
       {({ isSubmitting }) => (
         <Form className="flex items-center">
           <Input className={' bg-opacity-0'} required name="name" type="name" placeholder="Cosy Apartments" />
-
           <Button
             type="submit"
             disabled={isSubmitting}
@@ -130,19 +129,24 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         nameChangeForm
       ) : (
         <h1
-          className={cn(`text-2xl md:text-3xl font-bold text-gray-700 ${isOfferingOwner && 'hover:cursor-pointer'}`)}
+          className={cn(`text-2xl md:text-3xl font-bold text-gray-700 ${isOfferingManager && 'hover:cursor-pointer'}`)}
           onClick={() => {
-            isOfferingOwner ? setNameEditOn(true) : {};
+            isOfferingManager ? setNameEditOn(true) : {};
           }}
         >
           {offeringName}
         </h1>
       )}
       <div className="flex p-2 items-center font-semibold text-gray-600 gap-2">
-        {isOfferingOwner && profileVisibility && (
-          <AccessCodeForm accessCode={accessCode} handleCodeSubmission={handleAccessCodeChange} mini isOfferingOwner />
+        {isOfferingManager && profileVisibility && (
+          <AccessCodeForm
+            accessCode={accessCode}
+            handleCodeSubmission={handleAccessCodeChange}
+            mini
+            isOfferingManager
+          />
         )}
-        {isOfferingOwner && (
+        {isOfferingManager && (
           <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
         )}
         {profileVisibility && (

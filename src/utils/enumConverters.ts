@@ -10,6 +10,7 @@ import {
   OfferingStage,
   DocumentFormat,
   OfferingTabSection,
+  LegalEntityPermissionType,
 } from 'types';
 
 // ===== PROFILE ======
@@ -24,28 +25,6 @@ export const tabSectionOptions = [
 
 export const getTabSectionOption = (desiredSectionValue) => {
   return tabSectionOptions.find((option) => (option.value === desiredSectionValue ? option : null));
-};
-
-export const categoryOptions = [
-  { value: 'REAL_ESTATE', name: 'Real Estate' },
-  { value: 'BUSINESS_SERVICES', name: 'Business Services' },
-  { value: 'GAMES', name: 'Games' },
-  { value: 'ARTS_CULTURE', name: 'Arts & Culture' },
-  { value: 'POLITICS_ACTIVISM', name: 'Politics & Activism' },
-  { value: 'CONSUMER_SOFTWARE', name: 'Consumer Software' },
-  { value: 'BUSINESS_SOFTWARE', name: 'Business Software' },
-  { value: 'HEALTH_BIOTECH', name: 'Health & Biotech' },
-  { value: 'MUSIC_FILM_ENTERTAINMENT', name: 'Music, Film & Entertainment' },
-  { value: 'DEVELOPER_TOOLS', name: 'Developer Tools' },
-  { value: 'SCIENCE_EDUCATION', name: 'Science & Education' },
-  { value: 'MACHINE_LEARNING_DATA', name: 'Machine Learning & Data' },
-  { value: 'WRITING_JOURNALISM', name: 'Writing & Journalism' },
-  { value: 'CONSUMER_SERVICES', name: 'Consumer Services' },
-];
-
-export const getCategoryOption = (category) => {
-  const option = categoryOptions.find((cat) => (cat.value === category ? cat : null));
-  return option.name;
 };
 
 export const socialAccountOptions = [
@@ -85,6 +64,16 @@ export const getEntityTypeOptions = (nonHuman: boolean) => {
     return entityTypeOptions.filter((option) => option.value !== LegalEntityType.Individual);
   }
   return [{ value: LegalEntityType.Individual, name: 'Individual' }];
+};
+
+export const legalEntityPermissionOptions = [
+  { value: LegalEntityPermissionType.Admin, name: 'Admin', color: 'blue-500' },
+  { value: LegalEntityPermissionType.Editor, name: 'Editor', color: 'emerald-500' },
+  { value: LegalEntityPermissionType.Viewer, name: 'Viewer', color: 'orange-500' },
+];
+
+export const getLegalEntityPermissionOption = (permission: LegalEntityPermissionType) => {
+  return legalEntityPermissionOptions.find((option) => (option.value === permission ? option : null));
 };
 
 export const docFormatOptions = [
@@ -371,6 +360,7 @@ export const currencyOptionsExcludeCredits = currencyOptions.filter(
 );
 
 export const getCurrencyOption = (currency) => {
+  // console.log('getCurrencyOption', currency);
   return currencyOptions.find((cur) => (cur.value === currency?.code ? cur : null));
 };
 

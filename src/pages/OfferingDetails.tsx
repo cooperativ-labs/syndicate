@@ -25,6 +25,7 @@ import { calculateDistribution, getLowestSalePrice } from '@src/utils/helpersMon
 import { DocumentType, Offering } from 'types';
 import { getContractParticipants } from '@src/web3/reachCalls';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
+import { getEntityManagers } from '@src/utils/helpersUserAndEntity';
 import { GetEstablishedContracts } from '@src/utils/helpersContracts';
 import { loadStdlib, ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { ReachContext } from '@src/SetReachContext';
@@ -45,18 +46,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   // const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
 
   const chainId = setChainId;
-  const {
-    id,
-    name,
-    offeringEntity,
-    offeringUsers,
-    participants,
-    sales,
-    details,
-    isPublic,
-    accessCode,
-    smartContracts,
-  } = offering;
+  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContracts } = offering;
 
   const establishedContract = GetEstablishedContracts(smartContracts, chainId)[0];
   const contractId = establishedContract?.cryptoAddress.address;
@@ -86,12 +76,14 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const [recallContract, setRecallContract] = useState<string>();
 
   const hasContract = !!contractManager;
-  const offeringOwner = offeringUsers.find((u) => {
-    return u.user.id === userId;
-  });
-  const isOfferingOwner = !!offeringOwner;
+
+  //Is the user a manager of the legal entity that owns the offering
+
+  const offeringManager = getEntityManagers(offeringEntity);
+
+  const isOfferingManager = !!offeringManager;
   const isContractOwner = contractManager && contractManager === userWalletAddress;
-  const contractOwnerMatches = isContractOwner === isOfferingOwner;
+  const contractOwnerMatches = isContractOwner === isOfferingManager;
   const offeringDocs = getDocumentsOfType(offering.documents, DocumentType.OfferingDocument);
   const latestDistribution = offering.distributions?.length > 0 && offering.distributions?.slice(-1)[0];
   const myDistToClaim =
@@ -240,7 +232,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               gpEntityId={owners[0].id}
               accessCode={accessCode}
               offeringName={name}
-              isOfferingOwner={isOfferingOwner}
+              isOfferingManager={isOfferingManager}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
@@ -250,7 +242,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 className="my-6"
                 offeringDetails={details}
                 currentSalePrice={currentSalePrice}
-                isOfferingOwner={isOfferingOwner}
+                isOfferingManager={isOfferingManager}
                 contractViewDetails={{
                   sharesOutstanding: sharesOutstanding,
                   fundsDistributed: fundsDistributed,
@@ -262,8 +254,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               <BasicOfferingDetailsForm offeringId={id} operatingCurrency={offeringEntity.operatingCurrency} />
             )}
 
-            {isOfferingOwner && <hr className="my-10" />}
-            {isOfferingOwner && (
+            {isOfferingManager && <hr className="my-10" />}
+            {isOfferingManager && (
               <div className="flex items-center mt-10 ">
                 <Button
                   onClick={() => setFinancialSettingsPanel(true)}
@@ -295,7 +287,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         retrievalIssue={retrievalIssue}
                         hasContract={hasContract}
                         loading={contractInfo.loading}
-                        isOfferingOwner={isOfferingOwner}
+                        isOfferingManager={isOfferingManager}
                         saleFormModal={saleFormModal}
                         sales={contractSales}
                         offering={offering}
@@ -329,7 +321,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               contractOwnerMatches={contractOwnerMatches}
               isContractOwner={isContractOwner}
               offeringEntity={offeringEntity}
-              isOfferingOwner={isOfferingOwner}
+              isOfferingManager={isOfferingManager}
               contractId={contractId}
             />
           </div>
@@ -338,7 +330,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Documents</h1>
             <DocumentList
               documents={offeringDocs}
-              isOfferingOwner={isOfferingOwner}
+              isOfferingManager={isOfferingManager}
               offeringId={offering.id}
               ownerEntityId={owners[0].id}
             />

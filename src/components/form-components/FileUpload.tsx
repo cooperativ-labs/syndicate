@@ -28,14 +28,9 @@ const FileUpload: FC<FileUploadProps> = ({
 
   function handleUploadFile(file) {
     const onUploadSuccess = (url: string, fileId: string) => {
-      console.log('File uploaded and available at:', url);
       urlToDatabase(url, fileId, file.name, docType, getFileFormat(file));
       setProgressAmt(0);
       setUploading(false);
-    };
-
-    const onUploadError = (error: string) => {
-      console.error('File upload failed:', error);
     };
 
     const uploadFile = async (file) => {
@@ -59,8 +54,7 @@ const FileUpload: FC<FileUploadProps> = ({
         const data = await response.json();
         onUploadSuccess?.(data.url, data.fileId);
       } catch (error) {
-        console.error('Error details:', error);
-        onUploadError?.(error.message);
+        throw new Error('Error details:', error);
       }
     };
 
@@ -70,7 +64,6 @@ const FileUpload: FC<FileUploadProps> = ({
         convertTypes: ['image/png'],
         convertSize: 300000,
         success(result) {
-          console.log(result);
           // console.log('Compressed file size (in bytes): ', result.size);
           uploadFile(result as File);
         },

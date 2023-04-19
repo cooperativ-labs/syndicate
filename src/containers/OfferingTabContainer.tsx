@@ -15,7 +15,7 @@ type OfferingTabContainerProps = {
   contractOwnerMatches: boolean;
   isContractOwner: boolean;
   offeringEntity: LegalEntity;
-  isOfferingOwner: boolean;
+  isOfferingManager: boolean;
 };
 
 const TabOptions = [
@@ -30,13 +30,13 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   contractOwnerMatches,
   isContractOwner,
   offeringEntity,
-  isOfferingOwner,
+  isOfferingManager,
 }) => {
   const distributions = offering.distributions;
-  const startingTab = isOfferingOwner ? 'investors' : distributions.length > 0 ? 'distributions' : 'properties';
+  const startingTab = isOfferingManager ? 'investors' : distributions.length > 0 ? 'distributions' : 'properties';
   const [activeTab, setActiveTab] = useState<string>(startingTab);
   const investorTabOptions = TabOptions.filter((tab) => tab.showInvestors);
-  const tabList = isOfferingOwner ? TabOptions : investorTabOptions;
+  const tabList = isOfferingManager ? TabOptions : investorTabOptions;
 
   return (
     <div>
@@ -51,14 +51,14 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
             <h1 className="text-cDarkBlue text-2xl font-medium   mb-6 ">Properties</h1>
             <OfferingProperties
               offeringEntity={offeringEntity}
-              isOfferingOwner={isOfferingOwner}
+              isOfferingManager={isOfferingManager}
               offeringId={offering.id}
             />
           </div>
         )}
         {activeTab === 'investors' && (
           <div className="mt-8">
-            {isOfferingOwner && (
+            {isOfferingManager && (
               <>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investor Waitlist</h1>
                 {offering.waitlistMembers?.length > 0 && (

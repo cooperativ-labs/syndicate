@@ -163,6 +163,7 @@ export const ADD_PROPERTY_ADDRESS = gql`
     $stateProvince: String
     $postalCode: String
     $country: String!
+    $ownerId: [ID!]
   ) {
     updateRealEstateProperty(
       input: {
@@ -177,6 +178,7 @@ export const ADD_PROPERTY_ADDRESS = gql`
             stateProvince: $stateProvince
             postalCode: $postalCode
             country: $country
+            owner: { id: $ownerId }
           }
           lastUpdate: $currentDate
         }

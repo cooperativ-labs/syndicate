@@ -4,7 +4,6 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import OfferingDetails from '@src/pages/OfferingDetails';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import { CREATE_SALE } from '@src/utils/dGraphQueries/offering';
 import { Currency, OfferingParticipant } from 'types';

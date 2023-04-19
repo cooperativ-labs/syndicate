@@ -52,8 +52,7 @@ const StateProvider = ({ children }) => {
       case 'SET_SEARCHTEXT':
         return { ...state, searchText: action.payload };
       default:
-        const error = new Error();
-        return { ...state, error };
+        return { ...state };
     }
   }, initialState);
 

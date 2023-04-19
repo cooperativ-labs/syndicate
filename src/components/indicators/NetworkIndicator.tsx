@@ -5,7 +5,7 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { useAccount, useNetwork } from 'wagmi';
 
-export const networkIcon = (chainId, walletAddress) => {
+export const networkIcon = (chainId: number, walletAddress: string) => {
   if (!walletAddress) {
     return 'bg-white border-2 border-gray-300';
   }

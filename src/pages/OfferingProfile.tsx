@@ -13,13 +13,12 @@ import router from 'next/router';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
-import { copyTextToClipboard, getBaseUrl } from '@src/utils/helpersURL';
 import { DocumentType, Offering } from 'types';
+import { getBaseUrl } from '@src/utils/helpersURL';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { GetEstablishedContracts } from '@src/utils/helpersContracts';
 import { getLowestSalePrice } from '@src/utils/helpersMoney';
 import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { ReachContext } from '@src/SetReachContext';
 import { setChainId } from '@src/web3/connectors';
 import { useAsyncFn } from 'react-use';
@@ -147,7 +146,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
             <h2 className="text-gray-800 font-bold mb-3">Offering Documents</h2>
             <DocumentList
               documents={getDocumentsOfType(offering.documents, DocumentType.OfferingDocument)}
-              isOfferingOwner={false}
+              isOfferingManager={false}
               offeringId={offering.id}
             />
           </>
@@ -170,7 +169,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
         </TwoColumnLayout>
         <div className="w-full">
           <h1 className={contentSectionHeader}>Properties</h1>
-          <OfferingProperties offeringEntity={offeringEntity} isOfferingOwner={false} offeringId={offering.id} />
+          <OfferingProperties offeringEntity={offeringEntity} isOfferingManager={false} offeringId={offering.id} />
         </div>
       </Container>
     </div>

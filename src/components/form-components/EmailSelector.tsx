@@ -46,7 +46,7 @@ const EmailSelector: FC<EmailSelectorProps> = ({ entity, refetch, withAdd, addEm
 
       window.localStorage.removeItem('emailForSignIn');
     } catch (err) {
-      console.log(err);
+      throw new Error(err);
     }
   };
 

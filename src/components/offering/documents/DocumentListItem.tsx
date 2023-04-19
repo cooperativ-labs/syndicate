@@ -35,7 +35,7 @@ const DocumentListItem: FC<{ document: Document; offeringId: string; deleteButto
         }
         deleteDocument({ variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id } });
       } catch (error) {
-        console.error('Error details:', error);
+        throw new Error('Error details:', error);
       }
     } else {
       deleteDocument({ variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id } });

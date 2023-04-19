@@ -20,7 +20,6 @@ const UserSettings: FC = () => {
   const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
 
-  const userInfo = getUserPersonalEntity(user);
   const [alerted, setAlerted] = useState<boolean>(false);
 
   const [addEntityEmail, { data, error }] = useMutation(ADD_ENTITY_EMAIL);
@@ -29,6 +28,12 @@ const UserSettings: FC = () => {
   useEffect(() => {
     setLocalStorage(window.localStorage);
   }, [setLocalStorage]);
+
+  if (!user) {
+    return <Loading />;
+  }
+
+  const userInfo = getUserPersonalEntity(user);
 
   if (error && !alerted) {
     alert('Oops. Looks like something went wrong');

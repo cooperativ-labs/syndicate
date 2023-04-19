@@ -14,7 +14,7 @@ export type ContractViewDetails = {
 export type OfferingDetailsDisplayProps = {
   offeringDetails: OfferingDetails;
   currentSalePrice: number;
-  isOfferingOwner: boolean;
+  isOfferingManager: boolean;
   contractViewDetails: ContractViewDetails;
   className?: string;
 };
@@ -22,7 +22,7 @@ export type OfferingDetailsDisplayProps = {
 const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
   offeringDetails,
   currentSalePrice,
-  isOfferingOwner,
+  isOfferingManager,
   contractViewDetails,
   className,
 }) => {
@@ -55,7 +55,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
           <MoneyDisplay amount={currentSalePrice} bacId={bacId} currency={investmentCurrency} />
         </OfferingDetailDashboardItem>
 
-        {isOfferingOwner ? (
+        {isOfferingManager ? (
           <OfferingDetailDashboardItem title="Shares allocated">
             <MoneyDisplay amount={sharesOutstanding} />
           </OfferingDetailDashboardItem>
@@ -65,7 +65,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
           </OfferingDetailDashboardItem>
         )}
 
-        {isOfferingOwner ? (
+        {isOfferingManager ? (
           <OfferingDetailDashboardItem title="Funds Distributed">
             <MoneyDisplay amount={fundsDistributed} bacId={bacId} currency={investmentCurrency} />
           </OfferingDetailDashboardItem>

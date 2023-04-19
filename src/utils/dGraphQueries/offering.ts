@@ -5,7 +5,6 @@ export const ADD_OFFERING = gql`
   ${CORE_OFFERING_FIELDS}
   mutation AddOffering(
     $currentDate: DateTime!
-    $userId: ID!
     $managingEntityId: ID!
     $offeringEntityId: ID!
     $name: String!
@@ -25,7 +24,6 @@ export const ADD_OFFERING = gql`
           brandColor: $brandColor
           website: $website
           image: $image
-          offeringUsers: [{ user: { id: $userId }, roles: ADMIN }]
           offeringEntity: { id: $offeringEntityId, profileImage: $image }
         }
       ]

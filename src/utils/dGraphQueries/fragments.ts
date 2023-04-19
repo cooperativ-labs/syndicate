@@ -9,9 +9,6 @@ export const CORE_LINKED_ACCOUNT_FIELDS = gql`
     type
     verified
     hidden
-    project {
-      id
-    }
     owner {
       id
     }
@@ -118,50 +115,6 @@ export const SMART_CONTRACT_FIELDS = gql`
       id
     }
     established
-  }
-`;
-
-export const CORE_PROJECT_INFO_FIELDS = gql`
-  ${CORE_DOCUMENT_FIELDS}
-  ${CORE_LINKED_ACCOUNT_FIELDS}
-  fragment projectInfoData on ProjectInfo {
-    id
-    logo
-    shortDescription
-    generalDescription
-    brandColor
-    lightBrand
-    website
-    linkedAccounts {
-      ...linkedAccountsData
-    }
-    videoURL
-    pitchDeck
-    sharing {
-      image {
-        id
-        url
-        label
-      }
-    }
-    documents {
-      ...documentData
-    }
-  }
-`;
-
-export const CORE_PROJECT_FIELDS = gql`
-  ${CORE_PROJECT_INFO_FIELDS}
-  fragment projectData on Project {
-    id
-    name
-    slug
-    info {
-      ...projectInfoData
-    }
-    projectEntity {
-      id
-    }
   }
 `;
 
@@ -292,8 +245,6 @@ export const CORE_ENTITY_FIELDS = gql`
   ${CORE_LINKED_ACCOUNT_FIELDS}
   ${CORE_ADDRESS_FIELDS}
   ${CORE_DOCUMENT_FIELDS}
-  ${CORE_PROJECT_INFO_FIELDS}
-  ${CORE_PROJECT_FIELDS}
   ${CORE_RE_PROPERTY_FIELDS}
   ${CORE_PURCHASE_REQUEST_FIELDS}
   ${SMART_CONTRACT_FIELDS}
@@ -314,10 +265,13 @@ export const CORE_ENTITY_FIELDS = gql`
     website
     publicFacing
     users {
+      id
       title
+      permissions
       user {
         id
-        id
+        name
+        email
       }
     }
     owners {
@@ -387,9 +341,6 @@ export const CORE_ENTITY_FIELDS = gql`
         ...documentData
       }
     }
-    project {
-      ...projectData
-    }
     offerings {
       id
       name
@@ -398,12 +349,6 @@ export const CORE_ENTITY_FIELDS = gql`
       website
       details {
         ...offeringDetailsData
-      }
-      offeringUsers {
-        id
-        user {
-          id
-        }
       }
       participants {
         id
@@ -482,13 +427,6 @@ export const CORE_OFFERING_FIELDS = gql`
     offeringEntity {
       ...entityData
     }
-    offeringUsers {
-      id
-      user {
-        id
-        id
-      }
-    }
     purchaseRequests {
       ...purchaseRequestData
     }
@@ -547,28 +485,6 @@ export const CORE_DOCUMENT_SIGNATORY_FIELDS = gql`
     }
     legalEntity {
       id
-      project {
-        id
-      }
-    }
-  }
-`;
-
-export const CORE_PROJECT_ENTITY_FIELDS = gql`
-  ${CORE_ENTITY_FIELDS}
-  fragment projectEntityData on ProjectEntity {
-    id
-    archived
-    project {
-      id
-      name
-      slug
-      projectEntity {
-        id
-      }
-    }
-    linkedEntity {
-      ...entityData
     }
   }
 `;

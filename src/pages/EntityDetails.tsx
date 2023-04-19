@@ -8,12 +8,10 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { CurrencyCode, LegalEntity } from 'types';
 import { useMutation } from '@apollo/client';
 
-import DocumentList from '@src/components/offering/documents/DocumentList';
 import { ADD_ENTITY_EMAIL, REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import DashboardCard from '@src/components/cards/DashboardCard';
-import { getCurrencyOption } from '@src/utils/enumConverters';
 
 import Button from '@src/components/buttons/Button';
 import CreateAddress from '@src/components/address/CreateAddress';
@@ -24,7 +22,9 @@ import FileUpload from '@src/components/form-components/FileUpload';
 import FormModal from '@src/containers/FormModal';
 import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
 import SectionBlock from '@src/containers/SectionBlock';
+import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember';
 import SettingsSocial from '@src/components/account/SettingsSocial';
+import TeamMemberList from '@src/components/entity/TeamMemberList';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { useSession } from 'next-auth/react';
 
@@ -91,7 +91,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
 
       window.localStorage.removeItem('emailForSignIn');
     } catch (err) {
-      console.log(err);
+      throw new Error(err);
     }
   };
 
@@ -304,12 +304,17 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
           <div>Section for jurisdiction, tax Id, operating currency, legal note </div>
           <div>Section for adding socials</div>
         </div> */}
-        <div className="lg:w-96">
-          <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Documents</h2>
-          <DocumentList documents={entity.documentsOwned} isOfferingOwner={false} hideUpload />
-        </div>
+        <>
+          <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Team</h2>
+          <TeamMemberList teamMembers={entity.users} entityId={entity.id} />
+          <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
+            <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
+              <SettingsAddTeamMember entityId={entity.id} />
+            </SectionBlock>
+          </div>
+        </>
       </TwoColumnLayout>
-      <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings} />
+      <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings} entity={entity} />
     </div>
   );
 };

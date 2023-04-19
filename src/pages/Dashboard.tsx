@@ -6,9 +6,9 @@ import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC, useContext } from 'react';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { getUserOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
 import { ReachContext } from '@src/SetReachContext';
 import { useQuery } from '@apollo/client';
-import { User } from 'types';
 import { useSession } from 'next-auth/react';
 
 // type DashboardProps = {
@@ -23,6 +23,7 @@ const Dashboard: FC = () => {
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress },
   });
+
   if (!user) {
     return <></>;
   }
@@ -30,9 +31,7 @@ const Dashboard: FC = () => {
     return offeringParticipant.offering;
   });
 
-  const offerings = user.offerings.map((offeringUser) => {
-    return offeringUser.offering;
-  });
+  const offerings = getUserOfferingsFromEntity(user);
 
   const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;

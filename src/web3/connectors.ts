@@ -1,6 +1,6 @@
 import { CryptoAddressProtocol } from 'types';
 import { Chain, configureChains, createClient } from 'wagmi';
-import { mainnet, goerli, polygon, polygonMumbai } from 'wagmi/chains';
+import { mainnet, goerli, sepolia, polygon, polygonMumbai } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { InjectedConnector } from 'wagmi/connectors/injected';
@@ -49,7 +49,7 @@ export const setChainId = 654321;
 //   80001: 'https://polygon-mumbai.infura.io/v3/',
 // };
 
-export const SupportedChains = [mainnet, goerli, polygon, polygonMumbai];
+export const SupportedChains = [mainnet, sepolia, goerli, polygon, polygonMumbai];
 
 const { chains, provider, webSocketProvider } = configureChains(SupportedChains, [
   publicProvider(),
@@ -68,17 +68,27 @@ export const SupportedChainsAddendum = [
     name: mainnet.name,
     blockExplorer: mainnet.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
-    icon: 'assets/images/chain-icons/ethereum-eth-logo.svg',
+    icon: '/assets/images/chain-icons/ethereum-eth-logo.svg',
     contractsSupported: true,
     color: 'emerald-600',
+  },
+  {
+    id: sepolia.id,
+    name: sepolia.name,
+    blockExplorer: sepolia.blockExplorers.default.url,
+    protocol: CryptoAddressProtocol.Eth,
+    icon: '/assets/images/chain-logos/sepolia-logo.png',
+    contractsSupported: true,
+    color: 'blue-300',
   },
   {
     id: goerli.id,
     name: goerli.name,
     blockExplorer: goerli.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
+    icon: '/assets/images/chain-logos/sepolia-logo.png',
     contractsSupported: true,
-    color: 'emerald-300',
+    color: 'blue-300',
   },
   // {
   //   id: 100001,
@@ -94,7 +104,7 @@ export const SupportedChainsAddendum = [
     name: polygon.name,
     blockExplorer: polygon.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
-    icon: 'assets/images/chain-icons/polygon-matic-logo.svg',
+    icon: '/assets/images/chain-icons/polygon-matic-logo.svg',
     contractsSupported: true,
     color: 'purple-600',
   },

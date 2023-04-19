@@ -79,6 +79,15 @@ const CreateOffering: FC = () => {
   //   addParticipant(offeringId, offeringEntity);
   // }
 
+  if (data && !alerted) {
+    const offeringId = data?.addOffering.offering[0].id;
+    setAlerted(true);
+    setButtonStep('confirmed');
+    setTimeout(() => {
+      router.push(`/offerings/${offeringId}`);
+    }, 1000);
+  }
+
   const handleSubmit = async (values) => {
     try {
       await addOffering({

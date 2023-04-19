@@ -3,7 +3,6 @@ import {
   CORE_USER_FIELDS,
   CORE_ENTITY_FIELDS,
   SMART_CONTRACT_FIELDS,
-  CORE_PROJECT_FIELDS,
   CORE_INVESTMENT_OFFERING_FIELDS,
 } from './fragments';
 
@@ -25,13 +24,11 @@ export const CHECK_EMAIL_EXISTS = gql`
 `;
 
 export const GET_USER_FROM_EMAIL = gql`
-  ${CORE_USER_FIELDS}
   query GetUserFromEmail($emailAddress: String!) {
-    getEmailAddress(address: $address) {
-      address
-      user {
-        ...userData
-      }
+    queryUser(filter: { email: { eq: $emailAddress } }) {
+      id
+      email
+      name
     }
   }
 `;
@@ -39,30 +36,11 @@ export const GET_USER_FROM_EMAIL = gql`
 export const GET_USER = gql`
   ${CORE_ENTITY_FIELDS}
   ${SMART_CONTRACT_FIELDS}
-  ${CORE_PROJECT_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
   query GetUser($id: ID!) {
     queryUser(filter: { id: [$id] }) {
       id
       name
-      projects {
-        id
-        project {
-          ...projectData
-        }
-      }
-      offerings {
-        roles
-        offering {
-          id
-          name
-          image
-          shortDescription
-          details {
-            ...offeringDetailsData
-          }
-        }
-      }
       legalEntities {
         legalEntity {
           ...entityData

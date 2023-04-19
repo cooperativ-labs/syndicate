@@ -32,11 +32,6 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
 
   const setDefaultLogo = defaultLogo ? defaultLogo : '/assets/images/logos/company-placeholder.jpeg';
 
-  if (!user) {
-    return <></>;
-  }
-  const entityOptions = [...user.legalEntities].reverse();
-
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
   }
@@ -45,6 +40,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
   }
 
   const placeId = inputAddress && inputAddress.value.place_id;
+
   useEffect(() => {
     geocodeByPlaceId(placeId)
       .then((results) => {
@@ -54,7 +50,13 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
         setLatLang({ lat: lat, lng: lng });
       })
       .catch((error) => console.log(error));
-  }, [placeId]);
+  }, [placeId, setAutocompleteResults, setLatLang]);
+
+  if (!user) {
+    return <></>;
+  }
+
+  const entityOptions = [...user.legalEntities].reverse();
 
   const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
   const street_number = autocompleteResults[0]?.address_components.find((x) =>

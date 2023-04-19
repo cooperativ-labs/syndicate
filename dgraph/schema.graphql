@@ -39,7 +39,36 @@ enum DocumentAccessType {
 	PUBLIC
 }
 
-type DocumentSignatory  {
+type DocumentSignatory @auth (
+	update:	{rule: """
+						query($userId: ID!) { 
+								queryDocumentSignatory{
+									document{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}										
+										}
+									}
+						}"""
+
+	}
+	delete:	{rule: """
+						query($userId: ID!) { 
+								queryDocumentSignatory{
+									document{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}										
+										}
+									}
+						}"""
+	}
+) 
+ {
 	id: ID!
 	document: Document! @hasInverse(field:signatories) 
 	legalEntity: LegalEntity @hasInverse(field:documentsSigned) 
@@ -49,7 +78,43 @@ type DocumentSignatory  {
 	archived: Boolean
 }
 
-type Document  {
+type Document @auth (
+# add:	{rule: """
+# 						query($userId: ID!) { 
+# 								queryDocument{
+# 									owner{
+# 											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+# 													user(filter: { id: [$userId] }) { id }
+# 												}
+# 										}
+# 									}
+# 						}"""
+
+# 	}
+	update:	{rule: """
+						query($userId: ID!) { 
+								queryDocument{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+
+	}
+	delete:	{rule: """
+						query($userId: ID!) { 
+								queryDocument{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+	}
+) {
 	id: ID!
 	title: String 
 	text: String
@@ -94,46 +159,42 @@ enum CryptoAddressType {
 }
 
 type CryptoAddress @auth (
-  add: { rule:"""
-				query($userId: [ID!]) {
-					queryCryptoAddress { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+add:{rule: """
+						query($userId: ID!) { 
+								queryCryptoAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-		update: { rule: """
-				query($userId: [ID!]) {
-					queryCryptoAddress { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+						}"""
+	}
+	update:{rule: """
+						query($userId: ID!) { 
+								queryCryptoAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-		delete: { rule: """
-				query($userId: [ID!]) {
-					queryCryptoAddress { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+						}"""
+	
+	}
+	delete:{rule: """
+						query($userId: ID!) { 
+								queryCryptoAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-)  {
+						}"""
+	}
+
+) {
 	id: ID!
 	name: String 
 	address: String! @id
@@ -155,46 +216,43 @@ enum SmartContractType {
 }
 
 type SmartContract @auth (
-  add: { rule:"""
-				query($userId: [ID!]) {
-					querySmartContract { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+add: {rule: """
+						query($userId: ID!) { 
+								querySmartContract{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+															user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-		update: { rule: """
-				query($userId: [ID!]) {
-					querySmartContract { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+						}"""
+
+	}
+	update: {rule: """
+						query($userId: ID!) { 
+								querySmartContract{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+															user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-		# delete: { rule: """
-		# 		query($userId: [ID!]) {
-		# 			querySmartContract { 
-		# 				owner { 
-		# 					users { 
-		# 							user(filter: { id: $userId }) {
-		# 														__typename
-		# 														id
-		# 										}
-		# 								}
-		# 							}
-		# 					}
-		# 			}"""} 
-) {
+						}"""
+	
+	}
+	delete: {rule: """
+						query($userId: ID!) { 
+								querySmartContract{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+															user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+	
+	}
+)  {
 	id: ID!
 	cryptoAddress: CryptoAddress!
 	type: SmartContractType!
@@ -218,7 +276,47 @@ enum OfferingTabSection {
 	DISCLOSURES
 }
 
-type OfferingDescriptionText { 
+type OfferingDescriptionText @auth (
+add:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingDescriptionText{
+									offering{
+									offeringEntity{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}
+									}
+						}"""
+	}
+	update:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingDescriptionText{
+									offering{
+									offeringEntity{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}
+									}
+						}"""
+	}
+	delete:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingDescriptionText{
+									offering{
+									offeringEntity{
+											users(filter: { permissions: { eq: ADMIN } }) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}
+									}
+						}"""
+	}
+){ 
 	id: ID!
 	section: OfferingTabSection!
 	title: String!
@@ -234,26 +332,44 @@ type OfferingInfoSharing {
 	description: String
 }
 
-enum OfferingUserRole {
-	ADMIN
-	BOARD_MEMBER
-	PARTNER
-	TEAM
-	INVESTOR
-	ADVISOR
-	SUPPORTER
-}
-
-type OfferingUser {
-	id: ID!
-	offering: Offering! @hasInverse(field:offeringUsers) 
-	user: User! @hasInverse(field: offerings)
-	roles: [OfferingUserRole!] 
-	lastUpdate: DateTime!
-	archived: Boolean
-}
-
-type Offering  {
+type Offering @auth (
+add:
+			{rule: """
+						query($userId: ID!) { 
+								queryOffering{
+									offeringEntity{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+	}
+	update:
+			{rule: """
+						query($userId: ID!) { 
+								queryOffering{
+									offeringEntity{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+	}
+	delete:
+			{rule: """
+						query($userId: ID!) { 
+								queryOffering{
+									offeringEntity{
+											users(filter: { permissions: { eq: ADMIN }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+	}
+) {
 	id: ID! 
 	creationDate: DateTime! 
 	lastUpdate: DateTime! 
@@ -261,15 +377,14 @@ type Offering  {
 	image: String 
 	bannerImage: String
 	primaryVideo:	String
-	sharing: ProjectInfoSharing
+	sharing: OfferingInfoSharing
 	brandColor: String 
 	lightBrand: Boolean
 	website: String 
 	shortDescription: String
-	offeringUsers: [OfferingUser!] @hasInverse(field:offering) 
 	offeringEntity: LegalEntity @hasInverse(field:offerings) 
 	smartContracts: [SmartContract]
-	details: OfferingDetails
+	details: OfferingDetails @hasInverse(field:offering)
 	profileDescriptions: [OfferingDescriptionText] @hasInverse(field:offering)
 	purchaseRequests: [PurchaseRequest] @hasInverse(field:relatedOffering)
 	sales: [OfferingSale] @hasInverse(field:relatedOffering)
@@ -283,8 +398,11 @@ type Offering  {
 }
 
 enum OfferingDetailsType {
+	CRYPTO
+	PRIVATE_EQUITY
 	REAL_ESTATE
-	SELF_STORAGE
+	VENTURE_CAPITAL
+	OTHER
 }
 
 enum DistributionPeriodType {
@@ -307,8 +425,51 @@ enum OfferingStage {
 	CLOSED
 }
 
-type OfferingDetails {
+type OfferingDetails @auth (
+add:{rule: """
+						query($userId: ID!) { 
+								queryOfferingDetails{
+									offering{
+										offeringEntity{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}
+											}
+									}
+							}"""
+					}
+
+					update:{rule: """
+						query($userId: ID!) { 
+								queryOfferingDetails{
+									offering{
+										offeringEntity{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}
+											}
+									}
+							}"""
+					}
+					
+					delete:{rule: """
+						query($userId: ID!) { 
+								queryOfferingDetails{
+									offering{
+										offeringEntity{
+											users(filter: {permissions: { eq: ADMIN } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}
+											}
+									}
+							}"""
+					}
+){
 	id: ID!
+	offering: Offering! @hasInverse(field:details)
 	type: OfferingDetailsType
 	stage: OfferingStage
 	investmentCurrency: Currency!
@@ -344,14 +505,42 @@ type WaitlistMember {
 	name: String
 	offering: Offering! @hasInverse(field:waitlistMembers)
 	walletAddress: String
-	minPledge: Int @dgraph(pred: "WaitlistMember.minBuy")
-	maxPledge: Int @dgraph(pred: "WaitlistMember.maxBuy")
+	minPledge: Int 
+	maxPledge: Int
 	investorApplication: InvestorApplication
 	nonUS: Boolean
 	lastUpdate: DateTime!
 }
 
-type OfferingParticipant {
+type OfferingParticipant @auth (
+					update:{rule: """
+						query($userId: ID!) { 
+								queryOfferingParticipant{
+									offering{
+										offeringEntity{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}
+											}
+									}
+							}"""
+					}
+					
+					delete:{rule: """
+						query($userId: ID!) { 
+								queryOfferingParticipant{
+									offering{
+										offeringEntity{
+											users(filter: {permissions: { eq: ADMIN } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}
+											}
+									}
+							}"""
+					}
+) {
 	id: ID!
 	addressOfferingId: String! @id
 	walletAddress: String! @search(by:[fulltext]) 
@@ -429,7 +618,42 @@ enum RealEstatePropertyType {
 	SELF_STORAGE
 }
 
-type RealEstateProperty {
+type RealEstateProperty @auth (
+add:{ rule: """
+						query($userId: ID!){ 
+								queryRealEstateProperty{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+			update:{ rule: """
+						query($userId: ID!){ 
+								queryRealEstateProperty{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+			delete:{ rule: """
+						query($userId: ID!){ 
+								queryRealEstateProperty{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+)
+ {
 	id: ID!
 	propertyType: RealEstatePropertyType!
 	investmentStatus: AssetStatus
@@ -449,79 +673,48 @@ type RealEstateProperty {
 }
 
 
-"""
-PROJECT MODEL
-"""
-
-enum ProjectCategory {
-		BUSINESS
-}
-
-type ProjectInfoSharing {
-	image: Image
-	description: String
-}
-
-
-type ProjectInfo  {
-	id: ID!
-	creationDate: DateTime! 
-	logo: String 
-	sharing: ProjectInfoSharing
-	brandColor: String 
-	lightBrand: Boolean 
-	shortDescription: String 
-	generalDescription: String 
-	linkedAccounts: [LinkedAccount] @hasInverse(field:project) 
-	documents: [Document] 
-	website: String 
-	pitchDeck: String 
-	videoURL: String 
-	languages: [String] 
-	locations: [String] 
-	project: Project! @hasInverse(field:info) 
-}
-
-
-type Project  {
-	id: ID! 
-	name: String! @search(by:[fulltext]) 
-	slug: String
-	category: ProjectCategory 
-	info: ProjectInfo! 
-	projectUsers: [ProjectUser!] @hasInverse(field:project) 
-	projectEntity: LegalEntity @hasInverse(field:project) 
-	walletAddresses: [CryptoAddress] 
-	lastUpdate: DateTime 
-}
-
-
-enum ProjectUserRole {
-	ADMIN
-	BOARD_MEMBER
-	PARTNER
-	TEAM
-	INVESTOR
-	ADVISOR
-	SUPPORTER
-}
-
-type ProjectUser {
-	id: ID!
-	project: Project! @hasInverse(field:projectUsers) 
-	user: User! @hasInverse(field: projects)
-	title: String 
-	roles: [ProjectUserRole!] 
-	lastUpdate: DateTime!
-	archived: Boolean
-}
 
 """
-USER MODEL 
+ENTITY MODEL
 """
 
 
-type Address {
+type Address @auth (
+add:{rule: """
+						query($userId: ID!){ 
+								queryAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+			update:{rule: """
+						query($userId: ID!){ 
+								queryAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+			delete:{rule: """
+						query($userId: ID!){ 
+								queryAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+
+) {
 	id: ID!
 	label: String
 	line1: String
@@ -533,50 +726,46 @@ type Address {
 	country: String!
 	lat: Float
 	lng: Float
+	owner: LegalEntity @hasInverse(field: addresses)
 }
 
-
 type EmailAddress @auth (
-  add: { rule:"""
-				query($userId: [ID!]) {
-					queryEmailAddress { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+add:{rule: """
+						query($userId: ID!){ 
+								queryEmailAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-		update: { rule: """
-				query($userId: [ID!]) {
-					queryEmailAddress { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+						}"""
+			}
+			update:{rule: """
+						query($userId: ID!){ 
+								queryEmailAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-		delete: { rule: """
-				query($userId: [ID!]) {
-					queryEmailAddress { 
-						owner { 
-							users { 
-									user(filter: { id: $userId }) {
-																__typename
-																id
+						}"""
+			}
+			delete:{rule: """
+						query($userId: ID!){ 
+								queryEmailAddress{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
 												}
 										}
 									}
-							}
-					}"""} 
-)  {
+						}"""
+			}
+
+)
+{
 	id: ID!
 	address: String! @id
 	name: String
@@ -606,7 +795,42 @@ enum LinkedAccountType  {
 	OTHER
 }
 
-type LinkedAccount  {
+type LinkedAccount @auth (
+add:{rule: """
+						query($userId: ID!){ 
+								queryLinkedAccount{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+			update:{rule: """
+						query($userId: ID!){ 
+								queryLinkedAccount{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+			delete:{rule: """
+						query($userId: ID!){ 
+								queryLinkedAccount{
+									owner{
+											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+						}"""
+			}
+
+){
 	id: ID!
 	accountProvidedId: String
 	username: String @search(by:[term]) 
@@ -614,7 +838,6 @@ type LinkedAccount  {
 	type: LinkedAccountType 
 	verified: Boolean
 	hidden: Boolean
-	project: ProjectInfo @hasInverse(field:linkedAccounts)
 	owner: LegalEntity! @hasInverse(field:linkedAccounts) 
 }
 
@@ -625,47 +848,112 @@ enum LegalEntityType {
 	UNINCORPORATED_ASSOCIATION
 }
 
+enum LegalEntityUserRole {
+	BOARD_MEMBER
+	PARTNER
+	TEAM
+	INVESTOR
+	ADVISOR
+	SUPPORTER
+}
+
+
 enum LegalEntityPermissionType {
 	ADMIN
+	SUPER_ADMIN
+	EDITOR
 	VIEWER
 }
 
-type LegalEntityUser  {
+type LegalEntityUser 
+@auth(
+  # add: { rule: """
+  #   query($userId: ID!) {
+  #     queryLegalEntityUser {
+  #       user(filter: { id: [$userId] }) {
+  #         id
+  #       }
+  #     }
+  #   }
+  #   """
+		# }
+		update: {and:
+   [{ rule: """
+    query($userId: ID!) {
+      queryLegalEntityUser {
+        user(filter: { id: [$userId] }) {
+          id
+        }
+      }
+    }
+    """
+			 },
+				{ rule: """
+							query {
+								queryLegalEntityUser(filter: {permissions:  {eq: ADMIN}}) {id}
+						}
+    """
+				}]
+  }
+		delete: {and:
+   [{ rule: """
+    query($userId: ID!) {
+      queryLegalEntityUser {
+        user(filter: { id: [$userId] }) {
+          id
+        }
+      }
+    }
+    """
+			 },
+				{ rule: """
+							query {
+								queryLegalEntityUser(filter: {permissions:  {eq: EDITOR}}) {id}
+						}
+    """
+				}]
+  }
+)
+
+{
 	id: ID!
 	legalEntity: LegalEntity! @hasInverse(field:users)
 	user: User! @hasInverse(field:legalEntities) 
-	permissions: [LegalEntityPermissionType!]
+	permissions: [LegalEntityPermissionType!] @search
+	role: [LegalEntityUserRole] @search
 	title: String
 }
 
 type LegalEntity @auth (
 	add: { rule: """
-		query($userId: ID!) { 
-				queryLegalEntity {
-						users {
-							user(filter: { id: [$userId] }) { id }
+				query($userId: ID!) { 
+							queryLegalEntity {
+								users {
+									user(filter: { id: [$userId] }) { id }
+							}
 					}
-				}
 			}"""
 		}
 update:{rule: """
-						query($userId: ID!) { 
-								queryLegalEntity {
-										users {
-												user(filter: { id: [$userId] }) { id }
+						query($userId: ID!)  { 
+							queryLegalEntity {
+										users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+										# users(filter: { permissions: { eq: EDITOR } }) {
+
+																user(filter: { id: [$userId] }) { id }
+											}
 									}
-								}
-							}"""
-						}
-	delete: { rule: """
-					query($userId: ID!) { 
-				queryLegalEntity {
-						users {
-								user(filter: { id: [$userId] }) { id }
-					}
-				}
-			}"""
-		}
+						}"""
+			}
+	delete:{rule: """
+						query($userId: ID!)  { 
+							queryLegalEntity {
+										users(filter: { permissions: { eq: ADMIN }}) {
+																user(filter: { id: [$userId] }) { id }
+											}
+									}
+						}"""
+			}
 ) {
 	id: ID! 
 	type: LegalEntityType! 
@@ -684,13 +972,12 @@ update:{rule: """
 	bannerImage: String
 	website: String 
 	supplementaryLegalText: String
-	addresses: [Address]
+	addresses: [Address] @hasInverse(field:owner)
 	country: String 
 	jurisdiction: String 
 	linkedAccounts: [LinkedAccount] @hasInverse(field:owner) 
 	expertise: [String] 
 	interests: [String] 
-	project: Project @hasInverse(field:projectEntity) 
 	documentsOwned: [Document] @hasInverse(field:owner) 
 	documentsSigned: [DocumentSignatory] @hasInverse(field:legalEntity) 
 	smartContracts: [SmartContract] @hasInverse(field:owner)
@@ -703,17 +990,16 @@ update:{rule: """
 
 type User
   @auth(
-    query: {
-      or: [
-        {
-          rule: """
-          query ($userId: [ID!]) {queryUser(filter: { id:  $userId } ) {id}}
-          """
-        }
-         { rule: "{$admin: { eq: true } }" }
-									{ rule: "{$nextAuth: { eq: true } }" }
-      ]
-    }
+    # query: {
+    #   or: [
+    #     {
+    #       rule: """
+    #       query ($userId: [ID!]) {queryUser(filter: { id:  $userId } ) {id}}
+    #       """
+    #     }
+				# 					{ rule: "{$nextAuth: { eq: true } }" }
+    #   ]
+    # }
     delete: { rule: "{$nextAuth: { eq: true } }" }
     add: { rule: "{$nextAuth: { eq: true } }" }
     update: {
@@ -735,9 +1021,7 @@ type User
   image: String
   accounts: [Account] @hasInverse(field: "user")
   sessions: [Session] @hasInverse(field: "user")
-  projects: [ProjectUser] @hasInverse(field:user) 
 		legalEntities: [LegalEntityUser] @hasInverse(field:user) 
-		offerings: [OfferingUser] @hasInverse(field:user)
 		creationDate: DateTime
 }
 

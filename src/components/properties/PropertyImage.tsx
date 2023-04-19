@@ -34,7 +34,7 @@ const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) =
       }
       deleteImage({ variables: { currentDate: currentDate, propertyId: propertyId, imageId: image.id } });
     } catch (error) {
-      console.error('Error details:', error);
+      throw new Error('Error details:', error);
     }
   };
   return (

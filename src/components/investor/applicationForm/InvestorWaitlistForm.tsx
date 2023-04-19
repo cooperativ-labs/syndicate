@@ -108,7 +108,6 @@ const InvestorWaitlistForm: FC<InvestorWaitlistFormProps> = ({ offering }) => {
 
   const placeId = inputAddress && inputAddress.value.place_id;
   useEffect(() => {
-    console.log('herq');
     geocodeByPlaceId(placeId)
       .then((results) => {
         setAutocompleteResults(results);

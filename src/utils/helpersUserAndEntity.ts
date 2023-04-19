@@ -1,4 +1,4 @@
-import { LegalEntity, LegalEntityType, User } from 'types';
+import { LegalEntity, LegalEntityPermissionType, LegalEntityType, User } from 'types';
 
 export const getUserPersonalEntity = (user: User) => {
   const entityObject = user.legalEntities.find((entity) => entity.legalEntity.type === LegalEntityType.Individual);
@@ -31,4 +31,14 @@ export const getUserTitle = (userId: string, entity: LegalEntity) => {
   return entity.users.find((u) => {
     return u.user.id === userId;
   }).title;
+};
+
+export const getUserOfferingsFromEntity = (user: User) => {
+  return user.legalEntities.map((entity) => entity?.legalEntity?.offerings).flat();
+};
+
+export const getEntityManagers = (entity: LegalEntity) => {
+  return entity.users.filter((user) =>
+    user.permissions.includes(LegalEntityPermissionType.Admin || LegalEntityPermissionType.Editor)
+  );
 };

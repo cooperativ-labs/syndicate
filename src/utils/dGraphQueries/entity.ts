@@ -92,6 +92,64 @@ export const ADD_ENTITY_OWNER = gql`
   }
 `;
 
+export const ADD_LEGAL_ENTITY_USER = gql`
+  mutation AddLegalEntityUser(
+    $userId: ID!
+    $currentDate: DateTime!
+    $entityId: ID!
+    $title: String
+    $permissions: [LegalEntityPermissionType!]
+  ) {
+    updateLegalEntity(
+      input: {
+        filter: { id: [$entityId] }
+        set: { lastUpdate: $currentDate, users: { permissions: $permissions, title: $title, user: { id: $userId } } }
+      }
+    ) {
+      legalEntity {
+        id
+        users {
+          user {
+            id
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const REMOVE_LEGAL_ENTITY_USER = gql`
+  mutation RemoveLegalEntityUser($entityId: [ID!], $LegalEntityUserId: ID!, $userId: ID!, $currentDate: DateTime) {
+    updateLegalEntity(
+      input: {
+        filter: { id: $entityId }
+        remove: { users: { id: $LegalEntityUserId } }
+        set: { lastUpdate: $currentDate }
+      }
+    ) {
+      numUids
+      legalEntity {
+        id
+        users {
+          id
+        }
+      }
+    }
+    updateUser(input: { filter: { id: [$userId] }, remove: { legalEntities: { id: $LegalEntityUserId } } }) {
+      numUids
+      user {
+        id
+        legalEntities {
+          id
+        }
+      }
+    }
+    deleteLegalEntityUser(filter: { id: [$LegalEntityUserId] }) {
+      msg
+    }
+  }
+`;
+
 export const UPDATE_PERSONAL_INFORMATION = gql`
   mutation UpdateEntity(
     $currentDate: DateTime!

@@ -20,7 +20,6 @@ const EntityDashboard: FC = () => {
   if (!user) {
     return <></>;
   }
-  console.log(user);
   const entities = user.legalEntities.map((x) => x.legalEntity);
   // const entities = getNonHumanEntities(user);
 

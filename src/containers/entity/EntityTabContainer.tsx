@@ -1,5 +1,6 @@
 import cn from 'classnames';
 
+import DocumentList from '@src/components/offering/documents/DocumentList';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC, useState } from 'react';
@@ -10,14 +11,16 @@ type EntityTabContainerProps = {
   properties?: RealEstateProperty[];
   offerings: Offering[];
   subsidiaries: LegalEntity[];
+  entity: LegalEntity;
 };
 
 const TabOptions = [
   // { value: 'properties', name: 'Properties' },
   { value: 'offerings', name: 'Offerings' },
   { value: 'subsidiaries', name: 'Subsidiaries & SPVs' },
+  { value: 'documents', name: 'Documents' },
 ];
-const EntityTabContainer: FC<EntityTabContainerProps> = ({ properties, offerings, subsidiaries }) => {
+const EntityTabContainer: FC<EntityTabContainerProps> = ({ properties, offerings, subsidiaries, entity }) => {
   const [activeTab, setActiveTab] = useState<string>('offerings');
 
   return (
@@ -42,6 +45,12 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({ properties, offerings
         {activeTab === 'subsidiaries' && (
           <div className="mt-8">
             <EntitiesList entities={subsidiaries} />
+          </div>
+        )}
+        {activeTab === 'subsidiaries' && (
+          <div className="mt-8">
+            <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Documents</h2>
+            <DocumentList documents={entity.documentsOwned} isOfferingManager={false} hideUpload />
           </div>
         )}
       </div>
