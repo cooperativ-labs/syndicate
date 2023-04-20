@@ -120,7 +120,7 @@ export const ADD_LEGAL_ENTITY_USER = gql`
 `;
 
 export const REMOVE_LEGAL_ENTITY_USER = gql`
-  mutation RemoveLegalEntityUser($entityId: [ID!], $LegalEntityUserId: ID!, $userId: ID!, $currentDate: DateTime) {
+  mutation RemoveLegalEntityUser($entityId: [ID!], $LegalEntityUserId: ID!, $currentDate: DateTime) {
     updateLegalEntity(
       input: {
         filter: { id: $entityId }
@@ -132,15 +132,6 @@ export const REMOVE_LEGAL_ENTITY_USER = gql`
       legalEntity {
         id
         users {
-          id
-        }
-      }
-    }
-    updateUser(input: { filter: { id: [$userId] }, remove: { legalEntities: { id: $LegalEntityUserId } } }) {
-      numUids
-      user {
-        id
-        legalEntities {
           id
         }
       }

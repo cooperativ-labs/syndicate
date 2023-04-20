@@ -513,19 +513,19 @@ type WaitlistMember {
 }
 
 type OfferingParticipant @auth (
-					update:{rule: """
-						query($userId: ID!) { 
-								queryOfferingParticipant{
-									offering{
-										offeringEntity{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
-													user(filter: { id: [$userId] }) { id }
-													}
-												}
-											}
-									}
-							}"""
-					}
+					# update:{rule: """
+					# 	query($userId: ID!) { 
+					# 			queryOfferingParticipant{
+					# 				offering{
+					# 					offeringEntity{
+					# 						users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+					# 								user(filter: { id: [$userId] }) { id }
+					# 								}
+					# 							}
+					# 						}
+					# 				}
+					# 		}"""
+					# }
 					
 					delete:{rule: """
 						query($userId: ID!) { 
@@ -895,24 +895,37 @@ type LegalEntityUser
     """
 				}]
   }
-		delete: {and:
-   [{ rule: """
-    query($userId: ID!) {
-      queryLegalEntityUser {
-        user(filter: { id: [$userId] }) {
-          id
-        }
-      }
-    }
-    """
-			 },
-				{ rule: """
-							query {
-								queryLegalEntityUser(filter: {permissions:  {eq: EDITOR}}) {id}
-						}
-    """
-				}]
-  }
+		# delete: {or:
+  #  [{ rule: """
+  #   query($userId: ID!) {
+  #     queryLegalEntityUser {
+  #       user(filter: { id: [$userId] }) {
+  #         id
+  #       }
+  #     }
+  #   }
+  #   """
+		# 	 },
+		# 		{ rule: """
+		# 					query {
+		# 						queryLegalEntityUser(filter: {permissions:  {eq: ADMIN}}) {id}
+		# 				}
+  #   """
+		# 		}]
+  # }
+
+		# 		delete: { rule: """
+  #   query($userId: ID!) {
+  #     queryLegalEntityUser {
+  #       user(filter: { id: [$userId] }) {
+  #         id
+  #       }
+  #     }
+  #   }
+  #   """
+			
+				
+  # }
 )
 
 {

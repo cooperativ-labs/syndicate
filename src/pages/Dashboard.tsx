@@ -27,6 +27,7 @@ const Dashboard: FC = () => {
   if (!user) {
     return <></>;
   }
+
   const participantOfferings = participantData?.queryOfferingParticipant.map((offeringParticipant) => {
     return offeringParticipant.offering;
   });

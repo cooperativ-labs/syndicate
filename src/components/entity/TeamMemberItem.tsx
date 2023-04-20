@@ -27,9 +27,9 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   const makePermissionsChips = (permissions: LegalEntityPermissionType[]) => {
     return permissions.map((permission, i) => {
       const { name, color } = getLegalEntityPermissionOption(permission);
-      const bg = `bg-${color}`;
+      const permissionClass = `bg-${color} rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
       return (
-        <div key={i} className={cn(bg, 'rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold')}>
+        <div key={i} className={cn(permissionClass)}>
           {name}
         </div>
       );

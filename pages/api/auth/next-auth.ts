@@ -13,7 +13,7 @@ const getEndpoint = () => {
     //   return 'https://blue-surf-591466.us-east-1.aws.cloud.dgraph.io/graphql';
     default:
       // return 'http://localhost:8080/graphql';
-      return 'http://172.30.0.4:8080/graphql';
+      return 'http://172.31.0.5:8080/graphql';
   }
 };
 

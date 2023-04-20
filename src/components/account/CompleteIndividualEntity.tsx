@@ -30,7 +30,7 @@ const CompleteIndividualEntity: FC<CompleteIndividualEntityProps> = ({ userInfo,
     setAlerted(true);
   }
 
-  if (data) {
+  if (data && !alerted) {
     setAlerted(true);
     router.reload();
   }

@@ -16,7 +16,7 @@ type TeamMemberListProps = {
 
 const TeamMemberList: FC<TeamMemberListProps> = ({ teamMembers, entityId, currentUserId, isAdmin }) => {
   const [removeMember, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_LEGAL_ENTITY_USER);
-
+  
   if (deleteError) {
     throw new Error(deleteError.message);
   }
