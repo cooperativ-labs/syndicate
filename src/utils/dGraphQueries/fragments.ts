@@ -9,7 +9,7 @@ export const CORE_LINKED_ACCOUNT_FIELDS = gql`
     type
     verified
     hidden
-    owner {
+    organization {
       id
     }
   }
@@ -28,6 +28,10 @@ export const CORE_ADDRESS_FIELDS = gql`
     country
     lat
     lng
+    owner {
+      id
+      legalName
+    }
   }
 `;
 
@@ -67,7 +71,6 @@ export const CORE_APPLICATION_FIELDS = gql`
   fragment applicationData on InvestorApplication {
     id
     creationDate
-
     applicationDoc {
       ...documentData
     }
@@ -86,7 +89,7 @@ export const CORE_PURCHASE_REQUEST_FIELDS = gql`
     }
     purchaser {
       id
-      fullName
+      legalName
     }
     purchaseDocument {
       ...documentData
@@ -188,9 +191,11 @@ export const CORE_RE_PROPERTY_FIELDS = gql`
       offerings {
         id
       }
-      users {
-        user {
-          id
+      organization {
+        users {
+          user {
+            id
+          }
         }
       }
     }
@@ -222,10 +227,6 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
     permitted
     name
     nonUS
-    entity {
-      id
-      fullName
-    }
     externalId
     minPledge
     maxPledge
@@ -242,7 +243,6 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
 `;
 
 export const CORE_ENTITY_FIELDS = gql`
-  ${CORE_LINKED_ACCOUNT_FIELDS}
   ${CORE_ADDRESS_FIELDS}
   ${CORE_DOCUMENT_FIELDS}
   ${CORE_RE_PROPERTY_FIELDS}
@@ -253,34 +253,31 @@ export const CORE_ENTITY_FIELDS = gql`
     id
     taxId
     displayName
-    fullName
-    description
+    legalName
+    supplementaryLegalText
     jurisdiction
     operatingCurrency {
       code
     }
-    profileImage
-    bannerImage
     supplementaryLegalText
-    website
-    publicFacing
-    users {
+    organization {
       id
-      title
-      permissions
-      user {
+      name
+      users {
         id
-        name
-        email
+        permissions
+        user {
+          id
+          name
+          email
+        }
       }
     }
     owners {
       id
-      fullName
+      legalName
       displayName
       supplementaryLegalText
-      profileImage
-      website
       addresses {
         ...addressData
       }
@@ -288,8 +285,7 @@ export const CORE_ENTITY_FIELDS = gql`
     subsidiaries {
       id
       displayName
-      fullName
-      description
+      legalName
       jurisdiction
       offerings {
         id
@@ -304,25 +300,11 @@ export const CORE_ENTITY_FIELDS = gql`
         }
       }
     }
-    linkedAccounts {
-      ...linkedAccountsData
-    }
+
     addresses {
       ...addressData
     }
-    expertise
-    interests
-    phone
-    emailAddresses {
-      id
-      address
-      name
-      description
-      isPublic
-      owner {
-        id
-      }
-    }
+
     walletAddresses {
       id
       address
@@ -459,13 +441,61 @@ export const CORE_OFFERING_FIELDS = gql`
   }
 `;
 
+export const CORE_ORGANIZATION_FIELDS = gql`
+  ${CORE_LINKED_ACCOUNT_FIELDS}
+  ${CORE_OFFERING_FIELDS}
+  fragment organizationData on Organization {
+    id
+    name
+    description
+    logo
+    bannerImage
+    website
+    isPublic
+    phone
+    country
+    linkedAccounts {
+      ...linkedAccountsData
+    }
+    emailAddresses {
+      id
+      address
+      name
+      description
+      isPublic
+      organization {
+        id
+      }
+    }
+    users {
+      id
+      permissions
+      user {
+        id
+        name
+        email
+      }
+    }
+    legalEntities {
+      id
+      legalName
+      offerings {
+        ...offeringData
+      }
+      organization {
+        id
+      }
+    }
+  }
+`;
+
 export const CORE_USER_FIELDS = gql`
   ${CORE_ENTITY_FIELDS}
   fragment userData on User {
     id
     id
-    legalEntities {
-      legalEntity {
+    organizations {
+      organization {
         ...entityData
       }
     }

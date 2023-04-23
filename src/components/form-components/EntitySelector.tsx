@@ -30,15 +30,15 @@ const EntitySelector: FC<EntitySelectorProps> = ({
       if (excludeIndividuals) {
         if (entityNotHuman(entity.legalEntity)) {
           return (
-            <option key={i} value={entity?.legalEntity.id}>
-              {entity?.legalEntity.fullName}
+            <option key={i} value={entity?.id}>
+              {entity?.legalName}
             </option>
           );
         }
       } else {
         return (
-          <option key={i} value={entity?.legalEntity.id}>
-            {entity?.legalEntity.fullName}
+          <option key={i} value={entity?.id}>
+            {entity?.legalName}
           </option>
         );
       }

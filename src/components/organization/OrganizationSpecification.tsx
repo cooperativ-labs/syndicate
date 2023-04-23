@@ -12,11 +12,11 @@ import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enu
 
 export type EditSelectionType =
   | 'displayName'
-  | 'legalName'
+  | 'fullName'
   | 'jurisdiction'
   | 'currency'
   | 'taxId'
-  | 'supplementaryLegalText'
+  | 'description'
   | 'none';
 
 export const changeForm = (
@@ -25,28 +25,28 @@ export const changeForm = (
 
   setEditOn: (editOn: EditSelectionType) => void,
   handleChange: (values: {
-    legalName: string;
+    fullName: string;
     jurisdiction?: string;
     operatingCurrency: CurrencyCode;
     taxId?: string;
-    supplementaryLegalText?: string;
+    description?: string;
   }) => void
 ) => {
-  const { displayName, legalName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
+  const { displayName, fullName, jurisdiction, operatingCurrency, taxId, description } = entity;
   return (
     <Formik
       initialValues={{
         displayName: displayName,
-        legalName: legalName,
+        fullName: fullName,
         jurisdiction: jurisdiction,
         operatingCurrency: operatingCurrency.code,
         taxId: taxId,
-        supplementaryLegalText: supplementaryLegalText,
+        description: description,
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
-        if (!values.legalName) {
-          errors.legalName = 'Please include the legal name of this syndication.';
+        if (!values.fullName) {
+          errors.fullName = 'Please include the legal name of this syndication.';
         }
         if (!values.jurisdiction) {
           errors.jurisdiction = 'Please include the legal name of this syndication.';
@@ -66,13 +66,13 @@ export const changeForm = (
       {({ isSubmitting }) => (
         <Form
           className={cn(
-            itemType !== 'supplementaryLegalText' && 'md:grid',
+            itemType !== 'description' && 'md:grid',
             'flex flex-col  grid-cols-5 w-full items-center gap-2 my-4'
           )}
         >
           <div className="w-full md:col-span-3">
             {itemType === 'displayName' && <Input className={' bg-opacity-0'} required name="displayName" />}
-            {itemType === 'legalName' && <Input className={' bg-opacity-0'} required name="legalName" />}
+            {itemType === 'fullName' && <Input className={' bg-opacity-0'} required name="fullName" />}
 
             {itemType === 'jurisdiction' && <Input className={' bg-opacity-0'} required name="jurisdiction" />}
             {itemType === 'currency' && (
@@ -87,8 +87,8 @@ export const changeForm = (
               </Select>
             )}
             {itemType === 'taxId' && <Input className={' bg-opacity-0'} required name="taxId" placeholder="Tax ID" />}
-            {itemType === 'supplementaryLegalText' && (
-              <Input className={' bg-opacity-0 w-full'} required name="supplementaryLegalText" textArea />
+            {itemType === 'description' && (
+              <Input className={' bg-opacity-0 w-full'} required name="description" textArea />
             )}
           </div>
           <Button
@@ -121,27 +121,27 @@ type EntitySpecificationsProps = {
 
 const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityOwner, updateLegalEntity }) => {
   const [editOn, setEditOn] = useState<EditSelectionType>('none');
-  const { id, legalName, displayName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
+  const { id, fullName, displayName, jurisdiction, operatingCurrency, taxId, description } = entity;
 
   const handleChange = async (values: {
-    legalName: string;
+    fullName: string;
     jurisdiction: string;
     operatingCurrency: CurrencyCode;
     taxId: string;
-    supplementaryLegalText: string;
+    description: string;
   }) => {
-    const { legalName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = values;
+    const { fullName, jurisdiction, operatingCurrency, taxId, description } = values;
     try {
       updateLegalEntity({
         variables: {
           currentDate: currentDate,
           entityId: id,
           displayName: displayName,
-          legalName: legalName,
+          fullName: fullName,
           jurisdiction: jurisdiction,
           operatingCurrency: operatingCurrency,
           taxId: taxId,
-          supplementaryLegalText: supplementaryLegalText,
+          description: description,
         },
       });
       setEditOn('none');
@@ -154,10 +154,10 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
     <>
       <ClickToEditItem
         label="Legal name"
-        currenValue={legalName}
-        form={changeForm('legalName', entity, setEditOn, handleChange)}
+        currenValue={fullName}
+        form={changeForm('fullName', entity, setEditOn, handleChange)}
         editOn={editOn}
-        itemType="legalName"
+        itemType="fullName"
         isEntityOwner={isEntityOwner}
         setEditOn={setEditOn}
       />
@@ -189,11 +189,11 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="supplementaryLegalText"
-        currenValue={supplementaryLegalText}
-        form={changeForm('supplementaryLegalText', entity, setEditOn, handleChange)}
+        label="Description"
+        currenValue={description}
+        form={changeForm('description', entity, setEditOn, handleChange)}
         editOn={editOn}
-        itemType="supplementaryLegalText"
+        itemType="description"
         isEntityOwner={isEntityOwner}
         setEditOn={setEditOn}
       />

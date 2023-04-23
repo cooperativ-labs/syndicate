@@ -10,7 +10,7 @@ import {
   OfferingStage,
   DocumentFormat,
   OfferingTabSection,
-  LegalEntityPermissionType,
+  OrganizationPermissionType,
 } from 'types';
 
 // ===== PROFILE ======
@@ -66,14 +66,14 @@ export const getEntityTypeOptions = (nonHuman: boolean) => {
   return [{ value: LegalEntityType.Individual, name: 'Individual' }];
 };
 
-export const legalEntityPermissionOptions = [
-  { value: LegalEntityPermissionType.Admin, name: 'Admin', color: 'blue-500' },
-  { value: LegalEntityPermissionType.Editor, name: 'Editor', color: 'emerald-600' },
-  { value: LegalEntityPermissionType.Viewer, name: 'Viewer', color: 'orange-600' },
+export const organizationPermissionOptions = [
+  { value: OrganizationPermissionType.Admin, name: 'Admin', color: 'blue-500' },
+  { value: OrganizationPermissionType.Editor, name: 'Editor', color: 'emerald-600' },
+  { value: OrganizationPermissionType.Viewer, name: 'Viewer', color: 'orange-600' },
 ];
 
-export const getLegalEntityPermissionOption = (permission: LegalEntityPermissionType) => {
-  return legalEntityPermissionOptions.find((option) => (option.value === permission ? option : null));
+export const getOrganizationPermissionOption = (permission: OrganizationPermissionType) => {
+  return organizationPermissionOptions.find((option) => (option.value === permission ? option : null));
 };
 
 export const docFormatOptions = [

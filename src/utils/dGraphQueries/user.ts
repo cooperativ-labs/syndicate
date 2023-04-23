@@ -4,6 +4,7 @@ import {
   CORE_ENTITY_FIELDS,
   SMART_CONTRACT_FIELDS,
   CORE_INVESTMENT_OFFERING_FIELDS,
+  CORE_ORGANIZATION_FIELDS,
 } from './fragments';
 
 export const GET_USERS = gql`
@@ -34,19 +35,16 @@ export const GET_USER_FROM_EMAIL = gql`
 `;
 
 export const GET_USER = gql`
-  ${CORE_ENTITY_FIELDS}
+  ${CORE_ORGANIZATION_FIELDS}
   ${SMART_CONTRACT_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
   query GetUser($id: ID!) {
     queryUser(filter: { id: [$id] }) {
       id
       name
-      legalEntities {
-        legalEntity {
-          ...entityData
-          smartContracts {
-            ...smartContractData
-          }
+      organizations {
+        organization {
+          ...organizationData
         }
       }
     }
@@ -169,6 +167,19 @@ export const ADD_USER_WITH_WALLET = gql`
           }
         }
       ]
+    ) {
+      user {
+        ...userData
+      }
+    }
+  }
+`;
+
+export const UPDATE_USER = gql`
+  ${CORE_USER_FIELDS}
+  mutation UpdateUser($id: ID!, $currentDate: DateTime!, $name: String!, $email: String, $image: String) {
+    updateUser(
+      input: { filter: { id: [$id] }, set: { name: $name, email: $email, image: $image, lastUpdate: $currentDate } }
     ) {
       user {
         ...userData

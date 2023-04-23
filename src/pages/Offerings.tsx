@@ -1,24 +1,25 @@
-import CreateOffering from '@src/components/offering/CreateOffering';
-import EnsureProfileCompletion from '@src/containers/EnsureProfileCompletion';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import OfferingsList from '@src/components/offering/OfferingsList';
-import React, { FC, useContext } from 'react';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { getUserOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import React, { FC } from 'react';
+
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import router from 'next/router';
+import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 
 const Offerings: FC = () => {
   const { data: session, status } = useSession();
-  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
-  const user = userData?.queryUser[0];
+  const orgId = router.query.organizationId;
+  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const organization = organizationData?.getOrganization;
 
-  if (!user) {
+  if (!organization) {
     return <></>;
   }
 
-  const offerings = getUserOfferingsFromEntity(user);
+  const offerings = getOrgOfferingsFromEntity(organization);
 
   const hasOfferings = offerings?.length > 0;
   return (
@@ -27,19 +28,19 @@ const Offerings: FC = () => {
         <section>
           {hasOfferings ? (
             <>
-              <OfferingsList offerings={offerings} />
+              <OfferingsList offerings={offerings} organizationId={organization} />
               <MajorActionButton className="w-full md:w-96" link="offerings/create-offering">
                 Create another Offering
               </MajorActionButton>
             </>
           ) : (
             <LimitedWidthSection center>
-              <EnsureProfileCompletion
+              {/* <EnsureProfileCompletion
                 user={user}
                 explainerText="In order to create an offering, we first need some personal information"
               >
                 <CreateOffering />
-              </EnsureProfileCompletion>
+              </EnsureProfileCompletion> */}
             </LimitedWidthSection>
           )}
         </section>

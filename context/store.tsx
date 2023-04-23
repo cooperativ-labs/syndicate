@@ -5,20 +5,20 @@ export interface ApplicationStoreProps {
   ManagerSidebarOpen: boolean;
   WalletModalOpen: boolean;
   WalletActionLockModalOpen: boolean;
+  CreateOrgModalOpen: boolean;
   PageIsLoading: boolean;
   ProfilePrivateModalOn: boolean;
   sidebarOpen: boolean;
   noticesOpen: boolean;
   searchText: string;
-  project: any;
   dispatch: React.Dispatch<any>;
 }
 
 const initialState: ApplicationStoreProps = {
-  project: {},
   ManagerSidebarOpen: false,
   WalletModalOpen: false,
   WalletActionLockModalOpen: false,
+  CreateOrgModalOpen: false,
   PageIsLoading: false,
   ProfilePrivateModalOn: false,
   sidebarOpen: false,
@@ -37,6 +37,8 @@ const StateProvider = ({ children }) => {
         return { ...state, WalletModalOpen: !state.WalletModalOpen };
       case 'TOGGLE_WALLET_ACTION_LOCK':
         return { ...state, WalletActionLockModalOpen: !state.WalletActionLockModalOpen };
+      case 'TOGGLE_CREATE_ORG_MODAL':
+        return { ...state, CreateOrgModalOpen: !state.CreateOrgModalOpen };
       case 'TOGGLE_LOADING_PAGE_OFF':
         return { ...state, PageIsLoading: false };
       case 'TOGGLE_LOADING_PAGE_ON':

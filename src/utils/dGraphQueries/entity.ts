@@ -14,12 +14,9 @@ export const ADD_ENTITY = gql`
   ${CORE_ENTITY_FIELDS}
   mutation AddLegalEntity(
     $currentDate: DateTime!
-    $userId: ID!
-    $fullName: String!
-    $displayName: String!
+    $organizationId: ID!
+    $legalName: String!
     $type: LegalEntityType!
-    $image: String
-    $website: String
     $jurisdiction: String!
     $operatingCurrency: CurrencyCode!
     $supLegalText: String
@@ -31,20 +28,15 @@ export const ADD_ENTITY = gql`
     $stateProvince: String
     $postalCode: String
     $country: String!
-    $userTitle: String
   ) {
     addLegalEntity(
       input: [
         {
           creationDate: $currentDate
           lastUpdate: $currentDate
-          users: { permissions: ADMIN, user: { id: $userId }, title: $userTitle }
+          organization: { id: $organizationId }
           type: $type
-          displayName: $displayName
-          fullName: $fullName
-          publicFacing: false
-          profileImage: $image
-          website: $website
+          legalName: $legalName
           jurisdiction: $jurisdiction
           operatingCurrency: { code: $operatingCurrency }
           supplementaryLegalText: $supLegalText
@@ -63,9 +55,12 @@ export const ADD_ENTITY = gql`
     ) {
       legalEntity {
         ...entityData
-        users {
-          user {
-            id
+        organization {
+          id
+          users {
+            user {
+              id
+            }
           }
         }
       }
@@ -80,7 +75,7 @@ export const ADD_ENTITY_OWNER = gql`
     ) {
       legalEntity {
         id
-        fullName
+        legalName
         subsidiaries {
           id
           offerings {
@@ -92,109 +87,12 @@ export const ADD_ENTITY_OWNER = gql`
   }
 `;
 
-export const ADD_LEGAL_ENTITY_USER = gql`
-  mutation AddLegalEntityUser(
-    $userId: ID!
-    $currentDate: DateTime!
-    $entityId: ID!
-    $title: String
-    $permission: [LegalEntityPermissionType!]
-  ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: [$entityId] }
-        set: { lastUpdate: $currentDate, users: { permissions: $permission, title: $title, user: { id: $userId } } }
-      }
-    ) {
-      legalEntity {
-        id
-        users {
-          permissions
-          user {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const REMOVE_LEGAL_ENTITY_USER = gql`
-  mutation RemoveLegalEntityUser($entityId: [ID!], $LegalEntityUserId: ID!, $currentDate: DateTime) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        remove: { users: { id: $LegalEntityUserId } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      legalEntity {
-        id
-        users {
-          id
-        }
-      }
-    }
-    deleteLegalEntityUser(filter: { id: [$LegalEntityUserId] }) {
-      msg
-    }
-  }
-`;
-
-export const UPDATE_PERSONAL_INFORMATION = gql`
-  mutation UpdateEntity(
-    $currentDate: DateTime!
-    $entityId: [ID!]
-    $fullName: String!
-    $displayName: String!
-    $image: String
-    $publicFacing: Boolean
-    $description: String
-    $expertiseAdd: [String]
-    $expertiseRemove: [String]
-    $interestsAdd: [String]
-    $interestsRemove: [String]
-  ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        remove: { interests: $interestsRemove, expertise: $expertiseRemove }
-        set: {
-          lastUpdate: $currentDate
-          displayName: $displayName
-          fullName: $fullName
-          profileImage: $image
-          publicFacing: $publicFacing
-          description: $description
-          interests: $interestsAdd
-          expertise: $expertiseAdd
-        }
-      }
-    ) {
-      legalEntity {
-        id
-        fullName
-        displayName
-        publicFacing
-        description
-        expertise
-        interests
-      }
-    }
-  }
-`;
-
 export const UPDATE_ENTITY_INFORMATION = gql`
   mutation UpdateEntity(
     $currentDate: DateTime!
     $entityId: [ID!]
-    $fullName: String!
+    $legalName: String!
     $displayName: String!
-    $image: String
-    $bannerImage: String
-    $publicFacing: Boolean
-    $description: String
     $jurisdiction: String!
     $operatingCurrency: CurrencyCode!
     $taxId: String
@@ -205,11 +103,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
         set: {
           lastUpdate: $currentDate
           displayName: $displayName
-          fullName: $fullName
-          profileImage: $image
-          bannerImage: $bannerImage
-          publicFacing: $publicFacing
-          description: $description
+          legalName: $legalName
           jurisdiction: $jurisdiction
           operatingCurrency: { code: $operatingCurrency }
           taxId: $taxId
@@ -218,13 +112,9 @@ export const UPDATE_ENTITY_INFORMATION = gql`
     ) {
       legalEntity {
         id
-        fullName
+        legalName
         displayName
-        publicFacing
-        description
         jurisdiction
-        profileImage
-        bannerImage
         operatingCurrency {
           code
         }
@@ -237,15 +127,8 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
   mutation UpdateEntity(
     $currentDate: DateTime!
     $entityId: [ID!]
-    $fullName: String!
+    $legalName: String!
     $displayName: String!
-    $profileImage: String
-    $publicFacing: Boolean
-    $description: String
-    $expertiseAdd: [String]
-    $expertiseRemove: [String]
-    $interestsAdd: [String]
-    $interestsRemove: [String]
     $jurisdiction: String!
     $addressLabel: String
     $addressLine1: String!
@@ -259,17 +142,11 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
     updateLegalEntity(
       input: {
         filter: { id: $entityId }
-        remove: { interests: $interestsRemove, expertise: $expertiseRemove }
         set: {
           lastUpdate: $currentDate
           displayName: $displayName
-          fullName: $fullName
-          profileImage: $profileImage
-          publicFacing: $publicFacing
+          legalName: $legalName
           jurisdiction: $jurisdiction
-          description: $description
-          interests: $interestsAdd
-          expertise: $expertiseAdd
           addresses: {
             label: $addressLabel
             line1: $addressLine1
@@ -285,12 +162,8 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
     ) {
       legalEntity {
         id
-        fullName
+        legalName
         displayName
-        publicFacing
-        description
-        expertise
-        interests
       }
     }
   }
@@ -338,10 +211,12 @@ export const ADD_ENTITY_ADDRESS = gql`
           label
           line1
         }
-        users {
-          id
-          user {
+        organization {
+          users {
             id
+            user {
+              id
+            }
           }
         }
       }
@@ -408,129 +283,7 @@ export const REMOVE_ENTITY_ADDRESS = gql`
   }
 `;
 
-// USER EMAIL
-
-export const ADD_ENTITY_EMAIL = gql`
-  mutation AddUserEmail($entityId: ID!, $address: String!, $name: String, $description: String, $isPublic: Boolean) {
-    addEmailAddress(
-      input: {
-        address: $address
-        owner: { id: $entityId }
-        name: $name
-        description: $description
-        isPublic: $isPublic
-      }
-    ) {
-      emailAddress {
-        address
-        owner {
-          id
-          emailAddresses {
-            address
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const REMOVE_ENTITY_EMAIL = gql`
-  mutation RemoveEntityEmail($entityId: [ID!], $emailAddress: String!, $currentDate: DateTime) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        remove: { emailAddresses: { address: $emailAddress } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      legalEntity {
-        id
-        emailAddresses {
-          address
-        }
-      }
-    }
-    deleteEmailAddress(filter: { address: { eq: $emailAddress } }) {
-      msg
-    }
-  }
-`;
-
-export const UPDATE_EMAIL = gql`
-  mutation UpdateUserEmail($address: String!, $name: String, $description: String, $isPublic: Boolean) {
-    updateEmailAddress(
-      input: {
-        filter: { address: { eq: $address } }
-        set: { name: $name, description: $description, isPublic: $isPublic }
-      }
-    ) {
-      emailAddress {
-        id
-        name
-        address
-        isPublic
-        name
-        description
-        owner {
-          id
-        }
-      }
-    }
-  }
-`;
-
-//USER SOCIAL
-
-export const ADD_ENTITY_SOCIAL_ACCOUNTS = gql`
-  mutation ($entityId: [ID!], $url: String!, $type: LinkedAccountType!, $currentDate: DateTime!) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        set: { linkedAccounts: { url: $url, type: $type }, lastUpdate: $currentDate }
-      }
-    ) {
-      legalEntity {
-        id
-        displayName
-        fullName
-        linkedAccounts {
-          id
-          url
-          type
-          verified
-          hidden
-          owner {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const REMOVE_ENTITY_SOCIAL_ACCOUNT = gql`
-  mutation RemoveEntitySocialAccount($entityId: [ID!], $socialId: ID!, $currentDate: DateTime!) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        remove: { linkedAccounts: { id: $socialId } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      legalEntity {
-        id
-        linkedAccounts {
-          id
-        }
-      }
-    }
-    deleteLinkedAccount(filter: { id: [$socialId] }) {
-      msg
-    }
-  }
-`;
+// ENTITY WALLETS
 
 export const UPDATE_ENTITY_WALLETS = gql`
   mutation UpdateEntityWallets(

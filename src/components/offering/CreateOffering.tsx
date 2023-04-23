@@ -14,23 +14,20 @@ import { ADD_OFFERING, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries
 import { investmentOfferingTypeOptions } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { ReachContext } from '@src/SetReachContext';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { Organization } from 'types';
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
-const CreateOffering: FC = () => {
-  const { data: session, status } = useSession();
-  const { data: userData, refetch } = useQuery(GET_USER, { variables: { id: session.user.id } });
-  const user = userData?.queryUser[0];
+type CreateOfferingType = {
+  organization: Organization;
+  refetch: () => void;
+};
 
-  const { userWalletAddress } = useContext(ReachContext);
-
+const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   const [entityModal, setEntityModal] = useState<boolean>(false);
   const [addOffering, { data, error }] = useMutation(ADD_OFFERING);
-  // const [addOfferingParticipant, { data: participantData, error: participantError }] =
-  //   useMutation(ADD_OFFERING_PARTICIPANT);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
@@ -40,12 +37,8 @@ const CreateOffering: FC = () => {
     setEntityModal(false);
   };
 
-  if (!user) {
-    return <></>;
-  }
-
-  const entityOptions = [...user.legalEntities].reverse();
-  const spvEntityOptions = entityOptions.filter((entity) => entity.legalEntity.offerings.length === 0);
+  const entityOptions = [...organization.legalEntities].reverse();
+  const spvEntityOptions = entityOptions.filter((entity) => entity.offerings.length === 0);
 
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -82,10 +75,7 @@ const CreateOffering: FC = () => {
   if (data && !alerted) {
     const offeringId = data?.addOffering.offering[0].id;
     setAlerted(true);
-    setButtonStep('confirmed');
-    setTimeout(() => {
-      router.push(`/offerings/${offeringId}`);
-    }, 1000);
+    router.push(`/offerings/${offeringId}`);
   }
 
   const handleSubmit = async (values) => {
@@ -93,13 +83,10 @@ const CreateOffering: FC = () => {
       await addOffering({
         variables: {
           currentDate: currentDate,
-          userId: user.id,
           managingEntityId: values.managingEntityId,
           offeringEntityId: values.offeringEntityId,
           name: values.name,
           image: '/assets/images/logos/company-placeholder.jpeg',
-          // shortDescription: values.shortDescription,
-          // website: values.website,
           brandColor: '#275A8F',
         },
       });
@@ -115,25 +102,20 @@ const CreateOffering: FC = () => {
         onClose={() => setEntityModal(false)}
         title={`Link a legal entity to your offering.`}
       >
-        <CreateEntity actionOnCompletion={entitySubmissionCompletion} />
+        <CreateEntity organization={organization} actionOnCompletion={entitySubmissionCompletion} />
       </FormModal>
       <Formik
         initialValues={{
           managingEntityId: '',
           offeringEntityId: '',
           name: '',
-          website: '',
-          investmentType: '',
-          shortDescription: '',
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
           if (!values.name) {
             errors.name = 'Please set an name';
           }
-          if (!values.investmentType) {
-            errors.investmentType = 'Please select an investment type';
-          }
+
           if (values.managingEntityId === values.offeringEntityId) {
             errors.offeringEntityId = 'The General Partner and the offering entity cannot be the same.';
           }
@@ -164,21 +146,6 @@ const CreateOffering: FC = () => {
               excludeIndividuals
               withAdd
             />
-            <Select
-              required
-              className={defaultFieldDiv}
-              labelText="What type of asset are you offering"
-              name="investmentType"
-            >
-              <option value="">Select an asset type</option>
-              {investmentOfferingTypeOptions.map((type, i) => {
-                return (
-                  <option key={i} value={type.value}>
-                    {type.name}
-                  </option>
-                );
-              })}
-            </Select>
             <Input
               className={defaultFieldDiv}
               required
@@ -186,20 +153,6 @@ const CreateOffering: FC = () => {
               name="name"
               placeholder="e.g. Cosy Apartments"
             />
-            {/* <Input
-              className={fieldDiv}
-              textArea
-              labelText="Short Description (160 Characters)"
-              name="shortDescription"
-              placeholder="e.g. This is a set of seven luxury apartments."
-            />
-            <Input
-              className={fieldDiv}
-              labelText="Offering website (optional)"
-              name="website"
-              placeholder="https://www.awesome.com"
-            /> */}
-
             <FormButton
               type="submit"
               disabled={isSubmitting}

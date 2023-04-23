@@ -3,13 +3,14 @@ import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
-import React, { FC, useContext } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import WalletChooserModal from './wallet/WalletChooserModal';
 import WithAuthentication from './WithAuthentication';
 import { ApplicationStoreProps, store } from '@context/store';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { useQuery } from '@apollo/client';
+import { useApolloClient } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import NewOrganizationModal from './NewOrganizationModal';
 
 // const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
@@ -19,10 +20,29 @@ type ManagerProps = {
 };
 
 const Manager: FC<ManagerProps> = ({ children }) => {
+  const { data: session, status } = useSession();
+  const apolloClient = useApolloClient();
+  const [organizations, setOrganizations] = useState([]);
+
+  useEffect(() => {
+    apolloClient
+      .query({
+        query: GET_USER,
+        variables: { id: session?.user.id },
+      })
+      .then((response) => {
+        setOrganizations(response.data.queryUser[0]?.organizations);
+      });
+  }, [session, GET_USER, setOrganizations, apolloClient]);
+
+  const _organizations = organizations.map((org) => {
+    return org.organization;
+  });
+
   return (
     <div className="flex">
       <div className="flex z-30 md:z-10 min-h-screen">
-        <ManagerSideBar />
+        <ManagerSideBar organizations={_organizations} />{' '}
       </div>
       <div className="md:mx-6 w-full">
         <NavBar authenticatedUser />
@@ -53,6 +73,7 @@ const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
       <div className={cn(BackgroundGradient, 'min-h-full w-screen min-h-screen')}>
         <WalletChooserModal />
         <WithAuthentication>
+          <NewOrganizationModal />
           {/* <WalletActionLockModel /> */}
           {PageIsLoading && <LoadingModal />}
           <AlertPopup text="This is an alpha version. Please use with caution." />

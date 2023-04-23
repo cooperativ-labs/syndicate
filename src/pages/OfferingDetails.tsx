@@ -77,11 +77,12 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   const hasContract = !!contractManager;
 
-  //Is the user a manager of the legal entity that owns the offering
+  //Is the user an Admin or Editor of the organization that controls the legal entity that owns the offering
+  const offeringManagers = getEntityManagers(offeringEntity);
+  const currentOrganizationUserManager = offeringManagers?.find((user) => user.user.id === userId)?.user;
 
-  const offeringManager = getEntityManagers(offeringEntity);
+  const isOfferingManager = !!currentOrganizationUserManager;
 
-  const isOfferingManager = !!offeringManager;
   const isContractOwner = contractManager && contractManager === userWalletAddress;
   const contractOwnerMatches = isContractOwner === isOfferingManager;
   const offeringDocs = getDocumentsOfType(offering.documents, DocumentType.OfferingDocument);

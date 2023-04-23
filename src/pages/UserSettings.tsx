@@ -10,7 +10,7 @@ import WalletAddressList from '@src/components/WalletAddressList';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import { ADD_ENTITY_EMAIL } from '@src/utils/dGraphQueries/entity';
+
 import { getUserPersonalEntity } from '@src/utils/helpersUserAndEntity';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
@@ -22,7 +22,7 @@ const UserSettings: FC = () => {
 
   const [alerted, setAlerted] = useState<boolean>(false);
 
-  const [addEntityEmail, { data, error }] = useMutation(ADD_ENTITY_EMAIL);
+  // const [addEntityEmail, { data, error }] = useMutation(ADD_ENTITY_EMAIL);
   const [localStorage, setLocalStorage] = useState(undefined);
 
   useEffect(() => {
@@ -33,33 +33,31 @@ const UserSettings: FC = () => {
     return <Loading />;
   }
 
-  const userInfo = getUserPersonalEntity(user);
+  // if (error && !alerted) {
+  //   alert('Oops. Looks like something went wrong');
+  //   setAlerted(true);
+  // }
 
-  if (error && !alerted) {
-    alert('Oops. Looks like something went wrong');
-    setAlerted(true);
-  }
+  // const emailForSignIn = localStorage?.getItem('emailForSignIn');
+  // const addEmailToDatabase = (email) => {
+  //   try {
+  //     addEntityEmail({
+  //       variables: {
+  //         entityId: userInfo.id,
+  //         address: email,
+  //         isPublic: true,
+  //       },
+  //     });
 
-  const emailForSignIn = localStorage?.getItem('emailForSignIn');
-  const addEmailToDatabase = (email) => {
-    try {
-      addEntityEmail({
-        variables: {
-          entityId: userInfo.id,
-          address: email,
-          isPublic: true,
-        },
-      });
+  //     window.localStorage.removeItem('emailForSignIn');
+  //   } catch (err) {
+  //     return err;
+  //   }
+  // };
 
-      window.localStorage.removeItem('emailForSignIn');
-    } catch (err) {
-      return err;
-    }
-  };
-
-  if (emailForSignIn) {
-    addEmailToDatabase(emailForSignIn);
-  }
+  // if (emailForSignIn) {
+  //   addEmailToDatabase(emailForSignIn);
+  // }
 
   if (!user) {
     return <Loading />;
@@ -69,9 +67,9 @@ const UserSettings: FC = () => {
     <div data-test="component-landing" className="flex flex-col w-full h-full mt-4">
       <div>
         <LimitedWidthSection center>
-          <SettingsUserPersonalInfo userInfo={userInfo} />
+          <SettingsUserPersonalInfo user={user} />
         </LimitedWidthSection>
-        <LimitedWidthSection center>
+        {/* <LimitedWidthSection center>
           <h2 className="text-xl text-blue-900 font-semibold mb-4">Wallet Addresses</h2>
           <WalletAddressList walletAddresses={userInfo.walletAddresses} withEdit />
         </LimitedWidthSection>
@@ -84,7 +82,7 @@ const UserSettings: FC = () => {
           <h2 className="text-xl text-blue-900 font-semibold mb-4">Social Accounts</h2>
           <LinkedAccountsList linkedAccounts={userInfo.linkedAccounts} />
           <SettingsSocial entity={userInfo} />
-        </LimitedWidthSection>
+        </LimitedWidthSection> */}
       </div>
     </div>
   );

@@ -3,41 +3,30 @@ import AdditionalApplicationFields from './AdditionalApplicationFields';
 import AdvisorFields from './AdvisorFields';
 import Checkbox from '@src/components/form-components/Checkbox';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import CreateAddress from '@src/components/address/CreateAddress';
-import CreateEntity from '../../entity/CreateEntity';
 import CustomAddressAutocomplete from '@src/components/form-components/CustomAddressAutocomplete';
 import Datepicker from '@src/components/form-components/Datepicker';
-import EntitySelector from '../../form-components/EntitySelector';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
 import FormCard from '../../cards/FormCard';
-import FormModal from '@src/containers/FormModal';
 import Input, { defaultFieldDiv, defaultFieldLabelClass } from '@src/components/form-components/Inputs';
 import InvestorApplicationPledgeFields from './InvestorApplicationPledgeFields';
-import NonInput from '@src/components/form-components/NonInput';
 import PrimaryApplicationFields from './PrimaryApplicationFields';
 import PurchaserSummaryDisplay from './PurchaserSummaryDisplay';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import Select from '@src/components/form-components/Select';
 import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/dGraphQueries/offering';
-import { Address, LegalEntity, Offering } from 'types';
-import { checkDateInPast, getHumanDate } from '@src/utils/helpersGeneral';
+import { Offering } from 'types';
+import { checkDateInPast } from '@src/utils/helpersGeneral';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GeneratedApplicationText } from './SummaryGenerator';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { getSelectedAddressFromEntity, getSelectedEntity } from '@src/utils/helpersUserAndEntity';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { loadStdlib } from '@reach-sh/stdlib';
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ReachContext } from '@src/SetReachContext';
 import { setChainId } from '@src/web3/connectors';
-import { useAsyncFn } from 'react-use';
-import { useMutation, useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 
 type InvestorApplicationFormProps = {
@@ -527,7 +516,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                   <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
                     <LoadingButtonText
                       state={buttonStep}
-                      idleText={`Apply to become a ${offering.offeringEntity.fullName} investor`}
+                      idleText={`Apply to become a ${offering.offeringEntity.legalName} investor`}
                       submittingText="Applying..."
                       step2Text="Setting distribution token..."
                       confirmedText="Confirmed!"

@@ -24,7 +24,7 @@ export const ADD_OFFERING = gql`
           brandColor: $brandColor
           website: $website
           image: $image
-          offeringEntity: { id: $offeringEntityId, profileImage: $image }
+          offeringEntity: { id: $offeringEntityId }
         }
       ]
     ) {
@@ -40,7 +40,7 @@ export const ADD_OFFERING = gql`
     ) {
       legalEntity {
         id
-        fullName
+        legalName
         subsidiaries {
           id
           offerings {
@@ -295,10 +295,6 @@ export const GET_OFFERING_PARTICIPANT = gql`
     queryOfferingParticipant(filter: { walletAddress: { alloftext: $walletAddress } }) {
       id
       name
-      entity {
-        id
-        fullName
-      }
       offering {
         ...offeringData
       }

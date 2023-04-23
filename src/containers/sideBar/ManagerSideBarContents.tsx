@@ -4,15 +4,17 @@ import ManagerSidebarItem from '@src/components/buttons/ManagerSidebarItem';
 import React, { FC, useContext } from 'react';
 import { ReachContext } from '@src/SetReachContext';
 
-type ManagerSideBarContentsProps = {};
+type ManagerSideBarContentsProps = {
+  organizationId?: string;
+};
 
-const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = () => {
+const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationId }) => {
   const { reFetchWallet } = useContext(ReachContext);
   return (
     <div className="flex flex-col mr-2">
-      <ManagerSidebarItem link={`/`} title="Dashboard" />
-      <ManagerSidebarItem link={`/businesses`} title="Businesses" />
-      <ManagerSidebarItem link={`/offerings`} title="Offerings" />
+      <ManagerSidebarItem link={`/${organizationId}/`} title="Dashboard" />
+      <ManagerSidebarItem link={`/${organizationId}/entities`} title="Businesses" />
+      <ManagerSidebarItem link={`/${organizationId}/offerings`} title="Offerings" />
       {/* <ManagerSidebarItem link={`/investments`} title="Investments" /> */}
       {/* <ManagerSidebarItem link={`/marketplace`} title="Marketplace" /> */}
 

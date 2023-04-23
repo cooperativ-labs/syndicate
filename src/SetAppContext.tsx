@@ -3,6 +3,7 @@ import { ApolloClient, ApolloProvider, createHttpLink, gql, InMemoryCache } from
 import { GET_USERS } from './utils/dGraphQueries/user';
 import { setContext } from '@apollo/client/link/context';
 import { useSession } from 'next-auth/react';
+import LoadingModal from './components/loading/ModalLoading';
 
 declare let window: any;
 
@@ -85,7 +86,11 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
   }, [status, token]);
 
   if (status === 'loading' || !apolloClient) {
-    return <div>loading...</div>;
+    return (
+      <div>
+        <LoadingModal />
+      </div>
+    );
   }
 
   return <ApolloProvider client={apolloClient}>{children}</ApolloProvider>;

@@ -1,39 +1,34 @@
-import CompleteIndividualEntity from '@src/components/account/CompleteIndividualEntity';
 import CreateEntity from '@src/components/entity/CreateEntity';
-import FormCard from '@src/components/cards/FormCard';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 
 import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import router from 'next/router';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { getUserPersonalEntity } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
+import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 
 const CreateEntityPage: FC = () => {
-  const { data: session, status } = useSession();
-  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
+  const orgId = router.query.organizationId;
+  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const organization = organizationData?.getOrganization;
 
-  const user = userData?.queryUser[0];
-
-  if (!user) {
+  if (!organization) {
     return <LoadingModal />;
   }
-  const userInfo = getUserPersonalEntity(user);
+
   return (
     <div data-test="component-create-project-page" className="h-full flex">
       <ManagerWrapper>
         <LimitedWidthSection center>
-          {userInfo.addresses[0] ? (
+          {organization ? (
             <>
               <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
               <hr className="my-6" />
-              <CreateEntity actionOnCompletion={() => router.back()} />
+              <CreateEntity actionOnCompletion={() => router.back()} organization={organization} />
             </>
           ) : (
-            <CompleteIndividualEntity userInfo={userInfo} user={user} />
+            'You need to create an organization first'
           )}
         </LimitedWidthSection>
       </ManagerWrapper>

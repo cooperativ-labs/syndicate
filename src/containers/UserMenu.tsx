@@ -24,7 +24,7 @@ const UserMenu: FC<UserMenuProps> = ({ authenticatedUser }) => {
 
   const networkImage = userWalletAddress && networkIcon(chain.id, userWalletAddress);
 
-  const profileImg = session.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
+  const profileImg = session?.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
   return (
     <>
       {open && <div className="absolute top-0 bottom-0 left-0 right-0 z-40" onClick={() => setOpen(!open)} />}

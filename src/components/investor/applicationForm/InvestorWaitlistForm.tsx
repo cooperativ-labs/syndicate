@@ -25,13 +25,11 @@ import { GeneratedApplicationText } from './SummaryGenerator';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { getSelectedAddressFromEntity, getSelectedEntity } from '@src/utils/helpersUserAndEntity';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ReachContext } from '@src/SetReachContext';
 import { useMutation, useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
 
 type InvestorWaitlistFormProps = {
   offering: Offering;
@@ -498,7 +496,7 @@ const InvestorWaitlistForm: FC<InvestorWaitlistFormProps> = ({ offering }) => {
                 <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
                   <LoadingButtonText
                     state={buttonStep}
-                    idleText={`Apply to become a ${offering.offeringEntity.fullName} investor`}
+                    idleText={`Apply to become a ${offering.offeringEntity.legalName} investor`}
                     submittingText="Applying..."
                     step2Text="Setting distribution token..."
                     confirmedText="Confirmed!"

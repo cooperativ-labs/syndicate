@@ -18,12 +18,17 @@ import CreateAddress from '@src/components/address/CreateAddress';
 import DeleteButton from '@src/components/buttons/DeleteButton';
 import EntitySpecifications, { changeForm, EditSelectionType } from '@src/components/entity/EntitySpecifications';
 import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
+import FileUpload from '@src/components/form-components/FileUpload';
 import FormModal from '@src/containers/FormModal';
+import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
 import SectionBlock from '@src/containers/SectionBlock';
+import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember';
+import SettingsSocial from '@src/components/account/SettingsSocial';
+import TeamMemberList from '@src/components/entity/TeamMemberList';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { useSession } from 'next-auth/react';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { getEntityManagers, getIsAdmin } from '@src/utils/helpersUserAndEntity';
 
 type EntityDetailsProps = {
   entity: LegalEntity;
@@ -38,16 +43,20 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     },
   });
 
+  const user = userData?.queryUser[0];
+
+  const isAdmin = getIsAdmin(userId, entity);
+
   const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
     useMutation(UPDATE_ENTITY_INFORMATION);
-
+  const [addEntityEmail, { data: dataEmail, error: errorEmail }] = useMutation(ADD_ENTITY_EMAIL);
   const [deleteAddress, { error: deleteError }] = useMutation(REMOVE_ENTITY_ADDRESS);
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [imageModal, setImageModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditSelectionType>('none');
   const [alerted, setAlerted] = useState<boolean>(false);
 
-  const error = updateEntityError || deleteError;
+  const error = updateEntityError || errorEmail || deleteError;
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong. ${error}`);
     setAlerted(true);
@@ -62,9 +71,35 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     })
     .flat();
 
+  const [localStorage, setLocalStorage] = useState(undefined);
+  useEffect(() => {
+    setLocalStorage(window.localStorage);
+  }, [setLocalStorage]);
+
+  const emailForSignIn = localStorage?.getItem('emailForSignIn');
+  const addEmailToDatabase = (email: string) => {
+    try {
+      addEntityEmail({
+        variables: {
+          entityId: entity.id,
+          address: email,
+          isPublic: true,
+        },
+      });
+
+      window.localStorage.removeItem('emailForSignIn');
+    } catch (err) {
+      throw new Error(err);
+    }
+  };
+
+  if (emailForSignIn) {
+    addEmailToDatabase(emailForSignIn);
+  }
+
   const handleDisplayNameChange = (values: {
     displayName: string;
-    legalName: string;
+    fullName: string;
     jurisdiction: string;
     operatingCurrency: CurrencyCode;
   }) => {
@@ -73,12 +108,53 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         currentDate: currentDate,
         entityId: entity.id,
         displayName: values.displayName,
-        legalName: legalName,
+        fullName: fullName,
         jurisdiction: jurisdiction,
         operatingCurrency: operatingCurrency.code,
       },
     }).then((res) => {
       setNameEditOn('none');
+    });
+  };
+  const handleToggle = (profileVisibility: boolean) => {
+    updateLegalEntity({
+      variables: {
+        currentDate: currentDate,
+        entityId: entity.id,
+        fullName: fullName,
+        displayName: displayName,
+        publicFacing: profileVisibility,
+        jurisdiction: jurisdiction,
+        operatingCurrency: operatingCurrency.code,
+      },
+    });
+  };
+
+  const addProfileImageToDb = (url: string) => {
+    updateLegalEntity({
+      variables: {
+        entityId: entity.id,
+        currentDate: currentDate,
+        fullName: fullName,
+        displayName: displayName,
+        jurisdiction: jurisdiction,
+        operatingCurrency: operatingCurrency.code,
+        image: url,
+      },
+    });
+  };
+
+  const addBannerImageToDb = (url: string) => {
+    updateLegalEntity({
+      variables: {
+        entityId: entity.id,
+        currentDate: currentDate,
+        fullName: fullName,
+        displayName: displayName,
+        jurisdiction: jurisdiction,
+        operatingCurrency: operatingCurrency.code,
+        bannerImage: url,
+      },
     });
   };
 
@@ -99,9 +175,43 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       >
         <CreateAddress entity={entity} actionOnCompletion={() => submissionCompletion(setAddressModal)} />
       </FormModal>
+      <FormModal
+        formOpen={imageModal}
+        onClose={() => setImageModal(false)}
+        title={`Add an address to ${entity.displayName}`}
+      >
+        <div className="flex grid grid-cols-3 gap-4">
+          <div className="flex flex-col col-span-1 justify-center">
+            <img className="h-32 object-scale-down" src={profileImage} />
+            <FileUpload
+              uploaderText="Add profile image"
+              urlToDatabase={addProfileImageToDb}
+              accept={['jpg', 'jpeg', 'png', 'svg']}
+              baseUploadUrl={`/entities/${entity.id}/${userId}`}
+            />
+          </div>
+          <div className="col-span-2">
+            <img className="h-32 w-full object-cover" src={bannerImage} />
+            <FileUpload
+              uploaderText="Add banner image"
+              urlToDatabase={addBannerImageToDb}
+              accept={['jpg', 'jpeg', 'png', 'svg']}
+              baseUploadUrl={`/entities/${entity.id}/${userId}`}
+            />
+          </div>
+        </div>
+      </FormModal>
+
       <div className="flex items-center relative">
+        <img src={bannerImage} className="object-cover h-64 w-full absolute" />
         <div className="flex backdrop-opacity-10 backdrop-invert w-full h-64 bg-gray-800/50 items-center">
           <div className="ml-4 flex items-center ">
+            <RoundedImage
+              className="h-40 w-40 bg-gray-800 backdrop-opacity-10  border-2 border-gray-100 mr-4"
+              src={profileImage}
+              onClick={() => setImageModal(true)}
+            />
+
             <div>
               {nameEditOn === 'displayName' ? (
                 changeForm('displayName', entity, setNameEditOn, handleDisplayNameChange)
@@ -129,10 +239,25 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       <TwoColumnLayout twoThirdsLayout>
         <div>
           <DashboardCard>
+            <div className="flex justify-between">
+              <div className="font-semibold">Set as public profile:</div>
+              <div className="flex items-center">
+                <ProfileVisibilityToggle profileVisibility={entity.publicFacing} handleToggle={handleToggle} />
+                <a href={`/offerors/${entity.id}`} target="_blank" rel="noreferrer">
+                  <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
+                </a>
+              </div>
+            </div>
             <hr className="my-4" />
             <EntitySpecifications entity={entity} isEntityOwner={true} updateLegalEntity={updateLegalEntity} />
 
             <div>
+              <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
+                <SectionBlock asAccordion sectionTitle={'Email addresses'}>
+                  <EmailAddressList emailAddresses={emailAddresses} withEdit />
+                  <SettingsAddEmail completionUrl={`/entities/${entity.id}`} />
+                </SectionBlock>
+              </div>
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Locations'}>
                   <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
@@ -161,6 +286,12 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                   </Button>
                 </SectionBlock>
               </div>
+              <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
+                <SectionBlock asAccordion sectionTitle={'Socials'}>
+                  <LinkedAccountsList linkedAccounts={linkedAccounts} />
+                  <SettingsSocial entity={entity} />{' '}
+                </SectionBlock>
+              </div>
             </div>
           </DashboardCard>
         </div>
@@ -173,6 +304,12 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         </div> */}
         <>
           <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Team</h2>
+          <TeamMemberList teamMembers={entity.users} entityId={entity.id} currentUserId={userId} isAdmin={isAdmin} />
+          <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
+            <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
+              <SettingsAddTeamMember entityId={entity.id} />
+            </SectionBlock>
+          </div>
         </>
       </TwoColumnLayout>
       <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings} entity={entity} />

@@ -10,16 +10,17 @@ import { useRouter } from 'next/router';
 
 export type OfferingCardProps = {
   offering: Offering;
-  gpId?: string;
+  organizationId?: string;
 };
 
-const OfferingCard: React.FC<OfferingCardProps> = ({ offering, gpId }) => {
+const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organizationId }) => {
   const router = useRouter();
   const { name, shortDescription, id, details, image } = offering;
   // const { investmentCurrency, projectedAppreciation, projectedIrr, projectedIrrMax, preferredReturn } = details;
   const currentPrice = details && getLowestSalePrice(offering.sales, offering.details?.priceStart);
 
-  const pushLink = gpId ? `/offerors/${gpId}/${id}` : `/offerings/${id}`;
+  const publicFacing = router.pathname.includes('/offerors');
+  const pushLink = publicFacing ? `/offerors/${organizationId}/${id}` : `/${organizationId}/offerings/${id}`;
   return (
     <div
       onClick={() => {

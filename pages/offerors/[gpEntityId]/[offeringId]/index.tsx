@@ -41,7 +41,7 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
           property="og:image"
           content={sharing ? `/assets/images/sharing-images/${sharing?.image.url}` : '/assets/images/share.png'}
         />
-        <meta property="og:url" content={`https://cooperativ.io/offerings/${id}`}></meta>
+        <meta property="og:url" content={`https://cooperativ.io/${orgId}/offerings/${id}`}></meta>
         Twitter
         <meta name="twitter:title" content={name} />
         <meta name="twitter:description" content={shortDescription} />

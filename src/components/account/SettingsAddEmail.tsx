@@ -1,7 +1,6 @@
 import Input from '../form-components/Inputs';
 import React, { FC, useEffect, useState } from 'react';
 import router from 'next/router';
-import { ADD_ENTITY_EMAIL } from '@src/utils/dGraphQueries/entity';
 import { Form, Formik } from 'formik';
 
 const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';

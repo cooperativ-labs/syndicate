@@ -8,7 +8,7 @@ import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-compo
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
-import { CurrencyCode } from 'types';
+import { CurrencyCode, Organization } from 'types';
 import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
@@ -17,15 +17,13 @@ import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 export type CreateEntityType = {
+  organization: Organization;
   defaultLogo?: string;
   actionOnCompletion: () => void;
 };
 
-const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion }) => {
-  const { data: session, status } = useSession();
-  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
-  const user = userData?.queryUser[0];
-  const [addOrganization, { data, error }] = useMutation(ADD_ENTITY);
+const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionOnCompletion }) => {
+  const [addLegalEntity, { data, error }] = useMutation(ADD_ENTITY);
   const [latLang, setLatLang] = useState({ lat: null, lng: null });
   const [autocompleteResults, setAutocompleteResults] = useState([null]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
@@ -49,14 +47,16 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
         const lng = results[0]?.geometry.location.lng();
         setLatLang({ lat: lat, lng: lng });
       })
-      .catch((error) => console.log(error));
+      .catch((error) => {
+        return error;
+      });
   }, [placeId, setAutocompleteResults, setLatLang]);
 
-  if (!user) {
+  if (!organization) {
     return <></>;
   }
 
-  const entityOptions = [...user.legalEntities].reverse();
+  const entityOptions = [...organization.legalEntities].reverse();
 
   const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
   const street_number = autocompleteResults[0]?.address_components.find((x) =>
@@ -77,9 +77,8 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
     <Formik
       initialValues={{
         // nonHuman: 'true',
-        logo: '',
         website: '',
-        fullName: '',
+        legalName: '',
         supLegalText: '',
         addressLine1: '',
         addressLine2: '',
@@ -91,7 +90,6 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
         operatingCurrency: CurrencyCode.Usd,
         jurisdiction: '',
         type: undefined,
-        userTitle: '',
         addressAutocomplete: '',
       }}
       validate={(values) => {
@@ -99,8 +97,8 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
         //   values.type = LegalEntityType.Individual;
         // }
         const errors: any = {}; /** @TODO : Shape */
-        if (!values.fullName) {
-          errors.fullName = 'Please include a full legal name';
+        if (!values.legalName) {
+          errors.legalName = 'Please include a full legal name';
         }
         if (!values.type) {
           errors.type = 'Please select a type of entity';
@@ -112,13 +110,11 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
       }}
       onSubmit={(values, { setSubmitting }) => {
         setSubmitting(true);
-        addOrganization({
+        addLegalEntity({
           variables: {
-            userId: user.id,
-            displayName: values.fullName,
-            image: values.logo ?? setDefaultLogo,
-            website: values.website,
-            fullName: values.fullName,
+            organizationId: organization.id,
+            displayName: values.legalName,
+            legalName: values.legalName,
             supLegalText: values.supLegalText,
             addressLabel: 'Primary Operating Address',
             addressLine1: CreateFirstAddressLine(street_number, street_name),
@@ -132,7 +128,6 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
             operatingCurrency: values.operatingCurrency,
             jurisdiction: values.jurisdiction,
             type: values.type,
-            userTitle: values.userTitle,
             currentDate: currentDate,
           },
         });
@@ -155,17 +150,9 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
             className={defaultFieldDiv}
             required
             labelText="Organization's legal name"
-            name="fullName"
+            name="legalName"
             type="text"
             placeholder="Alphabet Inc."
-          />
-          <Input
-            className={defaultFieldDiv}
-            required
-            labelText="Your title"
-            name="userTitle"
-            type="text"
-            placeholder="e.g. President"
           />
 
           {/* <Input className={defaultFieldDiv} labelText="Logo" name="logo" type="text" /> */}
@@ -215,7 +202,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
           )}
 
           <MajorActionButton type="submit" disabled={isSubmitting}>
-            {`Create ${values.fullName}`}
+            {`Create ${values.legalName}`}
           </MajorActionButton>
         </Form>
       )}
