@@ -1,9 +1,9 @@
+import LoadingModal from './components/loading/ModalLoading';
 import React, { useEffect, useState } from 'react';
 import { ApolloClient, ApolloProvider, createHttpLink, gql, InMemoryCache } from '@apollo/client';
 import { GET_USERS } from './utils/dGraphQueries/user';
 import { setContext } from '@apollo/client/link/context';
 import { useSession } from 'next-auth/react';
-import LoadingModal from './components/loading/ModalLoading';
 
 declare let window: any;
 

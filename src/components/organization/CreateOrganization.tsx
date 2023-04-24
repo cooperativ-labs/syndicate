@@ -6,11 +6,11 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
+import router from 'next/router';
+import { ADD_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import { ADD_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
-import router from 'next/router';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
@@ -29,8 +29,10 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
     alert(`Oops. Looks like something went wrong: ${error.message}`);
   }
   if (data) {
+    const orgId = data.addOrganization.organization[0].id;
     actionOnCompletion && actionOnCompletion();
-    router.push(`/${data.addOrganization.organization[0].id}`);
+    window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
+    router.push(`/${orgId}`);
   }
 
   if (!user) {

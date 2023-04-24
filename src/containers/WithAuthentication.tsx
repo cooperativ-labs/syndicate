@@ -1,9 +1,9 @@
 import NeedAccount from './ModalNeedAccount';
 import React, { useEffect, useState } from 'react';
-import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 
 interface WithAuthenticationProps {
   redirectTo?: string;

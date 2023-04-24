@@ -33,6 +33,7 @@ export const changeForm = (
   }) => void
 ) => {
   const { displayName, legalName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
+  console.log(displayName);
   return (
     <Formik
       initialValues={{
@@ -125,12 +126,13 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
 
   const handleChange = async (values: {
     legalName: string;
+    displayName: string;
     jurisdiction: string;
     operatingCurrency: CurrencyCode;
     taxId: string;
     supplementaryLegalText: string;
   }) => {
-    const { legalName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = values;
+    const { legalName, displayName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = values;
     try {
       updateLegalEntity({
         variables: {
@@ -162,6 +164,15 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         setEditOn={setEditOn}
       />
       <ClickToEditItem
+        label="d/b/a"
+        currenValue={displayName}
+        form={changeForm('displayName', entity, setEditOn, handleChange)}
+        editOn={editOn}
+        itemType="displayName"
+        isEntityOwner={isEntityOwner}
+        setEditOn={setEditOn}
+      />
+      <ClickToEditItem
         label="Jurisdiction"
         currenValue={jurisdiction}
         form={changeForm('jurisdiction', entity, setEditOn, handleChange)}
@@ -189,7 +200,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="supplementaryLegalText"
+        label="Supplementary Legal Text"
         currenValue={supplementaryLegalText}
         form={changeForm('supplementaryLegalText', entity, setEditOn, handleChange)}
         editOn={editOn}

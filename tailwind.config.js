@@ -49,7 +49,7 @@ module.exports = {
       mdreverse: '0 4px 1px 6px rgba(0, 0, 0, 0.09), 0 2px 1px 4px rgba(0, 0, 0, 0.05)',
       lgreverse: '0 10px 3px 15px rgba(0, 0, 0, 0.07), 0 4px 2px 5px rgba(0, 0, 0, 0.04)',
       modal: '0 35px 60px -10px rgba(0, 0, 0, 0.5)',
-      shareButton: '0 7px 10px 5px rgba(0, 0, 0, 0.1), 0 3px 5px 3px rgba(0, 0, 0, 0.07)',
+      box: '0 7px 10px 5px rgba(0, 0, 0, 0.1), 0 3px 5px 3px rgba(0, 0, 0, 0.07)',
     },
   },
 

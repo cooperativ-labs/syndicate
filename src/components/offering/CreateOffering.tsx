@@ -16,8 +16,8 @@ import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { ReachContext } from '@src/SetReachContext';
 import { useMutation } from '@apollo/client';
 
-import { useRouter } from 'next/router';
 import { Organization } from 'types';
+import { useRouter } from 'next/router';
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 type CreateOfferingType = {
@@ -75,7 +75,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   if (data && !alerted) {
     const offeringId = data?.addOffering.offering[0].id;
     setAlerted(true);
-    router.push(`/offerings/${offeringId}`);
+    router.push(`/${organization.id}/offerings/${offeringId}`);
   }
 
   const handleSubmit = async (values) => {
@@ -156,7 +156,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
             <FormButton
               type="submit"
               disabled={isSubmitting}
-              className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
+              className="border-2 border-cLightBlue text-cLightBlue hover:bg-cLightBlue hover:text-white font-bold uppercase test-sm mt-8 rounded p-3 w-full"
             >
               <LoadingButtonText
                 state={buttonStep}

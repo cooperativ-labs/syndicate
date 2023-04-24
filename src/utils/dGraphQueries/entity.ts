@@ -16,6 +16,7 @@ export const ADD_ENTITY = gql`
     $currentDate: DateTime!
     $organizationId: ID!
     $legalName: String!
+    $displayName: String!
     $type: LegalEntityType!
     $jurisdiction: String!
     $operatingCurrency: CurrencyCode!
@@ -37,6 +38,7 @@ export const ADD_ENTITY = gql`
           organization: { id: $organizationId }
           type: $type
           legalName: $legalName
+          displayName: $legalName
           jurisdiction: $jurisdiction
           operatingCurrency: { code: $operatingCurrency }
           supplementaryLegalText: $supLegalText

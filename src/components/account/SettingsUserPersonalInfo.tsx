@@ -4,8 +4,8 @@ import React, { FC, useState } from 'react';
 import { currentDate, makeRemovalList, makeSubmissionList } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { LegalEntity, User } from 'types';
-import { useMutation } from '@apollo/client';
 import { UPDATE_USER } from '@src/utils/dGraphQueries/user';
+import { useMutation } from '@apollo/client';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 

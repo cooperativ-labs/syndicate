@@ -1,8 +1,8 @@
-import { ApplicationStoreProps, store } from '@context/store';
-import CreateOfferingPage from '@pages/[organizationId]/offerings/create-offering';
 import CloseButton from '@src/components/buttons/CloseButton';
+import CreateOfferingPage from '@pages/[organizationId]/offerings/create-offering';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import React, { FC, useContext } from 'react';
+import { ApplicationStoreProps, store } from '@context/store';
 
 const ModalCreateOrganization: FC = () => {
   const applicationStore: ApplicationStoreProps = useContext(store);
@@ -17,7 +17,7 @@ const ModalCreateOrganization: FC = () => {
               <div className="md:flex flex-col h-full w-full items-center pt-20">
                 <div className="flex-col px-4 w-full" style={{ maxWidth: '600px' }}>
                   <h1 className="text-2xl font-bold font-cDarkBlue text-center mb-4">
-                    To begin creating offerings, you'll need to create an organization.
+                    {`To begin creating offerings, you'll need to create an organization.`}
                   </h1>
                   <div className="px-3  md:mx-2">
                     <CreateOrganization

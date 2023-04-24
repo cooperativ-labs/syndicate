@@ -8,8 +8,8 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { CurrencyCode, LegalEntity } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 
-import { REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
 
 import DashboardCard from '@src/components/cards/DashboardCard';
 
@@ -26,9 +26,9 @@ import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember'
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import TeamMemberList from '@src/components/entity/TeamMemberList';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { useSession } from 'next-auth/react';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getEntityManagers, getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { useSession } from 'next-auth/react';
 
 type EntityDetailsProps = {
   entity: LegalEntity;

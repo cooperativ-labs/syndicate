@@ -5,10 +5,10 @@ import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import React, { FC, useContext } from 'react';
 import router from 'next/router';
+import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 
 const EntityDashboard: FC = () => {
   const { data: session, status } = useSession();

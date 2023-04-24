@@ -1,27 +1,28 @@
 import Input from '../form-components/Inputs';
 import React, { FC, useContext } from 'react';
 import Select from '../form-components/Select';
-import { ADD_LEGAL_ENTITY_USER } from '@src/utils/dGraphQueries/entity';
+
+import { ADD_ORGANIZATION_USER } from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GET_USER_FROM_EMAIL } from '@src/utils/dGraphQueries/user';
-import { legalEntityPermissionOptions } from '@src/utils/enumConverters';
-import { LegalEntityPermissionType } from 'types';
+import { getOrganizationPermissionOption, organizationPermissionOptions } from '@src/utils/enumConverters';
+import { OrganizationPermissionType } from 'types';
 import { useApolloClient } from '@apollo/client';
 import { useMutation } from '@apollo/client';
 
 const fieldDiv = 'md:my-2 bg-opacity-0';
 
 type SettingsAddTeamMemberProps = {
-  entityId: string;
+  organizationId: string;
 };
 
-const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => {
-  const [addTeamMember, { data, error }] = useMutation(ADD_LEGAL_ENTITY_USER);
+const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId }) => {
+  const [addTeamMember, { data, error }] = useMutation(ADD_ORGANIZATION_USER);
   const [userDoesNotExist, setUserDoesNotExist] = React.useState(false);
   const client = useApolloClient();
 
-  const handleAddTeamMemberAddress = async (emailAddress: string, permission: LegalEntityPermissionType) => {
+  const handleAddTeamMemberAddress = async (emailAddress: string, permission: OrganizationPermissionType) => {
     setUserDoesNotExist(false);
     client
       .query({
@@ -37,7 +38,7 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => 
           variables: {
             userId: result.data.queryUser[0].id,
             currentDate: currentDate,
-            entityId: entityId,
+            organizationId: organizationId,
             emailAddress: emailAddress,
             permission: permission,
           },
@@ -51,7 +52,7 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => 
     <Formik
       initialValues={{
         emailAddress: '',
-        permission: LegalEntityPermissionType.Editor,
+        permission: OrganizationPermissionType.Editor,
       }}
       validate={async (values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -85,7 +86,7 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ entityId }) => 
             />
             <Select className={`${fieldDiv} col-span-2`} name="permission">
               <option value="">--Role--</option>
-              {legalEntityPermissionOptions.map((option) => {
+              {organizationPermissionOptions.map((option) => {
                 return (
                   <option key={option.value} value={option.value}>
                     {option.name}

@@ -2,12 +2,12 @@ import cn from 'classnames';
 import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { EditButton } from '../form-components/ListItemButtons';
-import { getLegalEntityPermissionOption } from '@src/utils/enumConverters';
-import { LegalEntityPermissionType, LegalEntityUser } from 'types';
+import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
+import { OrganizationPermissionType, OrganizationUser } from 'types';
 
 type TeamMemberListItemProps = {
-  teamMember: LegalEntityUser;
-  entityId: string;
+  teamMember: OrganizationUser;
+  organizationId: string;
   currentUserId: string;
   isAdmin: boolean;
   removeMember: (variables: any) => void;
@@ -15,21 +15,33 @@ type TeamMemberListItemProps = {
 
 const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   teamMember,
-  entityId,
+  organizationId,
   currentUserId,
   isAdmin,
   removeMember,
 }) => {
   const [editOn, setEditOn] = useState<boolean>(false);
   const { user, permissions, id } = teamMember;
-  const { name, email, id: userId } = user;
+  const { name, email, id: userId, image } = user;
 
-  const makePermissionsChips = (permissions: LegalEntityPermissionType[]) => {
+  const makePermissionsChips = (permissions: OrganizationPermissionType[]) => {
     return permissions.map((permission, i) => {
-      const { name, color } = getLegalEntityPermissionOption(permission);
-      const permissionClass = `bg-${color} rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+      const { name, color } = getOrganizationPermissionOption(permission);
+
+      // color refuses to render if I apply it directly to the class. It even appears in the CSS in the inspector, but it doesn't render. I have no idea why. The behavior is also inconsistent. Sometimes it works, sometimes it doesn't.
+      const permissionClass = () => {
+        switch (name) {
+          case 'Admin':
+            return `bg-blue-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+          case 'Editor':
+            return `bg-green-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+          default:
+            return 'green-600';
+        }
+      };
+
       return (
-        <div key={i} className={cn(permissionClass)}>
+        <div key={i} className={cn(permissionClass())}>
           {name}
         </div>
       );
@@ -39,9 +51,12 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   const canModify = user.id !== currentUserId && isAdmin;
 
   return (
-    <div className="md:flex lg:grid grid-cols-6 gap-3 p-3  border-2 rounded-lg ">
-      <div className="col-span-4 mt-3 md:mt-0">
-        <div className="md:w-auto font-medium ">{name}</div>
+    <div className="md:flex lg:grid grid-cols-8 gap-1 p-3  border-2 rounded-lg items-center ">
+      <div className="col-span-1">
+        <img src={image} referrerPolicy="no-referrer" className="w-8 h-8 border-2 border-white rounded-full" />
+      </div>
+      <div className="col-span-5 mt-3 md:mt-0">
+        <div className="md:w-auto text-sm font-medium ">{name}</div>
       </div>
       <div className="flex col-span-1 mt-3 md:mt-0 items-center justify-end">{makePermissionsChips(permissions)}</div>
 
@@ -60,7 +75,11 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
               aria-label="remove wallet from whitelist"
               onClick={() =>
                 removeMember({
-                  variables: { entityId: entityId, LegalEntityUserId: id, userId: userId, currentDate: currentDate },
+                  variables: {
+                    organizationId: organizationId,
+                    organizationUserId: id,
+                    currentDate: currentDate,
+                  },
                 })
               }
             >

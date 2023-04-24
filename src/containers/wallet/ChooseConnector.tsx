@@ -1,8 +1,8 @@
-import cn from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@src/components/buttons/Button';
+import cn from 'classnames';
 import React, { FC, useContext } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { SupportedEthConnectors } from '@src/web3/connectors';
 import { useAccount, useConnect } from 'wagmi';
 import { WalletErrorCodes } from '@src/web3/helpersChain';

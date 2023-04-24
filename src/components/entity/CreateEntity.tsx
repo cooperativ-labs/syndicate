@@ -1,8 +1,7 @@
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
 import { Form, Formik } from 'formik';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
@@ -193,13 +192,13 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
             value={inputAddress}
             setValue={setInputAddress}
           />
-          {latLang.lat && (
+          {/* {latLang.lat && (
             <div className="mt-4">
               <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>
                 <Marker position={latLang} />
               </GoogleMap>
             </div>
-          )}
+          )} */}
 
           <MajorActionButton type="submit" disabled={isSubmitting}>
             {`Create ${values.legalName}`}

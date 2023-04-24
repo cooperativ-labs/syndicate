@@ -12,9 +12,9 @@ const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationI
   const { reFetchWallet } = useContext(ReachContext);
   return (
     <div className="flex flex-col mr-2">
-      <ManagerSidebarItem link={`/${organizationId}/`} title="Dashboard" />
-      <ManagerSidebarItem link={`/${organizationId}/entities`} title="Businesses" />
+      <ManagerSidebarItem link={`/${organizationId}/`} title="Overview" />
       <ManagerSidebarItem link={`/${organizationId}/offerings`} title="Offerings" />
+      <ManagerSidebarItem link={`/${organizationId}/entities`} title="Entities" />
       {/* <ManagerSidebarItem link={`/investments`} title="Investments" /> */}
       {/* <ManagerSidebarItem link={`/marketplace`} title="Marketplace" /> */}
 

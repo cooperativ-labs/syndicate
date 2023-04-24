@@ -474,6 +474,7 @@ export const CORE_ORGANIZATION_FIELDS = gql`
         id
         name
         email
+        image
       }
     }
     legalEntities {

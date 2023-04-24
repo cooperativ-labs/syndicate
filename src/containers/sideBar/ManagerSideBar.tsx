@@ -1,13 +1,14 @@
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
+import CooperativLogo from '@src/components/CooperativLogo';
 import Link from 'next/link';
 import ManagerSideBarContents from './ManagerSideBarContents';
+import OrganizationSwitcher from './OrganizationSwitcher';
 import React, { FC, useContext, useEffect, useState } from 'react';
+import router from 'next/router';
 import { ApplicationStoreProps, store } from '@context/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useWindowSize } from 'react-use';
-import OrganizationSwitcher from './OrganizationSwitcher';
-import CooperativLogo from '@src/components/CooperativLogo';
 
 type ManagerSideBarProps = {
   organizations: any[];
@@ -17,14 +18,15 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar, ManagerSidebarOpen } = applicationStore;
   const windowSize = useWindowSize();
+  const orgId = router.query.organizationId;
 
   const [selection, setSelection] = useState(undefined);
   useEffect(() => {
     setSelection(window.sessionStorage);
-  }),
-    [setSelection];
+  }, [setSelection]);
 
   const OrganizationIdFromSessionStorage = selection?.getItem('CHOSEN_ORGANIZATION');
+  const currentOrganization = orgId && organizations?.find((org) => org.id === orgId);
 
   useEffect(() => {
     if (ManagerSidebarOpen && windowSize.width < 768) {
@@ -40,7 +42,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
 
   const desktopSidebar = (
     <div className="flex grid-cols-6">
-      {organizations.length > 0 && (
+      {organizations?.length > 0 && (
         <div className="col-span-1">
           <OrganizationSwitcher organizations={organizations} />
         </div>
@@ -48,9 +50,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
 
       <div className="hidden md:flex col-span-5  bg-gray-100 w-48 z-10 min-h-full">
         <div className="h-full bg-opacity-0 p-1 pr-2">
-          <div className="mb-5 px-2 pr-4 md:mt-4 ">
-            <CooperativLogo />
-          </div>
+          <div className="mb-5 text-lg font-bold px-2 pr-4 md:mt-4 ">{currentOrganization?.name}</div>
           <ManagerSideBarContents organizationId={OrganizationIdFromSessionStorage} />
         </div>
       </div>
@@ -69,7 +69,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
       }}
     >
       <div className="fixed left-0 top-0 h-full  flex grid-cols-6">
-        {organizations.length > 0 && (
+        {organizations?.length > 0 && (
           <div className="col-span-1">
             <OrganizationSwitcher organizations={organizations} />
           </div>

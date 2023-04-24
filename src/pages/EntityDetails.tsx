@@ -8,8 +8,8 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { CurrencyCode, LegalEntity } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 
-import { REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
 
 import DashboardCard from '@src/components/cards/DashboardCard';
 
@@ -21,9 +21,9 @@ import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import SectionBlock from '@src/containers/SectionBlock';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { useSession } from 'next-auth/react';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { useSession } from 'next-auth/react';
 
 type EntityDetailsProps = {
   entity: LegalEntity;
@@ -37,6 +37,8 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       id: userId,
     },
   });
+
+  console.log(entity);
 
   const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
     useMutation(UPDATE_ENTITY_INFORMATION);

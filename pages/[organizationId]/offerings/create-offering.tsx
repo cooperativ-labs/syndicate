@@ -3,8 +3,8 @@ import FormCard from '@src/components/cards/FormCard';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import React, { FC } from 'react';
 import router from 'next/router';
-import { useQuery } from '@apollo/client';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { useQuery } from '@apollo/client';
 
 const CreateOfferingPage: FC = () => {
   const orgId = router.query.organizationId;

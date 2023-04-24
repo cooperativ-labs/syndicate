@@ -53,9 +53,9 @@ export const ADD_ORGANIZATION_USER = gql`
     $userId: ID!
     $currentDate: DateTime!
     $organizationId: ID!
-    $permission: [LegalORGANIZATIONPermissionType!]
+    $permission: [OrganizationPermissionType!]
   ) {
-    updateLegalORGANIZATION(
+    updateOrganization(
       input: {
         filter: { id: [$organizationId] }
         set: { lastUpdate: $currentDate, users: { permissions: $permission, user: { id: $userId } } }
@@ -75,11 +75,11 @@ export const ADD_ORGANIZATION_USER = gql`
 `;
 
 export const REMOVE_ORGANIZATION_USER = gql`
-  mutation RemoveOrganizationUser($organizationId: [ID!], $OrganizationUserId: ID!, $currentDate: DateTime) {
+  mutation RemoveOrganizationUser($organizationId: [ID!], $organizationUserId: ID!, $currentDate: DateTime) {
     updateOrganization(
       input: {
         filter: { id: $organizationId }
-        remove: { users: { id: $OrganizationUserId } }
+        remove: { users: { id: $organizationUserId } }
         set: { lastUpdate: $currentDate }
       }
     ) {
@@ -91,7 +91,7 @@ export const REMOVE_ORGANIZATION_USER = gql`
         }
       }
     }
-    deleteOrganizationUser(filter: { id: [$OrganizationUserId] }) {
+    deleteOrganizationUser(filter: { id: [$organizationUserId] }) {
       msg
     }
   }

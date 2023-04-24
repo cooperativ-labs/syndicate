@@ -3,11 +3,11 @@ import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC } from 'react';
 
+import router from 'next/router';
+import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import router from 'next/router';
-import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 
 const Offerings: FC = () => {
   const { data: session, status } = useSession();
