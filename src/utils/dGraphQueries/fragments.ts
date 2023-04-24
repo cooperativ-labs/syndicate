@@ -263,6 +263,11 @@ export const CORE_ENTITY_FIELDS = gql`
     organization {
       id
       name
+      logo
+      legalEntities {
+        id
+        legalName
+      }
       users {
         id
         permissions
@@ -281,6 +286,9 @@ export const CORE_ENTITY_FIELDS = gql`
       addresses {
         ...addressData
       }
+      organization {
+        id
+      }
     }
     subsidiaries {
       id
@@ -298,6 +306,9 @@ export const CORE_ENTITY_FIELDS = gql`
         sales {
           price
         }
+      }
+      organization {
+        id
       }
     }
 
@@ -384,15 +395,14 @@ export const CORE_OFFERING_FIELDS = gql`
     smartContracts {
       ...smartContractData
     }
-    sharing {
-      image {
-        id
-        url
-        label
-        fileId
-      }
-      description
+    sharingImage {
+      id
+      url
+      label
+      fileId
     }
+    shortDescription
+
     details {
       ...offeringDetailsData
     }
@@ -449,7 +459,14 @@ export const CORE_ORGANIZATION_FIELDS = gql`
     name
     description
     logo
+    brandColor
     bannerImage
+    sharingImage {
+      id
+      url
+      label
+      fileId
+    }
     website
     isPublic
     phone
@@ -480,8 +497,32 @@ export const CORE_ORGANIZATION_FIELDS = gql`
     legalEntities {
       id
       legalName
+      displayName
+      jurisdiction
+      organization {
+        id
+        slug
+      }
       offerings {
         ...offeringData
+      }
+      subsidiaries {
+        id
+        legalName
+        displayName
+        organization {
+          id
+          slug
+        }
+      }
+      owners {
+        id
+        legalName
+        displayName
+        organization {
+          id
+          slug
+        }
       }
       organization {
         id

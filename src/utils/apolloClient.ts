@@ -5,8 +5,20 @@ import { useMemo } from 'react';
 const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
 const stagingKey = process.env.NEXT_PUBLIC_STAGING1_DGRAPH_HEADER_KEY;
 
+export const getEndpoint = () => {
+  switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
+    case 'production':
+      return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
+    // case 'staging':
+    //   return 'https://blue-surf-591466.us-east-1.aws.cloud.dgraph.io/graphql';
+    default:
+      // return 'http://localhost:8080/graphql';
+      return 'http://172.18.0.4:8080/graphql';
+  }
+};
+
 const publichttpLink = createHttpLink({
-  uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+  uri: getEndpoint(),
   credentials: 'same-origin',
 });
 

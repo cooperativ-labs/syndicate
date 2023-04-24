@@ -8,41 +8,39 @@ import { ADD_ENTITY_OWNER } from '@src/utils/dGraphQueries/entity';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
-type GpAdderProps = {
+type AddOwningEntityProps = {
   ownedEntityId: string;
-  refetchOuter: () => void;
+  organization: Organization;
+  refetchOuter?: () => void;
 };
 
-const GpAdder: FC<GpAdderProps> = ({ ownedEntityId, refetchOuter }) => {
+const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, organization, refetchOuter }) => {
   const { data: session, status } = useSession();
-  const { data: userData, refetch } = useQuery(GET_USER, { variables: { id: session.user.id } });
-
-  const user = userData?.queryUser[0];
 
   const [addOwner, { data, error }] = useMutation(ADD_ENTITY_OWNER);
   const [entityModal, setEntityModal] = useState<boolean>(false);
 
   const submissionCompletion = (setModal) => {
     setModal(false);
-    refetch();
   };
 
   if (data) {
-    refetchOuter();
+    // refetchOuter();
   }
 
   return (
     <>
       <FormModal formOpen={entityModal} onClose={() => setEntityModal(false)} title={`Add an entity to your account`}>
-        <CreateEntity actionOnCompletion={() => submissionCompletion(setEntityModal)} />
+        <CreateEntity actionOnCompletion={() => submissionCompletion(setEntityModal)} organization={organization} />
       </FormModal>
 
       <Formik
         initialValues={{
-          gpEntityId: '',
+          addEntityOwner: '',
         }}
         validate={(values) => {}}
         onSubmit={(values, { setSubmitting }) => {
@@ -51,7 +49,7 @@ const GpAdder: FC<GpAdderProps> = ({ ownedEntityId, refetchOuter }) => {
           addOwner({
             variables: {
               currentDate: currentDate,
-              gpEntityId: values.gpEntityId,
+              addEntityOwner: values.addEntityOwner,
               ownedEntityId: ownedEntityId,
             },
           });
@@ -62,8 +60,8 @@ const GpAdder: FC<GpAdderProps> = ({ ownedEntityId, refetchOuter }) => {
           <Form className="flex flex-col gap relative">
             <EntitySelector
               className="flex flex-col"
-              fieldName="gpEntityId"
-              entities={user.legalEntities}
+              fieldName="addEntityOwner"
+              entities={organization.legalEntities}
               setModal={setEntityModal}
               label="Add a General Partner"
               withAdd
@@ -73,7 +71,7 @@ const GpAdder: FC<GpAdderProps> = ({ ownedEntityId, refetchOuter }) => {
               disabled={isSubmitting}
               className="bg-cLightBlue hover:bg-blue-800 text-white font-bold text-sm uppercase mt-4 rounded p-4 w-full "
             >
-              {`Add General Partner`}
+              {`Add Owner`}
             </Button>
           </Form>
         )}
@@ -82,4 +80,4 @@ const GpAdder: FC<GpAdderProps> = ({ ownedEntityId, refetchOuter }) => {
   );
 };
 
-export default GpAdder;
+export default AddOwningEntity;

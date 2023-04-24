@@ -1,12 +1,11 @@
-import Button from '../buttons/Button';
 import cn from 'classnames';
 import React, { FC, useState } from 'react';
 import router from 'next/router';
 import useWindowSize from '@hooks/useWindowSize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { LegalEntity, Offering } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { Offering, Organization } from 'types';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 
@@ -41,11 +40,11 @@ const ShareOfferPanelItem: FC<ShareOfferPanelItemProps> = ({ children, title, no
 type ShareOfferPanelProps = {
   offering: Offering;
   currentSalePrice: number;
-  generalPartner: LegalEntity;
+  organization: Organization;
   currentUser?: string;
 };
 
-const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice, generalPartner, currentUser }) => {
+const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice, organization, currentUser }) => {
   const permittedEntity = offering.participants.find((participant) => {
     return participant.addressOfferingId === currentUser + offering.id;
   });
@@ -66,7 +65,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
   const ApplyManageButton = (
     <button
       data-test="share-offer-panel"
-      onClick={() => router.push(`/offerors/${generalPartner.id}/${offering.id}/investor-application`)}
+      onClick={() => router.push(`/offerors/${organization.id}/${offering.id}/investor-application`)}
       className={cn([
         'ubuntu rounded-md font-bold bg-green-700 text-slate-100 px-4 py-2 items-center justify-center shadow-lg mt-4 flex w-full ',
       ])}

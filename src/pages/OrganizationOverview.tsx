@@ -1,5 +1,6 @@
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import CreateOffering from '@src/components/offering/CreateOffering';
+import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import OfferingFinder from '@src/components/offering/OfferingFinder';
 import OfferingsList from '@src/components/offering/OfferingsList';
@@ -12,7 +13,6 @@ import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getIsAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { ReachContext } from '@src/SetReachContext';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -52,11 +52,11 @@ const OrganizationOverview: FC = () => {
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
       <TwoColumnLayout twoThirdsLayout>
-        <div className="p-6 shadow-box rounded-md">
+        <DashboardCard>
           <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
           <CreateOffering organization={organization} refetch={refetch} />
-        </div>
-        <div className="flex flex-col p-6 shadow-box rounded-md">
+        </DashboardCard>
+        <DashboardCard>
           <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">Manage Team</h2>
           <TeamMemberList
             teamMembers={organization.users}
@@ -69,11 +69,11 @@ const OrganizationOverview: FC = () => {
               <SettingsAddTeamMember organizationId={organization.id} />
             </SectionBlock>
           </div>
-        </div>
+        </DashboardCard>
         {hasOfferings && (
           <div>
             <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your current offerings: </h2>
-            <OfferingsList offerings={offerings} organizationId={orgId as string} />
+            <OfferingsList offerings={offerings} />
           </div>
         )}
       </TwoColumnLayout>

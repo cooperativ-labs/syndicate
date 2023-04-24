@@ -1,19 +1,21 @@
+import cn from 'classnames';
 import React, { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type CloseButtonProps = {
-  onClose: () => void;
+  className?: string;
+  onClick: () => void;
 };
 
-const CloseButton: FC<CloseButtonProps> = ({ onClose }) => {
+const CloseButton: FC<CloseButtonProps> = ({ className, onClick }) => {
   return (
     <button
       id="close-button"
       onClick={(e) => {
         e.preventDefault();
-        onClose();
+        onClick();
       }}
-      className=" hover:shadow-lg text-gray-800 w-10 h-10 m-2 rounded-full"
+      className={cn(className, 'hover:shadow-lg text-gray-800 w-10 h-10 rounded-full')}
     >
       <FontAwesomeIcon icon="times" />
     </button>

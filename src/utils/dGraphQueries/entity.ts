@@ -16,7 +16,6 @@ export const ADD_ENTITY = gql`
     $currentDate: DateTime!
     $organizationId: ID!
     $legalName: String!
-    $displayName: String!
     $type: LegalEntityType!
     $jurisdiction: String!
     $operatingCurrency: CurrencyCode!
@@ -71,18 +70,37 @@ export const ADD_ENTITY = gql`
 `;
 
 export const ADD_ENTITY_OWNER = gql`
-  mutation AddEntityOwner($currentDate: DateTime!, $gpEntityId: ID!, $ownedEntityId: [ID!]) {
+  mutation AddEntityOwner($currentDate: DateTime!, $addEntityOwner: ID!, $ownedEntityId: [ID!]) {
     updateLegalEntity(
-      input: { filter: { id: $ownedEntityId }, set: { lastUpdate: $currentDate, owners: { id: $gpEntityId } } }
+      input: { filter: { id: $ownedEntityId }, set: { lastUpdate: $currentDate, owners: { id: $addEntityOwner } } }
     ) {
       legalEntity {
         id
         legalName
-        subsidiaries {
+        owners {
           id
-          offerings {
+          subsidiaries {
             id
           }
+        }
+      }
+    }
+  }
+`;
+
+export const REMOVE_ENTITY_OWNER = gql`
+  mutation RemoveEntityOwner($currentDate: DateTime!, $removeEntityOwner: ID!, $ownedEntityId: ID!) {
+    updateLegalEntity(
+      input: {
+        filter: { id: [$ownedEntityId] }
+        set: { lastUpdate: $currentDate }
+        remove: { owners: { id: $removeEntityOwner } }
+      }
+    ) {
+      legalEntity {
+        id
+        owners {
+          id
         }
       }
     }

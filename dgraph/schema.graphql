@@ -343,11 +343,6 @@ add:,
 	lastUpdate: DateTime! 
 }
 
-type OfferingInfoSharing {
-	image: Image
-	description: String
-}
-
 type Offering @auth (
 add:
 			{rule: """
@@ -396,7 +391,7 @@ add:
 	image: String 
 	bannerImage: String
 	primaryVideo:	String
-	sharing: OfferingInfoSharing
+	sharingImage: Image
 	brandColor: String 
 	lightBrand: Boolean
 	website: String 
@@ -1030,6 +1025,8 @@ type Organization
 	logo: String 
 	slug: String @search(by:[term])
 	bannerImage: String
+	sharingImage: Image
+	brandColor: String 
 	shortDescription: String
 	description: String
 	isPublic: Boolean @search

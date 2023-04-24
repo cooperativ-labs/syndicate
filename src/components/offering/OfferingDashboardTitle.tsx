@@ -14,7 +14,7 @@ type OfferingDashboardTitleProps = {
   profileVisibility: boolean;
   isOfferingManager: boolean;
   offeringId: string;
-  gpEntityId: string;
+  organizationId: string;
   accessCode: string;
   offeringName: string;
 };
@@ -25,7 +25,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   isOfferingManager,
   offeringId,
   accessCode,
-  gpEntityId,
+  organizationId,
 }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
@@ -150,7 +150,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
         )}
         {profileVisibility && (
-          <a href={`/offerors/${gpEntityId}/${offeringId}`} target="_blank" rel="noreferrer">
+          <a href={`/offerors/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
             <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
           </a>
         )}

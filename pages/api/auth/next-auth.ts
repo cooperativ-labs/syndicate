@@ -4,18 +4,7 @@ import { DgraphAdapter } from '@next-auth/dgraph-adapter';
 import { AuthOptions, Session, User } from 'next-auth';
 import * as jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
-
-const getEndpoint = () => {
-  switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-    case 'production':
-      return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
-    // case 'staging':
-    //   return 'https://blue-surf-591466.us-east-1.aws.cloud.dgraph.io/graphql';
-    default:
-      // return 'http://localhost:8080/graphql';
-      return 'http://172.18.0.4:8080/graphql';
-  }
-};
+import { getEndpoint } from '@src/utils/apolloClient';
 
 export const getKey = () => {
   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {

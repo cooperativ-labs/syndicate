@@ -30,7 +30,7 @@ const RightSidebar: FC<RightSidebarProps> = ({ children, formOpen, onClose }) =>
         >
           <div className={'z-50 absolute right-0 left-1/3 top-0 p-3 bg-white shadow-xl'}>
             <CloseButton
-              onClose={() => {
+              onClick={() => {
                 onClose();
               }}
             />

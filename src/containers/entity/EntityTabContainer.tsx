@@ -47,7 +47,7 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({ properties, offerings
             <EntitiesList entities={subsidiaries} />
           </div>
         )}
-        {activeTab === 'subsidiaries' && (
+        {activeTab === 'documents' && (
           <div className="mt-8">
             <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Documents</h2>
             <DocumentList documents={entity.documentsOwned} isOfferingManager={false} hideUpload />

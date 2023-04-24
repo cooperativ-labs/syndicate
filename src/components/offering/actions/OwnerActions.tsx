@@ -104,7 +104,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
     <div className=" relative mt-4 bg-gray-100 p-4 rounded-md">
       <div className="absolute -top-1 right-0 z-40">
         <CloseButton
-          onClose={() => {
+          onClick={() => {
             setShowActionPanel(false);
           }}
         />

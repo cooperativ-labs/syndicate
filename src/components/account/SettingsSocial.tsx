@@ -1,20 +1,20 @@
 import Input from '../form-components/Inputs';
 import React, { FC } from 'react';
 import Select from '../form-components/Select';
-import { ADD_ENTITY_SOCIAL_ACCOUNTS } from '@src/utils/dGraphQueries/entity';
+import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { LegalEntity } from 'types';
+import { LegalEntity, Organization } from 'types';
 import { socialAccountOptions } from '@src/utils/enumConverters';
 import { useMutation } from '@apollo/client';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 type SettingsSocialProps = {
-  entity: LegalEntity;
+  organization: Organization;
 };
-const SettingsUserSocial: FC<SettingsSocialProps> = ({ entity }) => {
-  const [addSocials, { error }] = useMutation(ADD_ENTITY_SOCIAL_ACCOUNTS);
+const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
+  const [addSocials, { error }] = useMutation(ADD_ORGANIZATION_SOCIAL_ACCOUNTS);
 
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -41,7 +41,7 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ entity }) => {
         addSocials({
           variables: {
             currentDate: currentDate,
-            entityId: entity.id,
+            organizationId: organization.id,
             url: values.url,
             type: values.type,
           },

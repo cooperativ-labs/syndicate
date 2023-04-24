@@ -1,7 +1,5 @@
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
-import CooperativLogo from '@src/components/CooperativLogo';
-import Link from 'next/link';
 import ManagerSideBarContents from './ManagerSideBarContents';
 import OrganizationSwitcher from './OrganizationSwitcher';
 import React, { FC, useContext, useEffect, useState } from 'react';

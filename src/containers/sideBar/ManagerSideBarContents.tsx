@@ -15,7 +15,7 @@ const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationI
       <ManagerSidebarItem link={`/${organizationId}/`} title="Overview" />
       <ManagerSidebarItem link={`/${organizationId}/offerings`} title="Offerings" />
       <ManagerSidebarItem link={`/${organizationId}/entities`} title="Entities" />
-      {/* <ManagerSidebarItem link={`/investments`} title="Investments" /> */}
+      <ManagerSidebarItem link={`/${organizationId}/settings`} title="Settings" />
       {/* <ManagerSidebarItem link={`/marketplace`} title="Marketplace" /> */}
 
       <div className="md:hidden ml-4">

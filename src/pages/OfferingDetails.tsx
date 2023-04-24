@@ -230,7 +230,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
             <OfferingDashboardTitle
               profileVisibility={isPublic}
               offeringId={id}
-              gpEntityId={owners[0].id}
+              organizationId={offeringEntity.organization.id}
               accessCode={accessCode}
               offeringName={name}
               isOfferingManager={isOfferingManager}

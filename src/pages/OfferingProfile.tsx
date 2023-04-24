@@ -8,7 +8,6 @@ import Header from '@src/containers/Header';
 import OfferingProperties from '@src/components/properties/OfferingProperties';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import RoundedImage from '@src/components/RoundedImage';
 import router from 'next/router';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
@@ -28,15 +27,14 @@ type OfferingProfileProps = {
 };
 
 const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
-  const { details, brandColor, website, offeringEntity, id, name, distributions } = offering;
+  const { details, brandColor, website, offeringEntity, id: offeringId, name: offeringName, distributions } = offering;
   const chainId = setChainId;
   const { reachLib, reFetchWallet } = useContext(ReachContext);
   const establishedContract = GetEstablishedContracts(offeringEntity.smartContracts, chainId)[0];
   const type = details && details.type;
   const stage = details && details.stage;
-  const generalPartner = offeringEntity.owners[0];
-  const gpAddress = generalPartner.addresses[0];
-  const shareURL = `${getBaseUrl()}/${id}`;
+  const organization = offeringEntity.organization;
+  const shareURL = `${getBaseUrl()}/${offeringId}`;
   const contractId = establishedContract?.cryptoAddress.address;
   const [retrievalIssue, setRetrievalIssue] = useState<boolean>();
   const [contractUser, setContractUser] = useState<string>();
@@ -45,6 +43,8 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const currentSalePrice = getLowestSalePrice(offering.sales, details.priceStart);
   const OfferingReProperties = offering.offeringEntity.realEstateProperties;
   const operatingCurrency = offering.offeringEntity.operatingCurrency;
+
+  const { id: orgId, name: orgName, logo } = organization;
 
   const [, getContractInfo] = useAsyncFn(async () => {
     try {
@@ -71,9 +71,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
     getContractInfo();
   }, [getContractInfo]);
 
-  const gpProfileImg = generalPartner.profileImage
-    ? generalPartner.profileImage
-    : '/assets/images/logos/company-placeholder.jpeg';
+  const OrgLogo = logo ? logo : '/assets/images/logos/company-placeholder.jpeg';
 
   return (
     <div data-test="layout-project" className="w-full h-full pb-10 md:pb-20">
@@ -90,7 +88,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
           <div className="flex-grow flex flex-col justify-center z-10">
             <h1 className={cn(['mt-24 text-3xl ubuntu font-bold text-gray-800'])}>
               <span className="flex items-center">
-                {name}
+                {offeringName}
 
                 {/* <button
                   data-test="atom-join-project-button"
@@ -106,10 +104,10 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
             </h1>
             <div
               className="flex text-sm text-gray-800 my-3 bg-white  rounded-full drop-shadow-md hover:drop-shadow-xl hover:cursor-pointer items-center max-w-max "
-              onClick={() => router.push(`/offerors/${generalPartner.id}`)}
+              onClick={() => router.push(`/offerors/${orgId}`)}
             >
-              <img className="h-10 w-10 bg-slate-400 border-1 border-slate-400 rounded-full" src={gpProfileImg} />{' '}
-              <span className="pl-2 pr-4 font-semibold">{generalPartner.fullName}</span>
+              <img className="h-10 w-10 bg-slate-400 border-1 border-slate-400 rounded-full" src={OrgLogo} />{' '}
+              <span className="pl-2 pr-4 font-semibold">{orgName}</span>
             </div>
             {offeringEntity.addresses.map((address, i) => (
               <AddressDisplay address={address} key={i} className="text-sm" />
@@ -131,7 +129,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
                 offering={offering}
                 currentUser={contractUser}
                 currentSalePrice={currentSalePrice}
-                generalPartner={generalPartner}
+                organization={organization}
               />
             )}
           </div>

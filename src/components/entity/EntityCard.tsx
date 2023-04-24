@@ -1,24 +1,21 @@
 import Card from '../cards/Card';
 import React from 'react';
-import RoundedImage from '../RoundedImage';
+import router from 'next/router';
 import { LegalEntity } from 'types';
-import { useRouter } from 'next/router';
 
 type EntityCardProps = {
   entity: LegalEntity;
 };
 
 const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
-  const router = useRouter();
-  const orgId = router.query.organizationId;
-  const { displayName, supplementaryLegalText, jurisdiction, id, subsidiaries, owners, offerings } = entity;
+  const { displayName, jurisdiction, id, subsidiaries, owners, offerings, organization } = entity;
 
   const isOfferingEntity = offerings.length > 0;
 
   return (
     <div
       onClick={() => {
-        router.push(`/${orgId}/entities/${id}`);
+        router.push(`/${organization.id}/entities/${id}`);
       }}
     >
       <Card className="rounded-lg hover:shadow-xl cursor-pointer md:w-96">
@@ -34,8 +31,11 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
           </div>
         </div>
 
-        <div className="flex border-t-2 border-gray-200 rounded-b-lg px-6 py-2 justify-between">
-          {isOfferingEntity && <div className="text-sm font-bold text-gray-700">This is an offering SPV</div>}
+        <div className="flex border-t-2 border-gray-200 rounded-b-lg px-6 py-2 h-10 justify-between">
+          <div>
+            {isOfferingEntity && <div className="text-sm font-bold text-gray-700">This is an offering SPV</div>}
+          </div>
+          <div>{jurisdiction && <div className="text-sm font-medium text-gray-500">{jurisdiction}</div>}</div>
         </div>
       </Card>
     </div>

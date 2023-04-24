@@ -10,14 +10,13 @@ import { useRouter } from 'next/router';
 
 export type OfferingCardProps = {
   offering: Offering;
-  organizationId?: string;
 };
 
-const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organizationId }) => {
+const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const router = useRouter();
-  const { name, shortDescription, id, details, image } = offering;
-  // const { investmentCurrency, projectedAppreciation, projectedIrr, projectedIrrMax, preferredReturn } = details;
+  const { name, shortDescription, id, details, image, offeringEntity } = offering;
   const currentPrice = details && getLowestSalePrice(offering.sales, offering.details?.priceStart);
+  const organizationId = offeringEntity?.organization.id;
 
   const publicFacing = router.pathname.includes('/offerors');
   const pushLink = publicFacing ? `/offerors/${organizationId}/${id}` : `/${organizationId}/offerings/${id}`;
@@ -31,7 +30,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organizationId })
       <Card className="md:mr-5 md:w-96 rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer">
         <img src={image} className="object-cover w-full h-24 absolute" />
         <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />
-        <h2 className="text-xl font-bold text-white absolute left-4 top-10">{name}</h2>
+        <div className="flex justify-between absolute left-4 top-5 right-4 items-center">
+          <h2 className="text-xl font-bold text-white ">{name}</h2>
+          <img src={image} referrerPolicy="no-referrer" className="w-16 h-16 border-2 border-white rounded-full" />
+        </div>
         <div className="p-4">
           {shortDescription && (
             <>

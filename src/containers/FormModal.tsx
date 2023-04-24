@@ -45,7 +45,7 @@ const FormModal: FC<FormModalProps> = ({ noModal, formOpen, title, subTitle, onC
               style={{ overflow: 'smooth', maxWidth: '800px' }}
             >
               <div className="absolute -top-1 right-0">
-                <CloseButton onClose={onClose} />
+                <CloseButton onClick={onClose} />
               </div>
               {title && (
                 <>

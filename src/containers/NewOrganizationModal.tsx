@@ -12,7 +12,7 @@ const ModalCreateOrganization: FC = () => {
       <div className="flex-grow z-10 bg-gradient-to-b from-gray-100 to-blue-50 h-screen">
         <div className="h-full px-4 md:px-8 py-2 md:py-5">
           <div className="mx-auto min-h-full">
-            <CloseButton onClose={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })} />
+            <CloseButton onClick={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })} />
             <div className="flex flex-grow justify-center h-full z-10">
               <div className="md:flex flex-col h-full w-full items-center pt-20">
                 <div className="flex-col px-4 w-full" style={{ maxWidth: '600px' }}>

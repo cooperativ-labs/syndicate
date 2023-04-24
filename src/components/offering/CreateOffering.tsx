@@ -11,9 +11,7 @@ import EntitySelector from '../form-components/EntitySelector';
 import FormButton from '../buttons/FormButton';
 import FormModal from '@src/containers/FormModal';
 import { ADD_OFFERING, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { investmentOfferingTypeOptions } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { ReachContext } from '@src/SetReachContext';
 import { useMutation } from '@apollo/client';
 
 import { Organization } from 'types';

@@ -102,7 +102,7 @@ export const UPDATE_ORGANIZATION_INFORMATION = gql`
     $currentDate: DateTime!
     $organizationId: [ID!]
     $name: String!
-    $image: String
+    $logo: String
     $bannerImage: String
     $isPublic: Boolean
     $shortDescription: String
@@ -114,13 +114,13 @@ export const UPDATE_ORGANIZATION_INFORMATION = gql`
         filter: { id: $organizationId }
         set: {
           lastUpdate: $currentDate
-          name: $displayName
-          logo: $image
+          name: $name
+          logo: $logo
           bannerImage: $bannerImage
           isPublic: $isPublic
           shortDescription: $shortDescription
           description: $description
-          country: $jurisdiction
+          country: $country
         }
       }
     ) {

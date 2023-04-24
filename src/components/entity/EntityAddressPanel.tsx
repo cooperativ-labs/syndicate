@@ -11,7 +11,7 @@ type EntityAddressPanelProps = {
 
 const EntityAddressPanel: FC<EntityAddressPanelProps> = ({ offeringEntity, owners }) => {
   return (
-    <SectionBlock sectionTitle={offeringEntity.fullName} mini>
+    <SectionBlock sectionTitle={offeringEntity.legalName} mini>
       <div className="bg-gray-200 p-3 rounded-md">
         {offeringEntity.addresses.map((address, i) => (
           <div key={i}>
@@ -25,7 +25,7 @@ const EntityAddressPanel: FC<EntityAddressPanelProps> = ({ offeringEntity, owner
             {owners.map((entity, i) => {
               return (
                 <div key={i}>
-                  <div>{entity.fullName}</div>
+                  <div>{entity.legalName}</div>
                   <div>
                     {entity.addresses.map((address, i) => (
                       <AddressDisplay address={address} key={i} />

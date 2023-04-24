@@ -1,15 +1,16 @@
 import cn from 'classnames';
 import React, { FC } from 'react';
-import { EditSelectionType } from '../entity/EntitySpecifications';
+import { EditEntitySelectionType } from '../entity/EntitySpecifications';
+import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 
 type ClickToEditItemProps = {
   label: string;
   currenValue: string;
   form: any;
-  editOn: EditSelectionType;
-  itemType: EditSelectionType;
+  editOn: EditEntitySelectionType | EditOrganizationSelectionType;
+  itemType: EditEntitySelectionType | EditOrganizationSelectionType;
   isEntityOwner: boolean;
-  setEditOn: (editOn: EditSelectionType) => void;
+  setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType) => void;
 };
 const ClickToEditItem: FC<ClickToEditItemProps> = ({
   label,

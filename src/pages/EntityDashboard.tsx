@@ -1,9 +1,7 @@
-import CreateEntity from '@src/components/entity/CreateEntity';
 import EntitiesList from '@src/components/entity/EntitiesList';
-import EntityCard from '@src/components/entity/EntityCard';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import MajorActionButton from '@src/components/buttons/MajorActionButton';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import router from 'next/router';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';

@@ -9,8 +9,9 @@ import cn from 'classnames';
 import Select from '../form-components/Select';
 import { CurrencyCode, LegalEntity } from 'types';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
+import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 
-export type EditSelectionType =
+export type EditEntitySelectionType =
   | 'displayName'
   | 'legalName'
   | 'jurisdiction'
@@ -20,10 +21,10 @@ export type EditSelectionType =
   | 'none';
 
 export const changeForm = (
-  itemType: EditSelectionType,
+  itemType: EditEntitySelectionType,
   entity: LegalEntity,
 
-  setEditOn: (editOn: EditSelectionType) => void,
+  setEditOn: (editOn: EditEntitySelectionType) => void,
   handleChange: (values: {
     legalName: string;
     jurisdiction?: string;
@@ -33,7 +34,6 @@ export const changeForm = (
   }) => void
 ) => {
   const { displayName, legalName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
-  console.log(displayName);
   return (
     <Formik
       initialValues={{
@@ -121,7 +121,7 @@ type EntitySpecificationsProps = {
 };
 
 const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityOwner, updateLegalEntity }) => {
-  const [editOn, setEditOn] = useState<EditSelectionType>('none');
+  const [editOn, setEditOn] = useState<EditEntitySelectionType | EditOrganizationSelectionType>('none');
   const { id, legalName, displayName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
 
   const handleChange = async (values: {

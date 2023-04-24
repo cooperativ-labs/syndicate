@@ -1,87 +1,98 @@
-import AddressDisplay from '@src/components/address/AddressDisplay';
-import EmailAddressList from '@src/components/EmailAddressList';
-import LinkedAccountsList from '@src/components/LinkedAccountsList';
-import React, { FC, useContext, useEffect, useState } from 'react';
-import RoundedImage from '@src/components/RoundedImage';
-import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { CurrencyCode, LegalEntity } from 'types';
-import { useMutation, useQuery } from '@apollo/client';
-
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { REMOVE_ENTITY_ADDRESS, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
-
 import DashboardCard from '@src/components/cards/DashboardCard';
-
-import Button from '@src/components/buttons/Button';
-import CreateAddress from '@src/components/address/CreateAddress';
-import DeleteButton from '@src/components/buttons/DeleteButton';
-import EntitySpecifications, { changeForm, EditSelectionType } from '@src/components/entity/EntitySpecifications';
-import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
+import EmailAddressList from '@src/components/EmailAddressList';
 import FileUpload from '@src/components/form-components/FileUpload';
 import FormModal from '@src/containers/FormModal';
+import LinkedAccountsList from '@src/components/LinkedAccountsList';
+import ModalLoading from '@src/components/loading/ModalLoading';
+import OrganizationSpecifications, {
+  changeForm,
+  EditOrganizationSelectionType,
+} from '@src/components/organization/OrganizationSpecifications';
 import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
+import React, { FC, useEffect, useState } from 'react';
+import RoundedImage from '@src/components/RoundedImage';
 import SectionBlock from '@src/containers/SectionBlock';
+import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember';
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import TeamMemberList from '@src/components/entity/TeamMemberList';
+import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
+import {
+  ADD_ORGANIZATION_EMAIL,
+  GET_ORGANIZATION,
+  UPDATE_ORGANIZATION_INFORMATION,
+} from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { getEntityManagers, getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { Organization } from 'types';
+import { useMutation, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
-type EntityDetailsProps = {
-  entity: LegalEntity;
-};
-
-const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
+const OrganizationDetails: FC = () => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
-  const { data: userData, error: entityError } = useQuery(GET_USER, {
-    variables: {
-      id: userId,
-    },
-  });
+  const router = useRouter();
+  const orgId = router.query.organizationId;
+  const {
+    data: organizationData,
+    error: getOrgError,
+    loading,
+    refetch,
+  } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const organization: Organization = organizationData?.getOrganization;
 
-  const user = userData?.queryUser[0];
-
-  const isAdmin = getIsAdmin(userId, entity);
-
-  const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
-    useMutation(UPDATE_ENTITY_INFORMATION);
-  const [addEntityEmail, { data: dataEmail, error: errorEmail }] = useMutation(ADD_ENTITY_EMAIL);
-  const [deleteAddress, { error: deleteError }] = useMutation(REMOVE_ENTITY_ADDRESS);
-  const [addressModal, setAddressModal] = useState<boolean>(false);
+  const [updateOrganization, { data: updateOrgData, error: updateOrgError }] = useMutation(
+    UPDATE_ORGANIZATION_INFORMATION
+  );
+  const [addOrganizationEmail, { data: dataEmail, error: errorEmail }] = useMutation(ADD_ORGANIZATION_EMAIL);
   const [imageModal, setImageModal] = useState<boolean>(false);
-  const [nameEditOn, setNameEditOn] = useState<EditSelectionType>('none');
+  const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
   const [alerted, setAlerted] = useState<boolean>(false);
 
-  const error = updateEntityError || errorEmail || deleteError;
+  const error = updateOrgError || errorEmail || getOrgError;
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong. ${error}`);
     setAlerted(true);
   }
-
-  const { displayName, legalName, addresses, walletAddresses, subsidiaries, taxId, jurisdiction, operatingCurrency } =
-    entity;
-
-  const offerings = subsidiaries
-    .map((entity) => {
-      return entity.offerings;
-    })
-    .flat();
 
   const [localStorage, setLocalStorage] = useState(undefined);
   useEffect(() => {
     setLocalStorage(window.localStorage);
   }, [setLocalStorage]);
 
+  if (!organization || loading) {
+    return <ModalLoading />;
+  }
+
+  const {
+    name,
+    emailAddresses,
+    logo,
+    bannerImage,
+    legalEntities,
+    country,
+    isPublic,
+    description,
+    shortDescription,
+    linkedAccounts,
+  } = organization;
+
+  const isAdmin = getIsAdmin(userId, organization);
+
+  const offerings = legalEntities
+    .map((entity) => {
+      return entity.offerings;
+    })
+    .flat();
+
   const emailForSignIn = localStorage?.getItem('emailForSignIn');
   const addEmailToDatabase = (email: string) => {
     try {
-      addEntityEmail({
+      addOrganizationEmail({
         variables: {
-          entityId: entity.id,
+          organizationId: orgId,
           address: email,
           isPublic: true,
         },
@@ -97,69 +108,59 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     addEmailToDatabase(emailForSignIn);
   }
 
-  const handleDisplayNameChange = (values: {
-    displayName: string;
-    fullName: string;
-    jurisdiction: string;
-    operatingCurrency: CurrencyCode;
-  }) => {
-    updateLegalEntity({
+  const handleNameChange = (values: { name: string }) => {
+    updateOrganization({
       variables: {
         currentDate: currentDate,
-        entityId: entity.id,
-        displayName: values.displayName,
-        fullName: fullName,
-        jurisdiction: jurisdiction,
-        operatingCurrency: operatingCurrency.code,
+        organizationId: organization.id,
+        name: values.name,
+        logo: logo,
+        bannerImage: bannerImage,
+        country: country,
       },
     }).then((res) => {
       setNameEditOn('none');
     });
   };
   const handleToggle = (profileVisibility: boolean) => {
-    updateLegalEntity({
+    updateOrganization({
       variables: {
         currentDate: currentDate,
-        entityId: entity.id,
-        fullName: fullName,
-        displayName: displayName,
-        publicFacing: profileVisibility,
-        jurisdiction: jurisdiction,
-        operatingCurrency: operatingCurrency.code,
+        organizationId: organization.id,
+        name: name,
+        country: country,
+        isPublic: profileVisibility,
+        logo: logo,
+        bannerImage: bannerImage,
       },
     });
   };
 
-  const addProfileImageToDb = (url: string) => {
-    updateLegalEntity({
+  const addLogoToDB = (url: string) => {
+    updateOrganization({
       variables: {
-        entityId: entity.id,
+        organizationId: organization.id,
         currentDate: currentDate,
-        fullName: fullName,
-        displayName: displayName,
-        jurisdiction: jurisdiction,
-        operatingCurrency: operatingCurrency.code,
-        image: url,
+        name: name,
+        country: country,
+        bannerImage: bannerImage,
+
+        logo: url,
       },
     });
   };
 
   const addBannerImageToDb = (url: string) => {
-    updateLegalEntity({
+    updateOrganization({
       variables: {
-        entityId: entity.id,
+        organizationId: organization.id,
         currentDate: currentDate,
-        fullName: fullName,
-        displayName: displayName,
-        jurisdiction: jurisdiction,
-        operatingCurrency: operatingCurrency.code,
+        name: name,
+        country: country,
+
         bannerImage: url,
       },
     });
-  };
-
-  const handleDeleteAddress = (addressId: string) => {
-    deleteAddress({ variables: { currentDate: currentDate, geoAddressId: addressId, entityId: entity.id } });
   };
 
   const submissionCompletion = (setModal) => {
@@ -168,26 +169,15 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
 
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
-      <FormModal
-        formOpen={addressModal}
-        onClose={() => setAddressModal(false)}
-        title={`Add an address to ${entity.displayName}`}
-      >
-        <CreateAddress entity={entity} actionOnCompletion={() => submissionCompletion(setAddressModal)} />
-      </FormModal>
-      <FormModal
-        formOpen={imageModal}
-        onClose={() => setImageModal(false)}
-        title={`Add an address to ${entity.displayName}`}
-      >
-        <div className="flex grid grid-cols-3 gap-4">
+      <FormModal formOpen={imageModal} onClose={() => setImageModal(false)}>
+        <div className=" grid grid-cols-3 gap-4">
           <div className="flex flex-col col-span-1 justify-center">
-            <img className="h-32 object-scale-down" src={profileImage} />
+            <img className="h-32 object-scale-down" src={logo} />
             <FileUpload
-              uploaderText="Add profile image"
-              urlToDatabase={addProfileImageToDb}
+              uploaderText="Add logo"
+              urlToDatabase={addLogoToDB}
               accept={['jpg', 'jpeg', 'png', 'svg']}
-              baseUploadUrl={`/entities/${entity.id}/${userId}`}
+              baseUploadUrl={`/${organization.id}/`}
             />
           </div>
           <div className="col-span-2">
@@ -196,7 +186,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
               uploaderText="Add banner image"
               urlToDatabase={addBannerImageToDb}
               accept={['jpg', 'jpeg', 'png', 'svg']}
-              baseUploadUrl={`/entities/${entity.id}/${userId}`}
+              baseUploadUrl={`/${organization.id}/`}
             />
           </div>
         </div>
@@ -208,19 +198,19 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
           <div className="ml-4 flex items-center ">
             <RoundedImage
               className="h-40 w-40 bg-gray-800 backdrop-opacity-10  border-2 border-gray-100 mr-4"
-              src={profileImage}
+              src={logo}
               onClick={() => setImageModal(true)}
             />
 
             <div>
-              {nameEditOn === 'displayName' ? (
-                changeForm('displayName', entity, setNameEditOn, handleDisplayNameChange)
+              {nameEditOn === 'name' ? (
+                changeForm('name', organization, setNameEditOn, handleNameChange)
               ) : (
                 <div
                   className="font-ubuntu text-3xl text-white font-semibold hover:cursor-pointer"
-                  onClick={() => setNameEditOn('displayName')}
+                  onClick={() => setNameEditOn('name')}
                 >
-                  {displayName}
+                  {name}
                 </div>
               )}
             </div>
@@ -242,79 +232,54 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
             <div className="flex justify-between">
               <div className="font-semibold">Set as public profile:</div>
               <div className="flex items-center">
-                <ProfileVisibilityToggle profileVisibility={entity.publicFacing} handleToggle={handleToggle} />
-                <a href={`/offerors/${entity.id}`} target="_blank" rel="noreferrer">
+                <ProfileVisibilityToggle profileVisibility={isPublic} handleToggle={handleToggle} />
+                <a href={`/offerors/${organization.id}`} target="_blank" rel="noreferrer" className="ml-2">
                   <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
                 </a>
               </div>
             </div>
             <hr className="my-4" />
-            <EntitySpecifications entity={entity} isEntityOwner={true} updateLegalEntity={updateLegalEntity} />
+            <OrganizationSpecifications
+              organization={organization}
+              isEntityOwner={true}
+              updateOrganization={updateOrganization}
+            />
 
             <div>
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Email addresses'}>
                   <EmailAddressList emailAddresses={emailAddresses} withEdit />
-                  <SettingsAddEmail completionUrl={`/entities/${entity.id}`} />
+                  <SettingsAddEmail completionUrl={`/${orgId}/settings`} />
                 </SectionBlock>
               </div>
-              <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
-                <SectionBlock asAccordion sectionTitle={'Locations'}>
-                  <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
-                    {addresses.map((address, i) => {
-                      return (
-                        <div key={i} className="p-3 bg-slate-100 rounded-md relative">
-                          <div className="mr-10">
-                            <AddressDisplay address={address} withCountry withLabel />{' '}
-                          </div>
-                          <div className="absolute -right-1 -top-1">
-                            <DeleteButton
-                              onDelete={() => handleDeleteAddress(address.id)}
-                              iconColor={'gray-800'}
-                              bgColor={'white'}
-                            />
-                          </div>
-                        </div>
-                      );
-                    })}
-                  </div>
-                  <Button
-                    className="mt-4 rounded-md bg-cLightBlue p-2 px-4 text-white font-semibold"
-                    onClick={() => setAddressModal(true)}
-                  >
-                    Add Address
-                  </Button>
-                </SectionBlock>
-              </div>
+
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Socials'}>
                   <LinkedAccountsList linkedAccounts={linkedAccounts} />
-                  <SettingsSocial entity={entity} />{' '}
+                  <SettingsSocial organization={organization} />{' '}
                 </SectionBlock>
               </div>
             </div>
           </DashboardCard>
         </div>
-
-        {/* <div>
-          <div className="mt-5 text-lg">Tab Section</div>
-          <div>Section for changing address, contact info, profile picture, banner image</div>
-          <div>Section for jurisdiction, tax Id, operating currency, legal note </div>
-          <div>Section for adding socials</div>
-        </div> */}
         <>
           <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Team</h2>
-          <TeamMemberList teamMembers={entity.users} entityId={entity.id} currentUserId={userId} isAdmin={isAdmin} />
+          <TeamMemberList
+            teamMembers={organization.users}
+            organizationId={organization.id}
+            currentUserId={userId}
+            isAdmin={isAdmin}
+          />
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
             <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
-              <SettingsAddTeamMember entityId={entity.id} />
+              <SettingsAddTeamMember organizationId={organization.id} />
             </SectionBlock>
           </div>
         </>
       </TwoColumnLayout>
-      <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings} entity={entity} />
+      {/* <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings} entity={entity} /> */}
     </div>
   );
 };
 
-export default EntityDetails;
+export default OrganizationDetails;
