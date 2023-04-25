@@ -3,9 +3,8 @@ import MoneyDisplay from '../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React from 'react';
-import { Currency, Offering } from 'types';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { getLowestSalePrice, numberWithCommas } from '@src/utils/helpersMoney';
+import { Offering } from 'types';
+import { getLowestSalePrice } from '@src/utils/helpersMoney';
 import { useRouter } from 'next/router';
 
 export type OfferingCardProps = {
@@ -18,8 +17,8 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const currentPrice = details && getLowestSalePrice(offering.sales, offering.details?.priceStart);
   const organizationId = offeringEntity?.organization.id;
 
-  const publicFacing = router.pathname.includes('/offerors');
-  const pushLink = publicFacing ? `/offerors/${organizationId}/${id}` : `/${organizationId}/offerings/${id}`;
+  const publicFacing = router.pathname.includes('/portal');
+  const pushLink = publicFacing ? `/${organizationId}/portal/${id}` : `/${organizationId}/offerings/${id}`;
   return (
     <div
       onClick={() => {

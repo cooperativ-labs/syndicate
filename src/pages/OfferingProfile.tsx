@@ -104,7 +104,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
             </h1>
             <div
               className="flex text-sm text-gray-800 my-3 bg-white  rounded-full drop-shadow-md hover:drop-shadow-xl hover:cursor-pointer items-center max-w-max "
-              onClick={() => router.push(`/offerors/${orgId}`)}
+              onClick={() => router.push(`/${orgId}/portal`)}
             >
               <img className="h-10 w-10 bg-slate-400 border-1 border-slate-400 rounded-full" src={OrgLogo} />{' '}
               <span className="pl-2 pr-4 font-semibold">{orgName}</span>

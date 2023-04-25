@@ -238,7 +238,7 @@ const OrganizationDetails: FC = () => {
               <div className="font-semibold">Set as public profile:</div>
               <div className="flex items-center">
                 <ProfileVisibilityToggle profileVisibility={isPublic} handleToggle={handleToggle} />
-                <a href={`/offerors/${organization.id}`} target="_blank" rel="noreferrer" className="ml-2">
+                <a href={`/${organization.id}/portal`} target="_blank" rel="noreferrer" className="ml-2">
                   <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
                 </a>
               </div>

@@ -204,8 +204,9 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     alert(`Oops. Looks like something went wrong: ${error.message}`);
   }
 
+  const orgId = offering.offeringEntity.organization.id;
   if (data) {
-    router.push(`/offerings/${offering.id}`);
+    router.push(`${orgId}/offerings/${offering.id}`);
   }
 
   const submitApplication = async (values) => {

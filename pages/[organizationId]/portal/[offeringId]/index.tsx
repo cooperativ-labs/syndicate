@@ -1,23 +1,26 @@
 import Footer from '@src/Footer/Footer';
 import Head from 'next/head';
 
-import OrganizationProfile from '@src/pages/OrganizationProfile';
 import React from 'react';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GetServerSideProps, NextPage } from 'next';
+
+import OfferingProfile from '@src/pages/OfferingProfile';
+import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
+import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
 import { initializeApollo } from '@src/utils/apolloClient';
-import { Organization } from 'types';
+import { Offering } from 'types';
+import PortalWrapper from '@src/containers/PortalWrapper';
 
 type ResultProps = {
-  result: Organization;
+  result: Offering;
 };
 
-const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
-  const organization = result;
+const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
+  const offering = result;
+  const orgId = offering.offeringEntity.organization.id;
+  const { name, shortDescription, sharingImage, id, isPublic, accessCode } = offering;
 
-  const { name, shortDescription, sharingImage, id } = organization;
-
-  return organization ? (
+  return offering && isPublic ? (
     <div data-test="component-project" className="bg-gray-50">
       <Head>
         <title>{name}</title>
@@ -29,7 +32,7 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
           property="og:image"
           content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
         />
-        <meta property="og:url" content={`https://cooperativ.io/offerings/${id}`}></meta>
+        <meta property="og:url" content={`https://cooperativ.io/${orgId}/offerings/${id}`}></meta>
         Twitter
         <meta name="twitter:title" content={name} />
         <meta name="twitter:description" content={shortDescription} />
@@ -39,12 +42,15 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
         />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <OrganizationProfile organization={organization} />
+      <ProfilePrivateModal offeringId={id} accessCode={accessCode} />
+      <PortalWrapper>
+        <OfferingProfile offering={offering} />
+      </PortalWrapper>
       <Footer color="bg-gray-200" />
     </div>
   ) : (
     <div className="flex items-center justify-center w-full h-screen">
-      <div>Sorry, this syndication does not have a public profile. </div>
+      <div>Sorry, this offering does not have a profile. </div>
     </div>
   );
 };
@@ -52,14 +58,14 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const apolloClient = initializeApollo();
 
-  const organizationId = params.organizationId;
+  const offeringId = params.offeringId;
 
   try {
     const { data } = await apolloClient.query({
-      query: GET_ORGANIZATION,
-      variables: { id: organizationId },
+      query: GET_OFFERING,
+      variables: { id: offeringId },
     });
-    const result = data.getOrganization;
+    const result = data.getOffering;
     return {
       props: { result },
     };
@@ -73,4 +79,4 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   }
 };
 
-export default OfferorProfile;
+export default ProjectProfile;

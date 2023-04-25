@@ -36,7 +36,7 @@ const ContractInvestorActions: FC<ContractInvestorActionsProps> = ({
   const { reachLib } = useContext(ReachContext);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [updateDistribution, { data: updateDistributionData }] = useMutation(UPDATE_DISTRIBUTION);
-  const generalPartner = offering.offeringEntity?.owners[0];
+  const organization = offering.offeringEntity.organization;
 
   return (
     <div className="flex flex-col w-full gap-3">
@@ -75,7 +75,7 @@ const ContractInvestorActions: FC<ContractInvestorActionsProps> = ({
           <div className="text-medium text-gray-600 border-2 rounded-md p-3 text-center">Application Pending</div>
         ) : (
           <Button
-            onClick={() => router.push(`/offerors/${generalPartner.id}/${offering.id}/investor-application`)}
+            onClick={() => router.push(`/${organization.id}/portal/${offering.id}/investor-application`)}
             className={standardClass}
           >
             View investor application
