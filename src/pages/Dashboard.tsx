@@ -7,11 +7,11 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import router from 'next/router';
+import { ApplicationStoreProps, store } from '@context/store';
 import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import { ApplicationStoreProps, store } from '@context/store';
 
 const Dashboard: FC = () => {
   const { data: session, status } = useSession();

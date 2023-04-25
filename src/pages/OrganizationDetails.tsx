@@ -22,6 +22,7 @@ import {
   GET_ORGANIZATION,
   UPDATE_ORGANIZATION_INFORMATION,
 } from '@src/utils/dGraphQueries/organization';
+import { ApplicationStoreProps, store } from '@context/store';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
@@ -29,7 +30,6 @@ import { Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { ApplicationStoreProps, store } from '@context/store';
 
 const OrganizationDetails: FC = () => {
   const { data: session, status } = useSession();
@@ -123,7 +123,6 @@ const OrganizationDetails: FC = () => {
         country: country,
       },
     }).then((res) => {
-      console.log(res);
       setNameEditOn('none');
       router.reload();
     });

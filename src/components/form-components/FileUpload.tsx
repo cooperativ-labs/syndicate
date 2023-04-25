@@ -1,12 +1,12 @@
+import cn from 'classnames';
 import Compressor from 'compressorjs';
+import DeleteButton from '../buttons/DeleteButton';
 import React, { FC, useState } from 'react';
 import { DocumentType } from 'types';
 import { FileUploader } from 'react-drag-drop-files';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import DeleteButton from '../buttons/DeleteButton';
-import cn from 'classnames';
 
 type FileUploadProps = {
   uploaderText: string;

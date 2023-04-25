@@ -4,15 +4,15 @@ import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 
+import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import router from 'next/router';
 import { ADD_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { ApplicationStoreProps, store } from '@context/store';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import FileUpload from '../form-components/FileUpload';
-import { ApplicationStoreProps, store } from '@context/store';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
