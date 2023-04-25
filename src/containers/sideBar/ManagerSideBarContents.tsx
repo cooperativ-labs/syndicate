@@ -1,15 +1,15 @@
 import DisconnectButton from '@src/components/buttons/DisconnectButton';
 import LogoutButton from '@src/components/buttons/LogoutButton';
 import ManagerSidebarItem from '@src/components/buttons/ManagerSidebarItem';
-import React, { FC, useContext } from 'react';
-import { ReachContext } from '@src/SetReachContext';
+import React, { FC } from 'react';
+
+export type ManagerSideBarItemSelectionType = 'Overview' | 'Offerings' | 'Entities' | 'Settings' | 'None';
 
 type ManagerSideBarContentsProps = {
-  organizationId?: string;
+  organizationId: string;
 };
 
 const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationId }) => {
-  const { reFetchWallet } = useContext(ReachContext);
   return (
     <div className="flex flex-col mr-2">
       <ManagerSidebarItem link={`/${organizationId}/`} title="Overview" />
@@ -20,7 +20,7 @@ const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationI
 
       <div className="md:hidden ml-4">
         <div className="flex flex-col my-4 gap-8">
-          <DisconnectButton refetchWallet={reFetchWallet} />
+          <DisconnectButton />
           <LogoutButton />
         </div>
       </div>

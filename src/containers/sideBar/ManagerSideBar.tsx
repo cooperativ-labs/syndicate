@@ -17,14 +17,9 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
   const { dispatch: dispatchSidebar, ManagerSidebarOpen } = applicationStore;
   const windowSize = useWindowSize();
   const orgId = router.query.organizationId;
+  const OrganizationIdFromSessionStorage = sessionStorage.getItem('CHOSEN_ORGANIZATION');
 
-  const [selection, setSelection] = useState(undefined);
-  useEffect(() => {
-    setSelection(window.sessionStorage);
-  }, [setSelection]);
-
-  const OrganizationIdFromSessionStorage = selection?.getItem('CHOSEN_ORGANIZATION');
-  const currentOrganization = orgId && organizations?.find((org) => org.id === orgId);
+  const currentOrganizationName = orgId && organizations?.find((org) => org.id === orgId)?.name;
 
   useEffect(() => {
     if (ManagerSidebarOpen && windowSize.width < 768) {
@@ -48,7 +43,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
 
       <div className="hidden md:flex col-span-5  bg-gray-100 w-48 z-10 min-h-full">
         <div className="h-full bg-opacity-0 p-1 pr-2">
-          <div className="mb-5 text-lg font-bold px-2 pr-4 md:mt-4 ">{currentOrganization?.name}</div>
+          <div className="mb-5 text-lg font-bold px-2 pr-4 md:mt-4 ">{currentOrganizationName}</div>
           <ManagerSideBarContents organizationId={OrganizationIdFromSessionStorage} />
         </div>
       </div>
@@ -85,7 +80,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
               </Button>
             </div>
           </div>
-          <ManagerSideBarContents />
+          <ManagerSideBarContents organizationId={OrganizationIdFromSessionStorage} />
         </div>
       </div>
     </div>

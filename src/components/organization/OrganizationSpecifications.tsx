@@ -58,7 +58,7 @@ export const changeForm = (
           <div className="w-full md:col-span-3">
             {itemType === 'country' && <Input className={' bg-opacity-0'} required name="country" />}
             {itemType === 'name' && <Input className={' bg-opacity-0'} required name="name" />}
-            {itemType === 'description' && <Input className={' bg-opacity-0'} required name="description" />}
+            {itemType === 'description' && <Input className={' bg-opacity-0'} required textArea name="description" />}
             {itemType === 'shortDescription' && (
               <Input className={' bg-opacity-0 w-full'} required name="shortDescription" textArea />
             )}
@@ -87,13 +87,13 @@ export const changeForm = (
 
 type OrganizationSpecificationsProps = {
   organization: Organization;
-  isEntityOwner: boolean;
+  isOrganizationManager: boolean;
   updateOrganization: (any) => void;
 };
 
 const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
   organization,
-  isEntityOwner,
+  isOrganizationManager,
   updateOrganization,
 }) => {
   const [editOn, setEditOn] = useState<EditOrganizationSelectionType | EditEntitySelectionType>('none');
@@ -112,7 +112,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
       updateOrganization({
         variables: {
           currentDate: currentDate,
-          entityId: id,
+          organizationId: id,
           country: country,
           name: name,
           description: description,
@@ -135,7 +135,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
         form={changeForm('name', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="name"
-        isEntityOwner={isEntityOwner}
+        isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
@@ -144,7 +144,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
         form={changeForm('country', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="country"
-        isEntityOwner={isEntityOwner}
+        isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
@@ -153,17 +153,17 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
         form={changeForm('description', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="description"
-        isEntityOwner={isEntityOwner}
+        isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />
 
       <ClickToEditItem
-        label="Supplementary Legal Text"
+        label="Short Description (160 characters max)"
         currenValue={shortDescription}
         form={changeForm('shortDescription', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="shortDescription"
-        isEntityOwner={isEntityOwner}
+        isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />
     </>

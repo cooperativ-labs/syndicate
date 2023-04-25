@@ -1,4 +1,4 @@
-import React, { FC, useState } from 'react';
+import React, { FC, useContext, useState } from 'react';
 
 import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
 import { Form, Formik } from 'formik';
@@ -11,6 +11,8 @@ import { ADD_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import FileUpload from '../form-components/FileUpload';
+import { ApplicationStoreProps, store } from '@context/store';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
@@ -22,8 +24,9 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   const user = userData?.queryUser[0];
   const [addOrganization, { data, error }] = useMutation(ADD_ORGANIZATION);
-
-  const setDefaultLogo = defaultLogo ? defaultLogo : '/assets/images/logos/company-placeholder.jpeg';
+  const [logoUrl, setLogoUrl] = useState<string>('');
+  const applicationStore: ApplicationStoreProps = useContext(store);
+  const { dispatch: dispatchPageIsLoading } = applicationStore;
 
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -54,12 +57,12 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
         }
         return errors;
       }}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
         addOrganization({
           variables: {
             userId: user.id,
-            logo: setDefaultLogo,
+            logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
             website: values.website,
             name: values.name,
             shortDescription: values.shortDescription,
@@ -67,19 +70,43 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
             currentDate: currentDate,
           },
         });
+        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
         setSubmitting(false);
       }}
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
-          <Input
-            className={defaultFieldDiv}
-            required
-            labelText="Organization's name"
-            name="name"
-            type="text"
-            placeholder="Alphabet Inc."
-          />
+          <div className="grid md:grid-cols-2 gap-4">
+            <div className="col-span-1">
+              <Input
+                className={defaultFieldDiv}
+                required
+                labelText="Organization's name"
+                name="name"
+                type="text"
+                placeholder="Alphabet Inc."
+              />{' '}
+              <Input
+                className={defaultFieldDiv}
+                labelText="Country of operation"
+                name="country"
+                type="text"
+                placeholder="e.g. Cayman Islands"
+              />
+            </div>
+            <div className="flex col-span-1 pt-5 justify-center">
+              <FileUpload
+                uploaderText="Add logo"
+                urlToDatabase={setLogoUrl}
+                accept={['jpg', 'jpeg', 'png', 'svg']}
+                imagePreview={logoUrl}
+                setImagePreview={setLogoUrl}
+                className="flex p-3 bg-gray-100  h-40 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40"
+                // baseUploadUrl={`/${organization.id}/`}
+              />
+            </div>
+          </div>
+          {/* <Input className={defaultFieldDiv} labelText="Logo" name="logo" type="text" /> */}
           <Input
             className={defaultFieldDiv}
             labelText="Organization's website"
@@ -87,17 +114,6 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
             type="text"
             placeholder="e.g. https://www.cooperativ.io"
           />
-
-          {/* <Input className={defaultFieldDiv} labelText="Logo" name="logo" type="text" /> */}
-
-          <Input
-            className={defaultFieldDiv}
-            labelText="Country of operation"
-            name="country"
-            type="text"
-            placeholder="e.g. Cayman Islands"
-          />
-
           <Input
             className={defaultFieldDiv}
             labelText="Short description of the organization"

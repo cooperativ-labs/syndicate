@@ -1,5 +1,4 @@
 import CloseButton from '@src/components/buttons/CloseButton';
-import CreateOfferingPage from '@pages/[organizationId]/offerings/create-offering';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import React, { FC, useContext } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
@@ -9,20 +8,31 @@ const ModalCreateOrganization: FC = () => {
   const { dispatch: toggleCreateOrganization, CreateOrgModalOpen } = applicationStore;
   if (CreateOrgModalOpen) {
     return (
-      <div className="flex-grow z-10 bg-gradient-to-b from-gray-100 to-blue-50 h-screen">
+      <div
+        data-test="component-create-new-org-modal"
+        className="flex-grow z-50 bg-gradient-to-b from-gray-100 to-blue-50 md:h-screen absolute top-0 bottom-0 right-0 left-0 "
+      >
         <div className="h-full px-4 md:px-8 py-2 md:py-5">
           <div className="mx-auto min-h-full">
-            <CloseButton onClick={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })} />
+            <div className="flex justify-end">
+              <CloseButton onClick={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })} />
+            </div>
             <div className="flex flex-grow justify-center h-full z-10">
               <div className="md:flex flex-col h-full w-full items-center pt-20">
                 <div className="flex-col px-4 w-full" style={{ maxWidth: '600px' }}>
-                  <h1 className="text-2xl font-bold font-cDarkBlue text-center mb-4">
-                    {`To begin creating offerings, you'll need to create an organization.`}
-                  </h1>
+                  <h1 className="text-3xl font-bold font-cDarkBlue text-center mb-4">{`Create a new organization.`}</h1>
                   <div className="px-3  md:mx-2">
                     <CreateOrganization
                       actionOnCompletion={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
                     />
+                  </div>
+                  <div className="flex justify-center uppercase mt-4">
+                    <button
+                      className="uppercase font-semibold text-sm"
+                      onClick={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
+                    >
+                      close
+                    </button>
                   </div>
                 </div>
               </div>

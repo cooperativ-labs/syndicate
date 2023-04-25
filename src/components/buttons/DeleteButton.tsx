@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type DeleteButtonProps = {
   onDelete: () => void;
-  iconColor: string;
-  bgColor: string;
+  iconColor?: string;
+  bgColor?: string;
 };
 
 const DeleteButton: FC<DeleteButtonProps> = ({ iconColor, bgColor, onDelete }) => {

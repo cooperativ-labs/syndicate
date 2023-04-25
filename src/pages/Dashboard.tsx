@@ -1,16 +1,17 @@
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import OfferingFinder from '@src/components/offering/OfferingFinder';
 import OfferingsList from '@src/components/offering/OfferingsList';
-import React, { FC } from 'react';
+import React, { FC, useContext } from 'react';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import router from 'next/router';
-import { cleanOrganizationArray } from '@src/utils/helpersOrganization';
+import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import { ApplicationStoreProps, store } from '@context/store';
 
 const Dashboard: FC = () => {
   const { data: session, status } = useSession();
@@ -18,15 +19,13 @@ const Dashboard: FC = () => {
   const { data: userData, error } = useQuery(GET_USER, { variables: { id: session?.user.id } });
   const user = userData?.queryUser[0];
 
-  const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
-    variables: { walletAddress: userWalletAddress },
-  });
-
   const organizations = cleanOrganizationArray(user?.organizations);
-
   const hasOrganizations = organizations?.length > 0;
 
   // For Participants
+  const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
+    variables: { walletAddress: userWalletAddress },
+  });
   const participantOfferings = participantData?.queryOfferingParticipant.map((offeringParticipant) => {
     return offeringParticipant.offering;
   });
@@ -57,7 +56,13 @@ const Dashboard: FC = () => {
               <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your Organizations </h2>
               {organizations.map((organization) => {
                 return (
-                  <div key={organization.id} className="p-4 bg-slate-300 rounded-md">
+                  <div
+                    key={organization.id}
+                    className="p-4 bg-slate-300 rounded-md"
+                    onClick={() => {
+                      handleOrganizationChange(organization.id);
+                    }}
+                  >
                     <h3 className="text-lg mb-3 text-blue-900 font-semibold">{organization.name}</h3>
                     {/* <OfferingsList offerings={organization.offerings} /> */}
                   </div>

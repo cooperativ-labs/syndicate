@@ -8,9 +8,10 @@ export interface ApplicationStoreProps {
   CreateOrgModalOpen: boolean;
   PageIsLoading: boolean;
   ProfilePrivateModalOn: boolean;
-  sidebarOpen: boolean;
-  noticesOpen: boolean;
-  searchText: string;
+  // SidebarOpen: boolean;
+  NoticesOpen: boolean;
+  SearchText: string;
+  ActiveOrg: string;
   dispatch: React.Dispatch<any>;
 }
 
@@ -21,9 +22,10 @@ const initialState: ApplicationStoreProps = {
   CreateOrgModalOpen: false,
   PageIsLoading: false,
   ProfilePrivateModalOn: false,
-  sidebarOpen: false,
-  noticesOpen: true,
-  searchText: undefined,
+  // SidebarOpen: false,
+  NoticesOpen: true,
+  SearchText: undefined,
+  ActiveOrg: undefined,
   dispatch: null,
 };
 const store = createContext(initialState);
@@ -47,12 +49,14 @@ const StateProvider = ({ children }) => {
         return { ...state, ProfilePrivateModalOn: false };
       case 'SET_PROFILE_PRIVATE_MODAL_ON':
         return { ...state, ProfilePrivateModalOn: true };
-      case 'TOGGLE_SIDEBAR':
-        return { ...state, sidebarOpen: !state.sidebarOpen };
+      // case 'TOGGLE_SIDEBAR':
+      //   return { ...state, SidebarOpen: !state.SidebarOpen };
       case 'TOGGLE_NOTICES':
-        return { ...state, noticesOpen: !state.noticesOpen };
+        return { ...state, NoticesOpen: !state.NoticesOpen };
       case 'SET_SEARCHTEXT':
-        return { ...state, searchText: action.payload };
+        return { ...state, SearchText: action.payload };
+      case 'SET_ACTIVE_ORG':
+        return { ...state, ActiveOrg: action.payload };
       default:
         return { ...state };
     }

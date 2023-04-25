@@ -21,19 +21,22 @@ type ManagerProps = {
 
 const Manager: FC<ManagerProps> = ({ children }) => {
   const { data: session, status } = useSession();
+  const userId = session?.user.id;
   const apolloClient = useApolloClient();
   const [organizations, setOrganizations] = useState([]);
+  // const applicationStore: ApplicationStoreProps = useContext(store);
+  // const { ActiveOrg } = applicationStore;
 
   useEffect(() => {
     apolloClient
       .query({
         query: GET_USER,
-        variables: { id: session?.user.id },
+        variables: { id: userId },
       })
       .then((response) => {
         setOrganizations(response.data.queryUser[0]?.organizations);
       });
-  }, [session, setOrganizations, apolloClient]);
+  }, [userId, setOrganizations, apolloClient]);
 
   const _organizations = organizations?.map((org) => {
     return org.organization;

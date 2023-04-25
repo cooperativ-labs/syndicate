@@ -19,7 +19,7 @@ const RoundedImage: React.FunctionComponent<RoundedImageProps> = ({ src, classNa
       )}
       onClick={onClick}
     >
-      <img src={src} className="min-w-full absolute" />
+      <img src={src} className="h-full absolute" />
       {!!onClick && (
         <div className="flex backdrop-opacity-10 hover:backdrop-invert w-full h-full text-white hover:bg-gray-800/50 items-center justify-center opacity-0 hover:opacity-100">
           <FontAwesomeIcon icon="pen" />

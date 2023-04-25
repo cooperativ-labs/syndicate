@@ -9,7 +9,7 @@ import OrganizationSpecifications, {
   EditOrganizationSelectionType,
 } from '@src/components/organization/OrganizationSpecifications';
 import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 import RoundedImage from '@src/components/RoundedImage';
 import SectionBlock from '@src/containers/SectionBlock';
 import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
@@ -29,6 +29,7 @@ import { Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { ApplicationStoreProps, store } from '@context/store';
 
 const OrganizationDetails: FC = () => {
   const { data: session, status } = useSession();
@@ -39,13 +40,15 @@ const OrganizationDetails: FC = () => {
     data: organizationData,
     error: getOrgError,
     loading,
-    refetch,
   } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization: Organization = organizationData?.getOrganization;
 
   const [updateOrganization, { data: updateOrgData, error: updateOrgError }] = useMutation(
     UPDATE_ORGANIZATION_INFORMATION
   );
+  const applicationStore: ApplicationStoreProps = useContext(store);
+  const { dispatch: setActiveOrg } = applicationStore;
+
   const [addOrganizationEmail, { data: dataEmail, error: errorEmail }] = useMutation(ADD_ORGANIZATION_EMAIL);
   const [imageModal, setImageModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
@@ -67,6 +70,7 @@ const OrganizationDetails: FC = () => {
   }
 
   const {
+    id,
     name,
     emailAddresses,
     logo,
@@ -119,7 +123,9 @@ const OrganizationDetails: FC = () => {
         country: country,
       },
     }).then((res) => {
+      console.log(res);
       setNameEditOn('none');
+      router.reload();
     });
   };
   const handleToggle = (profileVisibility: boolean) => {
@@ -241,7 +247,7 @@ const OrganizationDetails: FC = () => {
             <hr className="my-4" />
             <OrganizationSpecifications
               organization={organization}
-              isEntityOwner={true}
+              isOrganizationManager={true}
               updateOrganization={updateOrganization}
             />
 

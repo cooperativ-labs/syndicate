@@ -18,7 +18,7 @@ const backgroundColor = ' bg-gray-200';
 const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) => {
   const OrganizationIdFromSessionStorage = window.sessionStorage?.getItem('CHOSEN_ORGANIZATION');
   const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: toggleCreateOrganization } = applicationStore;
+  const { dispatch } = applicationStore;
 
   return (
     <div className={cn('relative min-h-full', backgroundColor)}>
@@ -32,7 +32,9 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
 
               OrganizationIdFromSessionStorage === org.id ? 'border-4 border-slate-600' : ''
             )}
-            onClick={() => handleOrganizationChange(org.id)}
+            onClick={() =>
+              handleOrganizationChange(org.id, () => dispatch({ type: 'SET_ACTIVE_ORG', payload: org.id }))
+            }
           >
             <img className="w-14 h-14" src={org.logo ?? '/assets/images/logos/company-placeholder.jpeg'} alt="" />
 
@@ -41,7 +43,7 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
         ))}
         <button
           className="flex  mx-2 rounded-lg border-4 text-gray-800 hover:text-gray-800 text-xl  focus:outline-none"
-          onClick={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
+          onClick={() => dispatch({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
         >
           <div className=" flex items-center justify-center w-14 h-14">
             <FontAwesomeIcon icon={'fa-plus' as IconProp} />

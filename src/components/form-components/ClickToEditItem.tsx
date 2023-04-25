@@ -9,7 +9,7 @@ type ClickToEditItemProps = {
   form: any;
   editOn: EditEntitySelectionType | EditOrganizationSelectionType;
   itemType: EditEntitySelectionType | EditOrganizationSelectionType;
-  isEntityOwner: boolean;
+  isManager: boolean;
   setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType) => void;
 };
 const ClickToEditItem: FC<ClickToEditItemProps> = ({
@@ -18,7 +18,7 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
   form,
   editOn,
   itemType,
-  isEntityOwner,
+  isManager,
   setEditOn,
 }) => {
   return (
@@ -27,18 +27,18 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
         form
       ) : (
         <div
-          className={cn(`font-bold text-gray-700`, isEntityOwner && 'hover:cursor-pointer')}
+          className={cn(`font-bold text-gray-700`, isManager && 'hover:cursor-pointer')}
           onClick={() => {
-            isEntityOwner ? setEditOn(itemType) : {};
+            isManager ? setEditOn(itemType) : {};
           }}
         >
           {label}
         </div>
       )}
       <div
-        className={cn(isEntityOwner && 'hover:cursor-pointer')}
+        className={cn(isManager && 'hover:cursor-pointer')}
         onClick={() => {
-          isEntityOwner ? setEditOn(itemType) : {};
+          isManager ? setEditOn(itemType) : {};
         }}
       >
         {editOn !== itemType && currenValue}
