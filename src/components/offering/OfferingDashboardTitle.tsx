@@ -150,7 +150,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
         )}
         {profileVisibility && (
-          <a href={`${organizationId}/portal/${offeringId}`} target="_blank" rel="noreferrer">
+          <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
             <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
           </a>
         )}

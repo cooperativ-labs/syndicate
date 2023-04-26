@@ -3,30 +3,34 @@ import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
 // import PortalSideBar from './sideBar/PortalSideBar';
 import NavBar from './NavigationBar';
-import NewOrganizationModal from './NewOrganizationModal';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useContext } from 'react';
 import WalletChooserModal from './wallet/WalletChooserModal';
-import WithAuthentication from './WithAuthentication';
 import { ApplicationStoreProps, store } from '@context/store';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { useApolloClient } from '@apollo/client';
-import { useSession } from 'next-auth/react';
+import router from 'next/router';
+import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { useQuery } from '@apollo/client';
 
-// const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
-const BackgroundGradient = 'bg-white';
+const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
+// const BackgroundGradient = 'bg-white';
 
 type PortalProps = {
   children: React.ReactNode;
 };
 
 const Portal: FC<PortalProps> = ({ children }) => {
+  const orgId = router.query.organizationId;
+  const { data, loading, error } = useQuery(GET_ORGANIZATION, {
+    variables: { id: orgId },
+  });
+  const organization = data?.getOrganization;
+
   return (
     <div className="flex">
       <div className="flex z-30 md:z-10 min-h-screen">
         {/* <PortalSideBar organizations={_organizations} />{' '} */}
       </div>
       <div className="w-full">
-        <NavBar authenticatedUser />
+        <NavBar orgLogo={organization?.logo} />
 
         <div className="flex-grow z-10">
           <div className="mx-auto ">{children}</div>

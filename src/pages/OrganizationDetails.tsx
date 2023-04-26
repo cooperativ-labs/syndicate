@@ -46,8 +46,6 @@ const OrganizationDetails: FC = () => {
   const [updateOrganization, { data: updateOrgData, error: updateOrgError }] = useMutation(
     UPDATE_ORGANIZATION_INFORMATION
   );
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: setActiveOrg } = applicationStore;
 
   const [addOrganizationEmail, { data: dataEmail, error: errorEmail }] = useMutation(ADD_ORGANIZATION_EMAIL);
   const [imageModal, setImageModal] = useState<boolean>(false);
@@ -91,26 +89,26 @@ const OrganizationDetails: FC = () => {
     })
     .flat();
 
-  const emailForSignIn = localStorage?.getItem('emailForSignIn');
-  const addEmailToDatabase = (email: string) => {
-    try {
-      addOrganizationEmail({
-        variables: {
-          organizationId: orgId,
-          address: email,
-          isPublic: true,
-        },
-      });
+  // const emailForSignIn = localStorage?.getItem('emailForSignIn');
+  // const addEmailToDatabase = (email: string) => {
+  //   try {
+  //     addOrganizationEmail({
+  //       variables: {
+  //         organizationId: orgId,
+  //         address: email,
+  //         isPublic: true,
+  //       },
+  //     });
 
-      window.localStorage.removeItem('emailForSignIn');
-    } catch (err) {
-      throw new Error(err);
-    }
-  };
+  //     window.localStorage.removeItem('emailForSignIn');
+  //   } catch (err) {
+  //     throw new Error(err);
+  //   }
+  // };
 
-  if (emailForSignIn) {
-    addEmailToDatabase(emailForSignIn);
-  }
+  // if (emailForSignIn) {
+  //   addEmailToDatabase(emailForSignIn);
+  // }
 
   const handleNameChange = (values: { name: string }) => {
     updateOrganization({
@@ -238,7 +236,7 @@ const OrganizationDetails: FC = () => {
               <div className="font-semibold">Set as public profile:</div>
               <div className="flex items-center">
                 <ProfileVisibilityToggle profileVisibility={isPublic} handleToggle={handleToggle} />
-                <a href={`/${organization.id}/portal`} target="_blank" rel="noreferrer" className="ml-2">
+                <a href={`/${organization.id}`} target="_blank" rel="noreferrer" className="ml-2">
                   <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
                 </a>
               </div>

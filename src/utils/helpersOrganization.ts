@@ -3,7 +3,7 @@ import { Organization } from 'types';
 
 export const handleOrganizationChange = (id: string, postSelectionAction?: () => void) => {
   window.sessionStorage.setItem('CHOSEN_ORGANIZATION', id);
-  router.push(`/${id}`);
+  router.push(`/${id}/overview`);
   postSelectionAction && postSelectionAction();
 };
 

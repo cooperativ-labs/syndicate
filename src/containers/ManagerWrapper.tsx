@@ -48,7 +48,7 @@ const Manager: FC<ManagerProps> = ({ children }) => {
         <ManagerSideBar organizations={_organizations} />{' '}
       </div>
       <div className="md:mx-6 w-full">
-        <NavBar authenticatedUser />
+        <NavBar />
         <div className="flex-grow z-10">
           <div className=" px-2 py-2 md:mt-4">
             <div className="mx-auto ">{children}</div>

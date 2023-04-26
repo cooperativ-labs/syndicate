@@ -1,9 +1,5 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { useMemo } from 'react';
-// // const analytics = getAnalytics(app);
-
-const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
-const stagingKey = process.env.NEXT_PUBLIC_STAGING1_DGRAPH_HEADER_KEY;
 
 export const getEndpoint = () => {
   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
@@ -13,7 +9,7 @@ export const getEndpoint = () => {
     //   return 'https://blue-surf-591466.us-east-1.aws.cloud.dgraph.io/graphql';
     default:
       // return 'http://localhost:8080/graphql';
-      return 'http://172.18.0.4:8080/graphql';
+      return 'http://172.18.0.5:8080/graphql';
   }
 };
 

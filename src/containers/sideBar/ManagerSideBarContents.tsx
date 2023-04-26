@@ -12,7 +12,7 @@ type ManagerSideBarContentsProps = {
 const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationId }) => {
   return (
     <div className="flex flex-col mr-2">
-      <ManagerSidebarItem link={`/${organizationId}/`} title="Overview" />
+      <ManagerSidebarItem link={`/${organizationId}/overview`} title="Overview" />
       <ManagerSidebarItem link={`/${organizationId}/offerings`} title="Offerings" />
       <ManagerSidebarItem link={`/${organizationId}/entities`} title="Entities" />
       <ManagerSidebarItem link={`/${organizationId}/settings`} title="Settings" />

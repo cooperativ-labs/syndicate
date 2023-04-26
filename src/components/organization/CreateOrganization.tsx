@@ -1,6 +1,5 @@
 import React, { FC, useContext, useState } from 'react';
 
-import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 
@@ -35,7 +34,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
     const orgId = data.addOrganization.organization[0].id;
     actionOnCompletion && actionOnCompletion();
     window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
-    router.push(`/${orgId}`);
+    router.push(`/${orgId}/overview`);
   }
 
   if (!user) {

@@ -36,7 +36,7 @@ const InvestorPortal: FC = () => {
   const isParticipant = participantOfferings?.length > 0;
 
   return (
-    <div data-test="component-InvestorPortal" className="flex flex-col w-full h-full">
+    <div data-test="component-InvestorPortal" className="flex flex-col w-full h-full mx-auto px-4">
       <TwoColumnLayout twoThirdsLayout>
         <DashboardCard>
           <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
@@ -44,7 +44,7 @@ const InvestorPortal: FC = () => {
         <DashboardCard>something</DashboardCard>
         {hasOfferings && (
           <div>
-            <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your current offerings: </h2>
+            <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your investments: </h2>
             <OfferingsList offerings={offerings} />
           </div>
         )}
