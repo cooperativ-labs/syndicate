@@ -8,7 +8,7 @@ import { GetServerSideProps, NextPage } from 'next';
 import { initializeApollo } from '@src/utils/apolloClient';
 import { Organization } from 'types';
 import PortalWrapper from '@src/containers/PortalWrapper';
-import InvestorPortal from '@src/pages/investorPortal';
+import PortalOrganization from '@src/pages/PortalOrganization';
 
 export const TEMP_IS_PARTICIPANT = true;
 
@@ -45,7 +45,7 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
       </Head>
       {TEMP_IS_PARTICIPANT ? (
         <PortalWrapper>
-          <InvestorPortal />
+          <PortalOrganization />{' '}
         </PortalWrapper>
       ) : (
         <OrganizationProfile organization={organization} />

@@ -16,9 +16,9 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
 import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
 import { submitOffer } from '@src/web3/reachCalls';
 import { useMutation } from '@apollo/client';
+import { useChainId } from 'wagmi';
 
 type ShareOfferFormProps = {
   offering: Offering;
@@ -48,7 +48,7 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
   setRecallContract,
 }) => {
   const { reachLib } = useContext(ReachContext);
-  const chainId = setChainId;
+  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const [createSaleObject, { data, error }] = useMutation(CREATE_SALE);
@@ -261,7 +261,7 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
                         name="approvalRequired"
                         checked={values.approvalRequired}
                         sideLabel
-                        labelText={`${permittedEntity?.name} understands that this sale requires approval from ${offeringEntity.fullName}.`}
+                        labelText={`${permittedEntity?.name} understands that this sale requires approval from ${offeringEntity.legalName}.`}
                       />
                     </div>
                   </>

@@ -3,7 +3,6 @@ import React from 'react';
 import useWindowSize from '@hooks/useWindowSize';
 
 import Container from './Layouts/Container';
-import NavBar from './NavigationBar';
 import { getBaseUrl } from '../utils/helpersURL';
 import { LegalEntity, Offering } from 'types';
 import { useRouter } from 'next/router';

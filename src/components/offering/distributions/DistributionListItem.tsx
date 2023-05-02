@@ -15,8 +15,9 @@ type DistributionListItemProps = {
 const chainId = setChainId;
 const DistributionListItem: FC<DistributionListItemProps> = ({ distribution, currency, hideTransactionId }) => {
   const { date, amount, transactionId } = distribution;
+
   return (
-    <div className="relative md:grid grid-cols-6 gap-3 items-center pl-3 p-1 border-2 rounded-lg ">
+    <div className="relative bg-white shadow-md md:grid grid-cols-8 gap-3 items-center pl-3 p-1 rounded-lg ">
       <div className="col-span-2">
         <div className="font-bold text-base ">{getHumanDate(date)}</div>
       </div>
@@ -32,9 +33,9 @@ const DistributionListItem: FC<DistributionListItemProps> = ({ distribution, cur
           {amount} {getCurrencyOption(currency).symbol}
         </div>
       </div>
-      {/* <div className="col-span-2 flex mt-3 md:mt-0 justify-end">
+      <div className="col-span-2 flex mt-3 md:mt-0 justify-end">
         <FormButton>{`Claim ${numberWithCommas(amount, 2)}`}</FormButton>
-      </div> */}
+      </div>
     </div>
   );
 };

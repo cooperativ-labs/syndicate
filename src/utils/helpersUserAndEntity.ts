@@ -27,13 +27,14 @@ export const getOrgOfferingsFromEntity = (organization: Organization) => {
   return organization.legalEntities.map((entity) => entity?.offerings).flat();
 };
 
-export const getEntityManagers = (entity: LegalEntity) => {
-  const organization = entity.organization;
-  return organization.users.filter((user) =>
-    user.permissions.includes(OrganizationPermissionType.Admin || OrganizationPermissionType.Editor)
-  );
-};
-
 export const getIsAdmin = (userId: string, organization: Organization) => {
   return organization.users.find((u) => u.user.id === userId).permissions.includes(OrganizationPermissionType.Admin);
+};
+
+export const getIsEditorOrAdmin = (userId: string, organization: Organization) => {
+  const userPermissions = organization.users.find((u) => u.user.id === userId).permissions;
+  return (
+    userPermissions.includes(OrganizationPermissionType.Admin) ||
+    userPermissions.includes(OrganizationPermissionType.Editor)
+  );
 };

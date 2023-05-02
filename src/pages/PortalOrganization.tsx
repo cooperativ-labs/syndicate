@@ -10,7 +10,7 @@ import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
-const InvestorPortal: FC = () => {
+const PortalOrganization: FC = () => {
   const { address: userWalletAddress } = useAccount();
   const router = useRouter();
   const orgId = router.query.organizationId;
@@ -36,21 +36,18 @@ const InvestorPortal: FC = () => {
   const isParticipant = participantOfferings?.length > 0;
 
   return (
-    <div data-test="component-InvestorPortal" className="flex flex-col w-full h-full mx-auto px-4">
+    <div data-test="component-PortalOrganization" className="flex flex-col w-full h-full mx-auto px-4">
       <TwoColumnLayout twoThirdsLayout>
-        <DashboardCard>
-          <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
-        </DashboardCard>
-        <DashboardCard>something</DashboardCard>
         {hasOfferings && (
           <div>
             <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your investments: </h2>
             <OfferingsList offerings={offerings} />
           </div>
         )}
+        <></>
       </TwoColumnLayout>
     </div>
   );
 };
 
-export default InvestorPortal;
+export default PortalOrganization;

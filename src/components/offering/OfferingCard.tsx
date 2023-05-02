@@ -16,6 +16,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const { name, shortDescription, id, details, image, offeringEntity } = offering;
   const currentPrice = details && getLowestSalePrice(offering.sales, offering.details?.priceStart);
   const organizationId = offeringEntity?.organization.id;
+  const organizationImg = offeringEntity?.organization.logo;
 
   const publicFacing = router.pathname.includes('/portal');
   const pushLink = publicFacing ? `/${organizationId}/portal/${id}` : `/${organizationId}/offerings/${id}`;
@@ -31,7 +32,11 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
         <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />
         <div className="flex justify-between absolute left-4 top-5 right-4 items-center">
           <h2 className="text-xl font-bold text-white ">{name}</h2>
-          <img src={image} referrerPolicy="no-referrer" className="w-16 h-16 border-2 border-white rounded-full" />
+          <img
+            src={organizationImg}
+            referrerPolicy="no-referrer"
+            className="w-16 h-16 border-2 border-white rounded-full"
+          />
         </div>
         <div className="p-4">
           {shortDescription && (

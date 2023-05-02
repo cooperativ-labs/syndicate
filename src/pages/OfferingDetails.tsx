@@ -21,18 +21,17 @@ import ShareBidForm from '@src/components/investor/tradingForms/ShareBidForm';
 import ShareOfferForm from '@src/components/investor/tradingForms/ShareOfferForm';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { calculateDistribution, getLowestSalePrice } from '@src/utils/helpersMoney';
+import { getLowestSalePrice } from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { getContractParticipants } from '@src/web3/reachCalls';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { getEntityManagers } from '@src/utils/helpersUserAndEntity';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { GetEstablishedContracts } from '@src/utils/helpersContracts';
-import { loadStdlib, ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
-import { useAccount } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { useAsyncFn } from 'react-use';
 import { useSession } from 'next-auth/react';
+import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
+import { loadStdlib } from '@reach-sh/stdlib';
 
 type OfferingDetailsProps = {
   offering: Offering;
@@ -40,12 +39,11 @@ type OfferingDetailsProps = {
 };
 
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
-  const { data: session, status } = useSession();
+  const { data: session } = useSession();
   const userId = session?.user?.id;
   const { address: userWalletAddress } = useAccount();
-  // const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
 
-  const chainId = setChainId;
+  const chainId = useChainId();
   const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContracts } = offering;
 
   const establishedContract = GetEstablishedContracts(smartContracts, chainId)[0];
@@ -78,18 +76,14 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const hasContract = !!contractManager;
 
   //Is the user an Admin or Editor of the organization that controls the legal entity that owns the offering
-  const offeringManagers = getEntityManagers(offeringEntity);
-  const currentOrganizationUserManager = offeringManagers?.find((user) => user.user.id === userId)?.user;
+  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
 
-  const isOfferingManager = !!currentOrganizationUserManager;
-
+  //Does the user's wallet address match the contract manager
   const isContractOwner = contractManager && contractManager === userWalletAddress;
-  const contractOwnerMatches = isContractOwner === isOfferingManager;
+  const contractOwnerMatches = isContractOwner === !!isOfferingManager;
   const offeringDocs = getDocumentsOfType(offering.documents, DocumentType.OfferingDocument);
-  const latestDistribution = offering.distributions?.length > 0 && offering.distributions?.slice(-1)[0];
-  const myDistToClaim =
-    offering.distributions?.length > 0 &&
-    calculateDistribution(latestDistribution, sharesOutstanding, myShares, userWalletAddress);
+  const latestDistribution = getLatestDistribution(offering);
+  const myDistToClaim = getMyDistToClaim(offering, sharesOutstanding, myShares, userWalletAddress);
 
   const [contractInfo, getContractInfo] = useAsyncFn(async () => {
     try {
@@ -139,7 +133,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   useEffect(() => {
     getContractInfo();
-    // console.log(getContractParticipants(reachLib, reachAcc, contractId));
   }, [recallContract, contractId, userWalletAddress, getContractInfo]);
 
   const permittedEntity = participants.find((participant) => {

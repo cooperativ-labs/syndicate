@@ -1,4 +1,4 @@
-import { OfferingSale } from 'types';
+import { Offering, OfferingSale } from 'types';
 
 export function priceCalculator(maxRaise: number, units: number, display?: boolean) {
   const baseAmount = maxRaise / units;
@@ -19,6 +19,10 @@ export function getLowestSalePrice(sales: OfferingSale[], priceStart: number) {
   return salesByPrice?.length > 0 ? salesByPrice[0].price : priceStart;
 }
 
+export const getCurrentSalePrice = (offering: Offering) => {
+  return getLowestSalePrice(offering.sales, offering.details.priceStart);
+};
+
 export const TotalCreditsWithValue = (ccPayments) => {
   let creditsReceived = 0;
   let totalWorth = 0;
@@ -37,11 +41,4 @@ export const AddFinancialInvestmentsAmount = (investments) => {
   let totalAmount = 0;
   investments?.map((investment) => (totalAmount += investment.amount));
   return totalAmount;
-};
-
-export const calculateDistribution = (distribution, sharesOutstanding, myShares, walletAddress) => {
-  if (distribution?.hasClaimed?.includes(walletAddress)) return 0;
-  const totalDistribution = distribution.amount;
-  if (!totalDistribution || !sharesOutstanding || !myShares) return 0;
-  return (myShares / sharesOutstanding) * totalDistribution;
 };

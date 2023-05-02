@@ -16,11 +16,11 @@ import { DocumentType, Offering } from 'types';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { GetEstablishedContracts } from '@src/utils/helpersContracts';
-import { getLowestSalePrice } from '@src/utils/helpersMoney';
+import { getCurrentSalePrice } from '@src/utils/helpersMoney';
 import { loadStdlib } from '@reach-sh/stdlib';
 import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
 import { useAsyncFn } from 'react-use';
+import { useAccount, useNetwork } from 'wagmi';
 
 type OfferingProfileProps = {
   offering: Offering;
@@ -28,9 +28,10 @@ type OfferingProfileProps = {
 
 const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const { details, brandColor, website, offeringEntity, id: offeringId, name: offeringName, distributions } = offering;
-  const chainId = setChainId;
+  const { chain } = useNetwork();
+  const { address: userWalletAddress } = useAccount();
   const { reachLib, reFetchWallet } = useContext(ReachContext);
-  const establishedContract = GetEstablishedContracts(offeringEntity.smartContracts, chainId)[0];
+  const establishedContract = GetEstablishedContracts(offeringEntity.smartContracts, chain.id)[0];
   const type = details && details.type;
   const stage = details && details.stage;
   const organization = offeringEntity.organization;
@@ -40,7 +41,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const [contractUser, setContractUser] = useState<string>();
   const [isWhiteListed, setIsWhiteListed] = useState<boolean>();
 
-  const currentSalePrice = getLowestSalePrice(offering.sales, details.priceStart);
+  const currentSalePrice = getCurrentSalePrice(offering);
   const OfferingReProperties = offering.offeringEntity.realEstateProperties;
   const operatingCurrency = offering.offeringEntity.operatingCurrency;
 

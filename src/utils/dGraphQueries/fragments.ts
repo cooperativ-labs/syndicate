@@ -127,6 +127,7 @@ export const CORE_INVESTMENT_OFFERING_FIELDS = gql`
   fragment offeringDetailsData on OfferingDetails {
     id
     type
+    customOnboardingLink
     stage
     investmentCurrency {
       code

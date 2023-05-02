@@ -487,6 +487,7 @@ add:{rule: """
 ){
 	id: ID!
 	offering: Offering! @hasInverse(field:details)
+	customOnboardingLink: String
 	type: OfferingDetailsType
 	stage: OfferingStage
 	investmentCurrency: Currency!

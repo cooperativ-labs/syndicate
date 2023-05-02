@@ -12,10 +12,10 @@ import { useSession } from 'next-auth/react';
 type NavBarProps = {
   transparent?: boolean;
   orgLogo?: string;
-  entityName?: string;
+  orgName?: string;
 };
 
-export const NavBar: FC<NavBarProps> = ({ orgLogo, entityName }) => {
+export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
   const { status } = useSession();
   const isAuthenticated = status === 'authenticated';
   const applicationStore: ApplicationStoreProps = useContext(store);
@@ -44,13 +44,11 @@ export const NavBar: FC<NavBarProps> = ({ orgLogo, entityName }) => {
             <img src={orgLogo} referrerPolicy="no-referrer" className="w-8 h-8 border-2 border-white rounded-full" />
           </div>
         )}
-        {entityName && (
-          <div className=" hidden md:flex text-sm uppercase font-semibold text-gray-700 ml-2">{entityName}</div>
-        )}
+        {orgName && <div className=" hidden md:flex text-sm uppercase font-semibold text-gray-700 ml-2">{orgName}</div>}
         <button className="ml-2 border-2 rounded-full  px-4 max-w-max lg:hidden" onClick={() => router.back()}>
           <FontAwesomeIcon icon="chevron-left" /> back
         </button>
-        <div className="flex">{!userWalletAddress && <ChooseConnectorButton buttonText={'Connect Wallet'} />}</div>
+        {/* <div className="flex">{!userWalletAddress && <ChooseConnectorButton buttonText={'Connect Wallet'} />}</div> */}
       </div>
 
       {userWalletAddress ? (

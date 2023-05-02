@@ -50,7 +50,6 @@ type WalletChoicesProps = {
 };
 
 const EthChoices: FC<WalletChoicesProps> = ({ dispatchWalletModal }) => {
-  const { connector: activeConnector, isConnected } = useAccount();
   const { connect, error } = useConnect();
 
   return (

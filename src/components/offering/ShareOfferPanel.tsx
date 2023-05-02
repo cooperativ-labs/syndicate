@@ -6,6 +6,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, Organization } from 'types';
+import { TEMP_IS_PARTICIPANT } from '@pages/[organizationId]';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 
@@ -59,18 +60,34 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
   const percentPledged = (sharesPledged / offering.details.numUnits) * 100;
 
   const { details } = offering;
-  const { investmentCurrency, projectedIrr, projectedIrrMax, preferredReturn, cocReturn, minUnitsPerInvestor } =
-    details;
+  const {
+    investmentCurrency,
+    projectedIrr,
+    projectedIrrMax,
+    preferredReturn,
+    cocReturn,
+    minUnitsPerInvestor,
+    customOnboardingLink,
+  } = details;
+
+  const buttonText = TEMP_IS_PARTICIPANT
+    ? 'Manage Investment'
+    : offering.waitlistOn
+    ? 'Join Waitlist'
+    : 'Apply to Invest';
+  const buttonLink = TEMP_IS_PARTICIPANT
+    ? `/${organization.id}/portal/${offering.id}`
+    : customOnboardingLink ?? `/${organization.id}/portal/${offering.id}/investor-application`;
 
   const ApplyManageButton = (
     <button
       data-test="share-offer-panel"
-      onClick={() => router.push(`/${organization.id}/portal/${offering.id}/investor-application`)}
+      onClick={() => router.push(buttonLink)}
       className={cn([
         'ubuntu rounded-md font-bold bg-green-700 text-slate-100 px-4 py-2 items-center justify-center shadow-lg mt-4 flex w-full ',
       ])}
     >
-      {offering.waitlistOn ? 'Join Waitlist' : permittedEntity ? 'Manage Investment' : 'Apply to Invest'}
+      {buttonText}
     </button>
   );
 
@@ -94,7 +111,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
       {/* <hr className="mt-5 mb-2 col-span-3" /> */}
       <div className="my-8 flex flex-col gap-4">
         <ShareOfferPanelItem title="Projected IRR" note="This is an estimate. Returns are not guaranteed.">
-          {projectedIrr ? `${projectedIrr / 100}` : 'undetermined'}
+          {projectedIrr ? `${projectedIrr / 100}` : 'undetermined '}
           {projectedIrrMax ? ` - ${projectedIrrMax / 100}` : ''}%
         </ShareOfferPanelItem>
         {preferredReturn ? (
