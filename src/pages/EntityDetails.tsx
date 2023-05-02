@@ -1,17 +1,10 @@
 import AddressDisplay from '@src/components/address/AddressDisplay';
-import EmailAddressList from '@src/components/EmailAddressList';
-import LinkedAccountsList from '@src/components/LinkedAccountsList';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import RoundedImage from '@src/components/RoundedImage';
-import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { CurrencyCode, LegalEntity } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { REMOVE_ENTITY_ADDRESS, REMOVE_ENTITY_OWNER, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
-
-import DashboardCard from '@src/components/cards/DashboardCard';
 
 import AddOwningEntity from '@src/components/entity/AddOwningEntity';
 import Button from '@src/components/buttons/Button';
@@ -184,13 +177,6 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
             </div>
           </div>
         </div>
-
-        {/* <div>
-          <div className="mt-5 text-lg">Tab Section</div>
-          <div>Section for changing address, contact info, profile picture, banner image</div>
-          <div>Section for jurisdiction, tax Id, operating currency, legal note </div>
-          <div>Section for adding socials</div>
-        </div> */}
         <></>
       </TwoColumnLayout>
       <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings} entity={entity} />

@@ -17,12 +17,7 @@ import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember'
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import TeamMemberList from '@src/components/entity/TeamMemberList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import {
-  ADD_ORGANIZATION_EMAIL,
-  GET_ORGANIZATION,
-  UPDATE_ORGANIZATION_INFORMATION,
-} from '@src/utils/dGraphQueries/organization';
-import { ApplicationStoreProps, store } from '@context/store';
+import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
@@ -30,12 +25,14 @@ import { Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { getBaseUrl } from '@src/utils/helpersURL';
 
 const OrganizationDetails: FC = () => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
   const router = useRouter();
-  const orgId = router.query.organizationId;
+  const { organizationId: orgId } = router.query;
+
   const {
     data: organizationData,
     error: getOrgError,
@@ -47,21 +44,15 @@ const OrganizationDetails: FC = () => {
     UPDATE_ORGANIZATION_INFORMATION
   );
 
-  const [addOrganizationEmail, { data: dataEmail, error: errorEmail }] = useMutation(ADD_ORGANIZATION_EMAIL);
   const [imageModal, setImageModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
   const [alerted, setAlerted] = useState<boolean>(false);
 
-  const error = updateOrgError || errorEmail || getOrgError;
+  const error = updateOrgError || getOrgError;
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong. ${error}`);
     setAlerted(true);
   }
-
-  const [localStorage, setLocalStorage] = useState(undefined);
-  useEffect(() => {
-    setLocalStorage(window.localStorage);
-  }, [setLocalStorage]);
 
   if (!organization || loading) {
     return <ModalLoading />;
@@ -88,27 +79,6 @@ const OrganizationDetails: FC = () => {
       return entity.offerings;
     })
     .flat();
-
-  // const emailForSignIn = localStorage?.getItem('emailForSignIn');
-  // const addEmailToDatabase = (email: string) => {
-  //   try {
-  //     addOrganizationEmail({
-  //       variables: {
-  //         organizationId: orgId,
-  //         address: email,
-  //         isPublic: true,
-  //       },
-  //     });
-
-  //     window.localStorage.removeItem('emailForSignIn');
-  //   } catch (err) {
-  //     throw new Error(err);
-  //   }
-  // };
-
-  // if (emailForSignIn) {
-  //   addEmailToDatabase(emailForSignIn);
-  // }
 
   const handleNameChange = (values: { name: string }) => {
     updateOrganization({
@@ -252,7 +222,7 @@ const OrganizationDetails: FC = () => {
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Email addresses'}>
                   <EmailAddressList emailAddresses={emailAddresses} withEdit />
-                  <SettingsAddEmail completionUrl={`/${orgId}/settings`} />
+                  <SettingsAddEmail completionUrl={`${getBaseUrl()}/email-confirmation`} />
                 </SectionBlock>
               </div>
 

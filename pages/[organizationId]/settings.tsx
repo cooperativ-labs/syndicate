@@ -1,8 +1,10 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import OrganizationDetails from '@src/pages/OrganizationDetails';
-import React, { FC } from 'react';
+import { useRouter } from 'next/router';
+import React, { FC, useEffect } from 'react';
 
 const OrganizationSettings: FC = () => {
+
   return (
     <div
       data-test="component-landing"

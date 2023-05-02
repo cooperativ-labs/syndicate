@@ -1,12 +1,31 @@
 import Input from '../form-components/Inputs';
-import React, { FC, useEffect, useState } from 'react';
-import router from 'next/router';
+import React, { FC } from 'react';
+
 import { Form, Formik } from 'formik';
+import { emailConfirmationContent } from '@src/services/postmark';
+import axios from 'axios';
+import { sha256 } from 'js-sha256';
 
 const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';
 
 type SettingsAddEmailProps = {
   completionUrl: string;
+};
+
+const handleAddEmailAddress = async (address: string, completionUrl: string) => {
+  window.localStorage.setItem('email', address);
+  const secret = sha256(address);
+  const confirmationLink = `${completionUrl}?token=${encodeURIComponent(secret)}`;
+
+  const to = address;
+  const subject = 'Welcome to Cooperativ.io';
+  const { html, text } = emailConfirmationContent(confirmationLink);
+  const htmlBody = html;
+  const textBody = text;
+
+  try {
+    await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
+  } catch (error) {}
 };
 
 const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
@@ -26,7 +45,7 @@ const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        // await handleAddEmailAddress(values.address, completionUrl);
+        await handleAddEmailAddress(values.address, completionUrl);
         setSubmitting(false);
       }}
     >

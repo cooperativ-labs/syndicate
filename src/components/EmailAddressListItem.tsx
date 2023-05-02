@@ -10,7 +10,7 @@ import Input from './form-components/Inputs';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { EditButton, MarkPublic } from './form-components/ListItemButtons';
 import { EmailAddress } from 'types';
-import { REMOVE_ENTITY_EMAIL, UPDATE_EMAIL } from '@src/utils/dGraphQueries/entity';
+import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/dGraphQueries/organization';
 
 type EmailAddressListItemProps = {
   email: EmailAddress;
@@ -18,11 +18,11 @@ type EmailAddressListItemProps = {
 };
 
 const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }) => {
-  const { owner, name, address, description, isPublic } = email;
+  const { organization, name, address, description, isPublic } = email;
   const [editOn, setEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
   const [updateEmailAddress, { error: updateError }] = useMutation(UPDATE_EMAIL);
-  const [deleteEmail, { error: deleteError }] = useMutation(REMOVE_ENTITY_EMAIL);
+  const [deleteEmail, { error: deleteError }] = useMutation(REMOVE_ORGANIZATION_EMAIL);
 
   if ((updateError && !alerted) || (deleteError && !alerted)) {
     alert(`Oops, looks like something went wrong. ${updateError?.message || deleteError?.message}`);
@@ -110,7 +110,9 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
           <button
             aria-label="edit address info"
             onClick={() =>
-              deleteEmail({ variables: { currentDate: currentDate, entityId: owner.id, emailAddress: address } })
+              deleteEmail({
+                variables: { currentDate: currentDate, organizationId: organization.id, emailAddress: address },
+              })
             }
           >
             <FontAwesomeIcon icon="trash" className="text-lg text-gray-600 mr-2" />
