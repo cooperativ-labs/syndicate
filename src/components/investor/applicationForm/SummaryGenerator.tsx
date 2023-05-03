@@ -168,7 +168,7 @@ export const GeneratedApplicationText = (
   const ApplicationSummary = GenerateInvestorApplicationSummary(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity.fullName,
+      offeringEntityName: offeringEntity.legalName,
       purchaserEntityName: purchaserEntityName,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
@@ -195,7 +195,7 @@ export const GeneratedApplicationText = (
       isNonHuman: isCompany,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
-      offeringEntityName: offeringEntity.fullName,
+      offeringEntityName: offeringEntity.legalName,
       purchaserEntityName: purchaserEntityName,
       purchaserAge: purchaserAge ? numberWithCommas(purchaserAge) : '',
       purchaserPrincipleResidence: purchaserPrincipleResidence,
@@ -238,7 +238,7 @@ export const GeneratedApplicationText = (
   const PurchaseAttestation = GenerateSubscriptionPurchaseAttestation(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity.fullName,
+      offeringEntityName: offeringEntity.legalName,
       numUnitsPurchase: numUnitsPurchase ? numberWithCommas(numUnitsPurchase) : '',
       offeringPrice: numberWithCommas(offeringPrice / 100),
       purchasePrice: numUnitsPurchase ? numberWithCommas((numUnitsPurchase * offeringPrice) / 100) : '',

@@ -11,7 +11,7 @@ export const getKey = () => {
     case 'production':
       return process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
     case 'staging':
-      return process.env.NEXT_PUBLIC_STAGING_DGRAPH_HEADER_KEY;
+      return process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
     default:
       return 'nothing';
   }

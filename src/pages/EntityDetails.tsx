@@ -15,7 +15,7 @@ import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import SectionBlock from '@src/containers/SectionBlock';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { useSession } from 'next-auth/react';
 
 type EntityDetailsProps = {
@@ -36,6 +36,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const [alerted, setAlerted] = useState<boolean>(false);
   const organization = entity.organization;
   const isAdmin = getIsAdmin(session?.user.id, organization);
+  const isAdminOrEditor = getIsEditorOrAdmin(session?.user.id, organization);
 
   const error = updateEntityError || deleteError || removeError;
   if (error && !alerted) {
@@ -120,7 +121,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       <TwoColumnLayout>
         <div>
           {/* <hr className="my-4" /> */}
-          <EntitySpecifications entity={entity} isEntityOwner={true} updateLegalEntity={updateLegalEntity} />
+          <EntitySpecifications entity={entity} isManager={isAdminOrEditor} updateLegalEntity={updateLegalEntity} />
 
           <div>
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">

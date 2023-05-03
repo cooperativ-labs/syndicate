@@ -23,6 +23,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { RealEstateProperty } from 'types';
 import { UPDATE_ADDRESS } from '@src/utils/dGraphQueries/entity';
 import { useSession } from 'next-auth/react';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 
 type PropertyDetailsProps = {
   property: RealEstateProperty;
@@ -57,13 +58,9 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
     loan,
   } = property;
 
-  const entityUsers = owner.users;
+  const organization = owner.organization;
 
-  const entityOwner = entityUsers.find((u) => {
-    return u.user.id === userId;
-  });
-
-  const isEntityOwner = !!entityOwner;
+  const isEntityManager = getIsEditorOrAdmin(userId, organization);
 
   const error = imageError || addressError || propertyError || deleteError;
   if (error && !alerted) {
@@ -140,10 +137,10 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           <h2 className="font-bold text-gray-700">Images</h2>
           <div className="flex">
             {images.map((image, i) => {
-              return <PropertyImage key={i} image={image} propertyId={id} isOwner={isEntityOwner} />;
+              return <PropertyImage key={i} image={image} propertyId={id} isOwner={isEntityManager} />;
             })}
           </div>
-          {isEntityOwner && (
+          {isEntityManager && (
             <FileUpload
               uploaderText="Add Picture"
               urlToDatabase={addImageToDb}
@@ -158,7 +155,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             <h2 className="font-bold text-gray-700">Address</h2>
             <AddressDisplay address={address} withCountry />
           </div>
-          {isEntityOwner && (
+          {isEntityManager && (
             <Button onClick={() => setAddressModal(true)}>
               <FontAwesomeIcon icon="pen" />
             </Button>
@@ -169,7 +166,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           <div>
             <h2 className="font-bold text-gray-700">Amenities</h2> {amenitiesDescription}
           </div>
-          {isEntityOwner && (
+          {isEntityManager && (
             <Button onClick={() => setDetailsModal(true)}>
               <FontAwesomeIcon icon="pen" />
             </Button>
@@ -189,14 +186,14 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             <div>Down payment: {numberWithCommas(downPayment)}</div>
             <div>Lender fees: {numberWithCommas(lenderFees)}</div>
           </div>
-          {isEntityOwner && (
+          {isEntityManager && (
             <Button onClick={() => setFinancialsModal(true)}>
               <FontAwesomeIcon icon="pen" />
             </Button>
           )}
         </div>
 
-        {isEntityOwner && (
+        {isEntityManager && (
           <>
             <hr className="my-4" />
             <div className="flex col-span-1 justify-center">

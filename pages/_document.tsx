@@ -7,9 +7,9 @@ export default class MyDocument extends Document {
       case 'production':
         return process.env.NEXT_PUBLIC_MAPS_API_KEY;
       case 'staging':
-        return process.env.NEXT_PUBLIC_STAGING_MAPS_API_KEY;
+        return process.env.NEXT_PUBLIC_MAPS_API_KEY;
       default:
-        return process.env.NEXT_PUBLIC_STAGING_MAPS_API_KEY;
+        return process.env.NEXT_PUBLIC_MAPS_API_KEY;
     }
   };
 
@@ -34,7 +34,7 @@ export default class MyDocument extends Document {
           <NextScript />
           <script
             async
-            src={`https://maps.googleapis.com/maps/api/js?key=${this.getConfig()}&libraries=places`}
+            src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&libraries=places`}
           ></script>
           <style jsx global>{`
             html,

@@ -317,15 +317,15 @@ export const SupportedAlgoConnectors = [
 
 // export type ConnectorIdType = 'injected' | 'walletlink' | 'walletconnect' | 'pera' | 'myAlgo' | 'algoSigner';
 
-// export const GetAlgoConnector = (id, providerEnv) => {
-//   switch (id) {
-//     case 'pera':
-//       return usePeraConnect(providerEnv);
-//     case 'myAlgo':
-//       return useMyAlgo(providerEnv);
-//     // case 'algoSigner':
-//     //   return AlgoSignerConnect;
-//     default:
-//       return undefined;
-//   }
-// };
+export const GetAlgoConnector = (id, providerEnv) => {
+  switch (id) {
+    case 'pera':
+      return undefined;
+    case 'myAlgo':
+      return undefined;
+    // case 'algoSigner':
+    //   return AlgoSignerConnect;
+    default:
+      return undefined;
+  }
+};

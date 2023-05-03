@@ -45,7 +45,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
 
   const { signature } = agreementContent;
   const offeringEntity = offering.offeringEntity;
-  const orgLegalName = offeringEntity.fullName;
+  const orgLegalName = offeringEntity.legalName;
   const offerEntityGP = offeringEntity.owners[0];
   const availableContract = GetAvailableContracts(offeringEntity.smartContracts, chainId)[0];
   const backingToken = availableContract?.backingToken;
@@ -60,7 +60,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
     {
       offeringId: offering.id,
       spvEntityName: orgLegalName,
-      gpEntityName: offerEntityGP.fullName,
+      gpEntityName: offerEntityGP.legalName,
       contractAddress: availableContract?.cryptoAddress.address,
       chainName: MatchSupportedChains(chainId)?.name,
       bacName: bacName,
@@ -87,7 +87,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
                   {/* <h1 className="text-cDarkBlue text-lg font-bold ">Step 1. Create Shares</h1> */}
                   <CreateShareClass
                     contractCreatorId={offeringEntity.id}
-                    entityName={offeringEntity.fullName}
+                    entityName={offeringEntity.legalName}
                     investmentCurrency={offering.details.investmentCurrency}
                   />
                 </div>
@@ -103,7 +103,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
                       bacName={bacName}
                       bacId={bacId}
                       entityId={offeringEntity.id}
-                      spvEntityName={offeringEntity.fullName}
+                      spvEntityName={offeringEntity.legalName}
                       offeringId={offering.id}
                     />
                     {/* <FormChainWarning /> */}

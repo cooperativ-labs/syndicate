@@ -191,7 +191,7 @@ const ShareBidForm: FC<ShareBidFormProps> = ({
                     }}
                   >
                     <div className="flex">
-                      {permittedEntity?.entity.fullName} {`accepts this offering's Terms and Conditions`}
+                      {permittedEntity?.name} {`accepts this offering's Terms and Conditions`}
                       <div className="ml-2">
                         {tocOpen ? <FontAwesomeIcon icon="chevron-up" /> : <FontAwesomeIcon icon="chevron-down" />}
                       </div>
@@ -232,7 +232,7 @@ const ShareBidForm: FC<ShareBidFormProps> = ({
                 name="approvalRequired"
                 checked={values.approvalRequired}
                 sideLabel
-                labelText={`${permittedEntity?.entity.fullName} understands that this sale requires approval from ${offering.offeringEntity.fullName}.`}
+                labelText={`${permittedEntity?.name} understands that this sale requires approval from ${offering.offeringEntity.legalName}.`}
               />
             </div>
             <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>

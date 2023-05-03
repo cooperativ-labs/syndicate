@@ -10,8 +10,7 @@
   publish = ".next"
   [context.staging.environment]
     NEXT_PUBLIC_DEPLOY_STAGE='staging'
-    NEXT_PUBLIC_STAGING_FIREBASE_AUTH_DOMAIN = 'cooperativ-staging.firebaseapp.com'
-    NEXT_PUBLIC_STAGING_FIREBASE_PROJECT_ID = 'cooperativ-staging'
-    NEXT_PUBLIC_STAGING_FIREBASE_STORAGE_BUCKET = 'cooperativ-staging.appspot.com'
-    NEXT_PUBLIC_STAGING_FIREBASE_MESSAGING_SENDER_ID = '33358597434'
-    NEXT_PUBLIC_STAGING_FIREBASE_APP_ID = '1:33358597434:web:91ec13dacf84a3a232d403'
+    NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID = 'syndicate-382709'
+    NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'cooperativ-filestore'
+    NEXT_PUBLIC_AUTH_HEADER = 'X-Auth-Token'
+    NEXT_PUBLIC_DGRAPH_ENDPOINT = https://blue-surf-960058.us-east-1.aws.cloud.dgraph.io/graphql

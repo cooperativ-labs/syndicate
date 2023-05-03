@@ -1,5 +1,4 @@
 import AddressDisplay from '../address/AddressDisplay';
-import GpAdder from '../entity/GpAdder';
 import React, { FC } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
 import { LegalEntity } from 'types';

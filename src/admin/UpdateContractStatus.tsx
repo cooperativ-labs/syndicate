@@ -1,18 +1,15 @@
 import Button from '@src/components/buttons/Button';
 import FormModal from '@src/containers/FormModal';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC } from 'react';
 import Select from '@src/components/form-components/Select';
-import { ADD_ENTITY_OWNER } from '@src/utils/dGraphQueries/entity';
+
 import { CREATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/dGraphQueries/crypto';
 import { CurrencyCode, Offering, SmartContractType } from 'types';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { MatchSupportedChains, setChainId } from '@src/web3/connectors';
 import { UPDATE_CONTRACT_STATUS } from '@src/utils/dGraphQueries/offering';
-import { useMutation, useQuery } from '@apollo/client';
-import { UserAccountContext } from '@src/SetAppContext';
+import { useMutation } from '@apollo/client';
 
 type UpdateContractStatusProps = {
   offering: Offering;

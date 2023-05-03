@@ -116,11 +116,11 @@ export const changeForm = (
 
 type EntitySpecificationsProps = {
   entity: LegalEntity;
-  isEntityOwner: boolean;
+  isManager: boolean;
   updateLegalEntity: (any) => void;
 };
 
-const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityOwner, updateLegalEntity }) => {
+const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager, updateLegalEntity }) => {
   const [editOn, setEditOn] = useState<EditEntitySelectionType | EditOrganizationSelectionType>('none');
   const { id, legalName, displayName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
 
@@ -160,7 +160,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         form={changeForm('legalName', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="legalName"
-        isEntityOwner={isEntityOwner}
+        isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
@@ -169,7 +169,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         form={changeForm('displayName', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="displayName"
-        isEntityOwner={isEntityOwner}
+        isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
@@ -178,7 +178,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         form={changeForm('jurisdiction', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="jurisdiction"
-        isEntityOwner={isEntityOwner}
+        isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
@@ -187,7 +187,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         form={changeForm('currency', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="currency"
-        isEntityOwner={isEntityOwner}
+        isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
@@ -196,7 +196,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         form={changeForm('taxId', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="taxId"
-        isEntityOwner={isEntityOwner}
+        isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
@@ -205,7 +205,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isEntityO
         form={changeForm('supplementaryLegalText', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="supplementaryLegalText"
-        isEntityOwner={isEntityOwner}
+        isManager={isManager}
         setEditOn={setEditOn}
       />
     </>

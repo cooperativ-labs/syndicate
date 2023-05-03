@@ -11,8 +11,7 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 
-import { getUserPersonalEntity } from '@src/utils/helpersUserAndEntity';
-import { useMutation, useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 const UserSettings: FC = () => {

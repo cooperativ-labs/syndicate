@@ -33,17 +33,6 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
   fieldLabelClass,
   setValue,
 }) => {
-  const getConfig = () => {
-    switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-      case 'production':
-        return process.env.NEXT_PUBLIC_MAPS_API_KEY;
-      case 'staging':
-        return process.env.NEXT_PUBLIC_STAGING_MAPS_API_KEY;
-      default:
-        return process.env.NEXT_PUBLIC_STAGING_MAPS_API_KEY;
-    }
-  };
-
   return (
     <div className={cn(className, 'flex flex-col w-full')}>
       {labelText && (
@@ -53,7 +42,7 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
         </label>
       )}
       <GooglePlacesAutocomplete
-        apiKey={getConfig()}
+        apiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY}
         selectProps={{
           value,
           onChange: setValue,

@@ -2,7 +2,7 @@ import Checkbox from './form-components/Checkbox';
 import cn from 'classnames';
 import FormattedCryptoAddress from './FormattedCryptoAddress';
 import Input from './form-components/Inputs';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { CryptoAddress, CryptoAddressType } from 'types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
@@ -11,6 +11,7 @@ import { MatchSupportedChains } from '@src/web3/connectors';
 import { REMOVE_ENTITY_WALLET } from '@src/utils/dGraphQueries/entity';
 import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/dGraphQueries/crypto';
 import { useMutation } from '@apollo/client';
+import { useAccount } from 'wagmi';
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;
@@ -21,6 +22,7 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
   const { owner, id, name, type, chainId, address, description, isPublic } = wallet;
   const [editOn, setEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
+  const { address: userWalletAddress } = useAccount();
   const [updateCryptoAddress, { error }] = useMutation(UPDATE_CRYPTO_ADDRESS);
   const [deleteWallet, { data, error: deleteError }] = useMutation(REMOVE_ENTITY_WALLET);
 
@@ -116,16 +118,18 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
             <div>
               <button
                 className={cn(
-                  uuid === wallet.address
+                  userWalletAddress === wallet.address
                     ? 'bg-gray-300 hover:bg-gray-300 text-gray-700'
                     : 'bg-red-900 hover:bg-red-800 text-white',
                   'font-bold uppercase mt-4 rounded p-2 w-full'
                 )}
-                disabled={uuid === wallet.address}
+                disabled={userWalletAddress === wallet.address}
                 aria-label="remove wallet from account"
                 onClick={() => deleteWallet({ variables: { entityId: owner.id, walletAddress: wallet.address } })}
               >
-                {uuid === wallet.address ? 'You cannot remove your login wallet' : 'Remove this wallet from my account'}
+                {userWalletAddress === wallet.address
+                  ? 'You cannot remove your login wallet'
+                  : 'Remove this wallet from my account'}
               </button>
             </div>
           </div>

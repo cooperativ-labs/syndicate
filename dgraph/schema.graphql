@@ -566,7 +566,6 @@ type OfferingParticipant @auth (
 	walletAddress: String! @search(by:[fulltext]) 
 	permitted: Boolean!
 	name: String
-	# entity: LegalEntity
 	offering: Offering! @hasInverse(field:participants)
 	investorApplication: InvestorApplication
 	minPledge: Int

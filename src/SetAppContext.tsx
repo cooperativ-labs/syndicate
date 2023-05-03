@@ -16,8 +16,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
   const [apolloClient, setApolloClient] = useState<ApolloClient<any> | null>(null);
 
   const token = session?.encodedJwt;
-  const productionKey = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
-  const stagingKey = process.env.NEXT_PUBLIC_STAGING_DGRAPH_HEADER_KEY;
+  const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
 
   const setHeaders = (headers, token) => {
     switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
@@ -26,7 +25,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
           headers: {
             ...headers,
             'X-Auth-Token': token ? `bearer ${token}` : '',
-            'DG-Auth': productionKey,
+            'DG-Auth': key,
           },
         };
       case 'staging':
@@ -34,7 +33,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
           headers: {
             ...headers,
             'X-Auth-Token': token ? `bearer ${token}` : '',
-            'DG-Auth': stagingKey,
+            'DG-Auth': key,
           },
         };
       default:

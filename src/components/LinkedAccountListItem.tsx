@@ -1,19 +1,20 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
 import { LinkedAccount } from 'types';
-import { REMOVE_ENTITY_SOCIAL_ACCOUNT } from '@src/utils/dGraphQueries/entity';
+
 import { useMutation } from '@apollo/client';
+import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/dGraphQueries/organization';
 
 type LinkedAccountListProps = {
   account: LinkedAccount;
 };
 
 const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account }) => {
-  const { owner, id, url, type, hidden, verified } = account;
+  const { organization, id, url, type, hidden, verified } = account;
   const [alerted, setAlerted] = useState<Boolean>(false);
-  const [deleteSocial, { error }] = useMutation(REMOVE_ENTITY_SOCIAL_ACCOUNT);
+  const [deleteSocial, { error }] = useMutation(REMOVE_ORGANIZATION_SOCIAL_ACCOUNT);
 
   if (error && !alerted) {
     alert('Oops. Looks like something went wrong');
@@ -26,7 +27,7 @@ const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account }) => {
       <button
         onClick={() => {
           deleteSocial({
-            variables: { currentDate: currentDate, entityId: owner.id, id: id, socialId: id },
+            variables: { currentDate: currentDate, organizationId: organization.id, id: id, socialId: id },
           });
         }}
       >
