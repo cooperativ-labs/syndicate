@@ -19,30 +19,21 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
   const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
 
   const setHeaders = (headers, token) => {
-    switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-      case 'production':
-        return {
-          headers: {
-            ...headers,
-            'X-Auth-Token': token ? `bearer ${token}` : '',
-            'DG-Auth': key,
-          },
-        };
-      case 'staging':
-        return {
-          headers: {
-            ...headers,
-            'X-Auth-Token': token ? `bearer ${token}` : '',
-            'DG-Auth': key,
-          },
-        };
-      default:
-        return {
-          headers: {
-            ...headers,
-            'X-Auth-Token': token ? `bearer ${token}` : '',
-          },
-        };
+    if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+      return {
+        headers: {
+          ...headers,
+          'X-Auth-Token': token ? `bearer ${token}` : '',
+          'DG-Auth': key,
+        },
+      };
+    } else {
+      return {
+        headers: {
+          ...headers,
+          'X-Auth-Token': token ? `bearer ${token}` : '',
+        },
+      };
     }
   };
 

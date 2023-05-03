@@ -4,18 +4,6 @@ import { DgraphAdapter } from '@next-auth/dgraph-adapter';
 import { AuthOptions, Session, User } from 'next-auth';
 import * as jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
-import { getEndpoint } from '@src/utils/apolloClient';
-
-export const getKey = () => {
-  switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-    case 'production':
-      return process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
-    case 'staging':
-      return process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
-    default:
-      return 'nothing';
-  }
-};
 
 const options: AuthOptions = {
   session: {
@@ -44,8 +32,8 @@ const options: AuthOptions = {
     }),
   ],
   adapter: DgraphAdapter({
-    endpoint: getEndpoint(),
-    authToken: getKey(),
+    endpoint: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT,
+    authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY,
     authHeader: process.env.NEXT_PUBLIC_AUTH_HEADER,
     jwtSecret: process.env.NEXT_PUBLIC_SECRET,
   }),

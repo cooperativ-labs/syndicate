@@ -1,20 +1,8 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { useMemo } from 'react';
 
-export const getEndpoint = () => {
-  switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-    case 'production':
-      return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
-    // case 'staging':
-    //   return 'https://blue-surf-591466.us-east-1.aws.cloud.dgraph.io/graphql';
-    default:
-      // return 'http://localhost:8080/graphql';
-      return 'http://172.22.0.2:8080/graphql';
-  }
-};
-
 const publichttpLink = createHttpLink({
-  uri: getEndpoint(),
+  uri: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT,
   credentials: 'same-origin',
 });
 
