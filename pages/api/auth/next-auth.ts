@@ -65,6 +65,7 @@ const options: AuthOptions = {
       // },
     }),
   ],
+
   adapter: DgraphAdapter({
     endpoint: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT,
     authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY,

@@ -1095,6 +1095,10 @@ type Account
   # accessToken: String // removed to avoid type conflict with access_token
   token_type: String
   refresh_token: String
+		refresh_token_expires_in: Int64
+		not_before:	Int64
+		id_token_expires_in: Int64
+		profile_info:	String
   access_token: String
   scope: String
   id_token: String

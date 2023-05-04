@@ -18,26 +18,25 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
   const token = session?.encodedJwt;
   const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
 
-  const setHeaders = (headers, token) => {
-    if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
-      return {
-        headers: {
-          ...headers,
-          'X-Auth-Token': token ? `bearer ${token}` : '',
-          'DG-Auth': key,
-        },
-      };
-    } else {
-      return {
-        headers: {
-          ...headers,
-          'X-Auth-Token': token ? `bearer ${token}` : '',
-        },
-      };
-    }
-  };
-
   useEffect(() => {
+    const setHeaders = (headers, token) => {
+      if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+        return {
+          headers: {
+            ...headers,
+            'X-Auth-Token': token ? `bearer ${token}` : '',
+            'DG-Auth': key,
+          },
+        };
+      } else {
+        return {
+          headers: {
+            ...headers,
+            'X-Auth-Token': token ? `bearer ${token}` : '',
+          },
+        };
+      }
+    };
     if (status !== 'loading') {
       const asyncMiddleware = setContext((_, { headers }) => setHeaders(headers, token));
       const httpLink = createHttpLink({
@@ -51,29 +50,9 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
         ssrMode: typeof window === 'undefined',
       });
 
-      //========================
-      // createApolloClient
-      //   .query({
-      //     query: gql`
-      //       query {
-      //         queryUser {
-      //           id
-      //           name
-      //         }
-      //       }
-      //     `,
-      //   })
-      //   .then((response) => {
-      //     console.log(response.data);
-      //   })
-      //   .catch((error) => {
-      //     console.error('Error:', error);
-      //   });
-      //===================
-
       setApolloClient(createApolloClient);
     }
-  }, [setHeaders, status, token]);
+  }, [status, token]);
 
   if (status === 'loading' || !apolloClient) {
     return (
