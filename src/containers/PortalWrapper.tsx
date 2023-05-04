@@ -2,14 +2,14 @@ import AlertPopup from '@src/components/alerts/AlertPopup';
 import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
 // import PortalSideBar from './sideBar/PortalSideBar';
+import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 import NavBar from './NavigationBar';
 import React, { FC, useContext } from 'react';
+import router from 'next/router';
 import WalletChooserModal from './wallet/WalletChooserModal';
 import { ApplicationStoreProps, store } from '@context/store';
-import router from 'next/router';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { useQuery } from '@apollo/client';
-import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 
 const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
 // const BackgroundGradient = 'bg-white';

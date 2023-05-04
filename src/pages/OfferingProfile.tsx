@@ -14,13 +14,13 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
 import { DocumentType, Offering } from 'types';
 import { getBaseUrl } from '@src/utils/helpersURL';
+import { getCurrentSalePrice } from '@src/utils/helpersMoney';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { GetEstablishedContracts } from '@src/utils/helpersContracts';
-import { getCurrentSalePrice } from '@src/utils/helpersMoney';
 import { loadStdlib } from '@reach-sh/stdlib';
 import { ReachContext } from '@src/SetReachContext';
-import { useAsyncFn } from 'react-use';
 import { useAccount, useNetwork } from 'wagmi';
+import { useAsyncFn } from 'react-use';
 
 type OfferingProfileProps = {
   offering: Offering;

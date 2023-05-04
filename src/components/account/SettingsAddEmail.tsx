@@ -1,9 +1,9 @@
 import Input from '../form-components/Inputs';
 import React, { FC } from 'react';
 
-import { Form, Formik } from 'formik';
-import { emailConfirmationContent } from '@src/services/postmark';
 import axios from 'axios';
+import { emailConfirmationContent } from '@src/services/postmark';
+import { Form, Formik } from 'formik';
 import { sha256 } from 'js-sha256';
 
 const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';
@@ -25,7 +25,9 @@ const handleAddEmailAddress = async (address: string, completionUrl: string) => 
 
   try {
     await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
-  } catch (error) {}
+  } catch (error) {
+    throw new Error(error);
+  }
 };
 
 const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {

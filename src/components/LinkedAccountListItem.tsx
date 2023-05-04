@@ -4,8 +4,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
 import { LinkedAccount } from 'types';
 
-import { useMutation } from '@apollo/client';
 import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/dGraphQueries/organization';
+import { useMutation } from '@apollo/client';
 
 type LinkedAccountListProps = {
   account: LinkedAccount;

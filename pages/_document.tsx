@@ -2,16 +2,16 @@ import Document, { Head, Html, Main, NextScript } from 'next/document';
 import React from 'react';
 // import tailwind from 'tailwind';
 export default class MyDocument extends Document {
-  getConfig = () => {
-    switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-      case 'production':
-        return process.env.NEXT_PUBLIC_MAPS_API_KEY;
-      case 'staging':
-        return process.env.NEXT_PUBLIC_MAPS_API_KEY;
-      default:
-        return process.env.NEXT_PUBLIC_MAPS_API_KEY;
-    }
-  };
+  // getConfig = () => {
+  //   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
+  //     case 'production':
+  //       return process.env.NEXT_PUBLIC_MAPS_API_KEY;
+  //     case 'staging':
+  //       return process.env.NEXT_PUBLIC_MAPS_API_KEY;
+  //     default:
+  //       return process.env.NEXT_PUBLIC_MAPS_API_KEY;
+  //   }
+  // };
 
   render() {
     return (

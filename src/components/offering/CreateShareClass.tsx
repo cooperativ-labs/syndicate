@@ -39,10 +39,10 @@ const CreateShareClass: FC<CreateShareClassProps> = ({ contractCreatorId, entity
 
   useEffect(() => {
     // console.log(window.ethereum);
-    console.log(window.ethereum?.isMetaMask);
+    // console.log(window.ethereum?.isMetaMask);
     // console.log(window.ethereum?.isCoinbaseWallet);
     // console.log(window.ethereum?.isBraveWallet);
-    console.log(window.ethereum?.isFrame);
+    // console.log(window.ethereum?.isFrame);
     // console.log(window.ethereum?.isRainbow);
     // console.log(ethers.getDefaultProvider('homestead'));
     // console.log(window.ethereum);

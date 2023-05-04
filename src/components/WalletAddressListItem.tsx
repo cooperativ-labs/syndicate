@@ -10,8 +10,8 @@ import { MarkPublic } from './form-components/ListItemButtons';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { REMOVE_ENTITY_WALLET } from '@src/utils/dGraphQueries/entity';
 import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/dGraphQueries/crypto';
-import { useMutation } from '@apollo/client';
 import { useAccount } from 'wagmi';
+import { useMutation } from '@apollo/client';
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;

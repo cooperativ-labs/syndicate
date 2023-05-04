@@ -3,8 +3,8 @@ import MoneyDisplay from '../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React from 'react';
-import { Offering } from 'types';
 import { getLowestSalePrice } from '@src/utils/helpersMoney';
+import { Offering } from 'types';
 import { useRouter } from 'next/router';
 
 export type OfferingCardProps = {

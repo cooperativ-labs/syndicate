@@ -65,7 +65,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
     if (!saleContents.price) {
       retrieveSale();
     }
-  }, [getSale, saleContents, retrieveSale]);
+  }, [saleContents, retrieveSale]);
 
   if (
     (saleContents.status === 'initd' && isContractOwner) ||

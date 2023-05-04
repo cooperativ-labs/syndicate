@@ -2,13 +2,13 @@ import Footer from '@src/Footer/Footer';
 import Head from 'next/head';
 
 import OrganizationProfile from '@src/pages/OrganizationProfile';
+import PortalOrganization from '@src/pages/PortalOrganization';
+import PortalWrapper from '@src/containers/PortalWrapper';
 import React from 'react';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GetServerSideProps, NextPage } from 'next';
 import { initializeApollo } from '@src/utils/apolloClient';
 import { Organization } from 'types';
-import PortalWrapper from '@src/containers/PortalWrapper';
-import PortalOrganization from '@src/pages/PortalOrganization';
 
 export const TEMP_IS_PARTICIPANT = true;
 

@@ -1,12 +1,14 @@
-import React, { FC, ReactNode, useContext, useEffect, useState } from 'react';
-import { ADD_USER_WITH_EMAIL } from '@src/utils/dGraphQueries/user';
+import * as Yup from 'yup';
+import CooperativLogo from '../CooperativLogo';
+import Link from 'next/link';
+import React, { FC, ReactNode, useState } from 'react';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
 import { signIn } from 'next-auth/react';
-import { useMutation } from '@apollo/client';
 
 export const loginButtonClass =
-  'flex my-5 items-center rounded-full bg-slate-50 border-2 border-cDarkBlue justify-center p-3 text-slate-700 font-bold w-full';
+  'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
 
 type SSOButtonProps = {
   icon: string;
@@ -17,22 +19,13 @@ type SSOButtonProps = {
 const SSOButton: FC<SSOButtonProps> = ({ onClick, iconPrefix, icon, text }) => {
   return (
     <button className={loginButtonClass} onClick={() => onClick()}>
-      <FontAwesomeIcon icon={[iconPrefix, icon as IconName]} className="text-lg text-slate-700 mr-2" /> {text}
+      <FontAwesomeIcon icon={[iconPrefix, icon as IconName]} className="mr-2" /> {text}
     </button>
   );
 };
 
 const CreateAccount: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-  const [loginInterface, setLoginInterface] = useState<'social' | 'email' | 'magic'>('social');
-  const [addUserWithEmail, { error: errorEmail }] = useMutation(ADD_USER_WITH_EMAIL);
-  const [tried, setTried] = useState(false);
-
-  if (errorEmail && !tried) {
-    const error = errorEmail;
-    alert(`Oops. Looks like something went wrong: ${error.message} (createAccount.tsx)`);
-    setTried(true);
-  }
 
   //===========================================================================
 
@@ -41,13 +34,51 @@ const CreateAccount: FC = () => {
     signIn('google');
   };
 
+  const handleMagicLink = (email: string) => {
+    setLoading(true);
+    signIn('email', { email });
+  };
+
+  const MagicLinkLoginSchema = Yup.object().shape({
+    email: Yup.string().email('Invalid email address').required('Email is required'),
+  });
+  const magicLinkForm = (
+    <Formik
+      initialValues={{ email: '' }}
+      validationSchema={MagicLinkLoginSchema}
+      onSubmit={(values) => handleMagicLink(values.email)}
+    >
+      {({ errors, touched, isSubmitting }) => (
+        <Form>
+          <div>
+            <Field
+              type="email"
+              name="email"
+              aria-label="login-email"
+              placeholder="you@example.com"
+              className={`w-full rounded-sm h-14 border-2 ${
+                touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
+              } focus:no-outline focus:ring-2 focus:ring-blue-400`}
+            />
+            <ErrorMessage name="email" component="div" className="mt-1 text-sm font-semibold text-red-700" />
+          </div>
+          <button
+            type="submit"
+            disabled={isSubmitting}
+            className="flex my-5 items-center rounded-sm bg-cLightBlue  justify-center p-3 text-slate-50 font-medium w-full"
+          >
+            Continue with email
+          </button>
+        </Form>
+      )}
+    </Formik>
+  );
+
   return (
     <div className="mt-5 md:p-10 md:rounded-lg md:bg-white md:shadow-xl">
-      {(loginInterface === 'email' || loginInterface === 'magic') && (
-        <button className="text-xs text-slate-600 font-bold uppercase" onClick={() => setLoginInterface('social')}>
-          <FontAwesomeIcon icon="chevron-left" /> Other login options
-        </button>
-      )}
+      <div className="flex justify-center mb-10">
+        <CooperativLogo />
+      </div>
       {loading ? (
         <div className="flex justify-center items-center ">
           <img
@@ -58,27 +89,24 @@ const CreateAccount: FC = () => {
           <span>Loading your account</span>
         </div>
       ) : (
-        <div className="mt-5">
-          {loginInterface === 'social' && (
-            <>
-              <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Sign in with Google" />
-              {/* <SSOButton onClick={handleTwitterLogin} iconPrefix="fab" icon="twitter" text="Sign in with Twitter" /> */}
-              {/* <SSOButton
-                onClick={() => setLoginInterface('email')}
-                iconPrefix="fas"
-                icon="envelope"
-                text="Sign in with email address "
-              /> */}
-              {/* <SSOButton
-                onClick={() => setLoginInterface('magic')}
-                iconPrefix="fas"
-                icon="envelope"
-                text="Sign in with magic link"
-              /> */}
-            </>
-          )}
+        <div className="mt-4">
+          {magicLinkForm}
+          <div className="flex items-center">
+            <hr className="my-4 w-full border-gray-500" />
+            <div className="m-4">or</div> <hr className="my-4 w-full border-gray-500" />
+          </div>
+          <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Continue with Google" />
         </div>
       )}
+      <div className="flex text-sm text-cGold text-center mt-10 justify-center">
+        <Link href="https://cooperativ.io/terms">
+          <div className="w-max">Terms of Service</div>
+        </Link>
+        <div className="mx-4">|</div>
+        <Link href="https://cooperativ.io/privacy">
+          <div className="w-max">Privacy Policy</div>
+        </Link>
+      </div>
     </div>
   );
 };

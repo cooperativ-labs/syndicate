@@ -5,6 +5,7 @@ import React, { FC, useContext, useState } from 'react';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 
+import AddItemButton from '@src/components/buttons/AddItemButton';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import router from 'next/router';
 import { ApplicationStoreProps, store } from '@context/store';
@@ -12,7 +13,6 @@ import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/hel
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import AddItemButton from '@src/components/buttons/AddItemButton';
 
 const Dashboard: FC = () => {
   const { data: session, status } = useSession();

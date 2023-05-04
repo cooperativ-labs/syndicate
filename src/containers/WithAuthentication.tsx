@@ -1,4 +1,4 @@
-import NeedAccount from './ModalNeedAccount';
+import LoginModal from './LoginModal';
 import React, { useEffect, useState } from 'react';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { useQuery } from '@apollo/client';
@@ -35,7 +35,7 @@ const WithAuthentication: React.FC<WithAuthenticationProps> = ({ children, redir
 
   return (
     <>
-      {showLoginModal && <NeedAccount />}
+      {showLoginModal && <LoginModal />}
       {!isNotLoggedIn && children}
     </>
   );

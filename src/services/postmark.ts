@@ -1,11 +1,11 @@
 var postmark = require('postmark');
 
 // Send an email:
-const client = new postmark.ServerClient(process.env.NEXT_PUBLIC_POSTMARK_API_KEY);
+export const postmarkClient = new postmark.ServerClient(process.env.NEXT_PUBLIC_POSTMARK_API_KEY);
 
 export async function sendEmail(to: string, subject: string, htmlBody: string, textBody: string) {
   try {
-    await client.sendEmail({
+    await postmarkClient.sendEmail({
       From: 'notifications@cooperativ.io',
       To: to,
       Subject: subject,

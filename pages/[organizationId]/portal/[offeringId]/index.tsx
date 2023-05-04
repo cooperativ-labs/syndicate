@@ -1,10 +1,10 @@
-import { useQuery } from '@apollo/client';
-import LoadingModal from '@src/components/loading/ModalLoading';
 import Container from '@src/containers/Layouts/Container';
-import PortalWrapper from '@src/containers/PortalWrapper';
+import LoadingModal from '@src/components/loading/ModalLoading';
 import PortalOffering from '@src/pages/PortalOffering';
-import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
+import PortalWrapper from '@src/containers/PortalWrapper';
 import router from 'next/router';
+import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
+import { useQuery } from '@apollo/client';
 
 import React, { FC } from 'react';
 import { Offering } from 'types';

@@ -21,17 +21,17 @@ import ShareBidForm from '@src/components/investor/tradingForms/ShareBidForm';
 import ShareOfferForm from '@src/components/investor/tradingForms/ShareOfferForm';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { getLowestSalePrice } from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { getContractParticipants } from '@src/web3/reachCalls';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { GetEstablishedContracts } from '@src/utils/helpersContracts';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
+import { getLowestSalePrice } from '@src/utils/helpersMoney';
+import { loadStdlib } from '@reach-sh/stdlib';
 import { useAccount, useChainId } from 'wagmi';
 import { useAsyncFn } from 'react-use';
 import { useSession } from 'next-auth/react';
-import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
-import { loadStdlib } from '@reach-sh/stdlib';
 
 type OfferingDetailsProps = {
   offering: Offering;

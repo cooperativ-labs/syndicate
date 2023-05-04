@@ -17,8 +17,8 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
 import { ReachContext } from '@src/SetReachContext';
 import { submitOffer } from '@src/web3/reachCalls';
-import { useMutation } from '@apollo/client';
 import { useChainId } from 'wagmi';
+import { useMutation } from '@apollo/client';
 
 type ShareOfferFormProps = {
   offering: Offering;

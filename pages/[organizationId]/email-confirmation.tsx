@@ -1,8 +1,8 @@
-import { useMutation, useQuery } from '@apollo/client';
 import { ADD_ORGANIZATION_EMAIL } from '@src/utils/dGraphQueries/organization';
-import { useRouter } from 'next/router';
-import { useEffect } from 'react';
 import { sha256 } from 'js-sha256';
+import { useEffect } from 'react';
+import { useMutation, useQuery } from '@apollo/client';
+import { useRouter } from 'next/router';
 
 const ConfirmEmail = () => {
   const router = useRouter();

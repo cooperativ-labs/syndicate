@@ -17,15 +17,15 @@ import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember'
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import TeamMemberList from '@src/components/entity/TeamMemberList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dGraphQueries/organization';
+import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
 import { Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { getBaseUrl } from '@src/utils/helpersURL';
 
 const OrganizationDetails: FC = () => {
   const { data: session, status } = useSession();

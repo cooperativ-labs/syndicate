@@ -1,8 +1,8 @@
 import CreateAccount from '@src/components/account/CreateAccount';
 import React, { FC } from 'react';
 
-interface NeedAccountProps {}
-const NeedAccount: FC<NeedAccountProps> = () => {
+interface LoginModalProps {}
+const LoginModal: FC<LoginModalProps> = () => {
   return (
     <div className="flex-grow z-10 bg-gradient-to-b from-gray-100 to-blue-50 h-screen">
       <div className="h-full px-4 md:px-8 py-2 md:py-5">
@@ -22,4 +22,4 @@ const NeedAccount: FC<NeedAccountProps> = () => {
   );
 };
 
-export default NeedAccount;
+export default LoginModal;
