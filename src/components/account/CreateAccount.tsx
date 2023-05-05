@@ -107,7 +107,7 @@ const CreateAccount: FC = () => {
           </div>
           <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Continue with Google" />
           {/* <SSOButton onClick={handleMicrosoftLogin} iconPrefix="fab" icon="microsoft" text="Continue with Microsoft" /> */}
-          <SSOButton onClick={handleLinkedInLogin} iconPrefix="fab" icon="linkedin" text="Continue with LinkedIn" />
+          {/* <SSOButton onClick={handleLinkedInLogin} iconPrefix="fab" icon="linkedin" text="Continue with LinkedIn" /> */}
         </div>
       )}
       <div className="flex text-sm text-cGold text-center mt-10 justify-center">

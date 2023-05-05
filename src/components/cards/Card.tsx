@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import cn from 'classnames';
 import React, { FC } from 'react';
 
 export interface CardProps {
@@ -6,7 +6,6 @@ export interface CardProps {
   style?: any;
   className?: string;
   center?: boolean;
-  width?: string;
   onClick?: () => void;
 }
 
@@ -15,7 +14,7 @@ const Card: FC<CardProps> = ({ children, onClick, ...rest }) => {
   return (
     <div
       data-test="component-card"
-      className={classNames(`${className} bg-white shadow-md`)}
+      className={cn(className, onClick && 'hover:pointer-cursor')}
       style={style}
       onClick={onClick}
       {...props}
