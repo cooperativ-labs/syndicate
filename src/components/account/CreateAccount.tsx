@@ -39,6 +39,11 @@ const CreateAccount: FC = () => {
     signIn('azure-ad-b2c');
   };
 
+  const handleLinkedInLogin = async () => {
+    setLoading(true);
+    signIn('linkedin');
+  };
+
   const handleMagicLink = (email: string) => {
     setLoading(true);
     signIn('email', { email });
@@ -101,7 +106,8 @@ const CreateAccount: FC = () => {
             <div className="m-4">or</div> <hr className="my-4 w-full border-gray-500" />
           </div>
           <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Continue with Google" />
-          <SSOButton onClick={handleMicrosoftLogin} iconPrefix="fab" icon="microsoft" text="Continue with Microsoft" />
+          {/* <SSOButton onClick={handleMicrosoftLogin} iconPrefix="fab" icon="microsoft" text="Continue with Microsoft" /> */}
+          <SSOButton onClick={handleLinkedInLogin} iconPrefix="fab" icon="linkedin" text="Continue with LinkedIn" />
         </div>
       )}
       <div className="flex text-sm text-cGold text-center mt-10 justify-center">

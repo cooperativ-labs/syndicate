@@ -1,4 +1,5 @@
 import GithubProvider from 'next-auth/providers/github';
+import LinkedInProvider from 'next-auth/providers/linkedin';
 import EmailProvider from 'next-auth/providers/email';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 import GoogleProvider from 'next-auth/providers/google';
@@ -30,14 +31,32 @@ const options: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET,
+      clientSecret: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_SECRET,
     }),
-    AzureADB2CProvider({
-      tenantId: process.env.NEXT_PUBLIC_AZURE_AD_B2C_TENANT_NAME,
-      clientId: process.env.NEXT_PUBLIC_AZURE_AD_B2C_CLIENT_ID,
-      clientSecret: process.env.NEXT_PUBLIC_AZURE_AD_B2C_CLIENT_SECRET,
-      primaryUserFlow: process.env.NEXT_PUBLIC_AZURE_AD_B2C_PRIMARY_USER_FLOW,
-      authorization: { params: { scope: 'offline_access openid' } },
+    // AzureADB2CProvider({
+    //   tenantId: process.env.NEXT_PUBLIC_AZURE_AD_B2C_TENANT_NAME,
+    //   clientId: process.env.NEXT_PUBLIC_AZURE_AD_B2C_CLIENT_ID,
+    //   clientSecret: process.env.NEXT_PUBLIC_AZURE_AD_B2C_CLIENT_SECRET,
+    //   primaryUserFlow: process.env.NEXT_PUBLIC_AZURE_AD_B2C_PRIMARY_USER_FLOW,
+    //   authorization: { params: { scope: 'offline_access openid' } },
+    // }),
+    LinkedInProvider({
+      clientId: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID,
+      clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
+      token: {
+        url: 'https://www.linkedin.com/oauth/v2/accessToken',
+        async request({ client, params, checks, provider }) {
+          const response = await client.oauthCallback(provider.callbackUrl, params, checks, {
+            exchangeBody: {
+              client_id: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID,
+              client_secret: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_SECRET,
+            },
+          });
+          return {
+            tokens: response,
+          };
+        },
+      },
     }),
     EmailProvider({
       server: process.env.NEXT_PUBLIC_EMAIL_SERVER,
