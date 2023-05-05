@@ -1,9 +1,9 @@
+import Card from '@src/components/cards/Card';
+import CreateOrganization from '@src/components/organization/CreateOrganization';
 import Dashboard from '@src/pages/Dashboard';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import React from 'react';
 import { NextPage } from 'next';
-import CreateOrganization from '@src/components/organization/CreateOrganization';
-import Card from '@src/components/cards/Card';
 const DashboardPage: NextPage = () => {
   return (
     <div data-test="component-landing" className="h-full flex">

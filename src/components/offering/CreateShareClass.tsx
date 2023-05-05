@@ -37,16 +37,16 @@ const CreateShareClass: FC<CreateShareClassProps> = ({ contractCreatorId, entity
   const protocol = MatchSupportedChains(chainId)?.protocol;
   const chainName = MatchSupportedChains(chainId)?.name;
 
-  useEffect(() => {
-    // console.log(window.ethereum);
-    // console.log(window.ethereum?.isMetaMask);
-    // console.log(window.ethereum?.isCoinbaseWallet);
-    // console.log(window.ethereum?.isBraveWallet);
-    // console.log(window.ethereum?.isFrame);
-    // console.log(window.ethereum?.isRainbow);
-    // console.log(ethers.getDefaultProvider('homestead'));
-    // console.log(window.ethereum);
-  }, [window]);
+  // useEffect(() => {
+  //   // console.log(window.ethereum);
+  //   // console.log(window.ethereum?.isMetaMask);
+  //   // console.log(window.ethereum?.isCoinbaseWallet);
+  //   // console.log(window.ethereum?.isBraveWallet);
+  //   // console.log(window.ethereum?.isFrame);
+  //   // console.log(window.ethereum?.isRainbow);
+  //   // console.log(ethers.getDefaultProvider('homestead'));
+  //   // console.log(window.ethereum);
+  // }, []);
 
   const [, deploy] = useAsyncFn(
     async (backingToken: any) => {
