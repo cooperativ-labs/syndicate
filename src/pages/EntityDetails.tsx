@@ -144,12 +144,14 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                     );
                   })}
                 </div>
-                <Button
-                  className="mt-4 rounded-md bg-cLightBlue p-2 px-4 text-white font-semibold"
-                  onClick={() => setAddOwnerModal(true)}
-                >
-                  Add Address
-                </Button>
+                {isAdminOrEditor && (
+                  <Button
+                    className="mt-4 rounded-md bg-cLightBlue p-2 px-4 text-white font-semibold"
+                    onClick={() => setAddOwnerModal(true)}
+                  >
+                    Add Address
+                  </Button>
+                )}
               </SectionBlock>
             </div>
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">

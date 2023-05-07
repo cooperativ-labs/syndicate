@@ -12,7 +12,7 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { getIsAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { getIsAdmin, getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -33,6 +33,7 @@ const OrganizationOverview: FC = () => {
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress },
   });
+
   if (!organization) {
     return (
       <div>
@@ -49,15 +50,19 @@ const OrganizationOverview: FC = () => {
   const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;
   const isAdmin = getIsAdmin(userId, organization);
+  const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
+
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
       <TwoColumnLayout twoThirdsLayout>
+        {isEditorOrAdmin && (
+          <DashboardCard>
+            <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
+            <CreateOffering organization={organization} refetch={refetch} />
+          </DashboardCard>
+        )}
         <DashboardCard>
-          <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
-          <CreateOffering organization={organization} refetch={refetch} />
-        </DashboardCard>
-        <DashboardCard>
-          <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">Manage Team</h2>
+          <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">{`${isAdmin ? 'Manage ' : ''}Team`}</h2>
           <TeamMemberList
             teamMembers={organization.users}
             organizationId={organization.id}

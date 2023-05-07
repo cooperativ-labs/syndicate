@@ -6,6 +6,7 @@ import { getDocFormatOption } from '@src/utils/enumConverters';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { useMutation } from '@apollo/client';
+import { useSession } from 'next-auth/react';
 
 const DocumentListItem: FC<{ document: Document; offeringId: string; deleteButton?: boolean }> = ({
   document,
@@ -25,12 +26,12 @@ const DocumentListItem: FC<{ document: Document; offeringId: string; deleteButto
         });
 
         if (!response.ok) {
-          // if (error.includes('No such object')) {
-          //   deleteDocument({
-          //     variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id },
-          //   });
-          // }
           const error = await response.text();
+          if (error.includes('No such object')) {
+            deleteDocument({
+              variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id },
+            });
+          }
           throw new Error(error);
         }
         deleteDocument({ variables: { currentDate: currentDate, offeringId: offeringId, documentId: document.id } });
@@ -52,12 +53,12 @@ const DocumentListItem: FC<{ document: Document; offeringId: string; deleteButto
           <FontAwesomeIcon icon={`${getDocFormatOption(document.format)?.icon}` as IconName} />
         </div>
         <div className="d-block">
-          <h1 className="font-bold text-sm truncate w:42 lg:w-60 ">{document.title}</h1>
+          <h1 className="font-bold text-sm truncate w:42  ">{document.title}</h1>
           <h2 className="text-gray-500 text-xs font-bold">{getDocFormatOption(document.format)?.subtitle}</h2>
         </div>
       </a>
       {deleteButton && (
-        <button aria-label="edit address info" onClick={handleDelete}>
+        <button aria-label="delete-document" onClick={handleDelete}>
           <FontAwesomeIcon icon="trash" className="text-lg text-gray-600 mr-2" />
         </button>
       )}

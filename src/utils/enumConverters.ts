@@ -70,6 +70,7 @@ export const organizationPermissionOptions = [
   { value: OrganizationPermissionType.Admin, name: 'Admin', color: 'blue-500' },
   { value: OrganizationPermissionType.Editor, name: 'Editor', color: 'emerald-600' },
   { value: OrganizationPermissionType.Viewer, name: 'Viewer', color: 'orange-600' },
+  { value: OrganizationPermissionType.Auditor, name: 'Auditor', color: 'gray-500' },
 ];
 
 export const getOrganizationPermissionOption = (permission: OrganizationPermissionType) => {

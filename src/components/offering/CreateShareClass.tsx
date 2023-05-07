@@ -11,7 +11,6 @@ import { ethers } from 'ethers';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { loadStdlib } from '@reach-sh/stdlib';
-import { ReachContext } from '@src/SetReachContext';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { useAccount, useNetwork, useProvider, useSigner } from 'wagmi';
 import { useAsyncFn } from 'react-use';

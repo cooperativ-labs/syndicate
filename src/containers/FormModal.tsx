@@ -41,7 +41,7 @@ const FormModal: FC<FormModalProps> = ({ noModal, formOpen, title, subTitle, onC
         >
           <div className="absolute right-0 left-0 top-32 ">
             <Card
-              className="relative mx-4 p-6 mb-10 flex-col md:mx-auto rounded-xl md:rounded-lg shadow-modal "
+              className="relative mx-4 p-6 mb-10 flex-col md:mx-auto rounded-xl md:rounded-lg shadow-modal bg-white "
               style={{ overflow: 'smooth', maxWidth: '800px' }}
             >
               <div className="absolute -top-1 right-0">

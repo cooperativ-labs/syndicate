@@ -52,6 +52,10 @@ export const CORE_DOCUMENT_FIELDS = gql`
     }
     owner {
       id
+      organization {
+        id
+        name
+      }
     }
     signatories {
       id

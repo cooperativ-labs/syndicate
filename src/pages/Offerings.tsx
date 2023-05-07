@@ -9,7 +9,7 @@ import CreateOffering from '@src/components/offering/CreateOffering';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import router from 'next/router';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
-import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
@@ -19,6 +19,7 @@ const Offerings: FC = () => {
   const orgId = router.query.organizationId;
   const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization = organizationData?.getOrganization;
+  const isAdminOrEditor = getIsEditorOrAdmin(session?.user?.id, organization);
 
   if (!organization) {
     return <></>;
@@ -43,11 +44,13 @@ const Offerings: FC = () => {
                   <CreateOffering organization={organization} refetch={refetch} />
                 </DashboardCard>
               ) : (
-                <AddItemButton
-                  onClick={() => setEntityFormOpen(true)}
-                  classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
-                  text="Add Offering"
-                />
+                isAdminOrEditor && (
+                  <AddItemButton
+                    onClick={() => setEntityFormOpen(true)}
+                    classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
+                    text="Add Offering"
+                  />
+                )
               )}
             </>
           ) : (

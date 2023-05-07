@@ -4,7 +4,7 @@ import BasicOfferingDetailsForm from '@src/components/offering/settings/BasicOff
 import Button from '@src/components/buttons/Button';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import FormModal from '@src/containers/FormModal';
-import HashInstructions from '@src/components/indicators/HashInstructions';
+
 import OfferingActions from '@src/components/offering/actions/OfferingActions';
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
 import OfferingDescriptionSettings from '@src/components/offering/settings/OfferingDescriptionSettings';
@@ -12,6 +12,7 @@ import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisp
 
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import DocumentList from '@src/components/offering/documents/DocumentList';
+import HashInstructions from '@src/components/indicators/HashInstructions';
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
@@ -244,8 +245,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                   bacId: bacId,
                 }}
               />
-            ) : (
+            ) : isOfferingManager ? (
               <BasicOfferingDetailsForm offeringId={id} operatingCurrency={offeringEntity.operatingCurrency} />
+            ) : (
+              'This offering has no details yet.'
             )}
 
             {isOfferingManager && <hr className="my-10" />}
@@ -310,14 +313,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
         <TwoColumnLayout twoThirdsLayout gap="12">
           {/* Slot 3 */}
           <div>
-            <OfferingTabContainer
-              offering={offering}
-              contractOwnerMatches={contractOwnerMatches}
-              isContractOwner={isContractOwner}
-              offeringEntity={offeringEntity}
-              isOfferingManager={isOfferingManager}
-              contractId={contractId}
-            />
+            {details && (
+              <OfferingTabContainer
+                offering={offering}
+                contractOwnerMatches={contractOwnerMatches}
+                isContractOwner={isContractOwner}
+                offeringEntity={offeringEntity}
+                isOfferingManager={isOfferingManager}
+                contractId={contractId}
+              />
+            )}
           </div>
 
           <>

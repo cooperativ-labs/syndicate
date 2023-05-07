@@ -124,11 +124,9 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
   return (
     <WagmiConfig client={wagmiClient}>
       <SessionProvider session={session}>
-        {/* <SetReachContext> */}
         <SetAppContext>
           <StateProvider>{cookiesApproved === 'approved' ? withCookies : withoutCookies}</StateProvider>
         </SetAppContext>
-        {/* </SetReachContext> */}
       </SessionProvider>
     </WagmiConfig>
   );

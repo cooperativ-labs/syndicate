@@ -4,15 +4,16 @@ import { LinkedAccount } from 'types';
 
 type LinkedAccountsListProps = {
   linkedAccounts: LinkedAccount[];
+  isOrganizationManager?: boolean;
 };
 
-const LinkedAccountsList: FC<LinkedAccountsListProps> = ({ linkedAccounts }) => {
+const LinkedAccountsList: FC<LinkedAccountsListProps> = ({ linkedAccounts, isOrganizationManager }) => {
   return (
     <div className="w-full">
       {linkedAccounts.map((account, i) => {
         return (
           <div className="mb-3" key={i}>
-            <LinkedAccountListItem account={account} />
+            <LinkedAccountListItem account={account} isOrganizationManager={isOrganizationManager} />
           </div>
         );
       })}

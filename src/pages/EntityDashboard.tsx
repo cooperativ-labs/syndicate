@@ -1,3 +1,4 @@
+import AddItemButton from '@src/components/buttons/AddItemButton';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import MajorActionButton from '@src/components/buttons/MajorActionButton';
@@ -5,6 +6,7 @@ import React, { FC } from 'react';
 import router from 'next/router';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
@@ -19,17 +21,24 @@ const EntityDashboard: FC = () => {
   if (!organization) {
     return <></>;
   }
+
+  const isAdminOrEditor = getIsEditorOrAdmin(session?.user?.id, organization);
   const entities = organization.legalEntities;
   const hasEntities = entities.length > 0;
+
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
       <div className=" ">
         {hasEntities ? (
           <>
             <EntitiesList entities={entities} />
-            <MajorActionButton className="w-full md:w-96" link={`/${orgId}/create-entity`}>
-              Create another entity
-            </MajorActionButton>
+            {isAdminOrEditor && (
+              <AddItemButton
+                onClick={() => router.push(`/${orgId}/create-entity`)}
+                classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
+                text="Add Entity"
+              />
+            )}
           </>
         ) : (
           <LimitedWidthSection center>

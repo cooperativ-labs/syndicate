@@ -37,10 +37,6 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
     router.push(`/${orgId}/overview`);
   }
 
-  if (!user) {
-    return <></>;
-  }
-
   return (
     <Formik
       initialValues={{

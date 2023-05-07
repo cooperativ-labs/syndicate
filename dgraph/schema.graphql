@@ -46,7 +46,7 @@ type DocumentSignatory @auth (
 									document{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}										
@@ -62,7 +62,7 @@ type DocumentSignatory @auth (
 									document{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}										
@@ -88,7 +88,7 @@ type Document @auth (
 # 								queryDocument{
 # 									owner{
 	# 										organization{
-# 											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+# 													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 # 													user(filter: { id: [$userId] }) { id }
 # 												}
 # 										}}
@@ -101,7 +101,7 @@ type Document @auth (
 								queryDocument{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}}
@@ -114,7 +114,7 @@ type Document @auth (
 								queryDocument{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}}
@@ -129,7 +129,7 @@ type Document @auth (
 	format: DocumentFormat 
 	type: DocumentType
 	url: String
-	fileId: String
+	fileId: String @search
 	thumbnailImage: Image
 	owner: LegalEntity @hasInverse(field:documentsOwned)
 	signatories: [DocumentSignatory] @hasInverse(field:document) 
@@ -171,7 +171,7 @@ add:{rule: """
 								queryCryptoAddress{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -183,7 +183,7 @@ add:{rule: """
 								queryCryptoAddress{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -196,7 +196,7 @@ add:{rule: """
 								queryCryptoAddress{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -231,7 +231,7 @@ add: {rule: """
 								querySmartContract{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 															user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -244,7 +244,7 @@ add: {rule: """
 								querySmartContract{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 															user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -257,7 +257,7 @@ add: {rule: """
 								querySmartContract{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 															user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -297,7 +297,7 @@ add:,
 									offering{
 									offeringEntity{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}}
@@ -311,7 +311,7 @@ add:,
 									offering{
 									offeringEntity{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}}
@@ -350,7 +350,7 @@ add:
 								queryOffering{
 									offeringEntity{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}}
@@ -363,7 +363,7 @@ add:
 								queryOffering{
 									offeringEntity{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}}
@@ -446,7 +446,7 @@ add:{rule: """
 									offering{
 										offeringEntity{
 											organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 													}
 												}}
@@ -461,7 +461,7 @@ add:{rule: """
 									offering{
 										offeringEntity{
 											organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 													}
 												}}
@@ -537,7 +537,7 @@ type OfferingParticipant @auth (
 					# 				offering{
 					# 					offeringEntity{
 						#      organization{
-					# 						users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+				# 								users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 					# 								user(filter: { id: [$userId] }) { id }
 					# 								}
 					# 							}}
@@ -643,7 +643,7 @@ add:{ rule: """
 								queryRealEstateProperty{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -655,7 +655,7 @@ add:{ rule: """
 								queryRealEstateProperty{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -667,7 +667,7 @@ add:{ rule: """
 								queryRealEstateProperty{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}}
 										}
@@ -705,7 +705,7 @@ add:{rule: """
 								queryAddress{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}}
@@ -717,7 +717,7 @@ add:{rule: """
 								queryAddress{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}}
@@ -729,7 +729,7 @@ add:{rule: """
 								queryAddress{
 									owner{
 										organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}}
@@ -757,7 +757,7 @@ add:{rule: """
 						query($userId: ID!){ 
 								queryEmailAddress{
 									organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}
@@ -768,7 +768,7 @@ add:{rule: """
 						query($userId: ID!){ 
 								queryEmailAddress{
 									organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}
@@ -779,7 +779,7 @@ add:{rule: """
 						query($userId: ID!){ 
 								queryEmailAddress{
 									organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}
@@ -823,7 +823,7 @@ add:{rule: """
 						query($userId: ID!){ 
 								queryLinkedAccount{
 									organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}
@@ -834,7 +834,7 @@ add:{rule: """
 						query($userId: ID!){ 
 								queryLinkedAccount{
 									organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}
@@ -845,7 +845,7 @@ add:{rule: """
 						query($userId: ID!){ 
 								queryLinkedAccount{
 									organization{
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 													user(filter: { id: [$userId] }) { id }
 												}
 										}
@@ -890,7 +890,7 @@ update:{rule: """
 						query($userId: ID!)  { 
 							queryLegalEntity {
 										organization {
-											users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+											users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 																user(filter: { id: [$userId] }) { id }
 											}
 									}
@@ -947,41 +947,50 @@ enum OrganizationPermissionType {
 	ADMIN
 	EDITOR
 	VIEWER
+	AUDITOR
 }
 
 type OrganizationUser 
 @auth(
-  # add: { rule: """
-  #   query($userId: ID!) {
-  #     queryOrganizationUser {
-  #       user(filter: { id: [$userId] }) {
-  #         id
-  #       }
-  #     }
-  #   }
-  #   """
-		# }
-		update: {and:
-   [{ rule: """
+  add: { rule: """
     query($userId: ID!) {
       queryOrganizationUser {
-        user(filter: { id: [$userId] }) {
-          id
-        }
+       	organization {
+											users(filter:  {permissions: { eq: ADMIN } }) {
+																user(filter: { id: [$userId] }) { id }
+											}
+									}
       }
     }
     """
-			 },
-				{ rule: """
-							query {
-								queryOrganizationUser(filter: {permissions:  {eq: ADMIN}}) {id}
-						}
+		},
+		update: { rule: """
+    query($userId: ID!) {
+      queryOrganizationUser {
+       	organization {
+											users(filter:  {permissions: { eq: ADMIN } }) {
+																user(filter: { id: [$userId] }) { id }
+											}
+									}
+      }
+    }
     """
-				}]
-  }
+		},
+		 delete: { rule: """
+    query($userId: ID!) {
+      queryOrganizationUser {
+       	organization {
+											users(filter:  {permissions: { eq: ADMIN } }) {
+																user(filter: { id: [$userId] }) { id }
+											}
+									}
+      }
+    }
+    """
+		}
 ){
 	id: ID!
-	organization: Organization! @hasInverse(field:users)
+	organization: Organization! @hasInverse(field:users) 
 	user: User! @hasInverse(field:organizations) 
 	permissions: [OrganizationPermissionType!] @search
 	# role: [OrganizationUserRole] @search
@@ -989,36 +998,36 @@ type OrganizationUser
 }
 
 type Organization	
-# @auth (
-# 	add: { rule: """
-# 				query($userId: ID!) { 
-# 							queryOrganization {
-# 								users {
-# 									user(filter: { id: [$userId] }) { id }
-# 							}
-# 					}
-# 			}"""
-# 		}
-# update:{rule: """
-# 						query($userId: ID!)  { 
-# 							queryOrganization {
-# 										users(filter: { permissions: { eq: EDITOR } or: {permissions: { eq: ADMIN } }}) {
+@auth (
+	add: { rule: """
+				query($userId: ID!) { 
+							queryOrganization {
+								users {
+									user(filter: { id: [$userId] }) { id }
+							}
+					}
+			}"""
+		}
+update:{rule: """
+						query($userId: ID!)  { 
+							queryOrganization {
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
 
-# 																user(filter: { id: [$userId] }) { id }
-# 											}
-# 									}
-# 						}"""
-# 			}	
-# 	delete:{rule: """
-# 						query($userId: ID!)  { 
-# 							queryOrganization {
-# 										users(filter: { permissions: { eq: ADMIN }}) {
-# 																user(filter: { id: [$userId] }) { id }
-# 											}
-# 									}
-# 						}"""
-# 			}
-# ) 
+																user(filter: { id: [$userId] }) { id }
+											}
+									}
+						}"""
+			}	
+	delete:{rule: """
+						query($userId: ID!)  { 
+							queryOrganization {
+										users(filter: { permissions: { eq: ADMIN }}) {
+																user(filter: { id: [$userId] }) { id }
+											}
+									}
+						}"""
+			}
+) 
 {
  id: ID!
 	name: String @search(by:[fulltext])

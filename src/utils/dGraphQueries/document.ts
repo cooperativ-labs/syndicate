@@ -1,6 +1,22 @@
 import gql from 'graphql-tag';
 import { CORE_DOCUMENT_FIELDS } from './fragments';
 
+export const GET_DOCUMENT_EDITORS = gql`
+  query GetDocumentEditors($fileId: String!) {
+    queryDocument(filter: { fileId: { allofterms: $fileId } }) {
+      owner {
+        organization {
+          users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+            user {
+              id
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
 export const ADD_OFFERING_DOCUMENT = gql`
   ${CORE_DOCUMENT_FIELDS}
   mutation AddOfferingDocument(

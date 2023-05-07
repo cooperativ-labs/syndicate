@@ -6,7 +6,7 @@ import OfferingSummaryPanel from './OfferingSummaryPanel';
 import { DELETE_SALE } from '@src/utils/dGraphQueries/offering';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { ReachContext } from '@src/SetReachContext';
+
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
@@ -14,6 +14,7 @@ import { useMutation } from '@apollo/client';
 import SaleManagerPanel from './ShareManagerPanel';
 import { getSale, SaleContentsType } from '@src/web3/reachCalls';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { ReachContext } from '@src/SetReachContext';
 
 type ShareSaleListItemProps = {
   index: number;

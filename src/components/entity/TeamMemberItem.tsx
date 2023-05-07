@@ -35,6 +35,10 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
             return `bg-blue-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
           case 'Editor':
             return `bg-green-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+          case 'Auditor':
+            return `bg-gray-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+          case 'Viewer':
+            return `bg-gray-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
           default:
             return 'green-600';
         }

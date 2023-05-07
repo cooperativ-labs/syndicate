@@ -76,13 +76,10 @@ export const ADD_ORGANIZATION_USER = gql`
 
 export const REMOVE_ORGANIZATION_USER = gql`
   mutation RemoveOrganizationUser($organizationId: [ID!], $organizationUserId: ID!, $currentDate: DateTime) {
-    updateOrganization(
-      input: {
-        filter: { id: $organizationId }
-        remove: { users: { id: $organizationUserId } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
+    deleteOrganizationUser(filter: { id: [$organizationUserId] }) {
+      msg
+    }
+    updateOrganization(input: { filter: { id: $organizationId }, set: { lastUpdate: $currentDate } }) {
       numUids
       organization {
         id
@@ -90,9 +87,6 @@ export const REMOVE_ORGANIZATION_USER = gql`
           id
         }
       }
-    }
-    deleteOrganizationUser(filter: { id: [$organizationUserId] }) {
-      msg
     }
   }
 `;

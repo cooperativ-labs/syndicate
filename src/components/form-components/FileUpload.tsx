@@ -2,6 +2,7 @@ import cn from 'classnames';
 import Compressor from 'compressorjs';
 import DeleteButton from '../buttons/DeleteButton';
 import React, { FC, useState } from 'react';
+import router from 'next/router';
 import { DocumentType } from 'types';
 import { FileUploader } from 'react-drag-drop-files';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

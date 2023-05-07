@@ -21,13 +21,13 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dGraphQueries/organization';
 import { getBaseUrl } from '@src/utils/helpersURL';
-import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 
-const OrganizationDetails: FC = () => {
+const OrganizationSettings: FC = () => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
   const router = useRouter();
@@ -73,6 +73,7 @@ const OrganizationDetails: FC = () => {
   } = organization;
 
   const isAdmin = getIsAdmin(userId, organization);
+  const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
 
   const offerings = legalEntities
     .map((entity) => {
@@ -172,7 +173,7 @@ const OrganizationDetails: FC = () => {
             <RoundedImage
               className="h-40 w-40 bg-gray-800 backdrop-opacity-10  border-2 border-gray-100 mr-4"
               src={logo}
-              onClick={() => setImageModal(true)}
+              onClick={() => isEditorOrAdmin && setImageModal(true)}
             />
 
             <div>
@@ -181,7 +182,7 @@ const OrganizationDetails: FC = () => {
               ) : (
                 <div
                   className="font-ubuntu text-3xl text-white font-semibold hover:cursor-pointer"
-                  onClick={() => setNameEditOn('name')}
+                  onClick={() => isEditorOrAdmin && setNameEditOn('name')}
                 >
                   {name}
                 </div>
@@ -190,7 +191,7 @@ const OrganizationDetails: FC = () => {
           </div>
           <button
             className="absolute right-4 bottom-4 text-white"
-            onClick={() => setImageModal(true)}
+            onClick={() => isEditorOrAdmin && setImageModal(true)}
             aria-label="edit banner image"
             name="Edit banner image"
           >
@@ -205,7 +206,9 @@ const OrganizationDetails: FC = () => {
             <div className="flex justify-between">
               <div className="font-semibold">Set as public profile:</div>
               <div className="flex items-center">
-                <ProfileVisibilityToggle profileVisibility={isPublic} handleToggle={handleToggle} />
+                {isEditorOrAdmin && (
+                  <ProfileVisibilityToggle profileVisibility={isPublic} handleToggle={handleToggle} />
+                )}
                 <a href={`/${organization.id}`} target="_blank" rel="noreferrer" className="ml-2">
                   <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
                 </a>
@@ -214,22 +217,22 @@ const OrganizationDetails: FC = () => {
             <hr className="my-4" />
             <OrganizationSpecifications
               organization={organization}
-              isOrganizationManager={true}
+              isOrganizationManager={isEditorOrAdmin}
               updateOrganization={updateOrganization}
             />
 
             <div>
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Email addresses'}>
-                  <EmailAddressList emailAddresses={emailAddresses} withEdit />
-                  <SettingsAddEmail completionUrl={`${getBaseUrl()}/email-confirmation`} />
+                  <EmailAddressList emailAddresses={emailAddresses} withEdit isOrganizationManager={isEditorOrAdmin} />
+                  {isEditorOrAdmin && <SettingsAddEmail completionUrl={`${getBaseUrl()}/email-confirmation`} />}
                 </SectionBlock>
               </div>
 
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Socials'}>
-                  <LinkedAccountsList linkedAccounts={linkedAccounts} />
-                  <SettingsSocial organization={organization} />{' '}
+                  <LinkedAccountsList linkedAccounts={linkedAccounts} isOrganizationManager={isEditorOrAdmin} />
+                  {isEditorOrAdmin && <SettingsSocial organization={organization} />}
                 </SectionBlock>
               </div>
             </div>
@@ -255,4 +258,4 @@ const OrganizationDetails: FC = () => {
   );
 };
 
-export default OrganizationDetails;
+export default OrganizationSettings;

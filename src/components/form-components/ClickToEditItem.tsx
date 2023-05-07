@@ -27,7 +27,7 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
         form
       ) : (
         <div
-          className={cn(`font-bold text-gray-700`, isManager && 'hover:cursor-pointer')}
+          className={cn(`font-bold text-gray-700`, isManager && 'hover:cursor-pointer hover:underline')}
           onClick={() => {
             isManager ? setEditOn(itemType) : {};
           }}

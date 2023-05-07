@@ -51,6 +51,19 @@ export const GET_USER = gql`
   }
 `;
 
+export const GET_USER_PERMISSIONS = gql`
+  query GetUserRole($id: ID!) {
+    queryUser(filter: { id: [$id] }) {
+      organizations {
+        permissions
+        organization {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const ADD_USER_WITH_TWITTER = gql`
   ${CORE_USER_FIELDS}
   mutation AddUser(

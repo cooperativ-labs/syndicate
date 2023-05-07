@@ -9,9 +9,10 @@ import { useMutation } from '@apollo/client';
 
 type LinkedAccountListProps = {
   account: LinkedAccount;
+  isOrganizationManager?: boolean;
 };
 
-const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account }) => {
+const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganizationManager }) => {
   const { organization, id, url, type, hidden, verified } = account;
   const [alerted, setAlerted] = useState<Boolean>(false);
   const [deleteSocial, { error }] = useMutation(REMOVE_ORGANIZATION_SOCIAL_ACCOUNT);
@@ -24,15 +25,17 @@ const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account }) => {
   return (
     <div className="grid grid-cols-3">
       <div className="col-span-1">{getSocialAccountOption(type).name}</div> <div className="col-span-1">{url}</div>
-      <button
-        onClick={() => {
-          deleteSocial({
-            variables: { currentDate: currentDate, organizationId: organization.id, id: id, socialId: id },
-          });
-        }}
-      >
-        <FontAwesomeIcon icon="times" />
-      </button>
+      {isOrganizationManager && (
+        <button
+          onClick={() => {
+            deleteSocial({
+              variables: { currentDate: currentDate, organizationId: organization.id, id: id, socialId: id },
+            });
+          }}
+        >
+          <FontAwesomeIcon icon="times" />
+        </button>
+      )}
     </div>
   );
 };
