@@ -19,11 +19,11 @@ const Offerings: FC = () => {
   const orgId = router.query.organizationId;
   const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization = organizationData?.getOrganization;
-  const isAdminOrEditor = getIsEditorOrAdmin(session?.user?.id, organization);
 
   if (!organization) {
     return <></>;
   }
+  const isAdminOrEditor = getIsEditorOrAdmin(session?.user?.id, organization);
 
   const offerings = getOrgOfferingsFromEntity(organization);
 

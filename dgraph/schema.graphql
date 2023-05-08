@@ -924,8 +924,8 @@ update:{rule: """
 	walletAddresses: [CryptoAddress] @hasInverse(field:owner) 
 	owners: [LegalEntity] @hasInverse(field:subsidiaries) 
 	subsidiaries: [LegalEntity] @hasInverse(field:owners) 
-	supplementaryLegalText: String
-	addresses: [Address] @hasInverse(field:owner)
+	purpose: String
+addresses: [Address] @hasInverse(field:owner)
 	jurisdiction: Jurisdiction 
 	documentsOwned: [Document] @hasInverse(field:owner) 
 	documentsSigned: [DocumentSignatory] @hasInverse(field:legalEntity) 

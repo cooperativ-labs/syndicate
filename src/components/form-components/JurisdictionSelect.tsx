@@ -12,6 +12,11 @@ type JurisdictionSelectProps = {
   className?: string;
   fieldClass?: string;
   fieldLabelClass?: string;
+  values: {
+    jurCountry: string;
+    jurProvince?: string;
+    [key: string]: any;
+  };
 };
 
 // NOTE - These field values are always 'jurCountry' and 'jurProvince' - they are not dynamic
@@ -25,9 +30,11 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
   fieldClass,
   disabled,
   fieldLabelClass,
+  values,
 }) => {
   const countries = Country.getAllCountries();
-  const [states, setStates] = useState([]);
+  const [states, setStates] = useState(undefined);
+  const hasStates = states && states.length > 0;
 
   return (
     <div className={cn(className, 'flex flex-col')}>
@@ -47,8 +54,9 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
         name={'jurCountry'}
         multiple={multiple}
         required={required}
-        onBlur={(e) => {
+        onChange={(e) => {
           setStates(State.getStatesOfCountry(e.target.value));
+          values.jurCountry = e.target.value;
         }}
         className={cn(
           fieldClass
@@ -64,7 +72,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
         ))}
       </Field>
       <ErrorMessage name={'jurCountry'} component="div" className="text-sm text-red-500" />
-      {states && (
+      {hasStates && (
         <Field
           as="select"
           id={id}

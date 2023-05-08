@@ -19,7 +19,7 @@ export type EditEntitySelectionType =
   | 'jurisdiction'
   | 'currency'
   | 'taxId'
-  | 'supplementaryLegalText'
+  | 'purpose'
   | 'none';
 
 export const changeForm = (
@@ -33,10 +33,10 @@ export const changeForm = (
     jurProvince?: string;
     operatingCurrency: CurrencyCode;
     taxId?: string;
-    supplementaryLegalText?: string;
+    purpose?: string;
   }) => void
 ) => {
-  const { displayName, legalName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
+  const { displayName, legalName, jurisdiction, operatingCurrency, taxId, purpose } = entity;
   return (
     <Formik
       initialValues={{
@@ -46,7 +46,7 @@ export const changeForm = (
         jurProvince: jurisdiction?.province,
         operatingCurrency: operatingCurrency.code,
         taxId: taxId,
-        supplementaryLegalText: supplementaryLegalText,
+        purpose: purpose,
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -68,10 +68,10 @@ export const changeForm = (
         setSubmitting(false);
       }}
     >
-      {({ isSubmitting }) => (
+      {({ values, isSubmitting }) => (
         <Form
           className={cn(
-            itemType !== 'supplementaryLegalText' && 'md:grid',
+            itemType !== 'purpose' && 'md:grid',
             'flex flex-col  grid-cols-5 w-full items-center gap-2 my-4'
           )}
         >
@@ -79,7 +79,7 @@ export const changeForm = (
             {itemType === 'displayName' && <Input className={' bg-opacity-0'} required name="displayName" />}
             {itemType === 'legalName' && <Input className={' bg-opacity-0'} required name="legalName" />}
 
-            {itemType === 'jurisdiction' && <JurisdictionSelect />}
+            {itemType === 'jurisdiction' && <JurisdictionSelect values={values} />}
             {itemType === 'currency' && (
               <Select className={' bg-opacity-0'} required name="operatingCurrency">
                 {currencyOptionsExcludeCredits.map((option, i) => {
@@ -92,9 +92,7 @@ export const changeForm = (
               </Select>
             )}
             {itemType === 'taxId' && <Input className={' bg-opacity-0'} required name="taxId" placeholder="Tax ID" />}
-            {itemType === 'supplementaryLegalText' && (
-              <Input className={' bg-opacity-0 w-full'} required name="supplementaryLegalText" textArea />
-            )}
+            {itemType === 'purpose' && <Input className={' bg-opacity-0 w-full'} required name="purpose" textArea />}
           </div>
           <Button
             type="submit"
@@ -126,7 +124,7 @@ type EntitySpecificationsProps = {
 
 const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager, updateLegalEntity }) => {
   const [editOn, setEditOn] = useState<EditEntitySelectionType | EditOrganizationSelectionType>('none');
-  const { id, legalName, displayName, operatingCurrency, taxId, supplementaryLegalText } = entity;
+  const { id, legalName, displayName, operatingCurrency, taxId, purpose } = entity;
 
   const handleChange = async (values: {
     legalName: string;
@@ -135,9 +133,9 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
     jurProvince?: string;
     operatingCurrency: CurrencyCode;
     taxId: string;
-    supplementaryLegalText: string;
+    purpose: string;
   }) => {
-    const { legalName, displayName, operatingCurrency, taxId, supplementaryLegalText } = values;
+    const { legalName, displayName, operatingCurrency, taxId, purpose } = values;
     try {
       updateLegalEntity({
         variables: {
@@ -149,7 +147,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
           jurProvince: values.jurProvince,
           operatingCurrency: operatingCurrency,
           taxId: taxId,
-          supplementaryLegalText: supplementaryLegalText,
+          purpose: purpose,
         },
       });
       setEditOn('none');
@@ -206,11 +204,11 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="Supplementary Legal Text"
-        currenValue={supplementaryLegalText}
-        form={changeForm('supplementaryLegalText', entity, setEditOn, handleChange)}
+        label="Entity purpose"
+        currenValue={purpose}
+        form={changeForm('purpose', entity, setEditOn, handleChange)}
         editOn={editOn}
-        itemType="supplementaryLegalText"
+        itemType="purpose"
         isManager={isManager}
         setEditOn={setEditOn}
       />

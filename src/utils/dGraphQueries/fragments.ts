@@ -259,7 +259,7 @@ export const CORE_ENTITY_FIELDS = gql`
     taxId
     displayName
     legalName
-    supplementaryLegalText
+    purpose
     jurisdiction {
       id
       country
@@ -268,7 +268,7 @@ export const CORE_ENTITY_FIELDS = gql`
     operatingCurrency {
       code
     }
-    supplementaryLegalText
+    purpose
     organization {
       id
       name
@@ -291,7 +291,7 @@ export const CORE_ENTITY_FIELDS = gql`
       id
       legalName
       displayName
-      supplementaryLegalText
+      purpose
       addresses {
         ...addressData
       }

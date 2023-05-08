@@ -77,7 +77,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
       initialValues={{
         website: '',
         legalName: '',
-        supLegalText: '',
+        entityPurpose: '',
         addressLine1: '',
         addressLine2: '',
         addressLine3: '',
@@ -115,7 +115,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
             organizationId: organization.id,
             displayName: values.legalName,
             legalName: values.legalName,
-            supLegalText: values.supLegalText,
+            entityPurpose: values.entityPurpose,
             addressLabel: 'Primary Operating Address',
             addressLine1: CreateFirstAddressLine(street_number, street_name),
             addressLine2: subpremise,
@@ -167,16 +167,16 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               );
             })}
           </Select>
-          <JurisdictionSelect className={defaultFieldDiv} labelText={'Jurisdiction'} />
+          <JurisdictionSelect className={defaultFieldDiv} labelText={'Jurisdiction'} values={values} />
 
           <Input
             className={defaultFieldDiv}
-            labelText="Supplementary Legal Text (optional)"
-            name="supLegalText"
+            labelText="Purpose of this entity"
+            name="entityPurpose"
             textArea
-            fieldHeight="h-48"
+            fieldHeight="h-24"
             type="text"
-            placeholder="e.g. The following individual and businesses own this business..."
+            placeholder="Short description of the purpose of this entity."
           />
 
           <hr className="my-6" />

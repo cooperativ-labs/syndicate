@@ -30,7 +30,7 @@ const EntityAddressPanel: FC<EntityAddressPanelProps> = ({ offeringEntity, owner
                       <AddressDisplay address={address} key={i} />
                     ))}
                   </div>
-                  <div>{entity.supplementaryLegalText}</div>
+                  <div>{entity.purpose}</div>
                 </div>
               );
             })}
