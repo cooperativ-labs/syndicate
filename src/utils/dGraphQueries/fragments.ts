@@ -260,7 +260,11 @@ export const CORE_ENTITY_FIELDS = gql`
     displayName
     legalName
     supplementaryLegalText
-    jurisdiction
+    jurisdiction {
+      id
+      country
+      province
+    }
     operatingCurrency {
       code
     }
@@ -299,7 +303,11 @@ export const CORE_ENTITY_FIELDS = gql`
       id
       displayName
       legalName
-      jurisdiction
+      jurisdiction {
+        id
+        country
+        province
+      }
       offerings {
         id
         name
@@ -503,7 +511,11 @@ export const CORE_ORGANIZATION_FIELDS = gql`
       id
       legalName
       displayName
-      jurisdiction
+      jurisdiction {
+        id
+        country
+        province
+      }
       organization {
         id
         slug

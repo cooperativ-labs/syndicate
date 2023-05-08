@@ -818,6 +818,7 @@ enum LinkedAccountType  {
 	OTHER
 }
 
+
 type LinkedAccount @auth (
 add:{rule: """
 						query($userId: ID!){ 
@@ -864,14 +865,19 @@ add:{rule: """
 	organization: Organization! @hasInverse(field:linkedAccounts) 
 }
 
+type Jurisdiction {
+	id: ID!
+	country:	String!
+	province: String
+}
+
+
 enum LegalEntityType {
 	INDIVIDUAL
 	CORPORATION
 	LLC
 	UNINCORPORATED_ASSOCIATION
 }
-
-
 
 type LegalEntity @auth (
 	add: { rule: """
@@ -920,7 +926,7 @@ update:{rule: """
 	subsidiaries: [LegalEntity] @hasInverse(field:owners) 
 	supplementaryLegalText: String
 	addresses: [Address] @hasInverse(field:owner)
-	jurisdiction: String 
+	jurisdiction: Jurisdiction 
 	documentsOwned: [Document] @hasInverse(field:owner) 
 	documentsSigned: [DocumentSignatory] @hasInverse(field:legalEntity) 
 	smartContracts: [SmartContract] @hasInverse(field:owner)
@@ -930,6 +936,8 @@ update:{rule: """
 	creationDate: DateTime!
 	lastUpdate: DateTime!
 }
+
+
 
 ### ORGANIZATION MODEL ###
 

@@ -3,6 +3,7 @@ import React, { FC, useContext, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 
+import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
@@ -81,13 +82,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
                 type="text"
                 placeholder="Alphabet Inc."
               />{' '}
-              <Input
-                className={defaultFieldDiv}
-                labelText="Country of operation"
-                name="country"
-                type="text"
-                placeholder="e.g. Cayman Islands"
-              />
+              <CountrySelect className={defaultFieldDiv} labelText="Country of operation" name="country" />
             </div>
             <div className="flex col-span-1 pt-5 justify-center">
               <FileUpload

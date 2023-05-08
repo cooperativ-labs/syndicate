@@ -6,10 +6,12 @@ import { Form, Formik } from 'formik';
 
 import ClickToEditItem from '../form-components/ClickToEditItem';
 import cn from 'classnames';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import Select from '../form-components/Select';
 import { CurrencyCode, LegalEntity } from 'types';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
+import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 
 export type EditEntitySelectionType =
   | 'displayName'
@@ -27,7 +29,8 @@ export const changeForm = (
   setEditOn: (editOn: EditEntitySelectionType) => void,
   handleChange: (values: {
     legalName: string;
-    jurisdiction?: string;
+    jurCountry?: string;
+    jurProvince?: string;
     operatingCurrency: CurrencyCode;
     taxId?: string;
     supplementaryLegalText?: string;
@@ -39,7 +42,8 @@ export const changeForm = (
       initialValues={{
         displayName: displayName,
         legalName: legalName,
-        jurisdiction: jurisdiction,
+        jurCountry: jurisdiction?.country,
+        jurProvince: jurisdiction?.province,
         operatingCurrency: operatingCurrency.code,
         taxId: taxId,
         supplementaryLegalText: supplementaryLegalText,
@@ -49,8 +53,8 @@ export const changeForm = (
         if (!values.legalName) {
           errors.legalName = 'Please include the legal name of this syndication.';
         }
-        if (!values.jurisdiction) {
-          errors.jurisdiction = 'Please include the legal name of this syndication.';
+        if (!values.jurCountry) {
+          errors.jurCountry = 'Please include the legal name of this syndication.';
         }
         if (!values.operatingCurrency) {
           errors.operatingCurrency = 'Please include the legal name of this syndication.';
@@ -75,7 +79,7 @@ export const changeForm = (
             {itemType === 'displayName' && <Input className={' bg-opacity-0'} required name="displayName" />}
             {itemType === 'legalName' && <Input className={' bg-opacity-0'} required name="legalName" />}
 
-            {itemType === 'jurisdiction' && <Input className={' bg-opacity-0'} required name="jurisdiction" />}
+            {itemType === 'jurisdiction' && <JurisdictionSelect />}
             {itemType === 'currency' && (
               <Select className={' bg-opacity-0'} required name="operatingCurrency">
                 {currencyOptionsExcludeCredits.map((option, i) => {
@@ -122,17 +126,18 @@ type EntitySpecificationsProps = {
 
 const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager, updateLegalEntity }) => {
   const [editOn, setEditOn] = useState<EditEntitySelectionType | EditOrganizationSelectionType>('none');
-  const { id, legalName, displayName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = entity;
+  const { id, legalName, displayName, operatingCurrency, taxId, supplementaryLegalText } = entity;
 
   const handleChange = async (values: {
     legalName: string;
     displayName: string;
-    jurisdiction: string;
+    jurCountry: string;
+    jurProvince?: string;
     operatingCurrency: CurrencyCode;
     taxId: string;
     supplementaryLegalText: string;
   }) => {
-    const { legalName, displayName, jurisdiction, operatingCurrency, taxId, supplementaryLegalText } = values;
+    const { legalName, displayName, operatingCurrency, taxId, supplementaryLegalText } = values;
     try {
       updateLegalEntity({
         variables: {
@@ -140,7 +145,8 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
           entityId: id,
           displayName: displayName,
           legalName: legalName,
-          jurisdiction: jurisdiction,
+          jurCountry: values.jurCountry,
+          jurProvince: values.jurProvince,
           operatingCurrency: operatingCurrency,
           taxId: taxId,
           supplementaryLegalText: supplementaryLegalText,
@@ -174,7 +180,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
       />
       <ClickToEditItem
         label="Jurisdiction"
-        currenValue={jurisdiction}
+        currenValue={renderJurisdiction(entity.jurisdiction)}
         form={changeForm('jurisdiction', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="jurisdiction"

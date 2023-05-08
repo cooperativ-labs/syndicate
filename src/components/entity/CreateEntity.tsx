@@ -1,10 +1,11 @@
 import React, { FC, useEffect, useState } from 'react';
 
 import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormik } from 'formik';
 
 import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
 import { CurrencyCode, Organization } from 'types';
@@ -12,8 +13,7 @@ import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { useMutation, useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
+import { useMutation } from '@apollo/client';
 
 export type CreateEntityType = {
   organization: Organization;
@@ -75,7 +75,6 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
   return (
     <Formik
       initialValues={{
-        // nonHuman: 'true',
         website: '',
         legalName: '',
         supLegalText: '',
@@ -87,7 +86,8 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         postalCode: '',
         country: '',
         operatingCurrency: CurrencyCode.Usd,
-        jurisdiction: '',
+        jurCountry: '',
+        jurProvince: '',
         type: undefined,
         addressAutocomplete: '',
       }}
@@ -109,6 +109,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
       }}
       onSubmit={(values, { setSubmitting }) => {
         setSubmitting(true);
+
         addLegalEntity({
           variables: {
             organizationId: organization.id,
@@ -125,7 +126,8 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
             lat: latLang.lat,
             lng: latLang.lng,
             operatingCurrency: values.operatingCurrency,
-            jurisdiction: values.jurisdiction,
+            jurCountry: values.jurCountry,
+            jurProvince: values.jurProvince,
             type: values.type,
             currentDate: currentDate,
           },
@@ -133,7 +135,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         setSubmitting(false);
       }}
     >
-      {({ isSubmitting, values }) => (
+      {({ values, isSubmitting }) => (
         <Form className="flex flex-col gap relative">
           <Select className={defaultFieldDiv} required labelText="Type of entity" name="type">
             <option value="">Select entity type</option>
@@ -165,14 +167,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               );
             })}
           </Select>
-          <Input
-            className={defaultFieldDiv}
-            required
-            labelText="State of registration"
-            name="jurisdiction"
-            type="text"
-            placeholder="e.g. Delaware"
-          />
+          <JurisdictionSelect className={defaultFieldDiv} labelText={'Jurisdiction'} />
 
           <Input
             className={defaultFieldDiv}

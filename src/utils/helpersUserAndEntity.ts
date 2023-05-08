@@ -1,4 +1,5 @@
-import { LegalEntity, LegalEntityType, Organization, OrganizationPermissionType, User } from 'types';
+import { Jurisdiction, LegalEntity, LegalEntityType, Organization, OrganizationPermissionType, User } from 'types';
+import { Country, State } from 'country-state-city';
 
 // export const getUserPersonalEntity = (user: User) => {
 //   const entityObject = user.legalEntities.find((entity) => entity.legalEntity.type === LegalEntityType.Individual);
@@ -37,4 +38,14 @@ export const getIsEditorOrAdmin = (userId: string, organization: Organization) =
     userPermissions.includes(OrganizationPermissionType.Admin) ||
     userPermissions.includes(OrganizationPermissionType.Editor)
   );
+};
+
+export const renderJurisdiction = (jurisdiction: Jurisdiction) => {
+  const country = Country.getCountryByCode(jurisdiction.country).name;
+  const states = State.getStatesOfCountry(jurisdiction.country);
+  const province = states.find((state) => state.isoCode === jurisdiction.province)?.name;
+  if (province) {
+    return `${province}, ${country}`;
+  }
+  return country;
 };

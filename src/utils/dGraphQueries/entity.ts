@@ -17,7 +17,8 @@ export const ADD_ENTITY = gql`
     $organizationId: ID!
     $legalName: String!
     $type: LegalEntityType!
-    $jurisdiction: String!
+    $jurCountry: String!
+    $jurProvince: String
     $operatingCurrency: CurrencyCode!
     $supLegalText: String
     $addressLabel: String
@@ -38,7 +39,7 @@ export const ADD_ENTITY = gql`
           type: $type
           legalName: $legalName
           displayName: $legalName
-          jurisdiction: $jurisdiction
+          jurisdiction: { country: $jurCountry, province: $jurProvince }
           operatingCurrency: { code: $operatingCurrency }
           supplementaryLegalText: $supLegalText
           addresses: {
@@ -113,7 +114,8 @@ export const UPDATE_ENTITY_INFORMATION = gql`
     $entityId: [ID!]
     $legalName: String!
     $displayName: String!
-    $jurisdiction: String!
+    $jurCountry: String!
+    $jurProvince: String
     $operatingCurrency: CurrencyCode!
     $taxId: String
   ) {
@@ -124,7 +126,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
           lastUpdate: $currentDate
           displayName: $displayName
           legalName: $legalName
-          jurisdiction: $jurisdiction
+          jurisdiction: { country: $jurCountry, province: $jurProvince }
           operatingCurrency: { code: $operatingCurrency }
           taxId: $taxId
         }
@@ -134,7 +136,11 @@ export const UPDATE_ENTITY_INFORMATION = gql`
         id
         legalName
         displayName
-        jurisdiction
+        jurisdiction {
+          id
+          country
+          province
+        }
         operatingCurrency {
           code
         }
@@ -149,7 +155,8 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
     $entityId: [ID!]
     $legalName: String!
     $displayName: String!
-    $jurisdiction: String!
+    $jurCountry: String!
+    $jurProvince: String
     $addressLabel: String
     $addressLine1: String!
     $addressLine2: String
@@ -166,7 +173,7 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
           lastUpdate: $currentDate
           displayName: $displayName
           legalName: $legalName
-          jurisdiction: $jurisdiction
+          jurisdiction: { country: $jurCountry, province: $jurProvince }
           addresses: {
             label: $addressLabel
             line1: $addressLine1

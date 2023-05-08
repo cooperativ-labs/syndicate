@@ -1,6 +1,7 @@
 import Button from '../buttons/Button';
 import Input from '../form-components/Inputs';
 import React, { FC, useState } from 'react';
+import { Country } from 'country-state-city';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 
@@ -140,7 +141,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
       />
       <ClickToEditItem
         label="Country"
-        currenValue={country}
+        currenValue={Country.getCountryByCode(country).name}
         form={changeForm('country', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="country"

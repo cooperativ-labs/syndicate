@@ -58,6 +58,7 @@
     "babel-loader": "^8.2.2",
     "classnames": "^2.3.2",
     "compressorjs": "^1.1.1",
+    "country-state-city": "^3.1.4",
     "ethers": "^5",
     "formik": "^2.2.9",
     "graphql": "^16.6.0",

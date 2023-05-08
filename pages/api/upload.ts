@@ -17,14 +17,14 @@ const handler = nextConnect<NextApiRequestWithFile, NextApiResponse>()
   .use(upload.single('file'))
   .post(async (req, res) => {
     const session = await getServerSession(req, res, options);
-    const apolloClient = initializeApollo();
-    const { data } = await apolloClient.query({
-      query: GET_USER_PERMISSIONS,
-      variables: { id: session?.user?.id },
-    });
-    const isOrgUser = data?.queryUser[0].organizations[0].permissions.includes('ADMIN', 'EDITOR');
+    // const apolloClient = initializeApollo();
+    // const { data } = await apolloClient.query({
+    //   query: GET_USER_PERMISSIONS,
+    //   variables: { id: session?.user?.id },
+    // });
+    // const isOrgUser = data?.queryUser[0].organizations[0].permissions.includes('ADMIN', 'EDITOR');
 
-    if (!isOrgUser) {
+    if (!session) {
       return res.status(401).send('Unauthorized');
     }
     try {
