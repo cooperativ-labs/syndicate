@@ -564,13 +564,14 @@ type OfferingParticipant @auth (
 	id: ID!
 	addressOfferingId: String! @id
 	walletAddress: String! @search(by:[fulltext]) 
+	chainId: Int!
 	permitted: Boolean!
 	name: String
 	offering: Offering! @hasInverse(field:participants)
 	investorApplication: InvestorApplication
 	minPledge: Int
 	maxPledge: Int
-	nonUS: Boolean
+	jurisdiction: Jurisdiction
 	paid: Boolean
 	externalId: String
 	lastUpdate: DateTime!

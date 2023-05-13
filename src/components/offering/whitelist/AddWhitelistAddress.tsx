@@ -3,7 +3,9 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React, { FC, useContext, useState } from 'react';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
 import { addWhitelistMember } from '@src/web3/reachCalls';
+import { ethers } from 'ethers';
 import { Form, Formik } from 'formik';
+import { isValidAddress } from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { ReachContext } from '@src/SetReachContext';
 import { useMutation } from '@apollo/client';
@@ -27,11 +29,14 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.address) {
-          errors.type = 'Please enter an address to approve';
+          errors.address = 'Please enter an address to approve';
+        } else if (!isValidAddress(values.address)) {
+          errors.address = 'This is not a valid address.';
         }
         if (!values.name) {
           errors.type = 'Please enter an address to approve';
         }
+        return errors;
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         setButtonStep('submitting');

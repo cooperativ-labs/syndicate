@@ -1,3 +1,5 @@
+import { ethers } from 'ethers';
+
 export const normalizeChainId = (chainId) => {
   return typeof chainId === 'number' ? chainId : parseInt(chainId[2]);
 };
@@ -36,6 +38,10 @@ export const ChainErrorResponses = (error) => {
     return { code: 5000, message: 'This contract has already been established.' };
   }
   return { code: null, message: error };
+};
+
+export const isValidAddress = (address) => {
+  return ethers.utils.isAddress(address);
 };
 
 export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) => {

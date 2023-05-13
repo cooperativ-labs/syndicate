@@ -95,9 +95,9 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
           >
             <LoadingButtonText
               state={approveButtonStep}
-              idleText="Approve Sale"
-              submittingText="Approving Sale..."
-              confirmedText="Sale Approved!"
+              idleText="Approve Listing"
+              submittingText="Approving Listing..."
+              confirmedText="Listing Approved!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />

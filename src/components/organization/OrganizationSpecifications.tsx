@@ -132,7 +132,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
     <>
       <ClickToEditItem
         label="Name"
-        currenValue={name}
+        currentValue={name}
         form={changeForm('name', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="name"
@@ -141,7 +141,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
       />
       <ClickToEditItem
         label="Country"
-        currenValue={Country.getCountryByCode(country).name}
+        currentValue={Country.getCountryByCode(country).name}
         form={changeForm('country', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="country"
@@ -150,7 +150,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
       />
       <ClickToEditItem
         label="Description"
-        currenValue={description}
+        currentValue={description}
         form={changeForm('description', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="description"
@@ -160,7 +160,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
 
       <ClickToEditItem
         label="Short Description (160 characters max)"
-        currenValue={shortDescription}
+        currentValue={shortDescription}
         form={changeForm('shortDescription', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="shortDescription"

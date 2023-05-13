@@ -123,7 +123,7 @@ type EntitySpecificationsProps = {
 };
 
 const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager, updateLegalEntity }) => {
-  const [editOn, setEditOn] = useState<EditEntitySelectionType | EditOrganizationSelectionType>('none');
+  const [editOn, setEditOn] = useState<EditEntitySelectionType | EditOrganizationSelectionType | string>('none');
   const { id, legalName, displayName, operatingCurrency, taxId, purpose } = entity;
 
   const handleChange = async (values: {
@@ -160,7 +160,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
     <>
       <ClickToEditItem
         label="Legal name"
-        currenValue={legalName}
+        currentValue={legalName}
         form={changeForm('legalName', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="legalName"
@@ -169,7 +169,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
       />
       <ClickToEditItem
         label="d/b/a"
-        currenValue={displayName}
+        currentValue={displayName}
         form={changeForm('displayName', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="displayName"
@@ -178,7 +178,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
       />
       <ClickToEditItem
         label="Jurisdiction"
-        currenValue={renderJurisdiction(entity.jurisdiction)}
+        currentValue={renderJurisdiction(entity.jurisdiction)}
         form={changeForm('jurisdiction', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="jurisdiction"
@@ -187,7 +187,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
       />
       <ClickToEditItem
         label="Currency"
-        currenValue={getCurrencyOption(operatingCurrency).symbol}
+        currentValue={getCurrencyOption(operatingCurrency).symbol}
         form={changeForm('currency', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="currency"
@@ -196,7 +196,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
       />
       <ClickToEditItem
         label="Tax ID"
-        currenValue={taxId}
+        currentValue={taxId}
         form={changeForm('taxId', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="taxId"
@@ -205,7 +205,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
       />
       <ClickToEditItem
         label="Entity purpose"
-        currenValue={purpose}
+        currentValue={purpose}
         form={changeForm('purpose', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="purpose"

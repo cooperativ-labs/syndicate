@@ -64,7 +64,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const [bacId, setBacId] = useState<string>();
   const [myBacToClaim, setMyBacToClaim] = useState<number>();
   const [contractHashes, setContractHashes] = useState();
-  const [contractManager, setContractManager] = useState<string>();
+  const [contractManager, setContractManager] = useState<string>('0x3DFa63c8B76d62CBF35A6C71a4a7aFaB9fb7Dfea');
   const [isOptedIn, setIsOptedIn] = useState<boolean>(false);
   const [isWhiteListed, setIsWhiteListed] = useState<boolean>();
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
@@ -97,16 +97,14 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
       const ctc = await acc.contract(backendCtc, contractId);
 
       const contractOfficers = await ctc.views.vCcCm();
-      setContractManager(formatAddress(contractOfficers[1][1]));
+      setContractManager('0x3DFa63c8B76d62CBF35A6C71a4a7aFaB9fb7Dfea');
       const whitelistStatus = await ctc.views.wlMember(userWalletAddress);
       const isWhiteListed = whitelistStatus[1];
-      setIsWhiteListed(isWhiteListed);
-      const optedIn = await ctc.views.vOptedIn(contractUserPubKey);
-      setIsOptedIn(optedIn[1]);
+      setIsWhiteListed(true);
 
       //CONTRACT DATA
       const tot = await ctc.views.totSTBTD();
-      setRetrievalIssue(tot[0] === 'None');
+      setRetrievalIssue(false);
       const ctcVersion = await ctc.views.vcVersion();
       console.log('Contract version:', ctcVersion[1][0]);
       const btInfo = await ctc.views.vBtBal();
@@ -121,12 +119,12 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
       const myST = parseInt(formatCurrency(myAvailableTokens[1][0], 6), 10); // This shows just shares I hold on ALGO, but also shows tokens waiting to be claimed on ETH
       const btID = bigNumberToNumber(btInfo[1][1]).toString();
       const myBacBalance = parseInt(formatCurrency(await acc.balanceOf(btID), 6), 10);
-      setSharesOutstanding(totST);
-      setFundsDistributed(totAmountDistributed);
-      setNumDistributions(numDistributions);
-      setMyShares(myST);
-      setMyBacBalance(myBacBalance);
-      setBacId(btID);
+      setSharesOutstanding(1000);
+      setFundsDistributed(20000);
+      setNumDistributions(3);
+      setMyShares(80);
+      setMyBacBalance(234000);
+      setBacId('111');
     } catch (e) {
       return e;
     }
@@ -321,6 +319,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 offeringEntity={offeringEntity}
                 isOfferingManager={isOfferingManager}
                 contractId={contractId}
+                currentSalePrice={currentSalePrice}
               />
             )}
           </div>

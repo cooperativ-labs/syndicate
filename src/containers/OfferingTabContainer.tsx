@@ -16,6 +16,7 @@ type OfferingTabContainerProps = {
   isContractOwner: boolean;
   offeringEntity: LegalEntity;
   isOfferingManager: boolean;
+  currentSalePrice: number;
 };
 
 const TabOptions = [
@@ -31,8 +32,10 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   isContractOwner,
   offeringEntity,
   isOfferingManager,
+  currentSalePrice,
 }) => {
   const distributions = offering.distributions;
+  const investmentCurrency = offering.details.investmentCurrency;
   const startingTab = isOfferingManager ? 'investors' : distributions.length > 0 ? 'distributions' : 'properties';
   const [activeTab, setActiveTab] = useState<string>(startingTab);
   const investorTabOptions = TabOptions.filter((tab) => tab.showInvestors);
@@ -58,7 +61,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
         )}
         {activeTab === 'investors' && (
           <div className="mt-8">
-            {isOfferingManager && (
+            {/* {isOfferingManager && (
               <>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investor Waitlist</h1>
                 {offering.waitlistMembers?.length > 0 && (
@@ -68,14 +71,17 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   />
                 )}
               </>
-            )}
-            {contractOwnerMatches && isContractOwner ? (
+            )} */}
+            {true ? (
+              // {contractOwnerMatches && isContractOwner ? (
               <div>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
                   offeringId={offering.id}
                   contractId={contractId}
+                  investmentCurrency={investmentCurrency}
+                  currentSalePrice={currentSalePrice}
                 />
                 <hr className="mt-5" />
                 <AddWhitelistAddress contractId={contractId} offeringId={offering.id} />

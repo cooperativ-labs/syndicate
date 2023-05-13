@@ -9,7 +9,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useEnsAvatar, useNetwork } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 const UserMenu: FC = () => {
@@ -42,8 +42,8 @@ const UserMenu: FC = () => {
         </Button>
 
         {open && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-40" onClick={() => setOpen(!open)}>
-            <Card className="absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 rounded-xl shadow-lg">
+          <div className="absolute top-0 bottom-0 left-0 right-0 z-100" onClick={() => setOpen(!open)}>
+            <Card className="absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 bg-white rounded-xl shadow-lg">
               {userWalletAddress ? (
                 <div className="flex flex-col justify-center">
                   <div className="flex items-center justify-center">

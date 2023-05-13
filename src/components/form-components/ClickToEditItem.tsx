@@ -5,16 +5,16 @@ import { EditOrganizationSelectionType } from '../organization/OrganizationSpeci
 
 type ClickToEditItemProps = {
   label: string;
-  currenValue: string;
+  currentValue: string;
   form: any;
-  editOn: EditEntitySelectionType | EditOrganizationSelectionType;
-  itemType: EditEntitySelectionType | EditOrganizationSelectionType;
+  editOn: EditEntitySelectionType | EditOrganizationSelectionType | string;
+  itemType: EditEntitySelectionType | EditOrganizationSelectionType | string;
   isManager: boolean;
-  setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType) => void;
+  setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType | string) => void;
 };
 const ClickToEditItem: FC<ClickToEditItemProps> = ({
   label,
-  currenValue,
+  currentValue,
   form,
   editOn,
   itemType,
@@ -41,7 +41,7 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
           isManager ? setEditOn(itemType) : {};
         }}
       >
-        {editOn !== itemType && currenValue}
+        {editOn !== itemType && currentValue}
       </div>
     </div>
   );

@@ -309,6 +309,7 @@ export const ADD_OFFERING_PARTICIPANT = gql`
     $name: String
     $offeringId: ID!
     $walletAddress: String!
+    $chainId: String!
     $permitted: Boolean!
   ) {
     addOfferingParticipant(
@@ -318,6 +319,7 @@ export const ADD_OFFERING_PARTICIPANT = gql`
         name: $name
         offering: { id: $offeringId }
         walletAddress: $walletAddress
+        chainId: $chainId
         permitted: $permitted
       } # upsert: true
     ) {
@@ -347,7 +349,8 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
     $walletAddress: String!
     $minPledge: Int
     $maxPledge: Int
-    $nonUS: Boolean
+    $jurCountry: String!
+    $jurState: String
     $applicationText: String!
     $applicationTitle: String!
     $signature: String!
@@ -362,7 +365,7 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
         permitted: false
         minPledge: $minPledge
         maxPledge: $maxPledge
-        nonUS: $nonUS
+        jurisdiction: { country: $jurCountry, state: $jurState }
         investorApplication: {
           creationDate: $currentDate
           applicationDoc: {
@@ -436,18 +439,30 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
     $id: [ID!]
     $name: String
     $externalId: String
+    $jurCountry: String!
+    $jurProvince: String
     $permitted: Boolean!
   ) {
     updateOfferingParticipant(
       input: {
         filter: { id: $id }
-        set: { lastUpdate: $currentDate, name: $name, externalId: $externalId, permitted: $permitted }
+        set: {
+          lastUpdate: $currentDate
+          name: $name
+          jurisdiction: { country: $jurCountry, province: $jurProvince }
+          externalId: $externalId
+          permitted: $permitted
+        }
       }
     ) {
       offeringParticipant {
         id
         walletAddress
         externalId
+        jurisdiction {
+          country
+          province
+        }
         name
         offering {
           id

@@ -214,7 +214,6 @@ export const CORE_WAITLIST_MEMBER_FIELDS = gql`
     name
     minPledge
     maxPledge
-    walletAddress
     nonUS
     investorApplication {
       ...applicationData
@@ -229,9 +228,14 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
     id
     addressOfferingId
     walletAddress
+    chainId
     permitted
     name
-    nonUS
+    jurisdiction {
+      id
+      country
+      province
+    }
     externalId
     minPledge
     maxPledge
@@ -240,6 +244,15 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
     }
     offering {
       id
+      offeringEntity {
+        organization {
+          users {
+            user {
+              id
+            }
+          }
+        }
+      }
       details {
         ...offeringDetailsData
       }
