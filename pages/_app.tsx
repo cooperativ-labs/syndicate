@@ -53,6 +53,7 @@ import {
 import { library } from '@fortawesome/fontawesome-svg-core';
 import { SessionProvider } from 'next-auth/react';
 import { StateProvider } from '@context/store';
+import { Toaster } from 'react-hot-toast';
 import { wagmiClient } from '@src/web3/connectors';
 import { WagmiConfig } from 'wagmi';
 
@@ -124,6 +125,7 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
   return (
     <WagmiConfig client={wagmiClient}>
       <SessionProvider session={session}>
+        <Toaster />
         <SetAppContext>
           <StateProvider>{cookiesApproved === 'approved' ? withCookies : withoutCookies}</StateProvider>
         </SetAppContext>

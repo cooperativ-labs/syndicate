@@ -1,4 +1,5 @@
 import { ethers } from 'ethers';
+import toast from 'react-hot-toast';
 
 export const normalizeChainId = (chainId) => {
   return typeof chainId === 'number' ? chainId : parseInt(chainId[2]);
@@ -49,7 +50,7 @@ export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) =>
   const errorMessage = ChainErrorResponses(error).message;
   if (recipient && errorCode === 1000) {
     setButtonStep('failed');
-    alert(`${recipient} has not opted into this offering (or is already whitelisted).`);
+    toast(`${recipient} has not opted into this offering (or is already whitelisted).`);
   }
   if (errorCode === 2000) {
     setButtonStep && setButtonStep('rejected');

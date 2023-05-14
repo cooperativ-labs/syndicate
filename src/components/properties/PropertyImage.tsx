@@ -17,7 +17,7 @@ const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) =
   const [deleteImage, { error: deleteError }] = useMutation(REMOVE_PROPERTY_IMAGE);
 
   if (deleteError) {
-    alert(`from Firebase: ${deleteError}`);
+    alert(`from Cloud: ${deleteError}`);
   }
   const handleDelete = async () => {
     try {

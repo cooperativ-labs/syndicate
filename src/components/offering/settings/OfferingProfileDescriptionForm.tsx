@@ -4,6 +4,7 @@ import React, { FC, useState } from 'react';
 import Select from '@src/components/form-components/Select';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
+import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
 import { tabSectionOptions } from '@src/utils/enumConverters';
@@ -16,6 +17,8 @@ export type OfferingProfileDescriptionFormProps = {
   addDescription?: any;
   updateDescription?: any;
   setAlerted: any;
+  tab: OfferingTabSection;
+  onSubmit?: () => void;
 };
 const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = ({
   offering,
@@ -23,10 +26,18 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   addDescription,
   updateDescription,
   setAlerted,
+  tab,
+  onSubmit,
 }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const isUpdate = !!description;
+
+  const tabSectionOptionsOhneFinancials = tabSectionOptions.filter(
+    (option) => option.value !== OfferingTabSection.Financials
+  );
+
+  const nextOrder = getDescriptionsByTab(offering, tab)?.length + 1;
 
   function handleSubmission(values) {
     description
@@ -36,8 +47,8 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
             descriptionId: description.id,
             title: values.title,
             text: values.text,
-            section: values.section,
-            order: values.order,
+            section: values.tab,
+            order: description.order,
           },
         })
       : addDescription({
@@ -46,23 +57,20 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
             offeringId: offering.id,
             title: values.title,
             text: values.text,
-            section: values.section,
-            order: values.order,
+            section: values.tab,
+            order: nextOrder,
           },
         });
   }
 
-  const tabSectionOptionsOhneFinancials = tabSectionOptions.filter(
-    (option) => option.value !== OfferingTabSection.Financials
-  );
+  // offering.profileDescriptions?.sort((a, b) => a.order - b.order);
 
   return (
     <Formik
       initialValues={{
         title: description?.title ?? '',
         text: description?.text ?? '',
-        section: description?.section ?? '',
-        order: description?.order ?? '',
+        tab: description?.section ?? tab,
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -72,12 +80,10 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         if (!values.text) {
           errors.text = 'Please include text.';
         }
-        if (!values.section) {
-          errors.section = 'Please specify a section.';
+        if (!values.tab) {
+          errors.tab = 'Please indicate the tab where you want this text to appear.';
         }
-        if (!values.order) {
-          errors.order = 'Please indicate order.';
-        }
+
         return errors;
       }}
       onSubmit={(values, { setSubmitting, resetForm }) => {
@@ -87,6 +93,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         try {
           handleSubmission(values);
           setButtonStep('confirmed');
+          onSubmit && onSubmit();
         } catch (e) {
           setButtonStep('failed');
           alert(e);
@@ -95,10 +102,16 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
       }}
     >
       {({ isSubmitting, values }) => (
-        <Form className="flex flex-col relative">
-          <div className="md:grid grid-cols-7 gap-4">
-            <Select className={`${fieldDiv} col-span-4`} labelText="Which tab" required name="section">
-              <option value={''}>Please select a section</option>
+        <Form className="flex flex-col relative  pr-7">
+          <div className="grid grid-cols-2 gap-6">
+            <Input
+              className={fieldDiv}
+              required
+              labelText="Section title"
+              name="title"
+              placeholder="e.g. About this offering"
+            />
+            <Select className={fieldDiv} labelText="Move to a different tab" required name="tab">
               {tabSectionOptionsOhneFinancials.map((section, i) => {
                 return (
                   <option key={i} value={section.value}>
@@ -107,25 +120,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
                 );
               })}
             </Select>
-            <div className="col-span-3 ">
-              <Input
-                className={fieldDiv}
-                type="number"
-                labelText="Order within tab"
-                name="order"
-                required
-                placeholder="e.g. 1"
-              />
-            </div>
           </div>
-          <Input
-            className={fieldDiv}
-            required
-            labelText="Section title"
-            name="title"
-            placeholder="e.g. About this offering"
-          />
-
           <Input
             className={fieldDiv}
             textArea

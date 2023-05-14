@@ -1,4 +1,4 @@
-import { Offering } from 'types';
+import { Offering, OfferingTabSection } from 'types';
 
 export const getLatestDistribution = (offering: Offering) => {
   return offering.distributions?.length > 0 && offering.distributions?.slice(-1)[0];
@@ -22,4 +22,10 @@ export const getMyDistToClaim = (
     offering.distributions?.length > 0 &&
     calculateDistribution(latestDistribution, sharesOutstanding, myShares, userWalletAddress)
   );
+};
+
+export const getDescriptionsByTab = (offering: Offering, tab: OfferingTabSection) => {
+  return offering.profileDescriptions.filter((description, i) => {
+    return description.section === tab;
+  });
 };
