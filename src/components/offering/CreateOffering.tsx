@@ -149,7 +149,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
               required
               labelText="What do you call this offering"
               name="name"
-              placeholder="e.g. Cosy Apartments"
+              placeholder="e.g. First Fund"
             />
             <FormButton
               type="submit"

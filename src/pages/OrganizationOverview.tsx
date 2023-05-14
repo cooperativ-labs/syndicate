@@ -18,6 +18,7 @@ import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
+import { toastExperiment } from '@src/components/indicators/Notifications';
 
 // type OrganizationDashboardProps = {
 //   user: User;
@@ -47,16 +48,6 @@ const OrganizationOverview: FC = () => {
     return offeringParticipant.offering;
   });
 
-  const toastExperiment = () => {
-    toast.custom(<div className="p-5 bg-cLightBlue rounded-full text-white font-semibold">Hello World</div>);
-    // toast('hi', {
-    //   position: 'top-center',
-    //   icon: '👏',
-
-    //   style: { borderRadius: '10px', background: '#333', color: '#fff' },
-    // });
-  };
-
   const offerings = organization && getOrgOfferingsFromEntity(organization);
   const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;
@@ -65,9 +56,12 @@ const OrganizationOverview: FC = () => {
 
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
-      <button className="bg-blue-500 text-white p-3" onClick={toastExperiment}>
+      {/* <button
+        className="bg-blue-500 text-white p-3"
+        onClick={() => toastExperiment({ title: 'hi', message: 'whhhattt' })}
+      >
         Make me a toast
-      </button>
+      </button> */}
       <TwoColumnLayout twoThirdsLayout>
         {isEditorOrAdmin && (
           <DashboardCard>
