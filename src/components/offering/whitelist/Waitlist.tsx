@@ -1,4 +1,4 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import React, { FC } from 'react';
 import WaitlistItem from './WaitlistItem';
 import { REMOVE_WAITLIST_OBJECT } from '@src/utils/dGraphQueries/offering';

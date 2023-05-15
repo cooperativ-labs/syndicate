@@ -1,4 +1,4 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import React, { FC, useContext } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import SelectedParticipantDetails from './SelectedParticipantDetails';

@@ -1,4 +1,4 @@
-import * as backendCtc from '../../web3/index.main';
+import * as backendCtc from '../../web3/ABI';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import PresentLegalText from './PresentLegalText';

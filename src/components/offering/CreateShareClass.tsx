@@ -1,4 +1,4 @@
-import * as backendCtc from '../../web3/index.main';
+import * as backendCtc from '../../web3/ABI';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import FormButton from '../buttons/FormButton';
 import React, { FC, useContext, useEffect, useState } from 'react';

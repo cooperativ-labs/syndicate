@@ -1,4 +1,4 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import AdditionalApplicationFields from './AdditionalApplicationFields';
 import AdvisorFields from './AdvisorFields';
 import Checkbox from '@src/components/form-components/Checkbox';

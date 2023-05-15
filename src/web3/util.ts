@@ -21,3 +21,7 @@ export const toDecimalByToken = (amt: number, currency?: CurrencyCode) => {
   const multiplier = Math.pow(10, decimal);
   return amt * multiplier;
 };
+
+export const toNormalNumber = (n: BigNumber, nDecimals: Decimals): number => {
+  return parseInt(toHumanNumber(n, nDecimals)._hex);
+};

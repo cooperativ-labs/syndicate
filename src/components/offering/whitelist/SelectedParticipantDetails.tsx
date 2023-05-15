@@ -1,4 +1,4 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import React, { FC, useContext, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';

@@ -1,4 +1,4 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';

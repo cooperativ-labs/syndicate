@@ -1,5 +1,7 @@
 import { CryptoAddressProtocol } from 'types';
 import { Chain, configureChains, createClient } from 'wagmi';
+// import { defineConfig } from '@wagmi/cli';
+// import { etherscan, react } from '@wagmi/cli/plugins';
 import { mainnet, goerli, sepolia, polygon, polygonMumbai } from 'wagmi/chains';
 import { publicProvider } from 'wagmi/providers/public';
 import { infuraProvider } from 'wagmi/providers/infura';
@@ -8,13 +10,9 @@ import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { LedgerConnector } from 'wagmi/connectors/ledger';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
+import ABI from './ABI';
 declare let window: any;
 
-//OLD ------------------
-const TestingContract = '0x05840f9f';
-const TestBackingToken = 0x05716d2b;
-
-export const setChainId = 654321;
 //OLD ------------------
 
 // export const jupiterBlockChain = {

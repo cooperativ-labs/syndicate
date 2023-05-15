@@ -1,4 +1,4 @@
-import * as backendCtc from './index.main';
+import * as backendCtc from './ABI';
 import { ALGO_MyAlgoConnect as MyAlgoConnect, loadStdlib } from '@reach-sh/stdlib';
 import { Dispatch, SetStateAction } from 'react';
 import { StandardChainErrorHandling } from './helpersChain';

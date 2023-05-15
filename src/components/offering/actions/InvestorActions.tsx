@@ -15,10 +15,9 @@ export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-
 export type ContractInvestorActionsProps = {
   offering: Offering;
   contractId: string;
-  isWhiteListed: boolean;
+  isWhitelisted: boolean;
   myDistToClaim: number;
   distributionId: string;
-  isOptedIn: boolean;
   setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
@@ -26,10 +25,9 @@ export type ContractInvestorActionsProps = {
 const ContractInvestorActions: FC<ContractInvestorActionsProps> = ({
   offering,
   contractId,
-  isWhiteListed,
+  isWhitelisted,
   myDistToClaim,
   distributionId,
-  isOptedIn,
   setShareSaleManagerModal,
   setRecallContract,
 }) => {
@@ -70,17 +68,14 @@ const ContractInvestorActions: FC<ContractInvestorActionsProps> = ({
         <></>
       )}
       <StandardButton fullWidth text="Buy & Sell Shares" onClick={() => setShareSaleManagerModal(true)} />
-      {!isWhiteListed &&
-        (isOptedIn ? (
-          <div className="text-medium text-gray-600 border-2 rounded-md p-3 text-center">Application Pending</div>
-        ) : (
-          <Button
-            onClick={() => router.push(`/${organization.id}/portal/${offering.id}/investor-application`)}
-            className={standardClass}
-          >
-            View investor application
-          </Button>
-        ))}
+      {!isWhitelisted && (
+        <Button
+          onClick={() => router.push(`/${organization.id}/portal/${offering.id}/investor-application`)}
+          className={standardClass}
+        >
+          View investor application
+        </Button>
+      )}
     </div>
   );
 };

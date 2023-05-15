@@ -1,4 +1,4 @@
-import * as backendCtc from '../../web3/index.main';
+import * as backendCtc from '../../web3/ABI';
 import FormButton from '../buttons/FormButton';
 import React, { FC, useState } from 'react';
 import { Form, Formik } from 'formik';

@@ -1,4 +1,4 @@
-import * as backendCtc from '../../web3/index.main';
+import * as backendCtc from '../../web3/ABI';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';

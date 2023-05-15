@@ -1,4 +1,4 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import Checkbox from '@src/components/form-components/Checkbox';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import FormButton from '@src/components/buttons/FormButton';

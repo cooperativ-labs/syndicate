@@ -35,8 +35,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   isContractOwner,
   myDistToClaim,
   distributionId,
-  isOptedIn,
-  isWhiteListed,
+  isWhitelisted,
   setShareSaleManagerModal,
   setSaleFormModal,
   refetch,
@@ -81,10 +80,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             <ContractInvestorActions
               offering={offering}
               contractId={contractId}
-              isWhiteListed={isWhiteListed}
+              isWhitelisted={isWhitelisted}
               myDistToClaim={myDistToClaim}
               distributionId={distributionId}
-              isOptedIn={isOptedIn}
               setShareSaleManagerModal={setShareSaleManagerModal}
               setRecallContract={setRecallContract}
             />

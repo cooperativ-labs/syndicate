@@ -1,4 +1,4 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import MoneyDisplay from '../../MoneyDisplay';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
