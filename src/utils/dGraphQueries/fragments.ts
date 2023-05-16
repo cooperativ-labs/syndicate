@@ -247,6 +247,7 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
       offeringEntity {
         organization {
           users {
+            permissions
             user {
               id
             }

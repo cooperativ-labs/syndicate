@@ -7,6 +7,7 @@ import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import router from 'next/router';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import { OfferingSale } from 'types';
+import { ContractAddressType } from '@src/web3/helpersChain';
 
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
@@ -36,6 +37,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   myDistToClaim,
   distributionId,
   isWhitelisted,
+  partitions,
   setShareSaleManagerModal,
   setSaleFormModal,
   refetch,
@@ -75,6 +77,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
               setRecallContract={setRecallContract}
               refetch={refetch}
               distributionId={distributionId}
+              partitions={partitions}
             />
           ) : (
             <ContractInvestorActions

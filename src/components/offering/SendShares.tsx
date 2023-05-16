@@ -1,22 +1,16 @@
-import * as backendCtc from '../../web3/ABI';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import Select from '../form-components/Select';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
-import { ChainErrorResponses, StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { ContractAddressType, createPartition } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { OfferingParticipant } from 'types';
-import { ReachContext } from '@src/SetReachContext';
-import { sendShares } from '@src/web3/reachCalls';
-import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
-
-import { Web3Provider } from '@ethersproject/providers';
+import { useChainId } from 'wagmi';
+import { sendShares } from '@src/web3/contractFunctionCalls';
+import toast from 'react-hot-toast';
 
 export type SendSharesProps = {
   sharesIssued: number;
@@ -24,6 +18,7 @@ export type SendSharesProps = {
   offeringId: string;
   contractId: string;
   offeringParticipants: OfferingParticipant[];
+  partitions: ContractAddressType[];
   refetch: () => void;
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
@@ -33,13 +28,14 @@ const SendShares: FC<SendSharesProps> = ({
   offeringId,
   contractId,
   offeringParticipants,
+  partitions,
   refetch,
   setRecallContract,
 }) => {
-  const { reachLib } = useContext(ReachContext);
+  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  // const { chainId } = useWeb3React<Web3Provider>();
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
+  const [transactionDetails, setTransactionDetails] = useState<any>(null);
 
   if (data) {
     refetch();
@@ -65,6 +61,7 @@ const SendShares: FC<SendSharesProps> = ({
         numShares: null,
         existingRecipient: '',
         newRecipient: '',
+        partition: partitions[0] ?? createPartition('Class A'),
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -88,16 +85,20 @@ const SendShares: FC<SendSharesProps> = ({
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
         const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
-        await sendShares(
-          reachLib,
-          contractId,
+        const partition = values.partition;
+        const transactionDetails = await sendShares(
+          contractId as ContractAddressType,
           offeringId,
           values.numShares,
-          recipient,
+          recipient as ContractAddressType,
+          chainId,
           setButtonStep,
           setRecallContract,
-          addWhitelistObject
+          addWhitelistObject,
+          partition
         );
+        toast.success(`${values.numShares} shares sent to ${recipient}. Transaction hash: ${transactionDetails.hash}`);
+        setTransactionDetails(transactionDetails);
         setSubmitting(false);
       }}
     >

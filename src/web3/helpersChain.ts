@@ -3,6 +3,11 @@ import toast from 'react-hot-toast';
 import ABI from './ABI';
 import { readContracts } from '@wagmi/core';
 
+export type ContractAddressType = `0x${string}`;
+
+export const createPartition = (name) =>
+  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['string'], [name])) as ContractAddressType;
+
 export const normalizeChainId = (chainId) => {
   return typeof chainId === 'number' ? chainId : parseInt(chainId[2]);
 };
@@ -61,37 +66,3 @@ export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) =>
     alert(`${errorMessage}`);
   }
 };
-
-export async function getContractData(userWalletAddress, contractId) {
-  const baseContractInfo = {
-    address: contractId as `0x${string}}`,
-    abi: ABI,
-  };
-  try {
-    const data = await readContracts({
-      contracts: [
-        { ...baseContractInfo, functionName: 'owner' },
-        {
-          ...baseContractInfo,
-          functionName: 'isManager',
-          args: [userWalletAddress],
-        },
-        {
-          ...baseContractInfo,
-          functionName: 'isWhitelisted',
-          args: [userWalletAddress],
-        },
-        {
-          ...baseContractInfo,
-          functionName: 'balanceOf',
-          args: [userWalletAddress],
-        },
-        { ...baseContractInfo, functionName: 'totalSupply' },
-        { ...baseContractInfo, functionName: 'getAllDocuments' },
-      ],
-    });
-    return data;
-  } catch (error) {
-    console.log(error);
-  }
-}

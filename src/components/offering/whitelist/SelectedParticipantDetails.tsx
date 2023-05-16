@@ -1,7 +1,7 @@
-import * as backendCtc from '../../../web3/ABI';
+import abi from '../../../web3/ABI';
 import React, { FC, useContext, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
+import { ContractAddressType, StandardChainErrorHandling } from '@src/web3/helpersChain';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
@@ -9,7 +9,7 @@ import { Currency, OfferingParticipant } from 'types';
 import { Form, Formik } from 'formik';
 import { ReachContext } from '@src/SetReachContext';
 import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { useAsyncFn } from 'react-use';
+
 import { useMutation } from '@apollo/client';
 
 import Input from '@src/components/form-components/Inputs';
@@ -18,88 +18,111 @@ import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAn
 
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import DistributionList from '../distributions/DistributionList';
-import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
+
 import { useSession } from 'next-auth/react';
+import { useContractRead, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { toNormalNumber } from '@src/web3/util';
+import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 
 type SelectedParticipantProps = {
-  participant: OfferingParticipant;
+  selection: string;
+  participants: OfferingParticipant[];
   contractId: string;
   currentSalePrice: number;
   investmentCurrency: Currency;
-  removeAddress: (walletAddress: string, whitelistItemID: string) => void;
+  removeMember: (any) => void;
 };
 
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
-  participant,
+  selection,
+  participants,
   contractId,
   currentSalePrice,
-  removeAddress,
+  removeMember,
 }) => {
   const { data: session } = useSession();
-  const { reachLib, userWalletAddress } = useContext(ReachContext);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [updateOfferingParticipant, { data: dataUpdate }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const [loading, setLoading] = useState<boolean>(false);
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
 
-  const {
-    name,
-    walletAddress,
-    externalId,
-    permitted,
-    id,
-    jurisdiction,
-    investorApplication,
-    offering,
-    chainId,
-    maxPledge,
-    minPledge,
-    paid,
-  } = participant;
+  const participant = participants.find((p) => p.id === selection);
+
+  const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
+    participant;
 
   const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity.organization);
 
-  const [, updateWhitelist] = useAsyncFn(async () => {
-    setButtonStep('submitting');
+  //-----------------Contract Interactions---------------------
 
-    const normalizeRecipientAddress = reachLib.formatAddress(walletAddress); // make sure address, not PubKey
-    const acc = await reachLib.getDefaultAccount();
-    const ctc = acc.contract(backendCtc, contractId);
-    const call = async (f) => {
-      try {
-        await f();
+  const sharedContractSpecs = {
+    address: contractId as ContractAddressType,
+    abi: abi,
+  };
+
+  const { data } = useContractRead({
+    ...sharedContractSpecs,
+    functionName: 'balanceOf',
+    args: [participant.walletAddress as ContractAddressType],
+  });
+
+  const { config: configRemove } = usePrepareContractWrite({
+    ...sharedContractSpecs,
+    functionName: 'removeFromWhitelist',
+    args: [walletAddress as ContractAddressType],
+  });
+
+  const { config: configApprove } = usePrepareContractWrite({
+    ...sharedContractSpecs,
+    functionName: 'addToWhitelist',
+    args: [walletAddress as ContractAddressType],
+  });
+
+  const { isSuccess: isSuccessRemove, write: remove } = useContractWrite(configRemove);
+  const removeAddress = async (whitelistItemID: string) => {
+    try {
+      remove();
+      if (isSuccessRemove) {
+        removeMember({ variables: { offeringId: offering.id, id: whitelistItemID, currentDate: currentDate } });
+      }
+    } catch (e) {
+      StandardChainErrorHandling(e);
+    }
+  };
+
+  const { isSuccess: isSuccessApprove, write: approve } = useContractWrite(configApprove);
+  const approveWhiteListMember = async () => {
+    setButtonStep('submitting');
+    try {
+      // () => approve();
+      if (isSuccessApprove) {
         await updateOfferingParticipant({
           variables: {
             currentDate: currentDate,
             id: id,
             name: name,
             externalId: externalId,
-            jurCountry: jurisdiction.country,
-            jurProvince: jurisdiction.province,
+            jurCountry: jurisdiction?.country,
+            jurProvince: jurisdiction?.province,
             permitted: true,
           },
         });
-        setButtonStep('confirmed');
-      } catch (e) {
-        StandardChainErrorHandling(e, setButtonStep);
       }
-
-      const apis = ctc.a;
-      call(async () => {
-        const apiReturn = await apis.addWL(normalizeRecipientAddress);
-        return apiReturn;
-      });
-    };
+      setButtonStep('confirmed');
+    } catch (e) {
+      StandardChainErrorHandling(e, setButtonStep);
+    }
     setLoading(false);
-  }, [reachLib, updateOfferingParticipant, id, walletAddress]);
+  };
+  //-----------------Contract Interactions--------------------
 
   const updateInvestorForm = (itemType) => {
     return (
       <Formik
         initialValues={{
           name: name,
-          jurCountry: jurisdiction.country,
-          jurProvince: jurisdiction.province,
+          jurCountry: jurisdiction?.country ?? '',
+          jurProvince: jurisdiction?.province ?? '',
           externalId: externalId,
         }}
         validate={(values) => {
@@ -122,8 +145,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
               permitted: permitted,
             },
           });
+          setSpecEditOn(undefined);
           setSubmitting(false);
-          resetForm();
         }}
       >
         {({ values, isSubmitting }) => (
@@ -168,10 +191,10 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
       />
       <ClickToEditItem
         label="Jurisdiction"
-        currentValue={renderJurisdiction(jurisdiction)}
+        currentValue={jurisdiction ? renderJurisdiction(jurisdiction) : null}
         form={updateInvestorForm('jurisdiction')}
         editOn={specEditOn}
-        itemType="jurisdiction"
+        itemType="jurisdiction?"
         isManager={isEditorOrAdmin}
         setEditOn={setSpecEditOn}
       />
@@ -217,13 +240,13 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         <button
           className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
           aria-label="remove wallet from whitelist"
-          onClick={() => removeAddress(walletAddress, id)}
+          onClick={() => removeAddress(id)}
         >
           Remove this this investor from the whitelist
         </button>
       ) : (
         <button
-          onClick={() => updateWhitelist()}
+          onClick={() => approveWhiteListMember()}
           className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
           // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
         >
@@ -242,8 +265,15 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
   return (
     <div className="flex flex-col">
-      <FormattedCryptoAddress address={walletAddress} chainId={chainId} className="font-bold text-lg" showFull />
+      <FormattedCryptoAddress
+        withCopy
+        address={walletAddress}
+        chainId={chainId}
+        className="font-bold text-lg"
+        showFull
+      />
       need to get shares and distributions from Chain
+      <div className="text-sm">{`Shares: ${toNormalNumber(data, 18)} `}</div>
       {specificationSection}
       {tradesSection}
       <hr className="my-10" />

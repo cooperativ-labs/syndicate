@@ -16,7 +16,7 @@ export const toContractInteger = (n: HumanNumber, nDecimals: Decimals): Contract
   return n.mul(BigNumber.from(10).pow(nDecimals));
 };
 
-export const toDecimalByToken = (amt: number, currency?: CurrencyCode) => {
+export const toDecimalByToken = (amt: number, currency?: CurrencyCode): number => {
   const decimal = getCurrencyOption(currency)?.decimals;
   const multiplier = Math.pow(10, decimal);
   return amt * multiplier;

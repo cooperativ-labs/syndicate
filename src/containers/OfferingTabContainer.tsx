@@ -78,7 +78,6 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
-                  offeringId={offering.id}
                   contractId={contractId}
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}

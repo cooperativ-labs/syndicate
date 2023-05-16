@@ -309,7 +309,7 @@ export const ADD_OFFERING_PARTICIPANT = gql`
     $name: String
     $offeringId: ID!
     $walletAddress: String!
-    $chainId: String!
+    $chainId: Int!
     $permitted: Boolean!
   ) {
     addOfferingParticipant(
@@ -404,6 +404,7 @@ export const ADD_WHITELIST_MEMBER = gql`
     $currentDate: DateTime!
     $addressOfferingId: String!
     $walletAddress: String!
+    $chainId: Int!
     $name: String
     $offering: ID!
     $externalId: String
@@ -413,6 +414,7 @@ export const ADD_WHITELIST_MEMBER = gql`
         lastUpdate: $currentDate
         addressOfferingId: $addressOfferingId
         walletAddress: $walletAddress
+        chainId: $chainId
         name: $name
         permitted: true
         offering: { id: $offering }
@@ -460,6 +462,7 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
         walletAddress
         externalId
         jurisdiction {
+          id
           country
           province
         }

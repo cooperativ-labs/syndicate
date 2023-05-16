@@ -1,7 +1,8 @@
-import { useContractRead, useContractReads } from 'wagmi';
-import ABI from '../ABI';
+import { useContractReads } from 'wagmi';
 import { toNormalNumber } from '../util';
 import { BigNumber } from 'ethers';
+import abi from '../ABI';
+import { ContractAddressType } from '../helpersChain';
 
 export type ContractInfoType = {
   contractOwner: string;
@@ -16,6 +17,7 @@ export type ContractInfoType = {
   myBacBalance: number;
   contractHashes: readonly [string, `0x${string}`, BigNumber] & {};
   decimals: number;
+  partitions: ContractAddressType[];
   isLoading: boolean;
 };
 
@@ -25,7 +27,7 @@ export const useContractInfo = (
 ): ContractInfoType | undefined => {
   const baseContractInfo = {
     address: contractId,
-    abi: ABI,
+    abi: abi,
   };
 
   if (!contractId) {
@@ -55,6 +57,7 @@ export const useContractInfo = (
       },
       { ...baseContractInfo, functionName: 'totalSupply' },
       { ...baseContractInfo, functionName: 'getAllDocuments' },
+      { ...baseContractInfo, functionName: 'getAllDocuments' },
     ],
   });
 
@@ -68,6 +71,7 @@ export const useContractInfo = (
   const fundsDistributed = data ? 20000 : undefined;
   const numDistributions = data ? 4 : undefined;
   const bacId = data ? '0x66458Bb9BF8e09eA40cf916BCb370727455F6040' : undefined;
+  const partitions = ['0xd300972c270941fe75b0929dadadff16cd5462ba2093bf53e8f76bc345ecf955' as ContractAddressType];
   // const contractBacBalance = data ? data[8] : undefined;
   const myBacBalance = data ? 234000 : undefined;
 
@@ -95,6 +99,7 @@ export const useContractInfo = (
     myBacBalance,
     contractHashes,
     decimals,
+    partitions,
     isLoading,
   };
 };

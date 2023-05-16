@@ -11,6 +11,7 @@ import { Offering, OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
 import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
+import { ContractAddressType } from '@src/web3/helpersChain';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 
@@ -20,6 +21,7 @@ export type ContractOwnerActionsProps = {
   distributionId: string;
   sharesOutstanding: number;
   myDistToClaim: number;
+  partitions: ContractAddressType[];
   setRecallContract: Dispatch<SetStateAction<string>>;
   setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
   setSaleFormModal: Dispatch<SetStateAction<boolean>>;
@@ -32,6 +34,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
   distributionId,
   sharesOutstanding,
   myDistToClaim,
+  partitions,
   setRecallContract,
   setShareSaleManagerModal,
   setSaleFormModal,
@@ -116,6 +119,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
           contractId={contractId}
           offeringId={id}
           offeringParticipants={participants}
+          partitions={partitions}
           refetch={refetch}
           setRecallContract={setRecallContract}
         />

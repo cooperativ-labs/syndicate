@@ -62,10 +62,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const [bidFormModel, setBidFormModel] = useState<boolean>(false);
   const [recallContract, setRecallContract] = useState<string>();
 
-  // ### TOKEN STUFF
-  // const partition = ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['string'], ['Partition1']));
-  // console.log(partition);
-
   const {
     contractOwner,
     isManager,
@@ -78,6 +74,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     numDistributions,
     bacId,
     contractHashes,
+    partitions,
     isLoading,
   } = useContractInfo(contractId, userWalletAddress);
 
@@ -245,6 +242,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         isContractOwner={isContractOwner}
                         myBacBalance={myBacBalance}
                         isWhitelisted={isWhitelisted}
+                        partitions={partitions}
                         setShareSaleManagerModal={setShareSaleManagerModal}
                         setSaleFormModal={setSaleFormModal}
                         refetch={refetch}
