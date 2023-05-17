@@ -17,6 +17,20 @@ type FormattedCryptoAddressProps = {
   isYou?: boolean;
 };
 
+export const presentAddress = (
+  address: string,
+  isYou?: boolean,
+  isDesktop?: boolean,
+  userName?: string,
+  showFull?: boolean,
+  ensName?: string
+) => {
+  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
+  const splitAddress = `${address.slice(0, 7)}... ${address.slice(-4)}`;
+  const withoutENS = showFull && isDesktop ? address : userName ? youSplitAddress : splitAddress;
+  return ensName ?? withoutENS;
+};
+
 const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   label,
   chainId,
@@ -46,20 +60,13 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
     return url;
   };
 
-  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
-  const splitAddress = `${address.slice(0, 7)}... ${address.slice(-4)}`;
-  const presentAddressOhneENS =
-    showFull && isDesktop ? (
-      address
-    ) : (
-      <span className="hover:underline whitespace-nowrap">{userName ? youSplitAddress : splitAddress}</span>
-    );
-
   return (
     <span className={cn('flex', [className ? className : 'text-sm text-gray-700'])}>
       <a target="_blank" rel="noreferrer" href={formURL(chainId, lookupType)}>
         {label}
-        {ensName ?? presentAddressOhneENS}
+        <span className="hover:underline whitespace-nowrap">
+          {presentAddress(address, isYou, isDesktop, userName, showFull, ensName)}
+        </span>
       </a>
       {withCopy && (
         <button

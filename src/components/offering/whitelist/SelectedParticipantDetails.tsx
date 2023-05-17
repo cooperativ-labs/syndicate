@@ -1,28 +1,22 @@
 import abi from '../../../web3/ABI';
-import React, { FC, useContext, useState } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { ContractAddressType, StandardChainErrorHandling } from '@src/web3/helpersChain';
-
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import { Currency, OfferingParticipant } from 'types';
-import { Form, Formik } from 'formik';
-import { ReachContext } from '@src/SetReachContext';
-import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-
-import { useMutation } from '@apollo/client';
-
-import Input from '@src/components/form-components/Inputs';
-import { DownloadFile } from '@src/utils/helpersAgreement';
-import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import DistributionList from '../distributions/DistributionList';
-
-import { useSession } from 'next-auth/react';
-import { useContractRead, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { toNormalNumber } from '@src/web3/util';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import Input from '@src/components/form-components/Inputs';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
+import React, { FC, useState } from 'react';
+import { ContractAddressType, StandardChainErrorHandling } from '@src/web3/helpersChain';
+import { Currency, OfferingParticipant } from 'types';
+import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { DownloadFile } from '@src/utils/helpersAgreement';
+import { Form, Formik } from 'formik';
+import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { toNormalNumber } from '@src/web3/util';
+import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
+import { useContractRead, useContractWrite } from 'wagmi';
+import { useMutation } from '@apollo/client';
+import { useSession } from 'next-auth/react';
 
 type SelectedParticipantProps = {
   selection: string;
@@ -30,7 +24,7 @@ type SelectedParticipantProps = {
   contractId: string;
   currentSalePrice: number;
   investmentCurrency: Currency;
-  removeMember: (any) => void;
+  removeMember: (variables) => void;
 };
 
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
@@ -43,15 +37,12 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const { data: session } = useSession();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [updateOfferingParticipant, { data: dataUpdate }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
+  const [approveOfferingParticipant, { data: dataApprove }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const [loading, setLoading] = useState<boolean>(false);
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
 
-  const participant = participants.find((p) => p.id === selection);
-
-  const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
-    participant;
-
-  const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity.organization);
+  const participant = participants?.find((p) => p.id === selection);
+  const participantWallet = participant?.walletAddress;
 
   //-----------------Contract Interactions---------------------
 
@@ -63,58 +54,78 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const { data } = useContractRead({
     ...sharedContractSpecs,
     functionName: 'balanceOf',
-    args: [participant.walletAddress as ContractAddressType],
+    args: [participantWallet as ContractAddressType],
   });
 
-  const { config: configRemove } = usePrepareContractWrite({
+  const removeFromDb = async () => {
+    await removeMember({ variables: { offeringId: offering.id, id: participant?.id, currentDate: currentDate } });
+  };
+
+  const { write: removeWrite } = useContractWrite({
     ...sharedContractSpecs,
     functionName: 'removeFromWhitelist',
-    args: [walletAddress as ContractAddressType],
+    mode: 'recklesslyUnprepared',
+    args: [participantWallet as ContractAddressType],
+    onSuccess: (data) => {
+      console.log(data), removeFromDb();
+    },
+    onError: (e) => {
+      StandardChainErrorHandling(e, setButtonStep);
+    },
   });
 
-  const { config: configApprove } = usePrepareContractWrite({
-    ...sharedContractSpecs,
-    functionName: 'addToWhitelist',
-    args: [walletAddress as ContractAddressType],
-  });
-
-  const { isSuccess: isSuccessRemove, write: remove } = useContractWrite(configRemove);
-  const removeAddress = async (whitelistItemID: string) => {
+  const removeWhitelistMember = async () => {
+    setButtonStep('submitting');
     try {
-      remove();
-      if (isSuccessRemove) {
-        removeMember({ variables: { offeringId: offering.id, id: whitelistItemID, currentDate: currentDate } });
-      }
+      removeWrite();
     } catch (e) {
       StandardChainErrorHandling(e);
     }
   };
 
-  const { isSuccess: isSuccessApprove, write: approve } = useContractWrite(configApprove);
+  // -----------------Approve Whitelist Participant---------------------
+
+  const updateDb = async () => {
+    await approveOfferingParticipant({
+      variables: {
+        currentDate: currentDate,
+        id: id,
+        permitted: true,
+      },
+    });
+    setButtonStep('confirmed');
+  };
+
+  const { data: addData, write: addWrite } = useContractWrite({
+    ...sharedContractSpecs,
+    functionName: 'removeFromWhitelist',
+    mode: 'recklesslyUnprepared',
+    args: [participantWallet as ContractAddressType],
+    onSuccess: () => updateDb(),
+    onError: (e) => {
+      StandardChainErrorHandling(e);
+    },
+  });
+
   const approveWhiteListMember = async () => {
     setButtonStep('submitting');
     try {
-      // () => approve();
-      if (isSuccessApprove) {
-        await updateOfferingParticipant({
-          variables: {
-            currentDate: currentDate,
-            id: id,
-            name: name,
-            externalId: externalId,
-            jurCountry: jurisdiction?.country,
-            jurProvince: jurisdiction?.province,
-            permitted: true,
-          },
-        });
-      }
-      setButtonStep('confirmed');
+      addWrite();
     } catch (e) {
-      StandardChainErrorHandling(e, setButtonStep);
+      StandardChainErrorHandling(e);
     }
-    setLoading(false);
   };
-  //-----------------Contract Interactions--------------------
+
+  //-----------------Contract Interactions END --------------------
+
+  if (!participant) {
+    return <div>Participant not found</div>;
+  }
+
+  const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
+    participant;
+
+  const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity.organization);
 
   const updateInvestorForm = (itemType) => {
     return (
@@ -127,9 +138,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
-          if (!values.jurCountry) {
-            errors.type = 'Please enter a country';
-          }
+          // if (!values.jurCountry) {
+          //   errors.type = 'Please enter a country';
+          // }
           return errors;
         }}
         onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -145,7 +156,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
               permitted: permitted,
             },
           });
-          setSpecEditOn(undefined);
+          setSpecEditOn('none');
           setSubmitting(false);
         }}
       >
@@ -191,7 +202,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
       />
       <ClickToEditItem
         label="Jurisdiction"
-        currentValue={jurisdiction ? renderJurisdiction(jurisdiction) : null}
+        currentValue={jurisdiction.country ? renderJurisdiction(jurisdiction) : null}
         form={updateInvestorForm('jurisdiction')}
         editOn={specEditOn}
         itemType="jurisdiction?"
@@ -240,13 +251,20 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         <button
           className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
           aria-label="remove wallet from whitelist"
-          onClick={() => removeAddress(id)}
+          onClick={removeWhitelistMember}
         >
-          Remove this this investor from the whitelist
+          <LoadingButtonText
+            state={buttonStep}
+            idleText="Remove this this investor from the whitelist"
+            submittingText="Removing..."
+            confirmedText="Investor Removed!"
+            failedText="Transaction failed"
+            rejectedText="You rejected the transaction. Click here to try again."
+          />
         </button>
       ) : (
         <button
-          onClick={() => approveWhiteListMember()}
+          onClick={approveWhiteListMember}
           className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
           // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
         >

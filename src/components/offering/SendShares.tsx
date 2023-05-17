@@ -2,15 +2,16 @@ import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import Select from '../form-components/Select';
+import toast from 'react-hot-toast';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
 import { ContractAddressType, createPartition } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { OfferingParticipant } from 'types';
-import { useMutation } from '@apollo/client';
-import { useChainId } from 'wagmi';
+import { presentAddress } from '../FormattedCryptoAddress';
 import { sendShares } from '@src/web3/contractFunctionCalls';
-import toast from 'react-hot-toast';
+import { useChainId } from 'wagmi';
+import { useMutation } from '@apollo/client';
 
 export type SendSharesProps = {
   sharesIssued: number;
@@ -45,12 +46,12 @@ const SendShares: FC<SendSharesProps> = ({
 
   const formButtonText = (values) => {
     const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
-    if (values.name || recipient) {
+    if (recipient) {
       return `Send ${
         values.numShares
           ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%)`
           : ''
-      } shares to ${values.name ?? recipient}`;
+      } shares to ${presentAddress(recipient)}`;
     }
     return 'Send shares';
   };
@@ -97,7 +98,13 @@ const SendShares: FC<SendSharesProps> = ({
           addWhitelistObject,
           partition
         );
-        toast.success(`${values.numShares} shares sent to ${recipient}. Transaction hash: ${transactionDetails.hash}`);
+        if (transactionDetails.hash) {
+          toast.success(
+            `${values.numShares} shares sent to ${presentAddress(recipient)}. Transaction hash: ${
+              transactionDetails.hash
+            }`
+          );
+        }
         setTransactionDetails(transactionDetails);
         setSubmitting(false);
       }}
@@ -106,12 +113,13 @@ const SendShares: FC<SendSharesProps> = ({
         <Form className="flex flex-col gap relative">
           <Select className={'mt-3'} name={'existingRecipient'} labelText="Investor's wallet address">
             <option value="">Select recipient</option>
+
             {offeringParticipants.map((participant, i) => {
               return (
                 <option key={i} value={participant.walletAddress}>
                   {participant.name
                     ? `${participant.name} (${participant.walletAddress.slice(-4)})`
-                    : participant.walletAddress}
+                    : presentAddress(participant.walletAddress)}
                 </option>
               );
             })}
@@ -137,6 +145,7 @@ const SendShares: FC<SendSharesProps> = ({
             // required
           />
           <hr className="bg-grey-600 my-3 mb-4" />
+
           <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
             <LoadingButtonText
               state={buttonStep}

@@ -11,7 +11,7 @@ import { parseEther, parseUnits } from 'ethers/lib/utils.js';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { toast } from 'react-hot-toast';
 import { ethers } from 'ethers';
-import { prepareWriteContract, writeContract } from '@wagmi/core';
+import { prepareWriteContract, writeContract, waitForTransaction } from '@wagmi/core';
 
 export type SaleContentsType = {
   qty: number;
@@ -35,7 +35,23 @@ export const addWhitelistMember = async (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>
 ) => {
-  setButtonStep('submitting');
+  const addToDb = async () => {
+    try {
+      addWhitelistObject({
+        variables: {
+          currentDate: currentDate,
+          addressOfferingId: walletAddress + offeringId,
+          walletAddress: walletAddress,
+          chainId: chainId,
+          name: name,
+          offering: offeringId,
+          externalId: externalId,
+        },
+      });
+    } catch (e) {
+      throw new Error(e);
+    }
+  };
 
   const config = await prepareWriteContract({
     address: contractId,
@@ -48,30 +64,64 @@ export const addWhitelistMember = async (
   const call = async () => {
     setButtonStep('submitting');
     try {
-      const { hash, wait } = await writeContract(config).catch((e) => {
-        console.log('error: ', e);
-        return { hash: '', wait: () => {} };
-      });
+      const { hash, wait } = await writeContract(config);
       transactionDetails = { hash: hash, wait: wait };
-      addWhitelistObject({
-        variables: {
-          currentDate: currentDate,
-          addressOfferingId: walletAddress + offeringId,
-          walletAddress: walletAddress,
-          chainId: chainId,
-          name: name,
-          offering: offeringId,
-          externalId: externalId,
-        },
+      await waitForTransaction({
+        hash: hash,
       });
+      await addToDb();
       setButtonStep('confirmed');
     } catch (e) {
-      StandardChainErrorHandling(e, setButtonStep);
+      StandardChainErrorHandling(e, setButtonStep, walletAddress);
     }
   };
   await call();
   return transactionDetails;
 };
+
+// export const removeWhitelistMember = async (
+//   contractId: ContractAddressType,
+//   offeringId: string,
+//   walletAddress: ContractAddressType,
+//   participantId: string,
+//   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
+//   removeMember: (
+//     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+//   ) => Promise<any>
+// ) => {
+//   const removeFromDb = async () => {
+//     try {
+//       removeMember({ variables: { offeringId: offeringId, id: participantId, currentDate: currentDate } });
+//     } catch (e) {
+//       throw new Error(e);
+//     }
+//   };
+
+//   const config = await prepareWriteContract({
+//     address: contractId,
+//     abi: abi,
+//     functionName: 'removeFromWhitelist',
+//     args: [walletAddress],
+//   });
+
+//   let transactionDetails = { hash: '', wait: () => {} };
+//   const call = async () => {
+//     setButtonStep('submitting');
+//     try {
+//       const { hash, wait } = await writeContract(config);
+//       transactionDetails = { hash: hash, wait: wait };
+//       await waitForTransaction({
+//         hash: hash,
+//       });
+//       await removeFromDb();
+//       setButtonStep('confirmed');
+//     } catch (e) {
+//       StandardChainErrorHandling(e, setButtonStep);
+//     }
+//   };
+//   await call();
+//   return transactionDetails;
+// };
 
 export const sendShares = async (
   contractId: ContractAddressType,
@@ -87,7 +137,6 @@ export const sendShares = async (
   partition: ContractAddressType
 ) => {
   const amt = parseUnits(numShares.toString(), 18);
-
   const config = await prepareWriteContract({
     address: contractId,
     abi: abi,
@@ -100,6 +149,7 @@ export const sendShares = async (
     try {
       const { hash, wait } = await writeContract(config);
       transactionDetails = { hash: hash, wait: wait };
+      //adds recipient to whitelist if they have not already been added
       await addWhitelistObject({
         variables: {
           currentDate: currentDate,
@@ -109,7 +159,9 @@ export const sendShares = async (
           offering: offeringId,
         },
       });
-
+      await waitForTransaction({
+        hash: hash,
+      });
       setButtonStep('confirmed');
       setRecallContract('sendShares');
     } catch (e) {

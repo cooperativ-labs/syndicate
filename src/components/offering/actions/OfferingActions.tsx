@@ -6,8 +6,8 @@ import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } 
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import router from 'next/router';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
-import { OfferingSale } from 'types';
 import { ContractAddressType } from '@src/web3/helpersChain';
+import { OfferingSale } from 'types';
 
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 

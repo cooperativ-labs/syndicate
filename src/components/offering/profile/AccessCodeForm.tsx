@@ -19,7 +19,7 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeS
     ? 'bg-cLightBlue hover:bg-cDarkBlue text-white text-xs font-medium  rounded-md p-1 px-2 flex justify-center items-center whitespace-nowrap'
     : 'bg-cLightBlue hover:bg-cDarkBlue text-white font-semibold rounded-r-full px-5 h-12 flex justify-center items-center ';
 
-  const code = isOfferingManager ? accessCode : '';
+  const code = isOfferingManager && accessCode;
 
   return (
     <>
@@ -30,7 +30,7 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeS
       ) : (
         <Formik
           initialValues={{
-            code: code,
+            code: code ?? '',
           }}
           validate={(values) => {
             const errors: any = {}; /** @TODO : Shape */
@@ -55,7 +55,7 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeS
                 placeholder={isOfferingManager ? '1234' : 'e.g. 1234'}
               />
               <button type="submit" disabled={isSubmitting} className={buttonClasses}>
-                {mini ? 'Set code' : <FontAwesomeIcon icon="chevron-right" className="mr-2 text-lg" />}
+                {mini ? 'Set access code' : <FontAwesomeIcon icon="chevron-right" className="mr-2 text-lg" />}
               </button>
             </Form>
           )}

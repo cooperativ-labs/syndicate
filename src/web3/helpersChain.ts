@@ -30,10 +30,10 @@ export const WalletErrorCodes = (error) => {
 };
 
 export const ChainErrorResponses = (error) => {
-  if (error.message.includes('has not opted in to app')) {
-    return { code: 1000, message: 'has not opted in to app' };
+  if (error.message.includes('address already whitelisted')) {
+    return { code: 1000, message: 'User is already on the whitelist' };
   }
-  if (error.message.includes('Error: Operation cancelled')) {
+  if (error.message.includes('User rejected request')) {
     return { code: 2000, message: 'User cancelled operation' };
   }
   if (error.message.includes('underflow on subtracting')) {
@@ -45,6 +45,9 @@ export const ChainErrorResponses = (error) => {
   if (error.message.includes('hash is immutable')) {
     return { code: 5000, message: 'This contract has already been established.' };
   }
+  if (error.message.includes('address already whitelisted')) {
+    return { code: 6000, message: 'This address has already been whitelisted.' };
+  }
   return { code: null, message: error };
 };
 
@@ -53,8 +56,10 @@ export const isValidAddress = (address) => {
 };
 
 export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) => {
+  console.log('error', error);
   const errorCode = ChainErrorResponses(error).code;
   const errorMessage = ChainErrorResponses(error).message;
+
   if (recipient && errorCode === 1000) {
     setButtonStep('failed');
     toast(`${recipient} has not opted into this offering (or is already whitelisted).`);

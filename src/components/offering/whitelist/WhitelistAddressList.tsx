@@ -8,8 +8,8 @@ import { Currency, OfferingParticipant } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { ReachContext } from '@src/SetReachContext';
 import { REMOVE_WHITELIST_OBJECT } from '@src/utils/dGraphQueries/offering';
-import { useMutation } from '@apollo/client';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { useMutation } from '@apollo/client';
 
 type WhitelistAddressListProps = {
   offeringParticipants: OfferingParticipant[];
@@ -25,7 +25,6 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
   investmentCurrency,
 }) => {
   const [removeMember, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_WHITELIST_OBJECT);
-  // const [selectedParticipant, setSelectedParticipant] = React.useState<OfferingParticipant | null>(null);
   const [selectedParticipant, setSelectedParticipant] = React.useState<string | undefined>(undefined);
 
   return (

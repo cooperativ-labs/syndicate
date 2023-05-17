@@ -429,6 +429,11 @@ export const ADD_WHITELIST_MEMBER = gql`
         externalId
         offering {
           id
+          participants {
+            id
+            walletAddress
+            name
+          }
         }
       }
     }
@@ -467,6 +472,23 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
           province
         }
         name
+        offering {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const APPROVE_OFFERING_PARTICIPANT = gql`
+  mutation ApproveOfferingParticipant($currentDate: DateTime!, $id: [ID!], $permitted: Boolean!) {
+    updateOfferingParticipant(
+      input: { filter: { id: $id }, set: { lastUpdate: $currentDate, permitted: $permitted } }
+    ) {
+      offeringParticipant {
+        id
+        walletAddress
+        permitted
         offering {
           id
         }

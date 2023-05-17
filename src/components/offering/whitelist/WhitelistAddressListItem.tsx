@@ -6,8 +6,8 @@ import StandardButton from '@src/components/buttons/StandardButton';
 import { ContractAddressType } from '@src/web3/helpersChain';
 import { OfferingParticipant } from 'types';
 import { ReachContext } from '@src/SetReachContext';
-import { useContractRead } from 'wagmi';
 import { toNormalNumber } from '@src/web3/util';
+import { useContractRead } from 'wagmi';
 
 type WhitelistAddressListItemProps = {
   participant: OfferingParticipant;

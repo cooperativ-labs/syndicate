@@ -123,13 +123,50 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
     </Formik>
   );
 
+  const [showVisibilitySettings, setShowVisibilitySettings] = useState<boolean>(false);
+  const visibilitySettings = (
+    <>
+      {showVisibilitySettings ? (
+        <>
+          {isOfferingManager && profileVisibility && (
+            <AccessCodeForm
+              accessCode={accessCode}
+              handleCodeSubmission={handleAccessCodeChange}
+              mini
+              isOfferingManager
+            />
+          )}
+          {isOfferingManager && (
+            <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
+          )}
+        </>
+      ) : (
+        <button
+          className="bg-cLightBlue hover:bg-cDarkBlue text-white text-xs font-medium  rounded-md p-1 px-2 flex justify-center items-center whitespace-nowrap"
+          onClick={() => setShowVisibilitySettings(true)}
+        >
+          Set profile visibility
+        </button>
+      )}
+      {profileVisibility && (
+        <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
+          <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg ml-2" />
+        </a>
+      )}
+    </>
+  );
+
   return (
     <div className="flex justify-between">
       {nameEditOn ? (
         nameChangeForm
       ) : (
         <h1
-          className={cn(`text-2xl md:text-3xl font-bold text-gray-700 ${isOfferingManager && 'hover:cursor-pointer'}`)}
+          className={cn(
+            `text-2xl md:text-3xl font-bold text-gray-700 ${
+              isOfferingManager && 'hover:cursor-pointer hover:underline'
+            }`
+          )}
           onClick={() => {
             isOfferingManager ? setNameEditOn(true) : {};
           }}
@@ -137,24 +174,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           {offeringName}
         </h1>
       )}
-      <div className="flex p-2 items-center font-semibold text-gray-600 gap-2">
-        {isOfferingManager && profileVisibility && (
-          <AccessCodeForm
-            accessCode={accessCode}
-            handleCodeSubmission={handleAccessCodeChange}
-            mini
-            isOfferingManager
-          />
-        )}
-        {isOfferingManager && (
-          <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
-        )}
-        {profileVisibility && (
-          <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
-            <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
-          </a>
-        )}
-      </div>
+      <div className="flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
     </div>
   );
 };

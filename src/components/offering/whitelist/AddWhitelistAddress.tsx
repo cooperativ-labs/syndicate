@@ -1,17 +1,13 @@
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
-
-import { Form, Formik } from 'formik';
-import { ContractAddressType, StandardChainErrorHandling, isValidAddress } from '@src/web3/helpersChain';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { ReachContext } from '@src/SetReachContext';
-import { useMutation } from '@apollo/client';
-import abi from '@src/web3/ABI';
-import { useChainId, useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { addWhitelistMember } from '@src/web3/contractFunctionCalls';
+import { ContractAddressType, isValidAddress } from '@src/web3/helpersChain';
+import { Form, Formik } from 'formik';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { useChainId } from 'wagmi';
+import { useMutation } from '@apollo/client';
 
 export type AddWhitelistAddressProps = {
   contractId: string;
@@ -21,12 +17,12 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
+  const [transactionDetails, setTransactionDetails] = useState<any>({
+    hash: '',
+    wait: () => {},
+  }); /** @TODO : Shape */
 
-  // const { config } = usePrepareContractWrite({
-  //   address: contractId as ContractAddressType,
-  //   abi: abi,
-  //   functionName: 'addToWhitelist',
-  // });
+  const hash = transactionDetails.hash as ContractAddressType;
 
   return (
     <Formik
@@ -60,6 +56,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
           setButtonStep,
           addWhitelistObject
         );
+        setTransactionDetails(transactionDetails);
         setSubmitting(false);
         resetForm();
       }}
@@ -96,7 +93,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
               state={buttonStep}
               idleText={`Approve ${values.address}`}
               submittingText="Adding member to whitelist..."
-              confirmedText="Confirmed!"
+              confirmedText="Added!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />
