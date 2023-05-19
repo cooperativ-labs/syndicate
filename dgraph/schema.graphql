@@ -926,7 +926,7 @@ update:{rule: """
 	owners: [LegalEntity] @hasInverse(field:subsidiaries) 
 	subsidiaries: [LegalEntity] @hasInverse(field:owners) 
 	purpose: String
-addresses: [Address] @hasInverse(field:owner)
+	addresses: [Address] @hasInverse(field:owner)
 	jurisdiction: Jurisdiction 
 	documentsOwned: [Document] @hasInverse(field:owner) 
 	documentsSigned: [DocumentSignatory] @hasInverse(field:legalEntity) 

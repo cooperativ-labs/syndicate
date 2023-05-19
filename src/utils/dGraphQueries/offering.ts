@@ -240,13 +240,13 @@ export const ADD_OFFERING_DETAILS = gql`
 
 export const ADD_LEGAL_SHARE_LINK = gql`
   mutation AddLegalLink(
+    $currentDate: DateTime
+    $documentOfferingUniqueId: String!
     $offeringId: [ID!]
     $entityId: ID!
-    $smartContractId: ID!
-    $currentDate: DateTime
-    $agreementTitle: String!
     $agreementText: String!
-    $documentOfferingUniqueId: String!
+    $smartContractId: ID!
+    $agreementTitle: String!
     $signature: String!
   ) {
     updateOffering(
@@ -326,9 +326,7 @@ export const ADD_OFFERING_PARTICIPANT = gql`
       offeringParticipant {
         id
         name
-        entity {
-          id
-        }
+
         offering {
           id
         }

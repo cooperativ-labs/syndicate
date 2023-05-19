@@ -11,7 +11,6 @@ import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisp
 
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import DocumentList from '@src/components/offering/documents/DocumentList';
-import HashInstructions from '@src/components/indicators/HashInstructions';
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
@@ -30,6 +29,8 @@ import { getLowestSalePrice } from '@src/utils/helpersMoney';
 import { useAccount, useChainId } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
+import HashInstructions from '@src/components/documentVerification/HashInstructions';
+import { String0x } from '@src/web3/helpersChain';
 import { useContractInfo } from '@src/web3/hooks/useContractInfo';
 
 // import { ABI } from '@src/web3/ABI';
@@ -43,16 +44,15 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const { data: session } = useSession();
   const userId = session?.user?.id;
   const { address: userWalletAddress } = useAccount();
-
   const chainId = useChainId();
   const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContracts } = offering;
 
   const establishedContract = GetEstablishedContracts(smartContracts, chainId)[0];
-  // const contractId = establishedContract?.cryptoAddress.address;
-  const contractId = '0x18201F3219e818eE419cF3aa193ff269ABAB0df8' as `0x${string}}`;
+  const contractId = establishedContract?.cryptoAddress.address as String0x;
+
   const owners = offeringEntity?.owners;
   const documents = offering?.documents;
-  const legalLinkText = getDocumentsOfType(documents, DocumentType.ShareLink)[0]?.text;
+  const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
   const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
 
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
@@ -73,7 +73,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     fundsDistributed,
     numDistributions,
     bacId,
-    contractHashes,
     partitions,
     isLoading,
   } = useContractInfo(contractId, userWalletAddress);
@@ -200,7 +199,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               'This offering has no details yet.'
             )}
 
-            {isOfferingManager && <hr className="my-10" />}
+            <hr className="my-10" />
             {isOfferingManager && (
               <div className="flex items-center mt-10 ">
                 <Button
@@ -284,8 +283,12 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               ownerEntityId={owners[0].id}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkText && contractHashes && (
-              <HashInstructions hashes={contractHashes} agreementText={legalLinkText} />
+            {legalLinkTexts.length > 0 && allDocuments.length > 0 && (
+              <HashInstructions
+                contractDocuments={allDocuments}
+                agreementTexts={legalLinkTexts}
+                contractId={contractId}
+              />
             )}
           </>
 

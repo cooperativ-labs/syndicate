@@ -54,8 +54,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { SessionProvider } from 'next-auth/react';
 import { StateProvider } from '@context/store';
 import { Toaster } from 'react-hot-toast';
-import { wagmiClient } from '@src/web3/connectors';
 import { WagmiConfig } from 'wagmi';
+import { wagmiConfig } from '@src/web3/connectors';
 
 library.add(fas, faCog);
 library.add(fas, faCommentDots);
@@ -123,7 +123,7 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
   );
 
   return (
-    <WagmiConfig client={wagmiClient}>
+    <WagmiConfig config={wagmiConfig}>
       <SessionProvider session={session}>
         <Toaster />
         <SetAppContext>

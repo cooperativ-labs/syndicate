@@ -1,15 +1,31 @@
-import { ethers } from 'ethers';
+import { bytesToString, hexToBytes, stringToHex } from 'viem';
+import { keccak256, toHex } from 'viem';
 import toast from 'react-hot-toast';
-import ABI from './ABI';
-import { readContracts } from '@wagmi/core';
+import { Document } from 'types';
 
-export type ContractAddressType = `0x${string}`;
+export type String0x = `0x${string}`;
 
-export const createPartition = (name) =>
-  ethers.utils.keccak256(ethers.utils.defaultAbiCoder.encode(['string'], [name])) as ContractAddressType;
+export const stringFromBytes32 = (bytes32: String0x) => {
+  const bytes = hexToBytes(bytes32);
+  const string = bytesToString(bytes, { size: 32 });
+  return string;
+};
+export const bytes32FromString = (string) => {
+  const bytes = stringToHex(string, { size: 32 });
+  return bytes;
+};
 
-export const normalizeChainId = (chainId) => {
-  return typeof chainId === 'number' ? chainId : parseInt(chainId[2]);
+export const hashBytes32FromString = (string: string) => keccak256(toHex(string));
+
+export const getHashTextPairs = (data: any, agreementTexts: Document[]) => {
+  const hashes = data.map((doc) => {
+    return doc.result[1];
+  });
+  const textHashPairs = agreementTexts.map((doc, i) => {
+    const hash = hashes.find((hash) => hashBytes32FromString(doc.text) === hash);
+    return { hash: hash, text: doc.text };
+  });
+  return textHashPairs;
 };
 
 export const WalletErrorMessages = {
@@ -49,10 +65,6 @@ export const ChainErrorResponses = (error) => {
     return { code: 6000, message: 'This address has already been whitelisted.' };
   }
   return { code: null, message: error };
-};
-
-export const isValidAddress = (address) => {
-  return ethers.utils.isAddress(address);
 };
 
 export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) => {

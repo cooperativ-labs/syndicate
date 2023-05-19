@@ -1,7 +1,6 @@
 import { useContractRead } from 'wagmi';
 import ABI from '../ABI';
 import { toNormalNumber } from '../util';
-import { BigNumber } from 'ethers';
 import { SaleStatusType } from '@src/utils/enumConverters';
 import { useState } from 'react';
 

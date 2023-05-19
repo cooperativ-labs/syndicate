@@ -6,10 +6,10 @@ import SendShares from '../SendShares';
 import SubmitDistribution from '../SubmitDistribution';
 import { ActionPanelActionsProps } from './OfferingActions';
 import { claimDistribution, claimProceeds } from '@src/web3/reachCalls';
-import { ContractAddressType } from '@src/web3/helpersChain';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 
@@ -21,7 +21,7 @@ export type ContractOwnerActionsProps = {
   distributionId: string;
   sharesOutstanding: number;
   myDistToClaim: number;
-  partitions: ContractAddressType[];
+  partitions: String0x[];
   setRecallContract: Dispatch<SetStateAction<string>>;
   setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
   setSaleFormModal: Dispatch<SetStateAction<boolean>>;

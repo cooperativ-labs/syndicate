@@ -3,9 +3,9 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import React, { FC, useContext } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
-import { ContractAddressType } from '@src/web3/helpersChain';
 import { OfferingParticipant } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useContractRead } from 'wagmi';
 
@@ -23,14 +23,13 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   const { userWalletAddress } = useContext(ReachContext);
 
   const { data } = useContractRead({
-    address: contractId as ContractAddressType,
+    address: contractId as String0x,
     abi: abi,
     functionName: 'balanceOf',
-    args: [participant.walletAddress as ContractAddressType],
+    args: [participant.walletAddress as String0x],
   });
 
   const isYou = participant.walletAddress === userWalletAddress;
-
   const numShares = data ? toNormalNumber(data, 18) : 'loading...';
 
   return (

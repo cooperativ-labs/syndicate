@@ -1,5 +1,5 @@
 import { CryptoAddressProtocol } from 'types';
-import { Chain, configureChains, createClient } from 'wagmi';
+import { configureChains, createConfig } from 'wagmi';
 // import { defineConfig } from '@wagmi/cli';
 // import { etherscan, react } from '@wagmi/cli/plugins';
 import { mainnet, goerli, sepolia, polygon, polygonMumbai } from 'wagmi/chains';
@@ -49,15 +49,15 @@ declare let window: any;
 
 export const SupportedChains = [mainnet, sepolia, goerli, polygon, polygonMumbai];
 
-const { chains, provider, webSocketProvider } = configureChains(SupportedChains, [
+const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
   publicProvider(),
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
 ]);
 
-export const wagmiClient = createClient({
+export const wagmiConfig = createConfig({
   autoConnect: true,
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 export const SupportedChainsAddendum = [

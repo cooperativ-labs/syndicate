@@ -20,7 +20,7 @@ export const ADD_ENTITY = gql`
     $jurCountry: String!
     $jurProvince: String
     $operatingCurrency: CurrencyCode!
-    $supLegalText: String
+    $entityPurpose: String
     $addressLabel: String
     $addressLine1: String!
     $addressLine2: String
@@ -41,7 +41,7 @@ export const ADD_ENTITY = gql`
           displayName: $legalName
           jurisdiction: { country: $jurCountry, province: $jurProvince }
           operatingCurrency: { code: $operatingCurrency }
-          supplementaryLegalText: $supLegalText
+          purpose: $entityPurpose
           addresses: {
             label: $addressLabel
             line1: $addressLine1

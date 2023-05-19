@@ -3,11 +3,11 @@ import React, { FC, useContext } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import SelectedParticipantDetails from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
-import { ContractAddressType, StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { Currency, OfferingParticipant } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { ReachContext } from '@src/SetReachContext';
 import { REMOVE_WHITELIST_OBJECT } from '@src/utils/dGraphQueries/offering';
+import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { useMutation } from '@apollo/client';
 

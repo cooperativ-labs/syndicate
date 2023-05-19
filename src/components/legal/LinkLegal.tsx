@@ -8,7 +8,7 @@ import CreateShareClass from '../offering/CreateShareClass';
 import UnestablishedContractCard from '../offering/UnestablishedContractCard';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { GetAvailableContracts } from '@src/utils/helpersContracts';
-import { MatchSupportedChains, setChainId } from '@src/web3/connectors';
+import { MatchSupportedChains } from '@src/web3/connectors';
 import { Offering, User } from 'types';
 import { useAsync } from 'react-use';
 import { useNetwork } from 'wagmi';
@@ -105,6 +105,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
                       entityId={offeringEntity.id}
                       spvEntityName={offeringEntity.legalName}
                       offeringId={offering.id}
+                      organizationId={offeringEntity.organization.id}
                     />
                     {/* <FormChainWarning /> */}
                   </div>

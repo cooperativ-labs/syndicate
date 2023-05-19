@@ -6,12 +6,12 @@ import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
-import { ContractAddressType, StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { Currency, OfferingParticipant } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { useContractRead, useContractWrite } from 'wagmi';
@@ -47,14 +47,14 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   //-----------------Contract Interactions---------------------
 
   const sharedContractSpecs = {
-    address: contractId as ContractAddressType,
+    address: contractId as String0x,
     abi: abi,
   };
 
   const { data } = useContractRead({
     ...sharedContractSpecs,
     functionName: 'balanceOf',
-    args: [participantWallet as ContractAddressType],
+    args: [participantWallet as String0x],
   });
 
   const removeFromDb = async () => {
@@ -65,7 +65,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     ...sharedContractSpecs,
     functionName: 'removeFromWhitelist',
     mode: 'recklesslyUnprepared',
-    args: [participantWallet as ContractAddressType],
+    args: [participantWallet as String0x],
     onSuccess: (data) => {
       console.log(data), removeFromDb();
     },
@@ -100,7 +100,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     ...sharedContractSpecs,
     functionName: 'removeFromWhitelist',
     mode: 'recklesslyUnprepared',
-    args: [participantWallet as ContractAddressType],
+    args: [participantWallet as String0x],
     onSuccess: () => updateDb(),
     onError: (e) => {
       StandardChainErrorHandling(e);

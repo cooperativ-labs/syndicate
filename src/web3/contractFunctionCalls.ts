@@ -1,17 +1,15 @@
 import abi, * as backendCtc from './ABI';
 import { ALGO_MyAlgoConnect as MyAlgoConnect, loadStdlib } from '@reach-sh/stdlib';
 import { Dispatch, SetStateAction, useState } from 'react';
-import { ContractAddressType, StandardChainErrorHandling } from './helpersChain';
+import { String0x, StandardChainErrorHandling, bytes32FromString, hashBytes32FromString } from './helpersChain';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
 import { SaleStatusType } from '@src/utils/enumConverters';
-import { parseEther, parseUnits } from 'ethers/lib/utils.js';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
-import { toast } from 'react-hot-toast';
-import { ethers } from 'ethers';
+
 import { prepareWriteContract, writeContract, waitForTransaction } from '@wagmi/core';
+import { parseUnits } from 'viem';
 
 export type SaleContentsType = {
   qty: number;
@@ -24,9 +22,9 @@ export type SaleContentsType = {
 };
 
 export const addWhitelistMember = async (
-  contractId: ContractAddressType,
+  contractId: String0x,
   offeringId: string,
-  walletAddress: ContractAddressType,
+  walletAddress: String0x,
   chainId: number,
   name: string,
   externalId: string,
@@ -54,18 +52,18 @@ export const addWhitelistMember = async (
   };
 
   const config = await prepareWriteContract({
-    address: contractId,
+    address: contractId as never,
     abi: abi,
     functionName: 'addToWhitelist',
     args: [walletAddress],
   });
 
-  let transactionDetails = { hash: '', wait: () => {} };
+  let transactionDetails = '';
   const call = async () => {
     setButtonStep('submitting');
     try {
-      const { hash, wait } = await writeContract(config);
-      transactionDetails = { hash: hash, wait: wait };
+      const { hash } = await writeContract(config);
+      transactionDetails = hash;
       await waitForTransaction({
         hash: hash,
       });
@@ -80,9 +78,9 @@ export const addWhitelistMember = async (
 };
 
 // export const removeWhitelistMember = async (
-//   contractId: ContractAddressType,
+//   contractId: String0x,
 //   offeringId: string,
-//   walletAddress: ContractAddressType,
+//   walletAddress: String0x,
 //   participantId: string,
 //   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
 //   removeMember: (
@@ -123,20 +121,50 @@ export const addWhitelistMember = async (
 //   return transactionDetails;
 // };
 
+export const setDocument = async (
+  docName: string,
+  text: string,
+  contractId: String0x,
+  setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
+  callback: () => void,
+  uri?: string
+) => {
+  const name = bytes32FromString(docName);
+
+  // console.log(stringFromBytes32(name));
+  // HOW DO WE DEAL WITH THE FACT THAT THE CONTRACT WANTS A BYTES32 AND WE HAVE A STRING FOR THE HASH?
+
+  const docHash = hashBytes32FromString(text) as String0x;
+
+  const config = await prepareWriteContract({
+    address: contractId,
+    abi: abi,
+    functionName: 'setDocument',
+    args: [name, uri, docHash],
+  });
+  try {
+    await writeContract(config);
+    callback();
+  } catch (e) {
+    StandardChainErrorHandling(e, setButtonStep);
+  }
+  return docHash;
+};
+
 export const sendShares = async (
-  contractId: ContractAddressType,
+  contractId: String0x,
   offeringId: string,
   numShares: number,
-  recipient: ContractAddressType,
+  recipient: String0x,
   chainId: number,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>,
   addWhitelistObject: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>,
-  partition: ContractAddressType
+  partition: String0x
 ) => {
-  const amt = parseUnits(numShares.toString(), 18);
+  const amt = parseUnits(numShares.toString() as `${number}`, 18);
   const config = await prepareWriteContract({
     address: contractId,
     abi: abi,

@@ -3,9 +3,10 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React, { FC, useState } from 'react';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
 import { addWhitelistMember } from '@src/web3/contractFunctionCalls';
-import { ContractAddressType, isValidAddress } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
+import { isAddress } from 'viem';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { String0x } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
@@ -22,7 +23,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
     wait: () => {},
   }); /** @TODO : Shape */
 
-  const hash = transactionDetails.hash as ContractAddressType;
+  const hash = transactionDetails.hash as String0x;
 
   return (
     <Formik
@@ -35,7 +36,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
         const errors: any = {}; /** @TODO : Shape */
         if (!values.address) {
           errors.address = 'Please enter an address to approve';
-        } else if (!isValidAddress(values.address)) {
+        } else if (!isAddress(values.address)) {
           errors.address = 'This is not a valid address.';
         }
         if (!values.name) {
@@ -47,9 +48,9 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
         setButtonStep('submitting');
         setSubmitting(true);
         const transactionDetails = await addWhitelistMember(
-          contractId as ContractAddressType,
+          contractId as String0x,
           offeringId,
-          values.address as ContractAddressType,
+          values.address as String0x,
           chainId,
           values.name,
           values.externalId,

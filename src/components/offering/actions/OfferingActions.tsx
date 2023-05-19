@@ -6,8 +6,8 @@ import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } 
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import router from 'next/router';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
-import { ContractAddressType } from '@src/web3/helpersChain';
 import { OfferingSale } from 'types';
+import { String0x } from '@src/web3/helpersChain';
 
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
@@ -43,11 +43,12 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   refetch,
   setRecallContract,
 }) => {
+  const organization = offering.offeringEntity.organization;
   if (!hasContract) {
     return isOfferingManager ? (
       <Button
         className="p-3 bg-cLightBlue rounded-md text-white"
-        onClick={() => router.push(`./${offering.id}/create-shares`)}
+        onClick={() => router.push(`/${organization.id}/offerings/${offering.id}/create-shares`)}
       >
         Create Shares
       </Button>

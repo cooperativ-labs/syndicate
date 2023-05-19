@@ -4,7 +4,7 @@ import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
-import { ContractAddressType, createPartition } from '@src/web3/helpersChain';
+import { bytes32FromString, String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { OfferingParticipant } from 'types';
@@ -19,7 +19,7 @@ export type SendSharesProps = {
   offeringId: string;
   contractId: string;
   offeringParticipants: OfferingParticipant[];
-  partitions: ContractAddressType[];
+  partitions: String0x[];
   refetch: () => void;
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
@@ -62,7 +62,7 @@ const SendShares: FC<SendSharesProps> = ({
         numShares: null,
         existingRecipient: '',
         newRecipient: '',
-        partition: partitions[0] ?? createPartition('Class A'),
+        partition: partitions[0] ?? bytes32FromString('Class A'),
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -88,10 +88,10 @@ const SendShares: FC<SendSharesProps> = ({
         const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
         const partition = values.partition;
         const transactionDetails = await sendShares(
-          contractId as ContractAddressType,
+          contractId as String0x,
           offeringId,
           values.numShares,
-          recipient as ContractAddressType,
+          recipient as String0x,
           chainId,
           setButtonStep,
           setRecallContract,
