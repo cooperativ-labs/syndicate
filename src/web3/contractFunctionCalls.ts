@@ -1,15 +1,14 @@
-import abi, * as backendCtc from './ABI';
 import { ALGO_MyAlgoConnect as MyAlgoConnect, loadStdlib } from '@reach-sh/stdlib';
-import { Dispatch, SetStateAction, useState } from 'react';
+import { Dispatch, SetStateAction } from 'react';
 import { String0x, StandardChainErrorHandling, bytes32FromString, hashBytes32FromString } from './helpersChain';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
 import { SaleStatusType } from '@src/utils/enumConverters';
-
-import { prepareWriteContract, writeContract, waitForTransaction } from '@wagmi/core';
+import { waitForTransaction, writeContract } from 'wagmi/actions';
 import { parseUnits } from 'viem';
+import { privateOfferingABI } from './generated';
 
 export type SaleContentsType = {
   qty: number;
@@ -51,19 +50,17 @@ export const addWhitelistMember = async (
     }
   };
 
-  const config = await prepareWriteContract({
-    address: contractId as never,
-    abi: abi,
-    functionName: 'addToWhitelist',
-    args: [walletAddress],
-  });
-
-  let transactionDetails = '';
+  let transactionHash = '';
   const call = async () => {
     setButtonStep('submitting');
     try {
-      const { hash } = await writeContract(config);
-      transactionDetails = hash;
+      const { hash } = await writeContract({
+        address: contractId,
+        abi: privateOfferingABI,
+        functionName: 'addToWhitelist',
+        args: [walletAddress],
+      });
+      transactionHash = hash;
       await waitForTransaction({
         hash: hash,
       });
@@ -74,52 +71,8 @@ export const addWhitelistMember = async (
     }
   };
   await call();
-  return transactionDetails;
+  return transactionHash;
 };
-
-// export const removeWhitelistMember = async (
-//   contractId: String0x,
-//   offeringId: string,
-//   walletAddress: String0x,
-//   participantId: string,
-//   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
-//   removeMember: (
-//     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
-//   ) => Promise<any>
-// ) => {
-//   const removeFromDb = async () => {
-//     try {
-//       removeMember({ variables: { offeringId: offeringId, id: participantId, currentDate: currentDate } });
-//     } catch (e) {
-//       throw new Error(e);
-//     }
-//   };
-
-//   const config = await prepareWriteContract({
-//     address: contractId,
-//     abi: abi,
-//     functionName: 'removeFromWhitelist',
-//     args: [walletAddress],
-//   });
-
-//   let transactionDetails = { hash: '', wait: () => {} };
-//   const call = async () => {
-//     setButtonStep('submitting');
-//     try {
-//       const { hash, wait } = await writeContract(config);
-//       transactionDetails = { hash: hash, wait: wait };
-//       await waitForTransaction({
-//         hash: hash,
-//       });
-//       await removeFromDb();
-//       setButtonStep('confirmed');
-//     } catch (e) {
-//       StandardChainErrorHandling(e, setButtonStep);
-//     }
-//   };
-//   await call();
-//   return transactionDetails;
-// };
 
 export const setDocument = async (
   docName: string,
@@ -130,20 +83,14 @@ export const setDocument = async (
   uri?: string
 ) => {
   const name = bytes32FromString(docName);
-
-  // console.log(stringFromBytes32(name));
-  // HOW DO WE DEAL WITH THE FACT THAT THE CONTRACT WANTS A BYTES32 AND WE HAVE A STRING FOR THE HASH?
-
   const docHash = hashBytes32FromString(text) as String0x;
-
-  const config = await prepareWriteContract({
-    address: contractId,
-    abi: abi,
-    functionName: 'setDocument',
-    args: [name, uri, docHash],
-  });
   try {
-    await writeContract(config);
+    await writeContract({
+      address: contractId,
+      abi: privateOfferingABI,
+      functionName: 'setDocument',
+      args: [name, uri, docHash],
+    });
     callback();
   } catch (e) {
     StandardChainErrorHandling(e, setButtonStep);
@@ -165,18 +112,18 @@ export const sendShares = async (
   partition: String0x
 ) => {
   const amt = parseUnits(numShares.toString() as `${number}`, 18);
-  const config = await prepareWriteContract({
-    address: contractId,
-    abi: abi,
-    functionName: 'issueByPartition',
-    args: [partition, recipient, amt],
-  });
-  let transactionDetails = { hash: '', wait: () => {} };
+
+  let transactionHash = '';
   const call = async () => {
     setButtonStep('submitting');
     try {
-      const { hash, wait } = await writeContract(config);
-      transactionDetails = { hash: hash, wait: wait };
+      const { hash } = await writeContract({
+        address: contractId,
+        abi: privateOfferingABI,
+        functionName: 'issueByPartition',
+        args: [partition, recipient, amt],
+      });
+      transactionHash = hash;
       //adds recipient to whitelist if they have not already been added
       await addWhitelistObject({
         variables: {
@@ -197,7 +144,7 @@ export const sendShares = async (
     }
   };
   await call();
-  return transactionDetails;
+  return transactionHash;
 };
 
 export const submitOffer = async (

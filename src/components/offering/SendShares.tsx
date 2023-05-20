@@ -9,8 +9,9 @@ import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { OfferingParticipant } from 'types';
 import { presentAddress } from '../FormattedCryptoAddress';
+import { privateOfferingABI } from '@src/web3/generated';
 import { sendShares } from '@src/web3/contractFunctionCalls';
-import { useChainId } from 'wagmi';
+import { useChainId, usePrepareContractWrite } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 export type SendSharesProps = {
@@ -98,11 +99,9 @@ const SendShares: FC<SendSharesProps> = ({
           addWhitelistObject,
           partition
         );
-        if (transactionDetails.hash) {
+        if (transactionDetails) {
           toast.success(
-            `${values.numShares} shares sent to ${presentAddress(recipient)}. Transaction hash: ${
-              transactionDetails.hash
-            }`
+            `${values.numShares} shares sent to ${presentAddress(recipient)}. Transaction hash: ${transactionDetails}`
           );
         }
         setTransactionDetails(transactionDetails);

@@ -72,8 +72,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 )}
               </>
             )} */}
-            {true ? (
-              // {contractOwnerMatches && isContractOwner ? (
+            {contractId ? (
               <div>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList

@@ -19,12 +19,12 @@ const UserMenu: FC = () => {
   const { chain } = useNetwork();
   const { address: userWalletAddress } = useAccount();
 
-  const networkImage = userWalletAddress && networkIcon(chain.id, userWalletAddress);
+  const networkImage = userWalletAddress && chain && networkIcon(chain.id, userWalletAddress);
 
   const profileImg = session?.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
   return (
     <>
-      {open && <div className="absolute top-0 bottom-0 left-0 right-0 z-40" onClick={() => setOpen(!open)} />}
+      {open && <div className="absolute top-0 bottom-0 left-0 right-0 z-20" onClick={() => setOpen(!open)} />}
       <div className="relative flex flex-col items-center ">
         <Button
           className={`border-gray-300 hover:border-gray-500
@@ -42,7 +42,7 @@ const UserMenu: FC = () => {
         </Button>
 
         {open && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-100" onClick={() => setOpen(!open)}>
+          <div className="absolute top-0 bottom-0 left-0 right-0 z-60">
             <Card className="absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 bg-white rounded-xl shadow-lg">
               {userWalletAddress ? (
                 <div className="flex flex-col justify-center">

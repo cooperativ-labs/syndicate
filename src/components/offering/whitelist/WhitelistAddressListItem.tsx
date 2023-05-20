@@ -1,14 +1,13 @@
-import abi from '../../../web3/ABI';
 import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import React, { FC, useContext } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
 import { OfferingParticipant } from 'types';
+import { privateOfferingABI } from '@src/web3/generated';
 import { ReachContext } from '@src/SetReachContext';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useContractRead } from 'wagmi';
-
 type WhitelistAddressListItemProps = {
   participant: OfferingParticipant;
   contractId: string;
@@ -24,7 +23,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
 
   const { data } = useContractRead({
     address: contractId as String0x,
-    abi: abi,
+    abi: privateOfferingABI,
     functionName: 'balanceOf',
     args: [participant.walletAddress as String0x],
   });

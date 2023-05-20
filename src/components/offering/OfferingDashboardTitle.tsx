@@ -1,6 +1,7 @@
 import AccessCodeForm from './profile/AccessCodeForm';
 import Button from '../buttons/Button';
 import cn from 'classnames';
+import FormattedCryptoAddress from '../FormattedCryptoAddress';
 import Input from '../form-components/Inputs';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
 import React, { FC, useState } from 'react';
@@ -17,6 +18,8 @@ type OfferingDashboardTitleProps = {
   organizationId: string;
   accessCode: string;
   offeringName: string;
+  contractId: string;
+  chainId: number;
 };
 
 const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
@@ -26,6 +29,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   offeringId,
   accessCode,
   organizationId,
+  contractId,
+  chainId,
 }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
@@ -158,22 +163,29 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
 
   return (
     <div className="flex justify-between">
-      {nameEditOn ? (
-        nameChangeForm
-      ) : (
-        <h1
-          className={cn(
-            `text-2xl md:text-3xl font-bold text-gray-700 ${
-              isOfferingManager && 'hover:cursor-pointer hover:underline'
-            }`
-          )}
-          onClick={() => {
-            isOfferingManager ? setNameEditOn(true) : {};
-          }}
-        >
-          {offeringName}
-        </h1>
-      )}
+      <div>
+        {nameEditOn ? (
+          nameChangeForm
+        ) : (
+          <h1
+            className={cn(
+              `text-2xl md:text-3xl font-bold text-gray-700 ${
+                isOfferingManager && 'hover:cursor-pointer hover:underline'
+              }`
+            )}
+            onClick={() => {
+              isOfferingManager ? setNameEditOn(true) : {};
+            }}
+          >
+            {offeringName}
+          </h1>
+        )}
+        {contractId ? (
+          <FormattedCryptoAddress chainId={chainId} address={contractId} showFull withCopy />
+        ) : (
+          <div className="text-sm text-gray-800">This offering's contract has not been deployed yet.</div>
+        )}
+      </div>
       <div className="flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
     </div>
   );

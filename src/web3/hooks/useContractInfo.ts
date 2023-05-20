@@ -1,7 +1,7 @@
 import { useContractReads } from 'wagmi';
 import { toNormalNumber } from '../util';
-import abi from '../ABI';
 import { String0x } from '../helpersChain';
+import { privateOfferingABI } from '../generated';
 
 export type ContractInfoType = {
   contractOwner: string;
@@ -25,7 +25,7 @@ export const useContractInfo = (contractId: String0x, userWalletAddress: string)
   }
   const baseContractInfo = {
     address: contractId,
-    abi: abi,
+    abi: privateOfferingABI,
   };
 
   if (!userWalletAddress) {

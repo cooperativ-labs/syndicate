@@ -5,7 +5,7 @@ import CookieBanner from '@src/CookieBanner';
 import React, { ReactElement, useEffect, useState } from 'react';
 import SetAppContext from '@src/SetAppContext';
 import SetCookieContext from '@src/SetCookieContext';
-import SetReachContext from '@src/SetReachContext';
+
 import {
   faArrowRight,
   faArrowUpFromBracket,
@@ -54,8 +54,8 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 import { SessionProvider } from 'next-auth/react';
 import { StateProvider } from '@context/store';
 import { Toaster } from 'react-hot-toast';
-import { WagmiConfig } from 'wagmi';
 import { wagmiConfig } from '@src/web3/connectors';
+import { WagmiConfig } from 'wagmi';
 
 library.add(fas, faCog);
 library.add(fas, faCommentDots);
@@ -96,7 +96,7 @@ library.add(fas, faPhone);
 library.add(fas, faLink);
 
 export default function MyApp({ Component, pageProps: { session, ...pageProps } }): ReactElement {
-  const [cookiesApproved, setCookiesApproved] = useState(undefined);
+  const [cookiesApproved, setCookiesApproved] = useState<null | string>(null);
 
   useEffect(() => {
     const result = window.localStorage?.getItem('COOKIE_APPROVED');

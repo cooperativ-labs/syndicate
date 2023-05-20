@@ -1,8 +1,9 @@
 import { useContractRead } from 'wagmi';
-import ABI from '../ABI';
 import { toNormalNumber } from '../util';
 import { SaleStatusType } from '@src/utils/enumConverters';
 import { useState } from 'react';
+import { privateOfferingABI } from '../generated';
+import { String0x } from '../helpersChain';
 
 export type SaleContentsType = {
   qty: number;
@@ -14,7 +15,7 @@ export type SaleContentsType = {
   btId: string;
   isLoading: boolean;
 };
-export const useGetSale = (contractId: `0x${string}}`, initiator: string): SaleContentsType | undefined => {
+export const useGetSale = (contractId: String0x, initiator: string): SaleContentsType | undefined => {
   const [saleContents, setSaleContents] = useState<SaleContentsType>({
     qty: 0,
     qtySold: 0,
@@ -28,7 +29,7 @@ export const useGetSale = (contractId: `0x${string}}`, initiator: string): SaleC
 
   const { data, isError, isLoading } = useContractRead({
     address: contractId,
-    abi: ABI,
+    abi: privateOfferingABI,
     // functionName: 'getSale',
   });
 

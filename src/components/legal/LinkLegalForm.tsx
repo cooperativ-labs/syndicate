@@ -1,17 +1,20 @@
+import abi from '@src/web3/ABI';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import PresentLegalText from './PresentLegalText';
 import React, { FC, useState } from 'react';
 import router from 'next/router';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
+import { bytes32FromString, hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
+import { c } from '@wagmi/cli/dist/config-c09a23a5';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
-import { hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import { privateOfferingABI } from '@src/web3/generated';
 import { setDocument } from '@src/web3/contractFunctionCalls';
 import { SmartContract } from 'types';
-import { useAccount, useChainId } from 'wagmi';
+import { useAccount, useChainId, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type LinkLegalFormProps = {
@@ -57,6 +60,20 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
+  // const { config } = usePrepareContractWrite({
+  //   address: availableContract.cryptoAddress.address,
+  //   abi: abi,
+  //   functionName: 'setDocument',
+  // });
+
+  // const { data, isLoading, isSuccess, write } = useContractWrite({
+  //   address: availableContract.cryptoAddress.address,
+  //   abi: abi,
+  //   functionName: 'setDocument',
+  // });
+
+  // console.log('data', data);
+
   const createDocHash = async (signature) => {
     setButtonStep('submitting');
     const handleEstablish = async () => {
@@ -89,13 +106,24 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
         });
 
         setButtonStep('confirmed');
-        router.push(`${getBaseUrl()}/portal/${offeringId}`);
+        router.push(`${getBaseUrl()}/offerings/${offeringId}`);
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
       }
     };
     const docTitle = `Token Link Agreement`;
-    const uri = `${getBaseUrl()}/portal/${offeringId}`;
+    const uri = `${getBaseUrl()}/offerings/${offeringId}`;
+    const name = bytes32FromString(docTitle);
+    const docHash = hashBytes32FromString(agreement) as String0x;
+
+    // write({
+    //   args: [name, uri, docHash],
+    //   onSuccess(data) {
+    //     console.log('success', data);
+    //     handleEstablish();
+    //   },
+    // });
+
     await setDocument(
       docTitle,
       agreement,

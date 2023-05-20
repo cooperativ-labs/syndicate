@@ -1,9 +1,9 @@
 import React, { FC } from 'react';
 
-import abi from '@src/web3/ABI';
 import DocumentHashItem from './DocumentHashItem';
 import { Document } from 'types';
 import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
+import { privateOfferingABI } from '@src/web3/generated';
 import { useContractReads } from 'wagmi';
 
 type HashInstructionsProps = {
@@ -14,18 +14,18 @@ type HashInstructionsProps = {
 
 const HashInstructions: FC<HashInstructionsProps> = ({ agreementTexts, contractDocuments, contractId }) => {
   const chainDocs = contractDocuments.map((doc) => {
-    return { address: contractId as String0x, abi: abi, functionName: 'getDocument', args: [doc] };
+    return { address: contractId as String0x, abi: privateOfferingABI, functionName: 'getDocument', args: [doc] };
   });
 
   const { data, isError, isLoading } = useContractReads({
     contracts: chainDocs,
   });
 
-  const hashTextArray = getHashTextPairs(data, agreementTexts);
+  const hashTextArray = data && getHashTextPairs(data, agreementTexts);
 
   return (
     <div className="p-3 border-2 border-cLightBlue bg-gray-100 rounded-md">
-      {hashTextArray.map((doc, i) => {
+      {hashTextArray?.map((doc, i) => {
         return <DocumentHashItem key={i} hash={doc.hash} text={doc.text} />;
       })}
       <div className="text-sm text-gray-700 mt-2">

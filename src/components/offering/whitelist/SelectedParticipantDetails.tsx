@@ -1,4 +1,3 @@
-import abi from '../../../web3/ABI';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import DistributionList from '../distributions/DistributionList';
@@ -11,6 +10,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { privateOfferingABI } from '@src/web3/generated';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
@@ -48,7 +48,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
   const sharedContractSpecs = {
     address: contractId as String0x,
-    abi: abi,
+    abi: privateOfferingABI,
   };
 
   const { data } = useContractRead({

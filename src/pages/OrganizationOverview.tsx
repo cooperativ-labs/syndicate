@@ -35,7 +35,7 @@ const OrganizationOverview: FC = () => {
     variables: { walletAddress: userWalletAddress },
   });
 
-  if (!organization) {
+  if (!organizationData) {
     return (
       <div>
         <LoadingModal />

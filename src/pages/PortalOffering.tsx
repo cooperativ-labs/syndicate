@@ -3,7 +3,8 @@ import DashboardCard from '@src/components/cards/DashboardCard';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import FormModal from '@src/containers/FormModal';
-import HashInstructions from '@src/components/indicators/HashInstructions';
+
+import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import React, { FC, useState } from 'react';
@@ -54,7 +55,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
     fundsDistributed,
     numDistributions,
     bacId,
-    contractHashes,
     isLoading,
   } = useContractInfo(contractId, userWalletAddress);
 
@@ -71,7 +71,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   } = offering;
 
   const documents = offering?.documents;
-  const legalLinkText = getDocumentsOfType(documents, DocumentType.ShareLink)[0]?.text;
+  const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
 
   const TEMP_offeringParticipant = true;
   const offeringParticipant = participants.find((participant) => {
@@ -207,8 +207,12 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3  ">Offering documents</h1>
             <DocumentList documents={offeringDocs} isOfferingManager={false} offeringId={offering.id} />{' '}
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkText && contractHashes && (
-              <HashInstructions hashes={contractHashes} agreementText={legalLinkText} />
+            {legalLinkTexts.length > 0 && allDocuments?.length > 0 && (
+              <HashInstructions
+                contractDocuments={allDocuments}
+                agreementTexts={legalLinkTexts}
+                contractId={contractId}
+              />
             )}
           </div>
         </TwoColumnLayout>

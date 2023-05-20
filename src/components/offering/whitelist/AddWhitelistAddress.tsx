@@ -18,12 +18,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
-  const [transactionDetails, setTransactionDetails] = useState<any>({
-    hash: '',
-    wait: () => {},
-  }); /** @TODO : Shape */
-
-  const hash = transactionDetails.hash as String0x;
+  const [transactionHash, setTransactionHash] = useState<string>('');
 
   return (
     <Formik
@@ -47,7 +42,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         setButtonStep('submitting');
         setSubmitting(true);
-        const transactionDetails = await addWhitelistMember(
+        const transactionHash = await addWhitelistMember(
           contractId as String0x,
           offeringId,
           values.address as String0x,
@@ -57,7 +52,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
           setButtonStep,
           addWhitelistObject
         );
-        setTransactionDetails(transactionDetails);
+        setTransactionHash(transactionHash);
         setSubmitting(false);
         resetForm();
       }}

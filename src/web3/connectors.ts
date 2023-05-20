@@ -1,16 +1,14 @@
 import { CryptoAddressProtocol } from 'types';
-import { configureChains, createConfig } from 'wagmi';
-// import { defineConfig } from '@wagmi/cli';
-// import { etherscan, react } from '@wagmi/cli/plugins';
-import { mainnet, goerli, sepolia, polygon, polygonMumbai } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
-import { infuraProvider } from 'wagmi/providers/infura';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+import { configureChains, createConfig, sepolia, mainnet } from 'wagmi';
+import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { LedgerConnector } from 'wagmi/connectors/ledger';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
-import ABI from './ABI';
+import { publicProvider } from 'wagmi/providers/public';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+
 declare let window: any;
 
 //OLD ------------------

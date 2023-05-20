@@ -176,6 +176,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               accessCode={accessCode}
               offeringName={name}
               isOfferingManager={isOfferingManager}
+              contractId={contractId}
+              chainId={establishedContract?.cryptoAddress.chainId}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
@@ -283,7 +285,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               ownerEntityId={owners[0].id}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkTexts.length > 0 && allDocuments.length > 0 && (
+            {legalLinkTexts.length > 0 && allDocuments?.length > 0 && (
               <HashInstructions
                 contractDocuments={allDocuments}
                 agreementTexts={legalLinkTexts}
