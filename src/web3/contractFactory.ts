@@ -1,23 +1,41 @@
-import abi, { _bytecode } from './ABI';
 import { getWalletClient, waitForTransaction } from '@wagmi/core';
+import { shareBytecode, swapBytecode } from './bytecode';
+import { shareContractABI, swapContractABI } from './generated';
+import { String0x } from './helpersChain';
 
-export const deployContract = async (userWalletAddress, chain) => {
+const deployContract = async (account, abi, bytecode, chain, args) => {
   const walletClient = getWalletClient();
-  const contractABI = abi;
-  const contractBytecode = _bytecode;
 
   const hash = await (
     await walletClient
   ).deployContract({
-    abi: contractABI,
-    account: userWalletAddress,
-    bytecode: contractBytecode,
+    account,
+    abi,
+    bytecode,
     chain,
+    args,
   });
 
   const data = await waitForTransaction({
     hash: hash,
   });
 
+  return data;
+};
+
+export const deployShareContract = async (userWalletAddress: String0x, chain) => {
+  const args = [];
+  const data = await deployContract(userWalletAddress, shareContractABI, shareBytecode, chain, args);
+  return data;
+};
+
+export const deploySwapContract = async (
+  userWalletAddress: String0x,
+  chain,
+  shareTokenAddress,
+  paymentTokenAddress
+) => {
+  const args = [shareTokenAddress, paymentTokenAddress];
+  const data = await deployContract(userWalletAddress, swapContractABI, swapBytecode, chain, args);
   return data;
 };

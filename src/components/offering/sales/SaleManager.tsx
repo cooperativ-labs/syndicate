@@ -16,12 +16,12 @@ export type SaleProps = any;
 type SaleManagerProps = {
   offeringId: string;
   saleDetails: SaleProps;
-  contractId: string;
+  shareContractId: string;
   sale: OfferingSale;
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
 // create Sale type
-const SaleManager: FC<SaleManagerProps> = ({ offeringId, saleDetails, contractId, sale, setRecallContract }) => {
+const SaleManager: FC<SaleManagerProps> = ({ offeringId, saleDetails, shareContractId, sale, setRecallContract }) => {
   const { reachLib, userWalletAddress } = useContext(ReachContext);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { formatCurrency } = reachLib;
@@ -34,7 +34,7 @@ const SaleManager: FC<SaleManagerProps> = ({ offeringId, saleDetails, contractId
     setButtonStep('submitting');
     reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
     const acc = await reachLib.getDefaultAccount();
-    const ctc = acc.contract(backendCtc, contractId);
+    const ctc = acc.contract(backendCtc, shareContractId);
     const call = async (f) => {
       try {
         await f();

@@ -220,8 +220,10 @@ add:{rule: """
 enum SmartContractType {
 	C2
 	C3
-	REVENUE_SHARES
 	EXCHANGE_MANAGER
+	SHARE
+	SWAP
+	DISTRIBUTION
 	OTHER
 }
 
@@ -269,6 +271,7 @@ add: {rule: """
 	id: ID!
 	cryptoAddress: CryptoAddress!
 	type: SmartContractType!
+	subType: String
 	numTokensAuthorized: Int64
 	backingToken: Currency
 	owner: LegalEntity @hasInverse(field:smartContracts)
@@ -600,8 +603,8 @@ type OfferingSale {
 	maxUnits: Int
 	price: Int!
 	relatedOffering: Offering! @hasInverse(field:sales) 
-	smartContractId: String
-	saleContractId: String
+	smartshareContractId: String
+	saleshareContractId: String
 	isBid: Boolean
 	initiator: String
 	creationDate: DateTime!

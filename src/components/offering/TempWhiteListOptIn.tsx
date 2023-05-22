@@ -7,17 +7,17 @@ import { loadStdlib } from '@reach-sh/stdlib';
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 
 type TempWhiteListOptInProps = {
-  contractId: string;
+  shareContractId: string;
 };
 
-const TempWhiteListOptIn: FC<TempWhiteListOptInProps> = ({ contractId }) => {
+const TempWhiteListOptIn: FC<TempWhiteListOptInProps> = ({ shareContractId }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const optIn = async () => {
     const reach = await loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
     reach.setWalletFallback(reach.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
     const acc = await reach.getDefaultAccount();
-    const ctc = acc.contract(backendCtc, contractId);
+    const ctc = acc.contract(backendCtc, shareContractId);
     const call = async (f) => {
       try {
         await f();
@@ -51,7 +51,7 @@ const TempWhiteListOptIn: FC<TempWhiteListOptInProps> = ({ contractId }) => {
           <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
             <LoadingButtonText
               state={buttonStep}
-              idleText={`Add me too ${contractId}`}
+              idleText={`Add me too ${shareContractId}`}
               submittingText="Deploying - This can take time. Please do not refresh."
               confirmedText="You have requested to join the whitelist!"
               failedText="Transaction failed"

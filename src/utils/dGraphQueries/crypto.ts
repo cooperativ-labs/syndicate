@@ -41,8 +41,8 @@ export const UPDATE_CRYPTO_ADDRESS = gql`
   }
 `;
 
-export const CREATE_UNESTABLISHED_SMART_CONTRACT = gql`
-  mutation AddUnestablishedSmartContract(
+export const CREATE_SMART_CONTRACT = gql`
+  mutation AddSmartContract(
     $cryptoAddress: String!
     $chainId: Int!
     $backingToken: CurrencyCode
@@ -50,6 +50,7 @@ export const CREATE_UNESTABLISHED_SMART_CONTRACT = gql`
     $type: SmartContractType!
     $protocol: CryptoAddressProtocol
     $owner: ID!
+    $offering: ID
   ) {
     addSmartContract(
       input: [
@@ -62,6 +63,7 @@ export const CREATE_UNESTABLISHED_SMART_CONTRACT = gql`
             owner: { id: $owner }
           }
           owner: { id: $owner }
+          smartContracts: { id: $smartshareContractId }
           numTokensAuthorized: $numTokens
           backingToken: { code: $backingToken }
           type: $type
@@ -74,6 +76,9 @@ export const CREATE_UNESTABLISHED_SMART_CONTRACT = gql`
         owner {
           id
           smartContracts {
+            id
+          }
+          organization {
             id
           }
         }

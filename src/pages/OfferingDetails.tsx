@@ -1,28 +1,22 @@
 import AlertBanner from '@src/components/alerts/AlertBanner';
 import BasicOfferingDetailsForm from '@src/components/offering/settings/BasicOfferingDetailsForm';
 import Button from '@src/components/buttons/Button';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import DashboardCard from '@src/components/cards/DashboardCard';
-import FormModal from '@src/containers/FormModal';
-
+import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingActions from '@src/components/offering/actions/OfferingActions';
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
 import OfferingDescriptionSettings from '@src/components/offering/settings/OfferingDescriptionSettings';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
-
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
 import React, { FC, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
-import ShareBidForm from '@src/components/investor/tradingForms/ShareBidForm';
-import ShareOfferForm from '@src/components/investor/tradingForms/ShareOfferForm';
-import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { GetEstablishedContracts } from '@src/utils/helpersContracts';
+import { getEstablishedContracts, getSwapContracts } from '@src/utils/helpersContracts';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
 import { getLowestSalePrice } from '@src/utils/helpersMoney';
@@ -30,8 +24,10 @@ import { useAccount, useChainId } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import { String0x } from '@src/web3/helpersChain';
-import { useContractInfo } from '@src/web3/hooks/useContractInfo';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { swap } from 'formik';
+import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
+import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 // import { ABI } from '@src/web3/ABI';
 
@@ -45,21 +41,22 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const userId = session?.user?.id;
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContracts } = offering;
+  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode } = offering;
 
-  const establishedContract = GetEstablishedContracts(smartContracts, chainId)[0];
-  const contractId = establishedContract?.cryptoAddress.address as String0x;
+  const smartContracts = offeringEntity.smartContracts;
+
+  //CURRENTLY ONLY GETS FIRST CONTRACT
+  const establishedContract = getEstablishedContracts(smartContracts, chainId)[0];
+  const shareContractId = establishedContract?.cryptoAddress.address as String0x;
+  const swapContract = getSwapContracts(smartContracts, chainId)[0];
+  const swapContractId = swapContract?.cryptoAddress.address as String0x;
 
   const owners = offeringEntity?.owners;
   const documents = offering?.documents;
   const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
   const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
-
-  const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
-  const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
-  const [bidFormModel, setBidFormModel] = useState<boolean>(false);
   const [recallContract, setRecallContract] = useState<string>();
 
   const {
@@ -67,15 +64,31 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     isManager,
     isWhitelisted,
     myShares,
-    myBacBalance,
     sharesOutstanding,
     allDocuments,
-    fundsDistributed,
-    numDistributions,
-    bacId,
     partitions,
-    isLoading,
-  } = useContractInfo(contractId, userWalletAddress);
+    isLoading: shareIsLoading,
+  } = useShareContractInfo(shareContractId, userWalletAddress);
+
+  const myBacBalance = 234000;
+  const fundsDistributed = 20000;
+  const numDistributions = 4;
+
+  const {
+    shareToken,
+    paymentToken,
+    balanceERC20,
+    swapApprovalsEnabled,
+    txnApprovalsEnabled,
+    nextOrderId,
+    isLoading: swapIsLoading,
+  } = useSwapContractInfo(swapContractId);
+
+  const swapContractMatches = !swapContract
+    ? true
+    : normalizeEthAddress(shareToken) === normalizeEthAddress(shareContractId);
+
+  const isLoading = shareIsLoading || swapIsLoading;
 
   const hasContract = !!contractOwner;
   const isContractOwner = contractOwner === userWalletAddress;
@@ -90,7 +103,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
   // currently refers to the single sale the contract can currently offer
   const contractSales = sales.filter((sale) => {
-    return sale.smartContractId === contractId;
+    return sale.smartContractId === shareContractId;
   });
 
   const currentSalePrice = getLowestSalePrice(sales, details?.priceStart);
@@ -107,52 +120,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
           <OfferingDescriptionSettings offering={offering} />
         </>
       </RightSideBar>
-      <FormModal
-        formOpen={shareSaleManagerModal}
-        onClose={() => setShareSaleManagerModal(false)}
-        title={`Manage shares of ${name}`}
-      >
-        {userWalletAddress && (
-          <ShareSaleList
-            offering={offering}
-            walletAddress={userWalletAddress}
-            sales={contractSales}
-            myBacBalance={myBacBalance}
-            contractId={contractId}
-            permittedEntity={permittedEntity}
-            isContractOwner={contractOwnerMatches && isContractOwner}
-            setShareSaleManagerModal={setShareSaleManagerModal}
-            setSaleFormModal={setSaleFormModal}
-            setRecallContract={setRecallContract}
-          />
-        )}
-      </FormModal>
-      <FormModal formOpen={saleFormModal} onClose={() => setSaleFormModal(false)} title={`Sell shares of ${name}`}>
-        <ShareOfferForm
-          offering={offering}
-          offeringMin={details?.minUnitsPerInvestor}
-          sharesOutstanding={sharesOutstanding}
-          walletAddress={userWalletAddress}
-          myShares={myShares}
-          contractId={contractId}
-          permittedEntity={permittedEntity}
-          isContractOwner={contractOwnerMatches && isContractOwner}
-          currentSalePrice={currentSalePrice}
-          setModal={setSaleFormModal}
-          setRecallContract={setRecallContract}
-        />
-      </FormModal>
-      {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${name}`}>
-        <ShareBidForm
-          offering={offering}
-          walletAddress={userWalletAddress}
-          offeringMin={details?.minUnitsPerInvestor}
-          contractId={contractId}
-          permittedEntity={permittedEntity}
-          setModal={setBidFormModel}
-          setRecallContract={setRecallContract}
-        />
-      </FormModal> */}
       <div className="md:mx-4">
         {!contractOwnerMatches && !isLoading && (
           <AlertBanner
@@ -161,6 +128,11 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 ? 'Your account does not manage this offering, but the connected wallet manages the associated shares.'
                 : 'Your account manages this offering, but the connected wallet does not manage the associated shares. To manage shares, please switch to the appropriate wallet.'
             }`}
+          />
+        )}
+        {!swapContractMatches && (
+          <AlertBanner
+            text={`The swap contract for this offering does not match the share contract. Please contact Cooperativ Support.`}
           />
         )}
 
@@ -176,7 +148,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               accessCode={accessCode}
               offeringName={name}
               isOfferingManager={isOfferingManager}
-              contractId={contractId}
+              shareContractId={shareContractId}
               chainId={establishedContract?.cryptoAddress.chainId}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
@@ -192,7 +164,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                   sharesOutstanding: sharesOutstanding,
                   fundsDistributed: fundsDistributed,
                   myShares: myShares,
-                  bacId: bacId,
+                  paymentToken: paymentToken,
                 }}
               />
             ) : isOfferingManager ? (
@@ -235,21 +207,22 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         hasContract={hasContract}
                         loading={isLoading}
                         isOfferingManager={isOfferingManager}
-                        saleFormModal={saleFormModal}
                         sales={contractSales}
                         offering={offering}
-                        contractId={contractId}
+                        shareContractId={shareContractId}
+                        swapContractId={swapContractId}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
                         myBacBalance={myBacBalance}
                         isWhitelisted={isWhitelisted}
                         partitions={partitions}
-                        setShareSaleManagerModal={setShareSaleManagerModal}
-                        setSaleFormModal={setSaleFormModal}
                         refetch={refetch}
                         setRecallContract={setRecallContract}
                         distributionId={latestDistribution.id}
                         myDistToClaim={myDistToClaim}
+                        permittedEntity={permittedEntity}
+                        currentSalePrice={currentSalePrice}
+                        myShares={myShares}
                       />
                     )}
                   </div>
@@ -270,7 +243,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 isContractOwner={isContractOwner}
                 offeringEntity={offeringEntity}
                 isOfferingManager={isOfferingManager}
-                contractId={contractId}
+                shareContractId={shareContractId}
                 currentSalePrice={currentSalePrice}
               />
             )}
@@ -289,7 +262,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               <HashInstructions
                 contractDocuments={allDocuments}
                 agreementTexts={legalLinkTexts}
-                contractId={contractId}
+                shareContractId={shareContractId}
               />
             )}
           </>

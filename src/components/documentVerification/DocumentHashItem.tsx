@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 type HashInstructionsProps = {
   agreementTexts: Document[];
   contractDocuments: string[];
-  contractId: string;
+  shareContractId: string;
 };
 
 type DocumentHashItemProps = {

@@ -11,10 +11,10 @@ import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 export type AddWhitelistAddressProps = {
-  contractId: string;
+  shareContractId: string;
   offeringId: string;
 };
-const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offeringId }) => {
+const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractId, offeringId }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
@@ -43,7 +43,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ contractId, offerin
         setButtonStep('submitting');
         setSubmitting(true);
         const transactionHash = await addWhitelistMember(
-          contractId as String0x,
+          shareContractId as String0x,
           offeringId,
           values.address as String0x,
           chainId,

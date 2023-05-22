@@ -1,6 +1,5 @@
 import * as backendCtc from '../../../web3/ABI';
 
-import axios from 'axios';
 import Checkbox from '@src/components/form-components/Checkbox';
 import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
@@ -20,14 +19,15 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
+
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { useAsync, useAsyncFn } from 'react-use';
+import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
-type ShareBidFormProps = {
+type PostBidFormProps = {
   offering: Offering;
-  contractId: string;
+  shareContractId: string;
   walletAddress: string;
   offeringMin: number;
   permittedEntity: OfferingParticipant;
@@ -37,17 +37,17 @@ type ShareBidFormProps = {
 
 // THIS FORM IS UNUSED AT THIS TIME BECAUSE WE DON'T OFFER A BID FUNCTION YET
 
-const ShareBidForm: FC<ShareBidFormProps> = ({
+const PostBidForm: FC<PostBidFormProps> = ({
   offering,
   walletAddress,
-  contractId,
+  shareContractId,
   offeringMin,
   permittedEntity,
   setModal,
   setRecallContract,
 }) => {
   const { reachLib } = useContext(ReachContext);
-  const chainId = setChainId;
+  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const [createBidObject, { data, error }] = useMutation(CREATE_SALE);
@@ -65,7 +65,7 @@ const ShareBidForm: FC<ShareBidFormProps> = ({
     // const reach = await loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
     // reach.setWalletFallback(reach.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
     const acc = await reachLib.getDefaultAccount();
-    const ctc = acc.contract(backendCtc, contractId);
+    const ctc = acc.contract(backendCtc, shareContractId);
     const call = async (f) => {
       try {
         if (numShares > offeringMin) {
@@ -76,7 +76,7 @@ const ShareBidForm: FC<ShareBidFormProps> = ({
           variables: {
             currentDate: currentDate,
             offeringId: offering.id,
-            smartContractId: contractId,
+            smartshareContractId: shareContractId,
             isBid: true,
             creator: permittedEntity.id,
             numShares: numShares,
@@ -258,4 +258,4 @@ const ShareBidForm: FC<ShareBidFormProps> = ({
   );
 };
 
-export default ShareBidForm;
+export default PostBidForm;

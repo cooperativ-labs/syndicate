@@ -4,10 +4,10 @@ import PresentLegalText from './PresentLegalText';
 import React, { useState } from 'react';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 
-import CreateShareClass from '../offering/CreateShareClass';
+import CreateShareContract from '../offering/CreateShareContract';
 import UnestablishedContractCard from '../offering/UnestablishedContractCard';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
-import { GetAvailableContracts } from '@src/utils/helpersContracts';
+import { getAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { Offering, User } from 'types';
 import { useAsync } from 'react-use';
@@ -47,7 +47,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const offeringEntity = offering.offeringEntity;
   const orgLegalName = offeringEntity.legalName;
   const offerEntityGP = offeringEntity.owners[0];
-  const availableContract = GetAvailableContracts(offeringEntity.smartContracts, chainId)[0];
+  const availableContract = getAvailableContracts(offeringEntity.smartContracts, chainId)[0];
   const backingToken = availableContract?.backingToken;
   const bacToken = getCurrencyOption(backingToken);
   const bacValue = bacToken?.value;
@@ -85,7 +85,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
               {!availableContract ? (
                 <div className="p-3 rounded-lg border-2 border-gray-400 my-4 md:w-96">
                   {/* <h1 className="text-cDarkBlue text-lg font-bold ">Step 1. Create Shares</h1> */}
-                  <CreateShareClass
+                  <CreateShareContract
                     contractCreatorId={offeringEntity.id}
                     entityName={offeringEntity.legalName}
                     investmentCurrency={offering.details.investmentCurrency}

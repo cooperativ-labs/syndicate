@@ -3,18 +3,18 @@ import React, { FC } from 'react';
 import DocumentHashItem from './DocumentHashItem';
 import { Document } from 'types';
 import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
-import { privateOfferingABI } from '@src/web3/generated';
+import { shareContractABI } from '@src/web3/generated';
 import { useContractReads } from 'wagmi';
 
 type HashInstructionsProps = {
   agreementTexts: Document[];
   contractDocuments: string[];
-  contractId: string;
+  shareContractId: string;
 };
 
-const HashInstructions: FC<HashInstructionsProps> = ({ agreementTexts, contractDocuments, contractId }) => {
+const HashInstructions: FC<HashInstructionsProps> = ({ agreementTexts, contractDocuments, shareContractId }) => {
   const chainDocs = contractDocuments.map((doc) => {
-    return { address: contractId as String0x, abi: privateOfferingABI, functionName: 'getDocument', args: [doc] };
+    return { address: shareContractId as String0x, abi: shareContractABI, functionName: 'getDocument', args: [doc] };
   });
 
   const { data, isError, isLoading } = useContractReads({

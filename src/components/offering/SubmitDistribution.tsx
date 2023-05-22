@@ -9,11 +9,11 @@ import { submitDistribution } from '@src/web3/reachCalls';
 import { useMutation } from '@apollo/client';
 
 type SubmitDistributionProps = {
-  contractId: string;
+  shareContractId: string;
   refetch: () => void;
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
-const SubmitDistribution: FC<SubmitDistributionProps> = ({ contractId, refetch, setRecallContract }) => {
+const SubmitDistribution: FC<SubmitDistributionProps> = ({ shareContractId, refetch, setRecallContract }) => {
   const { reachAcc } = useContext(ReachContext);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addDistribution, { data, error }] = useMutation(ADD_DISTRIBUTION);
@@ -36,7 +36,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({ contractId, refetch, 
       onSubmit={async (values, { setSubmitting }) => {
         await submitDistribution(
           reachAcc,
-          contractId,
+          shareContractId,
           values.amount,
           setButtonStep,
           setRecallContract,

@@ -1,31 +1,30 @@
 import { useContractReads } from 'wagmi';
 import { toNormalNumber } from '../util';
 import { String0x } from '../helpersChain';
-import { privateOfferingABI } from '../generated';
+import { shareContractABI } from '../generated';
 
-export type ContractInfoType = {
+export type ShareContractInfoType = {
   contractOwner: string;
   isManager: boolean;
   isWhitelisted: boolean;
   myShares: number;
   sharesOutstanding: number;
   allDocuments: any;
-  fundsDistributed: number;
-  numDistributions: number;
-  bacId: string;
-  myBacBalance: number;
   decimals: number;
   partitions: String0x[];
   isLoading: boolean;
 };
 
-export const useContractInfo = (contractId: String0x, userWalletAddress: string): ContractInfoType | undefined => {
-  if (!contractId) {
+export const useShareContractInfo = (
+  shareContractId: String0x,
+  userWalletAddress: string
+): ShareContractInfoType | undefined => {
+  if (!shareContractId) {
     console.warn('No contract ID provided');
   }
   const baseContractInfo = {
-    address: contractId,
-    abi: privateOfferingABI,
+    address: shareContractId,
+    abi: shareContractABI,
   };
 
   if (!userWalletAddress) {
@@ -64,11 +63,9 @@ export const useContractInfo = (contractId: String0x, userWalletAddress: string)
   const allDocuments = data ? data[5].result : undefined;
   const fundsDistributed = data ? 20000 : undefined;
   const numDistributions = data ? 4 : undefined;
-  const bacId = data ? '0x66458Bb9BF8e09eA40cf916BCb370727455F6040' : undefined;
   const partitions = data
     ? ['0xd300972c270941fe75b0929dadadff16cd5462ba2093bf53e8f76bc345ecf955' as String0x]
     : undefined;
-  // const contractBacBalance = data ? data[8] : undefined;
   const myBacBalance = data ? 234000 : undefined;
 
   return {
@@ -78,10 +75,6 @@ export const useContractInfo = (contractId: String0x, userWalletAddress: string)
     myShares,
     sharesOutstanding,
     allDocuments,
-    fundsDistributed,
-    numDistributions,
-    bacId,
-    myBacBalance,
     decimals,
     partitions,
     isLoading,

@@ -17,27 +17,32 @@ export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-
 
 export type ContractOwnerActionsProps = {
   offering: Offering;
-  contractId: string;
+  shareContractId: string;
+  swapContractId: String0x;
   distributionId: string;
   sharesOutstanding: number;
   myDistToClaim: number;
   partitions: String0x[];
   setRecallContract: Dispatch<SetStateAction<string>>;
-  setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
-  setSaleFormModal: Dispatch<SetStateAction<boolean>>;
   refetch: () => void;
 };
 
-const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
+type ContractInvestorActionsPropsAddendum = {
+  setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
+  setSwapContractModal: Dispatch<SetStateAction<boolean>>;
+};
+
+const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActionsPropsAddendum> = ({
   offering,
-  contractId,
+  shareContractId,
+  swapContractId,
   distributionId,
   sharesOutstanding,
   myDistToClaim,
   partitions,
   setRecallContract,
   setShareSaleManagerModal,
-  setSaleFormModal,
+  setSwapContractModal,
   refetch,
 }) => {
   const { reachLib } = useContext(ReachContext);
@@ -45,6 +50,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
   const { id, participants, details } = offering;
+
   const ButtonPanel = (
     <div className="flex flex-col w-full gap-3">
       <Button
@@ -63,7 +69,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
             onClick={() =>
               claimDistribution(
                 reachLib,
-                contractId,
+                shareContractId,
                 distributionId,
                 setButtonStep,
                 setRecallContract,
@@ -92,14 +98,25 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
       >
         Send shares
       </Button>
-      <Button
-        onClick={() => {
-          setShareSaleManagerModal(true);
-        }}
-        className={standardClass}
-      >
-        Manage Share Sales
-      </Button>
+      {swapContractId ? (
+        <Button
+          onClick={() => {
+            setShareSaleManagerModal(true);
+          }}
+          className={standardClass}
+        >
+          Manage Share Sales
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            setSwapContractModal(true);
+          }}
+          className={standardClass}
+        >
+          Configure trading
+        </Button>
+      )}
     </div>
   );
 
@@ -116,7 +133,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
         <SendShares
           sharesIssued={details?.numUnits}
           sharesOutstanding={sharesOutstanding}
-          contractId={contractId}
+          shareContractId={shareContractId}
           offeringId={id}
           offeringParticipants={participants}
           partitions={partitions}
@@ -125,7 +142,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
         />
       )}
       {showActionPanel === 'distribute' && (
-        <SubmitDistribution contractId={contractId} refetch={refetch} setRecallContract={setRecallContract} />
+        <SubmitDistribution shareContractId={shareContractId} refetch={refetch} setRecallContract={setRecallContract} />
       )}
     </div>
   );

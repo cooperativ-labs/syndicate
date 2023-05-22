@@ -13,14 +13,14 @@ import { useMutation } from '@apollo/client';
 
 type WhitelistAddressListProps = {
   offeringParticipants: OfferingParticipant[];
-  contractId: string;
+  shareContractId: string;
   currentSalePrice: number;
   investmentCurrency: Currency;
 };
 
 const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
   offeringParticipants,
-  contractId,
+  shareContractId,
   currentSalePrice,
   investmentCurrency,
 }) => {
@@ -35,7 +35,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
             <SelectedParticipantDetails
               selection={selectedParticipant}
               participants={offeringParticipants}
-              contractId={contractId}
+              shareContractId={shareContractId}
               currentSalePrice={currentSalePrice}
               investmentCurrency={investmentCurrency}
               removeMember={removeMember}
@@ -49,7 +49,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
             <div className="mb-3" key={i}>
               <WhitelistAddressListItem
                 participant={participant}
-                contractId={contractId}
+                shareContractId={shareContractId}
                 setSelectedParticipant={setSelectedParticipant}
               />
             </div>

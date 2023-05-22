@@ -3,27 +3,27 @@ import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import React, { FC, useContext } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
 import { OfferingParticipant } from 'types';
-import { privateOfferingABI } from '@src/web3/generated';
 import { ReachContext } from '@src/SetReachContext';
+import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useContractRead } from 'wagmi';
 type WhitelistAddressListItemProps = {
   participant: OfferingParticipant;
-  contractId: string;
+  shareContractId: string;
   setSelectedParticipant: (participantId: string) => void;
 };
 
 const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   participant,
-  contractId,
+  shareContractId,
   setSelectedParticipant,
 }) => {
   const { userWalletAddress } = useContext(ReachContext);
 
   const { data } = useContractRead({
-    address: contractId as String0x,
-    abi: privateOfferingABI,
+    address: shareContractId as String0x,
+    abi: shareContractABI,
     functionName: 'balanceOf',
     args: [participant.walletAddress as String0x],
   });

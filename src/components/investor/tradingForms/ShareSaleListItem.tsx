@@ -22,7 +22,7 @@ type ShareSaleListItemProps = {
   sale: OfferingSale;
   initiator: string;
   myBacBalance: number;
-  contractId: string;
+  shareContractId: string;
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
@@ -35,7 +35,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   sale,
   initiator,
   myBacBalance,
-  contractId,
+  shareContractId,
   permittedEntity,
   walletAddress,
   isContractOwner,
@@ -59,7 +59,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   const maxPurchase = sale.maxUnits;
 
   const retrieveSale = () => {
-    getSale(reachLib, reachAcc, contractId, initiator, setSaleContents);
+    getSale(reachLib, reachAcc, shareContractId, initiator, setSaleContents);
   };
 
   useEffect(() => {
@@ -116,7 +116,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                   offeringId={offering.id}
                   status={saleContents.status}
                   sale={sale}
-                  contractId={contractId}
+                  shareContractId={shareContractId}
                   recallGetSale={retrieveSale}
                   proceeds={saleContents.proceeds}
                   btId={saleContents.btId}
@@ -130,7 +130,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                 soldQty={saleContents.qtySold}
                 price={saleContents.price}
                 myBacBalance={myBacBalance}
-                contractId={contractId}
+                shareContractId={shareContractId}
                 permittedEntity={permittedEntity}
                 setModal={setModal}
                 setRecallContract={setRecallContract}

@@ -17,7 +17,7 @@ type SaleMangerPanelProps = {
   proceeds: number;
   btId: string;
   sale: OfferingSale;
-  contractId: string;
+  shareContractId: string;
   isContractOwner: boolean;
   small?: boolean;
   recallGetSale: (state: string) => void;
@@ -30,7 +30,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   proceeds,
   btId,
   sale,
-  contractId,
+  shareContractId,
   isContractOwner,
   small,
   recallGetSale,
@@ -47,7 +47,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
         {proceeds > 0 && isOfferor && (
           <Button
             className="text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full"
-            onClick={() => claimProceeds(reachLib, contractId, proceeds, setClaimProceedsButton, recallGetSale)}
+            onClick={() => claimProceeds(reachLib, shareContractId, proceeds, setClaimProceedsButton, recallGetSale)}
             disabled={claimProceedsButton === 'submitting'}
           >
             <LoadingButtonText
@@ -66,7 +66,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
             onClick={() =>
               cancelSale(
                 reachLib,
-                contractId,
+                shareContractId,
                 offeringId,
                 sale.id,
                 status,
@@ -90,7 +90,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
         {status === 'initd' && isContractOwner ? (
           <Button
             className="text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full"
-            onClick={() => approveSwap(reachLib, contractId, sale.initiator, setApproveButtonStep, recallGetSale)}
+            onClick={() => approveSwap(reachLib, shareContractId, sale.initiator, setApproveButtonStep, recallGetSale)}
             disabled={approveButtonStep === 'submitting'}
           >
             <LoadingButtonText

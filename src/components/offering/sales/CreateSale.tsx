@@ -23,7 +23,7 @@ export type CreateSaleProps = {
   sharesIssued: number;
   sharesOutstanding: number;
   offeringId: string;
-  contractId: string;
+  shareContractId: string;
   offeringMin: number;
   priceStart: number;
   currency: Currency;
@@ -37,7 +37,7 @@ const CreateSale: FC<CreateSaleProps> = ({
   offeringMin,
   priceStart,
   currency,
-  contractId,
+  shareContractId,
   refetch,
   setRecallContract,
 }) => {
@@ -71,7 +71,7 @@ const CreateSale: FC<CreateSaleProps> = ({
       // const reach = await loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
       reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MakePeraConnect }));
       const acc = await reachLib.getDefaultAccount();
-      const ctc = acc.contract(backendCtc, contractId);
+      const ctc = acc.contract(backendCtc, shareContractId);
       const call = async (f) => {
         try {
           await f();
@@ -80,7 +80,7 @@ const CreateSale: FC<CreateSaleProps> = ({
               currentDate: currentDate,
               initiator: userWalletAddress,
               offeringId: offeringId,
-              smartContractId: contractId,
+              smartshareContractId: shareContractId,
               numShares: numShares,
               minUnits: minUnits,
               maxUnits: maxUnits,

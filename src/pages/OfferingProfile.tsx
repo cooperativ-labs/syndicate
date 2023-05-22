@@ -33,7 +33,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const stage = details && details.stage;
   const organization = offeringEntity.organization;
   const shareURL = `${getBaseUrl()}/${offeringId}`;
-  const contractId = establishedContract?.cryptoAddress.address;
+  const shareContractId = establishedContract?.cryptoAddress.address;
 
   const currentSalePrice = getCurrentSalePrice(offering);
   const OfferingReProperties = offering.offeringEntity.realEstateProperties;
@@ -126,7 +126,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               <h2 className="text-gray-800 font-bold mb-3">Distribution History</h2>
               {details && (
                 <DistributionList
-                  contractId={contractId}
+                  shareContractId={shareContractId}
                   distributions={distributions}
                   currency={details.distributionCurrency}
                   hideTransactionId

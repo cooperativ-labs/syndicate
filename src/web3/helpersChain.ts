@@ -28,6 +28,10 @@ export const getHashTextPairs = (data: any, agreementTexts: Document[]) => {
   return textHashPairs;
 };
 
+export const normalizeEthAddress = (address: String0x) => {
+  return address.toLowerCase() as String0x;
+};
+
 export const WalletErrorMessages = {
   NeedToApproveConnection: `Trying to connect to your wallet: you may need to click on your wallet's browser extension to permit it to connect to Cooperativ.`,
   RejectedAttemptToConnect: `It looks like you rejected your wallet's attempt to connect. You can try the action again.`,

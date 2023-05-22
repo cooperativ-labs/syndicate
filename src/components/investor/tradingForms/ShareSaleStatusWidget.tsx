@@ -9,11 +9,16 @@ import { ReachContext } from '@src/SetReachContext';
 type ShareSaleStatusWidgetProps = {
   sales: OfferingSale[];
   offeringId: string;
-  contractId: string;
+  shareContractId: string;
   isContractOwner: boolean;
 };
 
-const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({ sales, offeringId, contractId, isContractOwner }) => {
+const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
+  sales,
+  offeringId,
+  shareContractId,
+  isContractOwner,
+}) => {
   const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
 
   const mySale = sales?.find((sale) => sale.initiator === userWalletAddress);
@@ -28,8 +33,8 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({ sales, offering
   });
 
   const retrieveSale = useCallback(() => {
-    getSale(reachLib, reachAcc, contractId, userWalletAddress, setSaleContents);
-  }, [reachLib, reachAcc, contractId, userWalletAddress, setSaleContents]);
+    getSale(reachLib, reachAcc, shareContractId, userWalletAddress, setSaleContents);
+  }, [reachLib, reachAcc, shareContractId, userWalletAddress, setSaleContents]);
 
   useEffect(() => {
     if (mySale) {
@@ -64,7 +69,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({ sales, offering
               proceeds={saleContents.proceeds}
               btId={saleContents.btId}
               sale={mySale}
-              contractId={contractId}
+              shareContractId={shareContractId}
               isContractOwner={isContractOwner}
               recallGetSale={retrieveSale}
               small

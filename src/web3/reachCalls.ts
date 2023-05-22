@@ -23,12 +23,12 @@ export type SaleContentsType = {
 export const getSale = async (
   reachLib: any,
   reachAcc: any,
-  contractId: string,
+  shareContractId: string,
   initiator: string,
   setSaleContents: (state: any) => void
 ) => {
   const { formatCurrency, bigNumberToNumber } = reachLib;
-  const ctc = reachAcc.contract(backendCtc, contractId);
+  const ctc = reachAcc.contract(backendCtc, shareContractId);
   const saleDetails = await ctc.views.vCurrSwap(initiator);
   const btInfo = await ctc.views.vBtBal();
   const btId = bigNumberToNumber(btInfo[1][1]).toString();
@@ -41,8 +41,8 @@ export const getSale = async (
   setSaleContents(saleContents);
 };
 
-export const getContractParticipants = async (reachLib: any, reachAcc: any, contractId: string) => {
-  const ctc = await reachAcc.contract(backendCtc, contractId);
+export const getContractParticipants = async (reachLib: any, reachAcc: any, shareContractId: string) => {
+  const ctc = await reachAcc.contract(backendCtc, shareContractId);
   const prov = await reachLib.getProvider();
   const a = await prov.indexer
     .searchAccounts()
@@ -57,7 +57,7 @@ export const getContractParticipants = async (reachLib: any, reachAcc: any, cont
 
 export const addWhitelistMember = async (
   reachLib: any,
-  contractId: string,
+  shareContractId: string,
   offeringId: string,
   walletAddress: string,
   name: string,
@@ -70,7 +70,7 @@ export const addWhitelistMember = async (
   setButtonStep('submitting');
   const normalizeRecipientAddress = reachLib.formatAddress(walletAddress); // make sure address, not PubKey
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, contractId);
+  const ctc = acc.contract(backendCtc, shareContractId);
   const call = async (f) => {
     try {
       await f();
@@ -99,7 +99,7 @@ export const addWhitelistMember = async (
 
 export const sendShares = async (
   reachLib: any,
-  contractId: string,
+  shareContractId: string,
   offeringId: string,
   numShares: number,
   recipient: string,
@@ -113,7 +113,7 @@ export const sendShares = async (
 
   const normalizeRecipientAddress = reachLib.formatAddress(recipient); // make sure address, not PubKey
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, contractId);
+  const ctc = acc.contract(backendCtc, shareContractId);
   const call = async (f) => {
     try {
       await f();
@@ -141,7 +141,7 @@ export const sendShares = async (
 
 export const submitOffer = async (
   reachLib: any,
-  contractId: string,
+  shareContractId: string,
   offeringId: string,
   isContractOwner: boolean,
   myShares: number,
@@ -159,7 +159,7 @@ export const submitOffer = async (
 ) => {
   setButtonStep('submitting');
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, contractId);
+  const ctc = acc.contract(backendCtc, shareContractId);
   const contractUserPubKey = acc.getAddress();
   const normalizeRecipientAddress = reachLib.formatAddress(contractUserPubKey);
   const call = async (f) => {
@@ -171,7 +171,7 @@ export const submitOffer = async (
         variables: {
           currentDate: currentDate,
           offeringId: offeringId,
-          smartContractId: contractId,
+          smartshareContractId: shareContractId,
           initiator: normalizeRecipientAddress,
           numShares: numShares,
           minUnits: minUnits,
@@ -202,7 +202,7 @@ export const submitOffer = async (
 
 export const cancelSale = async (
   reachLib: any,
-  contractId: string,
+  shareContractId: string,
   offeringId: string,
   saleId: string,
   saleStatus: SaleStatusType,
@@ -214,7 +214,7 @@ export const cancelSale = async (
   // const reach = await loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, contractId);
+  const ctc = acc.contract(backendCtc, shareContractId);
   const call = async (f) => {
     try {
       if (saleStatus !== '-----') {
@@ -236,7 +236,7 @@ export const cancelSale = async (
 
 export const approveSwap = async (
   reachLib: any,
-  contractId: string,
+  shareContractId: string,
   initiator: string,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>
@@ -244,7 +244,7 @@ export const approveSwap = async (
   setButtonStep('submitting');
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, contractId);
+  const ctc = acc.contract(backendCtc, shareContractId);
   const call = async (f) => {
     try {
       await f();
@@ -263,7 +263,7 @@ export const approveSwap = async (
 
 export const claimProceeds = async (
   reachLib: any,
-  contractId: string,
+  shareContractId: string,
   saleProceeds: number,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>
@@ -271,7 +271,7 @@ export const claimProceeds = async (
   setButtonStep('submitting');
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, contractId);
+  const ctc = acc.contract(backendCtc, shareContractId);
   const call = async (f) => {
     try {
       await f();
@@ -291,7 +291,7 @@ export const claimProceeds = async (
 
 export const submitDistribution = async (
   reachAcc: any,
-  contractId: string,
+  shareContractId: string,
   amount: number | string,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>,
@@ -300,7 +300,7 @@ export const submitDistribution = async (
   ) => Promise<any>
 ) => {
   setButtonStep('submitting');
-  const ctc = reachAcc.contract(backendCtc, contractId);
+  const ctc = reachAcc.contract(backendCtc, shareContractId);
   const call = async (f) => {
     try {
       await f();
@@ -320,7 +320,7 @@ export const submitDistribution = async (
 
 export const claimDistribution = async (
   reachLib: any,
-  contractId: string,
+  shareContractId: string,
   distributionId: string,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>,
@@ -329,7 +329,7 @@ export const claimDistribution = async (
   setButtonStep('submitting');
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, contractId);
+  const ctc = acc.contract(backendCtc, shareContractId);
   const contractUserPubKey = acc.getAddress();
   const normalizeRecipientAddress = reachLib.formatAddress(contractUserPubKey);
   const call = async (f) => {

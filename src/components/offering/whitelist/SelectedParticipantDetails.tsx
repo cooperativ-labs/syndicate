@@ -10,7 +10,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import { privateOfferingABI } from '@src/web3/generated';
+import { shareContractABI } from '@src/web3/generated';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
@@ -21,7 +21,7 @@ import { useSession } from 'next-auth/react';
 type SelectedParticipantProps = {
   selection: string;
   participants: OfferingParticipant[];
-  contractId: string;
+  shareContractId: string;
   currentSalePrice: number;
   investmentCurrency: Currency;
   removeMember: (variables) => void;
@@ -30,7 +30,7 @@ type SelectedParticipantProps = {
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   selection,
   participants,
-  contractId,
+  shareContractId,
   currentSalePrice,
   removeMember,
 }) => {
@@ -47,8 +47,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   //-----------------Contract Interactions---------------------
 
   const sharedContractSpecs = {
-    address: contractId as String0x,
-    abi: privateOfferingABI,
+    address: shareContractId as String0x,
+    abi: shareContractABI,
   };
 
   const { data } = useContractRead({
@@ -225,13 +225,13 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     <div>
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
       <DistributionList
-        contractId={contractId}
+        shareContractId={shareContractId}
         distributions={offering.distributions}
         currency={offering.details.distributionCurrency}
       />
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades</h1>
       <DistributionList
-        contractId={contractId}
+        shareContractId={shareContractId}
         distributions={offering.distributions}
         currency={offering.details.distributionCurrency}
       />

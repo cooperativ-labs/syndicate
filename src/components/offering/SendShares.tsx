@@ -9,8 +9,8 @@ import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { OfferingParticipant } from 'types';
 import { presentAddress } from '../FormattedCryptoAddress';
-import { privateOfferingABI } from '@src/web3/generated';
 import { sendShares } from '@src/web3/contractFunctionCalls';
+import { shareContractABI } from '@src/web3/generated';
 import { useChainId, usePrepareContractWrite } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
@@ -18,7 +18,7 @@ export type SendSharesProps = {
   sharesIssued: number;
   sharesOutstanding: number;
   offeringId: string;
-  contractId: string;
+  shareContractId: string;
   offeringParticipants: OfferingParticipant[];
   partitions: String0x[];
   refetch: () => void;
@@ -28,7 +28,7 @@ const SendShares: FC<SendSharesProps> = ({
   sharesIssued,
   sharesOutstanding,
   offeringId,
-  contractId,
+  shareContractId,
   offeringParticipants,
   partitions,
   refetch,
@@ -89,7 +89,7 @@ const SendShares: FC<SendSharesProps> = ({
         const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
         const partition = values.partition;
         const transactionDetails = await sendShares(
-          contractId as String0x,
+          shareContractId as String0x,
           offeringId,
           values.numShares,
           recipient as String0x,

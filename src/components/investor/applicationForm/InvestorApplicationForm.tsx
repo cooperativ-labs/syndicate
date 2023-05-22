@@ -214,8 +214,8 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     setButtonStep('submitting');
     await reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
     const acc = await reachLib.getDefaultAccount();
-    const contractId = offering.smartContracts[0].cryptoAddress.address;
-    const ctc = acc.contract(backendCtc, contractId);
+    const shareContractId = offering.smartContracts[0].cryptoAddress.address;
+    const ctc = acc.contract(backendCtc, shareContractId);
     const btBalance = await ctc.views.vBtBal();
     const btID = reachLib.bigNumberToNumber(btBalance[1][1]).toString();
     const call = async (f) => {

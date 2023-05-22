@@ -9,9 +9,10 @@ export default defineConfig({
       chainId: sepolia.id,
       contracts: [
         {
-          name: 'PrivateOffering',
-          address: '0x18201F3219e818eE419cF3aa193ff269ABAB0df8',
+          name: 'ShareContract',
+          address: '0xD08F75F2078EEE566565165C8aa536285C7A06A0',
         },
+        { name: 'SwapContract', address: '0x469C5070F39f5F46162577a19f12f3173ab9D28a' },
       ],
     }),
   ],

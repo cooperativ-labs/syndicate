@@ -36,8 +36,8 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   const organization = organizationData?.getOrganization;
 
   const establishedContract = offering && GetEstablishedContracts(offering.offeringEntity.smartContracts, chain.id)[0];
-  // const contractId = establishedContract?.cryptoAddress.address;
-  const contractId = '0x18201F3219e818eE419cF3aa193ff269ABAB0df8' as `0x${string}}`;
+  // const shareContractId = establishedContract?.cryptoAddress.address;
+  const shareContractId = '0x18201F3219e818eE419cF3aa193ff269ABAB0df8' as `0x${string}}`;
 
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
   const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
@@ -56,7 +56,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
     numDistributions,
     bacId,
     isLoading,
-  } = useContractInfo(contractId, userWalletAddress);
+  } = useContractInfo(shareContractId, userWalletAddress);
 
   const {
     details,
@@ -79,7 +79,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   });
 
   const contractSales = sales.filter((sale) => {
-    return sale.smartContractId === contractId;
+    return sale.smartshareContractId === shareContractId;
   });
 
   const currentSalePrice = getCurrentSalePrice(offering);
@@ -111,7 +111,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           sharesOutstanding={sharesOutstanding}
           walletAddress={userWalletAddress}
           myShares={myShares}
-          contractId={contractId}
+          shareContractId={shareContractId}
           permittedEntity={offeringParticipant}
           isContractOwner={false}
           currentSalePrice={currentSalePrice}
@@ -129,7 +129,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           walletAddress={userWalletAddress}
           sales={contractSales}
           myBacBalance={myBacBalance}
-          contractId={contractId}
+          shareContractId={shareContractId}
           permittedEntity={offeringParticipant}
           isContractOwner={false}
           setShareSaleManagerModal={setShareSaleManagerModal}
@@ -148,7 +148,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
               walletAddress={userWalletAddress}
               sales={contractSales}
               myBacBalance={myBacBalance}
-              contractId={contractId}
+              shareContractId={shareContractId}
               permittedEntity={offeringParticipant}
               isContractOwner={false}
               setShareSaleManagerModal={setShareSaleManagerModal}
@@ -163,7 +163,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
               saleFormModal={saleFormModal}
               sales={contractSales}
               offering={offering}
-              contractId={contractId}
+              shareContractId={shareContractId}
               sharesOutstanding={sharesOutstanding}
               isContractOwner={false}
               myBacBalance={myBacBalance}
@@ -195,7 +195,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
         <TwoColumnLayout twoThirdsLayout>
           <div className="mt-4 ">
             <DistributionList
-              contractId={contractId}
+              shareContractId={shareContractId}
               distributions={offering.distributions}
               currency={offering.details.distributionCurrency}
             />
@@ -211,7 +211,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
               <HashInstructions
                 contractDocuments={allDocuments}
                 agreementTexts={legalLinkTexts}
-                contractId={contractId}
+                shareContractId={shareContractId}
               />
             )}
           </div>

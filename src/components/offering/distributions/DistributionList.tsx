@@ -5,7 +5,7 @@ import { Currency, OfferingDistribution } from 'types';
 type DistributionListProps = {
   distributions: OfferingDistribution[];
   currency: Currency;
-  contractId: string;
+  shareContractId: string;
   hideTransactionId?: boolean;
 };
 
@@ -30,7 +30,12 @@ const TEMP_fake_distributions = [
   },
 ];
 
-const DistributionList: FC<DistributionListProps> = ({ contractId, distributions, currency, hideTransactionId }) => {
+const DistributionList: FC<DistributionListProps> = ({
+  shareContractId,
+  distributions,
+  currency,
+  hideTransactionId,
+}) => {
   return (
     <div className="p-3  border-t-8 rounded-lg w-full">
       <div className="hidden md:grid grid-cols-8 gap-3 items-center mb-5">

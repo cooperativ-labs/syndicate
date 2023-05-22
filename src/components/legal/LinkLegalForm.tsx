@@ -11,8 +11,8 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { privateOfferingABI } from '@src/web3/generated';
 import { setDocument } from '@src/web3/contractFunctionCalls';
+import { shareContractABI } from '@src/web3/generated';
 import { SmartContract } from 'types';
 import { useAccount, useChainId, useContractWrite, usePrepareContractWrite } from 'wagmi';
 import { useMutation } from '@apollo/client';
@@ -33,9 +33,7 @@ type LinkLegalFormProps = {
 const LinkLegalForm: FC<LinkLegalFormProps> = ({
   setAgreementContent,
   availableContract,
-  bacValue,
-  bacName,
-  bacId,
+
   agreement,
   spvEntityName,
   offeringId,
@@ -60,20 +58,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
-  // const { config } = usePrepareContractWrite({
-  //   address: availableContract.cryptoAddress.address,
-  //   abi: abi,
-  //   functionName: 'setDocument',
-  // });
-
-  // const { data, isLoading, isSuccess, write } = useContractWrite({
-  //   address: availableContract.cryptoAddress.address,
-  //   abi: abi,
-  //   functionName: 'setDocument',
-  // });
-
-  // console.log('data', data);
-
   const createDocHash = async (signature) => {
     setButtonStep('submitting');
     const handleEstablish = async () => {
@@ -85,7 +69,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
             offeringId: offeringId,
             entityId: entityId,
             agreementText: agreement,
-            smartContractId: availableContract.id,
+            smartshareContractId: availableContract.id,
             // minUnits: values.minUnits,
             // priceStart: parseInt(values.initialPrice, 10),
             // maxRaise: values.numUnits * parseInt(values.initialPrice, 10),
@@ -113,16 +97,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
     };
     const docTitle = `Token Link Agreement`;
     const uri = `${getBaseUrl()}/offerings/${offeringId}`;
-    const name = bytes32FromString(docTitle);
-    const docHash = hashBytes32FromString(agreement) as String0x;
-
-    // write({
-    //   args: [name, uri, docHash],
-    //   onSuccess(data) {
-    //     console.log('success', data);
-    //     handleEstablish();
-    //   },
-    // });
 
     await setDocument(
       docTitle,

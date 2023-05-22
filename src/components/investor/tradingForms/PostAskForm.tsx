@@ -20,9 +20,9 @@ import { submitOffer } from '@src/web3/reachCalls';
 import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
-type ShareOfferFormProps = {
+type PostAskFormProps = {
   offering: Offering;
-  contractId: string;
+  shareContractId: string;
   walletAddress: string;
   myShares: number;
   permittedEntity: OfferingParticipant;
@@ -34,10 +34,10 @@ type ShareOfferFormProps = {
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
 
-const ShareOfferForm: FC<ShareOfferFormProps> = ({
+const PostAskForm: FC<PostAskFormProps> = ({
   offering,
   walletAddress,
-  contractId,
+  shareContractId,
   myShares,
   permittedEntity,
   isContractOwner,
@@ -111,7 +111,7 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
           setSubmitting(true);
           await submitOffer(
             reachLib,
-            contractId,
+            shareContractId,
             id,
             isContractOwner,
             myShares,
@@ -291,4 +291,4 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
   );
 };
 
-export default ShareOfferForm;
+export default PostAskForm;

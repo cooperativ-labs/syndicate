@@ -245,7 +245,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
     $offeringId: [ID!]
     $entityId: ID!
     $agreementText: String!
-    $smartContractId: ID!
+    $smartshareContractId: ID!
     $agreementTitle: String!
     $signature: String!
   ) {
@@ -254,7 +254,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
         filter: { id: $offeringId }
         set: {
           lastUpdate: $currentDate
-          smartContracts: { id: $smartContractId }
+          smartContracts: { id: $smartshareContractId }
           waitlistOn: false
           documents: {
             title: $agreementTitle
@@ -280,7 +280,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
         }
       }
     }
-    updateSmartContract(input: { filter: { id: [$smartContractId] }, set: { established: true } }) {
+    updateSmartContract(input: { filter: { id: [$smartshareContractId] }, set: { established: true } }) {
       smartContract {
         id
         established
@@ -631,11 +631,11 @@ export const UPDATE_DISTRIBUTION = gql`
 `;
 
 export const UPDATE_CONTRACT_STATUS = gql`
-  mutation UpdateContractStatus($offeringId: [ID!], $smartContractId: ID!, $established: Boolean) {
+  mutation UpdateContractStatus($offeringId: [ID!], $smartshareContractId: ID!, $established: Boolean) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
-        set: { smartContracts: { id: $smartContractId, set: { established: $established } } }
+        set: { smartContracts: { id: $smartshareContractId, set: { established: $established } } }
       }
     ) {
       offering {
@@ -645,7 +645,7 @@ export const UPDATE_CONTRACT_STATUS = gql`
         }
       }
     }
-    updateSmartContract(input: { filter: { id: [$smartContractId] }, set: { established: $established } }) {
+    updateSmartContract(input: { filter: { id: [$smartshareContractId] }, set: { established: $established } }) {
       smartContract {
         id
         established
@@ -660,7 +660,7 @@ export const UPDATE_CONTRACT_STATUS = gql`
 //   mutation UpdateOffering(
 //     $currentDate: DateTime!
 //     $offeringId: [ID!]
-//     $smartContractId: String!
+//     $smartshareContractId: String!
 //     $numShares: Int!
 //     $minUnits: Int
 //     $maxUnits: Int
@@ -674,7 +674,7 @@ export const UPDATE_CONTRACT_STATUS = gql`
 //           sales: {
 //             creationDate: $currentDate
 //             lastUpdate: $currentDate
-//             smartContractId: $smartContractId
+//             smartshareContractId: $smartshareContractId
 //             numShares: $numShares
 //             minUnits: $minUnits
 //             maxUnits: $maxUnits
@@ -701,7 +701,7 @@ export const CREATE_SALE = gql`
   mutation UpdateOffering(
     $currentDate: DateTime!
     $offeringId: [ID!]
-    $smartContractId: String!
+    $smartshareContractId: String!
     $isBid: Boolean
     $numShares: Int!
     $minUnits: Int
@@ -717,7 +717,7 @@ export const CREATE_SALE = gql`
           sales: {
             creationDate: $currentDate
             lastUpdate: $currentDate
-            smartContractId: $smartContractId
+            smartshareContractId: $smartshareContractId
             isBid: $isBid
             initiator: $initiator
             numShares: $numShares

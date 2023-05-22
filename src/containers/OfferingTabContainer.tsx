@@ -11,7 +11,7 @@ import { LegalEntity, Offering } from 'types';
 
 type OfferingTabContainerProps = {
   offering: Offering;
-  contractId: string;
+  shareContractId: string;
   contractOwnerMatches: boolean;
   isContractOwner: boolean;
   offeringEntity: LegalEntity;
@@ -27,7 +27,7 @@ const TabOptions = [
 
 const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   offering,
-  contractId,
+  shareContractId,
   contractOwnerMatches,
   isContractOwner,
   offeringEntity,
@@ -72,17 +72,17 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 )}
               </>
             )} */}
-            {contractId ? (
+            {shareContractId ? (
               <div>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
-                  contractId={contractId}
+                  shareContractId={shareContractId}
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}
                 />
                 <hr className="mt-5" />
-                <AddWhitelistAddress contractId={contractId} offeringId={offering.id} />
+                <AddWhitelistAddress shareContractId={shareContractId} offeringId={offering.id} />
               </div>
             ) : (
               <div>You must create a share contract before you can add investors.</div>
@@ -100,7 +100,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
               )}
             </div>
             <DistributionList
-              contractId={contractId}
+              shareContractId={shareContractId}
               distributions={offering.distributions}
               currency={offering.details.distributionCurrency}
             />

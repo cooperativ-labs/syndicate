@@ -18,7 +18,7 @@ type OfferingDashboardTitleProps = {
   organizationId: string;
   accessCode: string;
   offeringName: string;
-  contractId: string;
+  shareContractId: string;
   chainId: number;
 };
 
@@ -29,7 +29,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   offeringId,
   accessCode,
   organizationId,
-  contractId,
+  shareContractId,
   chainId,
 }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
@@ -180,8 +180,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             {offeringName}
           </h1>
         )}
-        {contractId ? (
-          <FormattedCryptoAddress chainId={chainId} address={contractId} showFull withCopy />
+        {shareContractId ? (
+          <FormattedCryptoAddress chainId={chainId} address={shareContractId} showFull withCopy />
         ) : (
           <div className="text-sm text-gray-800">This offering's contract has not been deployed yet.</div>
         )}

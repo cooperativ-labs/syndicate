@@ -11,7 +11,7 @@ type ShareSaleListProps = {
   offering: Offering;
   sales: OfferingSale[];
   myBacBalance: number;
-  contractId: string;
+  shareContractId: string;
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
@@ -25,7 +25,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   walletAddress,
   sales,
   myBacBalance,
-  contractId,
+  shareContractId,
   permittedEntity,
   isContractOwner,
   setSaleFormModal,
@@ -75,7 +75,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               sale={sale}
               initiator={sale.initiator}
               myBacBalance={myBacBalance}
-              contractId={contractId}
+              shareContractId={shareContractId}
               permittedEntity={permittedEntity}
               isContractOwner={isContractOwner}
               setModal={setShareSaleManagerModal}
