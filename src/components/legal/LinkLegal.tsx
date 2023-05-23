@@ -39,10 +39,6 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
     axios.get(standardAgreement).then((resp) => resp.data);
   const { value: standardAgreementText } = useAsync(getStandardAgreementText, []);
 
-  if (!user) {
-    return <></>;
-  }
-
   const { signature } = agreementContent;
   const offeringEntity = offering.offeringEntity;
   const orgLegalName = offeringEntity.legalName;
@@ -74,60 +70,43 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   );
 
   return (
-    <div className="px-4 py-10">
-      <div className="md:mx-4">
-        <h1 className="text-3xl font-bold ">Create shares of {orgLegalName}</h1>
-        {/* {cryptoAddress.chainId === chainId ? ( */}
-
-        <div className="md:mt-10 lg:grid grid-cols-5 gap-6">
-          <div className="col-span-2">
-            <div className="">
-              {!availableContract ? (
-                <div className="p-3 rounded-lg border-2 border-gray-400 my-4 md:w-96">
-                  {/* <h1 className="text-cDarkBlue text-lg font-bold ">Step 1. Create Shares</h1> */}
-                  <CreateShareContract
-                    contractCreatorId={offeringEntity.id}
-                    entityName={offeringEntity.legalName}
-                    investmentCurrency={offering.details.investmentCurrency}
-                  />
-                </div>
-              ) : (
-                <div className="mb-3">
-                  <UnestablishedContractCard unestablishedContract={availableContract} />
-                  <div className="mt-4">
-                    <LinkLegalForm
-                      setAgreementContent={setAgreementContent}
-                      availableContract={availableContract}
-                      agreement={agreement}
-                      bacValue={bacValue}
-                      bacName={bacName}
-                      bacId={bacId}
-                      entityId={offeringEntity.id}
-                      spvEntityName={offeringEntity.legalName}
-                      offeringId={offering.id}
-                      organizationId={offeringEntity.organization.id}
-                    />
-                    {/* <FormChainWarning /> */}
-                  </div>
-                </div>
-              )}
-              {/* </div> */}
-            </div>
-          </div>
-          <div className="hidden md:flex border-t-1 lg:border-0 col-span-3 md:max-w-max">
-            <PresentLegalText text={agreement} />
+    <div className="flex flex-col gap">
+      <h1 className="font-semibold text-lg">Create shares of {orgLegalName}</h1>
+      {!availableContract ? (
+        <div className="mt-5">
+          <CreateShareContract contractCreatorId={offeringEntity.id} entityName={offeringEntity.legalName} />
+        </div>
+      ) : (
+        <div className="my-3">
+          <UnestablishedContractCard unestablishedContract={availableContract} />
+          <div className="mt-4">
+            <LinkLegalForm
+              setAgreementContent={setAgreementContent}
+              availableContract={availableContract}
+              agreement={agreement}
+              bacValue={bacValue}
+              bacName={bacName}
+              bacId={bacId}
+              entityId={offeringEntity.id}
+              spvEntityName={offeringEntity.legalName}
+              offeringId={offering.id}
+              organizationId={offeringEntity.organization.id}
+            />
+            {/* <FormChainWarning /> */}
           </div>
         </div>
-        {/* ) : (
-          <div className="font-bold text-center">
-            Please switch to the{' '}
-            <span className="text-yellow-600">{MatchSupportedChains(cryptoAddress.chainId).name} </span> network to
-            establish this class.
-          </div>
-        )} */}
-      </div>
+      )}
     </div>
   );
 };
 
 export default LinkLegal;
+{
+  /* ) : (
+          <div className="font-bold text-center">
+            Please switch to the{' '}
+            <span className="text-yellow-600">{MatchSupportedChains(cryptoAddress.chainId).name} </span> network to
+            establish this class.
+          </div>
+        )} */
+}

@@ -41,16 +41,27 @@ export const UPDATE_CRYPTO_ADDRESS = gql`
   }
 `;
 
-export const CREATE_SMART_CONTRACT = gql`
-  mutation AddSmartContract(
+export const ADD_CONTRACT_PARTITION = gql`
+  mutation AddContractPartition($id: [ID!], $partition: String) {
+    updateSmartContract(input: { filter: { id: $id }, set: { partitions: [$partition] } }) {
+      smartContract {
+        id
+        partitions
+        owner {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_SHARE_CONTRACT = gql`
+  mutation AddShareContract(
     $cryptoAddress: String!
     $chainId: Int!
-    $backingToken: CurrencyCode
-    $numTokens: Int64
     $type: SmartContractType!
     $protocol: CryptoAddressProtocol
-    $owner: ID!
-    $offering: ID
+    $ownerId: ID!
   ) {
     addSmartContract(
       input: [
@@ -60,11 +71,57 @@ export const CREATE_SMART_CONTRACT = gql`
             type: CONTRACT
             chainId: $chainId
             protocol: $protocol
-            owner: { id: $owner }
+            owner: { id: $ownerId }
           }
-          owner: { id: $owner }
-          smartContracts: { id: $smartshareContractId }
-          numTokensAuthorized: $numTokens
+          owner: { id: $ownerId }
+          type: $type
+          established: false
+        }
+      ]
+    ) {
+      smartContract {
+        id
+        owner {
+          id
+          smartContracts {
+            id
+          }
+          organization {
+            id
+          }
+        }
+        cryptoAddress {
+          id
+          address
+          chainId
+        }
+      }
+    }
+  }
+`;
+
+export const CREATE_SWAP_CONTRACT = gql`
+  mutation AddSwapContract(
+    $cryptoAddress: String!
+    $chainId: Int!
+    $backingToken: CurrencyCode
+    $type: SmartContractType!
+    $protocol: CryptoAddressProtocol
+    $ownerId: ID!
+    $offeringId: ID!
+  ) {
+    addSmartContract(
+      input: [
+        {
+          cryptoAddress: {
+            address: $cryptoAddress
+            type: CONTRACT
+            chainId: $chainId
+            protocol: $protocol
+            owner: { id: $ownerId }
+          }
+          owner: { id: $ownerId }
+          offering: { id: $offeringId }
           backingToken: { code: $backingToken }
           type: $type
           established: false

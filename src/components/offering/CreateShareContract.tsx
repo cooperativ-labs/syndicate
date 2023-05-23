@@ -2,10 +2,9 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 
 import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
-import { CREATE_SMART_CONTRACT } from '@src/utils/dGraphQueries/crypto';
-import { Currency, SmartContractType } from 'types';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { CREATE_SHARE_CONTRACT } from '@src/utils/dGraphQueries/crypto';
 import { MatchSupportedChains } from '@src/web3/connectors';
+import { SmartContractType } from 'types';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
@@ -18,10 +17,9 @@ import { useMutation } from '@apollo/client';
 type CreateShareContractProps = {
   contractCreatorId: string;
   entityName: string;
-  investmentCurrency: Currency;
 };
 
-const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, investmentCurrency }) => {
+const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -29,7 +27,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, 
   const chainId = useChainId();
   const { chain } = useNetwork();
 
-  const [addUnestablishedSmartContract, { data, error }] = useMutation(CREATE_SMART_CONTRACT);
+  const [addUnestablishedSmartContract, { data, error }] = useMutation(CREATE_SHARE_CONTRACT);
   const [alerted, setAlerted] = useState(false);
   const chainName = MatchSupportedChains(chainId)?.name;
 
@@ -45,7 +43,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, 
           chainId: chainId,
           type: SmartContractType.Share,
           protocol: protocol,
-          owner: contractCreatorId,
+          ownerId: contractCreatorId,
         },
       });
       setButtonStep('confirmed');
@@ -66,10 +64,13 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, 
         {!userWalletAddress ? (
           <ChooseConnectorButton buttonText={'Connect Wallet'} />
         ) : (
-          <Button className="rounded-lg p-3 bg-blue-500 text-white" onClick={() => deploy()}>
+          <Button
+            className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
+            onClick={() => deploy()}
+          >
             <LoadingButtonText
               state={buttonStep}
-              idleText={`Publish Class to ${chainName}`}
+              idleText={`Publish share manager smart contract to ${chainName}`}
               submittingText="Deploying - This can take time. Please do not refresh."
               confirmedText="Confirmed!"
               failedText="Transaction failed"
@@ -80,20 +81,6 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, 
       </div>
     </div>
   );
-  // return (
-  //   <Formik
-  //     validate={(values) => {
-  //       const errors: any = {}; /** @TODO : Shape */
-  //     }}
-  //     onSubmit={async (values, { setSubmitting }) => {
-  //       setSubmitting(true);
-  //       await deploy(investmentCurrency);
-  //       setSubmitting(false);
-  //     }}
-  //   >
-  //     {({ isSubmitting }) => <Form className="flex flex-col gap relative"></Form>}
-  //   </Formik>
-  // );
 };
 
 export default CreateShareContract;

@@ -7,7 +7,7 @@ export type ProfileVisibilityToggleProps = {
 };
 const ProfileVisibilityToggle: FC<ProfileVisibilityToggleProps> = ({ profileVisibility, handleToggle }) => {
   return (
-    <div className="flex align-middle justify-between items-center">
+    <div className="flex align-middle justify-between items-center ">
       <div className="text-sm font-medium text-gray-700 mr-2">
         {profileVisibility ? '' : 'Make visible to investors'}
       </div>

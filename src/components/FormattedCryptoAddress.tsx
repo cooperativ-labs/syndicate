@@ -3,6 +3,7 @@ import React, { FC, useState } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
+import { String0x } from '@src/web3/helpersChain';
 import { useEnsName } from 'wagmi';
 
 type FormattedCryptoAddressProps = {
@@ -18,7 +19,7 @@ type FormattedCryptoAddressProps = {
 };
 
 export const presentAddress = (
-  address: string,
+  address: string | String0x,
   isYou?: boolean,
   isDesktop?: boolean,
   userName?: string,

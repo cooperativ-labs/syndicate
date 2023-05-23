@@ -15,8 +15,8 @@ export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-
 
 export type ContractInvestorActionsProps = {
   offering: Offering;
-  shareContractId: string;
-  swapContractId: String0x;
+  shareContractAddress: String0x;
+  swapContractAddress: String0x;
   isWhitelisted: boolean;
   myDistToClaim: number;
   distributionId: string;
@@ -29,8 +29,8 @@ type ContractInvestorActionsPropsAddendum = {
 
 const ContractInvestorActions: FC<ContractInvestorActionsProps & ContractInvestorActionsPropsAddendum> = ({
   offering,
-  shareContractId,
-  swapContractId,
+  shareContractAddress,
+  swapContractAddress,
   isWhitelisted,
   myDistToClaim,
   distributionId,
@@ -52,7 +52,7 @@ const ContractInvestorActions: FC<ContractInvestorActionsProps & ContractInvesto
             onClick={() =>
               claimDistribution(
                 reachLib,
-                shareContractId,
+                shareContractAddress,
                 distributionId,
                 setButtonStep,
                 setRecallContract,

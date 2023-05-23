@@ -1,52 +1,44 @@
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import React, { FC, useState } from 'react';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
-import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
-import { bytes32FromString, String0x } from '@src/web3/helpersChain';
+
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { OfferingParticipant } from 'types';
 import { presentAddress } from '../FormattedCryptoAddress';
 import { sendShares } from '@src/web3/contractFunctionCalls';
-import { shareContractABI } from '@src/web3/generated';
-import { useChainId, usePrepareContractWrite } from 'wagmi';
+import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+
+import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { useMutation } from '@apollo/client';
 
 export type SendSharesProps = {
   sharesIssued: number;
   sharesOutstanding: number;
-  offeringId: string;
   shareContractId: string;
+  shareContractAddress: String0x;
   offeringParticipants: OfferingParticipant[];
   partitions: String0x[];
-  refetch: () => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
 };
 const SendShares: FC<SendSharesProps> = ({
   sharesIssued,
   sharesOutstanding,
-  offeringId,
+  shareContractAddress,
   shareContractId,
   offeringParticipants,
   partitions,
-  refetch,
-  setRecallContract,
 }) => {
-  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
-  const [transactionDetails, setTransactionDetails] = useState<any>(null);
 
-  if (data) {
-    refetch();
-  }
+  const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
+  const [transactionDetails, setTransactionDetails] = useState<any>(null);
 
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
   const formButtonText = (values) => {
-    const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
+    const recipient = values.recipient === 'new' ? values.newRecipient : values.recipient;
     if (recipient) {
       return `Send ${
         values.numShares
@@ -61,9 +53,9 @@ const SendShares: FC<SendSharesProps> = ({
     <Formik
       initialValues={{
         numShares: null,
-        existingRecipient: '',
-        newRecipient: '',
-        partition: partitions[0] ?? bytes32FromString('Class A'),
+        recipient: '' as String0x,
+        partition: partitions[0],
+        newPartition: '',
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -72,36 +64,39 @@ const SendShares: FC<SendSharesProps> = ({
         } else if (values.numShares > sharesRemaining) {
           errors.numShares = `You only have ${sharesRemaining} remaining shares to send.`;
         }
-        if (!values.existingRecipient) {
-          if (!values.newRecipient) {
-            errors.existingRecipient = 'Please indicate who you want to send shares to';
+        if (!values.recipient) {
+          errors.recipient = 'Please indicate who you want to send shares to';
+        }
+
+        if (!values.partition) {
+          if (!values.newPartition) {
+            errors.partition = 'Please specify a class of shares';
           }
         }
-        if (values.existingRecipient === 'new') {
-          if (!values.newRecipient) {
-            errors.newRecipient = 'Please indicate who you want to send shares to';
+        if (values.partition === '0xNew') {
+          if (!values.newPartition) {
+            errors.newPartition = 'Please specify a class of shares';
           }
         }
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
-        const partition = values.partition;
         const transactionDetails = await sendShares(
-          shareContractId as String0x,
-          offeringId,
+          shareContractAddress as String0x,
+          shareContractId,
           values.numShares,
-          recipient as String0x,
-          chainId,
+          values.recipient,
+          values.partition,
+          values.newPartition,
           setButtonStep,
-          setRecallContract,
-          addWhitelistObject,
-          partition
+          addPartition
         );
         if (transactionDetails) {
           toast.success(
-            `${values.numShares} shares sent to ${presentAddress(recipient)}. Transaction hash: ${transactionDetails}`
+            `${values.numShares} shares sent to ${presentAddress(
+              values.recipient
+            )}. Transaction hash: ${transactionDetails}`
           );
         }
         setTransactionDetails(transactionDetails);
@@ -110,7 +105,7 @@ const SendShares: FC<SendSharesProps> = ({
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
-          <Select className={'mt-3'} name={'existingRecipient'} labelText="Investor's wallet address">
+          <Select className={'mt-3'} name={'recipient'} labelText="Investor's wallet address">
             <option value="">Select recipient</option>
 
             {offeringParticipants.map((participant, i) => {
@@ -122,16 +117,28 @@ const SendShares: FC<SendSharesProps> = ({
                 </option>
               );
             })}
-            <hr className="bg-grey-400" />
-            <option value="new">+ Add new investor</option>
           </Select>
-          {values.existingRecipient === 'new' && (
+
+          <Select className={'mt-3'} name="partition" labelText="Share class">
+            <option value="">Select class</option>
+
+            {partitions.map((partition, i) => {
+              return (
+                <option key={i} value={partition}>
+                  {stringFromBytes32(partition)}
+                </option>
+              );
+            })}
+            <hr className="bg-grey-400" />
+            <option value="0xNew">+ Add new class</option>
+          </Select>
+          {values.partition === '0xNew' && (
             <Input
               className={defaultFieldDiv}
-              labelText="New investor's wallet address"
-              name="newRecipient"
+              labelText="New class name"
+              name="newPartition"
               type="text"
-              placeholder="0x531518975607FE8867fd5F39e9a3754F1fc38276"
+              placeholder="Class A"
               // required
             />
           )}

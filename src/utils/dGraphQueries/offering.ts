@@ -245,7 +245,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
     $offeringId: [ID!]
     $entityId: ID!
     $agreementText: String!
-    $smartshareContractId: ID!
+    $smartContractId: ID!
     $agreementTitle: String!
     $signature: String!
   ) {
@@ -254,7 +254,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
         filter: { id: $offeringId }
         set: {
           lastUpdate: $currentDate
-          smartContracts: { id: $smartshareContractId }
+          smartContracts: { id: $smartContractId }
           waitlistOn: false
           documents: {
             title: $agreementTitle
@@ -280,7 +280,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
         }
       }
     }
-    updateSmartContract(input: { filter: { id: [$smartshareContractId] }, set: { established: true } }) {
+    updateSmartContract(input: { filter: { id: [$smartContractId] }, set: { established: true } }) {
       smartContract {
         id
         established

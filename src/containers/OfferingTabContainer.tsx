@@ -8,10 +8,11 @@ import Tab from '@src/components/offering/tabs/Tab';
 import Waitlist from '@src/components/offering/whitelist/Waitlist';
 import WhitelistAddressList from '@src/components/offering/whitelist/WhitelistAddressList';
 import { LegalEntity, Offering } from 'types';
+import { String0x } from '@src/web3/helpersChain';
 
 type OfferingTabContainerProps = {
   offering: Offering;
-  shareContractId: string;
+  shareContractAddress: String0x;
   contractOwnerMatches: boolean;
   isContractOwner: boolean;
   offeringEntity: LegalEntity;
@@ -27,7 +28,7 @@ const TabOptions = [
 
 const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   offering,
-  shareContractId,
+  shareContractAddress,
   contractOwnerMatches,
   isContractOwner,
   offeringEntity,
@@ -72,17 +73,17 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 )}
               </>
             )} */}
-            {shareContractId ? (
+            {shareContractAddress ? (
               <div>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
-                  shareContractId={shareContractId}
+                  shareContractAddress={shareContractAddress}
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}
                 />
                 <hr className="mt-5" />
-                <AddWhitelistAddress shareContractId={shareContractId} offeringId={offering.id} />
+                <AddWhitelistAddress shareContractAddress={shareContractAddress} offeringId={offering.id} />
               </div>
             ) : (
               <div>You must create a share contract before you can add investors.</div>
@@ -100,7 +101,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
               )}
             </div>
             <DistributionList
-              shareContractId={shareContractId}
+              shareContractAddress={shareContractAddress}
               distributions={offering.distributions}
               currency={offering.details.distributionCurrency}
             />

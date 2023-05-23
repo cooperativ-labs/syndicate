@@ -9,12 +9,17 @@ import { useContractReads } from 'wagmi';
 type HashInstructionsProps = {
   agreementTexts: Document[];
   contractDocuments: string[];
-  shareContractId: string;
+  shareContractAddress: string;
 };
 
-const HashInstructions: FC<HashInstructionsProps> = ({ agreementTexts, contractDocuments, shareContractId }) => {
+const HashInstructions: FC<HashInstructionsProps> = ({ agreementTexts, contractDocuments, shareContractAddress }) => {
   const chainDocs = contractDocuments.map((doc) => {
-    return { address: shareContractId as String0x, abi: shareContractABI, functionName: 'getDocument', args: [doc] };
+    return {
+      address: shareContractAddress as String0x,
+      abi: shareContractABI,
+      functionName: 'getDocument',
+      args: [doc],
+    };
   });
 
   const { data, isError, isLoading } = useContractReads({

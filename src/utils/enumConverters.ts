@@ -288,10 +288,10 @@ export const currencyOptions = [
     type: currencyType.CRYP,
     value: CurrencyCode.DaiTest,
     symbol: 'DAI*',
-    address: '0xfDdfE7C9Ba9649fB8943f9277830972aa6f3a6bB',
+    address: '0x49d66a989A5821eA259C161141D4006cd8e37613',
     website: 'https://makerdao.com/',
     protocol: CryptoAddressProtocol.Eth,
-    chainId: 3,
+    chainId: 11155111,
     decimals: 18,
     logo: 'https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774',
   },
@@ -317,37 +317,8 @@ export const currencyOptions = [
     decimals: 18,
     logo: 'https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774',
   },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.AlgoUsdc,
-    symbol: 'USDC',
-    address: '31566704',
-    website: 'https://www.centre.io/usdc',
-    protocol: CryptoAddressProtocol.Algo,
-    chainId: 12345678,
-    decimals: 6,
-    logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
-  },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.AlgoUsdcTest,
-    symbol: 'USDC',
-    address: '91319595',
-    website: 'https://www.centre.io/usdc',
-    protocol: CryptoAddressProtocol.Algo,
-    chainId: 654321,
-    decimals: 6,
-    logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
-  },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.RealShare,
-    symbol: 'SHARE',
-    website: 'https://www.cooperativ.io',
-    protocol: CryptoAddressProtocol.Algo,
-    decimals: 6,
-  },
 ];
+
 export const bacOptions = currencyOptions.filter(
   (option) =>
     (option.type === currencyType.CRYP && option.protocol === CryptoAddressProtocol.Eth) ||

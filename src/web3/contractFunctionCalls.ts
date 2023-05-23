@@ -21,7 +21,7 @@ export type SaleContentsType = {
 };
 
 export const addWhitelistMember = async (
-  shareContractId: String0x,
+  shareContractAddress: String0x,
   offeringId: string,
   walletAddress: String0x,
   chainId: number,
@@ -55,7 +55,7 @@ export const addWhitelistMember = async (
     setButtonStep('submitting');
     try {
       const { hash } = await writeContract({
-        address: shareContractId,
+        address: shareContractAddress,
         abi: shareContractABI,
         functionName: 'addToWhitelist',
         args: [walletAddress],
@@ -77,7 +77,7 @@ export const addWhitelistMember = async (
 export const setDocument = async (
   docName: string,
   text: string,
-  shareContractId: String0x,
+  shareContractAddress: String0x,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   callback: () => void,
   uri?: string
@@ -86,7 +86,7 @@ export const setDocument = async (
   const docHash = hashBytes32FromString(text) as String0x;
   try {
     await writeContract({
-      address: shareContractId,
+      address: shareContractAddress,
       abi: shareContractABI,
       functionName: 'setDocument',
       args: [name, uri, docHash],
@@ -99,46 +99,44 @@ export const setDocument = async (
 };
 
 export const sendShares = async (
-  shareContractId: String0x,
-  offeringId: string,
+  shareContractAddress: String0x,
+  shareContractId: string,
   numShares: number,
   recipient: String0x,
-  chainId: number,
+  partition: string,
+  newPartition: string,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
-  setRecallContract: Dispatch<SetStateAction<string>>,
-  addWhitelistObject: (
+  addPartition: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
-  ) => Promise<any>,
-  partition: String0x
+  ) => Promise<any>
 ) => {
   const amt = parseUnits(numShares.toString() as `${number}`, 18);
 
   let transactionHash = '';
+
   const call = async () => {
     setButtonStep('submitting');
+    const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
     try {
       const { hash } = await writeContract({
-        address: shareContractId,
+        address: shareContractAddress,
         abi: shareContractABI,
         functionName: 'issueByPartition',
-        args: [partition, recipient, amt],
+        args: [setPartition, recipient, amt],
       });
       transactionHash = hash;
-      //adds recipient to whitelist if they have not already been added
-      await addWhitelistObject({
-        variables: {
-          currentDate: currentDate,
-          addressOfferingId: recipient + offeringId,
-          walletAddress: recipient,
-          chainId: chainId,
-          offering: offeringId,
-        },
-      });
+
       await waitForTransaction({
         hash: hash,
       });
+      if (partition === '0xNew')
+        await addPartition({
+          variables: {
+            smartContractId: shareContractId,
+            partition: setPartition,
+          },
+        });
       setButtonStep('confirmed');
-      setRecallContract('sendShares');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep, recipient);
     }
@@ -149,7 +147,7 @@ export const sendShares = async (
 
 export const submitOffer = async (
   reachLib: any,
-  shareContractId: string,
+  shareContractAddress: string,
   offeringId: string,
   isContractOwner: boolean,
   myShares: number,
@@ -167,7 +165,7 @@ export const submitOffer = async (
 ) => {
   setButtonStep('submitting');
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, shareContractId);
+  const ctc = acc.contract(backendCtc, shareContractAddress);
   const contractUserPubKey = acc.getAddress();
   const normalizeRecipientAddress = reachLib.formatAddress(contractUserPubKey);
   const call = async (f) => {
@@ -179,7 +177,7 @@ export const submitOffer = async (
         variables: {
           currentDate: currentDate,
           offeringId: offeringId,
-          smartshareContractId: shareContractId,
+          smartshareContractAddress: shareContractAddress,
           initiator: normalizeRecipientAddress,
           numShares: numShares,
           minUnits: minUnits,
@@ -210,7 +208,7 @@ export const submitOffer = async (
 
 export const cancelSale = async (
   reachLib: any,
-  shareContractId: string,
+  shareContractAddress: string,
   offeringId: string,
   saleId: string,
   saleStatus: SaleStatusType,
@@ -222,7 +220,7 @@ export const cancelSale = async (
   // const reach = await loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, shareContractId);
+  const ctc = acc.contract(backendCtc, shareContractAddress);
   const call = async (f) => {
     try {
       if (saleStatus !== '-----') {
@@ -244,7 +242,7 @@ export const cancelSale = async (
 
 export const approveSwap = async (
   reachLib: any,
-  shareContractId: string,
+  shareContractAddress: string,
   initiator: string,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>
@@ -252,7 +250,7 @@ export const approveSwap = async (
   setButtonStep('submitting');
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, shareContractId);
+  const ctc = acc.contract(backendCtc, shareContractAddress);
   const call = async (f) => {
     try {
       await f();
@@ -271,7 +269,7 @@ export const approveSwap = async (
 
 export const claimProceeds = async (
   reachLib: any,
-  shareContractId: string,
+  shareContractAddress: string,
   saleProceeds: number,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>
@@ -279,7 +277,7 @@ export const claimProceeds = async (
   setButtonStep('submitting');
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, shareContractId);
+  const ctc = acc.contract(backendCtc, shareContractAddress);
   const call = async (f) => {
     try {
       await f();
@@ -299,7 +297,7 @@ export const claimProceeds = async (
 
 export const submitDistribution = async (
   reachAcc: any,
-  shareContractId: string,
+  shareContractAddress: string,
   amount: number | string,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>,
@@ -308,7 +306,7 @@ export const submitDistribution = async (
   ) => Promise<any>
 ) => {
   setButtonStep('submitting');
-  const ctc = reachAcc.contract(backendCtc, shareContractId);
+  const ctc = reachAcc.contract(backendCtc, shareContractAddress);
   const call = async (f) => {
     try {
       await f();
@@ -328,7 +326,7 @@ export const submitDistribution = async (
 
 export const claimDistribution = async (
   reachLib: any,
-  shareContractId: string,
+  shareContractAddress: string,
   distributionId: string,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   setRecallContract: Dispatch<SetStateAction<string>>,
@@ -337,7 +335,7 @@ export const claimDistribution = async (
   setButtonStep('submitting');
   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
   const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, shareContractId);
+  const ctc = acc.contract(backendCtc, shareContractAddress);
   const contractUserPubKey = acc.getAddress();
   const normalizeRecipientAddress = reachLib.formatAddress(contractUserPubKey);
   const call = async (f) => {

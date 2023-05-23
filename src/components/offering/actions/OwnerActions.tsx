@@ -17,8 +17,9 @@ export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-
 
 export type ContractOwnerActionsProps = {
   offering: Offering;
+  shareContractAddress: String0x;
   shareContractId: string;
-  swapContractId: String0x;
+  swapContractAddress: String0x;
   distributionId: string;
   sharesOutstanding: number;
   myDistToClaim: number;
@@ -29,20 +30,21 @@ export type ContractOwnerActionsProps = {
 
 type ContractInvestorActionsPropsAddendum = {
   setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
-  setSwapContractModal: Dispatch<SetStateAction<boolean>>;
+  setSmartContractsSettingsModal: Dispatch<SetStateAction<boolean>>;
 };
 
 const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActionsPropsAddendum> = ({
   offering,
+  shareContractAddress,
   shareContractId,
-  swapContractId,
+  swapContractAddress,
   distributionId,
   sharesOutstanding,
   myDistToClaim,
   partitions,
   setRecallContract,
   setShareSaleManagerModal,
-  setSwapContractModal,
+  setSmartContractsSettingsModal,
   refetch,
 }) => {
   const { reachLib } = useContext(ReachContext);
@@ -69,7 +71,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActio
             onClick={() =>
               claimDistribution(
                 reachLib,
-                shareContractId,
+                shareContractAddress,
                 distributionId,
                 setButtonStep,
                 setRecallContract,
@@ -98,7 +100,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActio
       >
         Send shares
       </Button>
-      {swapContractId ? (
+      {swapContractAddress ? (
         <Button
           onClick={() => {
             setShareSaleManagerModal(true);
@@ -110,7 +112,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActio
       ) : (
         <Button
           onClick={() => {
-            setSwapContractModal(true);
+            setSmartContractsSettingsModal(true);
           }}
           className={standardClass}
         >
@@ -133,16 +135,18 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActio
         <SendShares
           sharesIssued={details?.numUnits}
           sharesOutstanding={sharesOutstanding}
+          shareContractAddress={shareContractAddress}
           shareContractId={shareContractId}
-          offeringId={id}
           offeringParticipants={participants}
           partitions={partitions}
-          refetch={refetch}
-          setRecallContract={setRecallContract}
         />
       )}
       {showActionPanel === 'distribute' && (
-        <SubmitDistribution shareContractId={shareContractId} refetch={refetch} setRecallContract={setRecallContract} />
+        <SubmitDistribution
+          shareContractAddress={shareContractAddress}
+          refetch={refetch}
+          setRecallContract={setRecallContract}
+        />
       )}
     </div>
   );

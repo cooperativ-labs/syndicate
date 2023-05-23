@@ -22,6 +22,7 @@ export type CreateOrganizationType = {
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
   const { data: session, status } = useSession();
   const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
+
   const user = userData?.queryUser[0];
   const [addOrganization, { data, error }] = useMutation(ADD_ORGANIZATION);
   const [logoUrl, setLogoUrl] = useState<string>('');

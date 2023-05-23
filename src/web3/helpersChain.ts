@@ -29,7 +29,7 @@ export const getHashTextPairs = (data: any, agreementTexts: Document[]) => {
 };
 
 export const normalizeEthAddress = (address: String0x) => {
-  return address.toLowerCase() as String0x;
+  return address?.toLowerCase() as String0x;
 };
 
 export const WalletErrorMessages = {
@@ -65,14 +65,13 @@ export const ChainErrorResponses = (error) => {
   if (error.message.includes('hash is immutable')) {
     return { code: 5000, message: 'This contract has already been established.' };
   }
-  if (error.message.includes('address already whitelisted')) {
-    return { code: 6000, message: 'This address has already been whitelisted.' };
+  if (error.message.includes('address not whitelisted')) {
+    return { code: 6000, message: 'This address not on the whitelist.' };
   }
   return { code: null, message: error };
 };
 
 export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) => {
-  console.log('error', error);
   const errorCode = ChainErrorResponses(error).code;
   const errorMessage = ChainErrorResponses(error).message;
 
@@ -80,8 +79,12 @@ export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) =>
     setButtonStep('failed');
     toast(`${recipient} has not opted into this offering (or is already whitelisted).`);
   }
+
   if (errorCode === 2000) {
     setButtonStep && setButtonStep('rejected');
+  }
+  if (errorCode === 6000) {
+    toast.error(`${recipient} ${errorMessage}.`);
   } else {
     setButtonStep && setButtonStep('failed');
     alert(`${errorMessage}`);

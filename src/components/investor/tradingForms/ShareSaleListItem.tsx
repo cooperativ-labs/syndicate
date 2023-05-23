@@ -7,9 +7,7 @@ import { DELETE_SALE } from '@src/utils/dGraphQueries/offering';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client';
+import { String0x } from '@src/web3/helpersChain';
 
 import SaleManagerPanel from './ShareManagerPanel';
 import { getSale, SaleContentsType } from '@src/web3/reachCalls';
@@ -22,7 +20,7 @@ type ShareSaleListItemProps = {
   sale: OfferingSale;
   initiator: string;
   myBacBalance: number;
-  shareContractId: string;
+  shareContractAddress: String0x;
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
@@ -35,7 +33,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   sale,
   initiator,
   myBacBalance,
-  shareContractId,
+  shareContractAddress,
   permittedEntity,
   walletAddress,
   isContractOwner,
@@ -59,7 +57,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   const maxPurchase = sale.maxUnits;
 
   const retrieveSale = () => {
-    getSale(reachLib, reachAcc, shareContractId, initiator, setSaleContents);
+    getSale(reachLib, reachAcc, shareContractAddress, initiator, setSaleContents);
   };
 
   useEffect(() => {
@@ -116,7 +114,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                   offeringId={offering.id}
                   status={saleContents.status}
                   sale={sale}
-                  shareContractId={shareContractId}
+                  shareContractAddress={shareContractAddress}
                   recallGetSale={retrieveSale}
                   proceeds={saleContents.proceeds}
                   btId={saleContents.btId}
@@ -130,7 +128,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                 soldQty={saleContents.qtySold}
                 price={saleContents.price}
                 myBacBalance={myBacBalance}
-                shareContractId={shareContractId}
+                shareContractAddress={shareContractAddress}
                 permittedEntity={permittedEntity}
                 setModal={setModal}
                 setRecallContract={setRecallContract}

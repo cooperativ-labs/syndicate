@@ -25,7 +25,6 @@ import { useSession } from 'next-auth/react';
 
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { swap } from 'formik';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
@@ -47,9 +46,11 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   //CURRENTLY ONLY GETS FIRST CONTRACT
   const establishedContract = getEstablishedContracts(smartContracts, chainId)[0];
-  const shareContractId = establishedContract?.cryptoAddress.address as String0x;
+  const shareContractAddress = establishedContract?.cryptoAddress.address as String0x;
+  const shareContractId = establishedContract?.id;
   const swapContract = getSwapContracts(smartContracts, chainId)[0];
-  const swapContractId = swapContract?.cryptoAddress.address as String0x;
+  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+  const partitions = establishedContract?.partitions;
 
   const owners = offeringEntity?.owners;
   const documents = offering?.documents;
@@ -66,9 +67,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     myShares,
     sharesOutstanding,
     allDocuments,
-    partitions,
     isLoading: shareIsLoading,
-  } = useShareContractInfo(shareContractId, userWalletAddress);
+  } = useShareContractInfo(shareContractAddress, userWalletAddress);
 
   const myBacBalance = 234000;
   const fundsDistributed = 20000;
@@ -82,11 +82,11 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     txnApprovalsEnabled,
     nextOrderId,
     isLoading: swapIsLoading,
-  } = useSwapContractInfo(swapContractId);
+  } = useSwapContractInfo(swapContractAddress);
 
   const swapContractMatches = !swapContract
     ? true
-    : normalizeEthAddress(shareToken) === normalizeEthAddress(shareContractId);
+    : normalizeEthAddress(shareToken) === normalizeEthAddress(shareContractAddress);
 
   const isLoading = shareIsLoading || swapIsLoading;
 
@@ -103,7 +103,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
   // currently refers to the single sale the contract can currently offer
   const contractSales = sales.filter((sale) => {
-    return sale.smartContractId === shareContractId;
+    return sale.smartContractId === shareContractAddress;
   });
 
   const currentSalePrice = getLowestSalePrice(sales, details?.priceStart);
@@ -121,7 +121,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
         </>
       </RightSideBar>
       <div className="md:mx-4">
-        {!contractOwnerMatches && !isLoading && (
+        {hasContract && !contractOwnerMatches && !isLoading && (
           <AlertBanner
             text={`${
               isContractOwner
@@ -148,7 +148,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               accessCode={accessCode}
               offeringName={name}
               isOfferingManager={isOfferingManager}
-              shareContractId={shareContractId}
+              shareContractAddress={shareContractAddress}
               chainId={establishedContract?.cryptoAddress.chainId}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
@@ -203,6 +203,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                       <ChooseConnectorButton buttonText={'Connect Wallet'} />
                     ) : (
                       <OfferingActions
+                        userId={userId}
                         retrievalIssue={false}
                         hasContract={hasContract}
                         loading={isLoading}
@@ -210,7 +211,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         sales={contractSales}
                         offering={offering}
                         shareContractId={shareContractId}
-                        swapContractId={swapContractId}
+                        shareContractAddress={shareContractAddress}
+                        swapContractAddress={swapContractAddress}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
                         myBacBalance={myBacBalance}
@@ -243,7 +245,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 isContractOwner={isContractOwner}
                 offeringEntity={offeringEntity}
                 isOfferingManager={isOfferingManager}
-                shareContractId={shareContractId}
+                shareContractAddress={shareContractAddress}
                 currentSalePrice={currentSalePrice}
               />
             )}
@@ -262,7 +264,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               <HashInstructions
                 contractDocuments={allDocuments}
                 agreementTexts={legalLinkTexts}
-                shareContractId={shareContractId}
+                shareContractAddress={shareContractAddress}
               />
             )}
           </>

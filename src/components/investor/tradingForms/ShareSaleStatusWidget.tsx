@@ -5,18 +5,19 @@ import { getSale, SaleContentsType } from '@src/web3/reachCalls';
 import { getSaleStatusOption } from '@src/utils/enumConverters';
 import { OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { String0x } from '@src/web3/helpersChain';
 
 type ShareSaleStatusWidgetProps = {
   sales: OfferingSale[];
   offeringId: string;
-  shareContractId: string;
+  shareContractAddress: String0x;
   isContractOwner: boolean;
 };
 
 const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
   sales,
   offeringId,
-  shareContractId,
+  shareContractAddress,
   isContractOwner,
 }) => {
   const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
@@ -33,8 +34,8 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
   });
 
   const retrieveSale = useCallback(() => {
-    getSale(reachLib, reachAcc, shareContractId, userWalletAddress, setSaleContents);
-  }, [reachLib, reachAcc, shareContractId, userWalletAddress, setSaleContents]);
+    getSale(reachLib, reachAcc, shareContractAddress, userWalletAddress, setSaleContents);
+  }, [reachLib, reachAcc, shareContractAddress, userWalletAddress, setSaleContents]);
 
   useEffect(() => {
     if (mySale) {
@@ -69,7 +70,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
               proceeds={saleContents.proceeds}
               btId={saleContents.btId}
               sale={mySale}
-              shareContractId={shareContractId}
+              shareContractAddress={shareContractAddress}
               isContractOwner={isContractOwner}
               recallGetSale={retrieveSale}
               small

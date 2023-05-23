@@ -1,11 +1,12 @@
 import DistributionListItem from './DistributionListItem';
 import React, { FC } from 'react';
 import { Currency, OfferingDistribution } from 'types';
+import { String0x } from '@src/web3/helpersChain';
 
 type DistributionListProps = {
   distributions: OfferingDistribution[];
   currency: Currency;
-  shareContractId: string;
+  shareContractAddress: String0x;
   hideTransactionId?: boolean;
 };
 
@@ -31,7 +32,7 @@ const TEMP_fake_distributions = [
 ];
 
 const DistributionList: FC<DistributionListProps> = ({
-  shareContractId,
+  shareContractAddress,
   distributions,
   currency,
   hideTransactionId,

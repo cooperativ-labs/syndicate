@@ -11,7 +11,7 @@ export type ShareContractInfoType = {
   sharesOutstanding: number;
   allDocuments: any;
   decimals: number;
-  partitions: String0x[];
+  firstPartition: String0x;
   isLoading: boolean;
 };
 
@@ -26,10 +26,6 @@ export const useShareContractInfo = (
     address: shareContractId,
     abi: shareContractABI,
   };
-
-  if (!userWalletAddress) {
-    throw new Error('No user wallet address provided');
-  }
 
   const { data, isLoading, isError, error } = useContractReads({
     contracts: [
@@ -51,6 +47,7 @@ export const useShareContractInfo = (
       },
       { ...baseContractInfo, functionName: 'totalSupply' },
       { ...baseContractInfo, functionName: 'getAllDocuments' },
+      { ...baseContractInfo, functionName: 'partitionList', args: [BigInt(0)] },
     ],
   });
 
@@ -63,9 +60,7 @@ export const useShareContractInfo = (
   const allDocuments = data ? data[5].result : undefined;
   const fundsDistributed = data ? 20000 : undefined;
   const numDistributions = data ? 4 : undefined;
-  const partitions = data
-    ? ['0xd300972c270941fe75b0929dadadff16cd5462ba2093bf53e8f76bc345ecf955' as String0x]
-    : undefined;
+  const firstPartition = data ? (data[6].result as String0x) : undefined;
   const myBacBalance = data ? 234000 : undefined;
 
   return {
@@ -76,7 +71,7 @@ export const useShareContractInfo = (
     sharesOutstanding,
     allDocuments,
     decimals,
-    partitions,
+    firstPartition,
     isLoading,
   };
 };

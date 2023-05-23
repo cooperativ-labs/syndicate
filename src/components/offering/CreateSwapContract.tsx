@@ -2,8 +2,8 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 
 import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
-import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
-import { CREATE_SMART_CONTRACT } from '@src/utils/dGraphQueries/crypto';
+import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
+import { CREATE_SWAP_CONTRACT } from '@src/utils/dGraphQueries/crypto';
 import { Currency, SmartContractType } from 'types';
 import { MatchSupportedChains } from '@src/web3/connectors';
 
@@ -13,13 +13,14 @@ import Select from '../form-components/Select';
 import { defaultFieldDiv } from '../form-components/Inputs';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { Form, Formik } from 'formik';
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
+import { profile } from 'console';
+import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { useAccount, useChainId, useNetwork } from 'wagmi';
 import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
 
 type CreateSwapContractProps = {
-  shareContractId: string;
+  shareContractAddress: String0x;
   investmentCurrency: Currency;
   contractOwnerEntityId: string;
   offeringId: string;
@@ -27,7 +28,7 @@ type CreateSwapContractProps = {
 };
 
 const CreateSwapContract: FC<CreateSwapContractProps> = ({
-  shareContractId,
+  shareContractAddress,
   investmentCurrency,
   contractOwnerEntityId,
   offeringId,
@@ -41,7 +42,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
 
   const chainBacs = bacOptions.filter((bac) => bac.chainId === chainId);
 
-  const [addSwapContract, { data, error }] = useMutation(CREATE_SMART_CONTRACT);
+  const [addSwapContract, { data, error }] = useMutation(CREATE_SWAP_CONTRACT);
   const [alerted, setAlerted] = useState(false);
   const chainName = MatchSupportedChains(chainId)?.name;
 
@@ -51,17 +52,18 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
       const protocol = MatchSupportedChains(chainId).protocol;
       dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
       try {
-        const contract = await deploySwapContract(userWalletAddress, chain, shareContractId, paymentTokenAddress);
+        const contract = await deploySwapContract(userWalletAddress, chain, shareContractAddress, paymentTokenAddress);
         // Make this update the offering instead so that we can add the smart contract to the offering and update the investment currency
+
         await addSwapContract({
           variables: {
             cryptoAddress: contract.contractAddress,
             chainId: chainId,
-            backingToken: investmentCurrency.code,
+            backingToken: getCurrencyById(paymentTokenAddress).value,
             type: SmartContractType.Swap,
             protocol: protocol,
-            owner: contractOwnerEntityId,
-            offering: offeringId,
+            ownerId: contractOwnerEntityId,
+            offeringId: offeringId,
           },
         });
         setButtonStep('confirmed');
@@ -70,7 +72,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
       }
       dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
     },
-    [userWalletAddress, shareContractId, chainId]
+    [userWalletAddress, shareContractAddress, chainId]
   );
 
   if (error && !alerted) {
@@ -80,11 +82,10 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
 
   return (
     <div>
-      <div className="font-semibold text-lg">Contract currency: {getCurrencyOption(investmentCurrency).symbol}</div>
-      <div className="text-sm text-gray-700 mb-4">
-        {`Funds will be accepted and distributions will be paid in ${getCurrencyOption(investmentCurrency).symbol}`}
-      </div>
-
+      <h1 className="font-semibold text-lg">Deploy trading contract</h1>
+      <p className="text-sm text-gray-500">
+        This contract will allow you to sell shares and to manage trading amongst your whitelisted investors.
+      </p>
       <div>
         {!userWalletAddress ? (
           <ChooseConnectorButton buttonText={'Connect Wallet'} />
@@ -101,8 +102,12 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
               return errors;
             }}
             onSubmit={async (values, { setSubmitting }) => {
+              if (values.investmentCurrencyAddress !== getCurrencyOption(investmentCurrency).address) {
+                window.confirm(`Note that changing the currency here will also change it on the offering's profile.`);
+              }
               setAlerted(false);
               setSubmitting(true);
+              deploy(values.investmentCurrencyAddress);
               setSubmitting(false);
             }}
           >
@@ -110,8 +115,8 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
               <Select
                 className={defaultFieldDiv}
                 required
-                name="investmentCurrencyCode"
-                labelText="Distributions will be paid in"
+                name="investmentCurrencyAddress"
+                labelText="Payment for shares will be accepted in"
               >
                 {chainBacs.map((option, i) => {
                   return (
@@ -121,7 +126,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
                   );
                 })}
               </Select>
-              <Button className="rounded-lg p-3 bg-blue-500 text-white" type="submit">
+              <Button className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium" type="submit">
                 <LoadingButtonText
                   state={buttonStep}
                   idleText={`Publish trading contract on ${chainName}`}

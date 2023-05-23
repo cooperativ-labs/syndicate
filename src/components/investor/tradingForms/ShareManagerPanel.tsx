@@ -8,6 +8,7 @@ import { getCurrencyById, SaleStatusType } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { String0x } from '@src/web3/helpersChain';
 import { useMutation } from '@apollo/client';
 
 type SaleMangerPanelProps = {
@@ -17,7 +18,7 @@ type SaleMangerPanelProps = {
   proceeds: number;
   btId: string;
   sale: OfferingSale;
-  shareContractId: string;
+  shareContractAddress: String0x;
   isContractOwner: boolean;
   small?: boolean;
   recallGetSale: (state: string) => void;
@@ -30,7 +31,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   proceeds,
   btId,
   sale,
-  shareContractId,
+  shareContractAddress,
   isContractOwner,
   small,
   recallGetSale,
@@ -47,7 +48,9 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
         {proceeds > 0 && isOfferor && (
           <Button
             className="text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full"
-            onClick={() => claimProceeds(reachLib, shareContractId, proceeds, setClaimProceedsButton, recallGetSale)}
+            onClick={() =>
+              claimProceeds(reachLib, shareContractAddress, proceeds, setClaimProceedsButton, recallGetSale)
+            }
             disabled={claimProceedsButton === 'submitting'}
           >
             <LoadingButtonText
@@ -66,7 +69,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
             onClick={() =>
               cancelSale(
                 reachLib,
-                shareContractId,
+                shareContractAddress,
                 offeringId,
                 sale.id,
                 status,
@@ -90,7 +93,9 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
         {status === 'initd' && isContractOwner ? (
           <Button
             className="text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full"
-            onClick={() => approveSwap(reachLib, shareContractId, sale.initiator, setApproveButtonStep, recallGetSale)}
+            onClick={() =>
+              approveSwap(reachLib, shareContractAddress, sale.initiator, setApproveButtonStep, recallGetSale)
+            }
             disabled={approveButtonStep === 'submitting'}
           >
             <LoadingButtonText

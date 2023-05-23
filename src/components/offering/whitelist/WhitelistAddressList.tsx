@@ -1,26 +1,24 @@
-import abi, * as backendCtc from '../../../web3/ABI';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import SelectedParticipantDetails from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
 import { Currency, OfferingParticipant } from 'types';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { ReachContext } from '@src/SetReachContext';
+
 import { REMOVE_WHITELIST_OBJECT } from '@src/utils/dGraphQueries/offering';
-import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { String0x } from '@src/web3/helpersChain';
+
 import { useMutation } from '@apollo/client';
 
 type WhitelistAddressListProps = {
   offeringParticipants: OfferingParticipant[];
-  shareContractId: string;
+  shareContractAddress: String0x;
   currentSalePrice: number;
   investmentCurrency: Currency;
 };
 
 const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
   offeringParticipants,
-  shareContractId,
+  shareContractAddress,
   currentSalePrice,
   investmentCurrency,
 }) => {
@@ -35,7 +33,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
             <SelectedParticipantDetails
               selection={selectedParticipant}
               participants={offeringParticipants}
-              shareContractId={shareContractId}
+              shareContractAddress={shareContractAddress}
               currentSalePrice={currentSalePrice}
               investmentCurrency={investmentCurrency}
               removeMember={removeMember}
@@ -49,7 +47,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
             <div className="mb-3" key={i}>
               <WhitelistAddressListItem
                 participant={participant}
-                shareContractId={shareContractId}
+                shareContractAddress={shareContractAddress}
                 setSelectedParticipant={setSelectedParticipant}
               />
             </div>

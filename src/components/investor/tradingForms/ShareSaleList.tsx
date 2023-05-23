@@ -5,13 +5,15 @@ import ShareSaleListItem from './ShareSaleListItem';
 import { defaultFieldLabelClass } from '@src/components/form-components/Inputs';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
+
+import { String0x } from '@src/web3/helpersChain';
+import { useChainId } from 'wagmi';
 
 type ShareSaleListProps = {
   offering: Offering;
   sales: OfferingSale[];
   myBacBalance: number;
-  shareContractId: string;
+  shareContractAddress: String0x;
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
@@ -25,14 +27,14 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   walletAddress,
   sales,
   myBacBalance,
-  shareContractId,
+  shareContractAddress,
   permittedEntity,
   isContractOwner,
   setSaleFormModal,
   setShareSaleManagerModal,
   setRecallContract,
 }) => {
-  const chainId = setChainId;
+  const chainId = useChainId();
   const { userWalletAddress } = useContext(ReachContext);
   const mySale = sales.find((sale) => sale.initiator === userWalletAddress);
   const offers = sales.filter((sale) => !sale.isBid);
@@ -75,7 +77,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               sale={sale}
               initiator={sale.initiator}
               myBacBalance={myBacBalance}
-              shareContractId={shareContractId}
+              shareContractAddress={shareContractAddress}
               permittedEntity={permittedEntity}
               isContractOwner={isContractOwner}
               setModal={setShareSaleManagerModal}

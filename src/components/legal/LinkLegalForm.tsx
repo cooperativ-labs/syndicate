@@ -5,16 +5,14 @@ import PresentLegalText from './PresentLegalText';
 import React, { FC, useState } from 'react';
 import router from 'next/router';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { bytes32FromString, hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { c } from '@wagmi/cli/dist/config-c09a23a5';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
+import { hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { setDocument } from '@src/web3/contractFunctionCalls';
-import { shareContractABI } from '@src/web3/generated';
 import { SmartContract } from 'types';
-import { useAccount, useChainId, useContractWrite, usePrepareContractWrite } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type LinkLegalFormProps = {
@@ -69,7 +67,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
             offeringId: offeringId,
             entityId: entityId,
             agreementText: agreement,
-            smartshareContractId: availableContract.id,
+            smartContractId: availableContract.id,
             // minUnits: values.minUnits,
             // priceStart: parseInt(values.initialPrice, 10),
             // maxRaise: values.numUnits * parseInt(values.initialPrice, 10),
@@ -132,7 +130,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
       >
         {({ isSubmitting, values }) => (
           <Form className="flex flex-col">
-            <div className="md:hidden">
+            <div className="mb-5">
               <PresentLegalText text={agreement} />
             </div>
             <Input

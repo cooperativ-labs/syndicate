@@ -72,6 +72,8 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
   const zip = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_code'))?.long_name;
   const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
 
+  console.log({ subpremise, street_number, street_name, city, sublocality, state, zip, country });
+
   return (
     <Formik
       initialValues={{
@@ -103,7 +105,13 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
           errors.type = 'Please select a type of entity';
         }
         if (!street_number || !street_name) {
-          errors.addressAutocomplete = 'Please include street number and street name';
+          errors.addressAutocomplete = 'Address must include street number and street name';
+        }
+        if (!city) {
+          errors.addressAutocomplete = 'Address must include a city';
+        }
+        if (!state) {
+          errors.addressAutocomplete = 'Address must include a state';
         }
         return errors;
       }}

@@ -10,26 +10,26 @@ import { toNormalNumber } from '@src/web3/util';
 import { useContractRead } from 'wagmi';
 type WhitelistAddressListItemProps = {
   participant: OfferingParticipant;
-  shareContractId: string;
+  shareContractAddress: String0x;
   setSelectedParticipant: (participantId: string) => void;
 };
 
 const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   participant,
-  shareContractId,
+  shareContractAddress,
   setSelectedParticipant,
 }) => {
   const { userWalletAddress } = useContext(ReachContext);
 
-  const { data } = useContractRead({
-    address: shareContractId as String0x,
+  const { data, isLoading } = useContractRead({
+    address: shareContractAddress as String0x,
     abi: shareContractABI,
     functionName: 'balanceOf',
     args: [participant.walletAddress as String0x],
   });
 
   const isYou = participant.walletAddress === userWalletAddress;
-  const numShares = data ? toNormalNumber(data, 18) : 'loading...';
+  const numShares = isLoading ? 'loading...' : data ? toNormalNumber(data, 18) : 0;
 
   return (
     <div

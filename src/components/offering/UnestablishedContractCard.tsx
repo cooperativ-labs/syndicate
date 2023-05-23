@@ -42,6 +42,7 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({ u
             address={cryptoAddress.address}
             chainId={cryptoAddress.chainId}
             withCopy
+            showFull
             label={isAlgorand ? 'Id:' : 'Address:'}
           />
           <div className="text-sm text-gray-700">

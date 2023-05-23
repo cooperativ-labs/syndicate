@@ -24,7 +24,7 @@ const UserMenu: FC = () => {
   const profileImg = session?.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
   return (
     <>
-      {open && <div className="absolute top-0 bottom-0 left-0 right-0 z-20" onClick={() => setOpen(!open)} />}
+      {open && <div className="absolute top-0 bottom-0 left-0 right-0 " onClick={() => setOpen(!open)} />}
       <div className="relative flex flex-col items-center ">
         <Button
           className={`border-gray-300 hover:border-gray-500

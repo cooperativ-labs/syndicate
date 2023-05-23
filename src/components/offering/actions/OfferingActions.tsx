@@ -3,16 +3,21 @@ import ContractInvestorActions, { ContractInvestorActionsProps } from './Investo
 import ContractOwnerActions, { ContractOwnerActionsProps } from './OwnerActions';
 import CreateSwapContract from '../CreateSwapContract';
 import FormModal from '@src/containers/FormModal';
+import LinkLegal from '@src/components/legal/LinkLegal';
 import Loading from '@src/components/loading/Loading';
 import PostAskForm from '@src/components/investor/tradingForms/PostAskForm';
-import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
+import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import router from 'next/router';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
-import { OfferingParticipant, OfferingSale } from 'types';
-import { String0x } from '@src/web3/helpersChain';
-import { useAccount } from 'wagmi';
+import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { OfferingParticipant, OfferingSale, User } from 'types';
+import { useAccount, useChainId } from 'wagmi';
+import { useQuery } from '@apollo/client';
+
+import SmartContractsSettings from './SmartContractsSettings';
 
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
@@ -28,6 +33,7 @@ type OfferingActionsProps = ContractOwnerActionsProps &
     permittedEntity: OfferingParticipant;
     currentSalePrice: number;
     myShares: number;
+    userId: string;
   };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
@@ -39,7 +45,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   sharesOutstanding,
   sales,
   shareContractId,
-  swapContractId,
+  shareContractAddress,
+  swapContractAddress,
   isContractOwner,
   myDistToClaim,
   distributionId,
@@ -51,32 +58,23 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   permittedEntity,
   currentSalePrice,
   myShares,
+  userId,
 }) => {
+  const chainId = useChainId();
+  const { data: userData } = useQuery(GET_USER, { variables: { id: userId } });
+  const user = userData?.queryUser[0];
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
-  const [swapContractModal, setSwapContractModal] = useState<boolean>(false);
+  const [smartContractsSettingsModal, setSmartContractsSettingsModal] = useState<boolean>(false);
   const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
   const [bidFormModel, setBidFormModel] = useState<boolean>(false);
+  const [contractSettingsPanel, setContractSettingsPanel] = useState<boolean>(false);
   const { address: userWalletAddress } = useAccount();
 
   const offeringName = offering.name;
   const offeringMin = offering.details.minUnitsPerInvestor;
   const investmentCurrency = offering.details.investmentCurrency;
 
-  const organization = offering.offeringEntity.organization;
-  if (!hasContract) {
-    return isOfferingManager ? (
-      <Button
-        className="p-3 bg-cLightBlue rounded-md text-white"
-        onClick={() => router.push(`/${organization.id}/offerings/${offering.id}/create-shares`)}
-      >
-        Create Shares
-      </Button>
-    ) : (
-      <>The offeror has not yet created shares or your wallet is not connected.</>
-    );
-  }
-
-  return (
+  const FormModals = (
     <>
       <FormModal
         formOpen={shareSaleManagerModal}
@@ -89,7 +87,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             walletAddress={userWalletAddress}
             sales={sales}
             myBacBalance={myBacBalance}
-            shareContractId={shareContractId}
+            shareContractAddress={shareContractAddress}
             permittedEntity={permittedEntity}
             isContractOwner={isContractOwner === !!isOfferingManager}
             setShareSaleManagerModal={setShareSaleManagerModal}
@@ -99,25 +97,33 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         )}
       </FormModal>
       <FormModal
-        formOpen={swapContractModal}
-        onClose={() => setSwapContractModal(false)}
-        title={`Set up trading for ${offeringName}`}
+        formOpen={smartContractsSettingsModal}
+        onClose={() => setSmartContractsSettingsModal(false)}
+        title={`Smart contract settings`}
       >
-        <CreateSwapContract
+        <SmartContractsSettings
+          user={user}
+          offering={offering}
+          chainId={chainId}
+          partitions={partitions}
           shareContractId={shareContractId}
-          onContractCreated={() => {}}
+          shareContractAddress={shareContractAddress}
+          swapContractAddress={swapContractAddress}
           investmentCurrency={investmentCurrency}
-          contractOwnerEntityId={offering.offeringEntity.id}
         />
       </FormModal>
-      <FormModal formOpen={saleFormModal} onClose={() => setSaleFormModal(false)} title={`Sell shares of ${name}`}>
+      <FormModal
+        formOpen={saleFormModal}
+        onClose={() => setSaleFormModal(false)}
+        title={`Sell shares of ${offeringName}`}
+      >
         <PostAskForm
           offering={offering}
           offeringMin={offeringMin}
           sharesOutstanding={sharesOutstanding}
           walletAddress={userWalletAddress}
           myShares={myShares}
-          shareContractId={shareContractId}
+          shareContractAddress={shareContractAddress}
           permittedEntity={permittedEntity}
           isContractOwner={isContractOwner === !!isOfferingManager}
           currentSalePrice={currentSalePrice}
@@ -125,17 +131,80 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           setRecallContract={setRecallContract}
         />
       </FormModal>
-      {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${name}`}>
-        <ShareBidForm
+      {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${offeringName}`}>
+  <ShareBidForm
+    offering={offering}
+    walletAddress={userWalletAddress}
+    offeringMin={details?.minUnitsPerInvestor}
+    shareContractAddress={shareContractAddress}
+    permittedEntity={permittedEntity}
+    setModal={setBidFormModel}
+    setRecallContract={setRecallContract}
+  />
+</FormModal> */}
+    </>
+  );
+
+  const ContractActions = (
+    <div className="flex flex-col w-full gap-3">
+      {isOfferingManager ? (
+        <Button
+          className="p-3 bg-cLightBlue rounded-md text-white"
+          onClick={() => setSmartContractsSettingsModal(true)}
+        >
+          Configure shares & trading
+        </Button>
+      ) : (
+        <div>The offeror has not yet created shares or your wallet is not connected.</div>
+      )}
+
+      {isContractOwner ? (
+        <ContractOwnerActions
           offering={offering}
-          walletAddress={userWalletAddress}
-          offeringMin={details?.minUnitsPerInvestor}
           shareContractId={shareContractId}
-          permittedEntity={permittedEntity}
-          setModal={setBidFormModel}
+          shareContractAddress={shareContractAddress}
+          swapContractAddress={swapContractAddress}
+          sharesOutstanding={sharesOutstanding}
+          myDistToClaim={myDistToClaim}
+          setShareSaleManagerModal={setShareSaleManagerModal}
+          setSmartContractsSettingsModal={setSmartContractsSettingsModal}
+          setRecallContract={setRecallContract}
+          refetch={refetch}
+          distributionId={distributionId}
+          partitions={partitions}
+        />
+      ) : (
+        <ContractInvestorActions
+          offering={offering}
+          shareContractAddress={shareContractAddress}
+          swapContractAddress={swapContractAddress}
+          isWhitelisted={isWhitelisted}
+          myDistToClaim={myDistToClaim}
+          distributionId={distributionId}
+          setShareSaleManagerModal={setShareSaleManagerModal}
           setRecallContract={setRecallContract}
         />
-      </FormModal> */}
+      )}
+      <ShareSaleStatusWidget
+        sales={sales}
+        offeringId={offering.id}
+        shareContractAddress={shareContractAddress}
+        isContractOwner={isContractOwner}
+      />
+    </div>
+  );
+
+  const NoContract = isOfferingManager ? (
+    <Button className="p-3 bg-cLightBlue rounded-md text-white" onClick={() => setSmartContractsSettingsModal(true)}>
+      Configure shares & trading
+    </Button>
+  ) : (
+    <>The offeror has not yet created shares or your wallet is not connected.</>
+  );
+
+  return (
+    <>
+      {FormModals}
       {retrievalIssue ? (
         <RetrievalIssue className="mt-10" />
       ) : loading ? (
@@ -143,40 +212,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           <Loading />
         </div>
       ) : (
-        <div className="">
-          {isContractOwner ? (
-            <ContractOwnerActions
-              offering={offering}
-              shareContractId={shareContractId}
-              swapContractId={swapContractId}
-              sharesOutstanding={sharesOutstanding}
-              myDistToClaim={myDistToClaim}
-              setShareSaleManagerModal={setShareSaleManagerModal}
-              setSwapContractModal={setSwapContractModal}
-              setRecallContract={setRecallContract}
-              refetch={refetch}
-              distributionId={distributionId}
-              partitions={partitions}
-            />
-          ) : (
-            <ContractInvestorActions
-              offering={offering}
-              shareContractId={shareContractId}
-              swapContractId={swapContractId}
-              isWhitelisted={isWhitelisted}
-              myDistToClaim={myDistToClaim}
-              distributionId={distributionId}
-              setShareSaleManagerModal={setShareSaleManagerModal}
-              setRecallContract={setRecallContract}
-            />
-          )}
-          <ShareSaleStatusWidget
-            sales={sales}
-            offeringId={offering.id}
-            shareContractId={shareContractId}
-            isContractOwner={isContractOwner}
-          />
-        </div>
+        <div className="">{hasContract ? ContractActions : NoContract}</div>
       )}
     </>
   );

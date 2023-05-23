@@ -21,7 +21,7 @@ import { useSession } from 'next-auth/react';
 type SelectedParticipantProps = {
   selection: string;
   participants: OfferingParticipant[];
-  shareContractId: string;
+  shareContractAddress: String0x;
   currentSalePrice: number;
   investmentCurrency: Currency;
   removeMember: (variables) => void;
@@ -30,7 +30,7 @@ type SelectedParticipantProps = {
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   selection,
   participants,
-  shareContractId,
+  shareContractAddress,
   currentSalePrice,
   removeMember,
 }) => {
@@ -38,7 +38,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [updateOfferingParticipant, { data: dataUpdate }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const [approveOfferingParticipant, { data: dataApprove }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
-  const [loading, setLoading] = useState<boolean>(false);
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
 
   const participant = participants?.find((p) => p.id === selection);
@@ -47,11 +46,11 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   //-----------------Contract Interactions---------------------
 
   const sharedContractSpecs = {
-    address: shareContractId as String0x,
+    address: shareContractAddress,
     abi: shareContractABI,
   };
 
-  const { data } = useContractRead({
+  const { data, isLoading } = useContractRead({
     ...sharedContractSpecs,
     functionName: 'balanceOf',
     args: [participantWallet as String0x],
@@ -64,10 +63,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const { write: removeWrite } = useContractWrite({
     ...sharedContractSpecs,
     functionName: 'removeFromWhitelist',
-    mode: 'recklesslyUnprepared',
     args: [participantWallet as String0x],
     onSuccess: (data) => {
-      console.log(data), removeFromDb();
+      removeFromDb();
     },
     onError: (e) => {
       StandardChainErrorHandling(e, setButtonStep);
@@ -99,7 +97,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const { data: addData, write: addWrite } = useContractWrite({
     ...sharedContractSpecs,
     functionName: 'removeFromWhitelist',
-    mode: 'recklesslyUnprepared',
     args: [participantWallet as String0x],
     onSuccess: () => updateDb(),
     onError: (e) => {
@@ -202,7 +199,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
       />
       <ClickToEditItem
         label="Jurisdiction"
-        currentValue={jurisdiction.country ? renderJurisdiction(jurisdiction) : null}
+        currentValue={jurisdiction?.country ? renderJurisdiction(jurisdiction) : null}
         form={updateInvestorForm('jurisdiction')}
         editOn={specEditOn}
         itemType="jurisdiction?"
@@ -225,13 +222,13 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     <div>
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
       <DistributionList
-        shareContractId={shareContractId}
+        shareContractAddress={shareContractAddress}
         distributions={offering.distributions}
         currency={offering.details.distributionCurrency}
       />
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades</h1>
       <DistributionList
-        shareContractId={shareContractId}
+        shareContractAddress={shareContractAddress}
         distributions={offering.distributions}
         currency={offering.details.distributionCurrency}
       />

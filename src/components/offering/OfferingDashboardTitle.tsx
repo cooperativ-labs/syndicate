@@ -8,6 +8,7 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
+import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 
@@ -18,7 +19,7 @@ type OfferingDashboardTitleProps = {
   organizationId: string;
   accessCode: string;
   offeringName: string;
-  shareContractId: string;
+  shareContractAddress: String0x;
   chainId: number;
 };
 
@@ -29,7 +30,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   offeringId,
   accessCode,
   organizationId,
-  shareContractId,
+  shareContractAddress,
   chainId,
 }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
@@ -130,7 +131,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
 
   const [showVisibilitySettings, setShowVisibilitySettings] = useState<boolean>(false);
   const visibilitySettings = (
-    <>
+    <div className="absolute right-4 top-1 flex min-w-max">
       {showVisibilitySettings ? (
         <>
           {isOfferingManager && profileVisibility && (
@@ -142,7 +143,9 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             />
           )}
           {isOfferingManager && (
-            <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
+            <div className="min-w-max">
+              <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
+            </div>
           )}
         </>
       ) : (
@@ -158,7 +161,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg ml-2" />
         </a>
       )}
-    </>
+    </div>
   );
 
   return (
@@ -180,13 +183,13 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             {offeringName}
           </h1>
         )}
-        {shareContractId ? (
-          <FormattedCryptoAddress chainId={chainId} address={shareContractId} showFull withCopy />
+        {shareContractAddress ? (
+          <FormattedCryptoAddress chainId={chainId} address={shareContractAddress} showFull withCopy />
         ) : (
           <div className="text-sm text-gray-800">This offering's contract has not been deployed yet.</div>
         )}
       </div>
-      <div className="flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
+      <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
     </div>
   );
 };

@@ -19,9 +19,10 @@ import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
+
+import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { useAsync, useAsyncFn } from 'react-use';
+import { useChainId } from 'wagmi';
 
 type SharePurchaseFormProps = {
   offering: Offering;
@@ -30,7 +31,7 @@ type SharePurchaseFormProps = {
   saleQty: number;
   soldQty: number;
   myBacBalance: number;
-  shareContractId: string;
+  shareContractAddress: String0x;
   permittedEntity: OfferingParticipant;
   setModal: (boolean) => void;
   setRecallContract: Dispatch<SetStateAction<string>>;
@@ -41,13 +42,13 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
   sale,
   price,
   myBacBalance,
-  shareContractId,
+  shareContractAddress,
   permittedEntity,
   setModal,
   setRecallContract,
 }) => {
   const { reachLib, userWalletAddress } = useContext(ReachContext);
-  const chainId = setChainId;
+  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -69,7 +70,7 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
     setButtonStep('submitting');
     await reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
     const acc = await reachLib.getDefaultAccount();
-    const ctc = acc.contract(backendCtc, shareContractId);
+    const ctc = acc.contract(backendCtc, shareContractAddress);
     const call = async (f) => {
       try {
         await f();

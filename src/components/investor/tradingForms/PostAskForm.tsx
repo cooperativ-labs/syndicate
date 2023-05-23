@@ -16,13 +16,14 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { String0x } from '@src/web3/helpersChain';
 import { submitOffer } from '@src/web3/reachCalls';
 import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type PostAskFormProps = {
   offering: Offering;
-  shareContractId: string;
+  shareContractAddress: String0x;
   walletAddress: string;
   myShares: number;
   permittedEntity: OfferingParticipant;
@@ -37,7 +38,7 @@ type PostAskFormProps = {
 const PostAskForm: FC<PostAskFormProps> = ({
   offering,
   walletAddress,
-  shareContractId,
+  shareContractAddress,
   myShares,
   permittedEntity,
   isContractOwner,
@@ -111,7 +112,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
           setSubmitting(true);
           await submitOffer(
             reachLib,
-            shareContractId,
+            shareContractAddress,
             id,
             isContractOwner,
             myShares,

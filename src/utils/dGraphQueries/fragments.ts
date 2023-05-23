@@ -122,6 +122,7 @@ export const SMART_CONTRACT_FIELDS = gql`
       id
     }
     established
+    partitions
   }
 `;
 
