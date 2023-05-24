@@ -186,7 +186,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         {shareContractAddress ? (
           <FormattedCryptoAddress chainId={chainId} address={shareContractAddress} showFull withCopy />
         ) : (
-          <div className="text-sm text-gray-800">This offering's contract has not been deployed yet.</div>
+          <div className="text-sm text-gray-800">{`This offering's contract has not been deployed yet.`}</div>
         )}
       </div>
       <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>

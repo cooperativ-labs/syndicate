@@ -50,7 +50,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
 
   if (agreementError && !alerted) {
     alert(`Oops. Looks like something went wrong: ${agreementError.message}`);
-    setLoadingModal(false);
     setAlerted(true);
   }
 
@@ -122,10 +121,8 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
         onSubmit={async (values, { setSubmitting }) => {
           setAlerted(false);
           setSubmitting(true);
-          setLoadingModal(true);
           await createDocHash(values.signature);
           setSubmitting(false);
-          setLoadingModal(false);
         }}
       >
         {({ isSubmitting, values }) => (

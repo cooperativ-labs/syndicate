@@ -6,9 +6,10 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
 import { SaleStatusType } from '@src/utils/enumConverters';
-import { waitForTransaction, writeContract } from 'wagmi/actions';
-import { parseUnits } from 'viem';
-import { shareContractABI } from './generated';
+import { waitForTransaction, writeContract, getAccount, prepareWriteContract } from 'wagmi/actions';
+import { Transaction, TransactionReceipt, parseUnits } from 'viem';
+import { shareContractABI, swapContractABI } from './generated';
+import toast from 'react-hot-toast';
 
 export type SaleContentsType = {
   qty: number;
@@ -54,12 +55,13 @@ export const addWhitelistMember = async (
   const call = async () => {
     setButtonStep('submitting');
     try {
-      const { hash } = await writeContract({
+      const { request } = await prepareWriteContract({
         address: shareContractAddress,
         abi: shareContractABI,
         functionName: 'addToWhitelist',
         args: [walletAddress],
       });
+      const { hash } = await writeContract(request);
       transactionHash = hash;
       await waitForTransaction({
         hash: hash,
@@ -80,16 +82,20 @@ export const setDocument = async (
   shareContractAddress: String0x,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
   callback: () => void,
-  uri?: string
+  uri: string
 ) => {
   const name = bytes32FromString(docName);
   const docHash = hashBytes32FromString(text) as String0x;
   try {
-    await writeContract({
+    const { request } = await prepareWriteContract({
       address: shareContractAddress,
       abi: shareContractABI,
       functionName: 'setDocument',
       args: [name, uri, docHash],
+    });
+    const { hash } = await writeContract(request);
+    await waitForTransaction({
+      hash: hash,
     });
     callback();
   } catch (e) {
@@ -112,23 +118,23 @@ export const sendShares = async (
 ) => {
   const amt = parseUnits(numShares.toString() as `${number}`, 18);
 
-  let transactionHash = '';
-
+  let transactionDetails = undefined;
   const call = async () => {
     setButtonStep('submitting');
     const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
     try {
-      const { hash } = await writeContract({
+      const { request } = await prepareWriteContract({
         address: shareContractAddress,
         abi: shareContractABI,
         functionName: 'issueByPartition',
         args: [setPartition, recipient, amt],
       });
-      transactionHash = hash;
 
-      await waitForTransaction({
+      const { hash } = await writeContract(request);
+      const details = await waitForTransaction({
         hash: hash,
       });
+      transactionDetails = details;
       if (partition === '0xNew')
         await addPartition({
           variables: {
@@ -136,61 +142,76 @@ export const sendShares = async (
             partition: setPartition,
           },
         });
+
       setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep, recipient);
     }
   };
   await call();
-  return transactionHash;
+  return transactionDetails;
 };
 
-export const submitOffer = async (
-  reachLib: any,
-  shareContractAddress: string,
+export const submitOrder = async (
+  values: {
+    numShares: number;
+    price: number;
+    partition: String0x;
+    minUnits: number;
+    maxUnits: number;
+    visible: boolean;
+  },
+  swapContractAddress: String0x,
   offeringId: string,
   isContractOwner: boolean,
-  myShares: number,
-  numShares: number,
-  price: number,
-  minUnits: number,
-  maxUnits: number,
+  isAsk: boolean,
+  isIssuance: boolean,
+  isErc20Payment: boolean,
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
-  setRecallContract: Dispatch<SetStateAction<string>>,
-  setModal: Dispatch<SetStateAction<boolean>>,
-  createSaleObject: (
+  createSale: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>,
-  deleteSaleObject?: (any) => void
+  setModal?: Dispatch<SetStateAction<boolean>>,
+  myShares?: number
 ) => {
   setButtonStep('submitting');
-  const acc = await reachLib.getDefaultAccount();
-  const ctc = acc.contract(backendCtc, shareContractAddress);
-  const contractUserPubKey = acc.getAddress();
-  const normalizeRecipientAddress = reachLib.formatAddress(contractUserPubKey);
-  const call = async (f) => {
+  const call = async () => {
     try {
-      if (!isContractOwner && numShares > myShares) {
-        throw Error;
+      if (!isContractOwner && values.numShares > myShares) {
+        throw Error('You do not have enough shares to sell.');
       }
-      await createSaleObject({
+      const { request, result } = await prepareWriteContract({
+        address: swapContractAddress,
+        abi: swapContractABI,
+        functionName: 'initiateOrder',
+        args: [values.partition, BigInt(values.numShares), BigInt(values.price), isAsk, isIssuance, isErc20Payment],
+      });
+      const { hash } = await writeContract(request);
+      const transactionReceipt = await waitForTransaction({
+        hash: hash,
+      });
+      const { address: userWalletAddress } = getAccount();
+      await createSale({
         variables: {
           currentDate: currentDate,
           offeringId: offeringId,
-          smartshareContractAddress: shareContractAddress,
-          initiator: normalizeRecipientAddress,
-          numShares: numShares,
-          minUnits: minUnits,
-          maxUnits: maxUnits,
-          price: price,
-          visible: true,
+          initiator: userWalletAddress,
+          swapContractAddress: swapContractAddress,
+          partition: values.partition,
+          isAsk: isAsk,
+          orderId: Number(result),
+          numShares: values.numShares,
+          price: values.price,
+          minUnits: values.minUnits,
+          maxUnits: values.maxUnits,
+          visible: values.visible,
         },
       });
-      await f();
+
       setButtonStep('confirmed');
-      setRecallContract('submitOffer');
-      alert(`You have offered ${numShares} shares.`);
-      setModal(false);
+      toast.success(`You have offered ${values.numShares} shares.`);
+      setModal && setModal(false);
+      return transactionReceipt;
     } catch (e) {
       // if (data) {
       //   const saleId = data.updateOffering.offering[0].sales[0].id;
@@ -199,11 +220,7 @@ export const submitOffer = async (
       StandardChainErrorHandling(e, setButtonStep);
     }
   };
-  const apis = ctc.a;
-  call(async () => {
-    const apiReturn = await apis.initSwap(loadStdlib(process.env).parseCurrency(numShares), price, isContractOwner);
-    return apiReturn;
-  });
+  await call();
 };
 
 export const cancelSale = async (

@@ -605,9 +605,9 @@ type OfferingSale {
 	maxUnits: Int
 	price: Int!
 	relatedOffering: Offering! @hasInverse(field:sales) 
-	smartContractId: String
-	saleContractId: String
-	isBid: Boolean
+	saleContractAddress: String!
+	orderId: Int!
+	isAsk: Boolean
 	initiator: String
 	creationDate: DateTime!
 	lastUpdate: DateTime

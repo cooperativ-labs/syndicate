@@ -457,7 +457,9 @@ export const CORE_OFFERING_FIELDS = gql`
       minUnits
       maxUnits
       visible
-      smartContractId
+      saleContractAddress
+      orderId
+      isAsk
       initiator
       relatedOffering {
         id

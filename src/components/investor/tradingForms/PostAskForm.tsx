@@ -7,6 +7,7 @@ import NonInput from '../../form-components/NonInput';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
+import { bytes32FromString, String0x } from '@src/web3/helpersChain';
 import { CREATE_SALE, DELETE_SALE } from '@src/utils/dGraphQueries/offering';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,14 +17,14 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
 import { ReachContext } from '@src/SetReachContext';
-import { String0x } from '@src/web3/helpersChain';
-import { submitOffer } from '@src/web3/reachCalls';
-import { useChainId } from 'wagmi';
+
+import { submitOrder } from '@src/web3/contractFunctionCalls';
+import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type PostAskFormProps = {
   offering: Offering;
-  shareContractAddress: String0x;
+  swapContractAddress: String0x;
   walletAddress: string;
   myShares: number;
   permittedEntity: OfferingParticipant;
@@ -31,14 +32,13 @@ type PostAskFormProps = {
   offeringMin: number;
   sharesOutstanding: number;
   currentSalePrice: number;
-  setModal: (boolean) => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  setModal: (x: boolean) => void;
 };
 
 const PostAskForm: FC<PostAskFormProps> = ({
   offering,
   walletAddress,
-  shareContractAddress,
+  swapContractAddress,
   myShares,
   permittedEntity,
   isContractOwner,
@@ -46,16 +46,15 @@ const PostAskForm: FC<PostAskFormProps> = ({
   sharesOutstanding,
   currentSalePrice,
   setModal,
-  setRecallContract,
 }) => {
-  const { reachLib } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const [createSaleObject, { data, error }] = useMutation(CREATE_SALE);
   const [deleteSaleObject, { data: dataDelete, error: errorDelete }] = useMutation(DELETE_SALE);
   const { id, name, details, documents, offeringEntity } = offering;
-  const sharesIssued = details.numUnits;
+  const sharesIssued = details?.numUnits;
 
   const outstanding = sharesOutstanding ?? 0;
   const sharesUnissued = sharesIssued - outstanding;
@@ -77,7 +76,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
           approvalRequired: false,
           minUnits: undefined,
           maxUnits: undefined,
-          toc: false,
+          toc: true,
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
@@ -102,7 +101,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
             if (!values.approvalRequired) {
               errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
             }
-            if (!values.toc) {
+            if (values.toc === true) {
               errors.toc = "You must accept this offering's Terms & Conditions";
             }
           }
@@ -110,18 +109,20 @@ const PostAskForm: FC<PostAskFormProps> = ({
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          await submitOffer(
-            reachLib,
-            shareContractAddress,
+          const partition = bytes32FromString('Class A');
+          await submitOrder(
+            swapContractAddress,
             id,
             isContractOwner,
             myShares,
             values.numUnitsToSell,
             values.price,
+            partition,
+            true,
+            true,
             values.minUnits,
             values.maxUnits,
             setButtonStep,
-            setRecallContract,
             setModal,
             createSaleObject
           );

@@ -701,8 +701,8 @@ export const CREATE_SALE = gql`
   mutation UpdateOffering(
     $currentDate: DateTime!
     $offeringId: [ID!]
-    $smartshareContractId: String!
-    $isBid: Boolean
+    $swapContractAddress: String!
+    $isAsk: Boolean
     $numShares: Int!
     $minUnits: Int
     $maxUnits: Int
@@ -717,8 +717,8 @@ export const CREATE_SALE = gql`
           sales: {
             creationDate: $currentDate
             lastUpdate: $currentDate
-            smartshareContractId: $smartshareContractId
-            isBid: $isBid
+            saleContractAddress: $swapContractAddress
+            isAsk: $isAsk
             initiator: $initiator
             numShares: $numShares
             minUnits: $minUnits

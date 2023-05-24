@@ -14,7 +14,7 @@ type CustomAddressAutocompleteProps = {
   setValue: Dispatch<SetStateAction<{ value: any }>>;
 };
 
-export const CreateFirstAddressLine = (streetNumber: string, streetName: string) => {
+export const createFirstAddressLine = (streetNumber: string, streetName: string) => {
   if (!!streetNumber && !!streetName) {
     return `${streetNumber} ${streetName}`;
   } else if (streetName) {
@@ -22,6 +22,39 @@ export const CreateFirstAddressLine = (streetNumber: string, streetName: string)
   } else {
     return;
   }
+};
+
+export const normalizeGeoAddress = (autocompleteResults) => {
+  console.log(autocompleteResults);
+
+  const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
+  const street_number = autocompleteResults[0]?.address_components.find((x) =>
+    x.types.includes('street_number')
+  )?.long_name;
+  const street_name = autocompleteResults[0]?.address_components.find((x) => x.types.includes('route'))?.long_name;
+  const baseCity = autocompleteResults[0]?.address_components.find((x) => x.types.includes('locality'))?.long_name;
+  const postalTown = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_town'))?.long_name;
+  const sublocality = autocompleteResults[0]?.address_components.find((x) =>
+    x.types.includes('sublocality')
+  )?.long_name;
+  const state = autocompleteResults[0]?.address_components.find((x) =>
+    x.types.includes('administrative_area_level_1')
+  )?.long_name;
+  const postalCode = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_code'))?.long_name;
+  const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
+
+  const firstAddressLine = createFirstAddressLine(street_number, street_name);
+  const secondAddressLine = subpremise;
+  const city = baseCity ?? postalTown ?? sublocality;
+
+  return {
+    firstAddressLine,
+    secondAddressLine,
+    city,
+    state,
+    postalCode,
+    country,
+  };
 };
 
 const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({

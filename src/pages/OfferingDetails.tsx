@@ -51,7 +51,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const swapContract = getSwapContracts(smartContracts, chainId)[0];
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
   const partitions = establishedContract?.partitions;
-
   const owners = offeringEntity?.owners;
   const documents = offering?.documents;
   const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
@@ -103,7 +102,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
   // currently refers to the single sale the contract can currently offer
   const contractSales = sales.filter((sale) => {
-    return sale.smartContractId === shareContractAddress;
+    return sale.saleContractAddress === shareContractAddress;
   });
 
   const currentSalePrice = getLowestSalePrice(sales, details?.priceStart);

@@ -17,7 +17,9 @@ import { OfferingParticipant, OfferingSale, User } from 'types';
 import { useAccount, useChainId } from 'wagmi';
 import { useQuery } from '@apollo/client';
 
+import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
 import SmartContractsSettings from './SmartContractsSettings';
+import { String0x } from '@src/web3/helpersChain';
 
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
@@ -73,7 +75,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const offeringName = offering.name;
   const offeringMin = offering.details.minUnitsPerInvestor;
   const investmentCurrency = offering.details.investmentCurrency;
-
+  const sharesIssued = offering.details?.numUnits;
   const FormModals = (
     <>
       <FormModal
@@ -117,18 +119,26 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         onClose={() => setSaleFormModal(false)}
         title={`Sell shares of ${offeringName}`}
       >
-        <PostAskForm
+        {/* <PostAskForm
           offering={offering}
           offeringMin={offeringMin}
           sharesOutstanding={sharesOutstanding}
-          walletAddress={userWalletAddress}
+          walletAddress={userWalletAddress as String0x}
           myShares={myShares}
-          shareContractAddress={shareContractAddress}
+          swapContractAddress={swapContractAddress}
           permittedEntity={permittedEntity}
           isContractOwner={isContractOwner === !!isOfferingManager}
           currentSalePrice={currentSalePrice}
           setModal={setSaleFormModal}
-          setRecallContract={setRecallContract}
+        /> */}
+        <PostInitialSale
+          sharesIssued={sharesIssued}
+          sharesOutstanding={sharesOutstanding}
+          offeringId={offering.id}
+          offeringMin={offeringMin}
+          priceStart={offering.details.priceStart}
+          currency={offering.details.investmentCurrency}
+          swapContractAddress={swapContractAddress}
         />
       </FormModal>
       {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${offeringName}`}>

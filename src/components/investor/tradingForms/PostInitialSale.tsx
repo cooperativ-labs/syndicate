@@ -5,49 +5,45 @@ import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
+import { bytes32FromString, StandardChainErrorHandling, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { CREATE_SALE } from '@src/utils/dGraphQueries/offering';
 import { Currency, OfferingParticipant } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
+import { Form, Formik, swap } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { loadStdlib } from '@reach-sh/stdlib';
 import { ALGO_MakePeraConnect as MakePeraConnect } from '@reach-sh/stdlib';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ReachContext } from '@src/SetReachContext';
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
+import { submitOrder } from '@src/web3/contractFunctionCalls';
+import { swapContractABI } from '@src/web3/generated';
+import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
 import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
 
-export type CreateSaleProps = {
+export type PostInitialSaleProps = {
   sharesIssued: number;
   sharesOutstanding: number;
   offeringId: string;
-  shareContractId: string;
+  swapContractAddress: String0x;
   offeringMin: number;
   priceStart: number;
   currency: Currency;
-  refetch: () => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
 };
-const CreateSale: FC<CreateSaleProps> = ({
+const PostInitialSale: FC<PostInitialSaleProps> = ({
   sharesIssued,
   sharesOutstanding,
   offeringId,
   offeringMin,
   priceStart,
   currency,
-  shareContractId,
-  refetch,
-  setRecallContract,
+  swapContractAddress,
 }) => {
-  const { reachLib, userWalletAddress } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [createSaleObject, { data, error }] = useMutation(CREATE_SALE);
+  const [createSale, { data, error }] = useMutation(CREATE_SALE);
 
-  if (data) {
-    refetch();
-  }
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
   const formButtonText = (values) => {
@@ -61,47 +57,11 @@ const CreateSale: FC<CreateSaleProps> = ({
   const saleCalculator = (numUnits: number, price: number) => {
     return numUnits * price;
   };
-
   const saleString = (numShares, price: number) => {
     return numberWithCommas(saleCalculator(price, parseInt(numShares, 10)));
   };
-  const [, createSale] = useAsyncFn(
-    async (numShares: number, price: number, minUnits: number, maxUnits: number, visible: boolean) => {
-      setButtonStep('submitting');
-      // const reach = await loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
-      reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MakePeraConnect }));
-      const acc = await reachLib.getDefaultAccount();
-      const ctc = acc.contract(backendCtc, shareContractId);
-      const call = async (f) => {
-        try {
-          await f();
-          await createSaleObject({
-            variables: {
-              currentDate: currentDate,
-              initiator: userWalletAddress,
-              offeringId: offeringId,
-              smartshareContractId: shareContractId,
-              numShares: numShares,
-              minUnits: minUnits,
-              maxUnits: maxUnits,
-              price: price,
-              visible: visible,
-            },
-          });
-          setRecallContract('createSale');
-          setButtonStep('confirmed');
-        } catch (e) {
-          StandardChainErrorHandling(e, setButtonStep);
-        }
-      };
-      const apis = ctc.a;
-      call(async () => {
-        const apiReturn = await apis.initSwap(loadStdlib(process.env).parseCurrency(numShares), price, true);
-        return apiReturn;
-      });
-    }
-  );
 
+  console.log(bytes32FromString('Class A'));
   return (
     <Formik
       initialValues={{
@@ -110,6 +70,7 @@ const CreateSale: FC<CreateSaleProps> = ({
         minUnits: undefined,
         maxUnits: undefined,
         visible: true,
+        partition: bytes32FromString('Class A'),
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -134,7 +95,21 @@ const CreateSale: FC<CreateSaleProps> = ({
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        await createSale(values.numShares, values.price, values.minUnits, values.maxUnits, values.visible);
+        const isContractOwner = true;
+        const isAsk = true;
+        const isIssuance = true;
+        const isErc20Payment = false;
+        await submitOrder(
+          values,
+          swapContractAddress,
+          offeringId,
+          isContractOwner,
+          isAsk,
+          isIssuance,
+          isErc20Payment,
+          setButtonStep,
+          createSale
+        );
         setSubmitting(false);
       }}
     >
@@ -209,4 +184,4 @@ const CreateSale: FC<CreateSaleProps> = ({
   );
 };
 
-export default CreateSale;
+export default PostInitialSale;
