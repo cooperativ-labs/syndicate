@@ -49,6 +49,11 @@ const CreateAccount: FC = () => {
     signIn('email', { email });
   };
 
+  const handleTestLogin = (email: string, password: string) => {
+    setLoading(true);
+    signIn('test-credentials', { email, password });
+  };
+
   const MagicLinkLoginSchema = Yup.object().shape({
     email: Yup.string().email('Invalid email address').required('Email is required'),
   });
@@ -84,6 +89,55 @@ const CreateAccount: FC = () => {
     </Formik>
   );
 
+  // const TestLoginSchema = Yup.object().shape({
+  //   email: Yup.string().email('Invalid email address').required('Email is required'),
+  //   password: Yup.string().required('Password is required'),
+  // });
+
+  // const testCredentials = (
+  //   <Formik
+  //     initialValues={{ email: '', password: '' }}
+  //     validationSchema={TestLoginSchema}
+  //     onSubmit={(values) => handleTestLogin(values.email, values.password)}
+  //   >
+  //     {({ errors, touched, isSubmitting }) => (
+  //       <Form>
+  //         <div>
+  //           <Field
+  //             type="email"
+  //             name="email"
+  //             aria-label="login-email"
+  //             placeholder="you@example.com"
+  //             className={`w-full rounded-sm h-14 border-2 ${
+  //               touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
+  //             } focus:no-outline focus:ring-2 focus:ring-blue-400`}
+  //           />
+  //           <ErrorMessage name="email" component="div" className="mt-1 text-sm font-semibold text-red-700" />
+  //         </div>
+  //         <div>
+  //           <Field
+  //             type="password"
+  //             name="password"
+  //             aria-label="password"
+  //             placeholder="123456"
+  //             className={`w-full rounded-sm h-14 border-2 ${
+  //               touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
+  //             } focus:no-outline focus:ring-2 focus:ring-blue-400`}
+  //           />
+  //           <ErrorMessage name="password" component="div" className="mt-1 text-sm font-semibold text-red-700" />
+  //         </div>
+  //         <button
+  //           type="submit"
+  //           disabled={isSubmitting}
+  //           className="flex my-5 items-center rounded-sm bg-cLightBlue  justify-center p-3 text-slate-50 font-medium w-full"
+  //         >
+  //           TestLogin
+  //         </button>
+  //       </Form>
+  //     )}
+  //   </Formik>
+  // );
+
   return (
     <div className="mt-5 md:p-10 md:rounded-lg md:bg-white md:shadow-xl">
       <div className="flex justify-center mb-10">
@@ -110,6 +164,7 @@ const CreateAccount: FC = () => {
           {/* <SSOButton onClick={handleLinkedInLogin} iconPrefix="fab" icon="linkedin" text="Continue with LinkedIn" /> */}
         </div>
       )}
+      {/* <div>{testCredentials}</div> */}
       <div className="flex text-sm text-cGold text-center mt-10 justify-center">
         <Link href="https://cooperativ.io/terms">
           <div className="w-max">Terms of Service</div>

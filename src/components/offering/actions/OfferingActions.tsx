@@ -1,25 +1,23 @@
 import Button from '@src/components/buttons/Button';
 import ContractInvestorActions, { ContractInvestorActionsProps } from './InvestorActions';
 import ContractOwnerActions, { ContractOwnerActionsProps } from './OwnerActions';
-import CreateSwapContract from '../CreateSwapContract';
+
 import FormModal from '@src/containers/FormModal';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import Loading from '@src/components/loading/Loading';
 import PostAskForm from '@src/components/investor/tradingForms/PostAskForm';
 import React, { FC, useState } from 'react';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
-import RightSideBar from '@src/containers/sideBar/RightSidebar';
-import router from 'next/router';
-import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
-import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { OfferingParticipant, OfferingSale, User } from 'types';
-import { useAccount, useChainId } from 'wagmi';
-import { useQuery } from '@apollo/client';
 
 import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
+import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
+import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings from './SmartContractsSettings';
+import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { OfferingParticipant, OfferingSale, User } from 'types';
 import { String0x } from '@src/web3/helpersChain';
+import { useAccount, useChainId } from 'wagmi';
+import { useQuery } from '@apollo/client';
 
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
@@ -35,6 +33,7 @@ type OfferingActionsProps = ContractOwnerActionsProps &
     permittedEntity: OfferingParticipant;
     currentSalePrice: number;
     myShares: number;
+    paymentTokenAddress: String0x;
     userId: string;
   };
 
@@ -44,11 +43,10 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   loading,
   isOfferingManager,
   offering,
+  paymentTokenAddress,
   sharesOutstanding,
   sales,
-  shareContractId,
-  shareContractAddress,
-  swapContractAddress,
+  contractSet,
   isContractOwner,
   myDistToClaim,
   distributionId,
@@ -69,8 +67,12 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const [smartContractsSettingsModal, setSmartContractsSettingsModal] = useState<boolean>(false);
   const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
   const [bidFormModel, setBidFormModel] = useState<boolean>(false);
-  const [contractSettingsPanel, setContractSettingsPanel] = useState<boolean>(false);
+
+  // YOU ARE INSTALLING SMART CONTRACT SETS
+
   const { address: userWalletAddress } = useAccount();
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
 
   const offeringName = offering.name;
   const offeringMin = offering.details.minUnitsPerInvestor;
@@ -89,7 +91,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             walletAddress={userWalletAddress}
             sales={sales}
             myBacBalance={myBacBalance}
-            shareContractAddress={shareContractAddress}
+            swapContractAddress={swapContractAddress}
+            paymentTokenAddress={paymentTokenAddress}
             permittedEntity={permittedEntity}
             isContractOwner={isContractOwner === !!isOfferingManager}
             setShareSaleManagerModal={setShareSaleManagerModal}
@@ -108,9 +111,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           offering={offering}
           chainId={chainId}
           partitions={partitions}
-          shareContractId={shareContractId}
-          shareContractAddress={shareContractAddress}
-          swapContractAddress={swapContractAddress}
+          contractSet={contractSet}
           investmentCurrency={investmentCurrency}
         />
       </FormModal>
@@ -171,9 +172,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       {isContractOwner ? (
         <ContractOwnerActions
           offering={offering}
-          shareContractId={shareContractId}
-          shareContractAddress={shareContractAddress}
-          swapContractAddress={swapContractAddress}
+          contractSet={contractSet}
           sharesOutstanding={sharesOutstanding}
           myDistToClaim={myDistToClaim}
           setShareSaleManagerModal={setShareSaleManagerModal}
@@ -186,8 +185,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       ) : (
         <ContractInvestorActions
           offering={offering}
-          shareContractAddress={shareContractAddress}
-          swapContractAddress={swapContractAddress}
+          contractSet={contractSet}
           isWhitelisted={isWhitelisted}
           myDistToClaim={myDistToClaim}
           distributionId={distributionId}

@@ -16,7 +16,6 @@ import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { getEstablishedContracts, getSwapContracts } from '@src/utils/helpersContracts';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
 import { getLowestSalePrice } from '@src/utils/helpersMoney';
@@ -40,17 +39,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const userId = session?.user?.id;
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode } = offering;
-
-  const smartContracts = offeringEntity.smartContracts;
+  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContractSets } = offering;
+  const contractSet = smartContractSets?.slice(-1)[0];
 
   //CURRENTLY ONLY GETS FIRST CONTRACT
-  const establishedContract = getEstablishedContracts(smartContracts, chainId)[0];
-  const shareContractAddress = establishedContract?.cryptoAddress.address as String0x;
-  const shareContractId = establishedContract?.id;
-  const swapContract = getSwapContracts(smartContracts, chainId)[0];
+  const shareContract = contractSet?.shareContract;
+  const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
+  const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
-  const partitions = establishedContract?.partitions;
+
+  const partitions = shareContract?.partitions as String0x[];
   const owners = offeringEntity?.owners;
   const documents = offering?.documents;
   const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
@@ -102,7 +100,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
   // currently refers to the single sale the contract can currently offer
   const contractSales = sales.filter((sale) => {
-    return sale.saleContractAddress === shareContractAddress;
+    return sale.saleContractAddress === swapContractAddress;
   });
 
   const currentSalePrice = getLowestSalePrice(sales, details?.priceStart);
@@ -148,7 +146,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               offeringName={name}
               isOfferingManager={isOfferingManager}
               shareContractAddress={shareContractAddress}
-              chainId={establishedContract?.cryptoAddress.chainId}
+              chainId={shareContract?.cryptoAddress.chainId}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
@@ -209,9 +207,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         isOfferingManager={isOfferingManager}
                         sales={contractSales}
                         offering={offering}
-                        shareContractId={shareContractId}
-                        shareContractAddress={shareContractAddress}
-                        swapContractAddress={swapContractAddress}
+                        contractSet={contractSet}
+                        paymentTokenAddress={paymentToken}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
                         myBacBalance={myBacBalance}

@@ -16,7 +16,6 @@ import { useMutation } from '@apollo/client';
 
 type CreateShareContractProps = {
   contractCreatorId: string;
-  entityName: string;
 };
 
 const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }) => {

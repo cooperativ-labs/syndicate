@@ -108,41 +108,35 @@ export const CREATE_SWAP_CONTRACT = gql`
     $type: SmartContractType!
     $protocol: CryptoAddressProtocol
     $ownerId: ID!
-    $offeringId: ID!
+    $contractSetId: ID!
   ) {
-    addSmartContract(
-      input: [
-        {
-          cryptoAddress: {
-            address: $cryptoAddress
-            type: CONTRACT
-            chainId: $chainId
-            protocol: $protocol
+    updateOfferingSmartContractSet(
+      input: {
+        filter: { id: [$contractSetId] }
+        set: {
+          swapContract: {
+            cryptoAddress: {
+              address: $cryptoAddress
+              type: CONTRACT
+              chainId: $chainId
+              protocol: $protocol
+              owner: { id: $ownerId }
+            }
             owner: { id: $ownerId }
+            backingToken: { code: $backingToken }
+            type: $type
+            established: false
           }
-          owner: { id: $ownerId }
-          offering: { id: $offeringId }
-          backingToken: { code: $backingToken }
-          type: $type
-          established: false
         }
-      ]
+      }
     ) {
-      smartContract {
+      offeringSmartContractSet {
         id
-        owner {
+        swapContract {
           id
-          smartContracts {
-            id
-          }
-          organization {
-            id
-          }
         }
-        cryptoAddress {
+        offering {
           id
-          address
-          chainId
         }
       }
     }

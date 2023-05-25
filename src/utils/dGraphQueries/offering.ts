@@ -254,7 +254,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
         filter: { id: $offeringId }
         set: {
           lastUpdate: $currentDate
-          smartContracts: { id: $smartContractId }
+          smartContractSets: { shareContract: { id: $smartContractId } }
           waitlistOn: false
           documents: {
             title: $agreementTitle
@@ -272,6 +272,12 @@ export const ADD_LEGAL_SHARE_LINK = gql`
     ) {
       offering {
         id
+        smartContractSets {
+          id
+          shareContract {
+            id
+          }
+        }
         documents {
           text
         }
@@ -700,6 +706,7 @@ export const UPDATE_CONTRACT_STATUS = gql`
 export const CREATE_SALE = gql`
   mutation UpdateOffering(
     $currentDate: DateTime!
+    $orderId: Int!
     $offeringId: [ID!]
     $swapContractAddress: String!
     $isAsk: Boolean
@@ -716,6 +723,7 @@ export const CREATE_SALE = gql`
         set: {
           sales: {
             creationDate: $currentDate
+            orderId: $orderId
             lastUpdate: $currentDate
             saleContractAddress: $swapContractAddress
             isAsk: $isAsk
@@ -737,6 +745,7 @@ export const CREATE_SALE = gql`
           price
           initiator
           creationDate
+          orderId
         }
       }
     }

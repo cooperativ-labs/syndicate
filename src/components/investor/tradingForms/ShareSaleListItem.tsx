@@ -13,14 +13,15 @@ import SaleManagerPanel from './ShareManagerPanel';
 import { getSale, SaleContentsType } from '@src/web3/reachCalls';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ReachContext } from '@src/SetReachContext';
+import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
 type ShareSaleListItemProps = {
   index: number;
   offering: Offering;
   sale: OfferingSale;
-  initiator: string;
   myBacBalance: number;
-  shareContractAddress: String0x;
+  swapContractAddress: String0x;
+  paymentTokenAddress: String0x;
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
@@ -31,9 +32,9 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   index,
   offering,
   sale,
-  initiator,
   myBacBalance,
-  shareContractAddress,
+  swapContractAddress,
+  paymentTokenAddress,
   permittedEntity,
   walletAddress,
   isContractOwner,
@@ -56,15 +57,38 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   const minPurchase = sale.minUnits;
   const maxPurchase = sale.maxUnits;
 
-  const retrieveSale = () => {
-    getSale(reachLib, reachAcc, shareContractAddress, initiator, setSaleContents);
-  };
-
-  useEffect(() => {
-    if (!saleContents.price) {
-      retrieveSale();
-    }
-  }, [saleContents, retrieveSale]);
+  const {
+    initiator,
+    partition,
+    amount,
+    price,
+    filledAmount,
+    filler,
+    isApproved,
+    isDisapproved,
+    isCancelled,
+    isFilled,
+    isShareIssuance,
+    isAskOrder,
+    isErc20Payment,
+    isLoading,
+  } = useOrderDetails(swapContractAddress, sale.orderId, paymentTokenAddress);
+  console.log({
+    initiator,
+    partition,
+    amount,
+    price,
+    filledAmount,
+    filler,
+    isApproved,
+    isDisapproved,
+    isCancelled,
+    isFilled,
+    isShareIssuance,
+    isAskOrder,
+    isErc20Payment,
+    isLoading,
+  });
 
   if (
     (saleContents.status === 'initd' && isContractOwner) ||

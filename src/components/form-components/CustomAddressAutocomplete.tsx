@@ -25,8 +25,6 @@ export const createFirstAddressLine = (streetNumber: string, streetName: string)
 };
 
 export const normalizeGeoAddress = (autocompleteResults) => {
-  console.log(autocompleteResults);
-
   const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
   const street_number = autocompleteResults[0]?.address_components.find((x) =>
     x.types.includes('street_number')
@@ -109,6 +107,7 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
           componentRestrictions: {
             country: ['us', 'ca', 'uk', 'de', 'ky', 'vg'],
           },
+          types: ['address'],
         }}
       />
       <ErrorMessage name={name} component="div" className="text-sm text-red-500" />

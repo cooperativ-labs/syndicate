@@ -2,7 +2,7 @@ import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC } from 'react';
-import { Currency, Offering, User } from 'types';
+import { Currency, Offering, OfferingSmartContractSet, User } from 'types';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import NewClassForm from './NewClassForm';
@@ -10,11 +10,9 @@ import NewClassForm from './NewClassForm';
 type SmartContractsSettingsProps = {
   user: User;
   offering: Offering;
+  contractSet: OfferingSmartContractSet;
   chainId: number;
   partitions: String0x[];
-  shareContractId: string;
-  shareContractAddress: String0x;
-  swapContractAddress: String0x;
   investmentCurrency: Currency;
 };
 
@@ -22,12 +20,14 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
   user,
   offering,
   chainId,
+  contractSet,
   partitions,
-  shareContractId,
-  shareContractAddress,
-  swapContractAddress,
   investmentCurrency,
 }) => {
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
+  const shareContract = contractSet?.shareContract;
+
   return (
     <>
       {!shareContractAddress ? (
@@ -47,11 +47,9 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
       <hr className="my-4" />
       {shareContractAddress && !swapContractAddress ? (
         <CreateSwapContract
-          shareContractAddress={shareContractAddress}
-          onContractCreated={() => {}}
+          contractSet={contractSet}
           investmentCurrency={investmentCurrency}
           contractOwnerEntityId={offering.offeringEntity.id}
-          offeringId={offering.id}
         />
       ) : (
         <div className="flex items-center">
@@ -72,7 +70,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
           {stringFromBytes32(partition)}
         </div>
       ))}
-      {shareContractAddress && <NewClassForm shareContractId={shareContractId} />}
+      {shareContractAddress && <NewClassForm shareContractId={shareContract.id} />}
     </>
   );
 };

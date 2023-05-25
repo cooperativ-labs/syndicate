@@ -5,7 +5,7 @@ import router from 'next/router';
 import StandardButton from '@src/components/buttons/StandardButton';
 import { claimDistribution } from '@src/web3/reachCalls';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering } from 'types';
+import { Offering, OfferingSmartContractSet } from 'types';
 import { ReachContext } from '@src/SetReachContext';
 import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
@@ -15,8 +15,7 @@ export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-
 
 export type ContractInvestorActionsProps = {
   offering: Offering;
-  shareContractAddress: String0x;
-  swapContractAddress: String0x;
+  contractSet: OfferingSmartContractSet;
   isWhitelisted: boolean;
   myDistToClaim: number;
   distributionId: string;
@@ -29,8 +28,7 @@ type ContractInvestorActionsPropsAddendum = {
 
 const ContractInvestorActions: FC<ContractInvestorActionsProps & ContractInvestorActionsPropsAddendum> = ({
   offering,
-  shareContractAddress,
-  swapContractAddress,
+  contractSet,
   isWhitelisted,
   myDistToClaim,
   distributionId,

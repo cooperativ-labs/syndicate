@@ -13,7 +13,8 @@ type ShareSaleListProps = {
   offering: Offering;
   sales: OfferingSale[];
   myBacBalance: number;
-  shareContractAddress: String0x;
+  swapContractAddress: String0x;
+  paymentTokenAddress: String0x;
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
@@ -27,7 +28,8 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   walletAddress,
   sales,
   myBacBalance,
-  shareContractAddress,
+  swapContractAddress,
+  paymentTokenAddress,
   permittedEntity,
   isContractOwner,
   setSaleFormModal,
@@ -37,7 +39,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   const chainId = useChainId();
   const { userWalletAddress } = useContext(ReachContext);
   const mySale = sales.find((sale) => sale.initiator === userWalletAddress);
-  const offers = sales.filter((sale) => !sale.isBid);
+  const offers = sales.filter((sale) => sale.isAsk);
 
   const saleButton = (
     <Button
@@ -75,9 +77,9 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               walletAddress={walletAddress}
               offering={offering}
               sale={sale}
-              initiator={sale.initiator}
               myBacBalance={myBacBalance}
-              shareContractAddress={shareContractAddress}
+              swapContractAddress={swapContractAddress}
+              paymentTokenAddress={paymentTokenAddress}
               permittedEntity={permittedEntity}
               isContractOwner={isContractOwner}
               setModal={setShareSaleManagerModal}

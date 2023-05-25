@@ -275,7 +275,6 @@ add: {rule: """
 	numTokensAuthorized: Int64
 	backingToken: Currency
 	owner: LegalEntity @hasInverse(field:smartContracts)
-	offering: Offering @hasInverse(field:smartContracts)
 	name: String
 	document: Document
 	established: Boolean
@@ -348,6 +347,57 @@ add:,
 	lastUpdate: DateTime! 
 }
 
+type OfferingSmartContractSet	@auth (
+add:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingSmartContractSet{
+									offering{
+									offeringEntity{
+										organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}}
+									}
+						}"""
+	}
+	update:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingSmartContractSet{
+									offering{
+									offeringEntity{
+										organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}}
+									}
+						}"""
+	}
+	delete:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingSmartContractSet{
+									offering{
+									offeringEntity{
+										organization{
+											users(filter: { permissions: { eq: ADMIN } }) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}}
+									}
+						}"""
+	}
+) {
+	id: ID!
+	offering: Offering @hasInverse(field: smartContractSets)
+	shareContract: SmartContract
+	swapContract: SmartContract
+	distributionContract: SmartContract
+}
+
 type Offering @auth (
 add:
 			{rule: """
@@ -402,7 +452,7 @@ add:
 	website: String 
 	shortDescription: String
 	offeringEntity: LegalEntity @hasInverse(field:offerings) 
-	smartContracts: [SmartContract] @hasInverse(field:offering)
+	smartContractSets: [OfferingSmartContractSet] @hasInverse(field:offering)
 	details: OfferingDetails @hasInverse(field:offering)
 	profileDescriptions: [OfferingDescriptionText] @hasInverse(field:offering)
 	purchaseRequests: [PurchaseRequest] @hasInverse(field:relatedOffering)

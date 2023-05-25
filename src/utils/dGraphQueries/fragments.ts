@@ -126,6 +126,25 @@ export const SMART_CONTRACT_FIELDS = gql`
   }
 `;
 
+export const SMART_CONTRACT_SET_FIELDS = gql`
+  ${SMART_CONTRACT_FIELDS}
+  fragment smartContractSetData on OfferingSmartContractSet {
+    id
+    offering {
+      id
+    }
+    shareContract {
+      ...smartContractData
+    }
+    swapContract {
+      ...smartContractData
+    }
+    distributionContract {
+      ...smartContractData
+    }
+  }
+`;
+
 export const CORE_INVESTMENT_OFFERING_FIELDS = gql`
   ${CORE_DOCUMENT_FIELDS}
 
@@ -402,7 +421,7 @@ export const CORE_OFFERING_FIELDS = gql`
   ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
   ${CORE_WAITLIST_MEMBER_FIELDS}
   ${CORE_PURCHASE_REQUEST_FIELDS}
-  ${SMART_CONTRACT_FIELDS}
+  ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
   fragment offeringData on Offering {
     id
@@ -420,8 +439,8 @@ export const CORE_OFFERING_FIELDS = gql`
     lightBrand
     website
     shortDescription
-    smartContracts {
-      ...smartContractData
+    smartContractSets {
+      ...smartContractSetData
     }
     sharingImage {
       id

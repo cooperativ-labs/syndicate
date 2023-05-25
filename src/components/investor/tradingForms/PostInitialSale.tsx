@@ -61,7 +61,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
     return numberWithCommas(saleCalculator(price, parseInt(numShares, 10)));
   };
 
-  console.log(bytes32FromString('Class A'));
+  // console.log(bytes32FromString('Class A'));
   return (
     <Formik
       initialValues={{
@@ -98,7 +98,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
         const isContractOwner = true;
         const isAsk = true;
         const isIssuance = true;
-        const isErc20Payment = false;
+        const isErc20Payment = true;
         await submitOrder(
           values,
           swapContractAddress,
@@ -115,6 +115,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
+          DONT FOR GET TO ADD CLASS CHOOSER
           <Input
             className={defaultFieldDiv}
             labelText={`Number of list for sale (${sharesRemaining} available )`}
@@ -153,7 +154,6 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
               placeholder="e.g. 120"
             />
           </div>
-
           <hr className="my-4" />
           <Checkbox
             fieldClass="text-sm bg-opacity-0 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"

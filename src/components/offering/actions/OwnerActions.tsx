@@ -7,7 +7,7 @@ import SubmitDistribution from '../SubmitDistribution';
 import { ActionPanelActionsProps } from './OfferingActions';
 import { claimDistribution, claimProceeds } from '@src/web3/reachCalls';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingSale } from 'types';
+import { Offering, OfferingSale, OfferingSmartContractSet } from 'types';
 import { ReachContext } from '@src/SetReachContext';
 import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
@@ -17,9 +17,7 @@ export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-
 
 export type ContractOwnerActionsProps = {
   offering: Offering;
-  shareContractAddress: String0x;
-  shareContractId: string;
-  swapContractAddress: String0x;
+  contractSet: OfferingSmartContractSet;
   distributionId: string;
   sharesOutstanding: number;
   myDistToClaim: number;
@@ -35,9 +33,7 @@ type ContractInvestorActionsPropsAddendum = {
 
 const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActionsPropsAddendum> = ({
   offering,
-  shareContractAddress,
-  shareContractId,
-  swapContractAddress,
+  contractSet,
   distributionId,
   sharesOutstanding,
   myDistToClaim,
@@ -52,6 +48,10 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActio
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
   const { id, participants, details } = offering;
+
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const shareContractId = contractSet?.shareContract?.id;
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
 
   const ButtonPanel = (
     <div className="flex flex-col w-full gap-3">

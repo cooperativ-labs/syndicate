@@ -1,4 +1,3 @@
-import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';

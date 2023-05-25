@@ -4,7 +4,7 @@ import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_SWAP_CONTRACT } from '@src/utils/dGraphQueries/crypto';
-import { Currency, SmartContractType } from 'types';
+import { Currency, OfferingSmartContractSet, SmartContractType } from 'types';
 import { MatchSupportedChains } from '@src/web3/connectors';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
@@ -20,18 +20,15 @@ import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
 
 type CreateSwapContractProps = {
-  shareContractAddress: String0x;
+  contractSet: OfferingSmartContractSet;
   investmentCurrency: Currency;
   contractOwnerEntityId: string;
-  offeringId: string;
-  onContractCreated: () => void;
 };
 
 const CreateSwapContract: FC<CreateSwapContractProps> = ({
-  shareContractAddress,
+  contractSet,
   investmentCurrency,
   contractOwnerEntityId,
-  offeringId,
 }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
@@ -39,6 +36,8 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   const { address: userWalletAddress, connector } = useAccount();
   const chainId = useChainId();
   const { chain } = useNetwork();
+
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
   const chainBacs = bacOptions.filter((bac) => bac.chainId === chainId);
 
@@ -63,9 +62,10 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
             type: SmartContractType.Swap,
             protocol: protocol,
             ownerId: contractOwnerEntityId,
-            offeringId: offeringId,
+            contractSetId: contractSet.id,
           },
         });
+
         setButtonStep('confirmed');
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
