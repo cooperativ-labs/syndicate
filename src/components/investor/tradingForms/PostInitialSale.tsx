@@ -1,25 +1,21 @@
-import * as backendCtc from '../../../web3/ABI';
 import Checkbox from '@src/components/form-components/Checkbox';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
-import { bytes32FromString, StandardChainErrorHandling, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import React, { FC, useState } from 'react';
 import { CREATE_SALE } from '@src/utils/dGraphQueries/offering';
-import { Currency, OfferingParticipant } from 'types';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { Form, Formik, swap } from 'formik';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { Currency } from 'types';
+import { Form, Formik } from 'formik';
+import { getCurrencyById } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MakePeraConnect as MakePeraConnect } from '@reach-sh/stdlib';
+import { String0x } from '@src/web3/helpersChain';
+
+import NewClassInputs from '@src/components/form-components/NewClassInputs';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ReachContext } from '@src/SetReachContext';
-import { submitOrder } from '@src/web3/contractFunctionCalls';
-import { swapContractABI } from '@src/web3/generated';
-import { useAccount, useContractWrite, useWaitForTransaction } from 'wagmi';
-import { useAsyncFn } from 'react-use';
+import { submitSwap } from '@src/web3/contractFunctionCalls';
+import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 export type PostInitialSaleProps = {
@@ -27,9 +23,11 @@ export type PostInitialSaleProps = {
   sharesOutstanding: number;
   offeringId: string;
   swapContractAddress: String0x;
+  paymentTokenAddress: String0x;
   offeringMin: number;
   priceStart: number;
-  currency: Currency;
+
+  partitions: String0x[];
 };
 const PostInitialSale: FC<PostInitialSaleProps> = ({
   sharesIssued,
@@ -37,12 +35,15 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
   offeringId,
   offeringMin,
   priceStart,
-  currency,
   swapContractAddress,
+  paymentTokenAddress,
+  partitions,
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [createSale, { data, error }] = useMutation(CREATE_SALE);
+  const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
+  console.log(data, error, partitionError, partitionData);
 
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
@@ -61,7 +62,6 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
     return numberWithCommas(saleCalculator(price, parseInt(numShares, 10)));
   };
 
-  // console.log(bytes32FromString('Class A'));
   return (
     <Formik
       initialValues={{
@@ -70,7 +70,8 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
         minUnits: undefined,
         maxUnits: undefined,
         visible: true,
-        partition: bytes32FromString('Class A'),
+        partition: partitions[0],
+        newPartition: '',
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -99,15 +100,17 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
         const isAsk = true;
         const isIssuance = true;
         const isErc20Payment = true;
-        await submitOrder(
+        await submitSwap(
           values,
           swapContractAddress,
+          getCurrencyById(paymentTokenAddress).decimals,
           offeringId,
           isContractOwner,
           isAsk,
           isIssuance,
           isErc20Payment,
           setButtonStep,
+          // addPartition,
           createSale
         );
         setSubmitting(false);
@@ -115,7 +118,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
-          DONT FOR GET TO ADD CLASS CHOOSER
+          <NewClassInputs partitions={partitions} values={values} />
           <Input
             className={defaultFieldDiv}
             labelText={`Number of list for sale (${sharesRemaining} available )`}
@@ -127,7 +130,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
           <div className="md:grid grid-cols-2 gap-3">
             <Input
               className={defaultFieldDiv}
-              labelText={`Price (${getCurrencyOption(currency).symbol})`}
+              labelText={`Price (${getCurrencyById(paymentTokenAddress).symbol})`}
               name="price"
               type="number"
               placeholder="1300"
@@ -136,7 +139,9 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
             <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText="Total sale:">
               <>
                 {values.numShares &&
-                  `${saleString(values.numShares, values.price)} ${currency && getCurrencyOption(currency).symbol}`}
+                  `${saleString(values.numShares, values.price)} ${
+                    paymentTokenAddress && getCurrencyById(paymentTokenAddress).symbol
+                  }`}
               </>
             </NonInput>
             <Input

@@ -238,6 +238,24 @@ export const ADD_OFFERING_DETAILS = gql`
   }
 `;
 
+export const UPDATE_INVESTMENT_CURRENCY = gql`
+  mutation UpdateInvestmentCurrency($offeringDetailsId: [ID!], $investmentCurrencyCode: CurrencyCode!) {
+    updateOfferingDetails(
+      input: { filter: { id: $offeringDetailsId }, set: { investmentCurrency: { code: $investmentCurrencyCode } } }
+    ) {
+      offeringDetails {
+        id
+        investmentCurrency {
+          code
+        }
+        offering {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const ADD_LEGAL_SHARE_LINK = gql`
   mutation AddLegalLink(
     $currentDate: DateTime
@@ -713,9 +731,9 @@ export const CREATE_SALE = gql`
     $numShares: Int!
     $minUnits: Int
     $maxUnits: Int
+    $initiator: String
     $price: Int!
     $visible: Boolean
-    $initiator: String
   ) {
     updateOffering(
       input: {

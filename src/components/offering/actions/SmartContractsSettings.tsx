@@ -50,6 +50,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
           contractOwnerEntityId={offering.offeringEntity.id}
+          offeringDetailsId={offering.details.id}
         />
       ) : (
         <div className="flex items-center">

@@ -14,7 +14,7 @@ export type OrderDetailsType = {
   isApproved: boolean;
   isDisapproved: boolean;
   isCancelled: boolean;
-  isFilled: boolean;
+  isAccepted: boolean;
   isShareIssuance: boolean;
   isAskOrder: boolean;
   isErc20Payment: boolean;
@@ -40,13 +40,14 @@ export const useOrderDetails = (
   const price = toNormalNumber(data?.price, paymentTokenDecimals);
   const filledAmount = toNormalNumber(data?.filledAmount, 18);
   const filler = data?.filler;
-  const isApproved = data?.status[0];
-  const isDisapproved = data?.status[1];
-  const isCancelled = data?.status[2];
-  const isFilled = data?.status[3];
-  const isShareIssuance = data?.orderType[0];
-  const isAskOrder = data?.orderType[1];
-  const isErc20Payment = data?.orderType[2];
+  const isApproved = data?.status.isApproved;
+  const isDisapproved = data?.status.isDisapproved;
+  const isCancelled = data?.status.isCancelled;
+  const isAccepted = data?.status.orderAccepted;
+
+  const isShareIssuance = data?.orderType.isShareIssuance;
+  const isAskOrder = data?.orderType.isAskOrder;
+  const isErc20Payment = data?.orderType.isErc20Payment;
 
   return {
     initiator,
@@ -58,7 +59,7 @@ export const useOrderDetails = (
     isApproved,
     isDisapproved,
     isCancelled,
-    isFilled,
+    isAccepted,
     isShareIssuance,
     isAskOrder,
     isErc20Payment,

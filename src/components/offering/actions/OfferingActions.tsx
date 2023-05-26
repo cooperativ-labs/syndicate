@@ -43,6 +43,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   loading,
   isOfferingManager,
   offering,
+
   paymentTokenAddress,
   sharesOutstanding,
   sales,
@@ -138,8 +139,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           offeringId={offering.id}
           offeringMin={offeringMin}
           priceStart={offering.details.priceStart}
-          currency={offering.details.investmentCurrency}
           swapContractAddress={swapContractAddress}
+          partitions={partitions}
+          paymentTokenAddress={paymentTokenAddress}
         />
       </FormModal>
       {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${offeringName}`}>

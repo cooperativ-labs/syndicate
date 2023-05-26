@@ -36,8 +36,8 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
     const orgId = data.addOrganization.organization[0].id;
     actionOnCompletion && actionOnCompletion();
     window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
-    router.push(`/${orgId}/overview`);
     dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
+    router.push(`/${orgId}/overview`);
   }
 
   return (

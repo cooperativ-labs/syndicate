@@ -31,7 +31,7 @@ type SharePurchaseFormProps = {
   saleQty: number;
   soldQty: number;
   myBacBalance: number;
-  shareContractAddress: String0x;
+  swapContractAddress: String0x;
   permittedEntity: OfferingParticipant;
   setModal: (boolean) => void;
   setRecallContract: Dispatch<SetStateAction<string>>;
@@ -42,7 +42,7 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
   sale,
   price,
   myBacBalance,
-  shareContractAddress,
+  swapContractAddress,
   permittedEntity,
   setModal,
   setRecallContract,
@@ -70,7 +70,7 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
     setButtonStep('submitting');
     await reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
     const acc = await reachLib.getDefaultAccount();
-    const ctc = acc.contract(backendCtc, shareContractAddress);
+    const ctc = acc.contract(backendCtc, swapContractAddress);
     const call = async (f) => {
       try {
         await f();

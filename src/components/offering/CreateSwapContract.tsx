@@ -13,8 +13,8 @@ import Select from '../form-components/Select';
 import { defaultFieldDiv } from '../form-components/Inputs';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { Form, Formik } from 'formik';
-import { profile } from 'console';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
+import { UPDATE_INVESTMENT_CURRENCY } from '@src/utils/dGraphQueries/offering';
 import { useAccount, useChainId, useNetwork } from 'wagmi';
 import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
@@ -23,26 +23,27 @@ type CreateSwapContractProps = {
   contractSet: OfferingSmartContractSet;
   investmentCurrency: Currency;
   contractOwnerEntityId: string;
+  offeringDetailsId: string;
 };
 
 const CreateSwapContract: FC<CreateSwapContractProps> = ({
   contractSet,
   investmentCurrency,
   contractOwnerEntityId,
+  offeringDetailsId,
 }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
+  const [addSwapContract, { data, error }] = useMutation(CREATE_SWAP_CONTRACT);
+  const [updateInvestmentCurrency] = useMutation(UPDATE_INVESTMENT_CURRENCY);
   const chainId = useChainId();
   const { chain } = useNetwork();
+  const [alerted, setAlerted] = useState(false);
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
-
   const chainBacs = bacOptions.filter((bac) => bac.chainId === chainId);
-
-  const [addSwapContract, { data, error }] = useMutation(CREATE_SWAP_CONTRACT);
-  const [alerted, setAlerted] = useState(false);
   const chainName = MatchSupportedChains(chainId)?.name;
 
   const [, deploy] = useAsyncFn(
@@ -65,7 +66,15 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
             contractSetId: contractSet.id,
           },
         });
-
+        const newCurrencyCode = getCurrencyById(paymentTokenAddress).value;
+        if (newCurrencyCode !== investmentCurrency.code) {
+          await updateInvestmentCurrency({
+            variables: {
+              offeringDetailsId: offeringDetailsId,
+              investmentCurrency: newCurrencyCode,
+            },
+          });
+        }
         setButtonStep('confirmed');
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);

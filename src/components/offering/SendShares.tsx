@@ -11,6 +11,7 @@ import { presentAddress } from '../FormattedCryptoAddress';
 import { sendShares } from '@src/web3/contractFunctionCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
+import NewClassInputs from '../form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { useMutation } from '@apollo/client';
 
@@ -22,6 +23,7 @@ export type SendSharesProps = {
   offeringParticipants: OfferingParticipant[];
   partitions: String0x[];
 };
+
 const SendShares: FC<SendSharesProps> = ({
   sharesIssued,
   sharesOutstanding,
@@ -119,29 +121,8 @@ const SendShares: FC<SendSharesProps> = ({
             })}
           </Select>
 
-          <Select className={'mt-3'} name="partition" labelText="Share class">
-            <option value="">Select class</option>
+          <NewClassInputs partitions={partitions} values={values} />
 
-            {partitions.map((partition, i) => {
-              return (
-                <option key={i} value={partition}>
-                  {stringFromBytes32(partition)}
-                </option>
-              );
-            })}
-            <hr className="bg-grey-400" />
-            <option value="0xNew">+ Add new class</option>
-          </Select>
-          {values.partition === '0xNew' && (
-            <Input
-              className={defaultFieldDiv}
-              labelText="New class name"
-              name="newPartition"
-              type="text"
-              placeholder="Class A"
-              // required
-            />
-          )}
           <Input
             className={defaultFieldDiv}
             labelText={`Number of shares to send (${sharesRemaining} remaining )`}

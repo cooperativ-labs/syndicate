@@ -2,45 +2,54 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import cn from 'classnames';
 import React, { FC, useContext, useState } from 'react';
 import SaleVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { approveSwap, cancelSale, claimProceeds } from '@src/web3/reachCalls';
+import { approveSwap, cancelSwap, claimProceeds } from '@src/web3/contractFunctionCalls';
 import { DELETE_SALE } from '@src/utils/dGraphQueries/offering';
 import { getCurrencyById, SaleStatusType } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { OfferingSale } from 'types';
-import { ReachContext } from '@src/SetReachContext';
 import { String0x } from '@src/web3/helpersChain';
+import { swapContractABI } from '@src/web3/generated';
+import { useAccount, useContractRead } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type SaleMangerPanelProps = {
   offeringId: string;
   isOfferor: boolean;
-  status: SaleStatusType;
-  proceeds: number;
+  isApproved: boolean;
   btId: string;
   sale: OfferingSale;
-  shareContractAddress: String0x;
+  swapContractAddress: String0x;
   isContractOwner: boolean;
   small?: boolean;
-  recallGetSale: (state: string) => void;
 };
 
 const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   offeringId,
   isOfferor,
-  status,
-  proceeds,
+  isApproved,
   btId,
   sale,
-  shareContractAddress,
+  swapContractAddress,
   isContractOwner,
   small,
-  recallGetSale,
 }) => {
-  const { reachLib } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
   const [deleteSaleObject, { data, error }] = useMutation(DELETE_SALE);
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
+
+  const {
+    data: contractData,
+    isLoading,
+    error: contractError,
+  } = useContractRead({
+    address: swapContractAddress,
+    abi: swapContractABI,
+    functionName: 'getUnclaimedProceeds',
+    args: [userWalletAddress],
+  });
+  const proceeds = Number(contractData?.tokenProceeds) ?? 0;
 
   return (
     <div>
@@ -48,9 +57,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
         {proceeds > 0 && isOfferor && (
           <Button
             className="text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full"
-            onClick={() =>
-              claimProceeds(reachLib, shareContractAddress, proceeds, setClaimProceedsButton, recallGetSale)
-            }
+            onClick={() => claimProceeds(swapContractAddress, setClaimProceedsButton)}
             disabled={claimProceedsButton === 'submitting'}
           >
             <LoadingButtonText
@@ -67,16 +74,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
           <Button
             className="text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full"
             onClick={() =>
-              cancelSale(
-                reachLib,
-                shareContractAddress,
-                offeringId,
-                sale.id,
-                status,
-                setCancelButtonStep,
-                recallGetSale,
-                deleteSaleObject
-              )
+              cancelSwap(swapContractAddress, sale.orderId, sale.id, offeringId, setCancelButtonStep, deleteSaleObject)
             }
             disabled={cancelButtonStep === 'submitting'}
           >
@@ -90,12 +88,10 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
             />
           </Button>
         )}
-        {status === 'initd' && isContractOwner ? (
+        {!isApproved && isContractOwner ? (
           <Button
             className="text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full"
-            onClick={() =>
-              approveSwap(reachLib, shareContractAddress, sale.initiator, setApproveButtonStep, recallGetSale)
-            }
+            onClick={() => approveSwap(swapContractAddress, sale.orderId, setApproveButtonStep)}
             disabled={approveButtonStep === 'submitting'}
           >
             <LoadingButtonText

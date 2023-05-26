@@ -41,17 +41,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   setModal,
   setRecallContract,
 }) => {
-  const { reachLib, reachAcc } = useContext(ReachContext);
   const [open, setOpen] = useState<boolean>(false);
-  const [saleContents, setSaleContents] = useState<SaleContentsType>({
-    qty: 0,
-    qtySold: 0,
-    price: 0,
-    proceeds: 0,
-    saleDetails: undefined,
-    status: undefined,
-    btId: undefined,
-  });
 
   const isOfferor = walletAddress === sale.initiator;
   const minPurchase = sale.minUnits;
@@ -67,34 +57,14 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
     isApproved,
     isDisapproved,
     isCancelled,
-    isFilled,
+    isAccepted,
     isShareIssuance,
     isAskOrder,
     isErc20Payment,
     isLoading,
   } = useOrderDetails(swapContractAddress, sale.orderId, paymentTokenAddress);
-  console.log({
-    initiator,
-    partition,
-    amount,
-    price,
-    filledAmount,
-    filler,
-    isApproved,
-    isDisapproved,
-    isCancelled,
-    isFilled,
-    isShareIssuance,
-    isAskOrder,
-    isErc20Payment,
-    isLoading,
-  });
 
-  if (
-    (saleContents.status === 'initd' && isContractOwner) ||
-    saleContents.status === 'partl' ||
-    saleContents.status === 'apprv'
-  ) {
+  if ((!isApproved && isContractOwner) || isApproved) {
     return (
       <div className="items-center shadow-md rounded-md my-5 ">
         <div
@@ -105,10 +75,10 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
           <div className="flex justify-between col-span-11">
             <OfferingSummaryPanel
               seller={sale.initiator}
-              saleQty={saleContents.qty}
-              soldQty={saleContents.qtySold}
-              price={saleContents.price}
-              investmentCurrency={offering.details.investmentCurrency}
+              saleQty={amount}
+              soldQty={filledAmount}
+              price={price}
+              paymentTokenAddress={paymentTokenAddress}
             />
             <div className="flex items-center p-1">
               {isOfferor && (
@@ -116,7 +86,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                   Manage your offer
                 </button>
               )}
-              {saleContents.status === 'initd' && (
+              {!isApproved && (
                 <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
                   Review sale request
                 </button>
@@ -127,7 +97,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
         </div>
         {open && (
           <div className="p-2">
-            {isOfferor || saleContents.status === 'initd' ? (
+            {isOfferor ? (
               <>
                 {!!minPurchase && <div>Minimum purchase: {numberWithCommas(minPurchase)} units</div>}
                 {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} units</div>}
@@ -136,23 +106,21 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                   isOfferor={isOfferor}
                   isContractOwner={isContractOwner}
                   offeringId={offering.id}
-                  status={saleContents.status}
+                  isApproved={isApproved}
                   sale={sale}
-                  shareContractAddress={shareContractAddress}
-                  recallGetSale={retrieveSale}
-                  proceeds={saleContents.proceeds}
-                  btId={saleContents.btId}
+                  swapContractAddress={swapContractAddress}
+                  btId={paymentTokenAddress}
                 />
               </>
             ) : (
               <SharePurchaseForm
                 offering={offering}
                 sale={sale}
-                saleQty={saleContents.qty}
-                soldQty={saleContents.qtySold}
-                price={saleContents.price}
+                saleQty={amount}
+                soldQty={filledAmount}
+                price={price}
                 myBacBalance={myBacBalance}
-                shareContractAddress={shareContractAddress}
+                swapContractAddress={swapContractAddress}
                 permittedEntity={permittedEntity}
                 setModal={setModal}
                 setRecallContract={setRecallContract}

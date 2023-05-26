@@ -1,16 +1,17 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
 import { Currency, OfferingSale } from 'types';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { setChainId } from '@src/web3/connectors';
+import { String0x } from '@src/web3/helpersChain';
+import { useChainId } from 'wagmi';
 
 type OfferingSummaryPanelProps = {
   seller: string;
   saleQty: number;
   soldQty: number;
   price: number;
-  investmentCurrency: Currency;
+  paymentTokenAddress: String0x;
   className?: string;
 };
 
@@ -19,11 +20,11 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   price,
   saleQty,
   soldQty,
-  investmentCurrency,
+  paymentTokenAddress,
   className,
 }) => {
-  const presentCurrency = getCurrencyOption(investmentCurrency).symbol;
-  const chainId = setChainId;
+  const presentCurrency = getCurrencyById(paymentTokenAddress).symbol;
+  const chainId = useChainId();
   return (
     <div className={className}>
       <div className="flex items-center">
