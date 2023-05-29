@@ -13,8 +13,6 @@ type SharePurchaseStepsProps = SharePurchaseRequestProps &
     isCancelled: boolean;
     isAccepted: boolean;
     paymentTokenAddress: String0x;
-    filler: String0x;
-    filledAmount: number;
     txnApprovalsEnabled: boolean;
   };
 
@@ -33,8 +31,6 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   isDisapproved,
   isCancelled,
   isAccepted,
-  filler,
-  filledAmount,
   setRecallContract,
 }) => {
   const [openStep, setOpenStep] = useState<number>(1);
