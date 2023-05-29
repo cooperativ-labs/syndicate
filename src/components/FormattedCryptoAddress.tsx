@@ -73,7 +73,7 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
         <button
           className="ml-2"
           onClick={(e) => {
-            e.preventDefault();
+            e.stopPropagation();
             navigator.clipboard.writeText(ensName ?? address);
             setCopied(true);
             setTimeout(() => {

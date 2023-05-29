@@ -34,9 +34,6 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
         } else if (!isAddress(values.address)) {
           errors.address = 'This is not a valid address.';
         }
-        if (!values.name) {
-          errors.type = 'Please enter an address to approve';
-        }
         return errors;
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
@@ -74,7 +71,6 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
               name="name"
               type="text"
               placeholder="Lisa Novak"
-              required
             />
             <Input
               className={`${defaultFieldDiv} col-span-3`}

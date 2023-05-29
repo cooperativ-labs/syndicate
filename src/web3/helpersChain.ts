@@ -77,11 +77,12 @@ export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) =>
 
   if (recipient && errorCode === 1000) {
     setButtonStep('failed');
-    toast(`${recipient} has not opted into this offering (or is already whitelisted).`);
+    toast(`${recipient} is already whitelisted).`);
+    return;
   }
-
   if (errorCode === 2000) {
     setButtonStep && setButtonStep('rejected');
+    return;
   }
   if (errorCode === 6000) {
     toast.error(`${recipient} ${errorMessage}.`);
@@ -89,4 +90,5 @@ export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) =>
     setButtonStep && setButtonStep('failed');
     alert(`${errorMessage}`);
   }
+  return { code: errorCode, message: errorMessage };
 };

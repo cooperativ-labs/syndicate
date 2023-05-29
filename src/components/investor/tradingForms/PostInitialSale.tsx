@@ -26,7 +26,7 @@ export type PostInitialSaleProps = {
   paymentTokenAddress: String0x;
   offeringMin: number;
   priceStart: number;
-
+  shareContractId: string;
   partitions: String0x[];
 };
 const PostInitialSale: FC<PostInitialSaleProps> = ({
@@ -36,6 +36,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
   offeringMin,
   priceStart,
   swapContractAddress,
+  shareContractId,
   paymentTokenAddress,
   partitions,
 }) => {
@@ -43,7 +44,6 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [createSale, { data, error }] = useMutation(CREATE_SALE);
   const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
-  console.log(data, error, partitionError, partitionData);
 
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
@@ -100,19 +100,26 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
         const isAsk = true;
         const isIssuance = true;
         const isErc20Payment = true;
-        await submitSwap(
-          values,
-          swapContractAddress,
-          getCurrencyById(paymentTokenAddress).decimals,
-          offeringId,
-          isContractOwner,
-          isAsk,
-          isIssuance,
-          isErc20Payment,
-          setButtonStep,
-          // addPartition,
-          createSale
-        );
+        await submitSwap({
+          numShares: values.numShares,
+          price: values.price,
+          partition: values.partition,
+          newPartition: values.newPartition,
+          minUnits: values.minUnits,
+          maxUnits: values.maxUnits,
+          visible: values.visible,
+          swapContractAddress: swapContractAddress,
+          shareContractId: shareContractId,
+          bacDecimals: getCurrencyById(paymentTokenAddress).decimals,
+          offeringId: offeringId,
+          isContractOwner: isContractOwner,
+          isAsk: isAsk,
+          isIssuance: isIssuance,
+          isErc20Payment: isErc20Payment,
+          setButtonStep: setButtonStep,
+          createSale: createSale,
+          addPartition: addPartition,
+        });
         setSubmitting(false);
       }}
     >

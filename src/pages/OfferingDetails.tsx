@@ -23,7 +23,7 @@ import { useAccount, useChainId } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { bytes32FromString, normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
@@ -35,14 +35,12 @@ type OfferingDetailsProps = {
 };
 
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
+  const { address: userWalletAddress } = useAccount();
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const { address: userWalletAddress } = useAccount();
-  const chainId = useChainId();
   const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContractSets } = offering;
   const contractSet = smartContractSets?.slice(-1)[0];
 
-  //CURRENTLY ONLY GETS FIRST CONTRACT
   const shareContract = contractSet?.shareContract;
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
@@ -73,8 +71,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   const {
     shareToken,
-    paymentToken,
-    balanceERC20,
+    paymentToken: paymentTokenAddress,
     swapApprovalsEnabled,
     txnApprovalsEnabled,
     nextOrderId,
@@ -94,7 +91,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const latestDistribution = getLatestDistribution(offering);
   const myDistToClaim = getMyDistToClaim(offering, sharesOutstanding, myShares, userWalletAddress);
 
-  const permittedEntity = participants.find((participant) => {
+  const offeringParticipant = participants.find((participant) => {
     return participant.addressOfferingId === userWalletAddress + id;
   });
   // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
@@ -161,7 +158,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                   sharesOutstanding: sharesOutstanding,
                   fundsDistributed: fundsDistributed,
                   myShares: myShares,
-                  paymentToken: paymentToken,
+                  paymentToken: paymentTokenAddress,
                 }}
               />
             ) : isOfferingManager ? (
@@ -208,17 +205,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         sales={contractSales}
                         offering={offering}
                         contractSet={contractSet}
-                        paymentTokenAddress={paymentToken}
+                        paymentTokenAddress={paymentTokenAddress}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
                         myBacBalance={myBacBalance}
-                        isWhitelisted={isWhitelisted}
                         partitions={partitions}
                         refetch={refetch}
                         setRecallContract={setRecallContract}
                         distributionId={latestDistribution.id}
                         myDistToClaim={myDistToClaim}
-                        permittedEntity={permittedEntity}
+                        permittedEntity={offeringParticipant}
                         currentSalePrice={currentSalePrice}
                         myShares={myShares}
                       />

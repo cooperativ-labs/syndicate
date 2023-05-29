@@ -12,19 +12,20 @@ import { CREATE_SALE, DELETE_SALE } from '@src/utils/dGraphQueries/offering';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
-import { ReachContext } from '@src/SetReachContext';
 
-import { submitOrder } from '@src/web3/contractFunctionCalls';
+import { submitSwap } from '@src/web3/contractFunctionCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type PostAskFormProps = {
   offering: Offering;
   swapContractAddress: String0x;
+  partitions: String0x[];
+  paymentTokenAddress: String0x;
   walletAddress: string;
   myShares: number;
   permittedEntity: OfferingParticipant;
@@ -39,6 +40,8 @@ const PostAskForm: FC<PostAskFormProps> = ({
   offering,
   walletAddress,
   swapContractAddress,
+  partitions,
+  paymentTokenAddress,
   myShares,
   permittedEntity,
   isContractOwner,
@@ -51,7 +54,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
-  const [createSaleObject, { data, error }] = useMutation(CREATE_SALE);
+  const [createSale, { data, error }] = useMutation(CREATE_SALE);
   const [deleteSaleObject, { data: dataDelete, error: errorDelete }] = useMutation(DELETE_SALE);
   const { id, name, details, documents, offeringEntity } = offering;
   const sharesIssued = details?.numUnits;
@@ -76,6 +79,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
           approvalRequired: false,
           minUnits: undefined,
           maxUnits: undefined,
+          partition: partitions[0],
           toc: true,
         }}
         validate={(values) => {
@@ -109,23 +113,27 @@ const PostAskForm: FC<PostAskFormProps> = ({
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          const partition = bytes32FromString('Class A');
-          await submitOrder(
-            swapContractAddress,
-            id,
-            isContractOwner,
-            myShares,
-            values.numUnitsToSell,
-            values.price,
-            partition,
-            true,
-            true,
-            values.minUnits,
-            values.maxUnits,
-            setButtonStep,
-            setModal,
-            createSaleObject
-          );
+          const isAsk = true;
+          const isIssuance = false;
+          const isErc20Payment = true;
+          await submitSwap({
+            numShares: values.numUnitsToSell,
+            price: values.price,
+            partition: values.partition,
+            minUnits: values.minUnits,
+            maxUnits: values.maxUnits,
+            swapContractAddress: swapContractAddress,
+            visible: true,
+            toc: values.toc,
+            bacDecimals: getCurrencyById(paymentTokenAddress).decimals,
+            offeringId: offering.id,
+            isContractOwner: isContractOwner,
+            isAsk: isAsk,
+            isIssuance: isIssuance,
+            isErc20Payment: isErc20Payment,
+            setButtonStep: setButtonStep,
+            createSale: createSale,
+          });
           setSubmitting(false);
         }}
       >

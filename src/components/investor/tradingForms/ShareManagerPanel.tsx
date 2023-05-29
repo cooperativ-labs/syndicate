@@ -46,10 +46,10 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: 'getUnclaimedProceeds',
+    functionName: 'unclaimedProceeds',
     args: [userWalletAddress],
   });
-  const proceeds = Number(contractData?.tokenProceeds) ?? 0;
+  const proceeds = Number(contractData[1]) ?? 0;
 
   return (
     <div>

@@ -10,9 +10,9 @@ export default defineConfig({
       contracts: [
         {
           name: 'ShareContract',
-          address: '0x8c4Faa40b9f3CdaEF990F3ACE935680D42Fa82f9',
+          address: '0x074EAf2EF4c553a0077De051EaF22e1A3cCF6C5e',
         },
-        { name: 'SwapContract', address: '0x30Db8f901686d43D8866F80B984E7faaE6103be9' },
+        { name: 'SwapContract', address: '0xBbA9522bB72b49C1623Ed8083D76799992c91792' },
       ],
     }),
   ],

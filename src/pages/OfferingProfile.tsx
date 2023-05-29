@@ -1,4 +1,3 @@
-import * as backendCtc from '../web3/ABI';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import cn from 'classnames';
 import Container from '@src/containers/Layouts/Container';
@@ -16,7 +15,8 @@ import { DocumentType, Offering } from 'types';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getCurrentSalePrice } from '@src/utils/helpersMoney';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { GetEstablishedContracts } from '@src/utils/helpersContracts';
+
+import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useChainId } from 'wagmi';
 
 type OfferingProfileProps = {
@@ -24,16 +24,29 @@ type OfferingProfileProps = {
 };
 
 const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
-  const { details, brandColor, website, offeringEntity, id: offeringId, name: offeringName, distributions } = offering;
-  const chainId = useChainId();
   const { address: userWalletAddress } = useAccount();
+  const {
+    details,
+    brandColor,
+    website,
+    offeringEntity,
+    id: offeringId,
+    name: offeringName,
+    distributions,
+    smartContractSets,
+  } = offering;
+  const contractSet = smartContractSets?.slice(-1)[0];
 
-  const establishedContract = GetEstablishedContracts(offeringEntity.smartContracts, chainId)[0];
+  const shareContract = contractSet?.shareContract;
+  const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
+  const swapContract = contractSet?.swapContract;
+  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+
+  const partitions = shareContract?.partitions as String0x[];
   const type = details && details.type;
   const stage = details && details.stage;
   const organization = offeringEntity.organization;
   const shareURL = `${getBaseUrl()}/${offeringId}`;
-  const shareContractId = establishedContract?.cryptoAddress.address;
 
   const currentSalePrice = getCurrentSalePrice(offering);
   const OfferingReProperties = offering.offeringEntity.realEstateProperties;
@@ -126,7 +139,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               <h2 className="text-gray-800 font-bold mb-3">Distribution History</h2>
               {details && (
                 <DistributionList
-                  shareContractId={shareContractId}
+                  shareContractAddress={shareContractAddress}
                   distributions={distributions}
                   currency={details.distributionCurrency}
                   hideTransactionId

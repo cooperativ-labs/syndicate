@@ -1,41 +1,54 @@
-import Button from '@src/components/buttons/Button';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ContractInvestorActions, { ContractInvestorActionsProps } from './InvestorActions';
-import ContractOwnerActions, { ContractOwnerActionsProps } from './OwnerActions';
 
 import FormModal from '@src/containers/FormModal';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import Loading from '@src/components/loading/Loading';
 import PostAskForm from '@src/components/investor/tradingForms/PostAskForm';
-import React, { FC, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 
+import CloseButton from '@src/components/buttons/CloseButton';
+import FormButton from '@src/components/buttons/FormButton';
 import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
+import SendShares from '../SendShares';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings from './SmartContractsSettings';
+import SubmitDistribution from '../SubmitDistribution';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { OfferingParticipant, OfferingSale, User } from 'types';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { Offering, OfferingParticipant, OfferingSale, OfferingSmartContractSet, User } from 'types';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useChainId } from 'wagmi';
+import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
+import { useAccount, useChainId, useMutation } from 'wagmi';
 import { useQuery } from '@apollo/client';
 
+export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
-type OfferingActionsProps = ContractOwnerActionsProps &
-  ContractInvestorActionsProps & {
-    sales: OfferingSale[];
-    hasContract: boolean;
-    loading: boolean;
-    isOfferingManager: boolean;
-    retrievalIssue: boolean;
-    isContractOwner: boolean;
-    myBacBalance: number;
-    permittedEntity: OfferingParticipant;
-    currentSalePrice: number;
-    myShares: number;
-    paymentTokenAddress: String0x;
-    userId: string;
-  };
+type OfferingActionsProps = {
+  sales: OfferingSale[];
+  hasContract: boolean;
+  loading: boolean;
+  isOfferingManager: boolean;
+  retrievalIssue: boolean;
+  isContractOwner: boolean;
+  myBacBalance: number;
+  permittedEntity: OfferingParticipant;
+  currentSalePrice: number;
+  myShares: number;
+  paymentTokenAddress: String0x;
+  userId: string;
+  offering: Offering;
+  contractSet: OfferingSmartContractSet;
+  distributionId: string;
+  sharesOutstanding: number;
+  myDistToClaim: number;
+  partitions: String0x[];
+  setRecallContract: Dispatch<SetStateAction<string>>;
+  refetch: () => void;
+};
 
 const OfferingActions: FC<OfferingActionsProps> = ({
   retrievalIssue,
@@ -43,7 +56,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   loading,
   isOfferingManager,
   offering,
-
   paymentTokenAddress,
   sharesOutstanding,
   sales,
@@ -51,7 +63,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   isContractOwner,
   myDistToClaim,
   distributionId,
-  isWhitelisted,
   partitions,
   refetch,
   setRecallContract,
@@ -67,11 +78,17 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
   const [smartContractsSettingsModal, setSmartContractsSettingsModal] = useState<boolean>(false);
   const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
+  const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
   const [bidFormModel, setBidFormModel] = useState<boolean>(false);
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
 
-  // YOU ARE INSTALLING SMART CONTRACT SETS
+  // const [updateDistribution, { data: updateDistributionData }] = useMutation(UPDATE_DISTRIBUTION);
+
+  const { id, participants, details } = offering;
 
   const { address: userWalletAddress } = useAccount();
+  const shareContractId = contractSet?.shareContract?.id as string;
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
 
@@ -79,6 +96,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const offeringMin = offering.details.minUnitsPerInvestor;
   const investmentCurrency = offering.details.investmentCurrency;
   const sharesIssued = offering.details?.numUnits;
+
   const FormModals = (
     <>
       <FormModal
@@ -119,30 +137,42 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       <FormModal
         formOpen={saleFormModal}
         onClose={() => setSaleFormModal(false)}
-        title={`Sell shares of ${offeringName}`}
+        title={`${isExistingShares ? 'Sell' : 'Offer new'} shares of ${offeringName}`}
       >
-        {/* <PostAskForm
-          offering={offering}
-          offeringMin={offeringMin}
-          sharesOutstanding={sharesOutstanding}
-          walletAddress={userWalletAddress as String0x}
-          myShares={myShares}
-          swapContractAddress={swapContractAddress}
-          permittedEntity={permittedEntity}
-          isContractOwner={isContractOwner === !!isOfferingManager}
-          currentSalePrice={currentSalePrice}
-          setModal={setSaleFormModal}
-        /> */}
-        <PostInitialSale
-          sharesIssued={sharesIssued}
-          sharesOutstanding={sharesOutstanding}
-          offeringId={offering.id}
-          offeringMin={offeringMin}
-          priceStart={offering.details.priceStart}
-          swapContractAddress={swapContractAddress}
-          partitions={partitions}
-          paymentTokenAddress={paymentTokenAddress}
-        />
+        <button
+          className="p-2 border-2 border-gray-300 text-sm text-gray-800 rounded-md"
+          onClick={() => setIsExistingShares(!isExistingShares)}
+        >{`${
+          isExistingShares ? 'Create a fresh offering of sales' : 'Sell existing shares form your wallet instead.'
+        }`}</button>
+        {isExistingShares ? (
+          <PostAskForm
+            offering={offering}
+            offeringMin={offeringMin}
+            sharesOutstanding={sharesOutstanding}
+            walletAddress={userWalletAddress as String0x}
+            myShares={myShares}
+            swapContractAddress={swapContractAddress}
+            permittedEntity={permittedEntity}
+            isContractOwner={isContractOwner === !!isOfferingManager}
+            currentSalePrice={currentSalePrice}
+            setModal={setSaleFormModal}
+            partitions={partitions}
+            paymentTokenAddress={paymentTokenAddress}
+          />
+        ) : (
+          <PostInitialSale
+            sharesIssued={sharesIssued}
+            sharesOutstanding={sharesOutstanding}
+            offeringId={offering.id}
+            offeringMin={offeringMin}
+            priceStart={offering.details.priceStart}
+            swapContractAddress={swapContractAddress}
+            shareContractId={shareContractId}
+            partitions={partitions}
+            paymentTokenAddress={paymentTokenAddress}
+          />
+        )}
       </FormModal>
       {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${offeringName}`}>
   <ShareBidForm
@@ -158,49 +188,106 @@ const OfferingActions: FC<OfferingActionsProps> = ({
     </>
   );
 
-  const ContractActions = (
+  const ActionPanel = (
+    <div className=" relative mt-4 bg-gray-100 p-4 rounded-md">
+      <div className="absolute -top-1 right-0 z-40">
+        <CloseButton
+          onClick={() => {
+            setShowActionPanel(false);
+          }}
+        />
+      </div>
+      {showActionPanel === 'send' && (
+        <SendShares
+          sharesIssued={details?.numUnits}
+          sharesOutstanding={sharesOutstanding}
+          shareContractAddress={shareContractAddress}
+          shareContractId={shareContractId}
+          offeringParticipants={participants}
+          partitions={partitions}
+        />
+      )}
+      {showActionPanel === 'distribute' && (
+        <SubmitDistribution
+          shareContractAddress={shareContractAddress}
+          refetch={refetch}
+          setRecallContract={setRecallContract}
+        />
+      )}
+    </div>
+  );
+
+  const ButtonPanel = (
     <div className="flex flex-col w-full gap-3">
       {isOfferingManager ? (
-        <Button
-          className="p-3 bg-cLightBlue rounded-md text-white"
-          onClick={() => setSmartContractsSettingsModal(true)}
-        >
-          Configure shares & trading
-        </Button>
+        <>
+          <Button
+            className="p-3 bg-cLightBlue rounded-md text-white"
+            onClick={() => setSmartContractsSettingsModal(true)}
+          >
+            Configure shares & trading
+          </Button>
+
+          {swapContractAddress ? (
+            <Button
+              onClick={() => {
+                setShareSaleManagerModal(true);
+              }}
+              className={standardClass}
+            >
+              Manage Share Sales
+            </Button>
+          ) : (
+            <Button
+              onClick={() => {
+                setSmartContractsSettingsModal(true);
+              }}
+              className={standardClass}
+            >
+              Configure trading
+            </Button>
+          )}
+          <Button
+            onClick={() => {
+              setShowActionPanel('send');
+            }}
+            className={standardClass}
+          >
+            Send shares
+          </Button>
+          {myDistToClaim ? (
+            <>
+              <FormButton type="submit" disabled={myDistToClaim === 0} onClick={() => {}}>
+                <LoadingButtonText
+                  state={buttonStep}
+                  idleText={`${numberWithCommas(myDistToClaim, 2)} AVAILABLE TO CLAIM`}
+                  submittingText="Claiming - This can take time. Please do not refresh."
+                  confirmedText="Confirmed! (check your wallet)"
+                  failedText="Transaction failed"
+                  rejectedText="You rejected the transaction. Click here to try again."
+                />
+              </FormButton>
+            </>
+          ) : (
+            <></>
+          )}
+        </>
       ) : (
         <div>The offeror has not yet created shares or your wallet is not connected.</div>
       )}
 
-      {isContractOwner ? (
-        <ContractOwnerActions
-          offering={offering}
-          contractSet={contractSet}
-          sharesOutstanding={sharesOutstanding}
-          myDistToClaim={myDistToClaim}
-          setShareSaleManagerModal={setShareSaleManagerModal}
-          setSmartContractsSettingsModal={setSmartContractsSettingsModal}
-          setRecallContract={setRecallContract}
-          refetch={refetch}
-          distributionId={distributionId}
-          partitions={partitions}
-        />
-      ) : (
-        <ContractInvestorActions
-          offering={offering}
-          contractSet={contractSet}
-          isWhitelisted={isWhitelisted}
-          myDistToClaim={myDistToClaim}
-          distributionId={distributionId}
-          setShareSaleManagerModal={setShareSaleManagerModal}
-          setRecallContract={setRecallContract}
-        />
-      )}
-      <ShareSaleStatusWidget
-        sales={sales}
-        offeringId={offering.id}
-        shareContractAddress={shareContractAddress}
-        isContractOwner={isContractOwner}
-      />
+      {/* <ContractOwnerActions
+        offering={offering}
+        contractSet={contractSet}
+        sharesOutstanding={sharesOutstanding}
+        myDistToClaim={myDistToClaim}
+        setShareSaleManagerModal={setShareSaleManagerModal}
+        setSmartContractsSettingsModal={setSmartContractsSettingsModal}
+        setRecallContract={setRecallContract}
+        refetch={refetch}
+        distributionId={distributionId}
+        partitions={partitions}
+      /> */}
     </div>
   );
 
@@ -222,10 +309,60 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           <Loading />
         </div>
       ) : (
-        <div className="">{hasContract ? ContractActions : NoContract}</div>
+        <>
+          <div className="">{!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}</div>
+          <ShareSaleStatusWidget
+            sales={sales}
+            offeringId={offering.id}
+            shareContractAddress={shareContractAddress}
+            isContractOwner={isContractOwner}
+          />
+        </>
       )}
     </>
   );
 };
 
 export default OfferingActions;
+
+{
+  /* <Button
+            onClick={() => {
+              setShowActionPanel('distribute');
+            }}
+            className={standardClass}
+          >
+            Create Distribution
+          </Button> */
+}
+{
+  /* {myDistToClaim ? (
+            <>
+              <FormButton
+                type="submit"
+                disabled={myDistToClaim === 0}
+                onClick={() =>
+                  claimDistribution(
+                    reachLib,
+                    shareContractAddress,
+                    distributionId,
+                    setButtonStep,
+                    setRecallContract,
+                    updateDistribution
+                  )
+                }
+              >
+                <LoadingButtonText
+                  state={buttonStep}
+                  idleText={`${numberWithCommas(myDistToClaim, 2)} AVAILABLE TO CLAIM`}
+                  submittingText="Claiming - This can take time. Please do not refresh."
+                  confirmedText="Confirmed! (check your wallet)"
+                  failedText="Transaction failed"
+                  rejectedText="You rejected the transaction. Click here to try again."
+                />
+              </FormButton>
+            </>
+          ) : (
+            <></>
+          )} */
+}

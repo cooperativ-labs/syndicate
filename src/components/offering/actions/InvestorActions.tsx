@@ -11,8 +11,6 @@ import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 
-export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
-
 export type ContractInvestorActionsProps = {
   offering: Offering;
   contractSet: OfferingSmartContractSet;

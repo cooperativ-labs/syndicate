@@ -19,12 +19,12 @@ import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
 
-import { acceptOffer, completeSwap } from '@src/web3/contractFunctionCalls';
+import { acceptOffer, acceptOrder, completeSwap } from '@src/web3/contractFunctionCalls';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { useAccount, useChainId } from 'wagmi';
 import { useAsync, useAsyncFn } from 'react-use';
 
-export type SharePurchaseFormProps = {
+export type SharePurchaseRequestProps = {
   offering: Offering;
   sale: OfferingSale;
   price: number;
@@ -37,7 +37,7 @@ export type SharePurchaseFormProps = {
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
 
-const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
+const SharePurchaseRequest: FC<SharePurchaseRequestProps> = ({
   offering,
   sale,
   price,
@@ -47,8 +47,6 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
 
   setRecallContract,
 }) => {
-  const { address: userWalletAddress } = useAccount();
-  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -95,8 +93,12 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-
-          await completeSwap(swapContractAddress, sale.orderId, values.numUnitsPurchase, setButtonStep);
+          await acceptOrder({
+            swapContractAddress: swapContractAddress,
+            orderId: sale.orderId,
+            amount: values.numUnitsPurchase,
+            setButtonStep: setButtonStep,
+          });
           // await acceptOffer(swapContractAddress, sale.orderId, setButtonStep);
           setSubmitting(false);
         }}
@@ -261,4 +263,4 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
   );
 };
 
-export default SharePurchaseForm;
+export default SharePurchaseRequest;

@@ -10,6 +10,7 @@ import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { String0x } from '@src/web3/helpersChain';
 
 import SaleManagerPanel from './ShareManagerPanel';
+import SharePurchaseSteps from './SharePurchaseSteps';
 import { getSale, SaleContentsType } from '@src/web3/reachCalls';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ReachContext } from '@src/SetReachContext';
@@ -22,6 +23,7 @@ type ShareSaleListItemProps = {
   myBacBalance: number;
   swapContractAddress: String0x;
   paymentTokenAddress: String0x;
+  txnApprovalsEnabled: boolean;
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
@@ -35,6 +37,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
   myBacBalance,
   swapContractAddress,
   paymentTokenAddress,
+  txnApprovalsEnabled,
   permittedEntity,
   walletAddress,
   isContractOwner,
@@ -113,7 +116,7 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                 />
               </>
             ) : (
-              <SharePurchaseForm
+              <SharePurchaseSteps
                 offering={offering}
                 sale={sale}
                 saleQty={amount}
@@ -122,8 +125,13 @@ const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
                 myBacBalance={myBacBalance}
                 swapContractAddress={swapContractAddress}
                 permittedEntity={permittedEntity}
-                setModal={setModal}
                 setRecallContract={setRecallContract}
+                isApproved={isApproved}
+                isDisapproved={isDisapproved}
+                isCancelled={isCancelled}
+                isAccepted={isAccepted}
+                paymentTokenAddress={paymentTokenAddress}
+                txnApprovalsEnabled={txnApprovalsEnabled}
               />
             )}
           </div>

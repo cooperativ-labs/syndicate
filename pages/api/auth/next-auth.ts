@@ -157,7 +157,6 @@ const options: AuthOptions = {
     },
     async session({ session, user, token }: { session: any; user: User; token: JWT }): Promise<Session> {
       session.user.id = token.id;
-      console.log('session', session);
       session.encodedJwt = jwt.sign(token, process.env.NEXT_PUBLIC_SECRET, {
         algorithm: 'HS256',
       });

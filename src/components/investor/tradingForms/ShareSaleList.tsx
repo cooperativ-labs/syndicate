@@ -18,6 +18,7 @@ type ShareSaleListProps = {
   walletAddress: string;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
+  txnApprovalsEnabled: boolean;
   setSaleFormModal: Dispatch<SetStateAction<boolean>>;
   setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
   setRecallContract: Dispatch<SetStateAction<string>>;
@@ -30,6 +31,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   myBacBalance,
   swapContractAddress,
   paymentTokenAddress,
+  txnApprovalsEnabled,
   permittedEntity,
   isContractOwner,
   setSaleFormModal,
@@ -58,17 +60,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   return (
     <>
-      <div className="mt-4 mb-2">
-        <div className={defaultFieldLabelClass}> Purchasing wallet:</div>
-        <FormattedCryptoAddress chainId={chainId} address={walletAddress} className="font-semibold" />
-      </div>
-      <div className="mt-4 mb-2">
-        <div className={defaultFieldLabelClass}> Purchasing entity:</div>
-        <div className="font-semibold"> {permittedEntity?.name}</div>
-      </div>
-      <hr className="my-6" />
-
-      <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`Offers`}</h2>
+      <h2 className="text-xl text-blue-900 font-semibold">{`Offers`}</h2>
       {offers.map((sale, i) => {
         return (
           <div key={i}>
@@ -80,6 +72,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               myBacBalance={myBacBalance}
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}
+              txnApprovalsEnabled={txnApprovalsEnabled}
               permittedEntity={permittedEntity}
               isContractOwner={isContractOwner}
               setModal={setShareSaleManagerModal}
