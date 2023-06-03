@@ -1,79 +1,98 @@
 import cn from 'classnames';
-import React, { FC, useCallback, useContext, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
-import { getSale, SaleContentsType } from '@src/web3/reachCalls';
 import { getSaleStatusOption } from '@src/utils/enumConverters';
 import { OfferingSale } from 'types';
-import { ReachContext } from '@src/SetReachContext';
 import { String0x } from '@src/web3/helpersChain';
+import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
 type ShareSaleStatusWidgetProps = {
-  sales: OfferingSale[];
+  sale: OfferingSale;
   offeringId: string;
-  shareContractAddress: String0x;
+  swapContractAddress: String0x;
+  paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
+  txnApprovalsEnabled: boolean;
   isContractOwner: boolean;
+  refetchMainContracts: () => void;
 };
 
 const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
-  sales,
+  sale,
   offeringId,
-  shareContractAddress,
+  txnApprovalsEnabled,
+  paymentTokenAddress,
+  paymentTokenDecimals,
+  swapContractAddress,
   isContractOwner,
+  refetchMainContracts,
 }) => {
-  const { reachLib, reachAcc, userWalletAddress } = useContext(ReachContext);
+  const {
+    initiator,
+    partition,
+    amount,
+    filledAmount,
+    filler,
+    isApproved,
+    isDisapproved,
+    isCancelled,
+    isAccepted,
+    refetchOrderDetails,
+  } = useOrderDetails(swapContractAddress, sale.orderId, paymentTokenDecimals);
 
-  const mySale = sales?.find((sale) => sale.initiator === userWalletAddress);
-  const [saleContents, setSaleContents] = useState<SaleContentsType>({
-    qty: 0,
-    qtySold: 0,
-    price: 0,
-    proceeds: 0,
-    saleDetails: undefined,
-    status: undefined,
-    btId: undefined,
-  });
+  const status =
+    initiator &&
+    getSaleStatusOption({
+      amount,
+      filledAmount,
+      isApproved,
+      isDisapproved,
+      isCancelled,
+      isAccepted,
+      txnApprovalsEnabled,
+    });
 
-  const retrieveSale = useCallback(() => {
-    getSale(reachLib, reachAcc, shareContractAddress, userWalletAddress, setSaleContents);
-  }, [reachLib, reachAcc, shareContractAddress, userWalletAddress, setSaleContents]);
+  const sharesRemaining = amount - filledAmount;
 
-  useEffect(() => {
-    if (mySale) {
-      retrieveSale();
-    }
-  }, [retrieveSale, mySale]);
+  function refetchAllContracts() {
+    refetchMainContracts();
+    refetchOrderDetails();
+  }
 
   return (
     <>
-      {saleContents?.status && (
+      {status && (
         <div className="px-3 pb-3 pt-2 mt-4 rounded-lg bg-slate-200">
           <div className="flex justify-between items-center">
             <div className="text-sm font-bold"> Your offer </div>
             <div
               className={cn(
                 'text-xs font-semibold rounded-md max-w-min px-1 h-5 border-2 min-w-max',
-                `text-${getSaleStatusOption(saleContents.status).color}`,
+                `text-${status?.color}`,
                 // 'text-white font-semibold',
-                `border-${getSaleStatusOption(saleContents.status)?.color}`
+                `border-${status?.color}`
               )}
             >
-              {getSaleStatusOption(saleContents.status).name}
+              {status?.name}
             </div>
           </div>
 
-          <div>Remaining: {saleContents.qty} shares</div>
+          <div>Remaining: {sharesRemaining} shares</div>
           <div className="flex flex-col gap-2 mt-4">
             <SaleManagerPanel
               isOfferor={true}
-              offeringId={offeringId}
-              status={saleContents.status}
-              proceeds={saleContents.proceeds}
-              btId={saleContents.btId}
-              sale={mySale}
-              shareContractAddress={shareContractAddress}
               isContractOwner={isContractOwner}
-              recallGetSale={retrieveSale}
+              offeringId={offeringId}
+              isApproved={isApproved}
+              sale={sale}
+              swapContractAddress={swapContractAddress}
+              txnApprovalsEnabled={txnApprovalsEnabled}
+              paymentTokenAddress={paymentTokenAddress}
+              paymentTokenDecimals={paymentTokenDecimals}
               small
+              isAccepted={isAccepted}
+              filler={filler}
+              refetchAllContracts={refetchAllContracts}
             />
           </div>
         </div>

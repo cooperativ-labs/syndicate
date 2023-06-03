@@ -351,7 +351,9 @@ export const CORE_ENTITY_FIELDS = gql`
           ...offeringDetailsData
         }
         sales {
-          price
+          saleContractAddress
+          initiator
+          orderId
         }
       }
       organization {
@@ -471,15 +473,12 @@ export const CORE_OFFERING_FIELDS = gql`
     }
     sales {
       id
-      numShares
-      price
       minUnits
       maxUnits
       visible
       saleContractAddress
-      orderId
-      isAsk
       initiator
+      orderId
       relatedOffering {
         id
       }

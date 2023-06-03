@@ -11,19 +11,26 @@ import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisp
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
+import {
+  ContractSale,
+  getCurrentSalePrice,
+  getLowestSalePrice,
+  getSaleArrayFromContract,
+} from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
-import { getLowestSalePrice } from '@src/utils/helpersMoney';
 import { useAccount, useChainId } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import { bytes32FromString, normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { MatchSupportedChains } from '@src/web3/connectors';
+import { useAsync } from 'react-use';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
@@ -40,6 +47,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const userId = session?.user?.id;
   const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContractSets } = offering;
   const contractSet = smartContractSets?.slice(-1)[0];
+  const chainId = useChainId();
 
   const shareContract = contractSet?.shareContract;
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
@@ -53,7 +61,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
-  const [recallContract, setRecallContract] = useState<string>();
+  const [contractSaleList, setContractSaleList] = useState<ContractSale[]>([]);
 
   const {
     contractOwner,
@@ -63,6 +71,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     sharesOutstanding,
     allDocuments,
     isLoading: shareIsLoading,
+    refetchShareContract,
   } = useShareContractInfo(shareContractAddress, userWalletAddress);
 
   const myBacBalance = 234000;
@@ -70,17 +79,20 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const numDistributions = 4;
 
   const {
-    shareToken,
-    paymentToken: paymentTokenAddress,
+    shareTokenAddress,
+    paymentTokenAddress,
+    paymentTokenDecimals,
     swapApprovalsEnabled,
     txnApprovalsEnabled,
     nextOrderId,
     isLoading: swapIsLoading,
+    refetchSwapContract,
   } = useSwapContractInfo(swapContractAddress);
 
-  const swapContractMatches = !swapContract
-    ? true
-    : normalizeEthAddress(shareToken) === normalizeEthAddress(shareContractAddress);
+  const refetchMainContracts = () => {
+    refetchShareContract();
+    refetchSwapContract();
+  };
 
   const isLoading = shareIsLoading || swapIsLoading;
 
@@ -100,7 +112,18 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     return sale.saleContractAddress === swapContractAddress;
   });
 
-  const currentSalePrice = getLowestSalePrice(sales, details?.priceStart);
+  useAsync(async () => {
+    const contractSaleList = await getSaleArrayFromContract(sales, swapContractAddress, paymentTokenDecimals);
+    setContractSaleList(contractSaleList);
+  }, [sales, swapContractAddress, paymentTokenDecimals, getSaleArrayFromContract]);
+
+  const currentSalePrice = getCurrentSalePrice(contractSaleList, offering.details.priceStart);
+
+  const swapContractMatches = !swapContract
+    ? true
+    : normalizeEthAddress(shareTokenAddress) === normalizeEthAddress(shareContractAddress);
+
+  const contractMatchesCurrentChain = !shareContract ? true : shareContract.cryptoAddress.chainId === chainId;
 
   return (
     <>
@@ -124,9 +147,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
             }`}
           />
         )}
-        {!swapContractMatches && (
+        {!swapContractMatches && contractMatchesCurrentChain && (
           <AlertBanner
             text={`The swap contract for this offering does not match the share contract. Please contact Cooperativ Support.`}
+          />
+        )}
+        {!contractMatchesCurrentChain && (
+          <AlertBanner
+            text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
+              MatchSupportedChains(shareContract.cryptoAddress.chainId).name
+            }.`}
           />
         )}
 
@@ -206,17 +236,21 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         offering={offering}
                         contractSet={contractSet}
                         paymentTokenAddress={paymentTokenAddress}
+                        paymentTokenDecimals={paymentTokenDecimals}
+                        swapApprovalsEnabled={swapApprovalsEnabled}
+                        txnApprovalsEnabled={txnApprovalsEnabled}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
                         myBacBalance={myBacBalance}
                         partitions={partitions}
-                        refetch={refetch}
-                        setRecallContract={setRecallContract}
+                        refetchMainContracts={refetchMainContracts}
                         distributionId={latestDistribution.id}
                         myDistToClaim={myDistToClaim}
                         permittedEntity={offeringParticipant}
                         currentSalePrice={currentSalePrice}
                         myShares={myShares}
+                        investmentCurrency={offering.details.investmentCurrency}
+                        chainId={0}
                       />
                     )}
                   </div>

@@ -1,3 +1,4 @@
+import React from 'react';
 import { ADD_ORGANIZATION_EMAIL } from '@src/utils/dGraphQueries/organization';
 import { sha256 } from 'js-sha256';
 import { useEffect } from 'react';

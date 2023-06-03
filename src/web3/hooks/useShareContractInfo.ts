@@ -1,5 +1,5 @@
 import { useContractReads } from 'wagmi';
-import { toNormalNumber } from '../util';
+import { shareContractDecimals, toNormalNumber } from '../util';
 import { String0x } from '../helpersChain';
 import { shareContractABI } from '../generated';
 
@@ -10,9 +10,10 @@ export type ShareContractInfoType = {
   myShares: number;
   sharesOutstanding: number;
   allDocuments: any;
-  decimals: number;
   firstPartition: String0x;
+  shareContractVersion: string;
   isLoading: boolean;
+  refetchShareContract: () => void;
 };
 
 export const useShareContractInfo = (
@@ -27,7 +28,13 @@ export const useShareContractInfo = (
     abi: shareContractABI,
   };
 
-  const { data, isLoading, isError, error } = useContractReads({
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchShareContract,
+  } = useContractReads({
     contracts: [
       { ...baseContractInfo, functionName: 'owner' },
       {
@@ -48,20 +55,18 @@ export const useShareContractInfo = (
       { ...baseContractInfo, functionName: 'totalSupply' },
       { ...baseContractInfo, functionName: 'getAllDocuments' },
       { ...baseContractInfo, functionName: 'partitionList', args: [BigInt(0)] },
+      { ...baseContractInfo, functionName: 'contractVersion' },
     ],
   });
 
-  const decimals = data ? 18 : undefined;
   const contractOwner = data ? data[0].result : undefined;
   const isManager = data ? data[1].result : undefined;
   const isWhitelisted = data ? data[2].result : undefined;
-  const myShares = data ? toNormalNumber(data[3].result, decimals) : undefined;
-  const sharesOutstanding = data ? toNormalNumber(data[4].result, decimals) : undefined;
+  const myShares = data ? toNormalNumber(data[3].result, shareContractDecimals) : undefined;
+  const sharesOutstanding = data ? toNormalNumber(data[4].result, shareContractDecimals) : undefined;
   const allDocuments = data ? data[5].result : undefined;
-  const fundsDistributed = data ? 20000 : undefined;
-  const numDistributions = data ? 4 : undefined;
   const firstPartition = data ? (data[6].result as String0x) : undefined;
-  const myBacBalance = data ? 234000 : undefined;
+  const shareContractVersion = data ? data[7].result : undefined;
 
   return {
     contractOwner,
@@ -70,8 +75,9 @@ export const useShareContractInfo = (
     myShares,
     sharesOutstanding,
     allDocuments,
-    decimals,
     firstPartition,
+    shareContractVersion,
     isLoading,
+    refetchShareContract,
   };
 };

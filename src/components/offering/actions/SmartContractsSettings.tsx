@@ -2,27 +2,26 @@ import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC } from 'react';
-import { Currency, Offering, OfferingSmartContractSet, User } from 'types';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import { User } from 'types';
 
 import NewClassForm from './NewClassForm';
+import SwapContractSettings, { SwapContractSettingsProps } from './SwapContractSettings';
 
-type SmartContractsSettingsProps = {
-  user: User;
-  offering: Offering;
-  contractSet: OfferingSmartContractSet;
-  chainId: number;
+export type SmartContractsSettingsProps = SwapContractSettingsProps & {
   partitions: String0x[];
-  investmentCurrency: Currency;
 };
 
-const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
+const SmartContractsSettings: FC<SmartContractsSettingsProps & { user: User }> = ({
   user,
   offering,
   chainId,
   contractSet,
+  swapApprovalsEnabled,
+  txnApprovalsEnabled,
   partitions,
   investmentCurrency,
+  refetchMainContracts,
 }) => {
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
@@ -44,27 +43,17 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
           />{' '}
         </div>
       )}
-      <hr className="my-4" />
-      {shareContractAddress && !swapContractAddress ? (
-        <CreateSwapContract
-          contractSet={contractSet}
-          investmentCurrency={investmentCurrency}
-          contractOwnerEntityId={offering.offeringEntity.id}
-          offeringDetailsId={offering.details.id}
-        />
-      ) : (
-        <div className="flex items-center">
-          2. Swap contract:{' '}
-          <FormattedCryptoAddress
-            chainId={chainId}
-            className="text-base font-medium ml-2"
-            showFull
-            withCopy
-            address={swapContractAddress}
-          />{' '}
-        </div>
-      )}
-      <hr className="my-4" />
+      <hr className="my-5" />
+      <SwapContractSettings
+        refetchMainContracts={refetchMainContracts}
+        swapApprovalsEnabled={swapApprovalsEnabled}
+        txnApprovalsEnabled={txnApprovalsEnabled}
+        contractSet={contractSet}
+        investmentCurrency={investmentCurrency}
+        offering={offering}
+        chainId={chainId}
+      />
+      <hr className="my-5" />
       3. Share classes:
       {partitions?.map((partition) => (
         <div key={partition} className="flex items-center">

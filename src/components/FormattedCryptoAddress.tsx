@@ -45,7 +45,11 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
 }) => {
   const addressForEns: `0x${string}` = address as `0x${string}`;
   const [copied, setCopied] = useState<boolean>(false);
-  const { data: ensName } = useEnsName({ address: addressForEns });
+  const { data: ensName } = useEnsName({
+    address: addressForEns,
+    chainId: 1,
+  });
+
   const chain = chainId && MatchSupportedChains(chainId);
   const blockExplorer = chain?.blockExplorer;
   const windowSize = useWindowSize();

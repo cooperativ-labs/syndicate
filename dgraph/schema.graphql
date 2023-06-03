@@ -650,18 +650,15 @@ type PurchaseRequest {
 
 type OfferingSale {
 	id: ID!
-	numShares: Int!
 	minUnits: Int
 	maxUnits: Int
-	price: Int!
+	visible: Boolean
 	relatedOffering: Offering! @hasInverse(field:sales) 
 	saleContractAddress: String!
+	initiator: String!
 	orderId: Int!
-	isAsk: Boolean
-	initiator: String
 	creationDate: DateTime!
 	lastUpdate: DateTime
-	visible: Boolean
 }
 
 type OfferingDistribution {

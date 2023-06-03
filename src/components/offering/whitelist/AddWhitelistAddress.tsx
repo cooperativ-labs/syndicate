@@ -2,7 +2,7 @@ import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React, { FC, useState } from 'react';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
-import { addWhitelistMember } from '@src/web3/contractFunctionCalls';
+import { addWhitelistMember } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
 import { isAddress } from 'viem';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
@@ -39,16 +39,16 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         setButtonStep('submitting');
         setSubmitting(true);
-        const transactionHash = await addWhitelistMember(
-          shareContractAddress as String0x,
+        const transactionHash = await addWhitelistMember({
+          shareContractAddress,
           offeringId,
-          values.address as String0x,
+          walletAddress: values.address as String0x,
           chainId,
-          values.name,
-          values.externalId,
+          name: values.name,
+          externalId: values.externalId,
           setButtonStep,
-          addWhitelistObject
-        );
+          addWhitelistObject,
+        });
         setTransactionHash(transactionHash);
         setSubmitting(false);
         resetForm();

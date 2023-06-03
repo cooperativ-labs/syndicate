@@ -1,31 +1,45 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import React, { useState } from 'react';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { setAllowance } from '@src/web3/contractFunctionCalls';
+import { setAllowance } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 type SetAllowanceFormProps = {
   amount: number;
   paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
   swapContractAddress: String0x;
+  refetchAllowance: () => void;
 };
 
-const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({ paymentTokenAddress, swapContractAddress, amount }) => {
+const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
+  paymentTokenAddress,
+  paymentTokenDecimals,
+  swapContractAddress,
+  amount,
+  refetchAllowance,
+}) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const chainId = useChainId();
   const chainName = MatchSupportedChains(chainId)?.name;
+
+  const handleAllowance = async () => {
+    await setAllowance({
+      paymentTokenAddress,
+      paymentTokenDecimals,
+      swapContractAddress,
+      amount,
+      setButtonStep,
+    });
+    refetchAllowance();
+    return;
+  };
+
   return (
     <Button
       className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
-      onClick={() =>
-        setAllowance({
-          paymentTokenAddress: paymentTokenAddress,
-          swapContractAddress: swapContractAddress,
-          amount: amount,
-          setButtonStep: setButtonStep,
-        })
-      }
+      onClick={() => handleAllowance()}
     >
       <LoadingButtonText
         state={buttonStep}

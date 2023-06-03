@@ -10,7 +10,7 @@ import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { setDocument } from '@src/web3/contractFunctionCalls';
+import { setDocument } from '@src/web3/contractShareCalls';
 import { SmartContract } from 'types';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
@@ -95,14 +95,14 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
     const docTitle = `Token Link Agreement`;
     const uri = `${getBaseUrl()}/offerings/${offeringId}`;
 
-    await setDocument(
-      docTitle,
-      agreement,
-      availableContract.cryptoAddress.address as String0x,
+    await setDocument({
+      docName: docTitle,
+      text: agreement,
+      shareContractAddress: availableContract.cryptoAddress.address as String0x,
       setButtonStep,
-      handleEstablish,
-      uri
-    );
+      callback: handleEstablish,
+      uri,
+    });
   };
 
   return (

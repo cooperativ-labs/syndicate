@@ -1,28 +1,24 @@
-import * as backendCtc from '../../../web3/ABI';
 import axios from 'axios';
 import Checkbox from '@src/components/form-components/Checkbox';
 import cn from 'classnames';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
-import Input, { defaultFieldDiv, defaultFieldLabelClass } from '@src/components/form-components/Inputs';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '../../form-components/NonInput';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import React, { FC, useState } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
 import { DownloadFile } from '@src/utils/helpersAgreement';
+import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
 
-import { acceptOffer, acceptOrder, completeSwap } from '@src/web3/contractFunctionCalls';
-import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { useAccount, useChainId } from 'wagmi';
-import { useAsync, useAsyncFn } from 'react-use';
+import { acceptOrder } from '@src/web3/contractSwapCalls';
+import { String0x } from '@src/web3/helpersChain';
+import { useAccount, useBalance } from 'wagmi';
+import { useAsync } from 'react-use';
 
 export type SharePurchaseRequestProps = {
   offering: Offering;
@@ -30,23 +26,22 @@ export type SharePurchaseRequestProps = {
   price: number;
   saleQty: number;
   soldQty: number;
-  myBacBalance: number;
+
   swapContractAddress: String0x;
   permittedEntity: OfferingParticipant;
-
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  refetchAllContracts: () => void;
 };
 
-const SharePurchaseRequest: FC<SharePurchaseRequestProps> = ({
+const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: string }> = ({
   offering,
   sale,
   price,
   myBacBalance,
   swapContractAddress,
   permittedEntity,
-
-  setRecallContract,
+  refetchAllContracts,
 }) => {
+  const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -97,6 +92,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps> = ({
             swapContractAddress: swapContractAddress,
             orderId: sale.orderId,
             amount: values.numUnitsPurchase,
+            refetchAllContracts: refetchAllContracts,
             setButtonStep: setButtonStep,
           });
           // await acceptOffer(swapContractAddress, sale.orderId, setButtonStep);
@@ -124,7 +120,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps> = ({
                 </>
               </NonInput>
               <div className="col-span-2" />
-              <div className="col-span-1 text-xs pl-2">{`Current balance: ${numberWithCommas(myBacBalance)}`}</div>
+              <div className="col-span-1 text-xs pl-2">{`Current balance: ${floatWithCommas(myBacBalance)}`}</div>
             </div>
             <hr className="my-6" />
             {/* Disclosures */}
@@ -243,15 +239,15 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps> = ({
             <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
               <LoadingButtonText
                 state={buttonStep}
-                idleText={`Purchase ${values.numUnitsPurchase ?? ''} shares ${
+                idleText={`Request to purchase ${values.numUnitsPurchase ?? ''} shares ${
                   values.numUnitsPurchase
                     ? `for ${purchaseString(values.numUnitsPurchase)} ${
                         getCurrencyOption(offering.details.investmentCurrency).symbol
                       } `
                     : ''
                 }`}
-                submittingText="Purchasing..."
-                confirmedText="Confirmed!"
+                submittingText="Submitting..."
+                confirmedText="Submitted!"
                 failedText="Transaction failed"
                 rejectedText="You rejected the transaction. Click here to try again."
               />

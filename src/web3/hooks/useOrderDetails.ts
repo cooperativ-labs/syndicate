@@ -1,5 +1,5 @@
-import { useContractRead } from 'wagmi';
-import { toNormalNumber } from '../util';
+import { erc20ABI, useContractRead } from 'wagmi';
+import { shareContractDecimals, toNormalNumber } from '../util';
 import { String0x } from '../helpersChain';
 import { swapContractABI } from '../generated';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -19,32 +19,38 @@ export type OrderDetailsType = {
   isAskOrder: boolean;
   isErc20Payment: boolean;
   isLoading: boolean;
+  refetchOrderDetails: () => void;
 };
 
 export const useOrderDetails = (
   swapContractAddress: String0x,
   orderId: number,
-  paymentToken: String0x
+  paymentTokenDecimals: number
 ): OrderDetailsType | undefined => {
-  const { data, isLoading, isError, error } = useContractRead({
+  const {
+    data,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchOrderDetails,
+  } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'orders',
     args: [BigInt(orderId)],
   });
 
+  const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
   const initiator = data && data[0];
   const partition = data && data[1];
-  const paymentTokenDecimals = getCurrencyById(paymentToken)?.decimals;
-  const amount = data && toNormalNumber(data[2], 18);
-  const price = data && toNormalNumber(data[3], paymentTokenDecimals);
-  const filledAmount = data && toNormalNumber(data[4], 18);
-  const filler = data && data[5];
+  const amount = data && toNormalNumber(data[2], shareContractDecimals);
+  const price = data && toNormalNumber(data[3], adjustTokenDecimalsForShareContract);
+  const filledAmount = data && toNormalNumber(data[4], shareContractDecimals);
+  const filler = data && (data[5] as String0x);
   const isApproved = data && data[7].isApproved;
   const isDisapproved = data && data[7].isDisapproved;
   const isCancelled = data && data[7].isCancelled;
   const isAccepted = data && data[7].orderAccepted;
-
   const isShareIssuance = data && data[6].isShareIssuance;
   const isAskOrder = data && data[6].isAskOrder;
   const isErc20Payment = data && data[6].isErc20Payment;
@@ -64,5 +70,6 @@ export const useOrderDetails = (
     isAskOrder,
     isErc20Payment,
     isLoading,
+    refetchOrderDetails,
   };
 };

@@ -81,7 +81,7 @@ const PostBidForm: FC<PostBidFormProps> = ({
             creator: permittedEntity.id,
             numShares: numShares,
             price: price,
-            visible: true,
+            visible: false,
           },
         });
         setButtonStep('confirmed');

@@ -17,7 +17,7 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
 
-import { submitSwap } from '@src/web3/contractFunctionCalls';
+import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
@@ -123,7 +123,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
             minUnits: values.minUnits,
             maxUnits: values.maxUnits,
             swapContractAddress: swapContractAddress,
-            visible: true,
+            visible: false,
             toc: values.toc,
             bacDecimals: getCurrencyById(paymentTokenAddress).decimals,
             offeringId: offering.id,

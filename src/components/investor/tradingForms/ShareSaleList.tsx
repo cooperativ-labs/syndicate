@@ -1,51 +1,33 @@
 import Button from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { Dispatch, FC, SetStateAction, useContext } from 'react';
-import ShareSaleListItem from './ShareSaleListItem';
+import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
 import { defaultFieldLabelClass } from '@src/components/form-components/Inputs';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
 
-import { String0x } from '@src/web3/helpersChain';
-import { useChainId } from 'wagmi';
-
-type ShareSaleListProps = {
-  offering: Offering;
+type ShareSaleListProps = ShareSaleListItemProps & {
   sales: OfferingSale[];
-  myBacBalance: number;
-  swapContractAddress: String0x;
-  paymentTokenAddress: String0x;
-  walletAddress: string;
-  permittedEntity: OfferingParticipant;
-  isContractOwner: boolean;
-  txnApprovalsEnabled: boolean;
   setSaleFormModal: Dispatch<SetStateAction<boolean>>;
-  setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
-  setRecallContract: Dispatch<SetStateAction<string>>;
 };
 
 const ShareSaleList: FC<ShareSaleListProps> = ({
   offering,
   walletAddress,
-  sales,
-  myBacBalance,
+  sales: offers,
   swapContractAddress,
   paymentTokenAddress,
+  paymentTokenDecimals,
   txnApprovalsEnabled,
   permittedEntity,
   isContractOwner,
   setSaleFormModal,
   setShareSaleManagerModal,
-  setRecallContract,
+  refetchMainContracts,
 }) => {
-  const chainId = useChainId();
-  const { userWalletAddress } = useContext(ReachContext);
-  const mySale = sales.find((sale) => sale.initiator === userWalletAddress);
-  const offers = sales.filter((sale) => sale.isAsk);
-
   const saleButton = (
     <Button
-      className="p-3 shadow-md rounded-md bg-slate-300 w-full uppercase font-semibold"
+      className="mt-4 p-3 shadow-md rounded-md bg-slate-300 w-full uppercase font-semibold"
       onClick={() => {
         setSaleFormModal(true), setShareSaleManagerModal(false);
       }}
@@ -54,14 +36,21 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     </Button>
   );
 
-  if (sales.length < 1) {
+  if (offers.length < 1) {
     return <>{saleButton}</>;
   }
+
+  const createOfferList = () => {
+    if (!isContractOwner) {
+      return offers.filter((offer) => offer.visible);
+    }
+    return offers;
+  };
 
   return (
     <>
       <h2 className="text-xl text-blue-900 font-semibold">{`Offers`}</h2>
-      {offers.map((sale, i) => {
+      {createOfferList().map((sale, i) => {
         return (
           <div key={i}>
             <ShareSaleListItem
@@ -69,20 +58,20 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               walletAddress={walletAddress}
               offering={offering}
               sale={sale}
-              myBacBalance={myBacBalance}
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}
               permittedEntity={permittedEntity}
               isContractOwner={isContractOwner}
-              setModal={setShareSaleManagerModal}
-              setRecallContract={setRecallContract}
+              setShareSaleManagerModal={setShareSaleManagerModal}
+              refetchMainContracts={refetchMainContracts}
+              paymentTokenDecimals={paymentTokenDecimals}
             />
           </div>
         );
       })}
 
-      {!mySale && <>{saleButton}</>}
+      {<>{saleButton}</>}
     </>
   );
 };

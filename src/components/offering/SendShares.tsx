@@ -8,7 +8,7 @@ import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { OfferingParticipant } from 'types';
 import { presentAddress } from '../FormattedCryptoAddress';
-import { sendShares } from '@src/web3/contractFunctionCalls';
+import { sendShares } from '@src/web3/contractShareCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import NewClassInputs from '../form-components/NewClassInputs';
@@ -84,16 +84,16 @@ const SendShares: FC<SendSharesProps> = ({
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        const transactionDetails = await sendShares(
-          shareContractAddress as String0x,
+        const transactionDetails = await sendShares({
+          shareContractAddress,
           shareContractId,
-          values.numShares,
-          values.recipient,
-          values.partition,
-          values.newPartition,
+          numShares: values.numShares,
+          recipient: values.recipient,
+          partition: values.partition,
+          newPartition: values.newPartition,
           setButtonStep,
-          addPartition
-        );
+          addPartition,
+        });
         if (transactionDetails) {
           toast.success(
             `${values.numShares} shares sent to ${presentAddress(

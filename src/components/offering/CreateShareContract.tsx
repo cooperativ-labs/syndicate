@@ -69,7 +69,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
           >
             <LoadingButtonText
               state={buttonStep}
-              idleText={`Publish share manager smart contract to ${chainName}`}
+              idleText={`Create share smart contract on ${chainName}`}
               submittingText="Deploying - This can take time. Please do not refresh."
               confirmedText="Confirmed!"
               failedText="Transaction failed"

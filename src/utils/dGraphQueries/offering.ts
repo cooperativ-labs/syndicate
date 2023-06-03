@@ -680,60 +680,16 @@ export const UPDATE_CONTRACT_STATUS = gql`
 
 // =========== SALE ================
 
-// export const CREATE_SALE = gql`
-//   mutation UpdateOffering(
-//     $currentDate: DateTime!
-//     $offeringId: [ID!]
-//     $smartshareContractId: String!
-//     $numShares: Int!
-//     $minUnits: Int
-//     $maxUnits: Int
-//     $price: Int!
-//     $visible: Boolean
-//   ) {
-//     updateOffering(
-//       input: {
-//         filter: { id: $offeringId }
-//         set: {
-//           sales: {
-//             creationDate: $currentDate
-//             lastUpdate: $currentDate
-//             smartshareContractId: $smartshareContractId
-//             numShares: $numShares
-//             minUnits: $minUnits
-//             maxUnits: $maxUnits
-//             price: $price
-//             visible: $visible
-//           }
-//         }
-//       }
-//     ) {
-//       offering {
-//         id
-//         sales {
-//           id
-//           numShares
-//           price
-//           creationDate
-//         }
-//       }
-//     }
-//   }
-// `;
-
 export const CREATE_SALE = gql`
   mutation UpdateOffering(
     $currentDate: DateTime!
     $orderId: Int!
     $offeringId: [ID!]
     $swapContractAddress: String!
-    $isAsk: Boolean
-    $numShares: Int!
     $minUnits: Int
     $maxUnits: Int
-    $initiator: String
-    $price: Int!
     $visible: Boolean
+    $initiator: String
   ) {
     updateOffering(
       input: {
@@ -744,13 +700,10 @@ export const CREATE_SALE = gql`
             orderId: $orderId
             lastUpdate: $currentDate
             saleContractAddress: $swapContractAddress
-            isAsk: $isAsk
-            initiator: $initiator
-            numShares: $numShares
             minUnits: $minUnits
             maxUnits: $maxUnits
-            price: $price
             visible: $visible
+            initiator: $initiator
           }
         }
       }
@@ -759,11 +712,9 @@ export const CREATE_SALE = gql`
         id
         sales {
           id
-          numShares
-          price
-          initiator
           creationDate
           orderId
+          initiator
         }
       }
     }
@@ -775,10 +726,7 @@ export const UPDATE_SALE = gql`
     updateOfferingSale(input: { filter: { id: $saleId }, set: { lastUpdate: $currentDate, visible: $visible } }) {
       offeringSale {
         id
-        numShares
-        price
         lastUpdate
-        initiator
         visible
       }
     }
@@ -790,9 +738,11 @@ export const DELETE_SALE = gql`
     updateOffering(
       input: { filter: { id: $offeringId }, remove: { sales: { id: $saleId } }, set: { lastUpdate: $currentDate } }
     ) {
-      numUids
       offering {
         id
+        sales {
+          id
+        }
       }
     }
     deleteOfferingSale(filter: { id: [$saleId] }) {

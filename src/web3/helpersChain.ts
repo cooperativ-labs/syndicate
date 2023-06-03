@@ -53,7 +53,7 @@ export const ChainErrorResponses = (error) => {
   if (error.message.includes('address already whitelisted')) {
     return { code: 1000, message: 'User is already on the whitelist' };
   }
-  if (error.message.includes('User rejected request')) {
+  if (error.message.includes('User rejected the request')) {
     return { code: 2000, message: 'User cancelled operation' };
   }
   if (error.message.includes('underflow on subtracting')) {

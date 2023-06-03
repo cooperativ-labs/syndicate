@@ -6,21 +6,20 @@ import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { ReachContext } from '@src/SetReachContext';
 import { String0x } from '@src/web3/helpersChain';
-import { submitDistribution } from '@src/web3/reachCalls';
+
 import { useMutation } from '@apollo/client';
 
 type SubmitDistributionProps = {
   shareContractAddress: String0x;
-  refetch: () => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  refetchMainContracts: () => void;
 };
-const SubmitDistribution: FC<SubmitDistributionProps> = ({ shareContractAddress, refetch, setRecallContract }) => {
+const SubmitDistribution: FC<SubmitDistributionProps> = ({ shareContractAddress, refetchMainContracts }) => {
   const { reachAcc } = useContext(ReachContext);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addDistribution, { data, error }] = useMutation(ADD_DISTRIBUTION);
 
   if (data) {
-    refetch();
+    refetchMainContracts();
   }
 
   return (
@@ -40,7 +39,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({ shareContractAddress,
           shareContractAddress,
           values.amount,
           setButtonStep,
-          setRecallContract,
+          refetchMainContracts,
           addDistribution
         );
       }}

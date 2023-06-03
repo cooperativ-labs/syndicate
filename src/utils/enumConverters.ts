@@ -170,16 +170,58 @@ export const getStageOption = (stage) => {
 export type SaleStatusType = 'initd' | 'partl' | 'apprv' | '-----' | 'compl';
 
 export const SaleStatusOptions = [
-  { value: 'initd', name: 'requires approval', color: 'orange-600' },
-  { value: 'partl', name: 'live', color: 'green-600' },
-  { value: 'apprv', name: 'live', color: 'green-600' },
-  { value: '-----', name: 'ended', color: 'gray-600' },
-  { value: 'compl', name: 'complete', color: 'gray-600' },
+  { value: 'initiated', name: 'requires approval', color: 'orange-600' },
+  { value: 'partiallyFilled', name: 'live', color: 'green-600' },
+  { value: 'approved', name: 'live', color: 'green-600' },
+  { value: 'disapproved', name: 'disapproved', color: 'red-600' },
+  { value: 'cancelled', name: 'cancelled', color: 'gray-600' },
+  { value: 'complete', name: 'complete', color: 'blue-600' },
 ];
 
-export const getSaleStatusOption = (status) => {
-  return SaleStatusOptions.find((st) => (st.value === status ? st : null));
+type SaleStatusOptionProps = {
+  isAccepted: boolean;
+  isApproved: boolean;
+  isDisapproved: boolean;
+  isCancelled: boolean;
+  amount: number;
+  filledAmount: number;
+  txnApprovalsEnabled: boolean;
 };
+
+export const getSaleStatusOption = ({
+  isAccepted,
+  isApproved,
+  isDisapproved,
+  isCancelled,
+  amount,
+  filledAmount,
+  txnApprovalsEnabled,
+}: SaleStatusOptionProps) => {
+  const initiated = !isAccepted && !isApproved && !isDisapproved && !isCancelled && !txnApprovalsEnabled;
+  const partiallyFilled = filledAmount > 0 && filledAmount < amount;
+  const approved = (txnApprovalsEnabled && !isApproved) || (isApproved && !isDisapproved && !isCancelled);
+  const disapproved = isDisapproved && !isCancelled;
+  const cancelled = isCancelled;
+  const complete = filledAmount === amount;
+
+  switch (true) {
+    case initiated:
+      return SaleStatusOptions[0];
+    case partiallyFilled:
+      return SaleStatusOptions[1];
+    case approved:
+      return SaleStatusOptions[2];
+    case disapproved:
+      return SaleStatusOptions[3];
+    case cancelled:
+      return SaleStatusOptions[4];
+    case complete:
+      return SaleStatusOptions[5];
+    default:
+      return SaleStatusOptions[0];
+  }
+};
+
 // ===== CURRENCY =====
 
 export enum currencyType {
@@ -288,7 +330,7 @@ export const currencyOptions = [
     type: currencyType.CRYP,
     value: CurrencyCode.DaiTest,
     symbol: 'DAI*',
-    address: '0x49d66a989A5821eA259C161141D4006cd8e37613',
+    address: '0x3aa3DAd8008288CB5F9dc2F6e1e6213035ddBE88',
     website: 'https://makerdao.com/',
     protocol: CryptoAddressProtocol.Eth,
     chainId: 11155111,

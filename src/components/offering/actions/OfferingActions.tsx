@@ -14,7 +14,7 @@ import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSa
 import SendShares from '../SendShares';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
-import SmartContractsSettings from './SmartContractsSettings';
+import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 import SubmitDistribution from '../SubmitDistribution';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -27,7 +27,7 @@ import { useQuery } from '@apollo/client';
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
-type OfferingActionsProps = {
+type OfferingActionsProps = SmartContractsSettingsProps & {
   sales: OfferingSale[];
   hasContract: boolean;
   loading: boolean;
@@ -39,6 +39,7 @@ type OfferingActionsProps = {
   currentSalePrice: number;
   myShares: number;
   paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
   userId: string;
   offering: Offering;
   contractSet: OfferingSmartContractSet;
@@ -46,8 +47,6 @@ type OfferingActionsProps = {
   sharesOutstanding: number;
   myDistToClaim: number;
   partitions: String0x[];
-  setRecallContract: Dispatch<SetStateAction<string>>;
-  refetch: () => void;
 };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
@@ -57,6 +56,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   isOfferingManager,
   offering,
   paymentTokenAddress,
+  paymentTokenDecimals,
+  swapApprovalsEnabled,
+  txnApprovalsEnabled,
   sharesOutstanding,
   sales,
   contractSet,
@@ -64,9 +66,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   myDistToClaim,
   distributionId,
   partitions,
-  refetch,
-  setRecallContract,
-  myBacBalance,
+  refetchMainContracts,
   permittedEntity,
   currentSalePrice,
   myShares,
@@ -109,14 +109,15 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             offering={offering}
             walletAddress={userWalletAddress}
             sales={sales}
-            myBacBalance={myBacBalance}
             swapContractAddress={swapContractAddress}
             paymentTokenAddress={paymentTokenAddress}
+            paymentTokenDecimals={paymentTokenDecimals}
             permittedEntity={permittedEntity}
             isContractOwner={isContractOwner === !!isOfferingManager}
             setShareSaleManagerModal={setShareSaleManagerModal}
             setSaleFormModal={setSaleFormModal}
-            setRecallContract={setRecallContract}
+            refetchMainContracts={refetchMainContracts}
+            txnApprovalsEnabled={txnApprovalsEnabled}
           />
         )}
       </FormModal>
@@ -132,6 +133,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           partitions={partitions}
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
+          swapApprovalsEnabled={swapApprovalsEnabled}
+          txnApprovalsEnabled={txnApprovalsEnabled}
+          refetchMainContracts={refetchMainContracts}
         />
       </FormModal>
       <FormModal
@@ -208,11 +212,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         />
       )}
       {showActionPanel === 'distribute' && (
-        <SubmitDistribution
-          shareContractAddress={shareContractAddress}
-          refetch={refetch}
-          setRecallContract={setRecallContract}
-        />
+        <SubmitDistribution shareContractAddress={shareContractAddress} refetchMainContracts={refetchMainContracts} />
       )}
     </div>
   );
@@ -299,6 +299,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
     <>The offeror has not yet created shares or your wallet is not connected.</>
   );
 
+  const mySale = sales?.find((sale) => sale.initiator === userWalletAddress);
+
   return (
     <>
       {FormModals}
@@ -311,12 +313,18 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       ) : (
         <>
           <div className="">{!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}</div>
-          <ShareSaleStatusWidget
-            sales={sales}
-            offeringId={offering.id}
-            shareContractAddress={shareContractAddress}
-            isContractOwner={isContractOwner}
-          />
+          {mySale && (
+            <ShareSaleStatusWidget
+              sale={mySale}
+              offeringId={offering.id}
+              swapContractAddress={swapContractAddress}
+              paymentTokenAddress={paymentTokenAddress}
+              paymentTokenDecimals={paymentTokenDecimals}
+              txnApprovalsEnabled={txnApprovalsEnabled}
+              isContractOwner={isContractOwner}
+              refetchMainContracts={refetchMainContracts}
+            />
+          )}
         </>
       )}
     </>

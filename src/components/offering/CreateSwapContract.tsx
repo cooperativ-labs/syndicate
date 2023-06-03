@@ -13,6 +13,7 @@ import Select from '../form-components/Select';
 import { defaultFieldDiv } from '../form-components/Inputs';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { Form, Formik } from 'formik';
+import { setContractOperator } from '@src/web3/contractShareCalls';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { UPDATE_INVESTMENT_CURRENCY } from '@src/utils/dGraphQueries/offering';
 import { useAccount, useChainId, useNetwork } from 'wagmi';
@@ -54,6 +55,11 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
       try {
         const contract = await deploySwapContract(userWalletAddress, chain, shareContractAddress, paymentTokenAddress);
         // Make this update the offering instead so that we can add the smart contract to the offering and update the investment currency
+        await setContractOperator({
+          shareContractAddress,
+          operator: contract.contractAddress,
+          setButtonStep,
+        });
 
         await addSwapContract({
           variables: {

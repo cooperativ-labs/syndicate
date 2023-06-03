@@ -14,7 +14,8 @@ import { String0x } from '@src/web3/helpersChain';
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { submitSwap } from '@src/web3/contractFunctionCalls';
+import { submitSwap } from '@src/web3/contractSwapCalls';
+import { toContractNumber, toNormalNumber } from '@src/web3/util';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
@@ -59,8 +60,33 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
     return numUnits * price;
   };
   const saleString = (numShares, price: number) => {
-    return numberWithCommas(saleCalculator(price, parseInt(numShares, 10)));
+    return numberWithCommas(saleCalculator(parseInt(numShares, 10), price));
   };
+
+  // // DECIMAL TEST
+
+  // const tokenDecimals = 18; //both shares and payment token
+  // const userEnteredShares = 10;
+  // const userEnteredPrice = 15;
+  // //userTotal = 150
+
+  // const contractShares = toContractNumber(userEnteredShares, tokenDecimals);
+  // console.log({ contractShares });
+  // //result = 10000000000000000000n
+
+  // const contractPrice = toContractNumber(userEnteredPrice, tokenDecimals);
+  // console.log({ contractPrice });
+  // //result = 15000000000000000000n
+
+  // const contractTotal = contractShares * contractPrice;
+  // console.log({ contractTotal });
+  // //result = 150000000000000000000n
+
+  // const backtoUserTotal = toNormalNumber(contractTotal, tokenDecimals);
+  // console.log({ backtoUserTotal });
+  // //result = 150
+
+  // //END DECIMAL TEST
 
   return (
     <Formik
