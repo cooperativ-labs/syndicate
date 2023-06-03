@@ -79,7 +79,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
     shareTokenAddress,
     paymentTokenAddress,
     paymentTokenDecimals,
-    swapApprovalsEnabled,
     txnApprovalsEnabled,
     isLoading: swapIsLoading,
     refetchSwapContract,
@@ -151,6 +150,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           setModal={setSaleFormModal}
           partitions={partitions as String0x[]}
           paymentTokenAddress={paymentTokenAddress}
+          refetchAllContracts={refetchMainContracts}
         />
       </FormModal>
       {/* <FormModal
@@ -180,7 +180,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           <DashboardCard>
             <ShareSaleList
               offering={offering}
-              walletAddress={userWalletAddress}
               sales={contractSales}
               swapContractAddress={swapContractAddress}
               permittedEntity={offeringParticipant}

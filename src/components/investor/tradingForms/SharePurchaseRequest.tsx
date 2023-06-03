@@ -24,9 +24,6 @@ export type SharePurchaseRequestProps = {
   offering: Offering;
   sale: OfferingSale;
   price: number;
-  saleQty: number;
-  soldQty: number;
-
   swapContractAddress: String0x;
   permittedEntity: OfferingParticipant;
   refetchAllContracts: () => void;

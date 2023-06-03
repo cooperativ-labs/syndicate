@@ -8,8 +8,8 @@ import { useChainId } from 'wagmi';
 
 type OfferingSummaryPanelProps = {
   seller: string;
-  saleQty: number;
-  soldQty: number;
+  shareQtyRemaining: number;
+
   price: number;
   paymentTokenAddress: String0x;
   className?: string;
@@ -18,8 +18,7 @@ type OfferingSummaryPanelProps = {
 const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   seller,
   price,
-  saleQty,
-  soldQty,
+  shareQtyRemaining,
   paymentTokenAddress,
   className,
 }) => {
@@ -31,7 +30,7 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
         Seller: <FormattedCryptoAddress className="ml-1" chainId={chainId} address={seller} withCopy />
       </div>
       <div>Share price: {` ${numberWithCommas(price)} ${presentCurrency}`}</div>
-      {!!saleQty && <div>Quantity for sale: {numberWithCommas(saleQty)}</div>}
+      {!!shareQtyRemaining && <div>Remaining for sale: {numberWithCommas(shareQtyRemaining)}</div>}
     </div>
   );
 };

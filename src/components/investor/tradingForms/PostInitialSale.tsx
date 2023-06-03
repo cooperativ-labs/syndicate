@@ -29,6 +29,7 @@ export type PostInitialSaleProps = {
   priceStart: number;
   shareContractId: string;
   partitions: String0x[];
+  refetchAllContracts: () => void;
 };
 const PostInitialSale: FC<PostInitialSaleProps> = ({
   sharesIssued,
@@ -40,6 +41,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
   shareContractId,
   paymentTokenAddress,
   partitions,
+  refetchAllContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -62,31 +64,6 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
   const saleString = (numShares, price: number) => {
     return numberWithCommas(saleCalculator(parseInt(numShares, 10), price));
   };
-
-  // // DECIMAL TEST
-
-  // const tokenDecimals = 18; //both shares and payment token
-  // const userEnteredShares = 10;
-  // const userEnteredPrice = 15;
-  // //userTotal = 150
-
-  // const contractShares = toContractNumber(userEnteredShares, tokenDecimals);
-  // console.log({ contractShares });
-  // //result = 10000000000000000000n
-
-  // const contractPrice = toContractNumber(userEnteredPrice, tokenDecimals);
-  // console.log({ contractPrice });
-  // //result = 15000000000000000000n
-
-  // const contractTotal = contractShares * contractPrice;
-  // console.log({ contractTotal });
-  // //result = 150000000000000000000n
-
-  // const backtoUserTotal = toNormalNumber(contractTotal, tokenDecimals);
-  // console.log({ backtoUserTotal });
-  // //result = 150
-
-  // //END DECIMAL TEST
 
   return (
     <Formik
@@ -145,6 +122,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
           setButtonStep: setButtonStep,
           createSale: createSale,
           addPartition: addPartition,
+          refetchAllContracts,
         });
         setSubmitting(false);
       }}

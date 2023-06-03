@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
 import { erc20ABI } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { off } from 'process';
 
 type SubmitSwapProps = {
   numShares: number;
@@ -36,6 +37,7 @@ type SubmitSwapProps = {
   addPartition?: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
+  refetchAllContracts: () => void;
 };
 
 export const submitSwap = async ({
@@ -60,6 +62,7 @@ export const submitSwap = async ({
   setButtonStep,
   createSale,
   addPartition,
+  refetchAllContracts,
 }: SubmitSwapProps) => {
   setButtonStep('submitting');
   const call = async () => {
@@ -106,16 +109,7 @@ export const submitSwap = async ({
           visible: visible,
         },
       });
-      // if (partition === '0xNew') {
-      //   console.log('adding partition');
-      //   await addPartition({
-      //     variables: {
-      //       smartContractId: shareContractId,
-      //       partition: setPartition as string,
-      //     },
-      //   });
-      // }
-
+      refetchAllContracts();
       setButtonStep('confirmed');
       toast.success(`You have offered ${numShares} shares.`);
       setModal && setModal(false);

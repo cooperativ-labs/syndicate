@@ -72,7 +72,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
 
   // Note: contractData[0] is eth, contractData[1] is erc20
   const rawProceeds = contractData && contractData[1];
-  const proceeds = rawProceeds && toNormalNumber(rawProceeds, paymentTokenDecimals);
+  const proceeds = rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
 
   const minPurchase = sale.minUnits;
   const maxPurchase = sale.maxUnits;
@@ -105,7 +105,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
       {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} shares</div>}
       {!!maxPurchase && <hr className="my-4" />}
       <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
-        {proceeds === 0 ? (
+        {isOfferor && proceeds === 0 && (
           <Button
             className={buttonClass}
             onClick={() =>
@@ -129,7 +129,8 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
               rejectedText="You rejected the transaction. Click here to try again."
             />
           </Button>
-        ) : (
+        )}
+        {isOfferor && proceeds !== 0 && (
           <Button
             className={buttonClass}
             onClick={() => claimProceeds({ swapContractAddress, setButtonStep: setClaimProceedsButton })}

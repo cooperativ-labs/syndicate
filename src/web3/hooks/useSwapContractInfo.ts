@@ -1,9 +1,6 @@
-import { useContractReads, useContractEvent, useContractRead, erc20ABI } from 'wagmi';
-import { toNormalNumber } from '../util';
+import { useContractReads, useContractRead, erc20ABI } from 'wagmi';
 import { String0x } from '../helpersChain';
 import { swapContractABI } from '../generated';
-import { getCurrencyById } from '@src/utils/enumConverters';
-import { Dispatch, SetStateAction, useState } from 'react';
 
 export type SwapContractInfoType = {
   shareTokenAddress: String0x;
@@ -38,14 +35,6 @@ export const useSwapContractInfo = (swapContractId: String0x): SwapContractInfoT
       { ...baseContractInfo, functionName: 'nextOrderId' },
       { ...baseContractInfo, functionName: 'contractVersion' },
     ],
-  });
-
-  useContractEvent({
-    ...baseContractInfo,
-    eventName: 'ProceedsWithdrawn',
-    listener(log) {
-      console.log(log);
-    },
   });
 
   const shareTokenAddress = data ? data[0].result : undefined;

@@ -680,42 +680,78 @@ export const UPDATE_CONTRACT_STATUS = gql`
 
 // =========== SALE ================
 
+// export const CREATE_SALE = gql`
+//   mutation UpdateOffering(
+//     $currentDate: DateTime!
+//     $orderId: Int!
+//     $offeringId: [ID!]
+//     $swapContractAddress: String!
+//     $minUnits: Int
+//     $maxUnits: Int
+//     $visible: Boolean
+//     $initiator: String
+//   ) {
+//     updateOffering(
+//       input: {
+//         filter: { id: $offeringId }
+//         set: {
+//           sales: {
+//             creationDate: $currentDate
+//             orderId: $orderId
+//             lastUpdate: $currentDate
+//             saleContractAddress: $swapContractAddress
+//             minUnits: $minUnits
+//             maxUnits: $maxUnits
+//             visible: $visible
+//             initiator: $initiator
+//           }
+//         }
+//       }
+//     ) {
+//       offering {
+//         id
+//         sales {
+//           id
+//           creationDate
+//           orderId
+//           initiator
+//         }
+//       }
+//     }
+//   }
+// `;
+
 export const CREATE_SALE = gql`
-  mutation UpdateOffering(
+  mutation CreateSale(
     $currentDate: DateTime!
     $orderId: Int!
-    $offeringId: [ID!]
+    $offeringId: ID!
     $swapContractAddress: String!
     $minUnits: Int
     $maxUnits: Int
     $visible: Boolean
-    $initiator: String
+    $initiator: String!
   ) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        set: {
-          sales: {
-            creationDate: $currentDate
-            orderId: $orderId
-            lastUpdate: $currentDate
-            saleContractAddress: $swapContractAddress
-            minUnits: $minUnits
-            maxUnits: $maxUnits
-            visible: $visible
-            initiator: $initiator
-          }
+    addOfferingSale(
+      input: [
+        {
+          relatedOffering: { id: $offeringId }
+          creationDate: $currentDate
+          orderId: $orderId
+          lastUpdate: $currentDate
+          saleContractAddress: $swapContractAddress
+          minUnits: $minUnits
+          maxUnits: $maxUnits
+          visible: $visible
+          initiator: $initiator
         }
-      }
+      ]
     ) {
-      offering {
+      offeringSale {
         id
-        sales {
-          id
-          creationDate
-          orderId
-          initiator
-        }
+        creationDate
+        orderId
+        initiator
       }
     }
   }

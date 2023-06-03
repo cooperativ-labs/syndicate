@@ -13,6 +13,8 @@ type SharePurchaseStepsProps = SharePurchaseRequestProps & {
   isDisapproved: boolean;
   isCancelled: boolean;
   isAccepted: boolean;
+  filler: String0x | '';
+  shareQtyRemaining: number;
   paymentTokenAddress: String0x;
   txnApprovalsEnabled: boolean;
 };
@@ -20,8 +22,7 @@ type SharePurchaseStepsProps = SharePurchaseRequestProps & {
 const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   offering,
   sale,
-  saleQty,
-  soldQty,
+  shareQtyRemaining,
   price,
   swapContractAddress,
   paymentTokenAddress,
@@ -31,11 +32,14 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   isDisapproved,
   isCancelled,
   isAccepted,
+  filler,
   refetchAllContracts,
 }) => {
   const [openStep, setOpenStep] = useState<number>(0);
   const [status, setStatus] = useState<string>('pending');
   const { address: userWalletAddress } = useAccount();
+
+  console.log({ isApproved, isDisapproved, isCancelled, isAccepted });
 
   const { data, refetch } = useContractReads({
     contracts: [
@@ -69,10 +73,10 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const allowance = data && toNormalNumber(data[0].result, paymentTokenDecimals);
   const acceptedOrderQty = data && toNormalNumber(data[1].result, shareContractDecimals);
   const allowanceRequiredForPurchase = acceptedOrderQty * price;
-  const isAllowanceSufficient = allowance >= allowanceRequiredForPurchase * 1.1;
+  const isAllowanceSufficient = allowance >= allowanceRequiredForPurchase;
 
   useEffect(() => {
-    if (!isAccepted && txnApprovalsEnabled) {
+    if (!isAccepted && txnApprovalsEnabled && shareQtyRemaining > 0) {
       setOpenStep(1);
     } else if (!isAllowanceSufficient && isAccepted && (isApproved || !txnApprovalsEnabled)) {
       setOpenStep(2);
@@ -97,8 +101,6 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           <SharePurchaseRequest
             offering={offering}
             sale={sale}
-            saleQty={saleQty}
-            soldQty={soldQty}
             price={price}
             myBacBalance={myBacBalance}
             swapContractAddress={swapContractAddress}
@@ -117,7 +119,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
             paymentTokenAddress={paymentTokenAddress}
             paymentTokenDecimals={paymentTokenDecimals}
             swapContractAddress={swapContractAddress}
-            amount={allowanceRequiredForPurchase * 1.1}
+            amount={allowanceRequiredForPurchase}
             refetchAllowance={refetch}
           />
         )}

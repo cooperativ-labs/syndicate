@@ -28,7 +28,7 @@ export const getHashTextPairs = (data: any, agreementTexts: Document[]) => {
   return textHashPairs;
 };
 
-export const normalizeEthAddress = (address: String0x) => {
+export const normalizeEthAddress = (address: String0x | string) => {
   return address?.toLowerCase() as String0x;
 };
 

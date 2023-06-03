@@ -107,7 +107,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         {userWalletAddress && (
           <ShareSaleList
             offering={offering}
-            walletAddress={userWalletAddress}
             sales={sales}
             swapContractAddress={swapContractAddress}
             paymentTokenAddress={paymentTokenAddress}
@@ -163,6 +162,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             setModal={setSaleFormModal}
             partitions={partitions}
             paymentTokenAddress={paymentTokenAddress}
+            refetchAllContracts={refetchMainContracts}
           />
         ) : (
           <PostInitialSale
@@ -175,6 +175,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             shareContractId={shareContractId}
             partitions={partitions}
             paymentTokenAddress={paymentTokenAddress}
+            refetchAllContracts={refetchMainContracts}
           />
         )}
       </FormModal>

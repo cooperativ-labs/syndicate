@@ -33,6 +33,7 @@ import { MatchSupportedChains } from '@src/web3/connectors';
 import { useAsync } from 'react-use';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import { c } from '@wagmi/cli/dist/config-c09a23a5';
 
 // import { ABI } from '@src/web3/ABI';
 
@@ -65,8 +66,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   const {
     contractOwner,
-    isManager,
-    isWhitelisted,
     myShares,
     sharesOutstanding,
     allDocuments,
@@ -108,6 +107,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   });
   // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
   // currently refers to the single sale the contract can currently offer
+
   const contractSales = sales.filter((sale) => {
     return sale.saleContractAddress === swapContractAddress;
   });
@@ -117,7 +117,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     setContractSaleList(contractSaleList);
   }, [sales, swapContractAddress, paymentTokenDecimals, getSaleArrayFromContract]);
 
-  const currentSalePrice = getCurrentSalePrice(contractSaleList, offering.details.priceStart);
+  const currentSalePrice = getCurrentSalePrice(contractSaleList, offering.details?.priceStart);
 
   const swapContractMatches = !swapContract
     ? true

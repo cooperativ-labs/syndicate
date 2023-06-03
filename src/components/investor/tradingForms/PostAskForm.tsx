@@ -34,6 +34,7 @@ type PostAskFormProps = {
   sharesOutstanding: number;
   currentSalePrice: number;
   setModal: (x: boolean) => void;
+  refetchAllContracts: () => void;
 };
 
 const PostAskForm: FC<PostAskFormProps> = ({
@@ -49,6 +50,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
   sharesOutstanding,
   currentSalePrice,
   setModal,
+  refetchAllContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
@@ -133,6 +135,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
             isErc20Payment: isErc20Payment,
             setButtonStep: setButtonStep,
             createSale: createSale,
+            refetchAllContracts,
           });
           setSubmitting(false);
         }}

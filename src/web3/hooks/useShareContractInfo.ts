@@ -20,9 +20,6 @@ export const useShareContractInfo = (
   shareContractId: String0x,
   userWalletAddress: string
 ): ShareContractInfoType | undefined => {
-  if (!shareContractId) {
-    console.warn('No contract ID provided');
-  }
   const baseContractInfo = {
     address: shareContractId,
     abi: shareContractABI,
