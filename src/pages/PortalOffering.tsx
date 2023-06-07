@@ -200,7 +200,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
               isOfferingManager={false}
               contractViewDetails={{
                 sharesOutstanding: sharesOutstanding,
-                fundsDistributed: fundsDistributed,
+
                 myShares: myShares,
                 paymentToken: paymentTokenAddress,
               }}
@@ -212,7 +212,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
             <DistributionList
               distributionContractAddress={distributionContractAddress}
               distributions={offering.distributions}
-              currency={offering.details.distributionCurrency}
             />
             <div className="mt-20 flex">
               <ProfileTabContainer offering={offering} />

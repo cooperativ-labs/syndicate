@@ -274,6 +274,11 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
           }
         }
       }
+      distributions {
+        id
+        transactionHash
+        contractIndex
+      }
       details {
         ...offeringDetailsData
       }
@@ -285,7 +290,7 @@ export const CORE_ENTITY_FIELDS = gql`
   ${CORE_ADDRESS_FIELDS}
   ${CORE_DOCUMENT_FIELDS}
   ${CORE_RE_PROPERTY_FIELDS}
-  ${CORE_PURCHASE_REQUEST_FIELDS}
+
   ${SMART_CONTRACT_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
   fragment entityData on LegalEntity {
@@ -397,9 +402,9 @@ export const CORE_ENTITY_FIELDS = gql`
         id
         walletAddress
       }
-      purchaseRequests {
-        ...purchaseRequestData
-      }
+      # purchaseRequests {
+      #   ...purchaseRequestData
+      # }
       distributions {
         id
         contractIndex
@@ -421,7 +426,7 @@ export const CORE_OFFERING_FIELDS = gql`
   ${CORE_ENTITY_FIELDS}
   ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
   ${CORE_WAITLIST_MEMBER_FIELDS}
-  ${CORE_PURCHASE_REQUEST_FIELDS}
+
   ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
   fragment offeringData on Offering {
@@ -467,9 +472,9 @@ export const CORE_OFFERING_FIELDS = gql`
     offeringEntity {
       ...entityData
     }
-    purchaseRequests {
-      ...purchaseRequestData
-    }
+    # purchaseRequests {
+    #   ...purchaseRequestData
+    # }
     sales {
       id
       minUnits

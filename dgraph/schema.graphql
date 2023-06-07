@@ -638,14 +638,23 @@ type InvestorApplication {
 	creationDate: DateTime!
 }
 
-type PurchaseRequest {
+# type PurchaseRequest {
+# 	id: ID!
+# 	numUnits: Int!
+# 	relatedOffering: Offering! @hasInverse(field:purchaseRequests) 
+# 	purchaser: LegalEntity!
+# 	purchaseDocument: Document!
+# 	purchaserWallet: String!
+# 	creationDate: DateTime!
+# }
+
+type OfferingIssuance	{
 	id: ID!
-	numUnits: Int!
-	relatedOffering: Offering! @hasInverse(field:purchaseRequests) 
-	purchaser: LegalEntity!
-	purchaseDocument: Document!
-	purchaserWallet: String!
-	creationDate: DateTime!
+	shareContractAddress: String!
+	recipientAddress: String!
+	amount: Int!
+	class: String!
+	transactionHash: String!
 }
 
 type OfferingSale {

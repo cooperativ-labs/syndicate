@@ -11,15 +11,10 @@ import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisp
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import {
-  ContractSale,
-  getCurrentSalePrice,
-  getLowestSalePrice,
-  getSaleArrayFromContract,
-} from '@src/utils/helpersMoney';
+import { ContractSale, getCurrentSalePrice, getSaleArrayFromContract } from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
@@ -33,7 +28,6 @@ import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useAsync } from 'react-use';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-
 // import { ABI } from '@src/web3/ABI';
 
 type OfferingDetailsProps = {

@@ -125,6 +125,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
     participant;
 
+  const distributions = offering.distributions;
+
   const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity.organization);
 
   const updateInvestorForm = (itemType) => {
@@ -224,15 +226,13 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const tradesSection = (
     <div>
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
-      <DistributionList
-        distributionContractAddress={distributionContractAddress}
-        distributions={offering.distributions}
-      />
+      <DistributionList distributionContractAddress={distributionContractAddress} distributions={distributions} />
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades</h1>
-      <DistributionList
+      trades go here
+      {/* <DistributionList
         distributionContractAddress={distributionContractAddress}
         distributions={offering.distributions}
-      />
+      /> */}
     </div>
   );
 
