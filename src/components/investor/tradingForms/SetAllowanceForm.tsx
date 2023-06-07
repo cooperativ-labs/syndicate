@@ -9,14 +9,14 @@ type SetAllowanceFormProps = {
   amount: number;
   paymentTokenAddress: String0x;
   paymentTokenDecimals: number;
-  swapContractAddress: String0x;
+  spenderAddress: String0x;
   refetchAllowance: () => void;
 };
 
 const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
-  swapContractAddress,
+  spenderAddress,
   amount,
   refetchAllowance,
 }) => {
@@ -28,7 +28,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
     await setAllowance({
       paymentTokenAddress,
       paymentTokenDecimals,
-      swapContractAddress,
+      spenderAddress,
       amount,
       setButtonStep,
     });

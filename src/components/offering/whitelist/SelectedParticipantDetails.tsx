@@ -5,7 +5,7 @@ import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
-import { Currency, OfferingParticipant } from 'types';
+import { Currency, OfferingParticipant, OfferingSmartContractSet } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
@@ -21,7 +21,7 @@ import { useSession } from 'next-auth/react';
 type SelectedParticipantProps = {
   selection: string;
   participants: OfferingParticipant[];
-  shareContractAddress: String0x;
+  contractSet: OfferingSmartContractSet;
   currentSalePrice: number;
   investmentCurrency: Currency;
   removeMember: (variables) => void;
@@ -30,7 +30,7 @@ type SelectedParticipantProps = {
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   selection,
   participants,
-  shareContractAddress,
+  contractSet,
   currentSalePrice,
   removeMember,
 }) => {
@@ -44,6 +44,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const participantWallet = participant?.walletAddress;
 
   //-----------------Contract Interactions---------------------
+
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
 
   const sharedContractSpecs = {
     address: shareContractAddress,
@@ -222,15 +225,13 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     <div>
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
       <DistributionList
-        shareContractAddress={shareContractAddress}
+        distributionContractAddress={distributionContractAddress}
         distributions={offering.distributions}
-        currency={offering.details.distributionCurrency}
       />
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades</h1>
       <DistributionList
-        shareContractAddress={shareContractAddress}
+        distributionContractAddress={distributionContractAddress}
         distributions={offering.distributions}
-        currency={offering.details.distributionCurrency}
       />
     </div>
   );

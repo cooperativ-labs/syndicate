@@ -1,8 +1,7 @@
-import { erc20ABI, useContractRead } from 'wagmi';
+import { useContractRead } from 'wagmi';
 import { shareContractDecimals, toNormalNumber } from '../util';
 import { String0x } from '../helpersChain';
 import { swapContractABI } from '../generated';
-import { getCurrencyById } from '@src/utils/enumConverters';
 
 export type OrderDetailsType = {
   initiator: String0x | '';

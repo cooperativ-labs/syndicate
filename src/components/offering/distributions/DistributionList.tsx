@@ -1,40 +1,15 @@
-import DistributionListItem from './DistributionListItem';
+import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 import React, { FC } from 'react';
-import { Currency, OfferingDistribution } from 'types';
-import { String0x } from '@src/web3/helpersChain';
+import { OfferingDistribution } from 'types';
 
-type DistributionListProps = {
+type DistributionListProps = DistributionListItemProps & {
   distributions: OfferingDistribution[];
-  currency: Currency;
-  shareContractAddress: String0x;
-  hideTransactionId?: boolean;
 };
 
-const TEMP_fake_distributions = [
-  {
-    id: '1',
-    date: '2021-09-01',
-    amount: 100,
-    transactionId: '0x1234567890123456789012345678901234567890',
-  },
-  {
-    id: '1',
-    date: '2021-09-01',
-    amount: 100,
-    transactionId: '0x1234567890123456789012345678901234567890',
-  },
-  {
-    id: '1',
-    date: '2021-09-01',
-    amount: 100,
-    transactionId: '0x1234567890123456789012345678901234567890',
-  },
-];
-
 const DistributionList: FC<DistributionListProps> = ({
-  shareContractAddress,
+  distributionContractAddress,
   distributions,
-  currency,
+  isDistributor,
   hideTransactionId,
 }) => {
   return (
@@ -52,10 +27,15 @@ const DistributionList: FC<DistributionListProps> = ({
           <div className="text-sm font-bold text-gray-700">Total Distribution</div>
         </div>
       </div>
-      {TEMP_fake_distributions.map((dist, i) => {
+      {distributions.map((dist, i) => {
         return (
           <div className="mb-3" key={i}>
-            <DistributionListItem distribution={dist} currency={currency} hideTransactionId={hideTransactionId} />
+            <DistributionListItem
+              distribution={dist}
+              hideTransactionId={hideTransactionId}
+              distributionContractAddress={distributionContractAddress}
+              isDistributor={isDistributor}
+            />
           </div>
         );
       })}

@@ -1,10 +1,10 @@
-import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC } from 'react';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { User } from 'types';
 
+import DistributionContractSettings from './DistributionContractSettings';
 import NewClassForm from './NewClassForm';
 import SwapContractSettings, { SwapContractSettingsProps } from './SwapContractSettings';
 
@@ -23,13 +23,11 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { user: User }> =
   investmentCurrency,
   refetchMainContracts,
 }) => {
-  const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
-  const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
   const shareContract = contractSet?.shareContract;
-
+  const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
   return (
     <>
-      {!shareContractAddress ? (
+      {!shareContract ? (
         user && <LinkLegal user={user} offering={offering} />
       ) : (
         <div className="flex items-center">
@@ -54,7 +52,14 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { user: User }> =
         chainId={chainId}
       />
       <hr className="my-5" />
-      3. Share classes:
+      <DistributionContractSettings
+        investmentCurrency={investmentCurrency}
+        offering={offering}
+        contractSet={contractSet}
+        chainId={chainId}
+      />
+      <hr className="my-5" />
+      4. Share classes:
       {partitions?.map((partition) => (
         <div key={partition} className="flex items-center">
           {stringFromBytes32(partition)}

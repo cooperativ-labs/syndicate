@@ -1,6 +1,4 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import ContractInvestorActions, { ContractInvestorActionsProps } from './InvestorActions';
-
 import FormModal from '@src/containers/FormModal';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import Loading from '@src/components/loading/Loading';
@@ -20,7 +18,7 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant, OfferingSale, OfferingSmartContractSet, User } from 'types';
 import { String0x } from '@src/web3/helpersChain';
-import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
+
 import { useAccount, useChainId, useMutation } from 'wagmi';
 import { useQuery } from '@apollo/client';
 
@@ -34,7 +32,6 @@ type OfferingActionsProps = SmartContractsSettingsProps & {
   isOfferingManager: boolean;
   retrievalIssue: boolean;
   isContractOwner: boolean;
-  myBacBalance: number;
   permittedEntity: OfferingParticipant;
   currentSalePrice: number;
   myShares: number;
@@ -161,7 +158,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             currentSalePrice={currentSalePrice}
             setModal={setSaleFormModal}
             partitions={partitions}
-            paymentTokenAddress={paymentTokenAddress}
+            paymentTokenDecimals={paymentTokenDecimals}
             refetchAllContracts={refetchMainContracts}
           />
         ) : (
@@ -175,6 +172,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             shareContractId={shareContractId}
             partitions={partitions}
             paymentTokenAddress={paymentTokenAddress}
+            paymentTokenDecimals={paymentTokenDecimals}
             refetchAllContracts={refetchMainContracts}
           />
         )}
@@ -211,9 +209,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           offeringParticipants={participants}
           partitions={partitions}
         />
-      )}
-      {showActionPanel === 'distribute' && (
-        <SubmitDistribution shareContractAddress={shareContractAddress} refetchMainContracts={refetchMainContracts} />
       )}
     </div>
   );

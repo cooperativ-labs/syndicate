@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import React, { FC } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
-import { getSaleStatusOption } from '@src/utils/enumConverters';
+import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { OfferingSale } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
@@ -42,7 +42,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
 
   const status =
     initiator &&
-    getSaleStatusOption({
+    getSwapStatusOption({
       amount,
       filledAmount,
       isApproved,
@@ -84,6 +84,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
               isContractOwner={isContractOwner}
               offeringId={offeringId}
               isApproved={isApproved}
+              isDisapproved={isDisapproved}
               sale={sale}
               swapContractAddress={swapContractAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}

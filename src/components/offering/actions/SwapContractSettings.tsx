@@ -6,7 +6,7 @@ import { String0x } from '@src/web3/helpersChain';
 
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
 import { swapContractABI } from '@src/web3/generated';
-import { useContractRead, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 
 export type SwapContractSettingsProps = {
   swapApprovalsEnabled: boolean;

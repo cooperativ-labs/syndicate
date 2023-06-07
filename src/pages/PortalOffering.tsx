@@ -62,7 +62,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
   const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
   const [bidFormModel, setBidFormModel] = useState<boolean>(false);
-
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
   const {
     myShares,
     sharesOutstanding,
@@ -149,7 +149,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           currentSalePrice={currentSalePrice}
           setModal={setSaleFormModal}
           partitions={partitions as String0x[]}
-          paymentTokenAddress={paymentTokenAddress}
+          paymentTokenDecimals={paymentTokenDecimals}
           refetchAllContracts={refetchMainContracts}
         />
       </FormModal>
@@ -209,11 +209,11 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
         </TwoColumnLayout>
         <TwoColumnLayout twoThirdsLayout>
           <div className="mt-4 ">
-            {/* <DistributionList
+            <DistributionList
               distributionContractAddress={distributionContractAddress}
               distributions={offering.distributions}
               currency={offering.details.distributionCurrency}
-            /> */}
+            />
             <div className="mt-20 flex">
               <ProfileTabContainer offering={offering} />
             </div>

@@ -14,6 +14,7 @@ import { waitForTransaction, writeContract, prepareWriteContract } from 'wagmi/a
 import { parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
+import { shareContractDecimals } from './util';
 
 export type SaleContentsType = {
   qty: number;
@@ -165,7 +166,7 @@ export const sendShares = async ({
   addPartition,
   refetchMainContracts,
 }: SendSharesProps) => {
-  const amt = parseUnits(numShares.toString() as `${number}`, 18);
+  const amt = parseUnits(numShares.toString() as `${number}`, shareContractDecimals);
 
   let transactionDetails = undefined;
   const call = async () => {

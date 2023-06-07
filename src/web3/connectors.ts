@@ -48,7 +48,7 @@ declare let window: any;
 export const SupportedChains = [mainnet, sepolia, goerli, polygon, polygonMumbai];
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
-  // publicProvider(),
+  publicProvider(),
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
 ]);
 

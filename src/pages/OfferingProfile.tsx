@@ -6,7 +6,7 @@ import DocumentList from '@src/components/offering/documents/DocumentList';
 import Header from '@src/containers/Header';
 import OfferingProperties from '@src/components/properties/OfferingProperties';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import router from 'next/router';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
@@ -41,6 +41,8 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+  const distributionContract = contractSet?.distributionContract;
+  const distributionContractAddress = distributionContract?.cryptoAddress.address as String0x;
 
   const partitions = shareContract?.partitions as String0x[];
   const type = details && details.type;
@@ -139,9 +141,8 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               <h2 className="text-gray-800 font-bold mb-3">Distribution History</h2>
               {details && (
                 <DistributionList
-                  shareContractAddress={shareContractAddress}
+                  distributionContractAddress={distributionContractAddress}
                   distributions={distributions}
-                  currency={details.distributionCurrency}
                   hideTransactionId
                 />
               )}

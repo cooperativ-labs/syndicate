@@ -4,9 +4,9 @@ import React, { FC, useState } from 'react';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
 import { addWhitelistMember } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
+import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
 import { isAddress } from 'viem';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { String0x } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
@@ -27,22 +27,24 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
         name: '',
         externalId: '',
       }}
-      validate={(values) => {
+      validate={async (values) => {
         const errors: any = {}; /** @TODO : Shape */
-        if (!values.address) {
+        const address = await getAddressFromEns(values.address);
+        if (!address) {
           errors.address = 'Please enter an address to approve';
-        } else if (!isAddress(values.address)) {
+        } else if (!isAddress(address)) {
           errors.address = 'This is not a valid address.';
         }
         return errors;
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
+        const address = await getAddressFromEns(values.address);
         setButtonStep('submitting');
         setSubmitting(true);
         const transactionHash = await addWhitelistMember({
           shareContractAddress,
           offeringId,
-          walletAddress: values.address as String0x,
+          walletAddress: address as String0x,
           chainId,
           name: values.name,
           externalId: values.externalId,

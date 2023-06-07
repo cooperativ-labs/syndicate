@@ -659,14 +659,13 @@ type OfferingSale {
 	orderId: Int!
 	creationDate: DateTime!
 	lastUpdate: DateTime
+	transactionHash: String!
 }
 
 type OfferingDistribution {
 	id: ID!
-	date: DateTime!
-	amount: Int!
-	transactionId: String
-	hasClaimed: [String]
+	contractIndex: Int!
+	transactionHash: String!
 }
 
 """

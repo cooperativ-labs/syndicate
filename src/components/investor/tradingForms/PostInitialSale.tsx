@@ -25,6 +25,7 @@ export type PostInitialSaleProps = {
   offeringId: string;
   swapContractAddress: String0x;
   paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
   offeringMin: number;
   priceStart: number;
   shareContractId: string;
@@ -40,6 +41,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
   swapContractAddress,
   shareContractId,
   paymentTokenAddress,
+  paymentTokenDecimals,
   partitions,
   refetchAllContracts,
 }) => {
@@ -113,7 +115,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
           visible: values.visible,
           swapContractAddress: swapContractAddress,
           shareContractId: shareContractId,
-          bacDecimals: getCurrencyById(paymentTokenAddress).decimals,
+          paymentTokenDecimals: paymentTokenDecimals,
           offeringId: offeringId,
           isContractOwner: isContractOwner,
           isAsk: isAsk,

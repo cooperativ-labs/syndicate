@@ -3,10 +3,10 @@ import React, { FC, useState } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
-import { String0x, normalizeEthAddress } from '@src/web3/helpersChain';
-import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import { useAccount } from 'wagmi';
+import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
 export type ShareSaleListItemProps = {
   offering: Offering;
@@ -106,6 +106,7 @@ const ShareSaleListItem: FC<Addendum> = ({
                   isContractOwner={isContractOwner}
                   offeringId={offering.id}
                   isApproved={isApproved}
+                  isDisapproved={isDisapproved}
                   isAccepted={isAccepted}
                   filler={filler}
                   sale={sale}
@@ -130,6 +131,7 @@ const ShareSaleListItem: FC<Addendum> = ({
                   isAccepted={isAccepted}
                   filler={filler}
                   paymentTokenAddress={paymentTokenAddress}
+                  paymentTokenDecimals={paymentTokenDecimals}
                   txnApprovalsEnabled={txnApprovalsEnabled}
                 />
               )}

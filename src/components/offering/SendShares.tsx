@@ -1,15 +1,15 @@
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { FC, useState } from 'react';
+import React, { FC, use, useState } from 'react';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
 
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { OfferingParticipant } from 'types';
-import { presentAddress } from '../FormattedCryptoAddress';
+
+import { addressWithENS, addressWithoutEns, splitAddress, String0x } from '@src/web3/helpersChain';
 import { sendShares } from '@src/web3/contractShareCalls';
-import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import NewClassInputs from '../form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
@@ -32,21 +32,21 @@ const SendShares: FC<SendSharesProps> = ({
   offeringParticipants,
   partitions,
 }) => {
+  const [recipient, setRecipient] = useState<string | String0x>('');
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
-  const [transactionDetails, setTransactionDetails] = useState<any>(null);
 
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
-  const formButtonText = (values) => {
-    const recipient = values.recipient === 'new' ? values.newRecipient : values.recipient;
+  const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
+    const recipient = values.recipient;
     if (recipient) {
       return `Send ${
         values.numShares
           ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%)`
           : ''
-      } shares to ${presentAddress(recipient)}`;
+        // } shares to`;
+      } shares to ${addressWithENS({ address: recipient })}`;
     }
     return 'Send shares';
   };
@@ -54,16 +54,17 @@ const SendShares: FC<SendSharesProps> = ({
   return (
     <Formik
       initialValues={{
-        numShares: null,
+        numShares: '',
         recipient: '' as String0x,
         partition: partitions[0],
         newPartition: '',
       }}
       validate={(values) => {
+        setRecipient(values.recipient);
         const errors: any = {}; /** @TODO : Shape */
         if (!values.numShares) {
           errors.numShares = 'Please indicate how many shares you want to send';
-        } else if (values.numShares > sharesRemaining) {
+        } else if (parseInt(values.numShares, 10) > sharesRemaining) {
           errors.numShares = `You only have ${sharesRemaining} remaining shares to send.`;
         }
         if (!values.recipient) {
@@ -87,7 +88,7 @@ const SendShares: FC<SendSharesProps> = ({
         const transactionDetails = await sendShares({
           shareContractAddress,
           shareContractId,
-          numShares: values.numShares,
+          numShares: parseInt(values.numShares, 10),
           recipient: values.recipient,
           partition: values.partition,
           newPartition: values.newPartition,
@@ -96,12 +97,12 @@ const SendShares: FC<SendSharesProps> = ({
         });
         if (transactionDetails) {
           toast.success(
-            `${values.numShares} shares sent to ${presentAddress(
-              values.recipient
-            )}. Transaction hash: ${transactionDetails}`
+            `${values.numShares} shares sent to ${addressWithENS({
+              address: recipient,
+            })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
           );
         }
-        setTransactionDetails(transactionDetails);
+
         setSubmitting(false);
       }}
     >
@@ -111,11 +112,13 @@ const SendShares: FC<SendSharesProps> = ({
             <option value="">Select recipient</option>
 
             {offeringParticipants.map((participant, i) => {
+              const presentableAddress = addressWithoutEns({
+                address: participant.walletAddress,
+                userName: participant.name,
+              });
               return (
                 <option key={i} value={participant.walletAddress}>
-                  {participant.name
-                    ? `${participant.name} (${participant.walletAddress.slice(-4)})`
-                    : presentAddress(participant.walletAddress)}
+                  {presentableAddress}
                 </option>
               );
             })}
@@ -136,7 +139,7 @@ const SendShares: FC<SendSharesProps> = ({
           <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
             <LoadingButtonText
               state={buttonStep}
-              idleText={formButtonText(values)}
+              idleText={formButtonText({ numShares: parseInt(values.numShares, 10), recipient: values.recipient })}
               submittingText="Sending shares..."
               confirmedText="Confirmed!"
               failedText="Transaction failed"

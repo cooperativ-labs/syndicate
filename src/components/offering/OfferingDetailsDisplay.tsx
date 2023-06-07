@@ -7,7 +7,7 @@ import { String0x } from '@src/web3/helpersChain';
 
 export type ContractViewDetails = {
   sharesOutstanding: number;
-  fundsDistributed: number;
+
   myShares: number;
   paymentToken: String0x;
 };
@@ -27,7 +27,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
   contractViewDetails,
   className,
 }) => {
-  const { sharesOutstanding, fundsDistributed, myShares, paymentToken } = contractViewDetails;
+  const { sharesOutstanding, myShares, paymentToken } = contractViewDetails;
   const {
     numUnits,
     projectedIrr,
@@ -72,7 +72,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
 
         {isOfferingManager ? (
           <OfferingDetailDashboardItem title="Funds Distributed">
-            <MoneyDisplay amount={fundsDistributed} paymentToken={paymentToken} currency={investmentCurrency} />
+            {/* <MoneyDisplay amount={fundsDistributed} paymentToken={paymentToken} currency={investmentCurrency} /> */}
           </OfferingDetailDashboardItem>
         ) : (
           <OfferingDetailDashboardItem title="Share value">

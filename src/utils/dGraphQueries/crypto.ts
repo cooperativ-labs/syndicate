@@ -143,6 +143,47 @@ export const CREATE_SWAP_CONTRACT = gql`
   }
 `;
 
+export const CREATE_DISTRIBUTION_CONTRACT = gql`
+  mutation AddDistributionContract(
+    $cryptoAddress: String!
+    $chainId: Int!
+    $type: SmartContractType!
+    $protocol: CryptoAddressProtocol
+    $ownerId: ID!
+    $contractSetId: ID!
+  ) {
+    updateOfferingSmartContractSet(
+      input: {
+        filter: { id: [$contractSetId] }
+        set: {
+          distributionContract: {
+            cryptoAddress: {
+              address: $cryptoAddress
+              type: CONTRACT
+              chainId: $chainId
+              protocol: $protocol
+              owner: { id: $ownerId }
+            }
+            owner: { id: $ownerId }
+            type: $type
+            established: false
+          }
+        }
+      }
+    ) {
+      offeringSmartContractSet {
+        id
+        distributionContract {
+          id
+        }
+        offering {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_UNESTABLISHED_SMART_CONTRACT = gql`
   mutation updateSmartContract($id: [ID!], $established: Boolean) {
     updateSmartContract(input: { filter: { id: $id }, set: { established: $established } }) {

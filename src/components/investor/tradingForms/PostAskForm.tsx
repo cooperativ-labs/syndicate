@@ -25,7 +25,7 @@ type PostAskFormProps = {
   offering: Offering;
   swapContractAddress: String0x;
   partitions: String0x[];
-  paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
   walletAddress: string;
   myShares: number;
   permittedEntity: OfferingParticipant;
@@ -42,7 +42,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
   walletAddress,
   swapContractAddress,
   partitions,
-  paymentTokenAddress,
+  paymentTokenDecimals,
   myShares,
   permittedEntity,
   isContractOwner,
@@ -52,12 +52,10 @@ const PostAskForm: FC<PostAskFormProps> = ({
   setModal,
   refetchAllContracts,
 }) => {
-  const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const [createSale, { data, error }] = useMutation(CREATE_SALE);
-  const [deleteSaleObject, { data: dataDelete, error: errorDelete }] = useMutation(DELETE_SALE);
   const { id, name, details, documents, offeringEntity } = offering;
   const sharesIssued = details?.numUnits;
 
@@ -118,6 +116,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
           const isAsk = true;
           const isIssuance = false;
           const isErc20Payment = true;
+
           await submitSwap({
             numShares: values.numUnitsToSell,
             price: values.price,
@@ -127,7 +126,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
             swapContractAddress: swapContractAddress,
             visible: false,
             toc: values.toc,
-            bacDecimals: getCurrencyById(paymentTokenAddress).decimals,
+            paymentTokenDecimals: paymentTokenDecimals,
             offeringId: offering.id,
             isContractOwner: isContractOwner,
             isAsk: isAsk,

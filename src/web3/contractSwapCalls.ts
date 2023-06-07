@@ -9,7 +9,6 @@ import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
 import { erc20ABI } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { off } from 'process';
 
 type SubmitSwapProps = {
   numShares: number;
@@ -22,7 +21,7 @@ type SubmitSwapProps = {
   toc?: boolean;
   swapContractAddress: String0x;
   shareContractId?: string;
-  bacDecimals: number;
+  paymentTokenDecimals: number;
   offeringId: string;
   isContractOwner: boolean;
   isAsk: boolean;
@@ -51,7 +50,7 @@ export const submitSwap = async ({
   toc,
   swapContractAddress,
   shareContractId,
-  bacDecimals,
+  paymentTokenDecimals,
   offeringId,
   isContractOwner,
   isAsk,
@@ -78,7 +77,7 @@ export const submitSwap = async ({
         args: [
           setPartition,
           toContractNumber(numShares, shareContractDecimals),
-          toContractNumber(price, bacDecimals - shareContractDecimals), //must account for share contract decimals
+          toContractNumber(price, paymentTokenDecimals - shareContractDecimals), //must account for share contract decimals
           isAsk,
           isIssuance,
           isErc20Payment,
@@ -107,6 +106,7 @@ export const submitSwap = async ({
           maxUnits: maxUnits,
           initiator: userWalletAddress,
           visible: visible,
+          transactionHash: transactionReceipt.transactionHash,
         },
       });
       refetchAllContracts();
@@ -168,7 +168,7 @@ export const acceptOrder = async ({
 type SetAllowanceProps = {
   paymentTokenAddress: String0x;
   paymentTokenDecimals: number;
-  swapContractAddress: String0x;
+  spenderAddress: String0x;
   amount: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
@@ -177,7 +177,7 @@ type SetAllowanceProps = {
 export const setAllowance = async ({
   paymentTokenAddress,
   paymentTokenDecimals,
-  swapContractAddress,
+  spenderAddress,
   amount,
   setButtonStep,
   setModal,
@@ -189,7 +189,7 @@ export const setAllowance = async ({
         address: paymentTokenAddress,
         abi: erc20ABI,
         functionName: 'approve',
-        args: [swapContractAddress, toContractNumber(amount, paymentTokenDecimals)],
+        args: [spenderAddress, toContractNumber(amount, paymentTokenDecimals)],
       });
       const { hash } = await writeContract(request);
       await waitForTransaction({
@@ -208,7 +208,7 @@ export const setAllowance = async ({
 export const adjustAllowance = async ({
   paymentTokenAddress,
   paymentTokenDecimals,
-  swapContractAddress,
+  spenderAddress,
   amount: amountIncrease,
   setButtonStep,
   setModal,
@@ -220,7 +220,7 @@ export const adjustAllowance = async ({
         address: paymentTokenAddress,
         abi: erc20ABI,
         functionName: 'increaseAllowance',
-        args: [swapContractAddress, toContractNumber(amountIncrease, paymentTokenDecimals)],
+        args: [spenderAddress, toContractNumber(amountIncrease, paymentTokenDecimals)],
       });
       const { hash } = await writeContract(request);
       await waitForTransaction({
@@ -236,27 +236,30 @@ export const adjustAllowance = async ({
   await call();
 };
 
-type ApproveSwapProps = {
+type ApproveRejectSwapProps = {
   swapContractAddress: String0x;
   orderId: number;
+  isDisapprove: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
 };
-export const approveSwap = async ({
+export const approveRejectSwap = async ({
   swapContractAddress,
   orderId,
+  isDisapprove,
   setButtonStep,
   refetchAllContracts,
   setModal,
-}: ApproveSwapProps) => {
+}: ApproveRejectSwapProps) => {
   setButtonStep('submitting');
+  const contractFunctionName = isDisapprove ? 'disapproveOrder' : 'approveOrder';
   const call = async () => {
     try {
       const { request } = await prepareWriteContract({
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: 'approveOrder',
+        functionName: contractFunctionName,
         args: [BigInt(orderId)],
       });
       const { hash } = await writeContract(request);
@@ -264,7 +267,7 @@ export const approveSwap = async ({
         hash: hash,
       });
       setButtonStep('confirmed');
-      toast.success(`You have approved the swap.`);
+      toast.success(`You have ${isDisapprove ? 'disapproved' : 'approved'} the swap.`);
       refetchAllContracts();
       setModal && setModal(false);
     } catch (e) {

@@ -2,6 +2,7 @@ import { bytesToString, hexToBytes, stringToHex } from 'viem';
 import { keccak256, toHex } from 'viem';
 import toast from 'react-hot-toast';
 import { Document } from 'types';
+import { fetchEnsAddress, fetchEnsName } from 'wagmi/actions';
 
 export type String0x = `0x${string}`;
 
@@ -32,6 +33,44 @@ export const normalizeEthAddress = (address: String0x | string) => {
   return address?.toLowerCase() as String0x;
 };
 
+export const getAddressFromEns = async (input: string | String0x) => {
+  let address = input;
+  if (input.includes('.eth')) {
+    const hexAddress = await fetchEnsAddress({
+      name: input,
+      chainId: 1,
+    });
+    address = hexAddress;
+  }
+  return address;
+};
+
+type AddressWithoutEnsProps = {
+  address: string | String0x;
+  isYou?: boolean;
+  isDesktop?: boolean;
+  userName?: string;
+  showFull?: boolean;
+};
+export const splitAddress = (address: String0x | string) => `${address.slice(0, 7)}... ${address.slice(-4)}`;
+
+export const addressWithoutEns = ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
+  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
+  const withoutENS = showFull && isDesktop ? address : userName ? youSplitAddress : splitAddress(address);
+  return withoutENS;
+};
+
+export const addressWithENS = async ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
+  let ensName = undefined;
+
+  ensName = await fetchEnsName({
+    address: address as String0x,
+    chainId: 1,
+  });
+  const withoutENS = addressWithoutEns({ address, isYou, isDesktop, userName, showFull });
+  return ensName ?? withoutENS;
+};
+
 export const WalletErrorMessages = {
   NeedToApproveConnection: `Trying to connect to your wallet: you may need to click on your wallet's browser extension to permit it to connect to Cooperativ.`,
   RejectedAttemptToConnect: `It looks like you rejected your wallet's attempt to connect. You can try the action again.`,
@@ -49,9 +88,12 @@ export const WalletErrorCodes = (error) => {
   }
 };
 
-export const ChainErrorResponses = (error) => {
+export const ChainErrorResponses = (error, recipient: string | String0x) => {
   if (error.message.includes('address already whitelisted')) {
-    return { code: 1000, message: 'User is already on the whitelist' };
+    return { code: 1001, message: `${recipient} is already whitelisted).` };
+  }
+  if (error.message.includes('address not whitelisted')) {
+    return { code: 1002, message: `${recipient} is not on the whitelist.` };
   }
   if (error.message.includes('User rejected the request')) {
     return { code: 2000, message: 'User cancelled operation' };
@@ -65,27 +107,38 @@ export const ChainErrorResponses = (error) => {
   if (error.message.includes('hash is immutable')) {
     return { code: 5000, message: 'This contract has already been established.' };
   }
-  if (error.message.includes('address not whitelisted')) {
-    return { code: 6000, message: 'This address not on the whitelist.' };
+  if (error.message.includes('reverted for unknown reason')) {
+    return {
+      code: 7001,
+      message:
+        'This transaction was not able to be completed. It is possible that a competing transaction was submitted just before yours.',
+    };
   }
-  return { code: null, message: error };
+  if (error.message.includes('Order already accepted')) {
+    return {
+      code: 7002,
+      message:
+        'Another request was submitted before yours. Please wait until the fund manager accepts or rejects that request.',
+    };
+  }
+  return { code: 9999, message: error.message };
 };
 
 export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) => {
-  const errorCode = ChainErrorResponses(error).code;
-  const errorMessage = ChainErrorResponses(error).message;
+  const errorCode = ChainErrorResponses(error, recipient).code;
+  const errorMessage = ChainErrorResponses(error, recipient).message;
 
-  if (recipient && errorCode === 1000) {
+  if (recipient && errorCode === 1001) {
     setButtonStep('failed');
-    toast(`${recipient} is already whitelisted).`);
+    toast(errorMessage);
+    return;
+  }
+  if (errorCode === 1002) {
+    toast.error(`${recipient} ${errorMessage}.`);
     return;
   }
   if (errorCode === 2000) {
     setButtonStep && setButtonStep('rejected');
-    return;
-  }
-  if (errorCode === 6000) {
-    toast.error(`${recipient} ${errorMessage}.`);
   } else {
     setButtonStep && setButtonStep('failed');
     alert(`${errorMessage}`);

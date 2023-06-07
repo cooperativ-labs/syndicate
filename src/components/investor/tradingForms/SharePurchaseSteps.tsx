@@ -16,6 +16,7 @@ type SharePurchaseStepsProps = SharePurchaseRequestProps & {
   filler: String0x | '';
   shareQtyRemaining: number;
   paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
   txnApprovalsEnabled: boolean;
 };
 
@@ -26,6 +27,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   price,
   swapContractAddress,
   paymentTokenAddress,
+  paymentTokenDecimals,
   txnApprovalsEnabled,
   permittedEntity,
   isApproved,
@@ -38,8 +40,6 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const [openStep, setOpenStep] = useState<number>(0);
   const [status, setStatus] = useState<string>('pending');
   const { address: userWalletAddress } = useAccount();
-
-  console.log({ isApproved, isDisapproved, isCancelled, isAccepted });
 
   const { data, refetch } = useContractReads({
     contracts: [
@@ -69,18 +69,24 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   };
 
   const myBacBalance = bacBalanceData?.formatted;
-  const paymentTokenDecimals = bacBalanceData?.decimals;
   const allowance = data && toNormalNumber(data[0].result, paymentTokenDecimals);
   const acceptedOrderQty = data && toNormalNumber(data[1].result, shareContractDecimals);
   const allowanceRequiredForPurchase = acceptedOrderQty * price;
   const isAllowanceSufficient = allowance >= allowanceRequiredForPurchase;
+  const currentUserFiller = userWalletAddress === filler;
+
+  const currentUserPending = isAccepted && currentUserFiller;
+  const otherOrderPending = isAccepted && !currentUserFiller;
+  const showRequestForm = !isAccepted && txnApprovalsEnabled && shareQtyRemaining > 0;
+  const showAllowanceForm = !isAllowanceSufficient && isAccepted && (isApproved || !txnApprovalsEnabled);
+  const showTradeExecutionForm = isAccepted && isApproved && isAllowanceSufficient;
 
   useEffect(() => {
-    if (!isAccepted && txnApprovalsEnabled && shareQtyRemaining > 0) {
+    if (showRequestForm) {
       setOpenStep(1);
-    } else if (!isAllowanceSufficient && isAccepted && (isApproved || !txnApprovalsEnabled)) {
+    } else if (showAllowanceForm) {
       setOpenStep(2);
-    } else if (isAccepted && isApproved && isAllowanceSufficient) {
+    } else if (showTradeExecutionForm) {
       setOpenStep(3);
     } else if (isCancelled) {
       setOpenStep(0);
@@ -91,34 +97,43 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     } else {
       setOpenStep(0);
     }
-  }, [isApproved, isDisapproved, isCancelled, isAccepted, txnApprovalsEnabled, isAllowanceSufficient, allowance]);
+  }, [showRequestForm, showAllowanceForm, showTradeExecutionForm, isCancelled, isDisapproved]);
 
   return (
     <div className="flex flex-col w-full gap-3">
-      <div className="p-3 border-2 rounded-lg">
-        1. Apply to purchase shares
-        {openStep === 1 && (
-          <SharePurchaseRequest
-            offering={offering}
-            sale={sale}
-            price={price}
-            myBacBalance={myBacBalance}
-            swapContractAddress={swapContractAddress}
-            permittedEntity={permittedEntity}
-            refetchAllContracts={refetchAllPlusAccepted}
-          />
-        )}
-      </div>
-      <div className="p-3 border-2 rounded-lg">
-        {isAccepted && `request for ${numberWithCommas(acceptedOrderQty)} shares pending`}
-      </div>
+      {currentUserPending ? (
+        <div className="p-3 border-2 border-green-600 rounded-lg">
+          {`Your request for ${numberWithCommas(acceptedOrderQty)} shares is pending`}
+        </div>
+      ) : (
+        otherOrderPending && (
+          <div className="p-3 border-2 border-orange-600 rounded-lg">{`Another investor's request is pending`}</div>
+        )
+      )}
+      {showRequestForm && (
+        <div className="p-3 border-2 rounded-lg">
+          1. Apply to purchase shares
+          {openStep === 1 && (
+            <SharePurchaseRequest
+              offering={offering}
+              sale={sale}
+              price={price}
+              myBacBalance={myBacBalance}
+              swapContractAddress={swapContractAddress}
+              permittedEntity={permittedEntity}
+              refetchAllContracts={refetchAllPlusAccepted}
+            />
+          )}
+        </div>
+      )}
+
       <div className="p-3 border-2 rounded-lg">
         2. Permit the smart contract to move your money{' '}
         {openStep === 2 && (
           <SetAllowanceForm
             paymentTokenAddress={paymentTokenAddress}
             paymentTokenDecimals={paymentTokenDecimals}
-            swapContractAddress={swapContractAddress}
+            spenderAddress={swapContractAddress}
             amount={allowanceRequiredForPurchase}
             refetchAllowance={refetch}
           />

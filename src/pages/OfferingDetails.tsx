@@ -28,12 +28,11 @@ import { useAccount, useChainId } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import { bytes32FromString, normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/connectors';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useAsync } from 'react-use';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-import { c } from '@wagmi/cli/dist/config-c09a23a5';
 
 // import { ABI } from '@src/web3/ABI';
 
@@ -54,6 +53,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+  const distributionContract = contractSet?.distributionContract;
+  const distributionContractAddress = distributionContract?.cryptoAddress.address as String0x;
 
   const partitions = shareContract?.partitions as String0x[];
   const owners = offeringEntity?.owners;
@@ -73,7 +74,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     refetchShareContract,
   } = useShareContractInfo(shareContractAddress, userWalletAddress);
 
-  const myBacBalance = 234000;
   const fundsDistributed = 20000;
   const numDistributions = 4;
 
@@ -186,7 +186,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 isOfferingManager={isOfferingManager}
                 contractViewDetails={{
                   sharesOutstanding: sharesOutstanding,
-                  fundsDistributed: fundsDistributed,
                   myShares: myShares,
                   paymentToken: paymentTokenAddress,
                 }}
@@ -241,7 +240,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         txnApprovalsEnabled={txnApprovalsEnabled}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
-                        myBacBalance={myBacBalance}
                         partitions={partitions}
                         refetchMainContracts={refetchMainContracts}
                         distributionId={latestDistribution.id}
@@ -271,8 +269,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 isContractOwner={isContractOwner}
                 offeringEntity={offeringEntity}
                 isOfferingManager={isOfferingManager}
-                shareContractAddress={shareContractAddress}
+                contractSet={contractSet}
                 currentSalePrice={currentSalePrice}
+                partitions={partitions}
               />
             )}
           </div>

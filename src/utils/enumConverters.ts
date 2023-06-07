@@ -11,6 +11,7 @@ import {
   DocumentFormat,
   OfferingTabSection,
   OrganizationPermissionType,
+  Currency,
 } from 'types';
 
 // ===== PROFILE ======
@@ -169,7 +170,7 @@ export const getStageOption = (stage) => {
 
 export type SaleStatusType = 'initd' | 'partl' | 'apprv' | '-----' | 'compl';
 
-export const SaleStatusOptions = [
+export const SwapStatusOptions = [
   { value: 'initiated', name: 'requires approval', color: 'orange-600' },
   { value: 'partiallyFilled', name: 'live', color: 'green-600' },
   { value: 'approved', name: 'live', color: 'green-600' },
@@ -178,7 +179,7 @@ export const SaleStatusOptions = [
   { value: 'complete', name: 'complete', color: 'blue-600' },
 ];
 
-type SaleStatusOptionProps = {
+type SwapStatusOptionProps = {
   isAccepted: boolean;
   isApproved: boolean;
   isDisapproved: boolean;
@@ -188,7 +189,7 @@ type SaleStatusOptionProps = {
   txnApprovalsEnabled: boolean;
 };
 
-export const getSaleStatusOption = ({
+export const getSwapStatusOption = ({
   isAccepted,
   isApproved,
   isDisapproved,
@@ -196,7 +197,7 @@ export const getSaleStatusOption = ({
   amount,
   filledAmount,
   txnApprovalsEnabled,
-}: SaleStatusOptionProps) => {
+}: SwapStatusOptionProps) => {
   const initiated = !isAccepted && !isApproved && !isDisapproved && !isCancelled && !txnApprovalsEnabled;
   const partiallyFilled = filledAmount > 0 && filledAmount < amount;
   const approved = (txnApprovalsEnabled && !isApproved) || (isApproved && !isDisapproved && !isCancelled);
@@ -206,19 +207,19 @@ export const getSaleStatusOption = ({
 
   switch (true) {
     case initiated:
-      return SaleStatusOptions[0];
+      return SwapStatusOptions[0];
     case partiallyFilled:
-      return SaleStatusOptions[1];
+      return SwapStatusOptions[1];
     case approved:
-      return SaleStatusOptions[2];
+      return SwapStatusOptions[2];
     case disapproved:
-      return SaleStatusOptions[3];
+      return SwapStatusOptions[3];
     case cancelled:
-      return SaleStatusOptions[4];
+      return SwapStatusOptions[4];
     case complete:
-      return SaleStatusOptions[5];
+      return SwapStatusOptions[5];
     default:
-      return SaleStatusOptions[0];
+      return SwapStatusOptions[0];
   }
 };
 
@@ -373,7 +374,7 @@ export const currencyOptionsExcludeCredits = currencyOptions.filter(
   (option) => option.type !== currencyType.COOP && option.chainId !== 3
 );
 
-export const getCurrencyOption = (currency) => {
+export const getCurrencyOption = (currency: Currency) => {
   // console.log('getCurrencyOption', currency);
   return currencyOptions.find((cur) => (cur.value === currency?.code ? cur : null));
 };

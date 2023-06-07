@@ -354,6 +354,7 @@ export const CORE_ENTITY_FIELDS = gql`
           saleContractAddress
           initiator
           orderId
+          transactionHash
         }
       }
       organization {
@@ -401,10 +402,8 @@ export const CORE_ENTITY_FIELDS = gql`
       }
       distributions {
         id
-        date
-        amount
-        hasClaimed
-        transactionId
+        contractIndex
+        transactionHash
       }
     }
     smartContracts {
@@ -479,6 +478,7 @@ export const CORE_OFFERING_FIELDS = gql`
       saleContractAddress
       initiator
       orderId
+      transactionHash
       relatedOffering {
         id
       }
@@ -488,10 +488,8 @@ export const CORE_OFFERING_FIELDS = gql`
     }
     distributions {
       id
-      date
-      amount
-      hasClaimed
-      transactionId
+      contractIndex
+      transactionHash
     }
     documents {
       ...documentData

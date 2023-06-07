@@ -3,7 +3,7 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useState } from 'react';
 import SaleVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { approveSwap, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
+import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DELETE_SALE, UPDATE_SALE } from '@src/utils/dGraphQueries/offering';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -19,6 +19,7 @@ type SaleMangerPanelProps = {
   offeringId: string;
   isOfferor: boolean;
   isApproved: boolean;
+  isDisapproved: boolean;
   isAccepted: boolean;
   filler: String0x | '';
   sale: OfferingSale;
@@ -35,6 +36,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   offeringId,
   isOfferor,
   isApproved,
+  isDisapproved,
   isAccepted,
   filler,
   sale,
@@ -51,6 +53,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   const [deleteSaleObject] = useMutation(DELETE_SALE);
   const [updateSaleObject, { data, error }] = useMutation(UPDATE_SALE);
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
 
@@ -78,9 +81,10 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   const maxPurchase = sale.maxUnits;
 
   const handleApprove = async () => {
-    await approveSwap({
+    await approveRejectSwap({
       swapContractAddress,
       orderId: sale.orderId,
+      isDisapprove: false,
       setButtonStep: setApproveButtonStep,
       refetchAllContracts,
     });
@@ -94,7 +98,13 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   };
 
   const handleDisapprove = async () => {
-    alert('still need to create this');
+    await approveRejectSwap({
+      swapContractAddress,
+      orderId: sale.orderId,
+      isDisapprove: true,
+      setButtonStep: setDisapproveButtonStep,
+      refetchAllContracts,
+    });
   };
 
   const buttonClass =
@@ -151,9 +161,9 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
       {/* if swapsApprovals are enabled but txnApprovals are not - show approve button (or disapprove if already approved) */}
       {/* if both txnApprovals are turned on, then only show button when enabled  */}
 
-      {(!txnApprovalsEnabled || isAccepted) && isContractOwner && (
+      {(!txnApprovalsEnabled || isAccepted) && isContractOwner && !isDisapproved && (
         <div className=" mt-3 grid grid-cols-2 gap-3">
-          {!isApproved ? (
+          {!isApproved && (
             <Button className={buttonClass} onClick={handleApprove} disabled={approveButtonStep === 'submitting'}>
               <LoadingButtonText
                 state={approveButtonStep}
@@ -164,20 +174,20 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
                 rejectedText="You rejected the transaction. Click here to try again."
               />
             </Button>
-          ) : (
-            <div>
-              <Button className={buttonClass} onClick={handleDisapprove} disabled={approveButtonStep === 'submitting'}>
-                <LoadingButtonText
-                  state={approveButtonStep}
-                  idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
-                  submittingText="Disapprove..."
-                  confirmedText="Confirmed"
-                  failedText="Transaction failed"
-                  rejectedText="You rejected the transaction. Click here to try again."
-                />
-              </Button>
-            </div>
           )}
+          <div>
+            <Button className={buttonClass} onClick={handleDisapprove} disabled={approveButtonStep === 'submitting'}>
+              <LoadingButtonText
+                state={disapproveButtonStep}
+                idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
+                submittingText="Disapprove..."
+                confirmedText="Confirmed"
+                failedText="Transaction failed"
+                rejectedText="You rejected the transaction. Click here to try again."
+              />
+            </Button>
+          </div>
+
           <div className="flex flex-col">
             <FormattedCryptoAddress chainId={chainId} address={filler} label="Requester: " />
             Shares requested: {acceptedOrderQty}

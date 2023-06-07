@@ -620,35 +620,32 @@ export const REMOVE_WHITELIST_OBJECT = gql`
 `;
 
 export const ADD_DISTRIBUTION = gql`
-  mutation UpdateOffering($currentDate: DateTime!, $offeringId: [ID!], $amount: Int!, $transactionId: String) {
+  mutation UpdateOffering($offeringId: [ID!], $transactionHash: String!, $contractIndex: Int!) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
-        set: { distributions: { date: $currentDate, amount: $amount, transactionId: $transactionId } }
+        set: { distributions: { transactionHash: $transactionHash, contractIndex: $contractIndex } }
       }
     ) {
       offering {
         id
         distributions {
           id
-          amount
-          date
+          transactionHash
+          contractIndex
         }
       }
     }
   }
 `;
 
-export const UPDATE_DISTRIBUTION = gql`
-  mutation UpdateOfferingDistribution($currentDate: DateTime!, $distributionId: [ID!], $claimantAddress: String) {
-    updateOfferingDistribution(
-      input: { filter: { id: $distributionId }, set: { date: $currentDate, hasClaimed: [$claimantAddress] } }
-    ) {
+export const UPDATE_CONTRACT_INDEX = gql`
+  mutation UpdateOfferingDistribution($distributionId: [ID!], $contractIndex: Int!) {
+    updateOfferingDistribution(input: { filter: { id: $distributionId }, set: { contractIndex: $contractIndex } }) {
       offeringDistribution {
         id
-        amount
-        date
-        hasClaimed
+        transactionHash
+        contractIndex
       }
     }
   }
@@ -731,6 +728,7 @@ export const CREATE_SALE = gql`
     $maxUnits: Int
     $visible: Boolean
     $initiator: String!
+    $transactionHash: String!
   ) {
     addOfferingSale(
       input: [
@@ -744,6 +742,7 @@ export const CREATE_SALE = gql`
           maxUnits: $maxUnits
           visible: $visible
           initiator: $initiator
+          transactionHash: $transactionHash
         }
       ]
     ) {
@@ -752,6 +751,7 @@ export const CREATE_SALE = gql`
         creationDate
         orderId
         initiator
+        transactionHash
       }
     }
   }
