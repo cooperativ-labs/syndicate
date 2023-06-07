@@ -1,4 +1,4 @@
-import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC, useEffect, useState } from 'react';
 import { Address } from 'types';
@@ -33,20 +33,8 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, addressId, addressLine1
       });
   }, [placeId]);
 
-  const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
-  const street_number = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('street_number')
-  )?.long_name;
-  const street_name = autocompleteResults[0]?.address_components.find((x) => x.types.includes('route'))?.long_name;
-  const city = autocompleteResults[0]?.address_components.find((x) => x.types.includes('locality'))?.long_name;
-  const sublocality = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('sublocality')
-  )?.long_name;
-  const state = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('administrative_area_level_1')
-  )?.long_name;
-  const zip = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_code'))?.long_name;
-  const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
+  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
+    normalizeGeoAddress(autocompleteResults);
 
   return (
     <Formik
@@ -81,11 +69,11 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, addressId, addressLine1
           variables: {
             entityId: addressId,
             addressLabel: values.addressLabel,
-            addressLine1: CreateFirstAddressLine(street_number, street_name),
-            addressLine2: subpremise,
-            city: city ?? sublocality,
+            addressLine1: firstAddressLine,
+            addressLine2: secondAddressLine,
+            city: city,
             stateProvince: state,
-            postalCode: zip,
+            postalCode: postalCode,
             country: country,
             lat: latLang.lat,
             lng: latLang.lng,

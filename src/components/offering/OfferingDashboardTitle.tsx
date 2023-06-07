@@ -1,12 +1,14 @@
 import AccessCodeForm from './profile/AccessCodeForm';
 import Button from '../buttons/Button';
 import cn from 'classnames';
+import FormattedCryptoAddress from '../FormattedCryptoAddress';
 import Input from '../form-components/Inputs';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
 import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
+import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 
@@ -17,6 +19,8 @@ type OfferingDashboardTitleProps = {
   organizationId: string;
   accessCode: string;
   offeringName: string;
+  shareContractAddress: String0x;
+  chainId: number;
 };
 
 const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
@@ -26,6 +30,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   offeringId,
   accessCode,
   organizationId,
+  shareContractAddress,
+  chainId,
 }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
@@ -123,38 +129,67 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
     </Formik>
   );
 
+  const [showVisibilitySettings, setShowVisibilitySettings] = useState<boolean>(false);
+  const visibilitySettings = (
+    <div className="absolute right-4 top-1 flex min-w-max">
+      {showVisibilitySettings ? (
+        <>
+          {isOfferingManager && profileVisibility && (
+            <AccessCodeForm
+              accessCode={accessCode}
+              handleCodeSubmission={handleAccessCodeChange}
+              mini
+              isOfferingManager
+            />
+          )}
+          {isOfferingManager && (
+            <div className="min-w-max">
+              <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
+            </div>
+          )}
+        </>
+      ) : (
+        <button
+          className="bg-cLightBlue hover:bg-cDarkBlue text-white text-xs font-medium  rounded-md p-1 px-2 flex justify-center items-center whitespace-nowrap"
+          onClick={() => setShowVisibilitySettings(true)}
+        >
+          Set profile visibility
+        </button>
+      )}
+      {profileVisibility && (
+        <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
+          <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg ml-2" />
+        </a>
+      )}
+    </div>
+  );
+
   return (
     <div className="flex justify-between">
-      {nameEditOn ? (
-        nameChangeForm
-      ) : (
-        <h1
-          className={cn(`text-2xl md:text-3xl font-bold text-gray-700 ${isOfferingManager && 'hover:cursor-pointer'}`)}
-          onClick={() => {
-            isOfferingManager ? setNameEditOn(true) : {};
-          }}
-        >
-          {offeringName}
-        </h1>
-      )}
-      <div className="flex p-2 items-center font-semibold text-gray-600 gap-2">
-        {isOfferingManager && profileVisibility && (
-          <AccessCodeForm
-            accessCode={accessCode}
-            handleCodeSubmission={handleAccessCodeChange}
-            mini
-            isOfferingManager
-          />
+      <div>
+        {nameEditOn ? (
+          nameChangeForm
+        ) : (
+          <h1
+            className={cn(
+              `text-2xl md:text-3xl font-bold text-gray-700 ${
+                isOfferingManager && 'hover:cursor-pointer hover:underline'
+              }`
+            )}
+            onClick={() => {
+              isOfferingManager ? setNameEditOn(true) : {};
+            }}
+          >
+            {offeringName}
+          </h1>
         )}
-        {isOfferingManager && (
-          <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
-        )}
-        {profileVisibility && (
-          <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
-            <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
-          </a>
+        {shareContractAddress ? (
+          <FormattedCryptoAddress chainId={chainId} address={shareContractAddress} showFull withCopy />
+        ) : (
+          <div className="text-sm text-gray-800">{`This offering's contract has not been deployed yet.`}</div>
         )}
       </div>
+      <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
     </div>
   );
 };

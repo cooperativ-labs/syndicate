@@ -11,6 +11,7 @@ import {
   DocumentFormat,
   OfferingTabSection,
   OrganizationPermissionType,
+  Currency,
 } from 'types';
 
 // ===== PROFILE ======
@@ -169,17 +170,59 @@ export const getStageOption = (stage) => {
 
 export type SaleStatusType = 'initd' | 'partl' | 'apprv' | '-----' | 'compl';
 
-export const SaleStatusOptions = [
-  { value: 'initd', name: 'requires approval', color: 'orange-600' },
-  { value: 'partl', name: 'live', color: 'green-600' },
-  { value: 'apprv', name: 'live', color: 'green-600' },
-  { value: '-----', name: 'ended', color: 'gray-600' },
-  { value: 'compl', name: 'complete', color: 'gray-600' },
+export const SwapStatusOptions = [
+  { value: 'initiated', name: 'requires approval', color: 'orange-600' },
+  { value: 'partiallyFilled', name: 'live', color: 'green-600' },
+  { value: 'approved', name: 'live', color: 'green-600' },
+  { value: 'disapproved', name: 'disapproved', color: 'red-600' },
+  { value: 'cancelled', name: 'cancelled', color: 'gray-600' },
+  { value: 'complete', name: 'complete', color: 'blue-600' },
 ];
 
-export const getSaleStatusOption = (status) => {
-  return SaleStatusOptions.find((st) => (st.value === status ? st : null));
+type SwapStatusOptionProps = {
+  isAccepted: boolean;
+  isApproved: boolean;
+  isDisapproved: boolean;
+  isCancelled: boolean;
+  amount: number;
+  filledAmount: number;
+  txnApprovalsEnabled: boolean;
 };
+
+export const getSwapStatusOption = ({
+  isAccepted,
+  isApproved,
+  isDisapproved,
+  isCancelled,
+  amount,
+  filledAmount,
+  txnApprovalsEnabled,
+}: SwapStatusOptionProps) => {
+  const initiated = !isAccepted && !isApproved && !isDisapproved && !isCancelled && !txnApprovalsEnabled;
+  const partiallyFilled = filledAmount > 0 && filledAmount < amount;
+  const approved = (txnApprovalsEnabled && !isApproved) || (isApproved && !isDisapproved && !isCancelled);
+  const disapproved = isDisapproved && !isCancelled;
+  const cancelled = isCancelled;
+  const complete = filledAmount === amount;
+
+  switch (true) {
+    case initiated:
+      return SwapStatusOptions[0];
+    case partiallyFilled:
+      return SwapStatusOptions[1];
+    case approved:
+      return SwapStatusOptions[2];
+    case disapproved:
+      return SwapStatusOptions[3];
+    case cancelled:
+      return SwapStatusOptions[4];
+    case complete:
+      return SwapStatusOptions[5];
+    default:
+      return SwapStatusOptions[0];
+  }
+};
+
 // ===== CURRENCY =====
 
 export enum currencyType {
@@ -277,21 +320,21 @@ export const currencyOptions = [
     type: currencyType.CRYP,
     value: CurrencyCode.UsdcTest,
     symbol: 'USDC*',
-    address: '0x8C035e5adD07e9297fc835604DAb380dCE874acE',
+    address: '0x66458Bb9BF8e09eA40cf916BCb370727455F6040',
     website: 'https://www.centre.io/',
     protocol: CryptoAddressProtocol.Eth,
-    chainId: 3,
-    decimals: 18,
+    decimals: 6,
+    chainId: 11155111,
     logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
   },
   {
     type: currencyType.CRYP,
     value: CurrencyCode.DaiTest,
     symbol: 'DAI*',
-    address: '0xfDdfE7C9Ba9649fB8943f9277830972aa6f3a6bB',
+    address: '0x3aa3DAd8008288CB5F9dc2F6e1e6213035ddBE88',
     website: 'https://makerdao.com/',
     protocol: CryptoAddressProtocol.Eth,
-    chainId: 3,
+    chainId: 11155111,
     decimals: 18,
     logo: 'https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774',
   },
@@ -317,37 +360,8 @@ export const currencyOptions = [
     decimals: 18,
     logo: 'https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774',
   },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.AlgoUsdc,
-    symbol: 'USDC',
-    address: '31566704',
-    website: 'https://www.centre.io/usdc',
-    protocol: CryptoAddressProtocol.Algo,
-    chainId: 12345678,
-    decimals: 6,
-    logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
-  },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.AlgoUsdcTest,
-    symbol: 'USDC',
-    address: '91319595',
-    website: 'https://www.centre.io/usdc',
-    protocol: CryptoAddressProtocol.Algo,
-    chainId: 654321,
-    decimals: 6,
-    logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
-  },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.RealShare,
-    symbol: 'SHARE',
-    website: 'https://www.cooperativ.io',
-    protocol: CryptoAddressProtocol.Algo,
-    decimals: 6,
-  },
 ];
+
 export const bacOptions = currencyOptions.filter(
   (option) =>
     (option.type === currencyType.CRYP && option.protocol === CryptoAddressProtocol.Eth) ||
@@ -360,7 +374,7 @@ export const currencyOptionsExcludeCredits = currencyOptions.filter(
   (option) => option.type !== currencyType.COOP && option.chainId !== 3
 );
 
-export const getCurrencyOption = (currency) => {
+export const getCurrencyOption = (currency: Currency) => {
   // console.log('getCurrencyOption', currency);
   return currencyOptions.find((cur) => (cur.value === currency?.code ? cur : null));
 };

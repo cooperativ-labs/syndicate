@@ -1,8 +1,11 @@
 import cn from 'classnames';
-import React, { FC, useState } from 'react';
+import React, { FC, use, useState } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
+import { addressWithENS, String0x } from '@src/web3/helpersChain';
+import { fetchEnsName } from 'wagmi/actions';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
+import { useAsync } from 'react-use';
 import { useEnsName } from 'wagmi';
 
 type FormattedCryptoAddressProps = {
@@ -28,9 +31,8 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   userName,
   isYou,
 }) => {
-  const addressForEns: `0x${string}` = address as `0x${string}`;
   const [copied, setCopied] = useState<boolean>(false);
-  const { data: ensName } = useEnsName({ address: addressForEns });
+  const [presentedAddress, setPresentedAddress] = useState<string>('...');
   const chain = chainId && MatchSupportedChains(chainId);
   const blockExplorer = chain?.blockExplorer;
   const windowSize = useWindowSize();
@@ -46,27 +48,23 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
     return url;
   };
 
-  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
-  const splitAddress = `${address.slice(0, 7)}... ${address.slice(-4)}`;
-  const presentAddressOhneENS =
-    showFull && isDesktop ? (
-      address
-    ) : (
-      <span className="hover:underline whitespace-nowrap">{userName ? youSplitAddress : splitAddress}</span>
-    );
+  useAsync(async () => {
+    const presentedAddress = await addressWithENS({ address, isYou, isDesktop, userName, showFull });
+    setPresentedAddress(presentedAddress);
+  }, [address, isYou, isDesktop, userName, showFull]);
 
   return (
     <span className={cn('flex', [className ? className : 'text-sm text-gray-700'])}>
       <a target="_blank" rel="noreferrer" href={formURL(chainId, lookupType)}>
         {label}
-        {ensName ?? presentAddressOhneENS}
+        <span className="hover:underline whitespace-nowrap">{presentedAddress}</span>
       </a>
       {withCopy && (
         <button
           className="ml-2"
           onClick={(e) => {
-            e.preventDefault();
-            navigator.clipboard.writeText(ensName ?? address);
+            e.stopPropagation();
+            navigator.clipboard.writeText(address);
             setCopied(true);
             setTimeout(() => {
               setCopied(false);

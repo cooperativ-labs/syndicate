@@ -1,20 +1,16 @@
 import { CryptoAddressProtocol } from 'types';
-import { Chain, configureChains, createClient } from 'wagmi';
-import { mainnet, goerli, sepolia, polygon, polygonMumbai } from 'wagmi/chains';
-import { publicProvider } from 'wagmi/providers/public';
-import { infuraProvider } from 'wagmi/providers/infura';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+import { configureChains, createConfig, sepolia, mainnet } from 'wagmi';
+import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { LedgerConnector } from 'wagmi/connectors/ledger';
 import { EthereumProvider } from '@walletconnect/ethereum-provider';
+import { publicProvider } from 'wagmi/providers/public';
+import { infuraProvider } from 'wagmi/providers/infura';
+import { InjectedConnector } from 'wagmi/connectors/injected';
+
 declare let window: any;
 
-//OLD ------------------
-const TestingContract = '0x05840f9f';
-const TestBackingToken = 0x05716d2b;
-
-export const setChainId = 654321;
 //OLD ------------------
 
 // export const jupiterBlockChain = {
@@ -51,15 +47,15 @@ export const setChainId = 654321;
 
 export const SupportedChains = [mainnet, sepolia, goerli, polygon, polygonMumbai];
 
-const { chains, provider, webSocketProvider } = configureChains(SupportedChains, [
+const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
   publicProvider(),
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
 ]);
 
-export const wagmiClient = createClient({
+export const wagmiConfig = createConfig({
   autoConnect: true,
-  provider,
-  webSocketProvider,
+  publicClient,
+  webSocketPublicClient,
 });
 
 export const SupportedChainsAddendum = [

@@ -1,148 +1,148 @@
-import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
-import SharePurchaseForm from './SharePurchaseForm';
-import { Offering, OfferingParticipant, OfferingSale } from 'types';
-
 import OfferingSummaryPanel from './OfferingSummaryPanel';
-import { DELETE_SALE } from '@src/utils/dGraphQueries/offering';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client';
-
+import React, { FC, useState } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
-import { getSale, SaleContentsType } from '@src/web3/reachCalls';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ReachContext } from '@src/SetReachContext';
+import SharePurchaseSteps from './SharePurchaseSteps';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { Offering, OfferingParticipant, OfferingSale } from 'types';
+import { useAccount } from 'wagmi';
+import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
-type ShareSaleListItemProps = {
-  index: number;
+export type ShareSaleListItemProps = {
   offering: Offering;
-  sale: OfferingSale;
-  initiator: string;
-  myBacBalance: number;
-  contractId: string;
-  walletAddress: string;
+  swapContractAddress: String0x;
+  paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
+  txnApprovalsEnabled: boolean;
   permittedEntity: OfferingParticipant;
   isContractOwner: boolean;
-  setModal: (boolean) => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  setShareSaleManagerModal: (boolean) => void;
+  refetchMainContracts: () => void;
 };
-const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
+
+type Addendum = ShareSaleListItemProps & {
+  index: number;
+  sale: OfferingSale;
+};
+
+const ShareSaleListItem: FC<Addendum> = ({
   index,
   offering,
   sale,
-  initiator,
-  myBacBalance,
-  contractId,
+  swapContractAddress,
+  paymentTokenAddress,
+  paymentTokenDecimals,
+  txnApprovalsEnabled,
   permittedEntity,
-  walletAddress,
   isContractOwner,
-  setModal,
-  setRecallContract,
+  setShareSaleManagerModal,
+  refetchMainContracts,
 }) => {
-  const { reachLib, reachAcc } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
   const [open, setOpen] = useState<boolean>(false);
-  const [saleContents, setSaleContents] = useState<SaleContentsType>({
-    qty: 0,
-    qtySold: 0,
-    price: 0,
-    proceeds: 0,
-    saleDetails: undefined,
-    status: undefined,
-    btId: undefined,
-  });
 
-  const isOfferor = walletAddress === sale.initiator;
-  const minPurchase = sale.minUnits;
-  const maxPurchase = sale.maxUnits;
+  const {
+    initiator,
+    partition,
+    amount,
+    price,
+    filledAmount,
+    filler,
+    isApproved,
+    isDisapproved,
+    isCancelled,
+    isAccepted,
+    isShareIssuance,
+    isAskOrder,
+    isErc20Payment,
+    isLoading,
+    refetchOrderDetails,
+  } = useOrderDetails(swapContractAddress, sale.orderId, paymentTokenDecimals);
 
-  const retrieveSale = () => {
-    getSale(reachLib, reachAcc, contractId, initiator, setSaleContents);
-  };
+  function refetchAllContracts() {
+    refetchMainContracts();
+    refetchOrderDetails();
+  }
 
-  useEffect(() => {
-    if (!saleContents.price) {
-      retrieveSale();
-    }
-  }, [saleContents, retrieveSale]);
+  const isOfferor = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
+  const shareQtyRemaining = amount - filledAmount;
 
-  if (
-    (saleContents.status === 'initd' && isContractOwner) ||
-    saleContents.status === 'partl' ||
-    saleContents.status === 'apprv'
-  ) {
-    return (
-      <div className="items-center shadow-md rounded-md my-5 ">
-        <div
-          className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
-          onClick={() => setOpen(!open)}
-        >
-          <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
-          <div className="flex justify-between col-span-11">
-            <OfferingSummaryPanel
-              seller={sale.initiator}
-              saleQty={saleContents.qty}
-              soldQty={saleContents.qtySold}
-              price={saleContents.price}
-              investmentCurrency={offering.details.investmentCurrency}
-            />
-            <div className="flex items-center p-1">
-              {isOfferor && (
-                <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
-                  Manage your offer
-                </button>
-              )}
-              {saleContents.status === 'initd' && (
-                <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
-                  Review sale request
-                </button>
-              )}
-              {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
+  return (
+    <>
+      {isOfferor || isContractOwner || sale.visible ? (
+        <div className="items-center shadow-md rounded-md my-5 ">
+          <div
+            className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
+            onClick={() => setOpen(!open)}
+          >
+            <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
+            <div className="flex justify-between col-span-11">
+              <OfferingSummaryPanel
+                seller={initiator}
+                shareQtyRemaining={shareQtyRemaining}
+                price={price}
+                paymentTokenAddress={paymentTokenAddress}
+              />
+              <div className="flex items-center p-1">
+                {isOfferor && (
+                  <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
+                    Manage your offer
+                  </button>
+                )}
+                {!isApproved && filler && txnApprovalsEnabled && isContractOwner && (
+                  <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
+                    Review sale request
+                  </button>
+                )}
+                {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
+              </div>
             </div>
           </div>
-        </div>
-        {open && (
-          <div className="p-2">
-            {isOfferor || saleContents.status === 'initd' ? (
-              <>
-                {!!minPurchase && <div>Minimum purchase: {numberWithCommas(minPurchase)} units</div>}
-                {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} units</div>}
-                {!!maxPurchase && <hr className="my-4" />}
+          {open && (
+            <div className="p-2">
+              {isOfferor || isContractOwner ? (
                 <SaleManagerPanel
                   isOfferor={isOfferor}
                   isContractOwner={isContractOwner}
                   offeringId={offering.id}
-                  status={saleContents.status}
+                  isApproved={isApproved}
+                  isDisapproved={isDisapproved}
+                  isAccepted={isAccepted}
+                  filler={filler}
                   sale={sale}
-                  contractId={contractId}
-                  recallGetSale={retrieveSale}
-                  proceeds={saleContents.proceeds}
-                  btId={saleContents.btId}
+                  swapContractAddress={swapContractAddress}
+                  txnApprovalsEnabled={txnApprovalsEnabled}
+                  paymentTokenAddress={paymentTokenAddress}
+                  paymentTokenDecimals={paymentTokenDecimals}
+                  refetchAllContracts={refetchAllContracts}
                 />
-              </>
-            ) : (
-              <SharePurchaseForm
-                offering={offering}
-                sale={sale}
-                saleQty={saleContents.qty}
-                soldQty={saleContents.qtySold}
-                price={saleContents.price}
-                myBacBalance={myBacBalance}
-                contractId={contractId}
-                permittedEntity={permittedEntity}
-                setModal={setModal}
-                setRecallContract={setRecallContract}
-              />
-            )}
-          </div>
-        )}
-      </div>
-    );
-  } else {
-    return <></>;
-  }
+              ) : (
+                <SharePurchaseSteps
+                  offering={offering}
+                  sale={sale}
+                  shareQtyRemaining={shareQtyRemaining}
+                  price={price}
+                  swapContractAddress={swapContractAddress}
+                  permittedEntity={permittedEntity}
+                  refetchAllContracts={refetchAllContracts}
+                  isApproved={isApproved}
+                  isDisapproved={isDisapproved}
+                  isCancelled={isCancelled}
+                  isAccepted={isAccepted}
+                  filler={filler}
+                  paymentTokenAddress={paymentTokenAddress}
+                  paymentTokenDecimals={paymentTokenDecimals}
+                  txnApprovalsEnabled={txnApprovalsEnabled}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
+  );
 };
 
 export default ShareSaleListItem;

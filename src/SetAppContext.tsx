@@ -52,7 +52,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
 
       setApolloClient(createApolloClient);
     }
-  }, [status, token]);
+  }, [status, token, key]);
 
   if (status === 'loading' || !apolloClient) {
     return (

@@ -1,53 +1,55 @@
-import * as backendCtc from '../../../web3/index.main';
 import Checkbox from '@src/components/form-components/Checkbox';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { CREATE_SALE } from '@src/utils/dGraphQueries/offering';
-import { Currency, OfferingParticipant } from 'types';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { Currency } from 'types';
 import { Form, Formik } from 'formik';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { getCurrencyById } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MakePeraConnect as MakePeraConnect } from '@reach-sh/stdlib';
+import { String0x } from '@src/web3/helpersChain';
+
+import NewClassInputs from '@src/components/form-components/NewClassInputs';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ReachContext } from '@src/SetReachContext';
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { useAsyncFn } from 'react-use';
+import { submitSwap } from '@src/web3/contractSwapCalls';
+import { toContractNumber, toNormalNumber } from '@src/web3/util';
+import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
-export type CreateSaleProps = {
+export type PostInitialSaleProps = {
   sharesIssued: number;
   sharesOutstanding: number;
   offeringId: string;
-  contractId: string;
+  swapContractAddress: String0x;
+  paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
   offeringMin: number;
   priceStart: number;
-  currency: Currency;
-  refetch: () => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  shareContractId: string;
+  partitions: String0x[];
+  refetchAllContracts: () => void;
 };
-const CreateSale: FC<CreateSaleProps> = ({
+const PostInitialSale: FC<PostInitialSaleProps> = ({
   sharesIssued,
   sharesOutstanding,
   offeringId,
   offeringMin,
   priceStart,
-  currency,
-  contractId,
-  refetch,
-  setRecallContract,
+  swapContractAddress,
+  shareContractId,
+  paymentTokenAddress,
+  paymentTokenDecimals,
+  partitions,
+  refetchAllContracts,
 }) => {
-  const { reachLib, userWalletAddress } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [createSaleObject, { data, error }] = useMutation(CREATE_SALE);
+  const [createSale, { data, error }] = useMutation(CREATE_SALE);
+  const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
 
-  if (data) {
-    refetch();
-  }
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
   const formButtonText = (values) => {
@@ -61,46 +63,9 @@ const CreateSale: FC<CreateSaleProps> = ({
   const saleCalculator = (numUnits: number, price: number) => {
     return numUnits * price;
   };
-
   const saleString = (numShares, price: number) => {
-    return numberWithCommas(saleCalculator(price, parseInt(numShares, 10)));
+    return numberWithCommas(saleCalculator(parseInt(numShares, 10), price));
   };
-  const [, createSale] = useAsyncFn(
-    async (numShares: number, price: number, minUnits: number, maxUnits: number, visible: boolean) => {
-      setButtonStep('submitting');
-      // const reach = await loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
-      reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MakePeraConnect }));
-      const acc = await reachLib.getDefaultAccount();
-      const ctc = acc.contract(backendCtc, contractId);
-      const call = async (f) => {
-        try {
-          await f();
-          await createSaleObject({
-            variables: {
-              currentDate: currentDate,
-              initiator: userWalletAddress,
-              offeringId: offeringId,
-              smartContractId: contractId,
-              numShares: numShares,
-              minUnits: minUnits,
-              maxUnits: maxUnits,
-              price: price,
-              visible: visible,
-            },
-          });
-          setRecallContract('createSale');
-          setButtonStep('confirmed');
-        } catch (e) {
-          StandardChainErrorHandling(e, setButtonStep);
-        }
-      };
-      const apis = ctc.a;
-      call(async () => {
-        const apiReturn = await apis.initSwap(loadStdlib(process.env).parseCurrency(numShares), price, true);
-        return apiReturn;
-      });
-    }
-  );
 
   return (
     <Formik
@@ -110,6 +75,8 @@ const CreateSale: FC<CreateSaleProps> = ({
         minUnits: undefined,
         maxUnits: undefined,
         visible: true,
+        partition: partitions[0],
+        newPartition: '',
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -134,12 +101,37 @@ const CreateSale: FC<CreateSaleProps> = ({
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        await createSale(values.numShares, values.price, values.minUnits, values.maxUnits, values.visible);
+        const isContractOwner = true;
+        const isAsk = true;
+        const isIssuance = true;
+        const isErc20Payment = true;
+        await submitSwap({
+          numShares: values.numShares,
+          price: values.price,
+          partition: values.partition,
+          newPartition: values.newPartition,
+          minUnits: values.minUnits,
+          maxUnits: values.maxUnits,
+          visible: values.visible,
+          swapContractAddress: swapContractAddress,
+          shareContractId: shareContractId,
+          paymentTokenDecimals: paymentTokenDecimals,
+          offeringId: offeringId,
+          isContractOwner: isContractOwner,
+          isAsk: isAsk,
+          isIssuance: isIssuance,
+          isErc20Payment: isErc20Payment,
+          setButtonStep: setButtonStep,
+          createSale: createSale,
+          addPartition: addPartition,
+          refetchAllContracts,
+        });
         setSubmitting(false);
       }}
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
+          <NewClassInputs partitions={partitions} values={values} />
           <Input
             className={defaultFieldDiv}
             labelText={`Number of list for sale (${sharesRemaining} available )`}
@@ -151,7 +143,7 @@ const CreateSale: FC<CreateSaleProps> = ({
           <div className="md:grid grid-cols-2 gap-3">
             <Input
               className={defaultFieldDiv}
-              labelText={`Price (${getCurrencyOption(currency).symbol})`}
+              labelText={`Price (${getCurrencyById(paymentTokenAddress).symbol})`}
               name="price"
               type="number"
               placeholder="1300"
@@ -160,7 +152,9 @@ const CreateSale: FC<CreateSaleProps> = ({
             <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText="Total sale:">
               <>
                 {values.numShares &&
-                  `${saleString(values.numShares, values.price)} ${currency && getCurrencyOption(currency).symbol}`}
+                  `${saleString(values.numShares, values.price)} ${
+                    paymentTokenAddress && getCurrencyById(paymentTokenAddress).symbol
+                  }`}
               </>
             </NonInput>
             <Input
@@ -178,7 +172,6 @@ const CreateSale: FC<CreateSaleProps> = ({
               placeholder="e.g. 120"
             />
           </div>
-
           <hr className="my-4" />
           <Checkbox
             fieldClass="text-sm bg-opacity-0 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
@@ -209,4 +202,4 @@ const CreateSale: FC<CreateSaleProps> = ({
   );
 };
 
-export default CreateSale;
+export default PostInitialSale;

@@ -1,23 +1,28 @@
 import { currencyOptions, getCurrencyOption } from '@src/utils/enumConverters';
-import { BigNumber } from 'ethers';
+
 import { CurrencyCode } from 'types';
+import { parseUnits } from 'viem';
+
+export const shareContractDecimals = 2;
 
 export type Decimals = number;
-export type HumanNumber = BigNumber;
-export type ContractInteger = BigNumber;
 
-// export const bigNaN = BigNumber.from('nan');
-
-export const toHumanNumber = (n: ContractInteger, nDecimals: Decimals): HumanNumber => {
-  return n.div(BigNumber.from(10).pow(nDecimals));
-};
-
-export const toContractInteger = (n: HumanNumber, nDecimals: Decimals): ContractInteger => {
-  return n.mul(BigNumber.from(10).pow(nDecimals));
-};
-
-export const toDecimalByToken = (amt: number, currency?: CurrencyCode) => {
+export const toDecimalByToken = (amt: number, currency?: CurrencyCode): number => {
   const decimal = getCurrencyOption(currency)?.decimals;
   const multiplier = Math.pow(10, decimal);
   return amt * multiplier;
+};
+
+export const toNormalNumber = (n: bigint, nDecimals: Decimals): number => {
+  return Number(n) / Math.pow(10, nDecimals);
+};
+
+export const toReverseContractNumber = (n: number, nDecimals: Decimals): bigint => {
+  const value = n / Math.pow(10, nDecimals);
+  return BigInt(value);
+};
+
+export const toContractNumber = (n: number, nDecimals: Decimals): bigint => {
+  const value = n.toString() as `${number}`;
+  return BigInt(parseUnits(value, nDecimals));
 };

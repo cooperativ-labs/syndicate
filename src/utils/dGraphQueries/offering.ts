@@ -238,15 +238,33 @@ export const ADD_OFFERING_DETAILS = gql`
   }
 `;
 
+export const UPDATE_INVESTMENT_CURRENCY = gql`
+  mutation UpdateInvestmentCurrency($offeringDetailsId: [ID!], $investmentCurrencyCode: CurrencyCode!) {
+    updateOfferingDetails(
+      input: { filter: { id: $offeringDetailsId }, set: { investmentCurrency: { code: $investmentCurrencyCode } } }
+    ) {
+      offeringDetails {
+        id
+        investmentCurrency {
+          code
+        }
+        offering {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const ADD_LEGAL_SHARE_LINK = gql`
   mutation AddLegalLink(
+    $currentDate: DateTime
+    $documentOfferingUniqueId: String!
     $offeringId: [ID!]
     $entityId: ID!
-    $smartContractId: ID!
-    $currentDate: DateTime
-    $agreementTitle: String!
     $agreementText: String!
-    $documentOfferingUniqueId: String!
+    $smartContractId: ID!
+    $agreementTitle: String!
     $signature: String!
   ) {
     updateOffering(
@@ -254,7 +272,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
         filter: { id: $offeringId }
         set: {
           lastUpdate: $currentDate
-          smartContracts: { id: $smartContractId }
+          smartContractSets: { shareContract: { id: $smartContractId } }
           waitlistOn: false
           documents: {
             title: $agreementTitle
@@ -272,6 +290,12 @@ export const ADD_LEGAL_SHARE_LINK = gql`
     ) {
       offering {
         id
+        smartContractSets {
+          id
+          shareContract {
+            id
+          }
+        }
         documents {
           text
         }
@@ -309,7 +333,7 @@ export const ADD_OFFERING_PARTICIPANT = gql`
     $name: String
     $offeringId: ID!
     $walletAddress: String!
-    $chainId: String!
+    $chainId: Int!
     $permitted: Boolean!
   ) {
     addOfferingParticipant(
@@ -326,9 +350,7 @@ export const ADD_OFFERING_PARTICIPANT = gql`
       offeringParticipant {
         id
         name
-        entity {
-          id
-        }
+
         offering {
           id
         }
@@ -404,6 +426,7 @@ export const ADD_WHITELIST_MEMBER = gql`
     $currentDate: DateTime!
     $addressOfferingId: String!
     $walletAddress: String!
+    $chainId: Int!
     $name: String
     $offering: ID!
     $externalId: String
@@ -413,6 +436,7 @@ export const ADD_WHITELIST_MEMBER = gql`
         lastUpdate: $currentDate
         addressOfferingId: $addressOfferingId
         walletAddress: $walletAddress
+        chainId: $chainId
         name: $name
         permitted: true
         offering: { id: $offering }
@@ -427,6 +451,11 @@ export const ADD_WHITELIST_MEMBER = gql`
         externalId
         offering {
           id
+          participants {
+            id
+            walletAddress
+            name
+          }
         }
       }
     }
@@ -460,10 +489,28 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
         walletAddress
         externalId
         jurisdiction {
+          id
           country
           province
         }
         name
+        offering {
+          id
+        }
+      }
+    }
+  }
+`;
+
+export const APPROVE_OFFERING_PARTICIPANT = gql`
+  mutation ApproveOfferingParticipant($currentDate: DateTime!, $id: [ID!], $permitted: Boolean!) {
+    updateOfferingParticipant(
+      input: { filter: { id: $id }, set: { lastUpdate: $currentDate, permitted: $permitted } }
+    ) {
+      offeringParticipant {
+        id
+        walletAddress
+        permitted
         offering {
           id
         }
@@ -573,46 +620,43 @@ export const REMOVE_WHITELIST_OBJECT = gql`
 `;
 
 export const ADD_DISTRIBUTION = gql`
-  mutation UpdateOffering($currentDate: DateTime!, $offeringId: [ID!], $amount: Int!, $transactionId: String) {
+  mutation UpdateOffering($offeringId: [ID!], $transactionHash: String!, $contractIndex: Int!) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
-        set: { distributions: { date: $currentDate, amount: $amount, transactionId: $transactionId } }
+        set: { distributions: { transactionHash: $transactionHash, contractIndex: $contractIndex } }
       }
     ) {
       offering {
         id
         distributions {
           id
-          amount
-          date
+          transactionHash
+          contractIndex
         }
       }
     }
   }
 `;
 
-export const UPDATE_DISTRIBUTION = gql`
-  mutation UpdateOfferingDistribution($currentDate: DateTime!, $distributionId: [ID!], $claimantAddress: String) {
-    updateOfferingDistribution(
-      input: { filter: { id: $distributionId }, set: { date: $currentDate, hasClaimed: [$claimantAddress] } }
-    ) {
+export const UPDATE_CONTRACT_INDEX = gql`
+  mutation UpdateOfferingDistribution($distributionId: [ID!], $contractIndex: Int!) {
+    updateOfferingDistribution(input: { filter: { id: $distributionId }, set: { contractIndex: $contractIndex } }) {
       offeringDistribution {
         id
-        amount
-        date
-        hasClaimed
+        transactionHash
+        contractIndex
       }
     }
   }
 `;
 
 export const UPDATE_CONTRACT_STATUS = gql`
-  mutation UpdateContractStatus($offeringId: [ID!], $smartContractId: ID!, $established: Boolean) {
+  mutation UpdateContractStatus($offeringId: [ID!], $smartshareContractId: ID!, $established: Boolean) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
-        set: { smartContracts: { id: $smartContractId, set: { established: $established } } }
+        set: { smartContracts: { id: $smartshareContractId, set: { established: $established } } }
       }
     ) {
       offering {
@@ -622,7 +666,7 @@ export const UPDATE_CONTRACT_STATUS = gql`
         }
       }
     }
-    updateSmartContract(input: { filter: { id: [$smartContractId] }, set: { established: $established } }) {
+    updateSmartContract(input: { filter: { id: [$smartshareContractId] }, set: { established: $established } }) {
       smartContract {
         id
         established
@@ -636,13 +680,13 @@ export const UPDATE_CONTRACT_STATUS = gql`
 // export const CREATE_SALE = gql`
 //   mutation UpdateOffering(
 //     $currentDate: DateTime!
+//     $orderId: Int!
 //     $offeringId: [ID!]
-//     $smartContractId: String!
-//     $numShares: Int!
+//     $swapContractAddress: String!
 //     $minUnits: Int
 //     $maxUnits: Int
-//     $price: Int!
 //     $visible: Boolean
+//     $initiator: String
 //   ) {
 //     updateOffering(
 //       input: {
@@ -650,13 +694,13 @@ export const UPDATE_CONTRACT_STATUS = gql`
 //         set: {
 //           sales: {
 //             creationDate: $currentDate
+//             orderId: $orderId
 //             lastUpdate: $currentDate
-//             smartContractId: $smartContractId
-//             numShares: $numShares
+//             saleContractAddress: $swapContractAddress
 //             minUnits: $minUnits
 //             maxUnits: $maxUnits
-//             price: $price
 //             visible: $visible
+//             initiator: $initiator
 //           }
 //         }
 //       }
@@ -665,9 +709,9 @@ export const UPDATE_CONTRACT_STATUS = gql`
 //         id
 //         sales {
 //           id
-//           numShares
-//           price
 //           creationDate
+//           orderId
+//           initiator
 //         }
 //       }
 //     }
@@ -675,46 +719,39 @@ export const UPDATE_CONTRACT_STATUS = gql`
 // `;
 
 export const CREATE_SALE = gql`
-  mutation UpdateOffering(
+  mutation CreateSale(
     $currentDate: DateTime!
-    $offeringId: [ID!]
-    $smartContractId: String!
-    $isBid: Boolean
-    $numShares: Int!
+    $orderId: Int!
+    $offeringId: ID!
+    $swapContractAddress: String!
     $minUnits: Int
     $maxUnits: Int
-    $price: Int!
     $visible: Boolean
-    $initiator: String
+    $initiator: String!
+    $transactionHash: String!
   ) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        set: {
-          sales: {
-            creationDate: $currentDate
-            lastUpdate: $currentDate
-            smartContractId: $smartContractId
-            isBid: $isBid
-            initiator: $initiator
-            numShares: $numShares
-            minUnits: $minUnits
-            maxUnits: $maxUnits
-            price: $price
-            visible: $visible
-          }
+    addOfferingSale(
+      input: [
+        {
+          relatedOffering: { id: $offeringId }
+          creationDate: $currentDate
+          orderId: $orderId
+          lastUpdate: $currentDate
+          saleContractAddress: $swapContractAddress
+          minUnits: $minUnits
+          maxUnits: $maxUnits
+          visible: $visible
+          initiator: $initiator
+          transactionHash: $transactionHash
         }
-      }
+      ]
     ) {
-      offering {
+      offeringSale {
         id
-        sales {
-          id
-          numShares
-          price
-          initiator
-          creationDate
-        }
+        creationDate
+        orderId
+        initiator
+        transactionHash
       }
     }
   }
@@ -725,10 +762,7 @@ export const UPDATE_SALE = gql`
     updateOfferingSale(input: { filter: { id: $saleId }, set: { lastUpdate: $currentDate, visible: $visible } }) {
       offeringSale {
         id
-        numShares
-        price
         lastUpdate
-        initiator
         visible
       }
     }
@@ -740,9 +774,11 @@ export const DELETE_SALE = gql`
     updateOffering(
       input: { filter: { id: $offeringId }, remove: { sales: { id: $saleId } }, set: { lastUpdate: $currentDate } }
     ) {
-      numUids
       offering {
         id
+        sales {
+          id
+        }
       }
     }
     deleteOfferingSale(filter: { id: [$saleId] }) {

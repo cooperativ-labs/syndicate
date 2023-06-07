@@ -1,53 +1,44 @@
-import * as backendCtc from '../../../web3/index.main';
 import axios from 'axios';
 import Checkbox from '@src/components/form-components/Checkbox';
 import cn from 'classnames';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
-import Input, { defaultFieldDiv, defaultFieldLabelClass } from '@src/components/form-components/Inputs';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '../../form-components/NonInput';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
 import { DownloadFile } from '@src/utils/helpersAgreement';
+import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant, OfferingSale } from 'types';
-import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { useAsync, useAsyncFn } from 'react-use';
 
-type SharePurchaseFormProps = {
+import { acceptOrder } from '@src/web3/contractSwapCalls';
+import { String0x } from '@src/web3/helpersChain';
+import { useAccount, useBalance } from 'wagmi';
+import { useAsync } from 'react-use';
+
+export type SharePurchaseRequestProps = {
   offering: Offering;
   sale: OfferingSale;
   price: number;
-  saleQty: number;
-  soldQty: number;
-  myBacBalance: number;
-  contractId: string;
+  swapContractAddress: String0x;
   permittedEntity: OfferingParticipant;
-  setModal: (boolean) => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  refetchAllContracts: () => void;
 };
 
-const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
+const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: string }> = ({
   offering,
   sale,
   price,
   myBacBalance,
-  contractId,
+  swapContractAddress,
   permittedEntity,
-  setModal,
-  setRecallContract,
+  refetchAllContracts,
 }) => {
-  const { reachLib, userWalletAddress } = useContext(ReachContext);
-  const chainId = setChainId;
+  const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -64,29 +55,6 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
   const purchaseString = (numUnitsPurchase) => {
     return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)));
   };
-
-  const [, submitPurchase] = useAsyncFn(async (numShares: number) => {
-    setButtonStep('submitting');
-    await reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
-    const acc = await reachLib.getDefaultAccount();
-    const ctc = acc.contract(backendCtc, contractId);
-    const call = async (f) => {
-      try {
-        await f();
-        setButtonStep('confirmed');
-        setRecallContract('submitPurchase');
-        alert(`You have purchased ${numShares} shares.`);
-        setModal(false);
-      } catch (e) {
-        StandardChainErrorHandling(e, setButtonStep);
-      }
-    };
-    const apis = ctc.a;
-    call(async () => {
-      const apiReturn = await apis.completeSwap(sale.initiator, loadStdlib(process.env).parseCurrency(numShares));
-      return apiReturn;
-    });
-  });
 
   return (
     <>
@@ -117,7 +85,14 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          await submitPurchase(values.numUnitsPurchase);
+          await acceptOrder({
+            swapContractAddress: swapContractAddress,
+            orderId: sale.orderId,
+            amount: values.numUnitsPurchase,
+            refetchAllContracts: refetchAllContracts,
+            setButtonStep: setButtonStep,
+          });
+          // await acceptOffer(swapContractAddress, sale.orderId, setButtonStep);
           setSubmitting(false);
         }}
       >
@@ -142,7 +117,7 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
                 </>
               </NonInput>
               <div className="col-span-2" />
-              <div className="col-span-1 text-xs pl-2">{`Current balance: ${numberWithCommas(myBacBalance)}`}</div>
+              <div className="col-span-1 text-xs pl-2">{`Current balance: ${floatWithCommas(myBacBalance)}`}</div>
             </div>
             <hr className="my-6" />
             {/* Disclosures */}
@@ -261,15 +236,15 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
             <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
               <LoadingButtonText
                 state={buttonStep}
-                idleText={`Purchase ${values.numUnitsPurchase ?? ''} shares ${
+                idleText={`Request to purchase ${values.numUnitsPurchase ?? ''} shares ${
                   values.numUnitsPurchase
                     ? `for ${purchaseString(values.numUnitsPurchase)} ${
                         getCurrencyOption(offering.details.investmentCurrency).symbol
                       } `
                     : ''
                 }`}
-                submittingText="Purchasing..."
-                confirmedText="Confirmed!"
+                submittingText="Submitting..."
+                confirmedText="Submitted!"
                 failedText="Transaction failed"
                 rejectedText="You rejected the transaction. Click here to try again."
               />
@@ -281,4 +256,4 @@ const SharePurchaseForm: FC<SharePurchaseFormProps> = ({
   );
 };
 
-export default SharePurchaseForm;
+export default SharePurchaseRequest;

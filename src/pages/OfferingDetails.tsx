@@ -1,38 +1,40 @@
-import * as backendCtc from '../web3/index.main';
 import AlertBanner from '@src/components/alerts/AlertBanner';
 import BasicOfferingDetailsForm from '@src/components/offering/settings/BasicOfferingDetailsForm';
 import Button from '@src/components/buttons/Button';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import DashboardCard from '@src/components/cards/DashboardCard';
-import FormModal from '@src/containers/FormModal';
-
+import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingActions from '@src/components/offering/actions/OfferingActions';
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
 import OfferingDescriptionSettings from '@src/components/offering/settings/OfferingDescriptionSettings';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
-
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import DocumentList from '@src/components/offering/documents/DocumentList';
-import HashInstructions from '@src/components/indicators/HashInstructions';
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
-import ShareBidForm from '@src/components/investor/tradingForms/ShareBidForm';
-import ShareOfferForm from '@src/components/investor/tradingForms/ShareOfferForm';
-import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
+import {
+  ContractSale,
+  getCurrentSalePrice,
+  getLowestSalePrice,
+  getSaleArrayFromContract,
+} from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
-import { getContractParticipants } from '@src/web3/reachCalls';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { GetEstablishedContracts } from '@src/utils/helpersContracts';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
-import { getLowestSalePrice } from '@src/utils/helpersMoney';
-import { loadStdlib } from '@reach-sh/stdlib';
 import { useAccount, useChainId } from 'wagmi';
-import { useAsyncFn } from 'react-use';
 import { useSession } from 'next-auth/react';
+
+import HashInstructions from '@src/components/documentVerification/HashInstructions';
+import { MatchSupportedChains } from '@src/web3/connectors';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { useAsync } from 'react-use';
+import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
+import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+
+// import { ABI } from '@src/web3/ABI';
 
 type OfferingDetailsProps = {
   offering: Offering;
@@ -40,110 +42,88 @@ type OfferingDetailsProps = {
 };
 
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
+  const { address: userWalletAddress } = useAccount();
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const { address: userWalletAddress } = useAccount();
-
+  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContractSets } = offering;
+  const contractSet = smartContractSets?.slice(-1)[0];
   const chainId = useChainId();
-  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContracts } = offering;
 
-  const establishedContract = GetEstablishedContracts(smartContracts, chainId)[0];
-  const contractId = establishedContract?.cryptoAddress.address;
+  const shareContract = contractSet?.shareContract;
+  const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
+  const swapContract = contractSet?.swapContract;
+  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+  const distributionContract = contractSet?.distributionContract;
+  const distributionContractAddress = distributionContract?.cryptoAddress.address as String0x;
+
+  const partitions = shareContract?.partitions as String0x[];
   const owners = offeringEntity?.owners;
   const documents = offering?.documents;
-  const legalLinkText = getDocumentsOfType(documents, DocumentType.ShareLink)[0]?.text;
-
-  ///TOKEN STUFF
-  const [retrievalIssue, setRetrievalIssue] = useState<boolean>();
-  const [sharesOutstanding, setSharesOutstanding] = useState<number>();
-
-  const [fundsDistributed, setFundsDistributed] = useState<number>();
-  const [numDistributions, setNumDistributions] = useState<number>();
-  const [myShares, setMyShares] = useState<number>();
-  const [myBacBalance, setMyBacBalance] = useState<number>();
-  const [bacId, setBacId] = useState<string>();
-  const [myBacToClaim, setMyBacToClaim] = useState<number>();
-  const [contractHashes, setContractHashes] = useState();
-  const [contractManager, setContractManager] = useState<string>('0x3DFa63c8B76d62CBF35A6C71a4a7aFaB9fb7Dfea');
-  const [isOptedIn, setIsOptedIn] = useState<boolean>(false);
-  const [isWhiteListed, setIsWhiteListed] = useState<boolean>();
-  const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
+  const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
+  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
-  const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
-  const [bidFormModel, setBidFormModel] = useState<boolean>(false);
-  const [recallContract, setRecallContract] = useState<string>();
+  const [contractSaleList, setContractSaleList] = useState<ContractSale[]>([]);
 
-  const hasContract = !!contractManager;
+  const {
+    contractOwner,
+    myShares,
+    sharesOutstanding,
+    allDocuments,
+    isLoading: shareIsLoading,
+    refetchShareContract,
+  } = useShareContractInfo(shareContractAddress, userWalletAddress);
 
-  //Is the user an Admin or Editor of the organization that controls the legal entity that owns the offering
-  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
+  const fundsDistributed = 20000;
+  const numDistributions = 4;
 
-  //Does the user's wallet address match the contract manager
-  const isContractOwner = contractManager && contractManager === userWalletAddress;
+  const {
+    shareTokenAddress,
+    paymentTokenAddress,
+    paymentTokenDecimals,
+    swapApprovalsEnabled,
+    txnApprovalsEnabled,
+    nextOrderId,
+    isLoading: swapIsLoading,
+    refetchSwapContract,
+  } = useSwapContractInfo(swapContractAddress);
+
+  const refetchMainContracts = () => {
+    refetchShareContract();
+    refetchSwapContract();
+  };
+
+  const isLoading = shareIsLoading || swapIsLoading;
+
+  const hasContract = !!contractOwner;
+  const isContractOwner = contractOwner === userWalletAddress;
   const contractOwnerMatches = isContractOwner === !!isOfferingManager;
   const offeringDocs = getDocumentsOfType(offering.documents, DocumentType.OfferingDocument);
   const latestDistribution = getLatestDistribution(offering);
   const myDistToClaim = getMyDistToClaim(offering, sharesOutstanding, myShares, userWalletAddress);
 
-  const [contractInfo, getContractInfo] = useAsyncFn(async () => {
-    try {
-      const reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ETH' });
-
-      const acc = await reachLib.getDefaultAccount();
-      const { formatAddress, formatCurrency, bigNumberToNumber } = reachLib;
-      const contractUserPubKey = await acc.getAddress();
-      //CONTRACT MANAGERS
-      const ctc = await acc.contract(backendCtc, contractId);
-
-      const contractOfficers = await ctc.views.vCcCm();
-      setContractManager('0x3DFa63c8B76d62CBF35A6C71a4a7aFaB9fb7Dfea');
-      const whitelistStatus = await ctc.views.wlMember(userWalletAddress);
-      const isWhiteListed = whitelistStatus[1];
-      setIsWhiteListed(true);
-
-      //CONTRACT DATA
-      const tot = await ctc.views.totSTBTD();
-      setRetrievalIssue(false);
-      const ctcVersion = await ctc.views.vcVersion();
-      console.log('Contract version:', ctcVersion[1][0]);
-      const btInfo = await ctc.views.vBtBal();
-      // const myTokens = await ctc.views.totSTBTDRec(acc.getAddress());
-      const myAvailableTokens = await ctc.views.claimSTBT(userWalletAddress);
-      const hashes = await ctc.views.vHash();
-      setContractHashes(hashes.slice(1));
-      const totST = parseInt(formatCurrency(tot[1][0], 6), 10);
-      const totAmountDistributed = parseInt(formatCurrency(tot[1][1], 6), 10);
-      const numDistributions = bigNumberToNumber(tot[1][2]);
-      const btBalance = parseInt(formatCurrency(btInfo[1][0], 6), 10);
-      const myST = parseInt(formatCurrency(myAvailableTokens[1][0], 6), 10); // This shows just shares I hold on ALGO, but also shows tokens waiting to be claimed on ETH
-      const btID = bigNumberToNumber(btInfo[1][1]).toString();
-      const myBacBalance = parseInt(formatCurrency(await acc.balanceOf(btID), 6), 10);
-      setSharesOutstanding(1000);
-      setFundsDistributed(20000);
-      setNumDistributions(3);
-      setMyShares(80);
-      setMyBacBalance(234000);
-      setBacId('111');
-    } catch (e) {
-      return e;
-    }
-  }, [recallContract, contractId, userWalletAddress]);
-
-  useEffect(() => {
-    getContractInfo();
-  }, [recallContract, contractId, userWalletAddress, getContractInfo]);
-
-  const permittedEntity = participants.find((participant) => {
+  const offeringParticipant = participants.find((participant) => {
     return participant.addressOfferingId === userWalletAddress + id;
   });
   // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
   // currently refers to the single sale the contract can currently offer
+
   const contractSales = sales.filter((sale) => {
-    return sale.smartContractId === contractId;
+    return sale.saleContractAddress === swapContractAddress;
   });
 
-  const currentSalePrice = getLowestSalePrice(sales, details?.priceStart);
+  useAsync(async () => {
+    const contractSaleList = await getSaleArrayFromContract(sales, swapContractAddress, paymentTokenDecimals);
+    setContractSaleList(contractSaleList);
+  }, [sales, swapContractAddress, paymentTokenDecimals, getSaleArrayFromContract]);
+
+  const currentSalePrice = getCurrentSalePrice(contractSaleList, offering.details?.priceStart);
+
+  const swapContractMatches = !swapContract
+    ? true
+    : normalizeEthAddress(shareTokenAddress) === normalizeEthAddress(shareContractAddress);
+
+  const contractMatchesCurrentChain = !shareContract ? true : shareContract.cryptoAddress.chainId === chainId;
 
   return (
     <>
@@ -157,60 +137,26 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
           <OfferingDescriptionSettings offering={offering} />
         </>
       </RightSideBar>
-      <FormModal
-        formOpen={shareSaleManagerModal}
-        onClose={() => setShareSaleManagerModal(false)}
-        title={`Manage shares of ${name}`}
-      >
-        {userWalletAddress && (
-          <ShareSaleList
-            offering={offering}
-            walletAddress={userWalletAddress}
-            sales={contractSales}
-            myBacBalance={myBacBalance}
-            contractId={contractId}
-            permittedEntity={permittedEntity}
-            isContractOwner={contractOwnerMatches && isContractOwner}
-            setShareSaleManagerModal={setShareSaleManagerModal}
-            setSaleFormModal={setSaleFormModal}
-            setRecallContract={setRecallContract}
-          />
-        )}
-      </FormModal>
-      <FormModal formOpen={saleFormModal} onClose={() => setSaleFormModal(false)} title={`Sell shares of ${name}`}>
-        <ShareOfferForm
-          offering={offering}
-          offeringMin={details?.minUnitsPerInvestor}
-          sharesOutstanding={sharesOutstanding}
-          walletAddress={userWalletAddress}
-          myShares={myShares}
-          contractId={contractId}
-          permittedEntity={permittedEntity}
-          isContractOwner={contractOwnerMatches && isContractOwner}
-          currentSalePrice={currentSalePrice}
-          setModal={setSaleFormModal}
-          setRecallContract={setRecallContract}
-        />
-      </FormModal>
-      {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${name}`}>
-        <ShareBidForm
-          offering={offering}
-          walletAddress={userWalletAddress}
-          offeringMin={details?.minUnitsPerInvestor}
-          contractId={contractId}
-          permittedEntity={permittedEntity}
-          setModal={setBidFormModel}
-          setRecallContract={setRecallContract}
-        />
-      </FormModal> */}
       <div className="md:mx-4">
-        {!contractOwnerMatches && !contractInfo.loading && (
+        {hasContract && !contractOwnerMatches && !isLoading && (
           <AlertBanner
             text={`${
               isContractOwner
                 ? 'Your account does not manage this offering, but the connected wallet manages the associated shares.'
                 : 'Your account manages this offering, but the connected wallet does not manage the associated shares. To manage shares, please switch to the appropriate wallet.'
             }`}
+          />
+        )}
+        {!swapContractMatches && contractMatchesCurrentChain && (
+          <AlertBanner
+            text={`The swap contract for this offering does not match the share contract. Please contact Cooperativ Support.`}
+          />
+        )}
+        {!contractMatchesCurrentChain && (
+          <AlertBanner
+            text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
+              MatchSupportedChains(shareContract.cryptoAddress.chainId).name
+            }.`}
           />
         )}
 
@@ -226,6 +172,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               accessCode={accessCode}
               offeringName={name}
               isOfferingManager={isOfferingManager}
+              shareContractAddress={shareContractAddress}
+              chainId={shareContract?.cryptoAddress.chainId}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
@@ -238,9 +186,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 isOfferingManager={isOfferingManager}
                 contractViewDetails={{
                   sharesOutstanding: sharesOutstanding,
-                  fundsDistributed: fundsDistributed,
                   myShares: myShares,
-                  bacId: bacId,
+                  paymentToken: paymentTokenAddress,
                 }}
               />
             ) : isOfferingManager ? (
@@ -249,7 +196,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               'This offering has no details yet.'
             )}
 
-            {isOfferingManager && <hr className="my-10" />}
+            <hr className="my-10" />
             {isOfferingManager && (
               <div className="flex items-center mt-10 ">
                 <Button
@@ -279,25 +226,29 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                       <ChooseConnectorButton buttonText={'Connect Wallet'} />
                     ) : (
                       <OfferingActions
-                        retrievalIssue={retrievalIssue}
+                        userId={userId}
+                        retrievalIssue={false}
                         hasContract={hasContract}
-                        loading={contractInfo.loading}
+                        loading={isLoading}
                         isOfferingManager={isOfferingManager}
-                        saleFormModal={saleFormModal}
                         sales={contractSales}
                         offering={offering}
-                        contractId={contractId}
+                        contractSet={contractSet}
+                        paymentTokenAddress={paymentTokenAddress}
+                        paymentTokenDecimals={paymentTokenDecimals}
+                        swapApprovalsEnabled={swapApprovalsEnabled}
+                        txnApprovalsEnabled={txnApprovalsEnabled}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
-                        myBacBalance={myBacBalance}
-                        isOptedIn={isOptedIn}
-                        isWhiteListed={isWhiteListed}
-                        setShareSaleManagerModal={setShareSaleManagerModal}
-                        setSaleFormModal={setSaleFormModal}
-                        refetch={refetch}
-                        setRecallContract={setRecallContract}
+                        partitions={partitions}
+                        refetchMainContracts={refetchMainContracts}
                         distributionId={latestDistribution.id}
                         myDistToClaim={myDistToClaim}
+                        permittedEntity={offeringParticipant}
+                        currentSalePrice={currentSalePrice}
+                        myShares={myShares}
+                        investmentCurrency={offering.details.investmentCurrency}
+                        chainId={0}
                       />
                     )}
                   </div>
@@ -318,8 +269,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 isContractOwner={isContractOwner}
                 offeringEntity={offeringEntity}
                 isOfferingManager={isOfferingManager}
-                contractId={contractId}
+                contractSet={contractSet}
                 currentSalePrice={currentSalePrice}
+                partitions={partitions}
               />
             )}
           </div>
@@ -333,8 +285,12 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               ownerEntityId={owners[0].id}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkText && contractHashes && (
-              <HashInstructions hashes={contractHashes} agreementText={legalLinkText} />
+            {legalLinkTexts.length > 0 && allDocuments?.length > 0 && (
+              <HashInstructions
+                contractDocuments={allDocuments}
+                agreementTexts={legalLinkTexts}
+                shareContractAddress={shareContractAddress}
+              />
             )}
           </>
 

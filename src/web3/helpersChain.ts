@@ -1,8 +1,74 @@
-import { ethers } from 'ethers';
+import { bytesToString, hexToBytes, stringToHex } from 'viem';
+import { keccak256, toHex } from 'viem';
 import toast from 'react-hot-toast';
+import { Document } from 'types';
+import { fetchEnsAddress, fetchEnsName } from 'wagmi/actions';
 
-export const normalizeChainId = (chainId) => {
-  return typeof chainId === 'number' ? chainId : parseInt(chainId[2]);
+export type String0x = `0x${string}`;
+
+export const stringFromBytes32 = (bytes32: String0x) => {
+  const bytes = hexToBytes(bytes32);
+  const string = bytesToString(bytes, { size: 32 });
+  return string;
+};
+export const bytes32FromString = (string) => {
+  const bytes = stringToHex(string, { size: 32 });
+  return bytes;
+};
+
+export const hashBytes32FromString = (string: string) => keccak256(toHex(string));
+
+export const getHashTextPairs = (data: any, agreementTexts: Document[]) => {
+  const hashes = data.map((doc) => {
+    return doc.result[1];
+  });
+  const textHashPairs = agreementTexts.map((doc, i) => {
+    const hash = hashes.find((hash) => hashBytes32FromString(doc.text) === hash);
+    return { hash: hash, text: doc.text };
+  });
+  return textHashPairs;
+};
+
+export const normalizeEthAddress = (address: String0x | string) => {
+  return address?.toLowerCase() as String0x;
+};
+
+export const getAddressFromEns = async (input: string | String0x) => {
+  let address = input;
+  if (input.includes('.eth')) {
+    const hexAddress = await fetchEnsAddress({
+      name: input,
+      chainId: 1,
+    });
+    address = hexAddress;
+  }
+  return address;
+};
+
+type AddressWithoutEnsProps = {
+  address: string | String0x;
+  isYou?: boolean;
+  isDesktop?: boolean;
+  userName?: string;
+  showFull?: boolean;
+};
+export const splitAddress = (address: String0x | string) => `${address.slice(0, 7)}... ${address.slice(-4)}`;
+
+export const addressWithoutEns = ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
+  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
+  const withoutENS = showFull && isDesktop ? address : userName ? youSplitAddress : splitAddress(address);
+  return withoutENS;
+};
+
+export const addressWithENS = async ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
+  let ensName = undefined;
+
+  ensName = await fetchEnsName({
+    address: address as String0x,
+    chainId: 1,
+  });
+  const withoutENS = addressWithoutEns({ address, isYou, isDesktop, userName, showFull });
+  return ensName ?? withoutENS;
 };
 
 export const WalletErrorMessages = {
@@ -22,11 +88,14 @@ export const WalletErrorCodes = (error) => {
   }
 };
 
-export const ChainErrorResponses = (error) => {
-  if (error.message.includes('has not opted in to app')) {
-    return { code: 1000, message: 'has not opted in to app' };
+export const ChainErrorResponses = (error, recipient: string | String0x) => {
+  if (error.message.includes('address already whitelisted')) {
+    return { code: 1001, message: `${recipient} is already whitelisted).` };
   }
-  if (error.message.includes('Error: Operation cancelled')) {
+  if (error.message.includes('address not whitelisted')) {
+    return { code: 1002, message: `${recipient} is not on the whitelist.` };
+  }
+  if (error.message.includes('User rejected the request')) {
     return { code: 2000, message: 'User cancelled operation' };
   }
   if (error.message.includes('underflow on subtracting')) {
@@ -38,19 +107,35 @@ export const ChainErrorResponses = (error) => {
   if (error.message.includes('hash is immutable')) {
     return { code: 5000, message: 'This contract has already been established.' };
   }
-  return { code: null, message: error };
-};
-
-export const isValidAddress = (address) => {
-  return ethers.utils.isAddress(address);
+  if (error.message.includes('reverted for unknown reason')) {
+    return {
+      code: 7001,
+      message:
+        'This transaction was not able to be completed. It is possible that a competing transaction was submitted just before yours.',
+    };
+  }
+  if (error.message.includes('Order already accepted')) {
+    return {
+      code: 7002,
+      message:
+        'Another request was submitted before yours. Please wait until the fund manager accepts or rejects that request.',
+    };
+  }
+  return { code: 9999, message: error.message };
 };
 
 export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) => {
-  const errorCode = ChainErrorResponses(error).code;
-  const errorMessage = ChainErrorResponses(error).message;
-  if (recipient && errorCode === 1000) {
+  const errorCode = ChainErrorResponses(error, recipient).code;
+  const errorMessage = ChainErrorResponses(error, recipient).message;
+
+  if (recipient && errorCode === 1001) {
     setButtonStep('failed');
-    toast(`${recipient} has not opted into this offering (or is already whitelisted).`);
+    toast(errorMessage);
+    return;
+  }
+  if (errorCode === 1002) {
+    toast.error(`${recipient} ${errorMessage}.`);
+    return;
   }
   if (errorCode === 2000) {
     setButtonStep && setButtonStep('rejected');
@@ -58,4 +143,5 @@ export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) =>
     setButtonStep && setButtonStep('failed');
     alert(`${errorMessage}`);
   }
+  return { code: errorCode, message: errorMessage };
 };

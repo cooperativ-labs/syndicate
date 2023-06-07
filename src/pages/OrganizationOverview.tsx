@@ -1,4 +1,3 @@
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -14,11 +13,11 @@ import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getIsAdmin, getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { toastExperiment } from '@src/components/indicators/Notifications';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
-import { toastExperiment } from '@src/components/indicators/Notifications';
 
 // type OrganizationDashboardProps = {
 //   user: User;
@@ -36,7 +35,7 @@ const OrganizationOverview: FC = () => {
     variables: { walletAddress: userWalletAddress },
   });
 
-  if (!organization) {
+  if (!organizationData) {
     return (
       <div>
         <LoadingModal />

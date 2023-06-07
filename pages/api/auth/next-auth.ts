@@ -1,5 +1,6 @@
 import GithubProvider from 'next-auth/providers/github';
 import LinkedInProvider from 'next-auth/providers/linkedin';
+import CredentialsProvider from 'next-auth/providers/credentials';
 import EmailProvider from 'next-auth/providers/email';
 import AzureADB2CProvider from 'next-auth/providers/azure-ad-b2c';
 import GoogleProvider from 'next-auth/providers/google';
@@ -66,6 +67,12 @@ const options: AuthOptions = {
     EmailProvider({
       server: process.env.NEXT_PUBLIC_EMAIL_SERVER,
       from: process.env.NEXT_PUBLIC_SMTP_FROM,
+      // sendVerificationRequest: ({ identifier: email, url, token, baseUrl, provider }) => {
+      //   return new Promise((resolve, reject) => {
+      //     console.log('Follow this link to sign in:', url);
+      //     resolve();
+      //   });
+      // },
 
       // sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
       //   if (!email) {
@@ -88,6 +95,29 @@ const options: AuthOptions = {
       //   }
       // },
     }),
+    // CredentialsProvider({
+    //   name: 'test-credentials',
+    //   credentials: {
+    //     // You can define any form fields you need here.
+    //     // For example, you might use an "identifier" field as a username or email.
+    //     email: { label: 'email', type: 'text', placeholder: 'Enter your email' },
+    //     password: { label: 'Password', type: 'password' },
+    //   },
+    //   async authorize(credentials, req) {
+    //     // This is where you should verify the credentials and return a user object.
+    //     // For simplicity, we're not actually checking the password here.
+    //     // In a real application, you should do that!
+    //     console.log('credentials', credentials);
+    //     // For this example, let's say that there's only one valid identifier.
+    //     if (credentials.email === 'j@cooperativ.io') {
+    //       // Return the user object. In your case, you may want to return an object that matches the shape of the user objects in your database.
+    //       return { id: '0x11111111', name: 'Test User' };
+    //     } else {
+    //       // If the credentials are invalid, return null to display an error message.
+    //       return null;
+    //     }
+    //   },
+    // }),
   ],
 
   adapter: DgraphAdapter({

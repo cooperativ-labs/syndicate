@@ -45,7 +45,7 @@ const WalletChooserModal: FC<WalletChooserModalProps> = ({ noModal }) => {
           }}
         >
           <Card
-            className="mx-4 absolute right-0 left-0 top-14 md:top-0 py-6 md:relative flex-col md:w-96 rounded-xl md:rounded-lg shadow-modal"
+            className="mx-4 bg-white absolute right-0 left-0 top-14 md:top-0 py-6 md:relative flex-col md:w-96 rounded-xl md:rounded-lg shadow-modal"
             style={{ overflow: 'smooth' }}
           >
             <button

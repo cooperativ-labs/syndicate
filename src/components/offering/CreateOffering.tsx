@@ -49,6 +49,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   //       variables: {
   //         currentDate: currentDate,
   //         addressOfferingId: userWalletAddress + offeringId,
+  //         chainId: chainId,
   //         offeringId: offeringId,
   //         name: `${offeringEntity.fullName}`,
   //         applicantId: offeringEntity.id,

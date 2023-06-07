@@ -122,6 +122,26 @@ export const SMART_CONTRACT_FIELDS = gql`
       id
     }
     established
+    partitions
+  }
+`;
+
+export const SMART_CONTRACT_SET_FIELDS = gql`
+  ${SMART_CONTRACT_FIELDS}
+  fragment smartContractSetData on OfferingSmartContractSet {
+    id
+    offering {
+      id
+    }
+    shareContract {
+      ...smartContractData
+    }
+    swapContract {
+      ...smartContractData
+    }
+    distributionContract {
+      ...smartContractData
+    }
   }
 `;
 
@@ -247,6 +267,7 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
       offeringEntity {
         organization {
           users {
+            permissions
             user {
               id
             }
@@ -330,7 +351,10 @@ export const CORE_ENTITY_FIELDS = gql`
           ...offeringDetailsData
         }
         sales {
-          price
+          saleContractAddress
+          initiator
+          orderId
+          transactionHash
         }
       }
       organization {
@@ -378,10 +402,8 @@ export const CORE_ENTITY_FIELDS = gql`
       }
       distributions {
         id
-        date
-        amount
-        hasClaimed
-        transactionId
+        contractIndex
+        transactionHash
       }
     }
     smartContracts {
@@ -400,7 +422,7 @@ export const CORE_OFFERING_FIELDS = gql`
   ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
   ${CORE_WAITLIST_MEMBER_FIELDS}
   ${CORE_PURCHASE_REQUEST_FIELDS}
-  ${SMART_CONTRACT_FIELDS}
+  ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
   fragment offeringData on Offering {
     id
@@ -418,8 +440,8 @@ export const CORE_OFFERING_FIELDS = gql`
     lightBrand
     website
     shortDescription
-    smartContracts {
-      ...smartContractData
+    smartContractSets {
+      ...smartContractSetData
     }
     sharingImage {
       id
@@ -450,13 +472,13 @@ export const CORE_OFFERING_FIELDS = gql`
     }
     sales {
       id
-      numShares
-      price
       minUnits
       maxUnits
       visible
-      smartContractId
+      saleContractAddress
       initiator
+      orderId
+      transactionHash
       relatedOffering {
         id
       }
@@ -466,10 +488,8 @@ export const CORE_OFFERING_FIELDS = gql`
     }
     distributions {
       id
-      date
-      amount
-      hasClaimed
-      transactionId
+      contractIndex
+      transactionHash
     }
     documents {
       ...documentData

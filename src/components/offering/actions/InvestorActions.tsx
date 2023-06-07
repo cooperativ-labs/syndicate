@@ -5,31 +5,31 @@ import router from 'next/router';
 import StandardButton from '@src/components/buttons/StandardButton';
 import { claimDistribution } from '@src/web3/reachCalls';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering } from 'types';
+import { Offering, OfferingSmartContractSet } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 
-export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
-
 export type ContractInvestorActionsProps = {
   offering: Offering;
-  contractId: string;
-  isWhiteListed: boolean;
+  contractSet: OfferingSmartContractSet;
+  isWhitelisted: boolean;
   myDistToClaim: number;
   distributionId: string;
-  isOptedIn: boolean;
-  setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
 
-const ContractInvestorActions: FC<ContractInvestorActionsProps> = ({
+type ContractInvestorActionsPropsAddendum = {
+  setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
+};
+
+const ContractInvestorActions: FC<ContractInvestorActionsProps & ContractInvestorActionsPropsAddendum> = ({
   offering,
-  contractId,
-  isWhiteListed,
+  contractSet,
+  isWhitelisted,
   myDistToClaim,
   distributionId,
-  isOptedIn,
   setShareSaleManagerModal,
   setRecallContract,
 }) => {
@@ -48,7 +48,7 @@ const ContractInvestorActions: FC<ContractInvestorActionsProps> = ({
             onClick={() =>
               claimDistribution(
                 reachLib,
-                contractId,
+                shareContractAddress,
                 distributionId,
                 setButtonStep,
                 setRecallContract,
@@ -70,17 +70,14 @@ const ContractInvestorActions: FC<ContractInvestorActionsProps> = ({
         <></>
       )}
       <StandardButton fullWidth text="Buy & Sell Shares" onClick={() => setShareSaleManagerModal(true)} />
-      {!isWhiteListed &&
-        (isOptedIn ? (
-          <div className="text-medium text-gray-600 border-2 rounded-md p-3 text-center">Application Pending</div>
-        ) : (
-          <Button
-            onClick={() => router.push(`/${organization.id}/portal/${offering.id}/investor-application`)}
-            className={standardClass}
-          >
-            View investor application
-          </Button>
-        ))}
+      {!isWhitelisted && (
+        <Button
+          onClick={() => router.push(`/${organization.id}/portal/${offering.id}/investor-application`)}
+          className={standardClass}
+        >
+          View investor application
+        </Button>
+      )}
     </div>
   );
 };

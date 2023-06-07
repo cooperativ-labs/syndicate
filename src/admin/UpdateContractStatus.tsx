@@ -4,30 +4,29 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React, { FC } from 'react';
 import Select from '@src/components/form-components/Select';
 
-import { CREATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/dGraphQueries/crypto';
+import { CREATE_SMART_CONTRACT } from '@src/utils/dGraphQueries/crypto';
 import { CurrencyCode, Offering, SmartContractType } from 'types';
 import { Form, Formik } from 'formik';
-import { MatchSupportedChains, setChainId } from '@src/web3/connectors';
+import { MatchSupportedChains } from '@src/web3/connectors';
 import { UPDATE_CONTRACT_STATUS } from '@src/utils/dGraphQueries/offering';
+import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type UpdateContractStatusProps = {
   offering: Offering;
 };
 
-const TestBackingTokenId = '0x05716d2b';
-
 const UpdateContractStatus: FC<UpdateContractStatusProps> = ({ offering }) => {
   const [updateStatus, { data, error }] = useMutation(UPDATE_CONTRACT_STATUS);
-  const [addUnestablishedSmartContract] = useMutation(CREATE_UNESTABLISHED_SMART_CONTRACT);
-  const chainId = setChainId;
+  const [addUnestablishedSmartContract] = useMutation(CREATE_SMART_CONTRACT);
+  const chainId = useChainId();
   const protocol = MatchSupportedChains(chainId)?.protocol;
 
   return (
     <>
       <Formik
         initialValues={{
-          smartContractId: '',
+          smartshareContractId: '',
         }}
         validate={(values) => {}}
         onSubmit={(values, { setSubmitting }) => {
@@ -36,7 +35,7 @@ const UpdateContractStatus: FC<UpdateContractStatusProps> = ({ offering }) => {
           updateStatus({
             variables: {
               offeringId: offering.id,
-              smartContractId: values.smartContractId,
+              smartshareContractId: values.smartshareContractId,
               established: true,
             },
           });
@@ -48,7 +47,7 @@ const UpdateContractStatus: FC<UpdateContractStatusProps> = ({ offering }) => {
             <Select
               className={defaultFieldDiv}
               required
-              name="smartContractId"
+              name="smartshareContractId"
               labelText="Distributions will be paid in"
             >
               <option value="">Select contract</option>;
@@ -72,7 +71,7 @@ const UpdateContractStatus: FC<UpdateContractStatusProps> = ({ offering }) => {
       </Formik>
       <Formik
         initialValues={{
-          contractId: '',
+          shareContractId: '',
           contractCreatorId: '',
         }}
         validate={(values) => {}}
@@ -81,10 +80,10 @@ const UpdateContractStatus: FC<UpdateContractStatusProps> = ({ offering }) => {
 
           addUnestablishedSmartContract({
             variables: {
-              cryptoAddress: values.contractId,
+              cryptoAddress: values.shareContractId,
               chainId: chainId,
               backingToken: CurrencyCode.AlgoUsdcTest,
-              type: SmartContractType.ExchangeManager,
+              type: SmartContractType.Share,
               protocol: protocol,
               owner: values.contractCreatorId,
             },
@@ -94,7 +93,7 @@ const UpdateContractStatus: FC<UpdateContractStatusProps> = ({ offering }) => {
       >
         {({ isSubmitting, values }) => (
           <Form className="flex flex-col gap relative">
-            <Input name="contractId" labelText="contract id" />
+            <Input name="shareContractId" labelText="contract id" />
             <Input
               name="contractCreatorId"
               labelText="legal Entity ID

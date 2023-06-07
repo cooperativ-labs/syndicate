@@ -1,60 +1,52 @@
-import * as backendCtc from '../../web3/index.main';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
+import React, { FC, use, useState } from 'react';
 import Select from '../form-components/Select';
-import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
-import { ChainErrorResponses, StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import toast from 'react-hot-toast';
+
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { OfferingParticipant } from 'types';
-import { ReachContext } from '@src/SetReachContext';
-import { sendShares } from '@src/web3/reachCalls';
-import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client';
 
-import { Web3Provider } from '@ethersproject/providers';
+import { addressWithENS, addressWithoutEns, splitAddress, String0x } from '@src/web3/helpersChain';
+import { sendShares } from '@src/web3/contractShareCalls';
+
+import NewClassInputs from '../form-components/NewClassInputs';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
+import { useMutation } from '@apollo/client';
 
 export type SendSharesProps = {
   sharesIssued: number;
   sharesOutstanding: number;
-  offeringId: string;
-  contractId: string;
+  shareContractId: string;
+  shareContractAddress: String0x;
   offeringParticipants: OfferingParticipant[];
-  refetch: () => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  partitions: String0x[];
 };
+
 const SendShares: FC<SendSharesProps> = ({
   sharesIssued,
   sharesOutstanding,
-  offeringId,
-  contractId,
+  shareContractAddress,
+  shareContractId,
   offeringParticipants,
-  refetch,
-  setRecallContract,
+  partitions,
 }) => {
-  const { reachLib } = useContext(ReachContext);
+  const [recipient, setRecipient] = useState<string | String0x>('');
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  // const { chainId } = useWeb3React<Web3Provider>();
-  const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
-
-  if (data) {
-    refetch();
-  }
+  const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
 
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
-  const formButtonText = (values) => {
-    const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
-    if (values.name || recipient) {
+  const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
+    const recipient = values.recipient;
+    if (recipient) {
       return `Send ${
         values.numShares
           ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%)`
           : ''
-      } shares to ${values.name ?? recipient}`;
+        // } shares to`;
+      } shares to ${addressWithENS({ address: recipient })}`;
     }
     return 'Send shares';
   };
@@ -62,71 +54,78 @@ const SendShares: FC<SendSharesProps> = ({
   return (
     <Formik
       initialValues={{
-        numShares: null,
-        existingRecipient: '',
-        newRecipient: '',
+        numShares: '',
+        recipient: '' as String0x,
+        partition: partitions[0],
+        newPartition: '',
       }}
       validate={(values) => {
+        setRecipient(values.recipient);
         const errors: any = {}; /** @TODO : Shape */
         if (!values.numShares) {
           errors.numShares = 'Please indicate how many shares you want to send';
-        } else if (values.numShares > sharesRemaining) {
+        } else if (parseInt(values.numShares, 10) > sharesRemaining) {
           errors.numShares = `You only have ${sharesRemaining} remaining shares to send.`;
         }
-        if (!values.existingRecipient) {
-          if (!values.newRecipient) {
-            errors.existingRecipient = 'Please indicate who you want to send shares to';
+        if (!values.recipient) {
+          errors.recipient = 'Please indicate who you want to send shares to';
+        }
+
+        if (!values.partition) {
+          if (!values.newPartition) {
+            errors.partition = 'Please specify a class of shares';
           }
         }
-        if (values.existingRecipient === 'new') {
-          if (!values.newRecipient) {
-            errors.newRecipient = 'Please indicate who you want to send shares to';
+        if (values.partition === '0xNew') {
+          if (!values.newPartition) {
+            errors.newPartition = 'Please specify a class of shares';
           }
         }
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        const recipient = values.existingRecipient === 'new' ? values.newRecipient : values.existingRecipient;
-        await sendShares(
-          reachLib,
-          contractId,
-          offeringId,
-          values.numShares,
-          recipient,
+        const transactionDetails = await sendShares({
+          shareContractAddress,
+          shareContractId,
+          numShares: parseInt(values.numShares, 10),
+          recipient: values.recipient,
+          partition: values.partition,
+          newPartition: values.newPartition,
           setButtonStep,
-          setRecallContract,
-          addWhitelistObject
-        );
+          addPartition,
+        });
+        if (transactionDetails) {
+          toast.success(
+            `${values.numShares} shares sent to ${addressWithENS({
+              address: recipient,
+            })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
+          );
+        }
+
         setSubmitting(false);
       }}
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
-          <Select className={'mt-3'} name={'existingRecipient'} labelText="Investor's wallet address">
+          <Select className={'mt-3'} name={'recipient'} labelText="Investor's wallet address">
             <option value="">Select recipient</option>
+
             {offeringParticipants.map((participant, i) => {
+              const presentableAddress = addressWithoutEns({
+                address: participant.walletAddress,
+                userName: participant.name,
+              });
               return (
                 <option key={i} value={participant.walletAddress}>
-                  {participant.name
-                    ? `${participant.name} (${participant.walletAddress.slice(-4)})`
-                    : participant.walletAddress}
+                  {presentableAddress}
                 </option>
               );
             })}
-            <hr className="bg-grey-400" />
-            <option value="new">+ Add new investor</option>
           </Select>
-          {values.existingRecipient === 'new' && (
-            <Input
-              className={defaultFieldDiv}
-              labelText="New investor's wallet address"
-              name="newRecipient"
-              type="text"
-              placeholder="0x531518975607FE8867fd5F39e9a3754F1fc38276"
-              // required
-            />
-          )}
+
+          <NewClassInputs partitions={partitions} values={values} />
+
           <Input
             className={defaultFieldDiv}
             labelText={`Number of shares to send (${sharesRemaining} remaining )`}
@@ -136,10 +135,11 @@ const SendShares: FC<SendSharesProps> = ({
             // required
           />
           <hr className="bg-grey-600 my-3 mb-4" />
+
           <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
             <LoadingButtonText
               state={buttonStep}
-              idleText={formButtonText(values)}
+              idleText={formButtonText({ numShares: parseInt(values.numShares, 10), recipient: values.recipient })}
               submittingText="Sending shares..."
               confirmedText="Confirmed!"
               failedText="Transaction failed"

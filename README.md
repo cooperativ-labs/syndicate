@@ -11,7 +11,7 @@ Find the IP address of the container:
 
     docker inspect -f '{{range .NetworkSettings.Networks}}{{.IPAddress}}{{end}}' <container id>
 
-Edit `next-auth.ts` the hostname to the IP address. (line 18)
+Edit `env.local`:  NEXT_PUBLIC_DGRAPH_ENDPOINT='http:/<New IP>:8080/graphql
 
 
 

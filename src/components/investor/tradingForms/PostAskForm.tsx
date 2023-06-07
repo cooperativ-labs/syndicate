@@ -7,22 +7,25 @@ import NonInput from '../../form-components/NonInput';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
+import { bytes32FromString, String0x } from '@src/web3/helpersChain';
 import { CREATE_SALE, DELETE_SALE } from '@src/utils/dGraphQueries/offering';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
-import { ReachContext } from '@src/SetReachContext';
-import { submitOffer } from '@src/web3/reachCalls';
-import { useChainId } from 'wagmi';
+
+import { submitSwap } from '@src/web3/contractSwapCalls';
+import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
-type ShareOfferFormProps = {
+type PostAskFormProps = {
   offering: Offering;
-  contractId: string;
+  swapContractAddress: String0x;
+  partitions: String0x[];
+  paymentTokenDecimals: number;
   walletAddress: string;
   myShares: number;
   permittedEntity: OfferingParticipant;
@@ -30,14 +33,16 @@ type ShareOfferFormProps = {
   offeringMin: number;
   sharesOutstanding: number;
   currentSalePrice: number;
-  setModal: (boolean) => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+  setModal: (x: boolean) => void;
+  refetchAllContracts: () => void;
 };
 
-const ShareOfferForm: FC<ShareOfferFormProps> = ({
+const PostAskForm: FC<PostAskFormProps> = ({
   offering,
   walletAddress,
-  contractId,
+  swapContractAddress,
+  partitions,
+  paymentTokenDecimals,
   myShares,
   permittedEntity,
   isContractOwner,
@@ -45,16 +50,14 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
   sharesOutstanding,
   currentSalePrice,
   setModal,
-  setRecallContract,
+  refetchAllContracts,
 }) => {
-  const { reachLib } = useContext(ReachContext);
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
-  const [createSaleObject, { data, error }] = useMutation(CREATE_SALE);
-  const [deleteSaleObject, { data: dataDelete, error: errorDelete }] = useMutation(DELETE_SALE);
+  const [createSale, { data, error }] = useMutation(CREATE_SALE);
   const { id, name, details, documents, offeringEntity } = offering;
-  const sharesIssued = details.numUnits;
+  const sharesIssued = details?.numUnits;
 
   const outstanding = sharesOutstanding ?? 0;
   const sharesUnissued = sharesIssued - outstanding;
@@ -76,7 +79,8 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
           approvalRequired: false,
           minUnits: undefined,
           maxUnits: undefined,
-          toc: false,
+          partition: partitions[0],
+          toc: true,
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
@@ -101,7 +105,7 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
             if (!values.approvalRequired) {
               errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
             }
-            if (!values.toc) {
+            if (values.toc === true) {
               errors.toc = "You must accept this offering's Terms & Conditions";
             }
           }
@@ -109,21 +113,29 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          await submitOffer(
-            reachLib,
-            contractId,
-            id,
-            isContractOwner,
-            myShares,
-            values.numUnitsToSell,
-            values.price,
-            values.minUnits,
-            values.maxUnits,
-            setButtonStep,
-            setRecallContract,
-            setModal,
-            createSaleObject
-          );
+          const isAsk = true;
+          const isIssuance = false;
+          const isErc20Payment = true;
+
+          await submitSwap({
+            numShares: values.numUnitsToSell,
+            price: values.price,
+            partition: values.partition,
+            minUnits: values.minUnits,
+            maxUnits: values.maxUnits,
+            swapContractAddress: swapContractAddress,
+            visible: false,
+            toc: values.toc,
+            paymentTokenDecimals: paymentTokenDecimals,
+            offeringId: offering.id,
+            isContractOwner: isContractOwner,
+            isAsk: isAsk,
+            isIssuance: isIssuance,
+            isErc20Payment: isErc20Payment,
+            setButtonStep: setButtonStep,
+            createSale: createSale,
+            refetchAllContracts,
+          });
           setSubmitting(false);
         }}
       >
@@ -291,4 +303,4 @@ const ShareOfferForm: FC<ShareOfferFormProps> = ({
   );
 };
 
-export default ShareOfferForm;
+export default PostAskForm;

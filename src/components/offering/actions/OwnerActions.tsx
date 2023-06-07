@@ -7,8 +7,9 @@ import SubmitDistribution from '../SubmitDistribution';
 import { ActionPanelActionsProps } from './OfferingActions';
 import { claimDistribution, claimProceeds } from '@src/web3/reachCalls';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingSale } from 'types';
+import { Offering, OfferingSale, OfferingSmartContractSet } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 
@@ -16,25 +17,30 @@ export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-
 
 export type ContractOwnerActionsProps = {
   offering: Offering;
-  contractId: string;
+  contractSet: OfferingSmartContractSet;
   distributionId: string;
   sharesOutstanding: number;
   myDistToClaim: number;
+  partitions: String0x[];
   setRecallContract: Dispatch<SetStateAction<string>>;
-  setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
-  setSaleFormModal: Dispatch<SetStateAction<boolean>>;
   refetch: () => void;
 };
 
-const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
+type ContractInvestorActionsPropsAddendum = {
+  setShareSaleManagerModal: Dispatch<SetStateAction<boolean>>;
+  setSmartContractsSettingsModal: Dispatch<SetStateAction<boolean>>;
+};
+
+const ContractOwnerActions: FC<ContractOwnerActionsProps & ContractInvestorActionsPropsAddendum> = ({
   offering,
-  contractId,
+  contractSet,
   distributionId,
   sharesOutstanding,
   myDistToClaim,
+  partitions,
   setRecallContract,
   setShareSaleManagerModal,
-  setSaleFormModal,
+  setSmartContractsSettingsModal,
   refetch,
 }) => {
   const { reachLib } = useContext(ReachContext);
@@ -42,6 +48,11 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
   const { id, participants, details } = offering;
+
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const shareContractId = contractSet?.shareContract?.id;
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
+
   const ButtonPanel = (
     <div className="flex flex-col w-full gap-3">
       <Button
@@ -60,7 +71,7 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
             onClick={() =>
               claimDistribution(
                 reachLib,
-                contractId,
+                shareContractAddress,
                 distributionId,
                 setButtonStep,
                 setRecallContract,
@@ -89,14 +100,25 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
       >
         Send shares
       </Button>
-      <Button
-        onClick={() => {
-          setShareSaleManagerModal(true);
-        }}
-        className={standardClass}
-      >
-        Manage Share Sales
-      </Button>
+      {swapContractAddress ? (
+        <Button
+          onClick={() => {
+            setShareSaleManagerModal(true);
+          }}
+          className={standardClass}
+        >
+          Manage Share Sales
+        </Button>
+      ) : (
+        <Button
+          onClick={() => {
+            setSmartContractsSettingsModal(true);
+          }}
+          className={standardClass}
+        >
+          Configure trading
+        </Button>
+      )}
     </div>
   );
 
@@ -113,15 +135,18 @@ const ContractOwnerActions: FC<ContractOwnerActionsProps> = ({
         <SendShares
           sharesIssued={details?.numUnits}
           sharesOutstanding={sharesOutstanding}
-          contractId={contractId}
-          offeringId={id}
+          shareContractAddress={shareContractAddress}
+          shareContractId={shareContractId}
           offeringParticipants={participants}
-          refetch={refetch}
-          setRecallContract={setRecallContract}
+          partitions={partitions}
         />
       )}
       {showActionPanel === 'distribute' && (
-        <SubmitDistribution contractId={contractId} refetch={refetch} setRecallContract={setRecallContract} />
+        <SubmitDistribution
+          shareContractAddress={shareContractAddress}
+          refetch={refetch}
+          setRecallContract={setRecallContract}
+        />
       )}
     </div>
   );

@@ -1,4 +1,9 @@
+import { String0x } from '@src/web3/helpersChain';
+import { readContract } from 'wagmi/actions';
 import { Offering, OfferingSale } from 'types';
+import { swap } from 'formik';
+import { swapContractABI } from '@src/web3/generated';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 
 export function priceCalculator(maxRaise: number, units: number, display?: boolean) {
   const baseAmount = maxRaise / units;
@@ -9,36 +14,57 @@ export function numberWithCommas(amount: number, decimals = 0) {
   return amount ? amount.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
 }
 
-export function getSalesByPrice(sales: OfferingSale[]) {
-  const arrayForSort = sales && [...sales];
-  return arrayForSort?.sort((a: OfferingSale, b: OfferingSale) => (a.price < b.price ? -1 : a.price > b.price ? 1 : 0));
+export function floatWithCommas(amount: string) {
+  return amount ? amount.replace(/\B(?=(\d{3})+(?!\d)(?=\.\d{0,}$))/g, ',') : '0.00';
 }
 
-export function getLowestSalePrice(sales: OfferingSale[], priceStart: number) {
-  const salesByPrice = getSalesByPrice(sales);
+export function getSalesByPrice(contractSaleList: ContractSale[]) {
+  const arrayForSort = contractSaleList && [...contractSaleList];
+  return arrayForSort?.sort((a: ContractSale, b: ContractSale) => (a.price < b.price ? -1 : a.price > b.price ? 1 : 0));
+}
+
+export function getLowestSalePrice(contractSaleList: ContractSale[], priceStart: number) {
+  const salesByPrice = getSalesByPrice(contractSaleList);
   return salesByPrice?.length > 0 ? salesByPrice[0].price : priceStart;
 }
 
-export const getCurrentSalePrice = (offering: Offering) => {
-  return getLowestSalePrice(offering.sales, offering.details.priceStart);
+export const getCurrentSalePrice = (contractSaleList: ContractSale[], startingPrice: number) => {
+  return getLowestSalePrice(contractSaleList, startingPrice);
 };
 
-export const TotalCreditsWithValue = (ccPayments) => {
-  let creditsReceived = 0;
-  let totalWorth = 0;
-  if (ccPayments) {
-    ccPayments.map((payment) => {
-      creditsReceived += payment.amount;
-      totalWorth += payment.amount * payment.currency.contributorCreditClass.currentFunding;
+export type ContractSale = {
+  saleId: string;
+  orderId: number;
+  price: number;
+  initiator: String0x | '';
+  partition: String0x | '';
+};
+
+export async function getSaleArrayFromContract(
+  sales: OfferingSale[],
+  swapContractAddress: String0x,
+  paymentTokenDecimals: number
+): Promise<ContractSale[]> {
+  const salesArray = sales.map(async (sale) => {
+    const data = await readContract({
+      address: swapContractAddress,
+      abi: swapContractABI,
+      functionName: 'orders',
+      args: [BigInt(sale.orderId)],
     });
-
-    return { creditsReceived, totalWorth };
-  }
-  return;
-};
-
-export const AddFinancialInvestmentsAmount = (investments) => {
-  let totalAmount = 0;
-  investments?.map((investment) => (totalAmount += investment.amount));
-  return totalAmount;
-};
+    const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
+    const initiator = data && data[0];
+    const price = data && toNormalNumber(data[3], adjustTokenDecimalsForShareContract);
+    const partition = data && data[1];
+    const saleId = sale.id;
+    const orderId = sale.orderId;
+    return {
+      saleId,
+      orderId,
+      price,
+      initiator,
+      partition,
+    };
+  });
+  return Promise.all(salesArray);
+}
