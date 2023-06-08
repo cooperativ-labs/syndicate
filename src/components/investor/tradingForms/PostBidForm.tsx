@@ -17,7 +17,7 @@ import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingParticipant, OfferingSale } from 'types';
+import { Offering, OfferingParticipant, ShareOrder } from 'types';
 import { ReachContext } from '@src/SetReachContext';
 
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';

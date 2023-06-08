@@ -52,12 +52,12 @@ type AddressWithoutEnsProps = {
   userName?: string;
   showFull?: boolean;
 };
-export const splitAddress = (address: String0x | string) => `${address.slice(0, 7)}... ${address.slice(-4)}`;
+export const splitAddress = (address: String0x | string) => `${address?.slice(0, 4)}... ${address?.slice(-4)}`;
 
 export const addressWithoutEns = ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
-  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
+  const youSplitAddress = `${isYou ? 'You' : userName} (${address?.slice(-4)})`;
   const withoutENS = showFull && isDesktop ? address : userName ? youSplitAddress : splitAddress(address);
-  return withoutENS;
+  return address ? withoutENS : undefined;
 };
 
 export const addressWithENS = async ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {

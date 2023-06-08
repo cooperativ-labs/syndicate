@@ -3,6 +3,7 @@ import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import DistributionList from '../distributions/DistributionList';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';
+import IssuanceSaleList from '../sales/IssuanceSaleList';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
 import { Currency, OfferingParticipant, OfferingSmartContractSet } from 'types';
@@ -10,12 +11,13 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
 import { shareContractABI } from '@src/web3/generated';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
 import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { useContractRead, useContractWrite } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 type SelectedParticipantProps = {
@@ -23,7 +25,7 @@ type SelectedParticipantProps = {
   participants: OfferingParticipant[];
   contractSet: OfferingSmartContractSet;
   currentSalePrice: number;
-  investmentCurrency: Currency;
+  paymentTokenDecimals: number;
   removeMember: (variables) => void;
 };
 
@@ -31,21 +33,29 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   selection,
   participants,
   contractSet,
+  paymentTokenDecimals,
   currentSalePrice,
   removeMember,
 }) => {
   const { data: session } = useSession();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [updateOfferingParticipant, { data: dataUpdate }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
-  const [approveOfferingParticipant, { data: dataApprove }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
+  const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
+  const [approveOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const { data: issuanceData, error } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
+    variables: { shareContractAddress: shareContractAddress },
+  });
 
   const participant = participants?.find((p) => p.id === selection);
   const participantWallet = participant?.walletAddress;
 
+  const issuances = issuanceData?.queryShareIssuanceTrade.filter((issuance) => {
+    return issuance.recipientAddress === participantWallet || issuance.senderAddress === participantWallet;
+  });
+
   //-----------------Contract Interactions---------------------
 
-  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
 
   const sharedContractSpecs = {
@@ -53,7 +63,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     abi: shareContractABI,
   };
 
-  const { data, isLoading } = useContractRead({
+  const { data: shareBalanceData } = useContractRead({
     ...sharedContractSpecs,
     functionName: 'balanceOf',
     args: [participantWallet as String0x],
@@ -124,9 +134,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
   const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
     participant;
-
   const distributions = offering.distributions;
-
   const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity.organization);
 
   const updateInvestorForm = (itemType) => {
@@ -227,12 +235,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     <div>
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
       <DistributionList distributionContractAddress={distributionContractAddress} distributions={distributions} />
-      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades</h1>
-      trades go here
-      {/* <DistributionList
-        distributionContractAddress={distributionContractAddress}
-        distributions={offering.distributions}
-      /> */}
+      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Issuances</h1>
+      <IssuanceSaleList issuances={issuances} paymentTokenDecimals={paymentTokenDecimals} />
     </div>
   );
 
@@ -288,8 +292,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         className="font-bold text-lg"
         showFull
       />
-      need to get shares and distributions from Chain
-      <div className="text-sm">{`Shares: ${toNormalNumber(data, 18)} `}</div>
+
+      <div className="text-sm">{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
       {specificationSection}
       {tradesSection}
       <hr className="my-10" />

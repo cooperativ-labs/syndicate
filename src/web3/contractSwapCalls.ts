@@ -9,6 +9,7 @@ import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
 import { erc20ABI } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { ShareIssuanceTradeType } from 'types';
 
 type SubmitSwapProps = {
   numShares: number;
@@ -29,7 +30,7 @@ type SubmitSwapProps = {
   isErc20Payment: boolean;
   myShares?: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  createSale: (
+  createOrder: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
@@ -59,7 +60,7 @@ export const submitSwap = async ({
   myShares,
   setModal,
   setButtonStep,
-  createSale,
+  createOrder,
   addPartition,
   refetchAllContracts,
 }: SubmitSwapProps) => {
@@ -88,7 +89,7 @@ export const submitSwap = async ({
         hash: hash,
       });
       const { address: userWalletAddress } = getAccount();
-      const orderId = Number(result);
+      const contractIndex = Number(result);
       addPartition &&
         (await addPartition({
           variables: {
@@ -96,10 +97,10 @@ export const submitSwap = async ({
             partition: setPartition as string,
           },
         }));
-      await createSale({
+      await createOrder({
         variables: {
           currentDate: currentDate,
-          orderId: orderId,
+          contractIndex: contractIndex,
           offeringId: offeringId,
           swapContractAddress: swapContractAddress,
           minUnits: minUnits,
@@ -116,8 +117,8 @@ export const submitSwap = async ({
       return transactionReceipt;
     } catch (e) {
       // if (data) {
-      //   const saleId = data.updateOffering.offering[0].sales[0].id;
-      //   await deleteSaleObject({ variables: { offeringId: id, saleId: saleId } });
+      //   const orderId = data.updateOffering.offering[0].sales[0].id;
+      //   await deleteSaleObject({ variables: { offeringId: id, orderId: orderId } });
       // }
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -128,7 +129,7 @@ export const submitSwap = async ({
 type AcceptOrderProps = {
   swapContractAddress: String0x;
   amount: number;
-  orderId: number;
+  contractIndex: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
@@ -137,7 +138,7 @@ type AcceptOrderProps = {
 export const acceptOrder = async ({
   swapContractAddress,
   amount,
-  orderId,
+  contractIndex,
   setButtonStep,
   refetchAllContracts,
   setModal,
@@ -149,7 +150,7 @@ export const acceptOrder = async ({
         address: swapContractAddress,
         abi: swapContractABI,
         functionName: 'acceptOrder',
-        args: [BigInt(orderId), toContractNumber(amount, shareContractDecimals)],
+        args: [BigInt(contractIndex), toContractNumber(amount, shareContractDecimals)],
       });
       const { hash } = await writeContract(request);
       await waitForTransaction({
@@ -238,7 +239,7 @@ export const adjustAllowance = async ({
 
 type ApproveRejectSwapProps = {
   swapContractAddress: String0x;
-  orderId: number;
+  contractIndex: number;
   isDisapprove: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
@@ -246,7 +247,7 @@ type ApproveRejectSwapProps = {
 };
 export const approveRejectSwap = async ({
   swapContractAddress,
-  orderId,
+  contractIndex,
   isDisapprove,
   setButtonStep,
   refetchAllContracts,
@@ -260,7 +261,7 @@ export const approveRejectSwap = async ({
         address: swapContractAddress,
         abi: swapContractABI,
         functionName: contractFunctionName,
-        args: [BigInt(orderId)],
+        args: [BigInt(contractIndex)],
       });
       const { hash } = await writeContract(request);
       await waitForTransaction({
@@ -279,24 +280,22 @@ export const approveRejectSwap = async ({
 
 type CancelOrderProps = {
   swapContractAddress: String0x;
-  orderId: number;
-  saleId: string;
-  offeringId: string;
+  contractIndex: number;
+  orderId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  deleteSaleObject: (
+  deleteOrderObject: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
-  refetchAllContracts?: () => void;
+  refetchAllContracts: () => void;
 };
 
 export const cancelSwap = async ({
   swapContractAddress,
+  contractIndex,
   orderId,
-  saleId,
-  offeringId,
   setButtonStep,
-  deleteSaleObject,
+  deleteOrderObject,
   setModal,
   refetchAllContracts,
 }: CancelOrderProps) => {
@@ -307,17 +306,17 @@ export const cancelSwap = async ({
         address: swapContractAddress,
         abi: swapContractABI,
         functionName: 'cancelOrder',
-        args: [BigInt(orderId)],
+        args: [BigInt(contractIndex)],
       });
       const { hash } = await writeContract(request);
       await waitForTransaction({
         hash: hash,
       });
-      deleteSaleObject && (await deleteSaleObject({ variables: { offeringId: offeringId, saleId: saleId } }));
+      deleteOrderObject && (await deleteOrderObject({ variables: { orderId: orderId } }));
       setButtonStep('confirmed');
       toast.success(`You have cancelled your sale.`);
       setModal && setModal(false);
-      refetchAllContracts && refetchAllContracts();
+      refetchAllContracts();
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -360,14 +359,14 @@ export const claimProceeds = async ({
 
 type AcceptOfferProps = {
   swapContractAddress: String0x;
-  orderId: number;
+  contractIndex: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   refetchAllContracts?: () => void;
 };
 
 export const acceptOffer = async ({
   swapContractAddress,
-  orderId,
+  contractIndex,
   setButtonStep,
   refetchAllContracts,
 }: AcceptOfferProps) => {
@@ -378,7 +377,7 @@ export const acceptOffer = async ({
         address: swapContractAddress,
         abi: swapContractABI,
         functionName: 'acceptOrder',
-        args: [BigInt(orderId)],
+        args: [BigInt(contractIndex)],
       });
       const { hash } = await writeContract(request);
       await waitForTransaction({
@@ -396,17 +395,31 @@ export const acceptOffer = async ({
 
 type FillOrderProps = {
   swapContractAddress: String0x;
+  shareContractAddress: String0x;
   amount: number;
-  orderId: number;
+  price: number;
+  contractIndex: number;
+  partition: String0x;
+  recipient: String0x;
+  sender: String0x;
+  addTrade: (
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+  ) => Promise<any>;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
-  refetchAllContracts?: () => void;
+  refetchAllContracts: () => void;
 };
 
 export const fillOrder = async ({
   swapContractAddress,
   amount,
-  orderId,
+  price,
+  contractIndex,
+  partition,
+  recipient,
+  sender,
+  shareContractAddress,
+  addTrade,
   setButtonStep,
   refetchAllContracts,
   setModal,
@@ -418,15 +431,27 @@ export const fillOrder = async ({
         address: swapContractAddress,
         abi: swapContractABI,
         functionName: 'fillOrder',
-        args: [BigInt(orderId), toContractNumber(amount, shareContractDecimals)],
+        args: [BigInt(contractIndex), toContractNumber(amount, shareContractDecimals)],
       });
       const { hash } = await writeContract(request);
-      await waitForTransaction({
+      const transactionDetails = await waitForTransaction({
         hash: hash,
+      });
+      addTrade({
+        variables: {
+          shareContractAddress,
+          recipientAddress: recipient,
+          senderAddress: sender,
+          amount: amount,
+          price: price,
+          transactionHash: transactionDetails.transactionHash,
+          partition: partition,
+          type: ShareIssuanceTradeType.Sell,
+        },
       });
       setButtonStep('confirmed');
       toast.success(`You have completed the swap.`);
-      refetchAllContracts && refetchAllContracts();
+      refetchAllContracts();
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }

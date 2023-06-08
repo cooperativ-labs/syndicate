@@ -1,7 +1,6 @@
 import { String0x } from '@src/web3/helpersChain';
 import { readContract } from 'wagmi/actions';
-import { Offering, OfferingSale } from 'types';
-import { swap } from 'formik';
+import { ShareOrder } from 'types';
 import { swapContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 
@@ -18,53 +17,55 @@ export function floatWithCommas(amount: string) {
   return amount ? amount.replace(/\B(?=(\d{3})+(?!\d)(?=\.\d{0,}$))/g, ',') : '0.00';
 }
 
-export function getSalesByPrice(contractSaleList: ContractSale[]) {
-  const arrayForSort = contractSaleList && [...contractSaleList];
-  return arrayForSort?.sort((a: ContractSale, b: ContractSale) => (a.price < b.price ? -1 : a.price > b.price ? 1 : 0));
-}
-
-export function getLowestSalePrice(contractSaleList: ContractSale[], priceStart: number) {
-  const salesByPrice = getSalesByPrice(contractSaleList);
-  return salesByPrice?.length > 0 ? salesByPrice[0].price : priceStart;
-}
-
-export const getCurrentSalePrice = (contractSaleList: ContractSale[], startingPrice: number) => {
-  return getLowestSalePrice(contractSaleList, startingPrice);
-};
-
-export type ContractSale = {
-  saleId: string;
-  orderId: number;
+export type ContractOrder = {
+  orderId: string;
+  contractIndex: number;
   price: number;
   initiator: String0x | '';
   partition: String0x | '';
 };
 
-export async function getSaleArrayFromContract(
-  sales: OfferingSale[],
+export function getOrdersByPrice(contractOrderList: ContractOrder[]) {
+  const arrayForSort = contractOrderList && [...contractOrderList];
+  return arrayForSort?.sort((a: ContractOrder, b: ContractOrder) =>
+    a.price < b.price ? -1 : a.price > b.price ? 1 : 0
+  );
+}
+
+export function getLowestOrderPrice(contractOrderList: ContractOrder[], priceStart: number) {
+  const ordersByPrice = getOrdersByPrice(contractOrderList);
+  return ordersByPrice?.length > 0 ? ordersByPrice[0].price : priceStart;
+}
+
+export const getCurrentOrderPrice = (contractOrderList: ContractOrder[], startingPrice: number) => {
+  return getLowestOrderPrice(contractOrderList, startingPrice);
+};
+
+export async function getOrderArrayFromContract(
+  orders: ShareOrder[],
   swapContractAddress: String0x,
   paymentTokenDecimals: number
-): Promise<ContractSale[]> {
-  const salesArray = sales.map(async (sale) => {
+): Promise<ContractOrder[]> {
+  const orderArray = orders.map(async (order) => {
     const data = await readContract({
       address: swapContractAddress,
       abi: swapContractABI,
       functionName: 'orders',
-      args: [BigInt(sale.orderId)],
+      args: [BigInt(order.contractIndex)],
     });
     const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
     const initiator = data && data[0];
     const price = data && toNormalNumber(data[3], adjustTokenDecimalsForShareContract);
     const partition = data && data[1];
-    const saleId = sale.id;
-    const orderId = sale.orderId;
+    const orderId = order.id;
+    const contractIndex = order.contractIndex;
     return {
-      saleId,
       orderId,
+      contractIndex,
       price,
       initiator,
       partition,
     };
   });
-  return Promise.all(salesArray);
+  return Promise.all(orderArray);
 }

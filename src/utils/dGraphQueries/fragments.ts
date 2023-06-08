@@ -355,10 +355,10 @@ export const CORE_ENTITY_FIELDS = gql`
         details {
           ...offeringDetailsData
         }
-        sales {
-          saleContractAddress
+        orders {
+          swapContractAddress
           initiator
-          orderId
+          contractIndex
           transactionHash
         }
       }
@@ -475,14 +475,14 @@ export const CORE_OFFERING_FIELDS = gql`
     # purchaseRequests {
     #   ...purchaseRequestData
     # }
-    sales {
+    orders {
       id
       minUnits
       maxUnits
       visible
-      saleContractAddress
+      swapContractAddress
       initiator
-      orderId
+      contractIndex
       transactionHash
       relatedOffering {
         id

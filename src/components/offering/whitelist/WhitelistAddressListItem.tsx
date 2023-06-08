@@ -1,12 +1,12 @@
 import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import React, { FC, useContext } from 'react';
-import StandardButton from '@src/components/buttons/StandardButton';
+
 import { OfferingParticipant } from 'types';
 import { ReachContext } from '@src/SetReachContext';
 import { shareContractABI } from '@src/web3/generated';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
 import { useContractRead } from 'wagmi';
 type WhitelistAddressListItemProps = {
   participant: OfferingParticipant;
@@ -29,7 +29,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   });
 
   const isYou = participant.walletAddress === userWalletAddress;
-  const numShares = isLoading ? 'loading...' : data ? toNormalNumber(data, 18) : 0;
+  const numShares = isLoading ? 'loading...' : data ? toNormalNumber(data, shareContractDecimals) : 0;
 
   return (
     <div

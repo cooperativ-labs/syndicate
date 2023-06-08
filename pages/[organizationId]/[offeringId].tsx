@@ -69,7 +69,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       props: { result },
     };
   } catch (error) {
-    console.error(error);
+    throw new Error(error);
     return {
       props: {
         result: null,

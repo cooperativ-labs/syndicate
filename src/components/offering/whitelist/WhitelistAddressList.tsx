@@ -7,6 +7,7 @@ import { Currency, OfferingParticipant, OfferingSmartContractSet } from 'types';
 import { REMOVE_WHITELIST_OBJECT } from '@src/utils/dGraphQueries/offering';
 import { String0x } from '@src/web3/helpersChain';
 
+import { getCurrencyOption } from '@src/utils/enumConverters';
 import { useMutation } from '@apollo/client';
 
 type WhitelistAddressListProps = {
@@ -36,7 +37,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
               participants={offeringParticipants}
               contractSet={contractSet}
               currentSalePrice={currentSalePrice}
-              investmentCurrency={investmentCurrency}
+              paymentTokenDecimals={getCurrencyOption(investmentCurrency).decimals}
               removeMember={removeMember}
             />
           )}

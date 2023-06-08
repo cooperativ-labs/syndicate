@@ -24,7 +24,8 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
   const chainId = useChainId();
   const chainName = MatchSupportedChains(chainId)?.name;
 
-  const handleAllowance = async () => {
+  const handleAllowance = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    e.preventDefault();
     await setAllowance({
       paymentTokenAddress,
       paymentTokenDecimals,
@@ -39,11 +40,11 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
   return (
     <Button
       className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
-      onClick={() => handleAllowance()}
+      onClick={(e) => handleAllowance(e)}
     >
       <LoadingButtonText
         state={buttonStep}
-        idleText={`Permit the smart contract access to funds your ${chainName} wallet`}
+        idleText={`You must first permit the smart contract access your funds`}
         submittingText="Setting allowance..."
         confirmedText="Confirmed!"
         failedText="Transaction failed"

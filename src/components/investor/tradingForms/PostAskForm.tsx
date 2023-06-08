@@ -8,7 +8,7 @@ import PresentLegalText from '@src/components/legal/PresentLegalText';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
 import { bytes32FromString, String0x } from '@src/web3/helpersChain';
-import { CREATE_SALE, DELETE_SALE } from '@src/utils/dGraphQueries/offering';
+
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
@@ -17,6 +17,7 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
 
+import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
@@ -24,6 +25,7 @@ import { useMutation } from '@apollo/client';
 type PostAskFormProps = {
   offering: Offering;
   swapContractAddress: String0x;
+  swapApprovalsEnabled: boolean;
   partitions: String0x[];
   paymentTokenDecimals: number;
   walletAddress: string;
@@ -41,6 +43,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
   offering,
   walletAddress,
   swapContractAddress,
+  swapApprovalsEnabled,
   partitions,
   paymentTokenDecimals,
   myShares,
@@ -49,13 +52,14 @@ const PostAskForm: FC<PostAskFormProps> = ({
   offeringMin,
   sharesOutstanding,
   currentSalePrice,
+
   setModal,
   refetchAllContracts,
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
-  const [createSale, { data, error }] = useMutation(CREATE_SALE);
+  const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
   const { id, name, details, documents, offeringEntity } = offering;
   const sharesIssued = details?.numUnits;
 
@@ -124,7 +128,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
             minUnits: values.minUnits,
             maxUnits: values.maxUnits,
             swapContractAddress: swapContractAddress,
-            visible: false,
+            visible: !swapApprovalsEnabled,
             toc: values.toc,
             paymentTokenDecimals: paymentTokenDecimals,
             offeringId: offering.id,
@@ -133,7 +137,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
             isIssuance: isIssuance,
             isErc20Payment: isErc20Payment,
             setButtonStep: setButtonStep,
-            createSale: createSale,
+            createOrder: createOrder,
             refetchAllContracts,
           });
           setSubmitting(false);

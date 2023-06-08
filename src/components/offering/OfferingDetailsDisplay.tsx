@@ -2,7 +2,7 @@ import MoneyDisplay from './../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React, { FC } from 'react';
-import { OfferingDetails, OfferingSale } from 'types';
+import { OfferingDetails, ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
 export type ContractViewDetails = {

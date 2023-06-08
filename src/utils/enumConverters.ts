@@ -12,6 +12,7 @@ import {
   OfferingTabSection,
   OrganizationPermissionType,
   Currency,
+  ShareIssuanceTradeType,
 } from 'types';
 
 // ===== PROFILE ======
@@ -168,8 +169,6 @@ export const getStageOption = (stage) => {
   return StageOptions.find((st) => (st.value === stage ? st : null));
 };
 
-export type SaleStatusType = 'initd' | 'partl' | 'apprv' | '-----' | 'compl';
-
 export const SwapStatusOptions = [
   { value: 'initiated', name: 'requires approval', color: 'orange-600' },
   { value: 'partiallyFilled', name: 'live', color: 'green-600' },
@@ -221,6 +220,17 @@ export const getSwapStatusOption = ({
     default:
       return SwapStatusOptions[0];
   }
+};
+
+// ===== Trades =====
+
+export const IssuanceTradeOptions = [
+  { value: ShareIssuanceTradeType.Sell, name: 'Sale', color: 'green-600' },
+  { value: ShareIssuanceTradeType.Issue, name: 'Issuance', color: 'blue-600' },
+];
+
+export const getIssuanceTradeOption = (tradeType) => {
+  return IssuanceTradeOptions.find((option) => (option.value === tradeType ? option : null));
 };
 
 // ===== CURRENCY =====

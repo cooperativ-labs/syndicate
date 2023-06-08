@@ -1,16 +1,18 @@
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { ADD_DISTRIBUTION } from '@src/utils/dGraphQueries/offering';
+
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 import { String0x } from '@src/web3/helpersChain';
 
 import SetAllowanceForm from '../investor/tradingForms/SetAllowanceForm';
+import { ADD_DISTRIBUTION } from '@src/utils/dGraphQueries/trades';
 import { dividendContractABI } from '@src/web3/generated';
 import { erc20ABI, useAccount, useContractRead, useContractReads } from 'wagmi';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
+import { toNormalNumber } from '@src/web3/util';
 import { useMutation } from '@apollo/client';
 
 type SubmitDistributionProps = {
@@ -42,7 +44,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     });
   };
 
-  const { data: reads } = useContractReads({
+  const { data: reads, refetch } = useContractReads({
     contracts: [
       {
         address: distributionTokenAddress,
@@ -58,9 +60,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     ],
   });
 
-  // if (data) {
-  //   refetchMainContracts();
-  // }
+  const allowance = reads && toNormalNumber(reads[0].result, distributionTokenDecimals);
 
   return (
     <Formik
@@ -90,13 +90,6 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     >
       {({ isSubmitting, values }) => (
         <>
-          <SetAllowanceForm
-            paymentTokenAddress={distributionTokenAddress}
-            paymentTokenDecimals={distributionTokenDecimals}
-            spenderAddress={distributionContractAddress}
-            amount={parseInt(values.amount, 10)}
-            refetchAllowance={() => {}}
-          />
           <Form className="flex flex-col gap relative">
             <Input
               className={defaultFieldDiv}
@@ -107,16 +100,27 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
               required
             />
             <div className="mt-4" />
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
-              <LoadingButtonText
-                state={buttonStep}
-                idleText={`Distribute funds to shareholders`}
-                submittingText="Submitting..."
-                confirmedText="Confirmed!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
+
+            {allowance < parseInt(values.amount, 10) ? (
+              <SetAllowanceForm
+                paymentTokenAddress={distributionTokenAddress}
+                paymentTokenDecimals={distributionTokenDecimals}
+                spenderAddress={distributionContractAddress}
+                amount={parseInt(values.amount, 10)}
+                refetchAllowance={refetch}
               />
-            </FormButton>
+            ) : (
+              <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+                <LoadingButtonText
+                  state={buttonStep}
+                  idleText={`Distribute funds to shareholders`}
+                  submittingText="Submitting..."
+                  confirmedText="Confirmed!"
+                  failedText="Transaction failed"
+                  rejectedText="You rejected the transaction. Click here to try again."
+                />
+              </FormButton>
+            )}
           </Form>
         </>
       )}

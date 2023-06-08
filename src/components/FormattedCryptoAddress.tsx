@@ -1,12 +1,10 @@
 import cn from 'classnames';
 import React, { FC, use, useState } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
-import { addressWithENS, String0x } from '@src/web3/helpersChain';
-import { fetchEnsName } from 'wagmi/actions';
+import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
 import { useAsync } from 'react-use';
-import { useEnsName } from 'wagmi';
 
 type FormattedCryptoAddressProps = {
   chainId: number;
@@ -31,16 +29,13 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   userName,
   isYou,
 }) => {
+  const defaultAddress = addressWithoutEns({ address, isYou, isDesktop: false, userName, showFull });
   const [copied, setCopied] = useState<boolean>(false);
-  const [presentedAddress, setPresentedAddress] = useState<string>('...');
+  const [presentedAddress, setPresentedAddress] = useState<string>(defaultAddress);
   const chain = chainId && MatchSupportedChains(chainId);
   const blockExplorer = chain?.blockExplorer;
   const windowSize = useWindowSize();
   const isDesktop = windowSize.width > 768;
-
-  if (!address) {
-    return <></>;
-  }
 
   const formURL = (chainId: number, lookupType: string) => {
     const type = lookupType === 'tx' ? 'tx' : isAlgorand(chainId) ? 'application' : 'address';

@@ -1,6 +1,6 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
-import { Currency, OfferingSale } from 'types';
+import { Currency, ShareOrder } from 'types';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';

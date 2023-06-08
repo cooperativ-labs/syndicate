@@ -1,32 +1,30 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import CloseButton from '@src/components/buttons/CloseButton';
+import FormButton from '@src/components/buttons/FormButton';
 import FormModal from '@src/containers/FormModal';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import Loading from '@src/components/loading/Loading';
 import PostAskForm from '@src/components/investor/tradingForms/PostAskForm';
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
-
-import CloseButton from '@src/components/buttons/CloseButton';
-import FormButton from '@src/components/buttons/FormButton';
 import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
+import React, { FC, useState } from 'react';
+import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import SendShares from '../SendShares';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
-import SubmitDistribution from '../SubmitDistribution';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingParticipant, OfferingSale, OfferingSmartContractSet, User } from 'types';
+import { Offering, OfferingParticipant, OfferingSmartContractSet, ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
-import { useAccount, useChainId, useMutation } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { useQuery } from '@apollo/client';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
 type OfferingActionsProps = SmartContractsSettingsProps & {
-  sales: OfferingSale[];
+  orders: ShareOrder[];
   hasContract: boolean;
   loading: boolean;
   isOfferingManager: boolean;
@@ -57,7 +55,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   swapApprovalsEnabled,
   txnApprovalsEnabled,
   sharesOutstanding,
-  sales,
+  orders,
   contractSet,
   isContractOwner,
   myDistToClaim,
@@ -104,7 +102,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         {userWalletAddress && (
           <ShareSaleList
             offering={offering}
-            sales={sales}
+            orders={orders}
             swapContractAddress={swapContractAddress}
             paymentTokenAddress={paymentTokenAddress}
             paymentTokenDecimals={paymentTokenDecimals}
@@ -114,6 +112,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             setSaleFormModal={setSaleFormModal}
             refetchMainContracts={refetchMainContracts}
             txnApprovalsEnabled={txnApprovalsEnabled}
+            shareContractAddress={shareContractAddress}
           />
         )}
       </FormModal>
@@ -143,7 +142,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           className="p-2 border-2 border-gray-300 text-sm text-gray-800 rounded-md"
           onClick={() => setIsExistingShares(!isExistingShares)}
         >{`${
-          isExistingShares ? 'Create a fresh offering of sales' : 'Sell existing shares form your wallet instead.'
+          isExistingShares ? 'Create a fresh offering of orders' : 'Sell existing shares form your wallet instead.'
         }`}</button>
         {isExistingShares ? (
           <PostAskForm
@@ -271,19 +270,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       ) : (
         <div>The offeror has not yet created shares or your wallet is not connected.</div>
       )}
-
-      {/* <ContractOwnerActions
-        offering={offering}
-        contractSet={contractSet}
-        sharesOutstanding={sharesOutstanding}
-        myDistToClaim={myDistToClaim}
-        setShareSaleManagerModal={setShareSaleManagerModal}
-        setSmartContractsSettingsModal={setSmartContractsSettingsModal}
-        setRecallContract={setRecallContract}
-        refetch={refetch}
-        distributionId={distributionId}
-        partitions={partitions}
-      /> */}
     </div>
   );
 
@@ -295,7 +281,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
     <>The offeror has not yet created shares or your wallet is not connected.</>
   );
 
-  const mySale = sales?.find((sale) => sale.initiator === userWalletAddress);
+  const myOrder = orders?.find((order) => order.initiator === userWalletAddress);
 
   return (
     <>
@@ -309,9 +295,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       ) : (
         <>
           <div className="">{!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}</div>
-          {mySale && (
+          {myOrder && (
             <ShareSaleStatusWidget
-              sale={mySale}
+              order={myOrder}
               offeringId={offering.id}
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}

@@ -9,22 +9,13 @@ import {
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
-import { SaleStatusType } from '@src/utils/enumConverters';
+
 import { waitForTransaction, writeContract, prepareWriteContract } from 'wagmi/actions';
 import { parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { shareContractDecimals } from './util';
-
-export type SaleContentsType = {
-  qty: number;
-  qtySold: number;
-  price: number;
-  proceeds: number;
-  saleDetails: any;
-  status: SaleStatusType;
-  btId: string;
-};
+import { ShareIssuanceTradeType } from 'types';
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
@@ -88,7 +79,7 @@ export const addWhitelistMember = async ({
       await addToDb();
       setButtonStep('confirmed');
     } catch (e) {
-      const parsedError = ChainErrorResponses(e);
+      const parsedError = ChainErrorResponses(e, walletAddress);
       if (parsedError.code === 1000) {
         await addToDb();
         refetchMainContracts && refetchMainContracts();
@@ -146,10 +137,14 @@ type SendSharesProps = {
   shareContractId: string;
   numShares: number;
   recipient: String0x;
+  sender: String0x;
   partition: string;
   newPartition: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addPartition: (
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+  ) => Promise<any>;
+  addIssuance: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   refetchMainContracts?: () => void;
@@ -160,10 +155,12 @@ export const sendShares = async ({
   shareContractId,
   numShares,
   recipient,
+  sender,
   partition,
   newPartition,
   setButtonStep,
   addPartition,
+  addIssuance,
   refetchMainContracts,
 }: SendSharesProps) => {
   const amt = parseUnits(numShares.toString() as `${number}`, shareContractDecimals);
@@ -185,6 +182,17 @@ export const sendShares = async ({
         hash: hash,
       });
       transactionDetails = details;
+      addIssuance({
+        variables: {
+          shareContractAddress,
+          recipientAddress: recipient,
+          senderAddress: sender,
+          amount: numShares,
+          transactionHash: transactionDetails.transactionHash,
+          partition: setPartition,
+          type: ShareIssuanceTradeType.Issue,
+        },
+      });
       if (partition === '0xNew')
         await addPartition({
           variables: {

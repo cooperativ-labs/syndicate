@@ -55,19 +55,21 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
 
   return (
     <div>
-      <FormModal
-        formOpen={submitDistributionModal}
-        onClose={() => setSubmitDistributionModal(false)}
-        title={`Submit a distribution`}
-      >
-        <SubmitDistribution
-          distributionContractAddress={distributionContractAddress}
-          distributionTokenDecimals={distributionTokenDecimals}
-          distributionTokenAddress={distributionTokenAddress}
-          partitions={partitions}
-          offeringId={offering.id}
-        />
-      </FormModal>
+      {distributionContractAddress && (
+        <FormModal
+          formOpen={submitDistributionModal}
+          onClose={() => setSubmitDistributionModal(false)}
+          title={`Submit a distribution`}
+        >
+          <SubmitDistribution
+            distributionContractAddress={distributionContractAddress}
+            distributionTokenDecimals={distributionTokenDecimals}
+            distributionTokenAddress={distributionTokenAddress}
+            partitions={partitions}
+            offeringId={offering.id}
+          />
+        </FormModal>
+      )}
       <div className={cn(`grid grid-cols-${tabList.length}`)}>
         {tabList.map((tab, i) => {
           return <Tab key={i} tabId={tab.value} label={tab.name} setActiveTab={setActiveTab} activeTab={activeTab} />;
@@ -102,7 +104,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
-                  shareContractAddress={shareContractAddress}
+                  contractSet={contractSet}
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}
                 />

@@ -1,12 +1,12 @@
 import * as backendCtc from '../../../web3/ABI';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import MoneyDisplay from '../../MoneyDisplay';
+import OrderVisibilityToggle from './SaleVisibilityToggle';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
-import SaleVisibilityToggle from './SaleVisibilityToggle';
-import { DELETE_SALE } from '@src/utils/dGraphQueries/offering';
+import { DELETE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-import { OfferingSale } from 'types';
 import { ReachContext } from '@src/SetReachContext';
+import { ShareOrder } from 'types';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
@@ -15,20 +15,20 @@ export type SaleProps = any;
 
 type SaleManagerProps = {
   offeringId: string;
-  saleDetails: SaleProps;
+  orderDetails: SaleProps;
   shareContractId: string;
-  sale: OfferingSale;
+  order: ShareOrder;
   setRecallContract: Dispatch<SetStateAction<string>>;
 };
 // create Sale type
-const SaleManager: FC<SaleManagerProps> = ({ offeringId, saleDetails, shareContractId, sale, setRecallContract }) => {
+const SaleManager: FC<SaleManagerProps> = ({ offeringId, orderDetails, shareContractId, order, setRecallContract }) => {
   const { reachLib, userWalletAddress } = useContext(ReachContext);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { formatCurrency } = reachLib;
-  const qty = parseInt(formatCurrency(saleDetails.qty._hex, 6), 10);
-  const sold = parseInt(formatCurrency(saleDetails.sold._hex, 6), 10);
-  const [deleteSaleObject, { data, error }] = useMutation(DELETE_SALE);
-  const status = saleDetails.status;
+  const qty = parseInt(formatCurrency(orderDetails.qty._hex, 6), 10);
+  const sold = parseInt(formatCurrency(orderDetails.sold._hex, 6), 10);
+  const [deleteSaleObject, { data, error }] = useMutation(DELETE_ORDER);
+  const status = orderDetails.status;
 
   const [, endSale] = useAsyncFn(async () => {
     setButtonStep('submitting');
@@ -38,7 +38,7 @@ const SaleManager: FC<SaleManagerProps> = ({ offeringId, saleDetails, shareContr
     const call = async (f) => {
       try {
         await f();
-        deleteSaleObject({ variables: { offeringId: offeringId, saleId: sale.id } });
+        deleteSaleObject({ variables: { offeringId: offeringId, orderId: order.id } });
         setButtonStep('confirmed');
         setRecallContract('endSale');
       } catch (e) {
@@ -79,7 +79,7 @@ const SaleManager: FC<SaleManagerProps> = ({ offeringId, saleDetails, shareContr
       </div>
 
       <hr className="my-4" />
-      <SaleVisibilityToggle saleVisibility={sale.visible} saleId={sale.id} />
+      <OrderVisibilityToggle orderVisibility={order.visible} id={order.id} />
     </div>
   );
 };

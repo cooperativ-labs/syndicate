@@ -2,14 +2,16 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useState } from 'react';
-import SaleVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
+
 import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { DELETE_SALE, UPDATE_SALE } from '@src/utils/dGraphQueries/offering';
+
+import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
+import { DELETE_ORDER, UPDATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { OfferingSale } from 'types';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
@@ -21,8 +23,10 @@ type SaleMangerPanelProps = {
   isApproved: boolean;
   isDisapproved: boolean;
   isAccepted: boolean;
+  isCancelled: boolean;
+  isFilled: boolean;
   filler: String0x | '';
-  sale: OfferingSale;
+  order: ShareOrder;
   swapContractAddress: String0x;
   paymentTokenAddress: String0x;
   paymentTokenDecimals: number;
@@ -38,8 +42,10 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   isApproved,
   isDisapproved,
   isAccepted,
+  isCancelled,
+  isFilled,
   filler,
-  sale,
+  order,
   swapContractAddress,
   paymentTokenAddress,
   paymentTokenDecimals,
@@ -50,8 +56,8 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const [deleteSaleObject] = useMutation(DELETE_SALE);
-  const [updateSaleObject, { data, error }] = useMutation(UPDATE_SALE);
+  const [deleteOrderObject] = useMutation(DELETE_ORDER);
+  const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -68,7 +74,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'acceptedOrderQty',
-    args: [filler as String0x, BigInt(sale.orderId)],
+    args: [filler as String0x, BigInt(order.contractIndex)],
   });
 
   const acceptedOrderQty = acceptedQty && toNormalNumber(acceptedQty, shareContractDecimals);
@@ -77,21 +83,21 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   const rawProceeds = contractData && contractData[1];
   const proceeds = rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
 
-  const minPurchase = sale.minUnits;
-  const maxPurchase = sale.maxUnits;
+  const minPurchase = order.minUnits;
+  const maxPurchase = order.maxUnits;
 
   const handleApprove = async () => {
     await approveRejectSwap({
       swapContractAddress,
-      orderId: sale.orderId,
+      contractIndex: order.contractIndex,
       isDisapprove: false,
       setButtonStep: setApproveButtonStep,
       refetchAllContracts,
     });
-    updateSaleObject({
+    updateOrderObject({
       variables: {
         currentDate: currentDate,
-        saleId: sale.id,
+        id: order.id,
         visible: true,
       },
     });
@@ -100,7 +106,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   const handleDisapprove = async () => {
     await approveRejectSwap({
       swapContractAddress,
-      orderId: sale.orderId,
+      contractIndex: order.contractIndex,
       isDisapprove: true,
       setButtonStep: setDisapproveButtonStep,
       refetchAllContracts,
@@ -115,17 +121,17 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
       {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} shares</div>}
       {!!maxPurchase && <hr className="my-4" />}
       <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
-        {isOfferor && proceeds === 0 && (
+        {!isCancelled && !isFilled && isOfferor && proceeds === 0 && (
           <Button
             className={buttonClass}
             onClick={() =>
               cancelSwap({
                 swapContractAddress,
-                orderId: sale.orderId,
-                saleId: sale.id,
-                offeringId,
+                contractIndex: order.contractIndex,
+                orderId: order.id,
                 setButtonStep: setCancelButtonStep,
-                deleteSaleObject,
+                deleteOrderObject,
+                refetchAllContracts,
               })
             }
             disabled={cancelButtonStep === 'submitting'}
@@ -156,7 +162,16 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
             />
           </Button>
         )}
-        {isContractOwner && sale && <SaleVisibilityToggle saleVisibility={sale.visible} saleId={sale.id} />}
+        {(isCancelled || isFilled) && proceeds === 0 && (
+          <Button
+            className={buttonClass}
+            onClick={() => deleteOrderObject({ variables: { orderId: order.id } })}
+            disabled={claimProceedsButton === 'submitting'}
+          >
+            {`Delete completed swap`}
+          </Button>
+        )}
+        {isContractOwner && order && <OrderVisibilityToggle orderVisibility={order.visible} id={order.id} />}
       </div>
       {/* if swapsApprovals are enabled but txnApprovals are not - show approve button (or disapprove if already approved) */}
       {/* if both txnApprovals are turned on, then only show button when enabled  */}

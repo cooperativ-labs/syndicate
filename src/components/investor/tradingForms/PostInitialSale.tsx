@@ -4,7 +4,6 @@ import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React, { FC, useState } from 'react';
-import { CREATE_SALE } from '@src/utils/dGraphQueries/offering';
 import { Currency } from 'types';
 import { Form, Formik } from 'formik';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -13,6 +12,7 @@ import { String0x } from '@src/web3/helpersChain';
 
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
+import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { toContractNumber, toNormalNumber } from '@src/web3/util';
@@ -47,7 +47,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [createSale, { data, error }] = useMutation(CREATE_SALE);
+  const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
   const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
 
   const sharesRemaining = sharesIssued - sharesOutstanding;
@@ -97,6 +97,12 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
         if (values.minUnits < offeringMin) {
           errors.minUnits = `Must be at least ${offeringMin}`;
         }
+        if (!values.partition) {
+          errors.partition = 'Please select a partition';
+        }
+        if (values.partition === '0xNew' && !values.newPartition) {
+          errors.newPartition = 'Please enter a new partition';
+        }
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
@@ -122,7 +128,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
           isIssuance: isIssuance,
           isErc20Payment: isErc20Payment,
           setButtonStep: setButtonStep,
-          createSale: createSale,
+          createOrder: createOrder,
           addPartition: addPartition,
           refetchAllContracts,
         });
