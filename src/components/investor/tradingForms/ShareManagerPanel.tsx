@@ -24,9 +24,12 @@ type SaleMangerPanelProps = {
   isDisapproved: boolean;
   isAccepted: boolean;
   isCancelled: boolean;
+  isAskOrder: boolean;
   isFilled: boolean;
   filler: String0x | '';
+  initiator: String0x | '';
   order: ShareOrder;
+  amount: number;
   swapContractAddress: String0x;
   paymentTokenAddress: String0x;
   paymentTokenDecimals: number;
@@ -43,9 +46,12 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
   isDisapproved,
   isAccepted,
   isCancelled,
+  isAskOrder,
   isFilled,
   filler,
+  initiator,
   order,
+  amount,
   swapContractAddress,
   paymentTokenAddress,
   paymentTokenDecimals,
@@ -204,8 +210,13 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
           </div>
 
           <div className="flex flex-col">
-            <FormattedCryptoAddress chainId={chainId} address={filler} label="Requester: " />
-            Shares requested: {acceptedOrderQty}
+            <FormattedCryptoAddress
+              chainId={chainId}
+              address={txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator}
+              label={`${txnApprovalsEnabled ? (isAskOrder ? 'Requester' : 'Initiator') : 'Initiator'}: `}
+            />
+            Shares {txnApprovalsEnabled ? (isAskOrder ? 'Requested' : 'Offered') : 'Offered'}:{' '}
+            {acceptedOrderQty > 0 ? acceptedOrderQty : amount}
           </div>
         </div>
       )}

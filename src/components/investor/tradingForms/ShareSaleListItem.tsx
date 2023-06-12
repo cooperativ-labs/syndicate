@@ -119,8 +119,11 @@ const ShareSaleListItem: FC<Addendum> = ({
                   isAccepted={isAccepted}
                   isCancelled={isCancelled}
                   isFilled={shareQtyRemaining === 0}
+                  isAskOrder={isAskOrder}
                   filler={filler}
+                  initiator={initiator}
                   order={order}
+                  amount={amount}
                   swapContractAddress={swapContractAddress}
                   txnApprovalsEnabled={txnApprovalsEnabled}
                   paymentTokenAddress={paymentTokenAddress}

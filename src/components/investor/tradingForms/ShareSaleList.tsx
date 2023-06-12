@@ -31,7 +31,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
         setSaleFormModal(true), setShareSaleManagerModal(false);
       }}
     >
-      Post Shares Offer
+      Post Bid/Ask
     </Button>
   );
 

@@ -6,7 +6,7 @@ import FormModal from '@src/containers/FormModal';
 
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
-import PostAskForm from '@src/components/investor/tradingForms/PostAskForm';
+import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import React, { FC, useState } from 'react';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
@@ -62,6 +62,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
   const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
   const [bidFormModel, setBidFormModel] = useState<boolean>(false);
+
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
   const {
     myShares,
@@ -137,7 +138,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
         onClose={() => setSaleFormModal(false)}
         title={`Sell shares of ${offeringName}`}
       >
-        <PostAskForm
+        <PostBidAskForm
           offering={offering}
           offeringMin={minUnitsPerInvestor}
           sharesOutstanding={sharesOutstanding}
@@ -154,6 +155,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           refetchAllContracts={refetchMainContracts}
         />
       </FormModal>
+
       {/* <FormModal
         formOpen={shareSaleManagerModal}
         onClose={() => setShareSaleManagerModal(false)}

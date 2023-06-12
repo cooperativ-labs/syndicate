@@ -22,7 +22,7 @@ import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
-type PostAskFormProps = {
+type PostBidAskFormProps = {
   offering: Offering;
   swapContractAddress: String0x;
   swapApprovalsEnabled: boolean;
@@ -39,7 +39,7 @@ type PostAskFormProps = {
   refetchAllContracts: () => void;
 };
 
-const PostAskForm: FC<PostAskFormProps> = ({
+const PostBidAskForm: FC<PostBidAskFormProps> = ({
   offering,
   walletAddress,
   swapContractAddress,
@@ -52,13 +52,13 @@ const PostAskForm: FC<PostAskFormProps> = ({
   offeringMin,
   sharesOutstanding,
   currentSalePrice,
-
   setModal,
   refetchAllContracts,
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
+  const [isAsk, setIsAsk] = useState<boolean>(false);
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
   const { id, name, details, documents, offeringEntity } = offering;
   const sharesIssued = details?.numUnits;
@@ -70,15 +70,17 @@ const PostAskForm: FC<PostAskFormProps> = ({
     return numUnits * price;
   };
 
-  const saleAmountString = (numUnitsToSell, price) => {
-    return numberWithCommas(offerCalculator(parseInt(numUnitsToSell, 10), price));
+  const saleAmountString = (numUnits, price) => {
+    return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
   };
+
+  const showSharesAvailable = `(${isContractOwner ? sharesUnissued : myShares} available)`;
 
   return (
     <>
       <Formik
         initialValues={{
-          numUnitsToSell: null,
+          numUnits: null,
           price: currentSalePrice,
           approvalRequired: false,
           minUnits: undefined,
@@ -88,11 +90,11 @@ const PostAskForm: FC<PostAskFormProps> = ({
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
-          if (!values.numUnitsToSell) {
-            errors.numUnitsToSell = 'You must choose a number of shares to sell.';
+          if (!values.numUnits) {
+            errors.numUnits = `You must choose a number of shares to ${isAsk ? 'sell' : 'buy'}.`;
           }
           if (isContractOwner) {
-            if (values.maxUnits > values.numUnitsToSell) {
+            if (values.maxUnits > values.numUnits) {
               errors.maxUnits = 'Maximum must be less then the total shares listed for sale';
             }
             if (values.maxUnits < 1 || values.maxUnits < values.minUnits) {
@@ -104,8 +106,8 @@ const PostAskForm: FC<PostAskFormProps> = ({
             if (values.minUnits < offeringMin) {
               errors.minUnits = `Must be at least ${offeringMin}`;
             }
-          } else if (values.numUnitsToSell > myShares) {
-            errors.numUnitsToSell = `You cannot sell more than ${myShares} shares.`;
+          } else if (isAsk && values.numUnits > myShares) {
+            errors.numUnits = `You cannot sell more than ${myShares} shares.`;
             if (!values.approvalRequired) {
               errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
             }
@@ -122,7 +124,7 @@ const PostAskForm: FC<PostAskFormProps> = ({
           const isErc20Payment = true;
 
           await submitSwap({
-            numShares: values.numUnitsToSell,
+            numShares: values.numUnits,
             price: values.price,
             partition: values.partition,
             minUnits: values.minUnits,
@@ -146,27 +148,21 @@ const PostAskForm: FC<PostAskFormProps> = ({
         {({ isSubmitting, values }) => (
           <Form className="">
             <div className="mt-4 mb-2">
-              <div className={defaultFieldLabelClass}> Selling wallet:</div>
+              <div className={defaultFieldLabelClass}>{`${isAsk ? 'Selling' : 'Buying'} wallet:`}</div>
               <FormattedCryptoAddress chainId={chainId} address={walletAddress} className="font-semibold" />
             </div>
-            <div className="mt-4 mb-2">
-              <div className={defaultFieldLabelClass}> Selling entity:</div>
-              <div className="font-semibold"> {permittedEntity?.name}</div>
-            </div>
             <hr className="my-6" />
-            {!isContractOwner && myShares < 1 ? (
+            {!isContractOwner && myShares < 1 && isAsk ? (
               <div>You do not have any shares to sell </div>
             ) : (
               <>
-                <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`Sale`}</h2>
+                <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`${isAsk ? 'Sale' : 'Purchase'}`}</h2>
                 {/* <OfferingSummaryPanel offering={offering} /> */}
                 <div className="md:grid grid-cols-3 gap-3">
                   <Input
                     className={cn(defaultFieldDiv, 'col-span-2')}
-                    labelText={`How many shares would you like to sell? (${
-                      isContractOwner ? sharesUnissued : myShares
-                    } available)`}
-                    name="numUnitsToSell"
+                    labelText={`How many shares would you like to ${isAsk ? `sell? ${showSharesAvailable}` : 'buy?'} `}
+                    name="numUnits"
                     type="number"
                     placeholder="e.g. 80"
                     required
@@ -178,13 +174,16 @@ const PostAskForm: FC<PostAskFormProps> = ({
                     })`}
                     name="price"
                     type="number"
-                    placeholder="e.g. 200"
+                    placeholder="e.g. 2000"
                     required
                   />
-                  <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText="Total Sale:">
+                  <NonInput
+                    className={`${defaultFieldDiv} col-span-1 pl-1`}
+                    labelText={`Total ${isAsk ? 'Sale' : 'Purchase'}:`}
+                  >
                     <>
-                      {values.numUnitsToSell &&
-                        `${saleAmountString(values.numUnitsToSell, values.price)} ${
+                      {values.numUnits &&
+                        `${saleAmountString(values.numUnits, values.price)} ${
                           details.investmentCurrency && getCurrencyOption(details.investmentCurrency).symbol
                         }`}
                     </>
@@ -277,7 +276,9 @@ const PostAskForm: FC<PostAskFormProps> = ({
                         name="approvalRequired"
                         checked={values.approvalRequired}
                         sideLabel
-                        labelText={`${permittedEntity?.name} understands that this sale requires approval from ${offeringEntity.legalName}.`}
+                        labelText={`${permittedEntity?.name} understands that this ${
+                          isAsk ? 'sale' : 'purchase'
+                        } requires approval from ${offeringEntity.legalName}.`}
                       />
                     </div>
                   </>
@@ -285,9 +286,11 @@ const PostAskForm: FC<PostAskFormProps> = ({
                 <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
                   <LoadingButtonText
                     state={buttonStep}
-                    idleText={`${isContractOwner ? 'Sell' : 'Propose sale of'} ${values.numUnitsToSell ?? ''} shares ${
-                      values.numUnitsToSell
-                        ? `for ${saleAmountString(values.numUnitsToSell, values.price)} ${
+                    idleText={`${isContractOwner ? 'Sell' : `Propose ${isAsk ? 'sale' : 'purchase'} of`} ${
+                      values.numUnits ?? ''
+                    } shares ${
+                      values.numUnits
+                        ? `for ${saleAmountString(values.numUnits, values.price)} ${
                             getCurrencyOption(details.investmentCurrency).symbol
                           } `
                         : ''
@@ -307,4 +310,4 @@ const PostAskForm: FC<PostAskFormProps> = ({
   );
 };
 
-export default PostAskForm;
+export default PostBidAskForm;

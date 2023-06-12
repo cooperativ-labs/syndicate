@@ -4,7 +4,7 @@ import FormButton from '@src/components/buttons/FormButton';
 import FormModal from '@src/containers/FormModal';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import Loading from '@src/components/loading/Loading';
-import PostAskForm from '@src/components/investor/tradingForms/PostAskForm';
+import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
 import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
 import React, { FC, useState } from 'react';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
@@ -145,7 +145,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           isExistingShares ? 'Create a fresh offering of orders' : 'Sell existing shares form your wallet instead.'
         }`}</button>
         {isExistingShares ? (
-          <PostAskForm
+          <PostBidAskForm
             offering={offering}
             offeringMin={offeringMin}
             sharesOutstanding={sharesOutstanding}
@@ -159,6 +159,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             partitions={partitions}
             paymentTokenDecimals={paymentTokenDecimals}
             refetchAllContracts={refetchMainContracts}
+            swapApprovalsEnabled={swapApprovalsEnabled}
           />
         ) : (
           <PostInitialSale

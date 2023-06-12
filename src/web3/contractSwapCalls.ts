@@ -16,8 +16,8 @@ type SubmitSwapProps = {
   price: number;
   partition: String0x;
   newPartition?: string;
-  minUnits: number;
-  maxUnits: number;
+  minUnits?: number;
+  maxUnits?: number;
   visible: boolean;
   toc?: boolean;
   swapContractAddress: String0x;
@@ -112,7 +112,7 @@ export const submitSwap = async ({
       });
       refetchAllContracts();
       setButtonStep('confirmed');
-      toast.success(`You have offered ${numShares} shares.`);
+      toast.success(`You have offered ${!isAsk ? 'to purchase ' : ''}${numShares} shares.`);
       setModal && setModal(false);
       return transactionReceipt;
     } catch (e) {

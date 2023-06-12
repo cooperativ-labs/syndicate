@@ -37,6 +37,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
     isDisapproved,
     isCancelled,
     isAccepted,
+    isAskOrder,
     refetchOrderDetails,
   } = useOrderDetails(swapContractAddress, order.contractIndex, paymentTokenDecimals);
 
@@ -96,6 +97,9 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
               refetchAllContracts={refetchAllContracts}
               isCancelled={isCancelled}
               isFilled={sharesRemaining === 0}
+              isAskOrder={isAskOrder}
+              initiator={initiator}
+              amount={amount}
             />
           </div>
         </div>
