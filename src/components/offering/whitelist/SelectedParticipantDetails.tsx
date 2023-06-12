@@ -19,6 +19,7 @@ import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { useContractRead, useContractWrite } from 'wagmi';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import ForceTransferForm from '../actions/ForceTransferForm';
 
 type SelectedParticipantProps = {
   selection: string;
@@ -26,6 +27,8 @@ type SelectedParticipantProps = {
   contractSet: OfferingSmartContractSet;
   currentSalePrice: number;
   paymentTokenDecimals: number;
+  offeringId: string;
+  partitions: String0x[];
   removeMember: (variables) => void;
 };
 
@@ -35,6 +38,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   contractSet,
   paymentTokenDecimals,
   currentSalePrice,
+  offeringId,
+  partitions,
   removeMember,
 }) => {
   const { data: session } = useSession();
@@ -48,7 +53,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   });
 
   const participant = participants?.find((p) => p.id === selection);
-  const participantWallet = participant?.walletAddress;
+  const participantWallet = participant?.walletAddress as String0x;
 
   const issuances = issuanceData?.queryShareIssuanceTrade.filter((issuance) => {
     return issuance.recipientAddress === participantWallet || issuance.senderAddress === participantWallet;
@@ -69,8 +74,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     args: [participantWallet as String0x],
   });
 
-  const removeFromDb = async () => {
-    await removeMember({ variables: { offeringId: offering.id, id: participant?.id, currentDate: currentDate } });
+  const removeFromDb = () => {
+    removeMember({ variables: { offeringId, id: participant?.id, currentDate: currentDate } });
   };
 
   const { write: removeWrite } = useContractWrite({
@@ -87,11 +92,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
   const removeWhitelistMember = async () => {
     setButtonStep('submitting');
-    try {
-      removeWrite();
-    } catch (e) {
-      StandardChainErrorHandling(e);
-    }
+    removeWrite();
   };
 
   // -----------------Approve Whitelist Participant---------------------
@@ -241,46 +242,56 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   );
 
   const buttonSection = (
-    <div className="flex gap-3">
-      <button
-        className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
-        aria-label="review application"
-        onClick={() => DownloadFile(investorApplication.applicationDoc.text, `${name} - application.md`)}
-      >
-        Review Investor Application
-      </button>
-      {permitted ? (
+    <>
+      <div className="flex gap-3">
         <button
-          className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
-          aria-label="remove wallet from whitelist"
-          onClick={removeWhitelistMember}
+          className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
+          aria-label="review application"
+          onClick={() => DownloadFile(investorApplication.applicationDoc.text, `${name} - application.md`)}
         >
-          <LoadingButtonText
-            state={buttonStep}
-            idleText="Remove this this investor from the whitelist"
-            submittingText="Removing..."
-            confirmedText="Investor Removed!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
-          />
+          Review Investor Application
         </button>
-      ) : (
-        <button
-          onClick={approveWhiteListMember}
-          className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
-          // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
-        >
-          <LoadingButtonText
-            state={buttonStep}
-            idleText="Approve Investor"
-            submittingText="Updating..."
-            confirmedText="Investor Approved!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
-          />
-        </button>
+        {permitted ? (
+          <button
+            className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
+            aria-label="remove wallet from whitelist"
+            onClick={removeWhitelistMember}
+          >
+            <LoadingButtonText
+              state={buttonStep}
+              idleText="Remove this this investor from the whitelist"
+              submittingText="Removing..."
+              confirmedText="Investor Removed!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
+          </button>
+        ) : (
+          <button
+            onClick={approveWhiteListMember}
+            className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
+            // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
+          >
+            <LoadingButtonText
+              state={buttonStep}
+              idleText="Approve Investor"
+              submittingText="Updating..."
+              confirmedText="Investor Approved!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
+          </button>
+        )}
+      </div>
+      {shareBalanceData > 0 && (
+        <ForceTransferForm
+          shareContractAddress={shareContractAddress}
+          partitions={partitions}
+          target={participantWallet}
+          offeringParticipants={participants}
+        />
       )}
-    </div>
+    </>
   );
 
   return (

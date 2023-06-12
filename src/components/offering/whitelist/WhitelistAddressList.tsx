@@ -11,6 +11,7 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { useMutation } from '@apollo/client';
 
 type WhitelistAddressListProps = {
+  offeringId: string;
   offeringParticipants: OfferingParticipant[];
   contractSet: OfferingSmartContractSet;
   currentSalePrice: number;
@@ -18,6 +19,7 @@ type WhitelistAddressListProps = {
 };
 
 const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
+  offeringId,
   offeringParticipants,
   contractSet,
   currentSalePrice,
@@ -26,6 +28,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
   const [removeMember, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_WHITELIST_OBJECT);
   const [selectedParticipant, setSelectedParticipant] = React.useState<string | undefined>(undefined);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const partitions = contractSet?.shareContract?.partitions as String0x[];
 
   return (
     <>
@@ -39,6 +42,8 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
               currentSalePrice={currentSalePrice}
               paymentTokenDecimals={getCurrencyOption(investmentCurrency).decimals}
               removeMember={removeMember}
+              partitions={partitions}
+              offeringId={''}
             />
           )}
         </div>

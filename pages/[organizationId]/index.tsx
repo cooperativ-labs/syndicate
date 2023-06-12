@@ -9,17 +9,26 @@ import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GetServerSideProps, NextPage } from 'next';
 import { initializeApollo } from '@src/utils/apolloClient';
 import { Organization } from 'types';
+import { useAccount } from 'wagmi';
 
-export const TEMP_IS_PARTICIPANT = true;
+export const TEMP_IS_PARTICIPANT = false;
 
 type ResultProps = {
   result: Organization;
 };
 
 const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
+  const { address: userWalletAddress } = useAccount();
   const organization = result;
 
   const { name, shortDescription, sharingImage, id } = organization;
+
+  const isParticipant =
+    organization.legalEntities.map((entity) =>
+      entity.offerings.map((offering) =>
+        offering.participants.map((participant) => participant.walletAddress === userWalletAddress)
+      )
+    ).length > 0;
 
   return organization ? (
     <div data-test="component-project" className="bg-gray-50">
@@ -43,7 +52,7 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
         />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      {TEMP_IS_PARTICIPANT ? (
+      {isParticipant ? (
         <PortalWrapper>
           <PortalOrganization />{' '}
         </PortalWrapper>
