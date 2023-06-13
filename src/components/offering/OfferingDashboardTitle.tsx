@@ -8,6 +8,7 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
+import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
@@ -36,6 +37,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
 
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -183,11 +185,20 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             {offeringName}
           </h1>
         )}
-        {shareContractAddress ? (
-          <FormattedCryptoAddress chainId={chainId} address={shareContractAddress} showFull withCopy />
-        ) : (
-          <div className="text-sm text-gray-800">{`This offering's contract has not been deployed yet.`}</div>
-        )}
+
+        <button
+          className="text-sm text-gray-700 "
+          onClick={(e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(`${getBaseUrl()}/portal/${offeringId}`);
+            setCopied(true);
+            setTimeout(() => {
+              setCopied(false);
+            }, 1000);
+          }}
+        >
+          Copy investor portal link {copied ? <FontAwesomeIcon icon="check" /> : <FontAwesomeIcon icon="copy" />}
+        </button>
       </div>
       <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
     </div>

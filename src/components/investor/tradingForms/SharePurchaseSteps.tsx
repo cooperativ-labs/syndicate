@@ -2,7 +2,7 @@ import React, { FC, useEffect, useState } from 'react';
 import SetAllowanceForm from './SetAllowanceForm';
 import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseRequest, { SharePurchaseRequestProps } from './SharePurchaseRequest';
-import { erc20ABI, useAccount, useBalance, useContractReads } from 'wagmi';
+import { erc20ABI, useAccount, useBalance, useContractRead, useContractReads } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
@@ -14,7 +14,11 @@ type SharePurchaseStepsProps = SharePurchaseRequestProps & {
   isCancelled: boolean;
   isAccepted: boolean;
   filler: String0x | '';
+  initiator: String0x | '';
   shareQtyRemaining: number;
+  shareContractAddress: String0x;
+  partition: String0x;
+  isAsk: boolean;
   paymentTokenAddress: String0x;
   paymentTokenDecimals: number;
   txnApprovalsEnabled: boolean;
@@ -22,8 +26,11 @@ type SharePurchaseStepsProps = SharePurchaseRequestProps & {
 
 const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   offering,
-  sale,
+  order,
   shareQtyRemaining,
+  shareContractAddress,
+  isAsk,
+  partition,
   price,
   swapContractAddress,
   paymentTokenAddress,
@@ -35,27 +42,16 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   isCancelled,
   isAccepted,
   filler,
+  initiator,
   refetchAllContracts,
 }) => {
-  const [openStep, setOpenStep] = useState<number>(0);
-  const [status, setStatus] = useState<string>('pending');
   const { address: userWalletAddress } = useAccount();
 
-  const { data, refetch } = useContractReads({
-    contracts: [
-      {
-        address: paymentTokenAddress,
-        abi: erc20ABI,
-        functionName: 'allowance',
-        args: [userWalletAddress, swapContractAddress],
-      },
-      {
-        address: swapContractAddress,
-        abi: swapContractABI,
-        functionName: 'acceptedOrderQty',
-        args: [userWalletAddress, BigInt(sale.orderId)],
-      },
-    ],
+  const { data: orderQtyData, refetch } = useContractRead({
+    address: swapContractAddress,
+    abi: swapContractABI,
+    functionName: 'acceptedOrderQty',
+    args: [userWalletAddress, BigInt(order.contractIndex)],
   });
 
   const { data: bacBalanceData } = useBalance({
@@ -69,35 +65,12 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   };
 
   const myBacBalance = bacBalanceData?.formatted;
-  const allowance = data && toNormalNumber(data[0].result, paymentTokenDecimals);
-  const acceptedOrderQty = data && toNormalNumber(data[1].result, shareContractDecimals);
-  const allowanceRequiredForPurchase = acceptedOrderQty * price;
-  const isAllowanceSufficient = allowance >= allowanceRequiredForPurchase;
+  const acceptedOrderQty = orderQtyData && toNormalNumber(orderQtyData, shareContractDecimals);
   const currentUserFiller = userWalletAddress === filler;
-
   const currentUserPending = isAccepted && currentUserFiller;
   const otherOrderPending = isAccepted && !currentUserFiller;
   const showRequestForm = !isAccepted && txnApprovalsEnabled && shareQtyRemaining > 0;
-  const showAllowanceForm = !isAllowanceSufficient && isAccepted && (isApproved || !txnApprovalsEnabled);
-  const showTradeExecutionForm = isAccepted && isApproved && isAllowanceSufficient;
-
-  useEffect(() => {
-    if (showRequestForm) {
-      setOpenStep(1);
-    } else if (showAllowanceForm) {
-      setOpenStep(2);
-    } else if (showTradeExecutionForm) {
-      setOpenStep(3);
-    } else if (isCancelled) {
-      setOpenStep(0);
-      setStatus('cancelled');
-    } else if (isDisapproved) {
-      setOpenStep(0);
-      setStatus('disapproved');
-    } else {
-      setOpenStep(0);
-    }
-  }, [showRequestForm, showAllowanceForm, showTradeExecutionForm, isCancelled, isDisapproved]);
+  const showTradeExecutionForm = (isAccepted || !txnApprovalsEnabled) && isApproved;
 
   return (
     <div className="flex flex-col w-full gap-3">
@@ -113,42 +86,35 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
       {showRequestForm && (
         <div className="p-3 border-2 rounded-lg">
           1. Apply to purchase shares
-          {openStep === 1 && (
-            <SharePurchaseRequest
-              offering={offering}
-              sale={sale}
-              price={price}
-              myBacBalance={myBacBalance}
-              swapContractAddress={swapContractAddress}
-              permittedEntity={permittedEntity}
-              refetchAllContracts={refetchAllPlusAccepted}
-            />
-          )}
+          <SharePurchaseRequest
+            offering={offering}
+            order={order}
+            price={price}
+            myBacBalance={myBacBalance}
+            swapContractAddress={swapContractAddress}
+            permittedEntity={permittedEntity}
+            refetchAllContracts={refetchAllPlusAccepted}
+          />
         </div>
       )}
 
       <div className="p-3 border-2 rounded-lg">
-        2. Permit the smart contract to move your money{' '}
-        {openStep === 2 && (
-          <SetAllowanceForm
-            paymentTokenAddress={paymentTokenAddress}
-            paymentTokenDecimals={paymentTokenDecimals}
-            spenderAddress={swapContractAddress}
-            amount={allowanceRequiredForPurchase}
-            refetchAllowance={refetch}
-          />
-        )}
-      </div>
-
-      <div className="p-3 border-2 rounded-lg">
-        3. Confirm your trade
-        {openStep === 3 && (
+        2. Confirm your trade
+        {showTradeExecutionForm && (
           <ShareCompleteSwap
+            isAsk={isAsk}
+            filler={filler as String0x}
+            initiator={initiator as String0x}
             swapContractAddress={swapContractAddress}
             txnApprovalsEnabled={txnApprovalsEnabled}
             acceptedOrderQty={acceptedOrderQty}
-            orderId={sale.orderId}
-            refetchAllContracts={refetchAllContracts}
+            price={price}
+            paymentTokenDecimals={paymentTokenDecimals}
+            contractIndex={order.contractIndex}
+            refetchAllContracts={refetchAllPlusAccepted}
+            shareContractAddress={shareContractAddress}
+            paymentTokenAddress={paymentTokenAddress}
+            partition={partition}
           />
         )}
       </div>

@@ -3,6 +3,8 @@ import { keccak256, toHex } from 'viem';
 import toast from 'react-hot-toast';
 import { Document } from 'types';
 import { fetchEnsAddress, fetchEnsName } from 'wagmi/actions';
+import { Dispatch, SetStateAction } from 'react';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
 
 export type String0x = `0x${string}`;
 
@@ -52,12 +54,12 @@ type AddressWithoutEnsProps = {
   userName?: string;
   showFull?: boolean;
 };
-export const splitAddress = (address: String0x | string) => `${address.slice(0, 7)}... ${address.slice(-4)}`;
+export const splitAddress = (address: String0x | string) => `${address?.slice(0, 4)}... ${address?.slice(-4)}`;
 
 export const addressWithoutEns = ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
-  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
+  const youSplitAddress = `${isYou ? 'You' : userName} (${address?.slice(-4)})`;
   const withoutENS = showFull && isDesktop ? address : userName ? youSplitAddress : splitAddress(address);
-  return withoutENS;
+  return address ? withoutENS : undefined;
 };
 
 export const addressWithENS = async ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
@@ -95,15 +97,18 @@ export const ChainErrorResponses = (error, recipient: string | String0x) => {
   if (error.message.includes('address not whitelisted')) {
     return { code: 1002, message: `${recipient} is not on the whitelist.` };
   }
+  if (error.message.includes('Balance not zero') && error.message.includes('removeFromWhitelist')) {
+    return { code: 1003, message: 'This user cannot be removed from the whitelist because they still hold shares.' };
+  }
   if (error.message.includes('User rejected the request')) {
     return { code: 2000, message: 'User cancelled operation' };
   }
-  if (error.message.includes('underflow on subtracting')) {
-    return { code: 3000, message: 'User does not have enough of the asset to complete the transaction.' };
-  }
-  if (error.message.includes('balance') && error.message.includes('below min')) {
-    return { code: 4000, message: 'You do not have enough ALGO to complete the transaction.' };
-  }
+  // if (error.message.includes('underflow on subtracting')) {
+  //   return { code: 3000, message: 'User does not have enough of the asset to complete the transaction.' };
+  // }
+  // if (error.message.includes('balance') && error.message.includes('below min')) {
+  //   return { code: 4001, message: 'You do not have enough ALGO to complete the transaction.' };
+  // }
   if (error.message.includes('hash is immutable')) {
     return { code: 5000, message: 'This contract has already been established.' };
   }
@@ -124,7 +129,11 @@ export const ChainErrorResponses = (error, recipient: string | String0x) => {
   return { code: 9999, message: error.message };
 };
 
-export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) => {
+export const StandardChainErrorHandling = (
+  error: any,
+  setButtonStep?: Dispatch<SetStateAction<LoadingButtonStateType>>,
+  recipient?: String0x
+) => {
   const errorCode = ChainErrorResponses(error, recipient).code;
   const errorMessage = ChainErrorResponses(error, recipient).message;
 
@@ -134,14 +143,20 @@ export const StandardChainErrorHandling = (error, setButtonStep?, recipient?) =>
     return;
   }
   if (errorCode === 1002) {
-    toast.error(`${recipient} ${errorMessage}.`);
+    setButtonStep('failed');
+    toast.error(errorMessage);
+    return;
+  }
+  if (errorCode === 1003) {
+    setButtonStep('failed');
+    toast.error(errorMessage);
     return;
   }
   if (errorCode === 2000) {
     setButtonStep && setButtonStep('rejected');
   } else {
     setButtonStep && setButtonStep('failed');
-    alert(`${errorMessage}`);
+    alert(errorMessage);
   }
   return { code: errorCode, message: errorMessage };
 };

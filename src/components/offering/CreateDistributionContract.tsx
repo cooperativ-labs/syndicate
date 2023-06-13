@@ -75,7 +75,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
   return (
     <div>
       <h1 className="font-semibold text-lg">Deploy distribution contract</h1>
-      <p className="text-sm text-gray-500">
+      <p className="text-sm text-gray-500 mb-4">
         This contract will allow you to distribute dividends to your shareholders.
       </p>
       <div>

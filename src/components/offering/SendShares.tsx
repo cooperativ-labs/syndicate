@@ -13,6 +13,8 @@ import { sendShares } from '@src/web3/contractShareCalls';
 
 import NewClassInputs from '../form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
+import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
+import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 export type SendSharesProps = {
@@ -22,6 +24,8 @@ export type SendSharesProps = {
   shareContractAddress: String0x;
   offeringParticipants: OfferingParticipant[];
   partitions: String0x[];
+  myShares: number;
+  refetchMainContracts: () => void;
 };
 
 const SendShares: FC<SendSharesProps> = ({
@@ -31,22 +35,26 @@ const SendShares: FC<SendSharesProps> = ({
   shareContractId,
   offeringParticipants,
   partitions,
+  myShares,
+  refetchMainContracts,
 }) => {
-  const [recipient, setRecipient] = useState<string | String0x>('');
+  const { address: userWalletAddress } = useAccount();
+  const [recipient, setRecipient] = useState<string | String0x>(undefined);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
+  const [addIssuance, { error: issuanceError }] = useMutation(ADD_ISSUANCE_OR_TRADE);
 
   const sharesRemaining = sharesIssued - sharesOutstanding;
 
   const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
-    const recipient = values.recipient;
+    const recipient = addressWithoutEns({ address: values.recipient });
     if (recipient) {
       return `Send ${
         values.numShares
           ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%)`
           : ''
         // } shares to`;
-      } shares to ${addressWithENS({ address: recipient })}`;
+      } shares to ${recipient}`;
     }
     return 'Send shares';
   };
@@ -54,6 +62,7 @@ const SendShares: FC<SendSharesProps> = ({
   return (
     <Formik
       initialValues={{
+        isIssuance: 'yes',
         numShares: '',
         recipient: '' as String0x,
         partition: partitions[0],
@@ -85,19 +94,24 @@ const SendShares: FC<SendSharesProps> = ({
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
+        const isIssuance = values.isIssuance === 'yes' ? true : false;
         const transactionDetails = await sendShares({
           shareContractAddress,
           shareContractId,
           numShares: parseInt(values.numShares, 10),
           recipient: values.recipient,
+          sender: userWalletAddress,
           partition: values.partition,
           newPartition: values.newPartition,
+          isIssuance,
+          addIssuance,
           setButtonStep,
           addPartition,
+          refetchMainContracts,
         });
         if (transactionDetails) {
           toast.success(
-            `${values.numShares} shares sent to ${addressWithENS({
+            `${values.numShares} shares sent to ${addressWithoutEns({
               address: recipient,
             })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
           );
@@ -108,9 +122,16 @@ const SendShares: FC<SendSharesProps> = ({
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
+          {myShares ? (
+            <Select className={'mt-3'} name={'isIssuance'} labelText="Send type">
+              <option value="yes">Issue new shares</option>
+              <option value="no">Issue held shares</option>
+            </Select>
+          ) : (
+            <></>
+          )}
           <Select className={'mt-3'} name={'recipient'} labelText="Investor's wallet address">
             <option value="">Select recipient</option>
-
             {offeringParticipants.map((participant, i) => {
               const presentableAddress = addressWithoutEns({
                 address: participant.walletAddress,
@@ -128,7 +149,9 @@ const SendShares: FC<SendSharesProps> = ({
 
           <Input
             className={defaultFieldDiv}
-            labelText={`Number of shares to send (${sharesRemaining} remaining )`}
+            labelText={`Number of shares to send (${
+              values.isIssuance === 'yes' ? sharesRemaining : myShares
+            } available )`}
             name="numShares"
             type="number"
             placeholder="40"

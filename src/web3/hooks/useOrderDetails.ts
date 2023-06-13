@@ -23,7 +23,7 @@ export type OrderDetailsType = {
 
 export const useOrderDetails = (
   swapContractAddress: String0x,
-  orderId: number,
+  contractIndex: number,
   paymentTokenDecimals: number
 ): OrderDetailsType | undefined => {
   const {
@@ -36,7 +36,7 @@ export const useOrderDetails = (
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'orders',
-    args: [BigInt(orderId)],
+    args: [BigInt(contractIndex)],
   });
 
   const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;

@@ -1,5 +1,5 @@
 import { useContractRead } from 'wagmi';
-import { String0x, stringFromBytes32 } from '../helpersChain';
+import { String0x } from '../helpersChain';
 import { dividendContractABI } from '../generated';
 import { shareContractDecimals, toNormalNumber } from '../util';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -46,19 +46,6 @@ export const useDistributionDetails = (
   const totalSupplyOfShares = data ? toNormalNumber(data[6], shareContractDecimals) : undefined;
   const isErc20Payout = data ? data[8] : undefined;
   const amountRemaining = data ? toNormalNumber(data[9], getCurrencyById(payoutTokenAddress).decimals) : undefined;
-
-  console.log({
-    dividendPartition,
-    blockTimestamp,
-    exDividendDate,
-    recordDate,
-    payoutDate,
-    dividendAmount,
-    payoutTokenAddress,
-    isErc20Payout,
-    amountRemaining,
-    // totalSupplyOfShares,
-  });
 
   return {
     dividendPartition,

@@ -4,13 +4,21 @@ import SaleManagerPanel from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { Offering, OfferingParticipant, OfferingSale } from 'types';
+import { Offering, OfferingParticipant, ShareOrder } from 'types';
 import { useAccount } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
+
+export type OrderStatusType = {
+  isApproved: boolean;
+  isDisapproved: boolean;
+  isAccepted: boolean;
+  isCancelled: boolean;
+};
 
 export type ShareSaleListItemProps = {
   offering: Offering;
   swapContractAddress: String0x;
+  shareContractAddress: String0x;
   paymentTokenAddress: String0x;
   paymentTokenDecimals: number;
   txnApprovalsEnabled: boolean;
@@ -22,14 +30,15 @@ export type ShareSaleListItemProps = {
 
 type Addendum = ShareSaleListItemProps & {
   index: number;
-  sale: OfferingSale;
+  order: ShareOrder;
 };
 
 const ShareSaleListItem: FC<Addendum> = ({
   index,
   offering,
-  sale,
+  order,
   swapContractAddress,
+  shareContractAddress,
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
@@ -57,7 +66,7 @@ const ShareSaleListItem: FC<Addendum> = ({
     isErc20Payment,
     isLoading,
     refetchOrderDetails,
-  } = useOrderDetails(swapContractAddress, sale.orderId, paymentTokenDecimals);
+  } = useOrderDetails(swapContractAddress, order.contractIndex, paymentTokenDecimals);
 
   function refetchAllContracts() {
     refetchMainContracts();
@@ -69,7 +78,7 @@ const ShareSaleListItem: FC<Addendum> = ({
 
   return (
     <>
-      {isOfferor || isContractOwner || sale.visible ? (
+      {isOfferor || isContractOwner || order.visible ? (
         <div className="items-center shadow-md rounded-md my-5 ">
           <div
             className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
@@ -91,7 +100,7 @@ const ShareSaleListItem: FC<Addendum> = ({
                 )}
                 {!isApproved && filler && txnApprovalsEnabled && isContractOwner && (
                   <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
-                    Review sale request
+                    Review order request
                   </button>
                 )}
                 {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
@@ -108,8 +117,13 @@ const ShareSaleListItem: FC<Addendum> = ({
                   isApproved={isApproved}
                   isDisapproved={isDisapproved}
                   isAccepted={isAccepted}
+                  isCancelled={isCancelled}
+                  isFilled={shareQtyRemaining === 0}
+                  isAskOrder={isAskOrder}
                   filler={filler}
-                  sale={sale}
+                  initiator={initiator}
+                  order={order}
+                  amount={amount}
                   swapContractAddress={swapContractAddress}
                   txnApprovalsEnabled={txnApprovalsEnabled}
                   paymentTokenAddress={paymentTokenAddress}
@@ -119,10 +133,11 @@ const ShareSaleListItem: FC<Addendum> = ({
               ) : (
                 <SharePurchaseSteps
                   offering={offering}
-                  sale={sale}
+                  order={order}
                   shareQtyRemaining={shareQtyRemaining}
                   price={price}
                   swapContractAddress={swapContractAddress}
+                  isAsk={isAskOrder}
                   permittedEntity={permittedEntity}
                   refetchAllContracts={refetchAllContracts}
                   isApproved={isApproved}
@@ -133,6 +148,9 @@ const ShareSaleListItem: FC<Addendum> = ({
                   paymentTokenAddress={paymentTokenAddress}
                   paymentTokenDecimals={paymentTokenDecimals}
                   txnApprovalsEnabled={txnApprovalsEnabled}
+                  shareContractAddress={shareContractAddress}
+                  partition={partition as String0x}
+                  initiator={initiator}
                 />
               )}
             </div>

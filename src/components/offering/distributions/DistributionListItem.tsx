@@ -17,6 +17,7 @@ export type DistributionListItemProps = {
   distributionContractAddress: String0x;
   isDistributor?: boolean;
   hideTransactionId?: boolean;
+  walletAddress: String0x;
 };
 
 const DistributionListItem: FC<DistributionListItemProps & { distribution: OfferingDistribution }> = ({
@@ -24,9 +25,10 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
   hideTransactionId,
   isDistributor,
   distributionContractAddress,
+  walletAddress,
 }) => {
   const chainId = useChainId();
-  const { address: userWalletAddress } = useAccount();
+
   const { transactionHash, contractIndex } = distribution;
   const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
 
@@ -46,7 +48,7 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
     address: distributionContractAddress,
     abi: dividendContractABI,
     functionName: 'getClaimableAmount',
-    args: [userWalletAddress, BigInt(contractIndex)],
+    args: [walletAddress, BigInt(contractIndex)],
   });
 
   const amountToClaim = data ? toNormalNumber(data, getCurrencyById(payoutTokenAddress).decimals) : undefined;
@@ -72,22 +74,19 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
           {dividendAmount} {getCurrencyById(payoutTokenAddress).symbol}
         </div>
       </div>
-      {isDistributor ? (
-        <div>{`${numberWithCommas(amountRemaining, 0)} unclaimed`}</div>
-      ) : (
-        <div className="col-span-2 flex mt-3 md:mt-0 justify-end">
-          <FormButton onClick={() => handleClaim()}>
-            <LoadingButtonText
-              state={buttonStep}
-              idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
-              submittingText="Submitting..."
-              confirmedText="Confirmed!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </FormButton>
-        </div>
-      )}
+
+      <div className="col-span-2 flex mt-3 md:mt-0 justify-end">
+        <FormButton onClick={() => handleClaim()}>
+          <LoadingButtonText
+            state={buttonStep}
+            idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
+            submittingText="Submitting..."
+            confirmedText="Confirmed!"
+            failedText="Transaction failed"
+            rejectedText="You rejected the transaction. Click here to try again."
+          />
+        </FormButton>
+      </div>
     </div>
   );
 };

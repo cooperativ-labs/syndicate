@@ -97,14 +97,15 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   );
   return (
     <>
-      {shareContractAddress && !swapContractAddress ? (
+      {shareContractAddress && !swapContractAddress && (
         <CreateSwapContract
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
           contractOwnerEntityId={offeringEntity.id}
           offeringDetailsId={details.id}
         />
-      ) : (
+      )}
+      {swapContractAddress && (
         <div className="flex flex-col">
           <div className="flex items-center">
             2. Swap contract:{' '}

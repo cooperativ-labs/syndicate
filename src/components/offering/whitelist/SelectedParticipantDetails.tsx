@@ -1,21 +1,25 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import DistributionList from '../distributions/DistributionList';
+import ForceTransferForm from '../actions/ForceTransferForm';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';
+import IssuanceSaleList from '../sales/IssuanceSaleList';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
+import SectionBlock from '@src/containers/SectionBlock';
 import { Currency, OfferingParticipant, OfferingSmartContractSet } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
 import { shareContractABI } from '@src/web3/generated';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
 import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { useContractRead, useContractWrite } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 type SelectedParticipantProps = {
@@ -23,29 +27,42 @@ type SelectedParticipantProps = {
   participants: OfferingParticipant[];
   contractSet: OfferingSmartContractSet;
   currentSalePrice: number;
-  investmentCurrency: Currency;
+  paymentTokenDecimals: number;
+  offeringId: string;
+  partitions: String0x[];
+  issuanceList: any[];
   removeMember: (variables) => void;
+  refetchContracts: () => void;
 };
 
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   selection,
   participants,
   contractSet,
+  paymentTokenDecimals,
   currentSalePrice,
+  offeringId,
+  partitions,
+  issuanceList,
   removeMember,
+  refetchContracts,
 }) => {
   const { data: session } = useSession();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [updateOfferingParticipant, { data: dataUpdate }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
-  const [approveOfferingParticipant, { data: dataApprove }] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
+  const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
+  const [approveOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
   const participant = participants?.find((p) => p.id === selection);
-  const participantWallet = participant?.walletAddress;
+  const participantWallet = participant?.walletAddress as String0x;
+
+  const issuances = issuanceList.filter((issuance) => {
+    return issuance.recipientAddress === participantWallet || issuance.senderAddress === participantWallet;
+  });
 
   //-----------------Contract Interactions---------------------
 
-  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
 
   const sharedContractSpecs = {
@@ -53,14 +70,14 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     abi: shareContractABI,
   };
 
-  const { data, isLoading } = useContractRead({
+  const { data: shareBalanceData } = useContractRead({
     ...sharedContractSpecs,
     functionName: 'balanceOf',
     args: [participantWallet as String0x],
   });
 
-  const removeFromDb = async () => {
-    await removeMember({ variables: { offeringId: offering.id, id: participant?.id, currentDate: currentDate } });
+  const removeFromDb = () => {
+    removeMember({ variables: { offeringId, id: participant?.id, currentDate: currentDate } });
   };
 
   const { write: removeWrite } = useContractWrite({
@@ -77,11 +94,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
   const removeWhitelistMember = async () => {
     setButtonStep('submitting');
-    try {
-      removeWrite();
-    } catch (e) {
-      StandardChainErrorHandling(e);
-    }
+    removeWrite();
   };
 
   // -----------------Approve Whitelist Participant---------------------
@@ -124,7 +137,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
   const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
     participant;
-
+  const distributions = offering.distributions;
   const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity.organization);
 
   const updateInvestorForm = (itemType) => {
@@ -226,57 +239,71 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
       <DistributionList
         distributionContractAddress={distributionContractAddress}
-        distributions={offering.distributions}
+        distributions={distributions}
+        isDistributor
+        walletAddress={participantWallet}
       />
-      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades</h1>
-      <DistributionList
-        distributionContractAddress={distributionContractAddress}
-        distributions={offering.distributions}
-      />
+      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Issuances</h1>
+      <IssuanceSaleList issuances={issuances} paymentTokenDecimals={paymentTokenDecimals} />
     </div>
   );
 
   const buttonSection = (
-    <div className="flex gap-3">
-      <button
-        className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
-        aria-label="review application"
-        onClick={() => DownloadFile(investorApplication.applicationDoc.text, `${name} - application.md`)}
-      >
-        Review Investor Application
-      </button>
-      {permitted ? (
+    <>
+      <div className="flex gap-3">
         <button
-          className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
-          aria-label="remove wallet from whitelist"
-          onClick={removeWhitelistMember}
+          className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
+          aria-label="review application"
+          onClick={() => DownloadFile(investorApplication.applicationDoc.text, `${name} - application.md`)}
         >
-          <LoadingButtonText
-            state={buttonStep}
-            idleText="Remove this this investor from the whitelist"
-            submittingText="Removing..."
-            confirmedText="Investor Removed!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
-          />
+          Review Investor Application
         </button>
-      ) : (
-        <button
-          onClick={approveWhiteListMember}
-          className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
-          // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
-        >
-          <LoadingButtonText
-            state={buttonStep}
-            idleText="Approve Investor"
-            submittingText="Updating..."
-            confirmedText="Investor Approved!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
-          />
-        </button>
+        {permitted ? (
+          <button
+            className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
+            aria-label="remove wallet from whitelist"
+            onClick={removeWhitelistMember}
+          >
+            <LoadingButtonText
+              state={buttonStep}
+              idleText="Remove this this investor from the whitelist"
+              submittingText="Removing..."
+              confirmedText="Investor Removed!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
+          </button>
+        ) : (
+          <button
+            onClick={approveWhiteListMember}
+            className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
+            // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
+          >
+            <LoadingButtonText
+              state={buttonStep}
+              idleText="Approve Investor"
+              submittingText="Updating..."
+              confirmedText="Investor Approved!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
+          </button>
+        )}
+      </div>
+      {shareBalanceData > 0 && (
+        <div className="mt-4 border-2 rounded-md px-2">
+          <SectionBlock className="font-bold" sectionTitle={'Force transfer or clawback'} mini asAccordion>
+            <ForceTransferForm
+              shareContractAddress={shareContractAddress}
+              partitions={partitions}
+              target={participantWallet}
+              offeringParticipants={participants}
+              refetchContracts={refetchContracts}
+            />
+          </SectionBlock>
+        </div>
       )}
-    </div>
+    </>
   );
 
   return (
@@ -288,8 +315,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         className="font-bold text-lg"
         showFull
       />
-      need to get shares and distributions from Chain
-      <div className="text-sm">{`Shares: ${toNormalNumber(data, 18)} `}</div>
+
+      <div className="text-sm">{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
       {specificationSection}
       {tradesSection}
       <hr className="my-10" />

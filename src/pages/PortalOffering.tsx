@@ -6,12 +6,12 @@ import FormModal from '@src/containers/FormModal';
 
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
-import PostAskForm from '@src/components/investor/tradingForms/PostAskForm';
+import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import React, { FC, useState } from 'react';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { ContractSale, getCurrentSalePrice, getSaleArrayFromContract } from '@src/utils/helpersMoney';
+import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
@@ -46,7 +46,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
     id: offeringId,
     distributions,
     participants,
-    sales,
+    orders,
     smartContractSets,
   } = offering;
 
@@ -58,10 +58,11 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
 
-  const [contractSaleList, setContractSaleList] = useState<ContractSale[]>([]);
+  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
   const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
   const [bidFormModel, setBidFormModel] = useState<boolean>(false);
+
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
   const {
     myShares,
@@ -76,10 +77,10 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   const numDistributions = 4;
 
   const {
-    shareTokenAddress,
     paymentTokenAddress,
     paymentTokenDecimals,
     txnApprovalsEnabled,
+    swapApprovalsEnabled,
     isLoading: swapIsLoading,
     refetchSwapContract,
   } = useSwapContractInfo(swapContractAddress);
@@ -106,15 +107,15 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
   });
 
   useAsync(async () => {
-    const contractSaleList = await getSaleArrayFromContract(sales, swapContractAddress, paymentTokenDecimals);
+    const contractSaleList = await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals);
     setContractSaleList(contractSaleList);
-  }, [sales, swapContractAddress, paymentTokenDecimals, getSaleArrayFromContract]);
+  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
-  const contractSales = sales.filter((sale) => {
-    return sale.saleContractAddress === swapContractAddress;
+  const contractOrders = orders.filter((order) => {
+    return order.swapContractAddress === swapContractAddress;
   });
 
-  const currentSalePrice = getCurrentSalePrice(contractSaleList, offering.details.priceStart);
+  const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details.priceStart);
   const offeringDocs = getDocumentsOfType(offering.documents, DocumentType.OfferingDocument);
   const latestDistribution = getLatestDistribution(offering);
   const myDistToClaim = getMyDistToClaim(offering, sharesOutstanding, myShares, userWalletAddress);
@@ -124,7 +125,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
       <div className="w-screen h-screen flex justify-center items-center pb-32">
         <div className="text-center">
           <h1 className="text-2xl font-bold">You are not a participant of this offering</h1>
-          <p className="text-lg">Please contact the organization for more information.</p>
+          <p className="text-lg">Please contact the fund manager for more information.</p>
         </div>
       </div>
     );
@@ -137,13 +138,14 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
         onClose={() => setSaleFormModal(false)}
         title={`Sell shares of ${offeringName}`}
       >
-        <PostAskForm
+        <PostBidAskForm
           offering={offering}
           offeringMin={minUnitsPerInvestor}
           sharesOutstanding={sharesOutstanding}
           walletAddress={userWalletAddress as String0x}
           myShares={myShares}
           swapContractAddress={swapContractAddress}
+          swapApprovalsEnabled={swapApprovalsEnabled}
           permittedEntity={offeringParticipant}
           isContractOwner={false}
           currentSalePrice={currentSalePrice}
@@ -153,6 +155,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           refetchAllContracts={refetchMainContracts}
         />
       </FormModal>
+
       {/* <FormModal
         formOpen={shareSaleManagerModal}
         onClose={() => setShareSaleManagerModal(false)}
@@ -161,7 +164,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
         <ShareSaleList
           offering={offering}
           walletAddress={userWalletAddress}
-          sales={contractSales}
+          orders={contractOrders}
           permittedEntity={offeringParticipant}
           isContractOwner={false}
           setShareSaleManagerModal={setShareSaleManagerModal}
@@ -180,7 +183,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           <DashboardCard>
             <ShareSaleList
               offering={offering}
-              sales={contractSales}
+              orders={contractOrders}
               swapContractAddress={swapContractAddress}
               permittedEntity={offeringParticipant}
               isContractOwner={false}
@@ -190,6 +193,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
               paymentTokenAddress={paymentTokenAddress}
               paymentTokenDecimals={paymentTokenDecimals}
               txnApprovalsEnabled={txnApprovalsEnabled}
+              shareContractAddress={shareContractAddress}
             />
           </DashboardCard>
           <DashboardCard>
@@ -200,7 +204,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
               isOfferingManager={false}
               contractViewDetails={{
                 sharesOutstanding: sharesOutstanding,
-                fundsDistributed: fundsDistributed,
+
                 myShares: myShares,
                 paymentToken: paymentTokenAddress,
               }}
@@ -212,7 +216,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
             <DistributionList
               distributionContractAddress={distributionContractAddress}
               distributions={offering.distributions}
-              currency={offering.details.distributionCurrency}
+              walletAddress={userWalletAddress}
             />
             <div className="mt-20 flex">
               <ProfileTabContainer offering={offering} />

@@ -9,22 +9,13 @@ import {
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
-import { SaleStatusType } from '@src/utils/enumConverters';
+
 import { waitForTransaction, writeContract, prepareWriteContract } from 'wagmi/actions';
 import { parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
-import { shareContractDecimals } from './util';
-
-export type SaleContentsType = {
-  qty: number;
-  qtySold: number;
-  price: number;
-  proceeds: number;
-  saleDetails: any;
-  status: SaleStatusType;
-  btId: string;
-};
+import { shareContractDecimals, toContractNumber } from './util';
+import { ShareIssuanceTradeType } from 'types';
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
@@ -88,7 +79,7 @@ export const addWhitelistMember = async ({
       await addToDb();
       setButtonStep('confirmed');
     } catch (e) {
-      const parsedError = ChainErrorResponses(e);
+      const parsedError = ChainErrorResponses(e, walletAddress);
       if (parsedError.code === 1000) {
         await addToDb();
         refetchMainContracts && refetchMainContracts();
@@ -146,13 +137,18 @@ type SendSharesProps = {
   shareContractId: string;
   numShares: number;
   recipient: String0x;
+  sender: String0x;
   partition: string;
   newPartition: string;
+  isIssuance: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addPartition: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
-  refetchMainContracts?: () => void;
+  addIssuance: (
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+  ) => Promise<any>;
+  refetchMainContracts: () => void;
 };
 
 export const sendShares = async ({
@@ -160,24 +156,29 @@ export const sendShares = async ({
   shareContractId,
   numShares,
   recipient,
+  sender,
   partition,
   newPartition,
+  isIssuance,
   setButtonStep,
   addPartition,
+  addIssuance,
   refetchMainContracts,
 }: SendSharesProps) => {
-  const amt = parseUnits(numShares.toString() as `${number}`, shareContractDecimals);
+  const amt = toContractNumber(numShares, shareContractDecimals);
 
   let transactionDetails = undefined;
   const call = async () => {
     setButtonStep('submitting');
     const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
+    const setFunctionName = isIssuance ? 'issueByPartition' : 'operatorTransferByPartition';
+    const setArgs = isIssuance ? [setPartition, recipient, amt] : [setPartition, sender, recipient, amt];
     try {
       const { request } = await prepareWriteContract({
         address: shareContractAddress,
         abi: shareContractABI,
-        functionName: 'issueByPartition',
-        args: [setPartition, recipient, amt],
+        functionName: setFunctionName,
+        args: setArgs,
       });
 
       const { hash } = await writeContract(request);
@@ -185,6 +186,17 @@ export const sendShares = async ({
         hash: hash,
       });
       transactionDetails = details;
+      await addIssuance({
+        variables: {
+          shareContractAddress,
+          recipientAddress: recipient,
+          senderAddress: sender,
+          amount: numShares,
+          transactionHash: transactionDetails.transactionHash,
+          partition: setPartition,
+          type: isIssuance ? ShareIssuanceTradeType.Issue : ShareIssuanceTradeType.Transfer,
+        },
+      });
       if (partition === '0xNew')
         await addPartition({
           variables: {
@@ -192,7 +204,7 @@ export const sendShares = async ({
             partition: setPartition,
           },
         });
-      refetchMainContracts && refetchMainContracts();
+      refetchMainContracts();
       setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep, recipient);
@@ -206,13 +218,16 @@ type SetContractOperatorProps = {
   shareContractAddress: String0x;
   operator: String0x;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
+  refetch: () => void;
 };
 
 export const setContractOperator = async ({
   shareContractAddress,
   operator,
   setButtonStep,
+  refetch,
 }: SetContractOperatorProps) => {
+  setButtonStep('submitting');
   try {
     const { request } = await prepareWriteContract({
       address: shareContractAddress,
@@ -224,75 +239,63 @@ export const setContractOperator = async ({
     await waitForTransaction({
       hash: hash,
     });
+    setButtonStep('confirmed');
+    refetch();
   } catch (e) {
     StandardChainErrorHandling(e, setButtonStep);
   }
 };
 
-// export const submitDistribution = async (
-//   reachAcc: any,
-//   shareContractId: string,
-//   amount: number | string,
-//   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
-//   setRecallContract: Dispatch<SetStateAction<string>>,
-//   addDistribution: (
-//     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
-//   ) => Promise<any>
-// ) => {
-//   setButtonStep('submitting');
-//   const ctc = reachAcc.contract(backendCtc, shareContractId);
-//   const call = async (f) => {
-//     try {
-//       await f();
-//       await addDistribution({ variables: { currentDate: currentDate, amount: amount } });
-//       setButtonStep('confirmed');
-//       setRecallContract('submitDistribution');
-//     } catch (e) {
-//       StandardChainErrorHandling(e, setButtonStep);
-//     }
-//   };
-//   const apis = ctc.a;
-//   call(async () => {
-//     const apiReturn = await apis.dBT(loadStdlib(process.env).parseCurrency(amount));
-//     return apiReturn;
-//   });
-// };
+type ForceTransferProps = {
+  shareContractAddress: String0x;
+  partition: String0x;
+  amount: number;
+  target: String0x;
+  recipient: String0x;
+  setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
+  addIssuance: (
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+  ) => Promise<any>;
+  refetchContracts: () => void;
+};
 
-// export const claimDistribution = async (
-//   reachLib: any,
-//   shareContractId: string,
-//   distributionId: string,
-//   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>,
-//   setRecallContract: Dispatch<SetStateAction<string>>,
-//   updateDistribution?: (any) => void
-// ) => {
-//   setButtonStep('submitting');
-//   reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
-//   const acc = await reachLib.getDefaultAccount();
-//   const ctc = acc.contract(backendCtc, shareContractId);
-//   const contractUserPubKey = acc.getAddress();
-//   const normalizeRecipientAddress = reachLib.formatAddress(contractUserPubKey);
-//   const call = async (f) => {
-//     try {
-//       await f();
-//       if (updateDistribution) {
-//         updateDistribution({
-//           variables: {
-//             currentDate: currentDate,
-//             distributionId: distributionId,
-//             claimantAddress: normalizeRecipientAddress,
-//           },
-//         });
-//       }
-//       setRecallContract('claimBT');
-//       setButtonStep('confirmed');
-//     } catch (e) {
-//       StandardChainErrorHandling(e, setButtonStep);
-//     }
-//   };
-//   const apis = ctc.a;
-//   call(async () => {
-//     const apiReturn = await apis.cBT();
-//     return apiReturn;
-//   });
-// };
+export const forceTransfer = async ({
+  shareContractAddress,
+  partition,
+  amount,
+  target,
+  recipient,
+  setButtonStep,
+  addIssuance,
+  refetchContracts,
+}: ForceTransferProps) => {
+  setButtonStep('submitting');
+  const amt = toContractNumber(amount, shareContractDecimals);
+  try {
+    const { request } = await prepareWriteContract({
+      address: shareContractAddress,
+      abi: shareContractABI,
+      functionName: 'operatorTransferByPartition',
+      args: [partition, target, recipient, toContractNumber(amount, shareContractDecimals)],
+    });
+    const { hash } = await writeContract(request);
+    const details = await waitForTransaction({
+      hash: hash,
+    });
+    await addIssuance({
+      variables: {
+        shareContractAddress,
+        recipientAddress: recipient,
+        senderAddress: target,
+        amount: amount,
+        transactionHash: details.transactionHash,
+        partition: partition,
+        type: ShareIssuanceTradeType.Forced,
+      },
+    });
+    refetchContracts();
+    setButtonStep('confirmed');
+  } catch (e) {
+    StandardChainErrorHandling(e, setButtonStep);
+  }
+};

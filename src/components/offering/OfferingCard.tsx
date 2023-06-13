@@ -3,7 +3,7 @@ import MoneyDisplay from '../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React from 'react';
-import { getLowestSalePrice } from '@src/utils/helpersMoney';
+import { getLowestOrderPrice } from '@src/utils/helpersMoney';
 import { Offering } from 'types';
 import { useRouter } from 'next/router';
 
@@ -14,7 +14,7 @@ export type OfferingCardProps = {
 const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const router = useRouter();
   const { name, shortDescription, id, details, image, offeringEntity } = offering;
-  const currentPrice = details && getLowestSalePrice(offering.sales, offering.details?.priceStart);
+  const currentPrice = details && getLowestOrderPrice(offering.orders, offering.details?.priceStart);
   const organizationId = offeringEntity?.organization.id;
   const organizationImg = offeringEntity?.organization.logo;
 

@@ -11,15 +11,10 @@ import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisp
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import {
-  ContractSale,
-  getCurrentSalePrice,
-  getLowestSalePrice,
-  getSaleArrayFromContract,
-} from '@src/utils/helpersMoney';
+import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
@@ -27,13 +22,16 @@ import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffer
 import { useAccount, useChainId } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
+import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
+import IssuanceSaleList from '@src/components/offering/sales/IssuanceSaleList';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
 import { useAsync } from 'react-use';
+import { useQuery } from '@apollo/client';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-
 // import { ABI } from '@src/web3/ABI';
 
 type OfferingDetailsProps = {
@@ -45,7 +43,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const { address: userWalletAddress } = useAccount();
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const { id, name, offeringEntity, participants, sales, details, isPublic, accessCode, smartContractSets } = offering;
+  const { id, name, offeringEntity, participants, orders, details, isPublic, accessCode, smartContractSets } = offering;
   const contractSet = smartContractSets?.slice(-1)[0];
   const chainId = useChainId();
 
@@ -54,7 +52,11 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
   const distributionContract = contractSet?.distributionContract;
-  const distributionContractAddress = distributionContract?.cryptoAddress.address as String0x;
+
+  const { data: issuanceData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
+    variables: { shareContractAddress: shareContractAddress },
+  });
+  const issuances = issuanceData?.queryShareIssuanceTrade;
 
   const partitions = shareContract?.partitions as String0x[];
   const owners = offeringEntity?.owners;
@@ -63,7 +65,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
-  const [contractSaleList, setContractSaleList] = useState<ContractSale[]>([]);
+  const [transactionHistoryPanel, setTransactionHistoryPanel] = useState<boolean>(false);
+  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
 
   const {
     contractOwner,
@@ -91,6 +94,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const refetchMainContracts = () => {
     refetchShareContract();
     refetchSwapContract();
+    refetchTransactionHistory();
   };
 
   const isLoading = shareIsLoading || swapIsLoading;
@@ -105,19 +109,19 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const offeringParticipant = participants.find((participant) => {
     return participant.addressOfferingId === userWalletAddress + id;
   });
-  // NOTE: This is set up to accept multiple sales from the DB, but `saleDetails`
-  // currently refers to the single sale the contract can currently offer
 
-  const contractSales = sales.filter((sale) => {
-    return sale.saleContractAddress === swapContractAddress;
+  // NOTE: This is set up to accept multiple orders from the DB, but `saleDetails`
+  // currently refers to the single order the contract can currently offer
+  const contractOrders = orders.filter((order) => {
+    return order.swapContractAddress === swapContractAddress;
   });
 
   useAsync(async () => {
-    const contractSaleList = await getSaleArrayFromContract(sales, swapContractAddress, paymentTokenDecimals);
+    const contractSaleList = await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals);
     setContractSaleList(contractSaleList);
-  }, [sales, swapContractAddress, paymentTokenDecimals, getSaleArrayFromContract]);
+  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
-  const currentSalePrice = getCurrentSalePrice(contractSaleList, offering.details?.priceStart);
+  const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details?.priceStart);
 
   const swapContractMatches = !swapContract
     ? true
@@ -127,6 +131,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
   return (
     <>
+      <RightSideBar formOpen={transactionHistoryPanel} onClose={() => setTransactionHistoryPanel(false)}>
+        <FullTransactionHistory issuances={issuances} paymentTokenDecimals={paymentTokenDecimals} />
+      </RightSideBar>
       <RightSideBar formOpen={financialSettingsPanel} onClose={() => setFinancialSettingsPanel(false)}>
         <OfferingFinancialSettings offering={offering} />
       </RightSideBar>
@@ -198,19 +205,29 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
 
             <hr className="my-10" />
             {isOfferingManager && (
-              <div className="flex items-center mt-10 ">
+              <div className="flex items-center mt-10 gap-3">
                 <Button
-                  onClick={() => setFinancialSettingsPanel(true)}
+                  onClick={() => {
+                    setFinancialSettingsPanel(true);
+                    refetchTransactionHistory();
+                  }}
                   className=" bg-cLightBlue p-3 font-semibold text-white rounded-md"
                 >
                   Edit Syndication Financials
                 </Button>
-                <div className="mx-2" />
+
                 <Button
                   onClick={() => setDescriptionSettingsPanel(true)}
                   className=" bg-cLightBlue p-3 font-semibold text-white rounded-md"
                 >
                   Edit Profile Details
+                </Button>
+
+                <Button
+                  onClick={() => setTransactionHistoryPanel(true)}
+                  className=" bg-cLightBlue p-3 font-semibold text-white rounded-md"
+                >
+                  View Transaction History
                 </Button>
               </div>
             )}
@@ -231,7 +248,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         hasContract={hasContract}
                         loading={isLoading}
                         isOfferingManager={isOfferingManager}
-                        sales={contractSales}
+                        orders={contractOrders}
                         offering={offering}
                         contractSet={contractSet}
                         paymentTokenAddress={paymentTokenAddress}
@@ -272,6 +289,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 contractSet={contractSet}
                 currentSalePrice={currentSalePrice}
                 partitions={partitions}
+                issuances={issuances}
+                refetchContracts={refetchMainContracts}
               />
             )}
           </div>

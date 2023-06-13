@@ -1,9 +1,6 @@
-import * as backendCtc from '../../../web3/ABI';
 import AdditionalApplicationFields from './AdditionalApplicationFields';
 import AdvisorFields from './AdvisorFields';
 import Checkbox from '@src/components/form-components/Checkbox';
-import CreateAddress from '@src/components/address/CreateAddress';
-import CreateEntity from '../../entity/CreateEntity';
 import CustomAddressAutocomplete from '@src/components/form-components/CustomAddressAutocomplete';
 import Datepicker from '@src/components/form-components/Datepicker';
 import EntitySelector from '../../form-components/EntitySelector';
@@ -28,7 +25,7 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ReachContext } from '@src/SetReachContext';
+import { useAccount } from 'wagmi';
 import { useMutation, useQuery } from '@apollo/client';
 
 type InvestorWaitlistFormProps = {
@@ -94,7 +91,7 @@ type InvestorWaitlistFormInputsType = {
   advisor_country: string;
 };
 const InvestorWaitlistForm: FC<InvestorWaitlistFormProps> = ({ offering }) => {
-  const { userWalletAddress } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const [addOfferingWaitlistMember, { data: dataWaitlist, error: errorWaitlist }] =

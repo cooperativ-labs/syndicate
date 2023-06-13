@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Offering, OfferingParticipant, OfferingSale } from 'types';
+import { Offering, OfferingParticipant, ShareOrder } from 'types';
 
 import { acceptOrder } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
@@ -22,7 +22,7 @@ import { useAsync } from 'react-use';
 
 export type SharePurchaseRequestProps = {
   offering: Offering;
-  sale: OfferingSale;
+  order: ShareOrder;
   price: number;
   swapContractAddress: String0x;
   permittedEntity: OfferingParticipant;
@@ -31,7 +31,7 @@ export type SharePurchaseRequestProps = {
 
 const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: string }> = ({
   offering,
-  sale,
+  order,
   price,
   myBacBalance,
   swapContractAddress,
@@ -43,7 +43,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
 
-  const standardSaleDisclosures = `/assets/sale/disclosures.md`;
+  const standardSaleDisclosures = `/assets/order/disclosures.md`;
   const getStandardSaleDisclosuresText = async (): Promise<string> =>
     axios.get(standardSaleDisclosures).then((resp) => resp.data);
   const { value: standardSaleDisclosuresText } = useAsync(getStandardSaleDisclosuresText, []);
@@ -68,11 +68,12 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
           const errors: any = {}; /** @TODO : Shape */
           if (!values.numUnitsPurchase) {
             errors.numUnitsPurchase = 'You must choose a number of shares to purchase.';
-            if (sale.minUnits) {
-            } else if (values.numUnitsPurchase < sale.minUnits) {
-              errors.numUnitsPurchase = `You must purchase at least ${sale.minUnits} shares.`;
-            } else if (values.numUnitsPurchase > sale.maxUnits) {
-              errors.numUnitsPurchase = `You cannot purchase more than ${sale.maxUnits} shares`;
+            if (order.minUnits) {
+              if (values.numUnitsPurchase < order.minUnits) {
+                errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
+              } else if (values.numUnitsPurchase > order.maxUnits) {
+                errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
+              }
             }
           }
           if (!values.disclosures) {
@@ -87,12 +88,12 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
           setSubmitting(true);
           await acceptOrder({
             swapContractAddress: swapContractAddress,
-            orderId: sale.orderId,
+            contractIndex: order.contractIndex,
             amount: values.numUnitsPurchase,
             refetchAllContracts: refetchAllContracts,
             setButtonStep: setButtonStep,
           });
-          // await acceptOffer(swapContractAddress, sale.orderId, setButtonStep);
+          // await acceptOffer(swapContractAddress, order.contractIndex, setButtonStep);
           setSubmitting(false);
         }}
       >

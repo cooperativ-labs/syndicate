@@ -24,8 +24,8 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering } from 'types';
-import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
+
+import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 
@@ -89,8 +89,8 @@ type InvestorFormInputsType = {
 };
 const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering }) => {
   const router = useRouter();
-  const chainId = setChainId;
-  const { reachLib, userWalletAddress } = useContext(ReachContext);
+  const chainId = useChainId();
+  const { address: userWalletAddress } = useAccount();
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
@@ -212,10 +212,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
   const submitApplication = async (values) => {
     const appTitle = `${values.purchaserEntityName}'s requests approval to invest in ${offering.name}`;
     setButtonStep('submitting');
-    await reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
-    const acc = await reachLib.getDefaultAccount();
-    const shareContractId = offering.smartContracts[0].cryptoAddress.address;
-    const ctc = acc.contract(backendCtc, shareContractId);
+
     const btBalance = await ctc.views.vBtBal();
     const btID = reachLib.bigNumberToNumber(btBalance[1][1]).toString();
     const call = async (f) => {

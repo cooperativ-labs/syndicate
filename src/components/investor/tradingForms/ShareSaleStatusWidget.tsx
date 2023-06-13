@@ -2,12 +2,12 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
-import { OfferingSale } from 'types';
+import { ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
 type ShareSaleStatusWidgetProps = {
-  sale: OfferingSale;
+  order: ShareOrder;
   offeringId: string;
   swapContractAddress: String0x;
   paymentTokenAddress: String0x;
@@ -18,7 +18,7 @@ type ShareSaleStatusWidgetProps = {
 };
 
 const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
-  sale,
+  order,
   offeringId,
   txnApprovalsEnabled,
   paymentTokenAddress,
@@ -37,8 +37,9 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
     isDisapproved,
     isCancelled,
     isAccepted,
+    isAskOrder,
     refetchOrderDetails,
-  } = useOrderDetails(swapContractAddress, sale.orderId, paymentTokenDecimals);
+  } = useOrderDetails(swapContractAddress, order.contractIndex, paymentTokenDecimals);
 
   const status =
     initiator &&
@@ -85,7 +86,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
               offeringId={offeringId}
               isApproved={isApproved}
               isDisapproved={isDisapproved}
-              sale={sale}
+              order={order}
               swapContractAddress={swapContractAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}
               paymentTokenAddress={paymentTokenAddress}
@@ -94,6 +95,11 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
               isAccepted={isAccepted}
               filler={filler}
               refetchAllContracts={refetchAllContracts}
+              isCancelled={isCancelled}
+              isFilled={sharesRemaining === 0}
+              isAskOrder={isAskOrder}
+              initiator={initiator}
+              amount={amount}
             />
           </div>
         </div>

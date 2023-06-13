@@ -24,5 +24,5 @@ export const toReverseContractNumber = (n: number, nDecimals: Decimals): bigint 
 
 export const toContractNumber = (n: number, nDecimals: Decimals): bigint => {
   const value = n.toString() as `${number}`;
-  return BigInt(parseUnits(value, nDecimals));
+  return parseUnits(value, nDecimals);
 };

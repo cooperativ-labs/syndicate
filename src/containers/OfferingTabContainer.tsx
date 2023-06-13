@@ -12,6 +12,7 @@ import WhitelistAddressList from '@src/components/offering/whitelist/WhitelistAd
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LegalEntity, Offering, OfferingSmartContractSet } from 'types';
 import { String0x } from '@src/web3/helpersChain';
+import { useAccount } from 'wagmi';
 
 type OfferingTabContainerProps = {
   offering: Offering;
@@ -22,6 +23,8 @@ type OfferingTabContainerProps = {
   isOfferingManager: boolean;
   currentSalePrice: number;
   partitions: String0x[];
+  issuances: any[];
+  refetchContracts: () => void;
 };
 
 const TabOptions = [
@@ -39,7 +42,10 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   isOfferingManager,
   currentSalePrice,
   partitions,
+  issuances,
+  refetchContracts,
 }) => {
+  const { address: userWalletAddress } = useAccount();
   const distributions = offering.distributions;
   const investmentCurrency = offering.details.investmentCurrency;
   const startingTab = isOfferingManager ? 'investors' : distributions.length > 0 ? 'distributions' : 'properties';
@@ -55,19 +61,21 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
 
   return (
     <div>
-      <FormModal
-        formOpen={submitDistributionModal}
-        onClose={() => setSubmitDistributionModal(false)}
-        title={`Submit a distribution`}
-      >
-        <SubmitDistribution
-          distributionContractAddress={distributionContractAddress}
-          distributionTokenDecimals={distributionTokenDecimals}
-          distributionTokenAddress={distributionTokenAddress}
-          partitions={partitions}
-          offeringId={offering.id}
-        />
-      </FormModal>
+      {distributionContractAddress && (
+        <FormModal
+          formOpen={submitDistributionModal}
+          onClose={() => setSubmitDistributionModal(false)}
+          title={`Submit a distribution`}
+        >
+          <SubmitDistribution
+            distributionContractAddress={distributionContractAddress}
+            distributionTokenDecimals={distributionTokenDecimals}
+            distributionTokenAddress={distributionTokenAddress}
+            partitions={partitions}
+            offeringId={offering.id}
+          />
+        </FormModal>
+      )}
       <div className={cn(`grid grid-cols-${tabList.length}`)}>
         {tabList.map((tab, i) => {
           return <Tab key={i} tabId={tab.value} label={tab.name} setActiveTab={setActiveTab} activeTab={activeTab} />;
@@ -102,9 +110,12 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
-                  shareContractAddress={shareContractAddress}
+                  contractSet={contractSet}
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}
+                  offeringId={offering.id}
+                  issuances={issuances}
+                  refetchContracts={refetchContracts}
                 />
                 <hr className="mt-5" />
                 <AddWhitelistAddress shareContractAddress={shareContractAddress} offeringId={offering.id} />
@@ -133,6 +144,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
               distributionContractAddress={distributionContractAddress}
               distributions={offering.distributions}
               isDistributor
+              walletAddress={userWalletAddress}
             />
           </div>
         )}

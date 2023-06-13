@@ -455,8 +455,7 @@ add:
 	smartContractSets: [OfferingSmartContractSet] @hasInverse(field:offering)
 	details: OfferingDetails @hasInverse(field:offering)
 	profileDescriptions: [OfferingDescriptionText] @hasInverse(field:offering)
-	purchaseRequests: [PurchaseRequest] @hasInverse(field:relatedOffering)
-	sales: [OfferingSale] @hasInverse(field:relatedOffering)
+	orders: [ShareOrder] @hasInverse(field:relatedOffering)
 	participants: [OfferingParticipant] @hasInverse(field:offering)
 	distributions: [OfferingDistribution]
 	documents: [Document] @hasInverse(field:offering)
@@ -638,25 +637,34 @@ type InvestorApplication {
 	creationDate: DateTime!
 }
 
-type PurchaseRequest {
-	id: ID!
-	numUnits: Int!
-	relatedOffering: Offering! @hasInverse(field:purchaseRequests) 
-	purchaser: LegalEntity!
-	purchaseDocument: Document!
-	purchaserWallet: String!
-	creationDate: DateTime!
+enum ShareIssuanceTradeType	{
+	ISSUE
+	SELL
+	FORCED
+	TRANSFER
 }
 
-type OfferingSale {
+type ShareIssuanceTrade	{
+	id: ID!
+	shareContractAddress: String! @search
+	recipientAddress: String! @search
+	senderAddress: String! @search
+	amount: Int!
+	price:	Int
+	partition: String! @search
+	transactionHash: String!
+	type: ShareIssuanceTradeType!
+}
+
+type ShareOrder {
 	id: ID!
 	minUnits: Int
 	maxUnits: Int
 	visible: Boolean
-	relatedOffering: Offering! @hasInverse(field:sales) 
-	saleContractAddress: String!
+	relatedOffering: Offering! @hasInverse(field:orders) 
+	swapContractAddress: String!
 	initiator: String!
-	orderId: Int!
+	contractIndex: Int!
 	creationDate: DateTime!
 	lastUpdate: DateTime
 	transactionHash: String!
