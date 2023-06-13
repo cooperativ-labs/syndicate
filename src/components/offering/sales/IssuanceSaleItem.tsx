@@ -62,11 +62,9 @@ const IssuanceSale: FC<IssuanceSaleProps & { issuance: ShareIssuanceTrade }> = (
         lookupType="tx"
       />
 
-      {price && (
-        <div className="col-span-1">
-          <div className={`font-medium  `}>{numberWithCommas(humanPrice)}</div>
-        </div>
-      )}
+      <div className="col-span-1">
+        <div className={`font-medium`}>{price ? numberWithCommas(humanPrice) : 'N/A'}</div>
+      </div>
     </div>
   );
 };

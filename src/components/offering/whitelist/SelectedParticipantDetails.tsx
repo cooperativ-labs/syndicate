@@ -1,11 +1,13 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import DistributionList from '../distributions/DistributionList';
+import ForceTransferForm from '../actions/ForceTransferForm';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';
 import IssuanceSaleList from '../sales/IssuanceSaleList';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
+import SectionBlock from '@src/containers/SectionBlock';
 import { Currency, OfferingParticipant, OfferingSmartContractSet } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
@@ -19,7 +21,6 @@ import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { useContractRead, useContractWrite } from 'wagmi';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import ForceTransferForm from '../actions/ForceTransferForm';
 
 type SelectedParticipantProps = {
   selection: string;
@@ -29,7 +30,9 @@ type SelectedParticipantProps = {
   paymentTokenDecimals: number;
   offeringId: string;
   partitions: String0x[];
+  issuanceList: any[];
   removeMember: (variables) => void;
+  refetchContracts: () => void;
 };
 
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
@@ -40,7 +43,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   currentSalePrice,
   offeringId,
   partitions,
+  issuanceList,
   removeMember,
+  refetchContracts,
 }) => {
   const { data: session } = useSession();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -48,14 +53,11 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const [approveOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
-  const { data: issuanceData, error } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
-    variables: { shareContractAddress: shareContractAddress },
-  });
 
   const participant = participants?.find((p) => p.id === selection);
   const participantWallet = participant?.walletAddress as String0x;
 
-  const issuances = issuanceData?.queryShareIssuanceTrade.filter((issuance) => {
+  const issuances = issuanceList.filter((issuance) => {
     return issuance.recipientAddress === participantWallet || issuance.senderAddress === participantWallet;
   });
 
@@ -235,7 +237,12 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const tradesSection = (
     <div>
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
-      <DistributionList distributionContractAddress={distributionContractAddress} distributions={distributions} />
+      <DistributionList
+        distributionContractAddress={distributionContractAddress}
+        distributions={distributions}
+        isDistributor
+        walletAddress={participantWallet}
+      />
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Issuances</h1>
       <IssuanceSaleList issuances={issuances} paymentTokenDecimals={paymentTokenDecimals} />
     </div>
@@ -284,12 +291,17 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         )}
       </div>
       {shareBalanceData > 0 && (
-        <ForceTransferForm
-          shareContractAddress={shareContractAddress}
-          partitions={partitions}
-          target={participantWallet}
-          offeringParticipants={participants}
-        />
+        <div className="mt-4 border-2 rounded-md px-2">
+          <SectionBlock className="font-bold" sectionTitle={'Force transfer or clawback'} mini asAccordion>
+            <ForceTransferForm
+              shareContractAddress={shareContractAddress}
+              partitions={partitions}
+              target={participantWallet}
+              offeringParticipants={participants}
+              refetchContracts={refetchContracts}
+            />
+          </SectionBlock>
+        </div>
       )}
     </>
   );

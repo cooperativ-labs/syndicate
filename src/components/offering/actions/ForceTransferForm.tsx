@@ -1,29 +1,36 @@
+import * as Yup from 'yup';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import Select from '@src/components/form-components/Select';
-import { forceTransfer } from '@src/web3/contractShareCalls';
-import { shareContractABI } from '@src/web3/generated';
-import { String0x, addressWithoutEns, stringFromBytes32 } from '@src/web3/helpersChain';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { Form, Formik } from 'formik';
 import React from 'react';
-import { useAsync } from 'react-use';
-import { OfferingParticipant } from 'types';
-import { useAccount, useContractRead } from 'wagmi';
-import { readContract } from 'wagmi/actions';
-import * as Yup from 'yup';
+import Select from '@src/components/form-components/Select';
 import SetOperatorButton from './SetOperatorButton';
-import { useMutation } from '@apollo/client';
 import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
+import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import { forceTransfer } from '@src/web3/contractShareCalls';
+import { Form, Formik } from 'formik';
+import { OfferingParticipant } from 'types';
+import { readContract } from 'wagmi/actions';
+import { shareContractABI } from '@src/web3/generated';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { useAccount, useContractRead } from 'wagmi';
+import { useAsync } from 'react-use';
+import { useMutation } from '@apollo/client';
 
-type ForceTransferForm = {
+type ForceTransferFormProps = {
   shareContractAddress: String0x;
   partitions: String0x[];
   offeringParticipants: OfferingParticipant[];
   target: String0x;
+  refetchContracts: () => void;
 };
 
-const ForceTransferForm = ({ shareContractAddress, partitions, offeringParticipants, target }: ForceTransferForm) => {
+const ForceTransferForm = ({
+  shareContractAddress,
+  partitions,
+  offeringParticipants,
+  target,
+  refetchContracts,
+}: ForceTransferFormProps) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
   const [partition, setPartition] = React.useState<String0x>(partitions[0]);
@@ -77,6 +84,7 @@ const ForceTransferForm = ({ shareContractAddress, partitions, offeringParticipa
           recipient: values.recipient as String0x,
           setButtonStep,
           addIssuance,
+          refetchContracts,
         });
         setSubmitting(false);
       }}

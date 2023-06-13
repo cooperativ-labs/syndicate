@@ -53,7 +53,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
   const distributionContract = contractSet?.distributionContract;
 
-  const { data: issuanceData, error } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
+  const { data: issuanceData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
     variables: { shareContractAddress: shareContractAddress },
   });
   const issuances = issuanceData?.queryShareIssuanceTrade;
@@ -94,6 +94,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const refetchMainContracts = () => {
     refetchShareContract();
     refetchSwapContract();
+    refetchTransactionHistory();
   };
 
   const isLoading = shareIsLoading || swapIsLoading;
@@ -108,9 +109,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const offeringParticipant = participants.find((participant) => {
     return participant.addressOfferingId === userWalletAddress + id;
   });
+
   // NOTE: This is set up to accept multiple orders from the DB, but `saleDetails`
   // currently refers to the single order the contract can currently offer
-
   const contractOrders = orders.filter((order) => {
     return order.swapContractAddress === swapContractAddress;
   });
@@ -206,7 +207,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
             {isOfferingManager && (
               <div className="flex items-center mt-10 gap-3">
                 <Button
-                  onClick={() => setFinancialSettingsPanel(true)}
+                  onClick={() => {
+                    setFinancialSettingsPanel(true);
+                    refetchTransactionHistory();
+                  }}
                   className=" bg-cLightBlue p-3 font-semibold text-white rounded-md"
                 >
                   Edit Syndication Financials
@@ -285,6 +289,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 contractSet={contractSet}
                 currentSalePrice={currentSalePrice}
                 partitions={partitions}
+                issuances={issuances}
+                refetchContracts={refetchMainContracts}
               />
             )}
           </div>

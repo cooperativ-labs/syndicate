@@ -69,10 +69,11 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
           if (!values.numUnitsPurchase) {
             errors.numUnitsPurchase = 'You must choose a number of shares to purchase.';
             if (order.minUnits) {
-            } else if (values.numUnitsPurchase < order.minUnits) {
-              errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
-            } else if (values.numUnitsPurchase > order.maxUnits) {
-              errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
+              if (values.numUnitsPurchase < order.minUnits) {
+                errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
+              } else if (values.numUnitsPurchase > order.maxUnits) {
+                errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
+              }
             }
           }
           if (!values.disclosures) {

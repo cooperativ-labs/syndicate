@@ -208,6 +208,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           shareContractId={shareContractId}
           offeringParticipants={participants}
           partitions={partitions}
+          myShares={myShares}
+          refetchMainContracts={refetchMainContracts}
         />
       )}
     </div>

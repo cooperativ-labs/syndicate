@@ -225,9 +225,10 @@ export const getSwapStatusOption = ({
 // ===== Trades =====
 
 export const IssuanceTradeOptions = [
-  { value: ShareIssuanceTradeType.Sell, name: 'Sale', color: 'green-600' },
-  { value: ShareIssuanceTradeType.Issue, name: 'Issuance', color: 'blue-600' },
+  { value: ShareIssuanceTradeType.Sell, name: 'Sale', color: 'Purple-600' },
+  { value: ShareIssuanceTradeType.Issue, name: 'Issuance', color: 'green-600' },
   { value: ShareIssuanceTradeType.Forced, name: 'Forced', color: 'red-600' },
+  { value: ShareIssuanceTradeType.Transfer, name: 'Transfer', color: 'black' },
 ];
 
 export const getIssuanceTradeOption = (tradeType) => {

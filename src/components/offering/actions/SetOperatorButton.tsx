@@ -1,10 +1,10 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import React, { useState } from 'react';
 
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import { setContractOperator } from '@src/web3/contractShareCalls';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
-import { setContractOperator } from '@src/web3/contractShareCalls';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 
 type SetOperatorButtonProps = {
   shareContractAddress: String0x;

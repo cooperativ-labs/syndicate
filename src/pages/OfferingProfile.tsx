@@ -144,6 +144,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
                   distributionContractAddress={distributionContractAddress}
                   distributions={distributions}
                   hideTransactionId
+                  walletAddress={userWalletAddress}
                 />
               )}
             </div>

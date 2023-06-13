@@ -6,7 +6,6 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, Organization } from 'types';
-import { TEMP_IS_PARTICIPANT } from '@pages/[organizationId]';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 
@@ -51,10 +50,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
   });
   const windowSize = useWindowSize();
 
-  let participants = [];
-  participants = offering.waitlistOn ? offering.waitlistMembers : offering.participants;
-
-  const sharesPledged = participants.reduce((acc, participant) => {
+  const sharesPledged = offering.participants.reduce((acc, participant) => {
     return acc + participant.maxPledge;
   }, 0);
   const percentPledged = (sharesPledged / offering.details.numUnits) * 100;
@@ -70,12 +66,8 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
     customOnboardingLink,
   } = details;
 
-  const buttonText = TEMP_IS_PARTICIPANT
-    ? 'Manage Investment'
-    : offering.waitlistOn
-    ? 'Join Waitlist'
-    : 'Apply to Invest';
-  const buttonLink = TEMP_IS_PARTICIPANT
+  const buttonText = !permittedEntity ? 'Manage Investment' : offering.waitlistOn ? 'Join Waitlist' : 'Apply to Invest';
+  const buttonLink = !permittedEntity
     ? `/${organization.id}/portal/${offering.id}`
     : customOnboardingLink ?? `/${organization.id}/portal/${offering.id}/investor-application`;
 

@@ -125,7 +125,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
       <div className="w-screen h-screen flex justify-center items-center pb-32">
         <div className="text-center">
           <h1 className="text-2xl font-bold">You are not a participant of this offering</h1>
-          <p className="text-lg">Please contact the organization for more information.</p>
+          <p className="text-lg">Please contact the fund manager for more information.</p>
         </div>
       </div>
     );
@@ -216,6 +216,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
             <DistributionList
               distributionContractAddress={distributionContractAddress}
               distributions={offering.distributions}
+              walletAddress={userWalletAddress}
             />
             <div className="mt-20 flex">
               <ProfileTabContainer offering={offering} />

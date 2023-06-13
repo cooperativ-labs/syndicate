@@ -9,11 +9,11 @@ import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react
 import StandardButton from '@src/components/buttons/StandardButton';
 import { bytes32FromString, String0x } from '@src/web3/helpersChain';
 
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, OfferingParticipant } from 'types';
 
@@ -146,164 +146,172 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
         }}
       >
         {({ isSubmitting, values }) => (
-          <Form className="">
-            <div className="mt-4 mb-2">
-              <div className={defaultFieldLabelClass}>{`${isAsk ? 'Selling' : 'Buying'} wallet:`}</div>
-              <FormattedCryptoAddress chainId={chainId} address={walletAddress} className="font-semibold" />
-            </div>
-            <hr className="my-6" />
-            {!isContractOwner && myShares < 1 && isAsk ? (
-              <div>You do not have any shares to sell </div>
-            ) : (
-              <>
-                <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`${isAsk ? 'Sale' : 'Purchase'}`}</h2>
-                {/* <OfferingSummaryPanel offering={offering} /> */}
-                <div className="md:grid grid-cols-3 gap-3">
-                  <Input
-                    className={cn(defaultFieldDiv, 'col-span-2')}
-                    labelText={`How many shares would you like to ${isAsk ? `sell? ${showSharesAvailable}` : 'buy?'} `}
-                    name="numUnits"
-                    type="number"
-                    placeholder="e.g. 80"
-                    required
-                  />
-                  <Input
-                    className={cn(defaultFieldDiv, 'col-span-2')}
-                    labelText={`At what price per share? (${
-                      details.investmentCurrency && getCurrencyOption(details.investmentCurrency).symbol
-                    })`}
-                    name="price"
-                    type="number"
-                    placeholder="e.g. 2000"
-                    required
-                  />
-                  <NonInput
-                    className={`${defaultFieldDiv} col-span-1 pl-1`}
-                    labelText={`Total ${isAsk ? 'Sale' : 'Purchase'}:`}
-                  >
-                    <>
-                      {values.numUnits &&
-                        `${saleAmountString(values.numUnits, values.price)} ${
-                          details.investmentCurrency && getCurrencyOption(details.investmentCurrency).symbol
-                        }`}
-                    </>
-                  </NonInput>
-                </div>
-                <hr className="my-6 mt-8" />
-                {isContractOwner && (
-                  <div>
-                    <div className="grid md:grid-cols-2 gap-3 my-6">
-                      <Input
-                        className={`${defaultFieldDiv} col-span-1`}
-                        labelText="Minimum purchase in shares"
-                        name="minUnits"
-                        type="number"
-                        placeholder="e.g. 10"
-                      />
-                      <Input
-                        className={`${defaultFieldDiv} col-span-1`}
-                        labelText="Maximum purchase in shares"
-                        name="maxUnits"
-                        type="number"
-                        placeholder="e.g. 120"
-                      />
-                    </div>
-                    <hr className="my-6 mt-8" />{' '}
-                  </div>
-                )}
+          <>
+            <Button className="w-full" onClick={() => setIsAsk(!isAsk)}>
+              {`Switch to ${isAsk ? 'Bid' : 'Ask'}`}
+            </Button>
 
-                {/* TOC SECTION */}
-                {!isContractOwner && (
-                  <>
-                    <div className="mb-3">
-                      <Checkbox
-                        fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
-                        name="toc"
-                        checked={values.toc}
-                        sideLabel
-                        labelText={
-                          <button
-                            className="text-sm  text-gray-700 hover:underline "
-                            aria-label="review application"
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setTocOpen(!tocOpen);
-                            }}
-                          >
-                            <div className="flex text-left">
-                              {permittedEntity?.name} {`accepts this offering's Terms and Conditions`}
-                              <div className="ml-2">
-                                {tocOpen ? (
-                                  <FontAwesomeIcon icon="chevron-up" />
-                                ) : (
-                                  <FontAwesomeIcon icon="chevron-down" />
-                                )}
-                              </div>
-                            </div>
-                          </button>
-                        }
-                      />
-                    </div>
-                    {tocOpen && (
-                      <div className="my-2 p-4 rounded-md bg-slate-100">
-                        <PresentLegalText text={documents[0].text} />
-                        <div className="flex">
-                          <StandardButton
-                            className="mt-5"
-                            outlined
-                            onClick={(e) => {
-                              e.preventDefault();
-                              DownloadFile(documents[0].text, `${name} - Terms & Conditions.md`);
-                            }}
-                            text="Download Terms & Conditions"
-                          />
-                          <StandardButton
-                            className="md:ml-3 mt-5"
-                            outlined
-                            onClick={(e) => {
-                              e.preventDefault();
-                              setTocOpen(false);
-                            }}
-                            text="Close"
-                          />
-                        </div>
+            <Form className="">
+              <div className="mt-4 mb-2">
+                <div className={defaultFieldLabelClass}>{`${isAsk ? 'Selling' : 'Buying'} wallet:`}</div>
+                <FormattedCryptoAddress chainId={chainId} address={walletAddress} className="font-semibold" />
+              </div>
+              <hr className="my-6" />
+              {!isContractOwner && myShares < 1 && isAsk ? (
+                <div>You do not have any shares to sell </div>
+              ) : (
+                <>
+                  <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`${isAsk ? 'Sale' : 'Purchase'}`}</h2>
+                  {/* <OfferingSummaryPanel offering={offering} /> */}
+                  <div className="md:grid grid-cols-3 gap-3">
+                    <Input
+                      className={cn(defaultFieldDiv, 'col-span-2')}
+                      labelText={`How many shares would you like to ${
+                        isAsk ? `sell? ${showSharesAvailable}` : 'buy?'
+                      } `}
+                      name="numUnits"
+                      type="number"
+                      placeholder="e.g. 80"
+                      required
+                    />
+                    <Input
+                      className={cn(defaultFieldDiv, 'col-span-2')}
+                      labelText={`At what price per share? (${
+                        details.investmentCurrency && getCurrencyOption(details.investmentCurrency).symbol
+                      })`}
+                      name="price"
+                      type="number"
+                      placeholder="e.g. 2000"
+                      required
+                    />
+                    <NonInput
+                      className={`${defaultFieldDiv} col-span-1 pl-1`}
+                      labelText={`Total ${isAsk ? 'Sale' : 'Purchase'}:`}
+                    >
+                      <>
+                        {values.numUnits &&
+                          `${saleAmountString(values.numUnits, values.price)} ${
+                            details.investmentCurrency && getCurrencyOption(details.investmentCurrency).symbol
+                          }`}
+                      </>
+                    </NonInput>
+                  </div>
+                  <hr className="my-6 mt-8" />
+                  {isContractOwner && (
+                    <div>
+                      <div className="grid md:grid-cols-2 gap-3 my-6">
+                        <Input
+                          className={`${defaultFieldDiv} col-span-1`}
+                          labelText="Minimum purchase in shares"
+                          name="minUnits"
+                          type="number"
+                          placeholder="e.g. 10"
+                        />
+                        <Input
+                          className={`${defaultFieldDiv} col-span-1`}
+                          labelText="Maximum purchase in shares"
+                          name="maxUnits"
+                          type="number"
+                          placeholder="e.g. 120"
+                        />
                       </div>
-                    )}
-                    <div className="mb-5">
-                      <Checkbox
-                        fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
-                        fieldLabelClass="font-bold text-sm text-gray-600"
-                        name="approvalRequired"
-                        checked={values.approvalRequired}
-                        sideLabel
-                        labelText={`${permittedEntity?.name} understands that this ${
-                          isAsk ? 'sale' : 'purchase'
-                        } requires approval from ${offeringEntity.legalName}.`}
-                      />
+                      <hr className="my-6 mt-8" />{' '}
                     </div>
-                  </>
-                )}
-                <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
-                  <LoadingButtonText
-                    state={buttonStep}
-                    idleText={`${isContractOwner ? 'Sell' : `Propose ${isAsk ? 'sale' : 'purchase'} of`} ${
-                      values.numUnits ?? ''
-                    } shares ${
-                      values.numUnits
-                        ? `for ${saleAmountString(values.numUnits, values.price)} ${
-                            getCurrencyOption(details.investmentCurrency).symbol
-                          } `
-                        : ''
-                    }`}
-                    submittingText="Creating sale..."
-                    confirmedText="Confirmed!"
-                    failedText="Transaction failed"
-                    rejectedText="You rejected the transaction. Click here to try again."
-                  />
-                </FormButton>
-              </>
-            )}
-          </Form>
+                  )}
+
+                  {/* TOC SECTION */}
+                  {!isContractOwner && (
+                    <>
+                      <div className="mb-3">
+                        <Checkbox
+                          fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
+                          name="toc"
+                          checked={values.toc}
+                          sideLabel
+                          labelText={
+                            <button
+                              className="text-sm  text-gray-700 hover:underline "
+                              aria-label="review application"
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setTocOpen(!tocOpen);
+                              }}
+                            >
+                              <div className="flex text-left">
+                                {permittedEntity?.name} {`accepts this offering's Terms and Conditions`}
+                                <div className="ml-2">
+                                  {tocOpen ? (
+                                    <FontAwesomeIcon icon="chevron-up" />
+                                  ) : (
+                                    <FontAwesomeIcon icon="chevron-down" />
+                                  )}
+                                </div>
+                              </div>
+                            </button>
+                          }
+                        />
+                      </div>
+                      {tocOpen && (
+                        <div className="my-2 p-4 rounded-md bg-slate-100">
+                          <PresentLegalText text={documents[0].text} />
+                          <div className="flex">
+                            <StandardButton
+                              className="mt-5"
+                              outlined
+                              onClick={(e) => {
+                                e.preventDefault();
+                                DownloadFile(documents[0].text, `${name} - Terms & Conditions.md`);
+                              }}
+                              text="Download Terms & Conditions"
+                            />
+                            <StandardButton
+                              className="md:ml-3 mt-5"
+                              outlined
+                              onClick={(e) => {
+                                e.preventDefault();
+                                setTocOpen(false);
+                              }}
+                              text="Close"
+                            />
+                          </div>
+                        </div>
+                      )}
+                      <div className="mb-5">
+                        <Checkbox
+                          fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
+                          fieldLabelClass="font-bold text-sm text-gray-600"
+                          name="approvalRequired"
+                          checked={values.approvalRequired}
+                          sideLabel
+                          labelText={`${permittedEntity?.name} understands that this ${
+                            isAsk ? 'sale' : 'purchase'
+                          } requires approval from ${offeringEntity.legalName}.`}
+                        />
+                      </div>
+                    </>
+                  )}
+                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+                    <LoadingButtonText
+                      state={buttonStep}
+                      idleText={`${isContractOwner ? 'Sell' : `Propose ${isAsk ? 'sale' : 'purchase'} of`} ${
+                        values.numUnits ?? ''
+                      } shares ${
+                        values.numUnits
+                          ? `for ${saleAmountString(values.numUnits, values.price)} ${
+                              getCurrencyOption(details.investmentCurrency).symbol
+                            } `
+                          : ''
+                      }`}
+                      submittingText="Creating sale..."
+                      confirmedText="Confirmed!"
+                      failedText="Transaction failed"
+                      rejectedText="You rejected the transaction. Click here to try again."
+                    />
+                  </FormButton>
+                </>
+              )}
+            </Form>
+          </>
         )}
       </Formik>
     </>

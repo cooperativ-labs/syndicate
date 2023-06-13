@@ -16,6 +16,8 @@ type WhitelistAddressListProps = {
   contractSet: OfferingSmartContractSet;
   currentSalePrice: number;
   investmentCurrency: Currency;
+  issuances: any[];
+  refetchContracts: () => void;
 };
 
 const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
@@ -24,6 +26,8 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
   contractSet,
   currentSalePrice,
   investmentCurrency,
+  issuances,
+  refetchContracts,
 }) => {
   const [removeMember, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_WHITELIST_OBJECT);
   const [selectedParticipant, setSelectedParticipant] = React.useState<string | undefined>(undefined);
@@ -43,7 +47,9 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
               paymentTokenDecimals={getCurrencyOption(investmentCurrency).decimals}
               removeMember={removeMember}
               partitions={partitions}
-              offeringId={''}
+              offeringId={offeringId}
+              issuanceList={issuances}
+              refetchContracts={refetchContracts}
             />
           )}
         </div>

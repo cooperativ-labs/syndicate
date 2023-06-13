@@ -11,8 +11,6 @@ import { initializeApollo } from '@src/utils/apolloClient';
 import { Organization } from 'types';
 import { useAccount } from 'wagmi';
 
-export const TEMP_IS_PARTICIPANT = false;
-
 type ResultProps = {
   result: Organization;
 };
@@ -83,7 +81,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       props: { result },
     };
   } catch (error) {
-    throw new Error(error);
     return {
       props: {
         result: null,

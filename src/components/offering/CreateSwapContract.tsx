@@ -59,6 +59,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
           shareContractAddress,
           operator: contract.contractAddress,
           setButtonStep,
+          refetch: () => {},
         });
 
         await addSwapContract({

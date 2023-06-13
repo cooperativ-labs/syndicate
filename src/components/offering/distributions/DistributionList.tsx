@@ -11,6 +11,7 @@ const DistributionList: FC<DistributionListProps> = ({
   distributions,
   isDistributor,
   hideTransactionId,
+  walletAddress,
 }) => {
   return (
     <div className="p-3  border-t-8 rounded-lg w-full">
@@ -35,6 +36,7 @@ const DistributionList: FC<DistributionListProps> = ({
               hideTransactionId={hideTransactionId}
               distributionContractAddress={distributionContractAddress}
               isDistributor={isDistributor}
+              walletAddress={walletAddress}
             />
           </div>
         );
