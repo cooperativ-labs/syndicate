@@ -22,7 +22,6 @@ export type CreateOrganizationType = {
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
   const { data: session, status } = useSession();
   const { data: userData } = useQuery(GET_USER, { variables: { id: session?.user.id } });
-  const [tried, setTried] = useState<boolean>(false);
   const user = userData?.queryUser[0];
   const [addOrganization, { data, error }] = useMutation(ADD_ORGANIZATION);
   const [logoUrl, setLogoUrl] = useState<string>('');
@@ -31,14 +30,6 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
 
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
-  }
-  if (data && !tried) {
-    const orgId = data.addOrganization.organization[0].id;
-    actionOnCompletion && actionOnCompletion();
-    window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
-    dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
-    router.push(`/${orgId}/overview`);
-    setTried(true);
   }
 
   return (
@@ -58,7 +49,8 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        addOrganization({
+        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
+        const result = await addOrganization({
           variables: {
             userId: user.id,
             logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
@@ -69,7 +61,11 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
             currentDate: currentDate,
           },
         });
-        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
+        const orgId = result.data.addOrganization.organization[0].id;
+        window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
+        router.reload();
+        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
+        actionOnCompletion && actionOnCompletion();
         setSubmitting(false);
       }}
     >

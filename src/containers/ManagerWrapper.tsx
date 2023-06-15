@@ -27,8 +27,6 @@ const Manager: FC<ManagerProps> = ({ children }) => {
   const userId = session?.user.id;
   const apolloClient = useApolloClient();
   const [organizations, setOrganizations] = useState<OrganizationUser[]>([]);
-  // const applicationStore: ApplicationStoreProps = useContext(store);
-  // const { ActiveOrg } = applicationStore;
 
   const toLoginIfNoUser = (user: User) => {
     if (!user) {
@@ -88,6 +86,8 @@ type ManagerWrapperProps = {
 const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { PageIsLoading } = applicationStore;
+
+  console.log('PageIsLoading', PageIsLoading);
 
   return (
     <div className="h-full">
