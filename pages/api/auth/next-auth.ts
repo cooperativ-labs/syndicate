@@ -131,7 +131,7 @@ const options: AuthOptions = {
     //   signOut: '/auth/signout',
     //   error: '/auth/error',
     //   verifyRequest: '/auth/verify-request',
-    newUser: '/welcome',
+    // newUser: '/welcome',
   },
   callbacks: {
     //@ts-ignore

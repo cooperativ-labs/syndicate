@@ -20,10 +20,9 @@ export type CreateOrganizationType = {
 };
 
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
-  const { data: session, status } = useSession();
-  const { data: userData } = useQuery(GET_USER, { variables: { id: session?.user.id } });
-  const user = userData?.queryUser[0];
-  const [addOrganization, { data, error }] = useMutation(ADD_ORGANIZATION);
+  const { data: session } = useSession();
+  const userId = session?.user.id;
+  const [addOrganization, { data, error, loading }] = useMutation(ADD_ORGANIZATION);
   const [logoUrl, setLogoUrl] = useState<string>('');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
@@ -31,6 +30,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
   }
+  console.log(loading);
 
   return (
     <Formik
@@ -52,7 +52,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
         dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
         const result = await addOrganization({
           variables: {
-            userId: user.id,
+            userId: userId,
             logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
             website: values.website,
             name: values.name,
