@@ -40,7 +40,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
     if (status !== 'loading') {
       const asyncMiddleware = setContext((_, { headers }) => setHeaders(headers, token));
       const httpLink = createHttpLink({
-        uri: process.env.NEXT_PUBLIC_GRAPHQL_ENDPOINT,
+        uri: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT,
         credentials: 'same-origin',
       });
 

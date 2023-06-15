@@ -87,8 +87,6 @@ const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { PageIsLoading } = applicationStore;
 
-  console.log('PageIsLoading', PageIsLoading);
-
   return (
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>

@@ -1,7 +1,6 @@
 import React, { FC, useContext, useState } from 'react';
 
 import { Form, Formik } from 'formik';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
@@ -30,7 +29,6 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
   }
-  console.log(loading);
 
   return (
     <Formik
