@@ -17,6 +17,5 @@
     NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID = 'syndicate-382709'
     NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'cooperativ-filestore'
     NEXT_PUBLIC_AUTH_HEADER = 'X-Auth-Token'
-
     NEXT_PUBLIC_DGRAPH_ENDPOINT = 'https://nameless-brook-470097.eu-central-1.aws.cloud.dgraph.io/graphql'
 
