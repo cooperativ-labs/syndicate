@@ -39,7 +39,7 @@ const ModalCreateOrganization: FC = () => {
                   <h1 className="text-3xl font-bold font-cDarkBlue text-center mb-4">{`Create a new organization.`}</h1>
                   <div className="px-3  md:mx-2">
                     <CreateOrganization
-                      actionOnCompletion={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
+                    // actionOnCompletion={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
                     />
                   </div>
                   <div className="flex justify-center uppercase mt-4">
