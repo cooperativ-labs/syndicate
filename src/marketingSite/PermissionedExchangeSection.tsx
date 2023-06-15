@@ -9,7 +9,7 @@ const FeatureItem: FC<{ image: string; title: string; subtitle: string; descript
   reverse,
 }) => {
   const windowSize = useWindowSize();
-  const isMobile = windowSize.width < 768;
+  const isMobile = windowSize.width && windowSize.width < 768;
   const imageItem = (
     <div className={'col-span-3 rounded-lg shadow-lg bg-white p-4'}>
       <img src={image} />

@@ -3,6 +3,7 @@ import React, { FC, useContext, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 
+import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
@@ -20,7 +21,8 @@ export type CreateOrganizationType = {
 
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
   const { data: session, status } = useSession();
-  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session?.user.id } });
+  const [tried, setTried] = useState<boolean>(false);
   const user = userData?.queryUser[0];
   const [addOrganization, { data, error }] = useMutation(ADD_ORGANIZATION);
   const [logoUrl, setLogoUrl] = useState<string>('');
@@ -30,11 +32,13 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
   }
-  if (data) {
+  if (data && !tried) {
     const orgId = data.addOrganization.organization[0].id;
     actionOnCompletion && actionOnCompletion();
     window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
+    dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
     router.push(`/${orgId}/overview`);
+    setTried(true);
   }
 
   return (
@@ -81,13 +85,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
                 type="text"
                 placeholder="Alphabet Inc."
               />{' '}
-              <Input
-                className={defaultFieldDiv}
-                labelText="Country of operation"
-                name="country"
-                type="text"
-                placeholder="e.g. Cayman Islands"
-              />
+              <CountrySelect className={defaultFieldDiv} labelText="Country of operation" name="country" />
             </div>
             <div className="flex col-span-1 pt-5 justify-center">
               <FileUpload

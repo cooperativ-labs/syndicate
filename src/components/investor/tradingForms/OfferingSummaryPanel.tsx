@@ -1,36 +1,36 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
-import { Currency, OfferingSale } from 'types';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { Currency, ShareOrder } from 'types';
+import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { setChainId } from '@src/web3/connectors';
+import { String0x } from '@src/web3/helpersChain';
+import { useChainId } from 'wagmi';
 
 type OfferingSummaryPanelProps = {
-  seller: string;
-  saleQty: number;
-  soldQty: number;
-  price: number;
-  investmentCurrency: Currency;
+  seller: String0x | undefined | '';
+  shareQtyRemaining: number | undefined;
+
+  price: number | undefined;
+  paymentTokenAddress: String0x | undefined;
   className?: string;
 };
 
 const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   seller,
   price,
-  saleQty,
-  soldQty,
-  investmentCurrency,
+  shareQtyRemaining,
+  paymentTokenAddress,
   className,
 }) => {
-  const presentCurrency = getCurrencyOption(investmentCurrency).symbol;
-  const chainId = setChainId;
+  const presentCurrency = getCurrencyById(paymentTokenAddress)?.symbol;
+  const chainId = useChainId();
   return (
     <div className={className}>
       <div className="flex items-center">
         Seller: <FormattedCryptoAddress className="ml-1" chainId={chainId} address={seller} withCopy />
       </div>
       <div>Share price: {` ${numberWithCommas(price)} ${presentCurrency}`}</div>
-      {!!saleQty && <div>Quantity for sale: {numberWithCommas(saleQty)}</div>}
+      {!!shareQtyRemaining && <div>Remaining for sale: {numberWithCommas(shareQtyRemaining)}</div>}
     </div>
   );
 };

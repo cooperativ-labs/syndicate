@@ -1,7 +1,7 @@
 import Card from '@src/components/cards/Card';
 import CloseButton from '@src/components/buttons/CloseButton';
 import cn from 'classnames';
-import React, { FC, ReactChild } from 'react';
+import React, { FC } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
 
 type FormModalProps = {
@@ -10,7 +10,7 @@ type FormModalProps = {
   title?: string;
   subTitle?: string;
   onClose: () => void;
-  children: ReactChild;
+  children: React.ReactNode;
 };
 
 const FormModal: FC<FormModalProps> = ({ noModal, formOpen, title, subTitle, onClose, children }) => {

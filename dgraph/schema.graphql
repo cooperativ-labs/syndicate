@@ -220,8 +220,10 @@ add:{rule: """
 enum SmartContractType {
 	C2
 	C3
-	REVENUE_SHARES
 	EXCHANGE_MANAGER
+	SHARE
+	SWAP
+	DISTRIBUTION
 	OTHER
 }
 
@@ -269,12 +271,14 @@ add: {rule: """
 	id: ID!
 	cryptoAddress: CryptoAddress!
 	type: SmartContractType!
+	subType: String
 	numTokensAuthorized: Int64
 	backingToken: Currency
 	owner: LegalEntity @hasInverse(field:smartContracts)
 	name: String
 	document: Document
 	established: Boolean
+	partitions: [String]
 }
 
 
@@ -343,6 +347,57 @@ add:,
 	lastUpdate: DateTime! 
 }
 
+type OfferingSmartContractSet	@auth (
+add:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingSmartContractSet{
+									offering{
+									offeringEntity{
+										organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}}
+									}
+						}"""
+	}
+	update:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingSmartContractSet{
+									offering{
+									offeringEntity{
+										organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}}
+									}
+						}"""
+	}
+	delete:,
+			{rule: """
+						query($userId: ID!) { 
+								queryOfferingSmartContractSet{
+									offering{
+									offeringEntity{
+										organization{
+											users(filter: { permissions: { eq: ADMIN } }) {
+													user(filter: { id: [$userId] }) { id }
+												}}
+										}}
+									}
+						}"""
+	}
+) {
+	id: ID!
+	offering: Offering @hasInverse(field: smartContractSets)
+	shareContract: SmartContract
+	swapContract: SmartContract
+	distributionContract: SmartContract
+}
+
 type Offering @auth (
 add:
 			{rule: """
@@ -397,11 +452,10 @@ add:
 	website: String 
 	shortDescription: String
 	offeringEntity: LegalEntity @hasInverse(field:offerings) 
-	smartContracts: [SmartContract]
+	smartContractSets: [OfferingSmartContractSet] @hasInverse(field:offering)
 	details: OfferingDetails @hasInverse(field:offering)
 	profileDescriptions: [OfferingDescriptionText] @hasInverse(field:offering)
-	purchaseRequests: [PurchaseRequest] @hasInverse(field:relatedOffering)
-	sales: [OfferingSale] @hasInverse(field:relatedOffering)
+	orders: [ShareOrder] @hasInverse(field:relatedOffering)
 	participants: [OfferingParticipant] @hasInverse(field:offering)
 	distributions: [OfferingDistribution]
 	documents: [Document] @hasInverse(field:offering)
@@ -564,13 +618,14 @@ type OfferingParticipant @auth (
 	id: ID!
 	addressOfferingId: String! @id
 	walletAddress: String! @search(by:[fulltext]) 
+	chainId: Int!
 	permitted: Boolean!
 	name: String
 	offering: Offering! @hasInverse(field:participants)
 	investorApplication: InvestorApplication
 	minPledge: Int
 	maxPledge: Int
-	nonUS: Boolean
+	jurisdiction: Jurisdiction
 	paid: Boolean
 	externalId: String
 	lastUpdate: DateTime!
@@ -582,38 +637,43 @@ type InvestorApplication {
 	creationDate: DateTime!
 }
 
-type PurchaseRequest {
-	id: ID!
-	numUnits: Int!
-	relatedOffering: Offering! @hasInverse(field:purchaseRequests) 
-	purchaser: LegalEntity!
-	purchaseDocument: Document!
-	purchaserWallet: String!
-	creationDate: DateTime!
+enum ShareIssuanceTradeType	{
+	ISSUE
+	SELL
+	FORCED
+	TRANSFER
 }
 
-type OfferingSale {
+type ShareIssuanceTrade	{
 	id: ID!
-	numShares: Int!
+	shareContractAddress: String! @search
+	recipientAddress: String! @search
+	senderAddress: String! @search
+	amount: Int!
+	price:	Int
+	partition: String! @search
+	transactionHash: String!
+	type: ShareIssuanceTradeType!
+}
+
+type ShareOrder {
+	id: ID!
 	minUnits: Int
 	maxUnits: Int
-	price: Int!
-	relatedOffering: Offering! @hasInverse(field:sales) 
-	smartContractId: String
-	saleContractId: String
-	isBid: Boolean
-	initiator: String
+	visible: Boolean
+	relatedOffering: Offering! @hasInverse(field:orders) 
+	swapContractAddress: String!
+	initiator: String!
+	contractIndex: Int!
 	creationDate: DateTime!
 	lastUpdate: DateTime
-	visible: Boolean
+	transactionHash: String!
 }
 
 type OfferingDistribution {
 	id: ID!
-	date: DateTime!
-	amount: Int!
-	transactionId: String
-	hasClaimed: [String]
+	contractIndex: Int!
+	transactionHash: String!
 }
 
 """
@@ -818,6 +878,7 @@ enum LinkedAccountType  {
 	OTHER
 }
 
+
 type LinkedAccount @auth (
 add:{rule: """
 						query($userId: ID!){ 
@@ -864,14 +925,19 @@ add:{rule: """
 	organization: Organization! @hasInverse(field:linkedAccounts) 
 }
 
+type Jurisdiction {
+	id: ID!
+	country:	String!
+	province: String
+}
+
+
 enum LegalEntityType {
 	INDIVIDUAL
 	CORPORATION
 	LLC
 	UNINCORPORATED_ASSOCIATION
 }
-
-
 
 type LegalEntity @auth (
 	add: { rule: """
@@ -918,9 +984,9 @@ update:{rule: """
 	walletAddresses: [CryptoAddress] @hasInverse(field:owner) 
 	owners: [LegalEntity] @hasInverse(field:subsidiaries) 
 	subsidiaries: [LegalEntity] @hasInverse(field:owners) 
-	supplementaryLegalText: String
+	purpose: String
 	addresses: [Address] @hasInverse(field:owner)
-	jurisdiction: String 
+	jurisdiction: Jurisdiction 
 	documentsOwned: [Document] @hasInverse(field:owner) 
 	documentsSigned: [DocumentSignatory] @hasInverse(field:legalEntity) 
 	smartContracts: [SmartContract] @hasInverse(field:owner)
@@ -930,6 +996,8 @@ update:{rule: """
 	creationDate: DateTime!
 	lastUpdate: DateTime!
 }
+
+
 
 ### ORGANIZATION MODEL ###
 

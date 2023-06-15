@@ -1,64 +1,64 @@
-import * as backendCtc from '../../web3/index.main';
+import abi from '@src/web3/ABI';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import PresentLegalText from './PresentLegalText';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import router from 'next/router';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { LegalEntity, SmartContract } from 'types';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { ReachContext } from '@src/SetReachContext';
-import { sha256 } from 'js-sha256';
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
+import { setDocument } from '@src/web3/contractShareCalls';
+import { CurrencyCode, Maybe, SmartContract } from 'types';
+import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
   availableContract: SmartContract;
-  bacValue: string;
-  bacName: string;
-  bacId: string;
+  bacValue: CurrencyCode | undefined;
+  bacName: string | undefined;
+  bacId: string | undefined;
   agreement: string;
-  spvEntityName: string;
+  spvEntityName: Maybe<string> | undefined;
   offeringId: string;
   entityId: string;
+  organizationId: string;
 };
 
 const LinkLegalForm: FC<LinkLegalFormProps> = ({
   setAgreementContent,
   availableContract,
-  bacValue,
-  bacName,
-  bacId,
+
   agreement,
   spvEntityName,
   offeringId,
   entityId,
+  organizationId,
 }) => {
   const [alerted, setAlerted] = useState<boolean>(false);
   const [loadingModal, setLoadingModal] = useState<boolean>(false);
-  const { reachAcc, userWalletAddress } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
+  const chainId = useChainId();
   const [addLegalLink, { data: agreementData, error: agreementError }] = useMutation(ADD_LEGAL_SHARE_LINK);
   const [addOfferingParticipant, { data: participantData, error: participantError }] =
     useMutation(ADD_OFFERING_PARTICIPANT);
 
-  const agreementHash = sha256(agreement);
+  const agreementHash = hashBytes32FromString(agreement);
 
   if (agreementError && !alerted) {
     alert(`Oops. Looks like something went wrong: ${agreementError.message}`);
-    setLoadingModal(false);
     setAlerted(true);
   }
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const docHash = async (values) => {
-    const ctc = reachAcc.contract(backendCtc, availableContract.cryptoAddress.address);
-    const docTitle = `Token Share Link - ${spvEntityName}`;
-    const call = async (f) => {
+
+  const createDocHash = async (signature: string) => {
+    setButtonStep('submitting');
+    const handleEstablish = async () => {
       try {
-        await f();
         await addLegalLink({
           variables: {
             currentDate: currentDate,
@@ -71,7 +71,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
             // priceStart: parseInt(values.initialPrice, 10),
             // maxRaise: values.numUnits * parseInt(values.initialPrice, 10),
             agreementTitle: docTitle,
-            signature: values.signature,
+            signature: signature,
           },
         });
         await addOfferingParticipant({
@@ -80,22 +80,28 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
             addressOfferingId: userWalletAddress + offeringId,
             offeringId: offeringId,
             name: spvEntityName,
-            applicantId: entityId,
             walletAddress: userWalletAddress,
-            permitted: false,
+            chainId: chainId,
+            permitted: true,
           },
         });
 
         setButtonStep('confirmed');
-        router.push(`/offerings/${offeringId}`);
+        router.push(`${getBaseUrl()}/offerings/${offeringId}`);
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
       }
     };
-    const apis = ctc.a;
-    call(async () => {
-      const apiReturn = await apis.docHash(agreementHash);
-      return apiReturn;
+    const docTitle = `Token Link Agreement`;
+    const uri = `${getBaseUrl()}/offerings/${offeringId}`;
+
+    await setDocument({
+      docName: docTitle,
+      text: agreement,
+      shareContractAddress: availableContract.cryptoAddress.address as String0x,
+      setButtonStep,
+      callback: handleEstablish,
+      uri,
     });
   };
 
@@ -115,16 +121,13 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
         onSubmit={async (values, { setSubmitting }) => {
           setAlerted(false);
           setSubmitting(true);
-          setButtonStep('submitting');
-          setLoadingModal(true);
-          await docHash(values);
+          await createDocHash(values.signature);
           setSubmitting(false);
-          setLoadingModal(false);
         }}
       >
         {({ isSubmitting, values }) => (
           <Form className="flex flex-col">
-            <div className="md:hidden">
+            <div className="mb-5">
               <PresentLegalText text={agreement} />
             </div>
             <Input
@@ -135,7 +138,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
               labelText="Signature"
               required
             />
-            <div className="text-sm text-blue-900 font-semibold text-opacity-80 mt-4">SHA-256 Hash</div>
+            <div className="text-sm text-blue-900 font-semibold text-opacity-80 mt-4">Agreement Hash (Keccak-256)</div>
             <div className="text-sm break-all">{agreementHash}</div>
             <FormButton
               type="submit"

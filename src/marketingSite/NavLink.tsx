@@ -11,7 +11,11 @@ interface NavLinkProps {
 
 const NavLink: React.FC<NavLinkProps> = ({ link, text, disabled, external }) => {
   return (
-    <a href={!disabled && link} target={external && '_blank'} rel={external && 'noreferrer'}>
+    <a
+      href={!disabled ? link : undefined}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noreferrer' : undefined}
+    >
       <span
         className={cn(
           'uppercase font-semibold text-sm hover:text-cGold mr-3 md:mr-10',

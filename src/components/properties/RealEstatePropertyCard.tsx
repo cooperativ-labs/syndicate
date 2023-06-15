@@ -1,17 +1,13 @@
 import AddressDisplay from '@src/components/address/AddressDisplay';
-import Button from '../buttons/Button';
 import cn from 'classnames';
 import MapPanel from '../MapPanel';
-import MoneyDisplay from '../MoneyDisplay';
-import OfferingDetailDashboardItem from '../offering/OfferingDetailDashboardItem';
 import React, { FC } from 'react';
 import router from 'next/router';
-import { Currency, CurrencyCode, RealEstateProperty } from 'types';
-import { numberWithCommas } from '@src/utils/helpersMoney';
+import { Address, Currency, CurrencyCode, Maybe, RealEstateProperty } from 'types';
 
 type RealEstatePropertyCardProps = {
   property: RealEstateProperty;
-  currency: Currency; //should change to Currency
+  currency: Maybe<Currency> | undefined;
   offeringEntityId: string;
   fullWidth?: boolean;
 };
@@ -31,14 +27,14 @@ export const RealEstatePropertyCard: FC<RealEstatePropertyCardProps> = ({
       )}
       onClick={() => router.push(`/entities/${offeringEntityId}/properties/${id}`)}
     >
-      <img src={images[0]?.url} className="object-cover w-full h-24 absolute" />
+      <img src={images ? images[0]?.url : undefined} className="object-cover w-full h-24 absolute" />
       <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />
       <h2 className="text-xl font-bold text-white absolute left-4 top-10">
-        {address.line1 ? `${address.line1}` : `${address.city}, ${address.stateProvince}`}
+        {address?.line1 ? `${address.line1}` : `${address?.city}, ${address?.stateProvince}`}
       </h2>
 
       <div className="p-4 flex flex-col ">
-        <AddressDisplay address={address} />
+        <AddressDisplay address={address as Address} />
         <hr className="my-3 bg-slate-400" />
 
         {/* <div>{description}</div> */}

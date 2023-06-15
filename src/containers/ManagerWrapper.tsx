@@ -5,12 +5,15 @@ import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
 import NewOrganizationModal from './NewOrganizationModal';
 import React, { FC, useContext, useEffect, useState } from 'react';
+import router from 'next/router';
 import WalletChooserModal from './wallet/WalletChooserModal';
 import WithAuthentication from './WithAuthentication';
 import { ApplicationStoreProps, store } from '@context/store';
+import { disconnectWallet } from '@src/web3/connectors';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { Organization, OrganizationUser, User } from 'types';
+import { signOut, useSession } from 'next-auth/react';
 import { useApolloClient } from '@apollo/client';
-import { useSession } from 'next-auth/react';
 
 // const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
@@ -23,9 +26,22 @@ const Manager: FC<ManagerProps> = ({ children }) => {
   const { data: session, status } = useSession();
   const userId = session?.user.id;
   const apolloClient = useApolloClient();
-  const [organizations, setOrganizations] = useState([]);
+  const [organizations, setOrganizations] = useState<OrganizationUser[]>([]);
   // const applicationStore: ApplicationStoreProps = useContext(store);
   // const { ActiveOrg } = applicationStore;
+
+  const toLoginIfNoUser = (user: User) => {
+    if (!user) {
+      disconnectWallet();
+      signOut({ callbackUrl: '/' })
+        .then(() => {
+          router.reload();
+        })
+        .catch((error) => {
+          throw new Error(error);
+        });
+    }
+  };
 
   useEffect(() => {
     apolloClient
@@ -34,7 +50,9 @@ const Manager: FC<ManagerProps> = ({ children }) => {
         variables: { id: userId },
       })
       .then((response) => {
-        setOrganizations(response.data.queryUser[0]?.organizations);
+        const user = response.data.queryUser[0];
+        toLoginIfNoUser(user);
+        setOrganizations(user?.organizations);
       });
   }, [userId, setOrganizations, apolloClient]);
 

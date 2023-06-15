@@ -4,9 +4,9 @@ import router from 'next/router';
 import useWindowSize from '@hooks/useWindowSize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
+import { Maybe } from 'yup';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, Organization } from 'types';
-import { TEMP_IS_PARTICIPANT } from '@pages/[organizationId]';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 
@@ -40,26 +40,29 @@ const ShareOfferPanelItem: FC<ShareOfferPanelItemProps> = ({ children, title, no
 
 type ShareOfferPanelProps = {
   offering: Offering;
-  currentSalePrice: number;
-  organization: Organization;
+  currentSalePrice: Maybe<number> | undefined;
+  organization: Organization | undefined;
   currentUser?: string;
 };
 
 const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice, organization, currentUser }) => {
-  const permittedEntity = offering.participants.find((participant) => {
-    return participant.addressOfferingId === currentUser + offering.id;
+  const participants = offering.participants;
+  const permittedEntity = participants?.find((participant) => {
+    return participant?.addressOfferingId === currentUser + offering.id;
   });
   const windowSize = useWindowSize();
 
-  let participants = [];
-  participants = offering.waitlistOn ? offering.waitlistMembers : offering.participants;
+  const sharesPledged = participants
+    ? participants.reduce((acc, participant) => {
+        const maxPledge = participant?.maxPledge ?? 0;
+        return acc + maxPledge;
+      }, 0)
+    : 0;
 
-  const sharesPledged = participants.reduce((acc, participant) => {
-    return acc + participant.maxPledge;
-  }, 0);
-  const percentPledged = (sharesPledged / offering.details.numUnits) * 100;
+  const percentPledged = offering.details?.numUnits ? (sharesPledged / offering.details.numUnits) * 100 : 0;
 
   const { details } = offering;
+
   const {
     investmentCurrency,
     projectedIrr,
@@ -68,16 +71,20 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
     cocReturn,
     minUnitsPerInvestor,
     customOnboardingLink,
-  } = details;
+  } = details || {
+    investmentCurrency: undefined,
+    projectedIrr: undefined,
+    projectedIrrMax: undefined,
+    preferredReturn: undefined,
+    cocReturn: undefined,
+    minUnitsPerInvestor: undefined,
+  };
 
-  const buttonText = TEMP_IS_PARTICIPANT
-    ? 'Manage Investment'
-    : offering.waitlistOn
-    ? 'Join Waitlist'
-    : 'Apply to Invest';
-  const buttonLink = TEMP_IS_PARTICIPANT
-    ? `/${organization.id}/portal/${offering.id}`
-    : customOnboardingLink ?? `/${organization.id}/portal/${offering.id}/investor-application`;
+  const buttonText = !permittedEntity ? 'Manage Investment' : offering.waitlistOn ? 'Join Waitlist' : 'Apply to Invest';
+  const buttonLink =
+    !permittedEntity && organization
+      ? `/${organization.id}/portal/${offering.id}`
+      : customOnboardingLink ?? `/${organization?.id}/portal/${offering.id}/investor-application`;
 
   const ApplyManageButton = (
     <button
@@ -98,7 +105,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
           Price<span className="text-sm">/share</span>
         </div>
         <div className="flex items-center">
-          <img src={getCurrencyOption(investmentCurrency).logo} className="h-6 mr-1" />
+          <img src={getCurrencyOption(investmentCurrency)?.logo} className="h-6 mr-1" />
           <div className="text-4xl font-bold"> {`${numberWithCommas(currentSalePrice)} `}</div>
         </div>
       </div>
@@ -133,8 +140,8 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
       {minUnitsPerInvestor ? (
         <div className="mt-2 font-semibold text-xs  text-gray-300 lg:text-gray-700 text-center">{`* Minimum purchase: ${minUnitsPerInvestor} share${
           minUnitsPerInvestor !== 1 ? 's' : ''
-        }  (${numberWithCommas(currentSalePrice * minUnitsPerInvestor)} ${
-          getCurrencyOption(investmentCurrency).symbol
+        }  (${numberWithCommas(currentSalePrice ? currentSalePrice * minUnitsPerInvestor : undefined)} ${
+          getCurrencyOption(investmentCurrency)?.symbol
         })`}</div>
       ) : (
         <></>

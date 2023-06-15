@@ -3,10 +3,10 @@ import React, { FC } from 'react';
 import RealEstatePropertyCard from './RealEstatePropertyCard';
 import router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { LegalEntity } from 'types';
+import { LegalEntity, Maybe } from 'types';
 
 type OfferingPropertiesProps = {
-  offeringEntity: LegalEntity;
+  offeringEntity: Maybe<LegalEntity> | undefined;
   isOfferingManager: boolean;
   offeringId: string;
 };
@@ -14,11 +14,11 @@ type OfferingPropertiesProps = {
 const OfferingProperties: FC<OfferingPropertiesProps> = ({ offeringEntity, isOfferingManager, offeringId }) => {
   return (
     <div className="flex flex-col md:flex-row md:flex-wrap justify center gap-5">
-      {offeringEntity.realEstateProperties.map((property, i) => (
+      {offeringEntity?.realEstateProperties?.map((property: any, i: number) => (
         <RealEstatePropertyCard
           key={i}
           property={property}
-          currency={offeringEntity.operatingCurrency}
+          currency={offeringEntity?.operatingCurrency}
           offeringEntityId={offeringEntity.id}
         />
       ))}

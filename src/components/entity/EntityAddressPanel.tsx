@@ -9,13 +9,14 @@ type EntityAddressPanelProps = {
 };
 
 const EntityAddressPanel: FC<EntityAddressPanelProps> = ({ offeringEntity, owners }) => {
+  const addresses = offeringEntity.addresses;
   return (
     <SectionBlock sectionTitle={offeringEntity.legalName} mini>
       <div className="bg-gray-200 p-3 rounded-md">
-        {offeringEntity.addresses.map((address, i) => (
+        {addresses?.map((address, i) => (
           <div key={i}>
             <AddressDisplay address={address} className="text-sm" />
-            {offeringEntity.addresses.length > 0 && <hr className="my-1" />}
+            {addresses.length > 0 && <hr className="my-1" />}
           </div>
         ))}
         {owners.length > 0 && (
@@ -26,11 +27,11 @@ const EntityAddressPanel: FC<EntityAddressPanelProps> = ({ offeringEntity, owner
                 <div key={i}>
                   <div>{entity.legalName}</div>
                   <div>
-                    {entity.addresses.map((address, i) => (
+                    {entity.addresses?.map((address, i) => (
                       <AddressDisplay address={address} key={i} />
                     ))}
                   </div>
-                  <div>{entity.supplementaryLegalText}</div>
+                  <div>{entity.purpose}</div>
                 </div>
               );
             })}

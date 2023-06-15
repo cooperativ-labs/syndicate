@@ -15,8 +15,11 @@ const WalletChooserModal: FC<WalletChooserModalProps> = ({ noModal }) => {
   const { dispatch: dispatchWalletModal, WalletModalOpen } = applicationStore;
 
   const windowSize = useWindowSize();
+  const windowWidth = windowSize && windowSize.width;
+  const isDesktop = windowWidth && windowWidth > 768 ? true : false;
+
   useEffect(() => {
-    if (WalletModalOpen && windowSize.width > 768) {
+    if (WalletModalOpen && isDesktop) {
       // setScrollY(window.scrollY);
       document.body.style.position = 'fixed';
       document.body.style.top = `-${window.scrollY}px`;
@@ -26,7 +29,7 @@ const WalletChooserModal: FC<WalletChooserModalProps> = ({ noModal }) => {
       document.body.style.top = '';
       // window.scrollTo(0, parseInt(scrollY));
     }
-  }, [WalletModalOpen, windowSize]);
+  }, [WalletModalOpen, windowSize, isDesktop]);
 
   if (WalletModalOpen) {
     return (
@@ -45,7 +48,7 @@ const WalletChooserModal: FC<WalletChooserModalProps> = ({ noModal }) => {
           }}
         >
           <Card
-            className="mx-4 absolute right-0 left-0 top-14 md:top-0 py-6 md:relative flex-col md:w-96 rounded-xl md:rounded-lg shadow-modal"
+            className="mx-4 bg-white absolute right-0 left-0 top-14 md:top-0 py-6 md:relative flex-col md:w-96 rounded-xl md:rounded-lg shadow-modal"
             style={{ overflow: 'smooth' }}
           >
             <button

@@ -3,17 +3,17 @@ import React, { FC, useEffect, useState } from 'react';
 import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
 import { Form, Formik } from 'formik';
 
-import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
-import { CurrencyCode, Organization } from 'types';
+import { CurrencyCode, LegalEntity, Organization } from 'types';
 import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
-import { GoogleMap, Marker } from '@react-google-maps/api';
-import { useMutation, useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
+import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
+import { useMutation } from '@apollo/client';
 
 export type CreateEntityType = {
   organization: Organization;
@@ -23,8 +23,8 @@ export type CreateEntityType = {
 
 const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionOnCompletion }) => {
   const [addLegalEntity, { data, error }] = useMutation(ADD_ENTITY);
-  const [latLang, setLatLang] = useState({ lat: null, lng: null });
-  const [autocompleteResults, setAutocompleteResults] = useState([null]);
+  const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
+  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
 
   const setDefaultLogo = defaultLogo ? defaultLogo : '/assets/images/logos/company-placeholder.jpeg';
@@ -55,30 +55,17 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
     return <></>;
   }
 
-  const entityOptions = [...organization.legalEntities].reverse();
+  const entityOptions = organization && getEntityOptionsList(organization.legalEntities as LegalEntity[]);
 
-  const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
-  const street_number = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('street_number')
-  )?.long_name;
-  const street_name = autocompleteResults[0]?.address_components.find((x) => x.types.includes('route'))?.long_name;
-  const city = autocompleteResults[0]?.address_components.find((x) => x.types.includes('locality'))?.long_name;
-  const sublocality = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('sublocality')
-  )?.long_name;
-  const state = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('administrative_area_level_1')
-  )?.long_name;
-  const zip = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_code'))?.long_name;
-  const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
+  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
+    normalizeGeoAddress(autocompleteResults);
 
   return (
     <Formik
       initialValues={{
-        // nonHuman: 'true',
         website: '',
         legalName: '',
-        supLegalText: '',
+        entityPurpose: '',
         addressLine1: '',
         addressLine2: '',
         addressLine3: '',
@@ -87,7 +74,8 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         postalCode: '',
         country: '',
         operatingCurrency: CurrencyCode.Usd,
-        jurisdiction: '',
+        jurCountry: '',
+        jurProvince: '',
         type: undefined,
         addressAutocomplete: '',
       }}
@@ -102,30 +90,38 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         if (!values.type) {
           errors.type = 'Please select a type of entity';
         }
-        if (!street_number || !street_name) {
-          errors.addressAutocomplete = 'Please include street number and street name';
+        if (!firstAddressLine) {
+          errors.addressAutocomplete = 'Address must include street number and street name';
+        }
+        if (!city) {
+          errors.addressAutocomplete = 'Address must include a city';
+        }
+        if (!state) {
+          errors.addressAutocomplete = 'Address must include a state';
         }
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
         setSubmitting(true);
+
         addLegalEntity({
           variables: {
             organizationId: organization.id,
             displayName: values.legalName,
             legalName: values.legalName,
-            supLegalText: values.supLegalText,
+            entityPurpose: values.entityPurpose,
             addressLabel: 'Primary Operating Address',
-            addressLine1: CreateFirstAddressLine(street_number, street_name),
-            addressLine2: subpremise,
-            city: city ?? sublocality,
+            addressLine1: firstAddressLine,
+            addressLine2: secondAddressLine,
+            city: city,
             stateProvince: state,
-            postalCode: zip,
+            postalCode: postalCode,
             country: country,
             lat: latLang.lat,
             lng: latLang.lng,
             operatingCurrency: values.operatingCurrency,
-            jurisdiction: values.jurisdiction,
+            jurCountry: values.jurCountry,
+            jurProvince: values.jurProvince,
             type: values.type,
             currentDate: currentDate,
           },
@@ -133,7 +129,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         setSubmitting(false);
       }}
     >
-      {({ isSubmitting, values }) => (
+      {({ values, isSubmitting }) => (
         <Form className="flex flex-col gap relative">
           <Select className={defaultFieldDiv} required labelText="Type of entity" name="type">
             <option value="">Select entity type</option>
@@ -165,23 +161,16 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               );
             })}
           </Select>
-          <Input
-            className={defaultFieldDiv}
-            required
-            labelText="State of registration"
-            name="jurisdiction"
-            type="text"
-            placeholder="e.g. Delaware"
-          />
+          <JurisdictionSelect className={defaultFieldDiv} labelText={'Jurisdiction'} values={values} />
 
           <Input
             className={defaultFieldDiv}
-            labelText="Supplementary Legal Text (optional)"
-            name="supLegalText"
+            labelText="Purpose of this entity"
+            name="entityPurpose"
             textArea
-            fieldHeight="h-48"
+            fieldHeight="h-24"
             type="text"
-            placeholder="e.g. The following individual and businesses own this business..."
+            placeholder="Short description of the purpose of this entity."
           />
 
           <hr className="my-6" />

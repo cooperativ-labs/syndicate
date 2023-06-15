@@ -2,19 +2,21 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
+import { Maybe } from 'types';
+import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
 
 type ClickToEditItemProps = {
   label: string;
-  currenValue: string;
+  currentValue: Maybe<string> | undefined;
   form: any;
-  editOn: EditEntitySelectionType | EditOrganizationSelectionType;
-  itemType: EditEntitySelectionType | EditOrganizationSelectionType;
-  isManager: boolean;
-  setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType) => void;
+  editOn: EditEntitySelectionType | EditOrganizationSelectionType | ParticipantSpecItemType | string | undefined;
+  itemType: EditEntitySelectionType | EditOrganizationSelectionType | string;
+  isManager: boolean | undefined;
+  setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType | string) => void;
 };
 const ClickToEditItem: FC<ClickToEditItemProps> = ({
   label,
-  currenValue,
+  currentValue,
   form,
   editOn,
   itemType,
@@ -41,7 +43,7 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
           isManager ? setEditOn(itemType) : {};
         }}
       >
-        {editOn !== itemType && currenValue}
+        {editOn !== itemType && currentValue}
       </div>
     </div>
   );

@@ -1,9 +1,11 @@
-import * as backendCtc from '../../../web3/index.main';
+import * as backendCtc from '../../../web3/ABI';
 import AdditionalApplicationFields from './AdditionalApplicationFields';
 import AdvisorFields from './AdvisorFields';
 import Checkbox from '@src/components/form-components/Checkbox';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import CustomAddressAutocomplete from '@src/components/form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, {
+  normalizeGeoAddress,
+} from '@src/components/form-components/CustomAddressAutocomplete';
 import Datepicker from '@src/components/form-components/Datepicker';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
@@ -21,11 +23,11 @@ import { GeneratedApplicationText } from './SummaryGenerator';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { Maybe, Offering } from 'types';
 import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering } from 'types';
-import { ReachContext } from '@src/SetReachContext';
-import { setChainId } from '@src/web3/connectors';
+
+import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
 
@@ -40,7 +42,7 @@ type InvestorFormInputsType = {
   purchaserEntityName: string;
   purchaserEntityManager: string;
   purchaserEntityManagerTitle: string;
-  numUnitsPurchase: number;
+  numUnitsPurchase: number | undefined;
   purchaseMethod: string;
   purchaserTitle: string;
   enteringAgent: string;
@@ -56,7 +58,7 @@ type InvestorFormInputsType = {
   purchaserPhone: string;
   taxId: string;
   purchaserEntityJurisdiction: string;
-  purchaserAge: number;
+  purchaserAge: number | undefined;
   purchaserPrincipleResidence: string;
   purchaserResidenceHistory: string;
   purchaserTaxState: string;
@@ -89,16 +91,16 @@ type InvestorFormInputsType = {
 };
 const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering }) => {
   const router = useRouter();
-  const chainId = setChainId;
-  const { reachLib, userWalletAddress } = useContext(ReachContext);
+  const chainId = useChainId();
+  const { address: userWalletAddress } = useAccount();
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const [addOfferingParticipant, { data, error }] = useMutation(ADD_OFFERING_PARTICIPANT_WITH_APPLICATION);
   const [alerted, setAlerted] = useState<boolean>(false);
 
-  const [latLang, setLatLang] = useState({ lat: null, lng: null });
-  const [autocompleteResults, setAutocompleteResults] = useState([null]);
+  const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
+  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
 
   const placeId = inputAddress && inputAddress.value.place_id;
@@ -117,25 +119,13 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     }
   }, [placeId]);
 
-  const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
-  const street_number = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('street_number')
-  )?.long_name;
-  const street_name = autocompleteResults[0]?.address_components.find((x) => x.types.includes('route'))?.long_name;
-  const city = autocompleteResults[0]?.address_components.find((x) => x.types.includes('locality'))?.long_name;
-  const sublocality = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('sublocality')
-  )?.long_name;
-  const state = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('administrative_area_level_1')
-  )?.long_name;
-  const zip = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_code'))?.long_name;
-  const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
+  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
+    normalizeGeoAddress(autocompleteResults);
 
-  const offerCalculator = (numUnits: number, price: number) => {
-    return numUnits * price;
+  const offerCalculator = (numUnits: number, price: Maybe<number> | undefined) => {
+    return price && numUnits * price;
   };
-  const saleAmountString = (numUnitsToSell, price) => {
+  const saleAmountString = (numUnitsToSell: string, price: Maybe<number> | undefined) => {
     return numberWithCommas(offerCalculator(parseInt(numUnitsToSell, 10), price));
   };
 
@@ -146,7 +136,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     purchaserEntityName: '',
     purchaserEntityManager: '',
     purchaserEntityManagerTitle: '',
-    numUnitsPurchase: null,
+    numUnitsPurchase: undefined,
     purchaseMethod: '',
     purchaserTitle: '',
     enteringAgent: '',
@@ -162,7 +152,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     purchaserPhone: '',
     taxId: '',
     purchaserEntityJurisdiction: '',
-    purchaserAge: null,
+    purchaserAge: undefined,
     purchaserPrincipleResidence: '',
     purchaserResidenceHistory: '',
     purchaserTaxState: '',
@@ -204,65 +194,56 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     alert(`Oops. Looks like something went wrong: ${error.message}`);
   }
 
-  const orgId = offering.offeringEntity.organization.id;
+  const orgId = offering.offeringEntity?.organization.id;
   if (data) {
     router.push(`${orgId}/offerings/${offering.id}`);
   }
 
-  const submitApplication = async (values) => {
+  const submitApplication = async (values: {
+    purchaserEntityName: string;
+    dateSigned: string;
+    // minPledge: string;
+    // maxPledge: string;
+    // jurCountry: string;
+    // jurState: string;
+    signature: string;
+  }) => {
     const appTitle = `${values.purchaserEntityName}'s requests approval to invest in ${offering.name}`;
     setButtonStep('submitting');
-    await reachLib.setWalletFallback(reachLib.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
-    const acc = await reachLib.getDefaultAccount();
-    const contractId = offering.smartContracts[0].cryptoAddress.address;
-    const ctc = acc.contract(backendCtc, contractId);
-    const btBalance = await ctc.views.vBtBal();
-    const btID = reachLib.bigNumberToNumber(btBalance[1][1]).toString();
-    const call = async (f) => {
-      try {
-        setButtonStep('step2');
-        await acc.tokenAccept(btID);
-        setButtonStep('submitting');
-        await f();
-        await addOfferingParticipant({
-          variables: {
-            currentDate: currentDate,
-            dateSigned: values.dateSigned,
-            addressOfferingId: userWalletAddress + offering.id,
-            name: values.purchaserEntityName,
-            minPledge: values.minPledge,
-            maxPledge: values.maxPledge,
-            nonUS: values.purchaserNonUs,
-            offeringId: offering.id,
-            offeringEntityId: offering.offeringEntity.id,
-            offeringUniqueId: offering.id + values.purchasingEntityName + 'application',
-            walletAddress: userWalletAddress,
-            applicationText: ApplicationText.all,
-            applicationTitle: appTitle,
-            signature: values.signature,
-          },
-        });
-        setButtonStep('confirmed');
-      } catch (e) {
-        setButtonStep('failed');
-      }
-    };
-    const apis = ctc.a;
-    call(async () => {
-      const apiReturn = await apis.optIn();
-      //console.log(`wait for it... share tokens allocated...`, apiReturn);
-      return apiReturn;
-    });
+    try {
+      await addOfferingParticipant({
+        variables: {
+          currentDate: currentDate,
+          dateSigned: values.dateSigned,
+          addressOfferingId: userWalletAddress + offering.id,
+          name: values.purchaserEntityName,
+          // minPledge: values.minPledge,
+          // maxPledge: values.maxPledge,
+          // jurCountry: values.jurCountry,
+          // jurState: values.jurState,
+          offeringId: offering.id,
+          offeringEntityId: offering.offeringEntity?.id,
+          offeringUniqueId: offering.id + values.purchaserEntityName + 'application',
+          walletAddress: userWalletAddress,
+          applicationText: ApplicationText.all,
+          applicationTitle: appTitle,
+          signature: values.signature,
+        },
+      });
+      setButtonStep('confirmed');
+    } catch (e) {
+      setButtonStep('failed');
+    }
   };
 
   const ApplicationText = GeneratedApplicationText(
     agreementContent,
     offering,
-    `${street_number} ${street_name}`,
-    subpremise,
-    city ?? sublocality,
+    firstAddressLine,
+    secondAddressLine,
+    city,
     state,
-    zip,
+    postalCode,
     country
   );
 
@@ -271,12 +252,12 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
       <Formik
         initialValues={{
           isCompany: false,
-          walletAddress: userWalletAddress,
+          walletAddress: userWalletAddress as string,
           offeringEntityManager: '',
           purchaserEntityName: '',
           purchaserEntityManager: '',
           purchaserEntityManagerTitle: '',
-          numUnitsPurchase: null,
+          numUnitsPurchase: undefined,
           purchaseMethod: '',
           purchaserTitle: '',
           enteringAgent: '',
@@ -293,7 +274,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
           purchaserPhone: '',
           taxId: '',
           purchaserEntityJurisdiction: '',
-          purchaserAge: null,
+          purchaserAge: undefined,
           purchaserPrincipleResidence: '',
           purchaserResidenceHistory: '',
           purchaserTaxState: '',
@@ -335,7 +316,15 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
 
-          await submitApplication(values);
+          await submitApplication({
+            purchaserEntityName: values.purchaserEntityName,
+            dateSigned: values.dateSigned,
+            // minPledge: values.minPledge,
+            // maxPledge: values.maxPledge,
+            // jurCountry: values.jurCountry,
+            // jurState: values.jurState,
+            signature: values.signature,
+          });
 
           setSubmitting(false);
         }}
@@ -517,7 +506,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                   <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
                     <LoadingButtonText
                       state={buttonStep}
-                      idleText={`Apply to become a ${offering.offeringEntity.legalName} investor`}
+                      idleText={`Apply to become a ${offering.offeringEntity?.legalName} investor`}
                       submittingText="Applying..."
                       step2Text="Setting distribution token..."
                       confirmedText="Confirmed!"

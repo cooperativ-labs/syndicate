@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type MarkPublicProps = {
-  isPublic: boolean;
+  isPublic: boolean | null | undefined;
 };
 
 export const MarkPublic: FC<MarkPublicProps> = ({ isPublic }) => {

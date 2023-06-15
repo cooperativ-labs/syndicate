@@ -9,22 +9,23 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useChainId, useEnsAvatar, useNetwork } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 const UserMenu: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated';
-  const { chain } = useNetwork();
+  const chain = useNetwork();
+  const chainId = useChainId();
   const { address: userWalletAddress } = useAccount();
 
-  const networkImage = userWalletAddress && networkIcon(chain.id, userWalletAddress);
+  const networkImage = userWalletAddress && chain && networkIcon(chainId, userWalletAddress);
 
   const profileImg = session?.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
   return (
     <>
-      {open && <div className="absolute top-0 bottom-0 left-0 right-0 z-40" onClick={() => setOpen(!open)} />}
+      {open && <div className="absolute top-0 bottom-0 left-0 right-0 " onClick={() => setOpen(!open)} />}
       <div className="relative flex flex-col items-center ">
         <Button
           className={`border-gray-300 hover:border-gray-500
@@ -42,8 +43,8 @@ const UserMenu: FC = () => {
         </Button>
 
         {open && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-40" onClick={() => setOpen(!open)}>
-            <Card className="absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 rounded-xl shadow-lg">
+          <div className="absolute top-0 bottom-0 left-0 right-0 z-40">
+            <Card className="absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 bg-white rounded-xl shadow-lg">
               {userWalletAddress ? (
                 <div className="flex flex-col justify-center">
                   <div className="flex items-center justify-center">
@@ -51,12 +52,12 @@ const UserMenu: FC = () => {
                       <img src={networkImage} className="p-2 w-8 h-8 bg-gray-200 rounded-full" />
                     ) : (
                       <div className="py-2 pl-2">
-                        <NetworkIndicatorDot chainId={chain.id} walletAddress={userWalletAddress} />
+                        <NetworkIndicatorDot chainId={chainId} walletAddress={userWalletAddress} />
                       </div>
                     )}
 
                     <div className="mx-1" />
-                    <FormattedCryptoAddress chainId={chain.id} address={userWalletAddress} withCopy />
+                    <FormattedCryptoAddress chainId={chainId} address={userWalletAddress} withCopy />
                   </div>
                   <div className="hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
                     <DisconnectButton />

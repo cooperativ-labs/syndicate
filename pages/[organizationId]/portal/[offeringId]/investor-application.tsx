@@ -1,6 +1,6 @@
 import Header from '@src/containers/Header';
 import InvestorApplicationForm from '@src/components/investor/applicationForm/InvestorApplicationForm';
-import InvestorWaitlistForm from '@src/components/investor/applicationForm/InvestorWaitlistForm';
+
 import LoadingModal from '@src/components/loading/ModalLoading';
 import PortalWrapper from '@src/containers/PortalWrapper';
 import React, { FC } from 'react';
@@ -28,11 +28,7 @@ const InvestorApplicationPage: FC = () => {
             <div className="flex-grow h-full z-10">
               <div className="h-full px-2 py-2 md:mt-4">
                 <div className="mx-auto min-h-full">
-                  {offering.waitlistOn ? (
-                    <InvestorWaitlistForm offering={offering} />
-                  ) : (
-                    <InvestorApplicationForm offering={offering} />
-                  )}
+                  <InvestorApplicationForm offering={offering} />
                 </div>
               </div>
             </div>

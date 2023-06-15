@@ -1,4 +1,4 @@
-import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import React, { FC, useEffect, useState } from 'react';
 import router from 'next/router';
@@ -18,8 +18,8 @@ type AddPropertyInfoProps = {
 };
 const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCurrency }) => {
   const [AddRePropertyInfo, { data, error }] = useMutation(ADD_RE_PROPERTY_INFO);
-  const [latLang, setLatLang] = useState({ lat: null, lng: null });
-  const [autocompleteResults, setAutocompleteResults] = useState([null]);
+  const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
+  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
   const [alerted, setAlerted] = useState<boolean>(false);
 
@@ -46,20 +46,9 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
       });
   }, [placeId]);
 
-  const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
-  const street_number = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('street_number')
-  )?.long_name;
-  const street_name = autocompleteResults[0]?.address_components.find((x) => x.types.includes('route'))?.long_name;
-  const city = autocompleteResults[0]?.address_components.find((x) => x.types.includes('locality'))?.long_name;
-  const sublocality = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('sublocality')
-  )?.long_name;
-  const state = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('administrative_area_level_1')
-  )?.long_name;
-  const zip = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_code'))?.long_name;
-  const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
+  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
+    normalizeGeoAddress(autocompleteResults);
+
   return (
     <Formik
       initialValues={{
@@ -104,11 +93,11 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
             downPayment: values.downPayment,
             lenderFees: values.lenderFees,
             closingCosts: values.closingCosts,
-            addressLine1: CreateFirstAddressLine(street_number, street_name),
-            addressLine2: subpremise,
-            city: city ?? sublocality,
+            addressLine1: firstAddressLine,
+            addressLine2: secondAddressLine,
+            city: city,
             stateProvince: state,
-            postalCode: zip,
+            postalCode: postalCode,
             country: country,
             lat: latLang.lat,
             lng: latLang.lng,
@@ -161,19 +150,19 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
           <Input
             className={defaultFieldDiv}
             type="number"
-            labelText={`Down payment (${getCurrencyOption(entityOperatingCurrency).symbol})`}
+            labelText={`Down payment (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
             name="downPayment"
           />
           <Input
             className={defaultFieldDiv}
             type="number"
-            labelText={`Lender's fees (${getCurrencyOption(entityOperatingCurrency).symbol})`}
+            labelText={`Lender's fees (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
             name="lenderFees"
           />
           <Input
             className={defaultFieldDiv}
             type="number"
-            labelText={`Closing costs (${getCurrencyOption(entityOperatingCurrency).symbol})`}
+            labelText={`Closing costs (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
             name="closingCosts"
           />
           <div>
@@ -194,7 +183,7 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
             disabled={isSubmitting}
             className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
           >
-            {`Create ${street_name ? `${street_number} ${street_name}` : `${city}, ${state}`}`}
+            {`Create ${firstAddressLine ? firstAddressLine : `${city}, ${state}`}`}
           </button>
         </Form>
       )}

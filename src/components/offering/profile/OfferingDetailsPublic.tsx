@@ -32,12 +32,12 @@ const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({ offeringDetails
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 items-center gap-3">
-      <OfferingDetailItem brandColor={brandColor} title="Deal size">{` ${numberWithCommas(
-        currentSharePrice * numUnits
-      )} ${getCurrencyOption(investmentCurrency).symbol}`}</OfferingDetailItem>
+      <OfferingDetailItem brandColor={brandColor} title="Deal size">{` ${
+        numUnits && numberWithCommas(currentSharePrice * numUnits)
+      } ${getCurrencyOption(investmentCurrency)?.symbol}`}</OfferingDetailItem>
 
       <OfferingDetailItem brandColor={brandColor} title="Share price">{` ${numberWithCommas(currentSharePrice)} ${
-        getCurrencyOption(investmentCurrency).symbol
+        getCurrencyOption(investmentCurrency)?.symbol
       }`}</OfferingDetailItem>
 
       {distributionPeriod && (

@@ -1,9 +1,7 @@
 import FinancialFactItem from './FinancialFactItem';
-import React, { FC, useState } from 'react';
-import ReactMarkdown from 'react-markdown';
-import useCurrencyFormatter from '@hooks/useCurrency';
-import { Currency, CurrencyCode, OfferingDetails } from 'types';
-import { numberWithCommas } from '@src/utils/helpersMoney';
+import React, { FC } from 'react';
+
+import { Currency, OfferingDetails } from 'types';
 
 type SourcesAndUsesDisplayProps = {
   offeringDetails: OfferingDetails;
@@ -19,22 +17,26 @@ const SourcesAndUsesDisplay: FC<SourcesAndUsesDisplayProps> = ({ offeringDetails
       <div>
         <FinancialFactItem label="Gross offering proceeds (max)" amount={maxRaise} currency={operatingCurrency} />
         <FinancialFactItem label="Gross offering proceeds (min)" amount={minRaise} currency={operatingCurrency} />
-        <FinancialFactItem
-          label="Legal/organizational expense"
-          amount={adminExpense}
-          percent={parseFloat((100 * (adminExpense / maxRaise)).toFixed(1))}
-          currency={operatingCurrency}
-        />
-        <FinancialFactItem
-          label="Proceeds invested (max)"
-          amount={maxRaise - adminExpense}
-          currency={operatingCurrency}
-        />
-        <FinancialFactItem
-          label="Proceeds invested (min)"
-          amount={minRaise - adminExpense}
-          currency={operatingCurrency}
-        />
+        {!!adminExpense && (
+          <>
+            <FinancialFactItem
+              label="Legal/organizational expense"
+              amount={adminExpense}
+              percent={parseFloat((100 * (adminExpense / maxRaise)).toFixed(1))}
+              currency={operatingCurrency}
+            />
+            <FinancialFactItem
+              label="Proceeds invested (max)"
+              amount={maxRaise - adminExpense}
+              currency={operatingCurrency}
+            />
+            <FinancialFactItem
+              label="Proceeds invested (min)"
+              amount={minRaise - adminExpense}
+              currency={operatingCurrency}
+            />
+          </>
+        )}
       </div>
     </div>
   );

@@ -1,4 +1,3 @@
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -8,11 +7,14 @@ import React, { FC, useContext } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
 import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember';
 import TeamMemberList from '@src/components/entity/TeamMemberList';
+import toast, { Toaster } from 'react-hot-toast';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getIsAdmin, getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { OfferingParticipant } from 'types';
+import { toastExperiment } from '@src/components/indicators/Notifications';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -27,14 +29,14 @@ const OrganizationOverview: FC = () => {
   const { address: userWalletAddress } = useAccount();
   const router = useRouter();
   const orgId = router.query.organizationId;
-  const userId = session.user.id;
+  const userId = session?.user.id;
   const { data: organizationData, error, loading, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization = organizationData?.getOrganization;
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress },
   });
 
-  if (!organization) {
+  if (!organizationData) {
     return (
       <div>
         <LoadingModal />
@@ -42,18 +44,26 @@ const OrganizationOverview: FC = () => {
     );
   }
 
-  const participantOfferings = participantData?.queryOfferingParticipant.map((offeringParticipant) => {
-    return offeringParticipant.offering;
-  });
+  const participantOfferings = participantData?.queryOfferingParticipant.map(
+    (offeringParticipant: OfferingParticipant) => {
+      return offeringParticipant.offering;
+    }
+  );
 
   const offerings = organization && getOrgOfferingsFromEntity(organization);
   const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;
-  const isAdmin = getIsAdmin(userId, organization);
+  const isAdmin = userId && getIsAdmin(userId, organization);
   const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
 
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
+      {/* <button
+        className="bg-blue-500 text-white p-3"
+        onClick={() => toastExperiment({ title: 'hi', message: 'whhhattt' })}
+      >
+        Make me a toast
+      </button> */}
       <TwoColumnLayout twoThirdsLayout>
         {isEditorOrAdmin && (
           <DashboardCard>

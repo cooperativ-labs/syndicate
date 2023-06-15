@@ -9,16 +9,16 @@ import Checkbox from './form-components/Checkbox';
 import Input from './form-components/Inputs';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { EditButton, MarkPublic } from './form-components/ListItemButtons';
-import { EmailAddress } from 'types';
+import { EmailAddress, Maybe } from 'types';
 import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/dGraphQueries/organization';
 
 type EmailAddressListItemProps = {
-  email: EmailAddress;
+  email: Maybe<Maybe<EmailAddress>> | undefined;
   withEdit?: boolean;
 };
 
 const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }) => {
-  const { organization, name, address, description, isPublic } = email;
+  const { organization, name, address, description, isPublic } = email as EmailAddress;
   const [editOn, setEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
   const [updateEmailAddress, { error: updateError }] = useMutation(UPDATE_EMAIL);
@@ -59,7 +59,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
           <div className="bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6">
             <Formik
               initialValues={{
-                isPublic: isPublic,
+                isPublic: !!isPublic,
                 name: name,
               }}
               onSubmit={(values, { setSubmitting }) => {
@@ -111,7 +111,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
             aria-label="edit address info"
             onClick={() =>
               deleteEmail({
-                variables: { currentDate: currentDate, organizationId: organization.id, emailAddress: address },
+                variables: { currentDate: currentDate, organizationId: organization?.id, emailAddress: address },
               })
             }
           >

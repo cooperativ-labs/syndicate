@@ -1,3 +1,4 @@
+import { String0x } from '@src/web3/helpersChain';
 import {
   CryptoAddressProtocol,
   CurrencyCode,
@@ -11,6 +12,9 @@ import {
   DocumentFormat,
   OfferingTabSection,
   OrganizationPermissionType,
+  Currency,
+  ShareIssuanceTradeType,
+  Maybe,
 } from 'types';
 
 // ===== PROFILE ======
@@ -23,7 +27,7 @@ export const tabSectionOptions = [
   { value: OfferingTabSection.Disclosures, name: 'Disclosures' },
 ];
 
-export const getTabSectionOption = (desiredSectionValue) => {
+export const getTabSectionOption = (desiredSectionValue: OfferingTabSection) => {
   return tabSectionOptions.find((option) => (option.value === desiredSectionValue ? option : null));
 };
 
@@ -46,7 +50,7 @@ export const socialAccountOptions = [
   { value: LinkedAccountType.Website, name: 'Website', icon: 'link' },
   { value: LinkedAccountType.Other, name: 'Other', icon: '' },
 ];
-export const getSocialAccountOption = (type: LinkedAccountType) => {
+export const getSocialAccountOption = (type: LinkedAccountType | null | undefined) => {
   const option = socialAccountOptions.find((account) => (account.value === type ? type : null));
   return option;
 };
@@ -73,8 +77,19 @@ export const organizationPermissionOptions = [
   { value: OrganizationPermissionType.Auditor, name: 'Auditor', color: 'gray-500' },
 ];
 
-export const getOrganizationPermissionOption = (permission: OrganizationPermissionType) => {
-  return organizationPermissionOptions.find((option) => (option.value === permission ? option : null));
+export const getOrganizationPermissionOption = (
+  permission: OrganizationPermissionType
+): { value: OrganizationPermissionType; name: string; color: string } => {
+  const defaultOption = {
+    value: OrganizationPermissionType.Viewer, // Set the default value as needed
+    name: 'Not Found',
+    color: '#000000',
+  };
+  const option = organizationPermissionOptions.find((option) => {
+    return option.value === permission ? option : null;
+  });
+
+  return option || defaultOption;
 };
 
 export const docFormatOptions = [
@@ -104,7 +119,7 @@ export const docFormatOptions = [
   { value: DocumentFormat.Markdown, name: 'Markdown', icon: 'file-alt', subtitle: 'Markdown' },
 ];
 
-export const getDocFormatOption = (type: DocumentFormat) => {
+export const getDocFormatOption = (type: Maybe<DocumentFormat> | undefined) => {
   return docFormatOptions.find((option) => option.value === type);
 };
 
@@ -121,9 +136,9 @@ export const distributionPeriodOptions = [
   // { value: DistributionPeriodType.None, name: 'None' },
 ];
 
-export const getDistributionPeriod = (period) => {
+export const getDistributionPeriod = (period: DistributionPeriodType) => {
   const option = distributionPeriodOptions.find((per) => (per.value === period ? per : null));
-  return option.name;
+  return option?.name;
 };
 
 // ===== ASSETS ======
@@ -138,7 +153,7 @@ export const propertyTypeOptions = [
   { value: RealEstatePropertyType.SelfStorage, name: 'Self-storage' },
 ];
 
-export const getPropertyTypeOption = (inputValue) => {
+export const getPropertyTypeOption = (inputValue: RealEstatePropertyType) => {
   return propertyTypeOptions.find((option) => (option.value === inputValue ? option : null));
 };
 
@@ -151,7 +166,7 @@ export const assetStatusOptions = [
   { value: AssetStatus.ForSale, name: 'For sale', width: '20%' },
 ];
 
-export const getAssetStatusOption = (inputValue) => {
+export const getAssetStatusOption = (inputValue: OfferingStage | Maybe<AssetStatus> | undefined) => {
   return assetStatusOptions.find((option) => (option.value === inputValue ? option : null));
 };
 
@@ -163,23 +178,78 @@ export const StageOptions = [
   { value: OfferingStage.Locked, name: 'Trading locked', width: '80%' },
   { value: OfferingStage.Closed, name: 'Closed', width: '100%' },
 ];
-export const getStageOption = (stage) => {
+export const getStageOption = (stage: OfferingStage) => {
   return StageOptions.find((st) => (st.value === stage ? st : null));
 };
 
-export type SaleStatusType = 'initd' | 'partl' | 'apprv' | '-----' | 'compl';
-
-export const SaleStatusOptions = [
-  { value: 'initd', name: 'requires approval', color: 'orange-600' },
-  { value: 'partl', name: 'live', color: 'green-600' },
-  { value: 'apprv', name: 'live', color: 'green-600' },
-  { value: '-----', name: 'ended', color: 'gray-600' },
-  { value: 'compl', name: 'complete', color: 'gray-600' },
+export const SwapStatusOptions = [
+  { value: 'initiated', name: 'requires approval', color: 'orange-600' },
+  { value: 'partiallyFilled', name: 'live', color: 'green-600' },
+  { value: 'approved', name: 'live', color: 'green-600' },
+  { value: 'disapproved', name: 'disapproved', color: 'red-600' },
+  { value: 'cancelled', name: 'cancelled', color: 'gray-600' },
+  { value: 'complete', name: 'complete', color: 'blue-600' },
 ];
 
-export const getSaleStatusOption = (status) => {
-  return SaleStatusOptions.find((st) => (st.value === status ? st : null));
+type SwapStatusOptionProps = {
+  isAccepted: boolean | undefined;
+  isApproved: boolean | undefined;
+  isDisapproved: boolean | undefined;
+  isCancelled: boolean | undefined;
+  amount: number | undefined;
+  filledAmount: number | undefined;
+  txnApprovalsEnabled: boolean | undefined;
 };
+
+export const getSwapStatusOption = ({
+  isAccepted,
+  isApproved,
+  isDisapproved,
+  isCancelled,
+  amount,
+  filledAmount,
+  txnApprovalsEnabled,
+}: SwapStatusOptionProps) => {
+  const initiated = !isAccepted && !isApproved && !isDisapproved && !isCancelled && !txnApprovalsEnabled;
+  const isFilledAmount = filledAmount ? filledAmount > 0 : false;
+  const filledLessthanAmount = filledAmount && amount ? filledAmount < amount : false;
+  const partiallyFilled = isFilledAmount && filledLessthanAmount;
+  const approved = (txnApprovalsEnabled && !isApproved) || (isApproved && !isDisapproved && !isCancelled);
+  const disapproved = isDisapproved && !isCancelled;
+  const cancelled = isCancelled;
+  const complete = filledAmount === amount;
+
+  switch (true) {
+    case initiated:
+      return SwapStatusOptions[0];
+    case partiallyFilled:
+      return SwapStatusOptions[1];
+    case approved:
+      return SwapStatusOptions[2];
+    case disapproved:
+      return SwapStatusOptions[3];
+    case cancelled:
+      return SwapStatusOptions[4];
+    case complete:
+      return SwapStatusOptions[5];
+    default:
+      return SwapStatusOptions[0];
+  }
+};
+
+// ===== Trades =====
+
+export const IssuanceTradeOptions = [
+  { value: ShareIssuanceTradeType.Sell, name: 'Sale', color: 'Purple-600' },
+  { value: ShareIssuanceTradeType.Issue, name: 'Issuance', color: 'green-600' },
+  { value: ShareIssuanceTradeType.Forced, name: 'Forced', color: 'red-600' },
+  { value: ShareIssuanceTradeType.Transfer, name: 'Transfer', color: 'black' },
+];
+
+export const getIssuanceTradeOption = (tradeType: ShareIssuanceTradeType) => {
+  return IssuanceTradeOptions.find((option) => (option.value === tradeType ? option : null));
+};
+
 // ===== CURRENCY =====
 
 export enum currencyType {
@@ -277,21 +347,21 @@ export const currencyOptions = [
     type: currencyType.CRYP,
     value: CurrencyCode.UsdcTest,
     symbol: 'USDC*',
-    address: '0x8C035e5adD07e9297fc835604DAb380dCE874acE',
+    address: '0x66458Bb9BF8e09eA40cf916BCb370727455F6040',
     website: 'https://www.centre.io/',
     protocol: CryptoAddressProtocol.Eth,
-    chainId: 3,
-    decimals: 18,
+    decimals: 6,
+    chainId: 11155111,
     logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
   },
   {
     type: currencyType.CRYP,
     value: CurrencyCode.DaiTest,
     symbol: 'DAI*',
-    address: '0xfDdfE7C9Ba9649fB8943f9277830972aa6f3a6bB',
+    address: '0x3aa3DAd8008288CB5F9dc2F6e1e6213035ddBE88',
     website: 'https://makerdao.com/',
     protocol: CryptoAddressProtocol.Eth,
-    chainId: 3,
+    chainId: 11155111,
     decimals: 18,
     logo: 'https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774',
   },
@@ -317,37 +387,8 @@ export const currencyOptions = [
     decimals: 18,
     logo: 'https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774',
   },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.AlgoUsdc,
-    symbol: 'USDC',
-    address: '31566704',
-    website: 'https://www.centre.io/usdc',
-    protocol: CryptoAddressProtocol.Algo,
-    chainId: 12345678,
-    decimals: 6,
-    logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
-  },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.AlgoUsdcTest,
-    symbol: 'USDC',
-    address: '91319595',
-    website: 'https://www.centre.io/usdc',
-    protocol: CryptoAddressProtocol.Algo,
-    chainId: 654321,
-    decimals: 6,
-    logo: 'https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389',
-  },
-  {
-    type: currencyType.CRYP,
-    value: CurrencyCode.RealShare,
-    symbol: 'SHARE',
-    website: 'https://www.cooperativ.io',
-    protocol: CryptoAddressProtocol.Algo,
-    decimals: 6,
-  },
 ];
+
 export const bacOptions = currencyOptions.filter(
   (option) =>
     (option.type === currencyType.CRYP && option.protocol === CryptoAddressProtocol.Eth) ||
@@ -360,12 +401,13 @@ export const currencyOptionsExcludeCredits = currencyOptions.filter(
   (option) => option.type !== currencyType.COOP && option.chainId !== 3
 );
 
-export const getCurrencyOption = (currency) => {
+export const getCurrencyOption = (currency: Maybe<Currency> | undefined) => {
   // console.log('getCurrencyOption', currency);
   return currencyOptions.find((cur) => (cur.value === currency?.code ? cur : null));
 };
 
-export const getCurrencyById = (id) => {
+export const getCurrencyById = (id: String0x | undefined) => {
+  if (!id) return null;
   return currencyOptions.find((cur) => (cur.address === id ? cur : null));
 };
 
@@ -374,16 +416,6 @@ export const getCurrencyById = (id) => {
 // };
 
 // ===== MISC ======
-
-export const seekingOptions = [
-  { value: 'CO_FOUNDER', name: 'Co-Founder' },
-  { value: 'CONTRIBUTORS', name: 'Contributors' },
-  { value: 'INVESTMENT', name: 'Investment' },
-];
-export const getSeekingOption = (sought) => {
-  const option = seekingOptions.find((seek) => (seek.value === sought ? sought : null));
-  return option.name;
-};
 
 export const severityOptions = [
   { value: null, name: 'Need rank' },

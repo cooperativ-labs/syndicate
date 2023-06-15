@@ -1,22 +1,29 @@
 import AccessCodeForm from './profile/AccessCodeForm';
 import Button from '../buttons/Button';
 import cn from 'classnames';
+import FormattedCryptoAddress from '../FormattedCryptoAddress';
 import Input from '../form-components/Inputs';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
 import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { Maybe } from 'types';
+import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
+import toast from 'react-hot-toast';
 
 type OfferingDashboardTitleProps = {
-  profileVisibility: boolean;
-  isOfferingManager: boolean;
+  profileVisibility: Maybe<boolean> | undefined;
+  isOfferingManager: Maybe<boolean> | undefined;
   offeringId: string;
-  organizationId: string;
-  accessCode: string;
+  organizationId: string | undefined;
+  accessCode: Maybe<string> | undefined;
   offeringName: string;
+  shareContractAddress: String0x;
+  chainId: Maybe<number> | undefined;
 };
 
 const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
@@ -26,10 +33,13 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   offeringId,
   accessCode,
   organizationId,
+  shareContractAddress,
+  chainId,
 }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
+  const [copied, setCopied] = useState<boolean>(false);
 
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -57,8 +67,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         },
       });
       setNameEditOn(false);
-    } catch {
-      alert(`Oops. Looks like something went wrong: ${error.message}`);
+    } catch (error: any) {
+      toast.error(`Oops. Looks like something went wrong: ${error.message}`);
       setAlerted(true);
     }
   };
@@ -73,8 +83,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           offeringId: offeringId,
         },
       });
-    } catch {
-      alert(`Oops. Looks like something went wrong: ${error.message}`);
+    } catch (error: any) {
+      toast.error(`Oops. Looks like something went wrong: ${error.message}`);
       setAlerted(true);
     }
   };
@@ -123,38 +133,76 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
     </Formik>
   );
 
+  const [showVisibilitySettings, setShowVisibilitySettings] = useState<boolean>(false);
+  const visibilitySettings = (
+    <div className="absolute right-4 top-1 flex min-w-max">
+      {showVisibilitySettings ? (
+        <>
+          {isOfferingManager && profileVisibility && (
+            <AccessCodeForm
+              accessCode={accessCode}
+              handleCodeSubmission={handleAccessCodeChange}
+              mini
+              isOfferingManager
+            />
+          )}
+          {isOfferingManager && (
+            <div className="min-w-max">
+              <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
+            </div>
+          )}
+        </>
+      ) : (
+        <button
+          className="bg-cLightBlue hover:bg-cDarkBlue text-white text-xs font-medium  rounded-md p-1 px-2 flex justify-center items-center whitespace-nowrap"
+          onClick={() => setShowVisibilitySettings(true)}
+        >
+          Set profile visibility
+        </button>
+      )}
+      {profileVisibility && (
+        <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
+          <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg ml-2" />
+        </a>
+      )}
+    </div>
+  );
+
   return (
     <div className="flex justify-between">
-      {nameEditOn ? (
-        nameChangeForm
-      ) : (
-        <h1
-          className={cn(`text-2xl md:text-3xl font-bold text-gray-700 ${isOfferingManager && 'hover:cursor-pointer'}`)}
-          onClick={() => {
-            isOfferingManager ? setNameEditOn(true) : {};
+      <div>
+        {nameEditOn ? (
+          nameChangeForm
+        ) : (
+          <h1
+            className={cn(
+              `text-2xl md:text-3xl font-bold text-gray-700 ${
+                isOfferingManager && 'hover:cursor-pointer hover:underline'
+              }`
+            )}
+            onClick={() => {
+              isOfferingManager ? setNameEditOn(true) : {};
+            }}
+          >
+            {offeringName}
+          </h1>
+        )}
+
+        <button
+          className="text-sm text-gray-700 "
+          onClick={(e) => {
+            e.stopPropagation();
+            navigator.clipboard.writeText(`${getBaseUrl()}/portal/${offeringId}`);
+            setCopied(true);
+            setTimeout(() => {
+              setCopied(false);
+            }, 1000);
           }}
         >
-          {offeringName}
-        </h1>
-      )}
-      <div className="flex p-2 items-center font-semibold text-gray-600 gap-2">
-        {isOfferingManager && profileVisibility && (
-          <AccessCodeForm
-            accessCode={accessCode}
-            handleCodeSubmission={handleAccessCodeChange}
-            mini
-            isOfferingManager
-          />
-        )}
-        {isOfferingManager && (
-          <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
-        )}
-        {profileVisibility && (
-          <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
-            <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
-          </a>
-        )}
+          Copy investor portal link {copied ? <FontAwesomeIcon icon="check" /> : <FontAwesomeIcon icon="copy" />}
+        </button>
       </div>
+      <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
     </div>
   );
 };

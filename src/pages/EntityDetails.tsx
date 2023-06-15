@@ -1,7 +1,7 @@
 import AddressDisplay from '@src/components/address/AddressDisplay';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { CurrencyCode, LegalEntity } from 'types';
+import { CurrencyCode, LegalEntity, Maybe, Offering } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 
 import { REMOVE_ENTITY_ADDRESS, REMOVE_ENTITY_OWNER, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
@@ -35,7 +35,8 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const [nameEditOn, setNameEditOn] = useState<EditEntitySelectionType>('none');
   const [alerted, setAlerted] = useState<boolean>(false);
   const organization = entity.organization;
-  const isAdmin = getIsAdmin(session?.user.id, organization);
+  const userId = session?.user.id;
+  const isAdmin = userId && getIsAdmin(userId, organization);
   const isAdminOrEditor = getIsEditorOrAdmin(session?.user.id, organization);
 
   const error = updateEntityError || deleteError || removeError;
@@ -57,25 +58,20 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   } = entity;
 
   const offerings = subsidiaries
-    .map((entity) => {
-      return entity.offerings;
+    ?.map((entity) => {
+      if (entity) return entity.offerings;
     })
     .flat();
 
-  const handleDisplayNameChange = (values: {
-    displayName: string;
-    legalName: string;
-    jurisdiction: string;
-    operatingCurrency: CurrencyCode;
-  }) => {
+  const handleDisplayNameChange = (values: { displayName: Maybe<string> | undefined }) => {
     updateLegalEntity({
       variables: {
         currentDate: currentDate,
         entityId: entity.id,
         displayName: values.displayName,
         legalName: legalName,
-        jurisdiction: jurisdiction,
-        operatingCurrency: operatingCurrency.code,
+        jurCountry: jurisdiction?.country,
+        operatingCurrencyCode: operatingCurrency?.code,
       },
     }).then((res) => {
       setNameEditOn('none');
@@ -91,7 +87,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     removeOwner({ variables: { currentDate: currentDate, removeEntityOwner: owner, ownedEntityId: entity.id } });
   };
 
-  const submissionCompletion = (setModal) => {
+  const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {
     setModal(false);
   };
 
@@ -127,19 +123,21 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
               <SectionBlock asAccordion sectionTitle={'Locations'}>
                 <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
-                  {addresses.map((address, i) => {
+                  {addresses?.map((address, i) => {
                     return (
                       <div key={i} className="p-3 bg-slate-100 rounded-md relative">
                         <div className="mr-10">
                           <AddressDisplay address={address} withCountry withLabel />{' '}
                         </div>
-                        <div className="absolute -right-1 -top-1">
-                          <DeleteButton
-                            onDelete={() => handleDeleteAddress(address.id)}
-                            iconColor={'gray-800'}
-                            bgColor={'white'}
-                          />
-                        </div>
+                        {address && (
+                          <div className="absolute -right-1 -top-1">
+                            <DeleteButton
+                              onDelete={() => handleDeleteAddress(address.id)}
+                              iconColor={'gray-800'}
+                              bgColor={'white'}
+                            />
+                          </div>
+                        )}
                       </div>
                     );
                   })}
@@ -157,11 +155,11 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
               <SectionBlock asAccordion sectionTitle={'Owners'}>
                 <div className="flex flex-col md:flex-row md:flex-wrap gap-4 mt-4">
-                  {owners.map((owner, i) => {
+                  {owners?.map((owner, i) => {
                     return (
                       <div key={i} className="p-3 bg-slate-100 rounded-md relative">
-                        <div className="mr-10">{owner.legalName}</div>
-                        {isAdmin && (
+                        <div className="mr-10">{owner?.legalName}</div>
+                        {isAdmin && owner && (
                           <div className="absolute -right-1 -top-1">
                             <DeleteButton
                               onDelete={() => handleRemoveOwner(owner.id)}
@@ -182,7 +180,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         </div>
         <></>
       </TwoColumnLayout>
-      <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings} entity={entity} />
+      <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings as Offering[]} entity={entity} />
     </div>
   );
 };

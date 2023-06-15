@@ -2,20 +2,29 @@ import AddWhitelistAddress from '@src/components/offering/whitelist/AddWhitelist
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
+import FormModal from './FormModal';
 import OfferingProperties from '@src/components/properties/OfferingProperties';
 import React, { FC, useState } from 'react';
+import SubmitDistribution from '@src/components/offering/SubmitDistribution';
 import Tab from '@src/components/offering/tabs/Tab';
 import Waitlist from '@src/components/offering/whitelist/Waitlist';
 import WhitelistAddressList from '@src/components/offering/whitelist/WhitelistAddressList';
-import { LegalEntity, Offering } from 'types';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from 'types';
+import { String0x } from '@src/web3/helpersChain';
+import { useAccount } from 'wagmi';
 
 type OfferingTabContainerProps = {
   offering: Offering;
-  contractId: string;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
   contractOwnerMatches: boolean;
   isContractOwner: boolean;
-  offeringEntity: LegalEntity;
+  offeringEntity: Maybe<LegalEntity> | undefined;
   isOfferingManager: boolean;
+  currentSalePrice: Maybe<number> | undefined;
+  partitions: String0x[];
+  issuances: any[];
+  refetchContracts: () => void;
 };
 
 const TabOptions = [
@@ -26,20 +35,49 @@ const TabOptions = [
 
 const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   offering,
-  contractId,
+  contractSet,
   contractOwnerMatches,
   isContractOwner,
   offeringEntity,
   isOfferingManager,
+  currentSalePrice,
+  partitions,
+  issuances,
+  refetchContracts,
 }) => {
+  const { address: userWalletAddress } = useAccount();
   const distributions = offering.distributions;
-  const startingTab = isOfferingManager ? 'investors' : distributions.length > 0 ? 'distributions' : 'properties';
+  const investmentCurrency = offering.details?.investmentCurrency;
+  const distArraylength = distributions?.length;
+  const hasDistributions = distArraylength && distArraylength > 0;
+  const startingTab = isOfferingManager ? 'investors' : hasDistributions ? 'distributions' : 'properties';
   const [activeTab, setActiveTab] = useState<string>(startingTab);
   const investorTabOptions = TabOptions.filter((tab) => tab.showInvestors);
   const tabList = isOfferingManager ? TabOptions : investorTabOptions;
+  const [submitDistributionModal, setSubmitDistributionModal] = useState<boolean>(false);
+
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
+  const distributionTokenDecimals = getCurrencyOption(offering.details?.investmentCurrency)?.decimals;
+  const distributionTokenAddress = getCurrencyOption(offering.details?.investmentCurrency)?.address as String0x;
 
   return (
     <div>
+      {distributionContractAddress && (
+        <FormModal
+          formOpen={submitDistributionModal}
+          onClose={() => setSubmitDistributionModal(false)}
+          title={`Submit a distribution`}
+        >
+          <SubmitDistribution
+            distributionContractAddress={distributionContractAddress}
+            distributionTokenDecimals={distributionTokenDecimals}
+            distributionTokenAddress={distributionTokenAddress}
+            partitions={partitions}
+            offeringId={offering.id}
+          />
+        </FormModal>
+      )}
       <div className={cn(`grid grid-cols-${tabList.length}`)}>
         {tabList.map((tab, i) => {
           return <Tab key={i} tabId={tab.value} label={tab.name} setActiveTab={setActiveTab} activeTab={activeTab} />;
@@ -58,7 +96,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
         )}
         {activeTab === 'investors' && (
           <div className="mt-8">
-            {isOfferingManager && (
+            {/* {isOfferingManager && (
               <>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investor Waitlist</h1>
                 {offering.waitlistMembers?.length > 0 && (
@@ -68,17 +106,21 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   />
                 )}
               </>
-            )}
-            {contractOwnerMatches && isContractOwner ? (
+            )} */}
+            {shareContractAddress ? (
               <div>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
+                  contractSet={contractSet}
+                  investmentCurrency={investmentCurrency}
+                  currentSalePrice={currentSalePrice}
                   offeringId={offering.id}
-                  contractId={contractId}
+                  issuances={issuances}
+                  refetchContracts={refetchContracts}
                 />
                 <hr className="mt-5" />
-                <AddWhitelistAddress contractId={contractId} offeringId={offering.id} />
+                <AddWhitelistAddress shareContractAddress={shareContractAddress} offeringId={offering.id} />
               </div>
             ) : (
               <div>You must create a share contract before you can add investors.</div>
@@ -88,17 +130,23 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
         {activeTab === 'distributions' && (
           <div>
             <div className="flex justify-between items-center">
-              <h1 className="text-cDarkBlue text-2xl font-medium   mb-6 mt-8 ">Distributions</h1>
-              {contractOwnerMatches && isContractOwner && (
-                <Button onClick={() => {}} className="h-12 bg-cLightBlue p-3 font-semibold text-white rounded-md">
+              <h1 className="text-cDarkBlue text-2xl font-medium mb-6 mt-8 ">Distributions</h1>
+              {contractOwnerMatches && isContractOwner && !!distributionContractAddress && (
+                <Button
+                  onClick={() => {
+                    setSubmitDistributionModal(true);
+                  }}
+                  className="h-12 bg-cLightBlue p-3 font-semibold text-white rounded-md"
+                >
                   Submit Distribution
                 </Button>
               )}
             </div>
             <DistributionList
-              contractId={contractId}
+              distributionContractAddress={distributionContractAddress}
               distributions={offering.distributions}
-              currency={offering.details.distributionCurrency}
+              isDistributor
+              walletAddress={userWalletAddress as String0x}
             />
           </div>
         )}

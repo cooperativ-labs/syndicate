@@ -1,23 +1,23 @@
-export const makeSubmissionList = (list) => {
-  if (typeof list === 'string') {
-    return list.split(',').map((item) => {
-      return `${formatTag(item.toLowerCase())}`;
-    });
-  }
-  return list;
-};
+// export const makeSubmissionList = (list) => {
+//   if (typeof list === 'string') {
+//     return list.split(',').map((item) => {
+//       return `${formatTag(item.toLowerCase())}`;
+//     });
+//   }
+//   return list;
+// };
 
-export const makeRemovalList = (oldList, newList) => {
-  return oldList.filter((oldItem) => {
-    return !newList.includes(oldItem);
-  });
-};
+// export const makeRemovalList = (oldList, newList) => {
+//   return oldList.filter((oldItem) => {
+//     return !newList.includes(oldItem);
+//   });
+// };
 
 const date = new Date();
 export const currentDate = rfc3339(date);
 
-export function rfc3339(d) {
-  function pad(n) {
+export function rfc3339(d: Date) {
+  function pad(n: number) {
     return n < 10 ? '0' + n : n;
   }
 
@@ -36,13 +36,13 @@ export function rfc3339(d) {
   );
 }
 
-export function timezoneOffset(offset) {
+export function timezoneOffset(offset: number) {
   var sign;
   if (offset === 0) {
     return 'Z';
   }
 
-  function pad(n) {
+  function pad(n: number) {
     return n < 10 ? '0' + n : n;
   }
 

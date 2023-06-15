@@ -122,6 +122,26 @@ export const SMART_CONTRACT_FIELDS = gql`
       id
     }
     established
+    partitions
+  }
+`;
+
+export const SMART_CONTRACT_SET_FIELDS = gql`
+  ${SMART_CONTRACT_FIELDS}
+  fragment smartContractSetData on OfferingSmartContractSet {
+    id
+    offering {
+      id
+    }
+    shareContract {
+      ...smartContractData
+    }
+    swapContract {
+      ...smartContractData
+    }
+    distributionContract {
+      ...smartContractData
+    }
   }
 `;
 
@@ -214,7 +234,6 @@ export const CORE_WAITLIST_MEMBER_FIELDS = gql`
     name
     minPledge
     maxPledge
-    walletAddress
     nonUS
     investorApplication {
       ...applicationData
@@ -229,9 +248,14 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
     id
     addressOfferingId
     walletAddress
+    chainId
     permitted
     name
-    nonUS
+    jurisdiction {
+      id
+      country
+      province
+    }
     externalId
     minPledge
     maxPledge
@@ -240,6 +264,21 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
     }
     offering {
       id
+      offeringEntity {
+        organization {
+          users {
+            permissions
+            user {
+              id
+            }
+          }
+        }
+      }
+      distributions {
+        id
+        transactionHash
+        contractIndex
+      }
       details {
         ...offeringDetailsData
       }
@@ -251,7 +290,7 @@ export const CORE_ENTITY_FIELDS = gql`
   ${CORE_ADDRESS_FIELDS}
   ${CORE_DOCUMENT_FIELDS}
   ${CORE_RE_PROPERTY_FIELDS}
-  ${CORE_PURCHASE_REQUEST_FIELDS}
+
   ${SMART_CONTRACT_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
   fragment entityData on LegalEntity {
@@ -259,12 +298,16 @@ export const CORE_ENTITY_FIELDS = gql`
     taxId
     displayName
     legalName
-    supplementaryLegalText
-    jurisdiction
+    purpose
+    jurisdiction {
+      id
+      country
+      province
+    }
     operatingCurrency {
       code
     }
-    supplementaryLegalText
+    purpose
     organization {
       id
       name
@@ -287,7 +330,7 @@ export const CORE_ENTITY_FIELDS = gql`
       id
       legalName
       displayName
-      supplementaryLegalText
+      purpose
       addresses {
         ...addressData
       }
@@ -299,7 +342,11 @@ export const CORE_ENTITY_FIELDS = gql`
       id
       displayName
       legalName
-      jurisdiction
+      jurisdiction {
+        id
+        country
+        province
+      }
       offerings {
         id
         name
@@ -308,8 +355,11 @@ export const CORE_ENTITY_FIELDS = gql`
         details {
           ...offeringDetailsData
         }
-        sales {
-          price
+        orders {
+          swapContractAddress
+          initiator
+          contractIndex
+          transactionHash
         }
       }
       organization {
@@ -352,15 +402,13 @@ export const CORE_ENTITY_FIELDS = gql`
         id
         walletAddress
       }
-      purchaseRequests {
-        ...purchaseRequestData
-      }
+      # purchaseRequests {
+      #   ...purchaseRequestData
+      # }
       distributions {
         id
-        date
-        amount
-        hasClaimed
-        transactionId
+        contractIndex
+        transactionHash
       }
     }
     smartContracts {
@@ -378,8 +426,8 @@ export const CORE_OFFERING_FIELDS = gql`
   ${CORE_ENTITY_FIELDS}
   ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
   ${CORE_WAITLIST_MEMBER_FIELDS}
-  ${CORE_PURCHASE_REQUEST_FIELDS}
-  ${SMART_CONTRACT_FIELDS}
+
+  ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
   fragment offeringData on Offering {
     id
@@ -397,8 +445,8 @@ export const CORE_OFFERING_FIELDS = gql`
     lightBrand
     website
     shortDescription
-    smartContracts {
-      ...smartContractData
+    smartContractSets {
+      ...smartContractSetData
     }
     sharingImage {
       id
@@ -424,18 +472,18 @@ export const CORE_OFFERING_FIELDS = gql`
     offeringEntity {
       ...entityData
     }
-    purchaseRequests {
-      ...purchaseRequestData
-    }
-    sales {
+    # purchaseRequests {
+    #   ...purchaseRequestData
+    # }
+    orders {
       id
-      numShares
-      price
       minUnits
       maxUnits
       visible
-      smartContractId
+      swapContractAddress
       initiator
+      contractIndex
+      transactionHash
       relatedOffering {
         id
       }
@@ -445,10 +493,8 @@ export const CORE_OFFERING_FIELDS = gql`
     }
     distributions {
       id
-      date
-      amount
-      hasClaimed
-      transactionId
+      contractIndex
+      transactionHash
     }
     documents {
       ...documentData
@@ -503,7 +549,11 @@ export const CORE_ORGANIZATION_FIELDS = gql`
       id
       legalName
       displayName
-      jurisdiction
+      jurisdiction {
+        id
+        country
+        province
+      }
       organization {
         id
         slug

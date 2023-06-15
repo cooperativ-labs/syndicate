@@ -1,4 +1,3 @@
-import * as backendCtc from '../web3/index.main';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import cn from 'classnames';
 import Container from '@src/containers/Layouts/Container';
@@ -7,70 +6,71 @@ import DocumentList from '@src/components/offering/documents/DocumentList';
 import Header from '@src/containers/Header';
 import OfferingProperties from '@src/components/properties/OfferingProperties';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import router from 'next/router';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
-import { DocumentType, Offering } from 'types';
+import { DocumentType, Maybe, Offering } from 'types';
 import { getBaseUrl } from '@src/utils/helpersURL';
-import { getCurrentSalePrice } from '@src/utils/helpersMoney';
+
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { GetEstablishedContracts } from '@src/utils/helpersContracts';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ReachContext } from '@src/SetReachContext';
-import { useAccount, useNetwork } from 'wagmi';
-import { useAsyncFn } from 'react-use';
+
+import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
+import { String0x } from '@src/web3/helpersChain';
+import { useAccount, useChainId } from 'wagmi';
+import { useAsync } from 'react-use';
+import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 type OfferingProfileProps = {
   offering: Offering;
 };
 
 const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
-  const { details, brandColor, website, offeringEntity, id: offeringId, name: offeringName, distributions } = offering;
-  const { chain } = useNetwork();
   const { address: userWalletAddress } = useAccount();
-  const { reachLib, reFetchWallet } = useContext(ReachContext);
-  const establishedContract = GetEstablishedContracts(offeringEntity.smartContracts, chain.id)[0];
+  const {
+    details,
+    brandColor,
+    website,
+    offeringEntity,
+    id: offeringId,
+    name: offeringName,
+    distributions,
+    smartContractSets,
+    documents,
+    orders,
+  } = offering;
+
+  const contractSet = smartContractSets?.slice(-1)[0];
+  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
+
+  const shareContract = contractSet?.shareContract;
+  const swapContract = contractSet?.swapContract;
+  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+  const distributionContract = contractSet?.distributionContract;
+  const distributionContractAddress = distributionContract?.cryptoAddress.address as String0x;
+
+  const partitions = shareContract?.partitions as String0x[];
   const type = details && details.type;
   const stage = details && details.stage;
-  const organization = offeringEntity.organization;
+  const organization = offeringEntity?.organization;
   const shareURL = `${getBaseUrl()}/${offeringId}`;
-  const contractId = establishedContract?.cryptoAddress.address;
-  const [retrievalIssue, setRetrievalIssue] = useState<boolean>();
-  const [contractUser, setContractUser] = useState<string>();
-  const [isWhiteListed, setIsWhiteListed] = useState<boolean>();
 
-  const currentSalePrice = getCurrentSalePrice(offering);
-  const OfferingReProperties = offering.offeringEntity.realEstateProperties;
-  const operatingCurrency = offering.offeringEntity.operatingCurrency;
+  const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
 
-  const { id: orgId, name: orgName, logo } = organization;
+  useAsync(async () => {
+    const contractSaleList =
+      orders &&
+      paymentTokenDecimals &&
+      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
+    contractSaleList && setContractSaleList(contractSaleList);
+  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
-  const [, getContractInfo] = useAsyncFn(async () => {
-    try {
-      // const reach = loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
-      // reach.setWalletFallback(reach.walletFallback({ providerEnv: 'TestNet', MyAlgoConnect }));
-      //USER
-      const acc = await reachLib.getDefaultAccount();
-      const contractUserPubKey = acc.getAddress();
-      setContractUser(reachLib.formatAddress(contractUserPubKey));
-      //CONTRACT MANAGERS
-      const ctc = await acc.contract(backendCtc, contractId);
-      const whitelistStatus = await ctc.views.wlMember(contractUser);
-      const isWhiteListed = whitelistStatus[1];
-      setIsWhiteListed(isWhiteListed);
-      //CONTRACT DATA
-      const tot = await ctc.views.totSTBTD();
-      setRetrievalIssue(tot[0] === 'None');
-    } catch (e) {
-      return e;
-    }
-  }, [loadStdlib, contractId, isWhiteListed]);
+  const currentSalePrice = getCurrentOrderPrice(contractSaleList, details?.priceStart);
+  const OfferingReProperties = offering.offeringEntity?.realEstateProperties;
+  const operatingCurrency = offering.offeringEntity?.operatingCurrency;
 
-  useEffect(() => {
-    getContractInfo();
-  }, [getContractInfo]);
+  const { id: orgId, name: orgName, logo } = organization || { id: '', name: '', logo: '' };
 
   const OrgLogo = logo ? logo : '/assets/images/logos/company-placeholder.jpeg';
 
@@ -110,7 +110,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               <img className="h-10 w-10 bg-slate-400 border-1 border-slate-400 rounded-full" src={OrgLogo} />{' '}
               <span className="pl-2 pr-4 font-semibold">{orgName}</span>
             </div>
-            {offeringEntity.addresses.map((address, i) => (
+            {offeringEntity?.addresses?.map((address, i) => (
               <AddressDisplay address={address} key={i} className="text-sm" />
             ))}
             {website && (
@@ -128,7 +128,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
             {details && (
               <ShareOfferPanel
                 offering={offering}
-                currentUser={contractUser}
+                currentUser={userWalletAddress}
                 currentSalePrice={currentSalePrice}
                 organization={organization}
               />
@@ -144,7 +144,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
           <>
             <h2 className="text-gray-800 font-bold mb-3">Offering Documents</h2>
             <DocumentList
-              documents={getDocumentsOfType(offering.documents, DocumentType.OfferingDocument)}
+              documents={getDocumentsOfType(documents, DocumentType.OfferingDocument)}
               isOfferingManager={false}
               offeringId={offering.id}
             />
@@ -157,10 +157,10 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               <h2 className="text-gray-800 font-bold mb-3">Distribution History</h2>
               {details && (
                 <DistributionList
-                  contractId={contractId}
+                  distributionContractAddress={distributionContractAddress}
                   distributions={distributions}
-                  currency={details.distributionCurrency}
                   hideTransactionId
+                  walletAddress={userWalletAddress}
                 />
               )}
             </div>

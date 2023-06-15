@@ -42,11 +42,12 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({ u
             address={cryptoAddress.address}
             chainId={cryptoAddress.chainId}
             withCopy
-            label={isAlgorand ? 'Id:' : 'Address:'}
+            showFull
+            label={'Address: '}
           />
           <div className="text-sm text-gray-700">
             {/* Shares authorized: {numberWithCommas(numTokensAuthorized)} */}
-            {backingToken && <div> Distribution currency: {getCurrencyOption(backingToken).symbol} </div>}
+            {backingToken && <div> Distribution currency: {getCurrencyOption(backingToken)?.symbol} </div>}
           </div>
         </div>
         <button

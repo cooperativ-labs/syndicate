@@ -1,16 +1,17 @@
 import Card from '../cards/Card';
 import React from 'react';
 import router from 'next/router';
-import { LegalEntity } from 'types';
+import { LegalEntity, Maybe } from 'types';
+import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 
-type EntityCardProps = {
-  entity: LegalEntity;
+export type EntityCardProps = {
+  entity: Maybe<Maybe<LegalEntity>>;
 };
 
 const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
-  const { displayName, jurisdiction, id, subsidiaries, owners, offerings, organization } = entity;
+  const { displayName, jurisdiction, id, subsidiaries, owners, offerings, organization } = entity as LegalEntity;
 
-  const isOfferingEntity = offerings.length > 0;
+  const isOfferingEntity = offerings && offerings.length > 0;
 
   return (
     <div
@@ -35,7 +36,11 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
           <div>
             {isOfferingEntity && <div className="text-sm font-bold text-gray-700">This is an offering SPV</div>}
           </div>
-          <div>{jurisdiction && <div className="text-sm font-medium text-gray-500">{jurisdiction}</div>}</div>
+          <div>
+            {jurisdiction && (
+              <div className="text-sm font-medium text-gray-500">{renderJurisdiction(jurisdiction)}</div>
+            )}
+          </div>
         </div>
       </Card>
     </div>

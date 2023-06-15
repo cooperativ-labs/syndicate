@@ -2,19 +2,19 @@ import MoneyDisplay from './../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React, { FC } from 'react';
-import { OfferingDetails, OfferingSale } from 'types';
+import { Maybe, OfferingDetails, ShareOrder } from 'types';
+import { String0x } from '@src/web3/helpersChain';
 
 export type ContractViewDetails = {
-  sharesOutstanding: number;
-  fundsDistributed: number;
-  myShares: number;
-  bacId: string;
+  sharesOutstanding: number | undefined;
+  myShares: number | undefined;
+  paymentToken: String0x | undefined;
 };
 
 export type OfferingDetailsDisplayProps = {
-  offeringDetails: OfferingDetails;
-  currentSalePrice: number;
-  isOfferingManager: boolean;
+  offeringDetails: Maybe<OfferingDetails> | undefined;
+  currentSalePrice: Maybe<number> | undefined;
+  isOfferingManager: boolean | undefined;
   contractViewDetails: ContractViewDetails;
   className?: string;
 };
@@ -26,7 +26,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
   contractViewDetails,
   className,
 }) => {
-  const { sharesOutstanding, fundsDistributed, myShares, bacId } = contractViewDetails;
+  const { sharesOutstanding, myShares, paymentToken } = contractViewDetails;
   const {
     numUnits,
     projectedIrr,
@@ -38,13 +38,14 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
     targetEquityMultiple,
     targetEquityMultipleMax,
     investmentCurrency,
-  } = offeringDetails;
+  } = offeringDetails as OfferingDetails;
 
+  const totalValue = numUnits && currentSalePrice ? numUnits * currentSalePrice : undefined;
   return (
     <div className={className}>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <OfferingDetailDashboardItem title="Deal size">
-          <MoneyDisplay amount={currentSalePrice * numUnits} bacId={bacId} currency={investmentCurrency} />
+          <MoneyDisplay amount={totalValue} paymentToken={paymentToken} currency={investmentCurrency} />
         </OfferingDetailDashboardItem>
 
         {/* <div className="flex justify-center">
@@ -52,7 +53,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
       </div> */}
 
         <OfferingDetailDashboardItem title="Share price">
-          <MoneyDisplay amount={currentSalePrice} bacId={bacId} currency={investmentCurrency} />
+          <MoneyDisplay amount={currentSalePrice} paymentToken={paymentToken} currency={investmentCurrency} />
         </OfferingDetailDashboardItem>
 
         {isOfferingManager ? (
@@ -67,11 +68,15 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
 
         {isOfferingManager ? (
           <OfferingDetailDashboardItem title="Funds Distributed">
-            <MoneyDisplay amount={fundsDistributed} bacId={bacId} currency={investmentCurrency} />
+            {/* <MoneyDisplay amount={fundsDistributed} paymentToken={paymentToken} currency={investmentCurrency} /> */}
           </OfferingDetailDashboardItem>
         ) : (
           <OfferingDetailDashboardItem title="Share value">
-            <MoneyDisplay amount={myShares * currentSalePrice} bacId={bacId} currency={investmentCurrency} />
+            <MoneyDisplay
+              amount={currentSalePrice && myShares ? currentSalePrice * myShares : undefined}
+              paymentToken={paymentToken}
+              currency={investmentCurrency}
+            />
           </OfferingDetailDashboardItem>
         )}
       </div>

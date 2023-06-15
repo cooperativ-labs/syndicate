@@ -1,21 +1,28 @@
-import { SmartContract } from 'types';
+import { Maybe, SmartContract, SmartContractType } from 'types';
 
-export const GetAvailableContracts = (unestablishedSmartContracts: SmartContract[], chainId) => {
-  let availableContracts = [];
-  unestablishedSmartContracts.map((contract) => {
-    if (contract?.cryptoAddress.chainId === chainId && !contract.established) {
-      availableContracts.push(contract);
+const contractIsSameChain = (contract: Maybe<SmartContract>, chainId: number): boolean => {
+  return contract?.cryptoAddress.chainId === chainId;
+};
+export const getAvailableContracts = (unestablishedSmartContracts: Maybe<SmartContract>[], chainId: number) => {
+  return unestablishedSmartContracts.map((contract) => {
+    if (contractIsSameChain(contract, chainId) && !contract?.established) {
+      return contract;
     }
   });
-  return availableContracts;
 };
 
-export const GetEstablishedContracts = (smartContracts: SmartContract[], chainId) => {
-  let establishedContracts = [];
-  smartContracts.map((contract) => {
-    if (contract?.cryptoAddress.chainId === chainId && contract.established) {
-      establishedContracts.push(contract);
-    }
-  });
-  return establishedContracts;
-};
+// export const getEstablishedContracts = (smartContracts: SmartContract[], chainId: number) => {
+//   return smartContracts.map((contract) => {
+//     if (contractIsSameChain(contract, chainId) && contract.established && contract?.type === SmartContractType.Share) {
+//       return contract;
+//     }
+//   });
+// };
+
+// export const getSwapContracts = (smartContracts: SmartContract[], chainId: number) => {
+//   return smartContracts.map((contract) => {
+//     if (contractIsSameChain(contract, chainId) && contract?.type === SmartContractType.Swap) {
+//       return contract;
+//     }
+//   });
+// };

@@ -1,4 +1,4 @@
-function useCurrencyFormatter(amount, currency) {
+function useCurrencyFormatter(amount: number, currency: string | undefined) {
   if (amount > 1000) {
     const rounded = `${Math.round(amount / 1000)}k ${currency !== 'Contributor Credits' ? currency : ''} `;
     return { amount, rounded };

@@ -9,41 +9,51 @@ import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GetServerSideProps, NextPage } from 'next';
 import { initializeApollo } from '@src/utils/apolloClient';
 import { Organization } from 'types';
-
-export const TEMP_IS_PARTICIPANT = true;
+import { useAccount } from 'wagmi';
 
 type ResultProps = {
   result: Organization;
 };
 
 const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
+  const { address: userWalletAddress } = useAccount();
   const organization = result;
 
   const { name, shortDescription, sharingImage, id } = organization;
+
+  const orgParticipants = organization.legalEntities
+    ?.map((entity) =>
+      entity?.offerings?.map((offering) =>
+        offering?.participants?.map((participant) => participant?.walletAddress === userWalletAddress)
+      )
+    )
+    .flat(2);
+
+  const isParticipant = orgParticipants?.includes(true);
 
   return organization ? (
     <div data-test="component-project" className="bg-gray-50">
       <Head>
         <title>{name}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta property="og:title" content={name} />
+        <meta property="og:title" content={name ?? ''} />
         <meta property="og:type" content="website" />
-        <meta property="og:description" content={shortDescription} />
+        <meta property="og:description" content={shortDescription ?? ''} />
         <meta
           property="og:image"
           content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
         />
         <meta property="og:url" content={`https://cooperativ.io/${id}/portal/`}></meta>
         Twitter
-        <meta name="twitter:title" content={name} />
-        <meta name="twitter:description" content={shortDescription} />
+        <meta name="twitter:title" content={name ?? ''} />
+        <meta name="twitter:description" content={shortDescription ?? ''} />
         <meta
           name="twitter:image"
           content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
         />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      {TEMP_IS_PARTICIPANT ? (
+      {isParticipant ? (
         <PortalWrapper>
           <PortalOrganization />{' '}
         </PortalWrapper>
@@ -62,7 +72,7 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const apolloClient = initializeApollo();
 
-  const organizationId = params.organizationId;
+  const organizationId = params?.organizationId;
 
   try {
     const { data } = await apolloClient.query({
@@ -74,7 +84,6 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       props: { result },
     };
   } catch (error) {
-    console.error(error);
     return {
       props: {
         result: null,

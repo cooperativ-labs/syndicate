@@ -5,7 +5,15 @@ import Tab from '@src/components/offering/tabs/Tab';
 import TextSection, { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
 import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
 import TotalReturns from '@src/components/offering/tabs/financialDisplay/TotalReturns';
-import { Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
+import {
+  Currency,
+  Maybe,
+  Offering,
+  OfferingDescriptionText,
+  OfferingDetails,
+  OfferingTabSection,
+  RealEstateProperty,
+} from 'types';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 import { useWindowSize } from 'react-use';
 
@@ -14,27 +22,35 @@ type ProfileTabContainerProps = {
 };
 
 const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
-  const [activeTab, setActiveTab] = useState<OfferingTabSection>(OfferingTabSection.Details);
+  const [activeTab, setActiveTab] = useState<OfferingTabSection | string>(OfferingTabSection.Details);
   const isMobile = useWindowSize().width < 768;
   function sortByOrder(descriptions: OfferingDescriptionText[]) {
     return descriptions.sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : 0));
   }
 
   const detailsDescriptions = sortByOrder(
-    offering.profileDescriptions.filter((description) => description.section === OfferingTabSection.Details)
+    offering.profileDescriptions?.filter(
+      (description) => description?.section === OfferingTabSection.Details
+    ) as OfferingDescriptionText[]
   );
   const termsDescriptions = sortByOrder(
-    offering.profileDescriptions.filter((description) => description.section === OfferingTabSection.Terms)
+    offering.profileDescriptions?.filter(
+      (description) => description?.section === OfferingTabSection.Terms
+    ) as OfferingDescriptionText[]
   );
   const offerorInfoDescriptions = sortByOrder(
-    offering.profileDescriptions.filter((description) => description.section === OfferingTabSection.OfferorInfo)
+    offering.profileDescriptions?.filter(
+      (description) => description?.section === OfferingTabSection.OfferorInfo
+    ) as OfferingDescriptionText[]
   );
   const disclosuresDescriptions = sortByOrder(
-    offering.profileDescriptions.filter((description) => description.section === OfferingTabSection.Disclosures)
+    offering.profileDescriptions?.filter(
+      (description) => description?.section === OfferingTabSection.Disclosures
+    ) as OfferingDescriptionText[]
   );
 
-  const OfferingReProperties = offering.offeringEntity.realEstateProperties;
-  const operatingCurrency = offering.offeringEntity.operatingCurrency;
+  const OfferingReProperties = offering.offeringEntity?.realEstateProperties;
+  const operatingCurrency = offering.offeringEntity?.operatingCurrency;
 
   return (
     <div>
@@ -72,9 +88,15 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
         )}
         {activeTab === OfferingTabSection.Financials && (
           <div>
-            <TotalReturns offeringDetails={offering.details} />
-            <SourcesAndUsesDisplay operatingCurrency={operatingCurrency} offeringDetails={offering.details} />
-            <TotalInvestmentValue OfferingReProperties={OfferingReProperties} operatingCurrency={operatingCurrency} />
+            <TotalReturns offeringDetails={offering.details as OfferingDetails} />
+            <SourcesAndUsesDisplay
+              operatingCurrency={operatingCurrency as Currency}
+              offeringDetails={offering.details as OfferingDetails}
+            />
+            <TotalInvestmentValue
+              OfferingReProperties={OfferingReProperties as RealEstateProperty[]}
+              operatingCurrency={operatingCurrency as Currency}
+            />
           </div>
         )}
         {activeTab === OfferingTabSection.Terms && (

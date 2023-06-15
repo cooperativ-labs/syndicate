@@ -12,7 +12,7 @@ const OfferingDetailItem: FC<OfferingDetailItemProps> = ({ title, children, bran
     <div className="border-2 border-gray-200 p-2 rounded-md">
       <div
         className={cn(brandColor ? '' : 'text-green-600', 'flex justify-center text-lg  font bold text-center')}
-        style={brandColor && { color: brandColor }}
+        style={brandColor ? { color: brandColor } : undefined}
       >
         {children}
       </div>

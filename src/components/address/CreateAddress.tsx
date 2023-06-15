@@ -1,4 +1,4 @@
-import CustomAddressAutocomplete, { CreateFirstAddressLine } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
 import Input, { addressFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC, useEffect, useState } from 'react';
@@ -18,8 +18,8 @@ export type CreateAddressType = {
 const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) => {
   const [addAddress, { data, error }] = useMutation(ADD_ENTITY_ADDRESS);
   // const [map, setMap] = useState(null);
-  const [latLang, setLatLang] = useState({ lat: null, lng: null });
-  const [autocompleteResults, setAutocompleteResults] = useState([null]);
+  const [latLang, setLatLang] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
+  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
 
   if (error) {
@@ -44,31 +44,19 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
       });
   }, [placeId]);
 
-  const subpremise = autocompleteResults[0]?.address_components.find((x) => x.types.includes('subpremise'))?.long_name;
-  const street_number = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('street_number')
-  )?.long_name;
-  const street_name = autocompleteResults[0]?.address_components.find((x) => x.types.includes('route'))?.long_name;
-  const city = autocompleteResults[0]?.address_components.find((x) => x.types.includes('locality'))?.long_name;
-  const sublocality = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('sublocality')
-  )?.long_name;
-  const state = autocompleteResults[0]?.address_components.find((x) =>
-    x.types.includes('administrative_area_level_1')
-  )?.long_name;
-  const zip = autocompleteResults[0]?.address_components.find((x) => x.types.includes('postal_code'))?.long_name;
-  const country = autocompleteResults[0]?.address_components.find((x) => x.types.includes('country'))?.long_name;
+  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
+    normalizeGeoAddress(autocompleteResults);
 
-  const onSubmit = (label) => {
+  const onSubmit = (label: string) => {
     addAddress({
       variables: {
         entityId: entity.id,
         addressLabel: label,
-        addressLine1: CreateFirstAddressLine(street_number, street_name),
-        addressLine2: subpremise,
-        city: city ?? sublocality,
+        addressLine1: firstAddressLine,
+        addressLine2: secondAddressLine,
+        city: city,
         stateProvince: state,
-        postalCode: zip,
+        postalCode: postalCode,
         country: country,
         lat: latLang.lat,
         lng: latLang.lng,
@@ -85,7 +73,7 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
-        if (!street_number || !street_name || !city || !state || !zip || !country) {
+        if (!firstAddressLine || !city || !state || !postalCode || !country) {
           errors.addressAutocomplete = 'Please include an address.';
         }
         if (!values.addressLabel) {

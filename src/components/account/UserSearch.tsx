@@ -17,7 +17,7 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
   const { dispatch } = applicationStore;
   const router = useRouter();
 
-  const handleSubmit = (submission) => {
+  const handleSubmit = (submission: string) => {
     dispatch({ type: 'SET_SEARCHTEXT', payload: submission });
     if (router.route !== '/') {
       router.push('/');

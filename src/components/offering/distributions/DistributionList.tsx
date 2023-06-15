@@ -1,36 +1,18 @@
-import DistributionListItem from './DistributionListItem';
+import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 import React, { FC } from 'react';
-import { Currency, OfferingDistribution } from 'types';
+import { Maybe, OfferingDistribution } from 'types';
 
-type DistributionListProps = {
-  distributions: OfferingDistribution[];
-  currency: Currency;
-  contractId: string;
-  hideTransactionId?: boolean;
+type DistributionListProps = DistributionListItemProps & {
+  distributions: Maybe<Maybe<OfferingDistribution>[]> | undefined;
 };
 
-const TEMP_fake_distributions = [
-  {
-    id: '1',
-    date: '2021-09-01',
-    amount: 100,
-    transactionId: '0x1234567890123456789012345678901234567890',
-  },
-  {
-    id: '1',
-    date: '2021-09-01',
-    amount: 100,
-    transactionId: '0x1234567890123456789012345678901234567890',
-  },
-  {
-    id: '1',
-    date: '2021-09-01',
-    amount: 100,
-    transactionId: '0x1234567890123456789012345678901234567890',
-  },
-];
-
-const DistributionList: FC<DistributionListProps> = ({ contractId, distributions, currency, hideTransactionId }) => {
+const DistributionList: FC<DistributionListProps> = ({
+  distributionContractAddress,
+  distributions,
+  isDistributor,
+  hideTransactionId,
+  walletAddress,
+}) => {
   return (
     <div className="p-3  border-t-8 rounded-lg w-full">
       <div className="hidden md:grid grid-cols-8 gap-3 items-center mb-5">
@@ -46,10 +28,16 @@ const DistributionList: FC<DistributionListProps> = ({ contractId, distributions
           <div className="text-sm font-bold text-gray-700">Total Distribution</div>
         </div>
       </div>
-      {TEMP_fake_distributions.map((dist, i) => {
+      {distributions?.map((dist, i) => {
         return (
           <div className="mb-3" key={i}>
-            <DistributionListItem distribution={dist} currency={currency} hideTransactionId={hideTransactionId} />
+            <DistributionListItem
+              distribution={dist as OfferingDistribution}
+              hideTransactionId={hideTransactionId}
+              distributionContractAddress={distributionContractAddress}
+              isDistributor={isDistributor}
+              walletAddress={walletAddress}
+            />
           </div>
         );
       })}

@@ -1,23 +1,22 @@
-import React, { FC } from 'react';
-
 import cn from 'classnames';
+import React, { FC } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { UPDATE_SALE } from '@src/utils/dGraphQueries/offering';
+import { UPDATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { useMutation } from '@apollo/client';
 
-type SaleVisibilityToggleProps = {
-  saleVisibility: boolean;
-  saleId: string;
+type OrderVisibilityToggleProps = {
+  orderVisibility: boolean | undefined | null;
+  id: string;
 };
-const SaleVisibilityToggle: FC<SaleVisibilityToggleProps> = ({ saleVisibility, saleId }) => {
-  const [updateSaleObject, { data, error }] = useMutation(UPDATE_SALE);
+const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({ orderVisibility, id }) => {
+  const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
 
   const handleToggle = () => {
-    updateSaleObject({
+    updateOrderObject({
       variables: {
         currentDate: currentDate,
-        saleId: saleId,
-        visible: !saleVisibility,
+        id: id,
+        visible: !orderVisibility,
       },
     });
   };
@@ -33,11 +32,11 @@ const SaleVisibilityToggle: FC<SaleVisibilityToggleProps> = ({ saleVisibility, s
             handleToggle();
           }}
         >
-          <div className={cn([saleVisibility ? ' ml-5 bg-emerald-600' : 'bg-gray-400'], 'h-6 w-6 rounded-full ')} />
+          <div className={cn([orderVisibility ? ' ml-5 bg-emerald-600' : 'bg-gray-400'], 'h-6 w-6 rounded-full ')} />
         </button>
       </div>
     </div>
   );
 };
 
-export default SaleVisibilityToggle;
+export default OrderVisibilityToggle;

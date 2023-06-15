@@ -17,9 +17,10 @@ export const ADD_ENTITY = gql`
     $organizationId: ID!
     $legalName: String!
     $type: LegalEntityType!
-    $jurisdiction: String!
+    $jurCountry: String!
+    $jurProvince: String
     $operatingCurrency: CurrencyCode!
-    $supLegalText: String
+    $entityPurpose: String
     $addressLabel: String
     $addressLine1: String!
     $addressLine2: String
@@ -38,9 +39,9 @@ export const ADD_ENTITY = gql`
           type: $type
           legalName: $legalName
           displayName: $legalName
-          jurisdiction: $jurisdiction
+          jurisdiction: { country: $jurCountry, province: $jurProvince }
           operatingCurrency: { code: $operatingCurrency }
-          supplementaryLegalText: $supLegalText
+          purpose: $entityPurpose
           addresses: {
             label: $addressLabel
             line1: $addressLine1
@@ -113,8 +114,9 @@ export const UPDATE_ENTITY_INFORMATION = gql`
     $entityId: [ID!]
     $legalName: String!
     $displayName: String!
-    $jurisdiction: String!
-    $operatingCurrency: CurrencyCode!
+    $jurCountry: String!
+    $jurProvince: String
+    $operatingCurrencyCode: CurrencyCode!
     $taxId: String
   ) {
     updateLegalEntity(
@@ -124,8 +126,8 @@ export const UPDATE_ENTITY_INFORMATION = gql`
           lastUpdate: $currentDate
           displayName: $displayName
           legalName: $legalName
-          jurisdiction: $jurisdiction
-          operatingCurrency: { code: $operatingCurrency }
+          jurisdiction: { country: $jurCountry, province: $jurProvince }
+          operatingCurrency: { code: $operatingCurrencyCode }
           taxId: $taxId
         }
       }
@@ -134,7 +136,11 @@ export const UPDATE_ENTITY_INFORMATION = gql`
         id
         legalName
         displayName
-        jurisdiction
+        jurisdiction {
+          id
+          country
+          province
+        }
         operatingCurrency {
           code
         }
@@ -149,7 +155,8 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
     $entityId: [ID!]
     $legalName: String!
     $displayName: String!
-    $jurisdiction: String!
+    $jurCountry: String!
+    $jurProvince: String
     $addressLabel: String
     $addressLine1: String!
     $addressLine2: String
@@ -166,7 +173,7 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
           lastUpdate: $currentDate
           displayName: $displayName
           legalName: $legalName
-          jurisdiction: $jurisdiction
+          jurisdiction: { country: $jurCountry, province: $jurProvince }
           addresses: {
             label: $addressLabel
             line1: $addressLine1

@@ -10,6 +10,7 @@ import CreateOrganization from '@src/components/organization/CreateOrganization'
 import router from 'next/router';
 import { ApplicationStoreProps, store } from '@context/store';
 import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/helpersOrganization';
+import { OfferingParticipant } from 'types';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
@@ -28,9 +29,11 @@ const Dashboard: FC = () => {
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress },
   });
-  const participantOfferings = participantData?.queryOfferingParticipant.map((offeringParticipant) => {
-    return offeringParticipant.offering;
-  });
+  const participantOfferings = participantData?.queryOfferingParticipant.map(
+    (offeringParticipant: OfferingParticipant) => {
+      return offeringParticipant.offering;
+    }
+  );
   const isParticipant = participantOfferings?.length > 0;
 
   return (
@@ -61,7 +64,11 @@ const Dashboard: FC = () => {
                       handleOrganizationChange(organization.id);
                     }}
                   >
-                    <img className="w-10 h-10 rounded-full mr-4" src={organization.logo} alt="Avatar of Organization" />
+                    <img
+                      className="w-10 h-10 rounded-full mr-4"
+                      src={organization.logo as string}
+                      alt="Avatar of Organization"
+                    />
                     <h3 className="text-lg text-blue-900 font-semibold">{organization.name}</h3>
                   </div>
                 );

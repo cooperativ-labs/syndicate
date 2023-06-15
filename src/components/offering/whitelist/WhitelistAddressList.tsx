@@ -1,55 +1,73 @@
-import * as backendCtc from '../../../web3/index.main';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
+import RightSideBar from '@src/containers/sideBar/RightSidebar';
+import SelectedParticipantDetails from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
-import { ChainErrorResponses, StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { loadStdlib } from '@reach-sh/stdlib';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
-import { OfferingParticipant } from 'types';
-import { ReachContext } from '@src/SetReachContext';
+import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
+
 import { REMOVE_WHITELIST_OBJECT } from '@src/utils/dGraphQueries/offering';
-import { useAsyncFn } from 'react-use';
+import { String0x } from '@src/web3/helpersChain';
+
+import { getCurrencyOption } from '@src/utils/enumConverters';
 import { useMutation } from '@apollo/client';
 
 type WhitelistAddressListProps = {
-  offeringParticipants: OfferingParticipant[];
   offeringId: string;
-  contractId: string;
+  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  currentSalePrice: Maybe<number> | undefined;
+  investmentCurrency: Maybe<Currency> | undefined;
+  issuances: any[];
+  refetchContracts: () => void;
 };
 
-const WhitelistAddressList: FC<WhitelistAddressListProps> = ({ offeringParticipants, offeringId, contractId }) => {
-  const { reachAcc } = useContext(ReachContext);
+const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
+  offeringId,
+  offeringParticipants,
+  contractSet,
+  currentSalePrice,
+  investmentCurrency,
+  issuances,
+  refetchContracts,
+}) => {
   const [removeMember, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_WHITELIST_OBJECT);
-
-  const removeAddress = async (walletAddress: string, whitelistItemID: string) => {
-    const ctc = reachAcc.contract(backendCtc, contractId);
-    const call = async (f) => {
-      try {
-        await f();
-        removeMember({ variables: { offeringId: offeringId, id: whitelistItemID, currentDate: currentDate } });
-      } catch (e) {
-        StandardChainErrorHandling(e);
-      }
-    };
-    const apis = ctc.a;
-    call(async () => {
-      const apiReturn = await apis.remWL(walletAddress);
-      alert(`${walletAddress} removed from whitelist`);
-
-      return apiReturn;
-    });
-  };
+  const [selectedParticipant, setSelectedParticipant] = React.useState<string | undefined>(undefined);
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const partitions = contractSet?.shareContract?.partitions as String0x[];
 
   return (
-    <div className="w-full">
-      {offeringParticipants.map((participant, i) => {
-        return (
-          <div className="mb-3" key={i}>
-            <WhitelistAddressListItem participant={participant} contractId={contractId} removeAddress={removeAddress} />
-          </div>
-        );
-      })}
-    </div>
+    <>
+      <RightSideBar formOpen={!!selectedParticipant} onClose={() => setSelectedParticipant(undefined)}>
+        <div className="w-full">
+          {selectedParticipant && (
+            <SelectedParticipantDetails
+              selection={selectedParticipant}
+              participants={offeringParticipants}
+              contractSet={contractSet}
+              currentSalePrice={currentSalePrice}
+              paymentTokenDecimals={getCurrencyOption(investmentCurrency)?.decimals}
+              removeMember={removeMember}
+              partitions={partitions}
+              offeringId={offeringId}
+              issuanceList={issuances}
+              refetchContracts={refetchContracts}
+            />
+          )}
+        </div>
+      </RightSideBar>
+      <div className="w-full">
+        {offeringParticipants?.map((participant, i) => {
+          return (
+            <div className="mb-3" key={i}>
+              <WhitelistAddressListItem
+                participant={participant}
+                shareContractAddress={shareContractAddress}
+                setSelectedParticipant={setSelectedParticipant}
+              />
+            </div>
+          );
+        })}
+      </div>
+    </>
   );
 };
 

@@ -1,3 +1,4 @@
+import React from 'react';
 import { ADD_ORGANIZATION_EMAIL } from '@src/utils/dGraphQueries/organization';
 import { sha256 } from 'js-sha256';
 import { useEffect } from 'react';
@@ -16,6 +17,9 @@ const ConfirmEmail = () => {
   if (error) {
     alert(`Oops. Looks like there was a problem adding your email address. ${error}`);
   }
+
+  //IF THIS ISN'T WORKING, TRY MOVING THIS TO THE _APP.JS FILE (weird copilot suggestion)
+  // IF THIS ISN'T WORKING, THE ISSUE MAY BE THE DEPENDENCIES IN THE HOOK BELOW
 
   useEffect(() => {
     if (storedEmail && hashStoredEmail) {
@@ -36,7 +40,7 @@ const ConfirmEmail = () => {
       alert('Email confirmed successfully!');
       router.push(`/${orgId}/settings`);
     }
-  }, [storedEmail, router]);
+  }, [storedEmail, router, hashStoredEmail, token, orgId, addOrganizationEmail]);
 
   return (
     <div className="p-4 mx-auto max-w-xl bg-white rounded-xl shadow-lg">

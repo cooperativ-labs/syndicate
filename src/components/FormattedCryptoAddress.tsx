@@ -1,19 +1,21 @@
 import cn from 'classnames';
-import React, { FC, useState } from 'react';
+import React, { FC, use, useState } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
+import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
-import { useEnsName } from 'wagmi';
+import { useAsync } from 'react-use';
+import { Maybe } from 'yup';
 
 type FormattedCryptoAddressProps = {
-  chainId: number;
-  address: string;
+  chainId: Maybe<number> | undefined;
+  address: string | String0x | undefined;
   label?: string;
   withCopy?: boolean;
   className?: string;
   showFull?: boolean;
   lookupType?: 'address' | 'tx';
-  userName?: string;
+  userName?: Maybe<string> | undefined;
   isYou?: boolean;
 };
 
@@ -28,45 +30,37 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   userName,
   isYou,
 }) => {
-  const addressForEns: `0x${string}` = address as `0x${string}`;
+  const defaultAddress = addressWithoutEns({ address, isYou, isDesktop: false, userName, showFull });
   const [copied, setCopied] = useState<boolean>(false);
-  const { data: ensName } = useEnsName({ address: addressForEns });
-  const chain = chainId && MatchSupportedChains(chainId);
+  const [presentedAddress, setPresentedAddress] = useState<string | undefined>(defaultAddress ?? undefined);
+  const chain = chainId ? MatchSupportedChains(chainId) : undefined;
   const blockExplorer = chain?.blockExplorer;
   const windowSize = useWindowSize();
-  const isDesktop = windowSize.width > 768;
+  const isDesktop = windowSize.width ? windowSize.width > 768 : false;
 
-  if (!address) {
-    return <></>;
-  }
-
-  const formURL = (chainId: number, lookupType: string) => {
+  const formURL = (chainId: Maybe<number> | undefined, lookupType?: string) => {
     const type = lookupType === 'tx' ? 'tx' : isAlgorand(chainId) ? 'application' : 'address';
     const url = `${blockExplorer}/${lookupType ? type : 'address'}/${address}`;
     return url;
   };
 
-  const youSplitAddress = `${isYou ? 'You' : userName} (${address.slice(-4)})`;
-  const splitAddress = `${address.slice(0, 7)}... ${address.slice(-4)}`;
-  const presentAddressOhneENS =
-    showFull && isDesktop ? (
-      address
-    ) : (
-      <span className="hover:underline whitespace-nowrap">{userName ? youSplitAddress : splitAddress}</span>
-    );
+  useAsync(async () => {
+    const presentedAddress = await addressWithENS({ address, isYou, isDesktop, userName, showFull });
+    setPresentedAddress(presentedAddress);
+  }, [address, isYou, isDesktop, userName, showFull]);
 
   return (
     <span className={cn('flex', [className ? className : 'text-sm text-gray-700'])}>
       <a target="_blank" rel="noreferrer" href={formURL(chainId, lookupType)}>
         {label}
-        {ensName ?? presentAddressOhneENS}
+        <span className="hover:underline whitespace-nowrap">{presentedAddress}</span>
       </a>
-      {withCopy && (
+      {withCopy && address && (
         <button
           className="ml-2"
           onClick={(e) => {
-            e.preventDefault();
-            navigator.clipboard.writeText(ensName ?? address);
+            e.stopPropagation();
+            navigator.clipboard.writeText(address);
             setCopied(true);
             setTimeout(() => {
               setCopied(false);

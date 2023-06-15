@@ -4,12 +4,16 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/dGraphQueries/offering';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getTabSectionOption } from '@src/utils/enumConverters';
-import { Offering, OfferingDescriptionText } from 'types';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
 import { useMutation } from '@apollo/client';
 
-type OfferingDescriptionItemProps = { offering: Offering; description: OfferingDescriptionText };
-const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, description }) => {
+type OfferingDescriptionItemProps = {
+  offering: Offering;
+  description: Maybe<OfferingDescriptionText> | undefined;
+  order: number | undefined;
+  tab: OfferingTabSection | undefined;
+};
+const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, description, order, tab }) => {
   const [open, setOpen] = useState<boolean>(false);
   const [updateDescription, { data: dataUpdate, error: errorUpdate }] = useMutation(UPDATE_DESCRIPTION_TEXT);
   const [deleteDescription, { data: dataDelete, error: errorDelete }] = useMutation(DELETE_DESCRIPTION_TEXT);
@@ -17,29 +21,37 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, d
   const [alerted, setAlerted] = useState<boolean>(false);
 
   if (errorUpdate || errorDelete) {
-    alert(`Oops. Looks like something went wrong: ${errorUpdate ? errorUpdate.message : errorDelete.message}`);
+    alert(`Oops. Looks like something went wrong: ${errorUpdate ? errorUpdate.message : errorDelete?.message}`);
   }
   if ((dataUpdate && !alerted) || (dataDelete && !alerted)) {
     setAlerted(true);
   }
 
   return (
-    <div className="p-4 my-8 first:mt-0 border-2 border-gray-200 rounded-lg shadow-sm ">
+    <div className=" my-2 first:mt-0 p-4 border-2 bg-white border-gray-200 rounded-lg shadow-sm ">
       <div className="flex justify-between items-center">
         <div className="grid grid-cols-11">
-          <div className="col-span-10 ">
-            <div className="font-medium text-lg"> {description.title} </div>
-            <div>Tab: {getTabSectionOption(description.section).name}</div>
-            <div>Order: {description.order}</div>
+          <div className="flex col-span-8 ">
+            <div className="font-medium text-lg"> {description?.title} </div>
           </div>
         </div>
-        <Button
-          className={`focus:outline-none pr-2 rounded-full font-semibold text-lg text-gray-700`}
-          aria-label={open ? 'expand section' : 'collapse section'}
-          onClick={() => setOpen(!open)}
-        >
-          <div className="p-1">{open ? <FontAwesomeIcon icon="close" /> : <FontAwesomeIcon icon="pen" />}</div>
-        </Button>
+        <div className="col-span-3 flex ">
+          <Button
+            className={`focus:outline-none pr-5 rounded-full font-semibold text-lg text-gray-700`}
+            aria-label={open ? 'expand section' : 'collapse section'}
+            onClick={() => setOpen(!open)}
+          >
+            <div className="p-1">{open ? <FontAwesomeIcon icon="close" /> : <FontAwesomeIcon icon="pen" />}</div>
+          </Button>
+          <div
+            className={`focus:outline-none pr-2 rounded-full font-semibold text-lg text-gray-700`}
+            aria-label={'drag to reorder section'}
+          >
+            <div className="p-1">
+              <FontAwesomeIcon icon="bars" />
+            </div>
+          </div>
+        </div>
       </div>
 
       {open && (
@@ -49,11 +61,15 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, d
             description={description}
             setAlerted={setAlerted}
             updateDescription={updateDescription}
+            tab={tab}
+            onSubmit={() => {
+              setOpen(false);
+            }}
           />
           <button
             onClick={() =>
               deleteDescription({
-                variables: { offeringId: offering.id, descriptionId: description.id, currentDate: currentDate },
+                variables: { offeringId: offering.id, descriptionId: description?.id, currentDate: currentDate },
               })
             }
             className="p-3 border-2 border-red-800 rounded-md w-full text-red-800 font-bold uppercase -mt-10"

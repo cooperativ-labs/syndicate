@@ -1,148 +1,166 @@
-import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
-import SharePurchaseForm from './SharePurchaseForm';
-import { Offering, OfferingParticipant, OfferingSale } from 'types';
-
 import OfferingSummaryPanel from './OfferingSummaryPanel';
-import { DELETE_SALE } from '@src/utils/dGraphQueries/offering';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-
-import { StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client';
-
+import React, { FC, useState } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
-import { getSale, SaleContentsType } from '@src/web3/reachCalls';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ReachContext } from '@src/SetReachContext';
+import SharePurchaseSteps from './SharePurchaseSteps';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Maybe, Offering, OfferingParticipant, ShareOrder } from 'types';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { useAccount } from 'wagmi';
+import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
-type ShareSaleListItemProps = {
-  index: number;
-  offering: Offering;
-  sale: OfferingSale;
-  initiator: string;
-  myBacBalance: number;
-  contractId: string;
-  walletAddress: string;
-  permittedEntity: OfferingParticipant;
-  isContractOwner: boolean;
-  setModal: (boolean) => void;
-  setRecallContract: Dispatch<SetStateAction<string>>;
+export type OrderStatusType = {
+  isApproved: boolean;
+  isDisapproved: boolean;
+  isAccepted: boolean;
+  isCancelled: boolean;
 };
-const ShareSaleListItem: FC<ShareSaleListItemProps> = ({
+
+export type ShareSaleListItemProps = {
+  offering: Offering;
+  swapContractAddress: String0x | undefined;
+  shareContractAddress: String0x | undefined;
+  paymentTokenAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
+  txnApprovalsEnabled: boolean | undefined;
+  permittedEntity: Maybe<OfferingParticipant> | undefined;
+  isContractOwner: boolean;
+  setShareSaleManagerModal: (x: boolean) => void;
+  refetchMainContracts: () => void;
+};
+
+type Addendum = ShareSaleListItemProps & {
+  index: number;
+  order: ShareOrder;
+};
+
+const ShareSaleListItem: FC<Addendum> = ({
   index,
   offering,
-  sale,
-  initiator,
-  myBacBalance,
-  contractId,
+  order,
+  swapContractAddress,
+  shareContractAddress,
+  paymentTokenAddress,
+  paymentTokenDecimals,
+  txnApprovalsEnabled,
   permittedEntity,
-  walletAddress,
   isContractOwner,
-  setModal,
-  setRecallContract,
+  setShareSaleManagerModal,
+  refetchMainContracts,
 }) => {
-  const { reachLib, reachAcc } = useContext(ReachContext);
+  const { address: userWalletAddress } = useAccount();
   const [open, setOpen] = useState<boolean>(false);
-  const [saleContents, setSaleContents] = useState<SaleContentsType>({
-    qty: 0,
-    qtySold: 0,
-    price: 0,
-    proceeds: 0,
-    saleDetails: undefined,
-    status: undefined,
-    btId: undefined,
-  });
 
-  const isOfferor = walletAddress === sale.initiator;
-  const minPurchase = sale.minUnits;
-  const maxPurchase = sale.maxUnits;
+  const {
+    initiator,
+    partition,
+    amount,
+    price,
+    filledAmount,
+    filler,
+    isApproved,
+    isDisapproved,
+    isCancelled,
+    isAccepted,
+    isShareIssuance,
+    isAskOrder,
+    isErc20Payment,
+    isLoading,
+    refetchOrderDetails,
+  } = useOrderDetails(swapContractAddress, order.contractIndex, paymentTokenDecimals);
 
-  const retrieveSale = () => {
-    getSale(reachLib, reachAcc, contractId, initiator, setSaleContents);
-  };
+  function refetchAllContracts() {
+    refetchMainContracts();
+    refetchOrderDetails();
+  }
 
-  useEffect(() => {
-    if (!saleContents.price) {
-      retrieveSale();
-    }
-  }, [saleContents, retrieveSale]);
+  const isOfferor = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
+  const shareQtyRemaining = amount && filledAmount && amount - filledAmount;
 
-  if (
-    (saleContents.status === 'initd' && isContractOwner) ||
-    saleContents.status === 'partl' ||
-    saleContents.status === 'apprv'
-  ) {
-    return (
-      <div className="items-center shadow-md rounded-md my-5 ">
-        <div
-          className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
-          onClick={() => setOpen(!open)}
-        >
-          <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
-          <div className="flex justify-between col-span-11">
-            <OfferingSummaryPanel
-              seller={sale.initiator}
-              saleQty={saleContents.qty}
-              soldQty={saleContents.qtySold}
-              price={saleContents.price}
-              investmentCurrency={offering.details.investmentCurrency}
-            />
-            <div className="flex items-center p-1">
-              {isOfferor && (
-                <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
-                  Manage your offer
-                </button>
-              )}
-              {saleContents.status === 'initd' && (
-                <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
-                  Review sale request
-                </button>
-              )}
-              {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
+  return (
+    <>
+      {isOfferor || isContractOwner || order.visible ? (
+        <div className="items-center shadow-md rounded-md my-5 ">
+          <div
+            className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
+            onClick={() => setOpen(!open)}
+          >
+            <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
+            <div className="flex justify-between col-span-11">
+              <OfferingSummaryPanel
+                seller={initiator}
+                shareQtyRemaining={shareQtyRemaining}
+                price={price}
+                paymentTokenAddress={paymentTokenAddress}
+              />
+              <div className="flex items-center p-1">
+                {isOfferor && (
+                  <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
+                    Manage your offer
+                  </button>
+                )}
+                {!isApproved && filler && txnApprovalsEnabled && isContractOwner && (
+                  <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
+                    Review order request
+                  </button>
+                )}
+                {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
+              </div>
             </div>
           </div>
-        </div>
-        {open && (
-          <div className="p-2">
-            {isOfferor || saleContents.status === 'initd' ? (
-              <>
-                {!!minPurchase && <div>Minimum purchase: {numberWithCommas(minPurchase)} units</div>}
-                {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} units</div>}
-                {!!maxPurchase && <hr className="my-4" />}
+          {open && (
+            <div className="p-2">
+              {isOfferor || isContractOwner ? (
                 <SaleManagerPanel
                   isOfferor={isOfferor}
                   isContractOwner={isContractOwner}
                   offeringId={offering.id}
-                  status={saleContents.status}
-                  sale={sale}
-                  contractId={contractId}
-                  recallGetSale={retrieveSale}
-                  proceeds={saleContents.proceeds}
-                  btId={saleContents.btId}
+                  isApproved={isApproved}
+                  isDisapproved={isDisapproved}
+                  isAccepted={isAccepted}
+                  isCancelled={isCancelled}
+                  isFilled={shareQtyRemaining === 0}
+                  isAskOrder={isAskOrder}
+                  filler={filler}
+                  initiator={initiator as String0x}
+                  order={order}
+                  amount={amount}
+                  swapContractAddress={swapContractAddress}
+                  txnApprovalsEnabled={txnApprovalsEnabled}
+                  paymentTokenAddress={paymentTokenAddress}
+                  paymentTokenDecimals={paymentTokenDecimals}
+                  refetchAllContracts={refetchAllContracts}
                 />
-              </>
-            ) : (
-              <SharePurchaseForm
-                offering={offering}
-                sale={sale}
-                saleQty={saleContents.qty}
-                soldQty={saleContents.qtySold}
-                price={saleContents.price}
-                myBacBalance={myBacBalance}
-                contractId={contractId}
-                permittedEntity={permittedEntity}
-                setModal={setModal}
-                setRecallContract={setRecallContract}
-              />
-            )}
-          </div>
-        )}
-      </div>
-    );
-  } else {
-    return <></>;
-  }
+              ) : (
+                <SharePurchaseSteps
+                  offering={offering}
+                  order={order}
+                  shareQtyRemaining={shareQtyRemaining as number}
+                  price={price as number}
+                  swapContractAddress={swapContractAddress as String0x}
+                  isAsk={isAskOrder as boolean}
+                  permittedEntity={permittedEntity as OfferingParticipant}
+                  refetchAllContracts={refetchAllContracts as () => void}
+                  isApproved={isApproved as boolean}
+                  isDisapproved={isDisapproved as boolean}
+                  isCancelled={isCancelled as boolean}
+                  isAccepted={isAccepted as boolean}
+                  filler={filler as String0x}
+                  paymentTokenAddress={paymentTokenAddress as String0x}
+                  paymentTokenDecimals={paymentTokenDecimals as number}
+                  txnApprovalsEnabled={txnApprovalsEnabled as boolean}
+                  shareContractAddress={shareContractAddress as String0x}
+                  partition={partition as String0x}
+                  initiator={initiator as String0x}
+                />
+              )}
+            </div>
+          )}
+        </div>
+      ) : (
+        <></>
+      )}
+    </>
+  );
 };
 
 export default ShareSaleListItem;

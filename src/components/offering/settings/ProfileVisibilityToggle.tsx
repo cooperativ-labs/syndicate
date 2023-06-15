@@ -2,12 +2,15 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 
 export type ProfileVisibilityToggleProps = {
-  profileVisibility: boolean;
+  profileVisibility: boolean | undefined | null;
   handleToggle: (profileVisibility: boolean) => void;
 };
 const ProfileVisibilityToggle: FC<ProfileVisibilityToggleProps> = ({ profileVisibility, handleToggle }) => {
   return (
-    <div className="flex align-middle justify-between">
+    <div className="flex align-middle justify-between items-center ">
+      <div className="text-sm font-medium text-gray-700 mr-2">
+        {profileVisibility ? '' : 'Make visible to investors'}
+      </div>
       <button
         className=" border-2 border-grey-100 shadow-inner rounded-full w-12 bg-white "
         onClick={(e) => {

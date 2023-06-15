@@ -1,26 +1,26 @@
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import React, { FC, useState } from 'react';
+import React, { FC, use, useState } from 'react';
 import Select from '@src/components/form-components/Select';
 import { ADD_OFFERING_DETAILS } from '@src/utils/dGraphQueries/offering';
 import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
-import { Currency, OfferingDetailsType } from 'types';
+import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { setChainId } from '@src/web3/connectors';
+import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;
-  operatingCurrency: Currency;
+  operatingCurrency: Maybe<Currency> | undefined;
 };
 
 const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringId, operatingCurrency }) => {
   const [alerted, setAlerted] = useState<boolean>(false);
   const [addOfferingDetails, { data, error }] = useMutation(ADD_OFFERING_DETAILS);
-  const chainId = setChainId;
+  const chainId = useChainId();
   const chainBacs = bacOptions.filter((bac) => bac.chainId === chainId);
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -32,7 +32,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
       <Formik
         initialValues={{
           initialPrice: '',
-          investmentCurrencyCode: '',
+          investmentCurrencyCode: '' as CurrencyCode,
           numUnits: '',
           minUnitsPerInvestor: '',
           maxUnitsPerInvestor: '',
@@ -89,7 +89,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
             <div className="md:grid grid-cols-2 gap-3">
               <Input
                 className={defaultFieldDiv}
-                labelText={`Initial unit price (${getCurrencyOption(operatingCurrency).symbol})`}
+                labelText={`Initial unit price (${getCurrencyOption(operatingCurrency)?.symbol})`}
                 name="initialPrice"
                 type="number"
                 placeholder="e.g. 1300"
@@ -127,7 +127,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
                   values.investmentCurrencyCode &&
                   values.initialPrice &&
                   `${numberWithCommas(parseInt(values.numUnits, 10) * parseInt(values.initialPrice, 10))} ${
-                    getCurrencyOption({ code: values.investmentCurrencyCode }).symbol
+                    getCurrencyOption({ code: values.investmentCurrencyCode })?.symbol
                   }`}
               </>
             </NonInput>
