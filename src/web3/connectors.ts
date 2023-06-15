@@ -256,7 +256,6 @@ export const GetEthConnector = (id: 'injected' | 'walletconnect' | 'coinbase' | 
 
 export const disconnectWallet = async (callback?: () => void) => {
   await window.algorand?.disconnect();
-
   window.sessionStorage.removeItem('CHOSEN_CONNECTOR');
   window.localStorage.removeItem('wc:session:');
   window.localStorage.removeItem('wagmi.connected');
