@@ -1,5 +1,5 @@
 // store.js
-import React, { createContext, useReducer } from 'react';
+import React, { ReactNode, createContext, useReducer } from 'react';
 
 export interface ApplicationStoreProps {
   ManagerSidebarOpen: boolean;
@@ -10,8 +10,8 @@ export interface ApplicationStoreProps {
   ProfilePrivateModalOn: boolean;
   // SidebarOpen: boolean;
   NoticesOpen: boolean;
-  SearchText: string;
-  ActiveOrg: string;
+  SearchText: string | undefined;
+  ActiveOrg: string | undefined;
   dispatch: React.Dispatch<any>;
 }
 
@@ -26,12 +26,12 @@ const initialState: ApplicationStoreProps = {
   NoticesOpen: true,
   SearchText: undefined,
   ActiveOrg: undefined,
-  dispatch: null,
+  dispatch: () => null,
 };
 const store = createContext(initialState);
 const { Provider } = store;
-const StateProvider = ({ children }) => {
-  const [state, dispatch] = useReducer((state, action) => {
+const StateProvider = ({ children }: { children: ReactNode }) => {
+  const [state, dispatch] = useReducer((state: any, action: any) => {
     switch (action.type) {
       case 'TOGGLE_MANAGER_SIDEBAR':
         return { ...state, ManagerSidebarOpen: !state.ManagerSidebarOpen };

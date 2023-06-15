@@ -1,7 +1,7 @@
 import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import { Currency, Offering, OfferingSmartContractSet } from 'types';
+import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
@@ -9,16 +9,18 @@ import { swapContractABI } from '@src/web3/generated';
 import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 
 export type SwapContractSettingsProps = {
-  swapApprovalsEnabled: boolean;
-  txnApprovalsEnabled: boolean;
-  contractSet: OfferingSmartContractSet;
-  investmentCurrency: Currency;
+  swapApprovalsEnabled: boolean | undefined;
+  txnApprovalsEnabled: boolean | undefined;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
   offering: Offering;
-  chainId: number;
   refetchMainContracts: () => void;
 };
 
-const SwapContractSettings: FC<SwapContractSettingsProps> = ({
+export type SwapContractsSettingsAdditional = SwapContractSettingsProps & {
+  investmentCurrency: Currency | undefined | null;
+};
+
+const SwapContractSettings: FC<SwapContractsSettingsAdditional & { chainId: number }> = ({
   swapApprovalsEnabled,
   txnApprovalsEnabled,
   contractSet,
@@ -66,12 +68,12 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
 
   const handleSwapToggle = async () => {
     setIsLoading('listing');
-    writeSwapApproval();
+    writeSwapApproval && writeSwapApproval();
   };
 
   const handleTxnToggle = async () => {
     setIsLoading('txn');
-    writeTxnApproval();
+    writeTxnApproval && writeTxnApproval();
   };
 
   const swapApproval = (
@@ -101,8 +103,8 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
         <CreateSwapContract
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
-          contractOwnerEntityId={offeringEntity.id}
-          offeringDetailsId={details.id}
+          contractOwnerEntityId={offeringEntity?.id}
+          offeringDetailsId={details?.id}
         />
       )}
       {swapContractAddress && (

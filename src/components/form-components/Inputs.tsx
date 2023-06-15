@@ -1,5 +1,5 @@
 import cn from 'classnames';
-import React from 'react';
+import React, { WheelEvent } from 'react';
 import { ErrorMessage, Field } from 'formik';
 
 export const defaultFieldLabelClass = 'text-sm text-blue-900 font-semibold text-opacity-80';
@@ -61,7 +61,12 @@ export const Input: React.FC<CustomInputProps> = ({
         )}
         required={required}
         onBlur={onBlur}
-        onWheel={(e) => type === 'number' && e.target.blur()}
+        onWheel={(e: WheelEvent<HTMLInputElement>) => {
+          if (type === 'number') {
+            const inputElement = e.target as HTMLElement;
+            inputElement.blur();
+          }
+        }}
       />
       <ErrorMessage name={name} component="div" className="text-sm text-red-500" />
     </div>

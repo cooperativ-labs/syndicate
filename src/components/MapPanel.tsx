@@ -1,9 +1,9 @@
 import React, { FC, useState } from 'react';
-import { Address } from 'types';
+import { Address, Maybe } from 'types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 
 type MapPanelProps = {
-  address?: Address;
+  address?: Maybe<Address> | undefined;
   height: string;
   width: string;
   showTextAddress?: boolean;
@@ -23,9 +23,9 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
   };
 
   const onLoad = React.useCallback(
-    function callback(map) {
-      if (!address.lng) {
-        const formatted_address = `${address.line1}, ${address.city}, ${address.stateProvince} ${address.postalCode}`;
+    function callback(map: any) {
+      if (!address?.lng) {
+        const formatted_address = `${address?.line1}, ${address?.city}, ${address?.stateProvince} ${address?.postalCode}`;
         const request = {
           query: formatted_address,
           fields: ['name', 'geometry'],
@@ -34,26 +34,29 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
         const service = new window.google.maps.places.PlacesService(map);
 
         service.findPlaceFromQuery(request, function (results, status) {
-          if (status === google.maps.places.PlacesServiceStatus.OK) {
+          if (status === google.maps.places.PlacesServiceStatus.OK && results) {
             for (var i = 0; i < results.length; i++) {
-              setLatLang({ lat: results[i].geometry.location.lat(), lng: results[i].geometry.location.lng() });
+              setLatLang({
+                lat: results[i].geometry?.location?.lat() as number,
+                lng: results[i].geometry?.location?.lng() as number,
+              });
             }
-            map.setCenter(results[0].geometry.location);
+            map.setCenter(results[0].geometry?.location);
           }
         });
       } else {
-        setLatLang({ lat: address.lat, lng: address.lng });
+        setLatLang({ lat: address.lat as number, lng: address.lng });
       }
     },
     [address]
   );
 
-  const onUnmount = React.useCallback(function callback(map) {}, [address, setLatLang, latLang]);
+  const onUnmount = React.useCallback(function callback(map: any) {}, [address, setLatLang, latLang]);
 
   return true ? (
     <div>
-      {showTextAddress && address.line1 && (
-        <div className="text-sm font-medium">{`${address.line1}, ${address.city}, ${address.stateProvince} ${address.postalCode}`}</div>
+      {showTextAddress && address?.line1 && (
+        <div className="text-sm font-medium">{`${address?.line1}, ${address?.city}, ${address?.stateProvince} ${address?.postalCode}`}</div>
       )}
       <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={14} onUnmount={onUnmount} onLoad={onLoad}>
         <Marker position={center} />

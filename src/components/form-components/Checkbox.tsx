@@ -2,12 +2,13 @@ import cn from 'classnames';
 import React from 'react';
 import { ErrorMessage, Field } from 'formik';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
+import { Maybe } from 'types';
 
 export interface CheckboxProps {
   id?: any;
   name: string;
   required?: boolean;
-  checked: boolean;
+  checked: Maybe<boolean> | undefined;
 }
 export interface CustomCheckboxProps extends CheckboxProps {
   labelText?: string | ReactElement;

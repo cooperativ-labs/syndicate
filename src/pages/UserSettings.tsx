@@ -16,17 +16,12 @@ import { useSession } from 'next-auth/react';
 
 const UserSettings: FC = () => {
   const { data: session, status } = useSession();
-  const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
+  const { data: userData } = useQuery(GET_USER, { variables: { id: session?.user.id } });
   const user = userData?.queryUser[0];
 
   const [alerted, setAlerted] = useState<boolean>(false);
 
   // const [addEntityEmail, { data, error }] = useMutation(ADD_ENTITY_EMAIL);
-  const [localStorage, setLocalStorage] = useState(undefined);
-
-  useEffect(() => {
-    setLocalStorage(window.localStorage);
-  }, [setLocalStorage]);
 
   if (!user) {
     return <Loading />;

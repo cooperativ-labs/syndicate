@@ -20,20 +20,20 @@ import { useMutation } from '@apollo/client';
 type SaleMangerPanelProps = {
   offeringId: string;
   isOfferor: boolean;
-  isApproved: boolean;
-  isDisapproved: boolean;
-  isAccepted: boolean;
-  isCancelled: boolean;
-  isAskOrder: boolean;
-  isFilled: boolean;
-  filler: String0x | '';
+  isApproved: boolean | undefined;
+  isDisapproved: boolean | undefined;
+  isAccepted: boolean | undefined;
+  isCancelled: boolean | undefined;
+  isAskOrder: boolean | undefined;
+  isFilled: boolean | undefined;
+  filler: String0x | '' | undefined;
   initiator: String0x | '';
   order: ShareOrder;
-  amount: number;
-  swapContractAddress: String0x;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  txnApprovalsEnabled: boolean;
+  amount: number | undefined;
+  swapContractAddress: String0x | undefined;
+  paymentTokenAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
+  txnApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;
   small?: boolean;
   refetchAllContracts: () => void;
@@ -73,7 +73,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'unclaimedProceeds',
-    args: [userWalletAddress],
+    args: [userWalletAddress as String0x],
   });
 
   const { data: acceptedQty } = useContractRead({
@@ -87,7 +87,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
 
   // Note: contractData[0] is eth, contractData[1] is erc20
   const rawProceeds = contractData && contractData[1];
-  const proceeds = rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
+  const proceeds = paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
 
   const minPurchase = order.minUnits;
   const maxPurchase = order.maxUnits;
@@ -160,7 +160,7 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
           >
             <LoadingButtonText
               state={claimProceedsButton}
-              idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress).symbol}`}
+              idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
               submittingText="Claiming Proceeds..."
               confirmedText="Proceeds Claimed!"
               failedText="Transaction failed"
@@ -209,15 +209,17 @@ const SaleManagerPanel: FC<SaleMangerPanelProps> = ({
             </Button>
           </div>
 
-          <div className="flex flex-col">
-            <FormattedCryptoAddress
-              chainId={chainId}
-              address={txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator}
-              label={`${txnApprovalsEnabled ? (isAskOrder ? 'Requester' : 'Initiator') : 'Initiator'}: `}
-            />
-            Shares {txnApprovalsEnabled ? (isAskOrder ? 'Requested' : 'Offered') : 'Offered'}:{' '}
-            {acceptedOrderQty > 0 ? acceptedOrderQty : amount}
-          </div>
+          {
+            <div className="flex flex-col">
+              <FormattedCryptoAddress
+                chainId={chainId}
+                address={txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator}
+                label={`${txnApprovalsEnabled ? (isAskOrder ? 'Requester' : 'Initiator') : 'Initiator'}: `}
+              />
+              Shares {txnApprovalsEnabled ? (isAskOrder ? 'Requested' : 'Offered') : 'Offered'}:{' '}
+              {acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount}
+            </div>
+          }
         </div>
       )}
     </div>

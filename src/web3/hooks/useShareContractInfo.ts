@@ -4,22 +4,22 @@ import { String0x } from '../helpersChain';
 import { shareContractABI } from '../generated';
 
 export type ShareContractInfoType = {
-  contractOwner: string;
-  isManager: boolean;
-  isWhitelisted: boolean;
-  myShares: number;
-  sharesOutstanding: number;
-  allDocuments: any;
-  firstPartition: String0x;
-  shareContractVersion: string;
-  isLoading: boolean;
+  contractOwner: string | undefined;
+  isManager: boolean | undefined;
+  isWhitelisted: boolean | undefined;
+  myShares: number | undefined;
+  sharesOutstanding: number | undefined;
+  allDocuments: any | undefined;
+  firstPartition: String0x | undefined;
+  shareContractVersion: string | undefined;
+  isLoading: boolean | undefined;
   refetchShareContract: () => void;
 };
 
 export const useShareContractInfo = (
   shareContractId: String0x,
-  userWalletAddress: string
-): ShareContractInfoType | undefined => {
+  userWalletAddress: String0x | undefined
+): ShareContractInfoType => {
   const baseContractInfo = {
     address: shareContractId,
     abi: shareContractABI,

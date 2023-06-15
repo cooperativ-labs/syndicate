@@ -27,7 +27,7 @@ const FinancialFactItem: FC<FinancialFactItemProps> = ({
       <div className="flex justify-between px-4 lg:px-8">
         <div className="font-bold">{label} </div>
         <div>
-          {amount && numberWithCommas(amount)} {amount && currency && `(${getCurrencyOption(currency).symbol})`}
+          {amount && numberWithCommas(amount)} {amount && currency && `(${getCurrencyOption(currency)?.symbol})`}
           {amount && percent && ` (`}
           {percent && `${percent}${secondPercent ? ` - ${secondPercent}` : ''}%`} {amount && percent && `)`}
           {multiple && (

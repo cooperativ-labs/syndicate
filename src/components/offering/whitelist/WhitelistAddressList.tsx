@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import SelectedParticipantDetails from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
-import { Currency, OfferingParticipant, OfferingSmartContractSet } from 'types';
+import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
 
 import { REMOVE_WHITELIST_OBJECT } from '@src/utils/dGraphQueries/offering';
 import { String0x } from '@src/web3/helpersChain';
@@ -12,10 +12,10 @@ import { useMutation } from '@apollo/client';
 
 type WhitelistAddressListProps = {
   offeringId: string;
-  offeringParticipants: OfferingParticipant[];
-  contractSet: OfferingSmartContractSet;
-  currentSalePrice: number;
-  investmentCurrency: Currency;
+  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  currentSalePrice: Maybe<number> | undefined;
+  investmentCurrency: Maybe<Currency> | undefined;
   issuances: any[];
   refetchContracts: () => void;
 };
@@ -36,7 +36,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
 
   return (
     <>
-      <RightSideBar formOpen={!!selectedParticipant} onClose={() => setSelectedParticipant(null)}>
+      <RightSideBar formOpen={!!selectedParticipant} onClose={() => setSelectedParticipant(undefined)}>
         <div className="w-full">
           {selectedParticipant && (
             <SelectedParticipantDetails
@@ -44,7 +44,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
               participants={offeringParticipants}
               contractSet={contractSet}
               currentSalePrice={currentSalePrice}
-              paymentTokenDecimals={getCurrencyOption(investmentCurrency).decimals}
+              paymentTokenDecimals={getCurrencyOption(investmentCurrency)?.decimals}
               removeMember={removeMember}
               partitions={partitions}
               offeringId={offeringId}
@@ -55,7 +55,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
         </div>
       </RightSideBar>
       <div className="w-full">
-        {offeringParticipants.map((participant, i) => {
+        {offeringParticipants?.map((participant, i) => {
           return (
             <div className="mb-3" key={i}>
               <WhitelistAddressListItem

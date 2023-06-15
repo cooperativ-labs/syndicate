@@ -9,17 +9,18 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
-import { useAccount, useEnsAvatar, useNetwork } from 'wagmi';
+import { useAccount, useChainId, useEnsAvatar, useNetwork } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 const UserMenu: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const { data: session, status } = useSession();
   const isAuthenticated = status === 'authenticated';
-  const { chain } = useNetwork();
+  const chain = useNetwork();
+  const chainId = useChainId();
   const { address: userWalletAddress } = useAccount();
 
-  const networkImage = userWalletAddress && chain && networkIcon(chain.id, userWalletAddress);
+  const networkImage = userWalletAddress && chain && networkIcon(chainId, userWalletAddress);
 
   const profileImg = session?.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
   return (
@@ -51,12 +52,12 @@ const UserMenu: FC = () => {
                       <img src={networkImage} className="p-2 w-8 h-8 bg-gray-200 rounded-full" />
                     ) : (
                       <div className="py-2 pl-2">
-                        <NetworkIndicatorDot chainId={chain.id} walletAddress={userWalletAddress} />
+                        <NetworkIndicatorDot chainId={chainId} walletAddress={userWalletAddress} />
                       </div>
                     )}
 
                     <div className="mx-1" />
-                    <FormattedCryptoAddress chainId={chain.id} address={userWalletAddress} withCopy />
+                    <FormattedCryptoAddress chainId={chainId} address={userWalletAddress} withCopy />
                   </div>
                   <div className="hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
                     <DisconnectButton />

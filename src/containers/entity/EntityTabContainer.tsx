@@ -5,13 +5,13 @@ import EntitiesList from '@src/components/entity/EntitiesList';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC, useState } from 'react';
 import Tab from '@src/components/offering/tabs/Tab';
-import { LegalEntity, Offering, RealEstateProperty } from 'types';
+import { LegalEntity, Maybe, Offering, RealEstateProperty } from 'types';
 
 type EntityTabContainerProps = {
   properties?: RealEstateProperty[];
-  offerings: Offering[];
-  subsidiaries: LegalEntity[];
-  entity: LegalEntity;
+  offerings: Maybe<Offering>[] | undefined;
+  subsidiaries: Maybe<Maybe<LegalEntity>[]> | undefined;
+  entity: Maybe<LegalEntity>;
 };
 
 const TabOptions = [
@@ -50,7 +50,7 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({ properties, offerings
         {activeTab === 'documents' && (
           <div className="mt-8">
             <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Documents</h2>
-            <DocumentList documents={entity.documentsOwned} isOfferingManager={false} hideUpload />
+            <DocumentList documents={entity?.documentsOwned} isOfferingManager={false} hideUpload />
           </div>
         )}
       </div>

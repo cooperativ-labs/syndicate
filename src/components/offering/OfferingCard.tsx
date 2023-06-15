@@ -2,19 +2,40 @@ import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
-import React from 'react';
-import { getLowestOrderPrice } from '@src/utils/helpersMoney';
-import { Offering } from 'types';
+import React, { useState } from 'react';
+import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
+import { Maybe, Offering } from 'types';
+import { String0x } from '@src/web3/helpersChain';
+import { swapContractAddress } from '@src/web3/generated';
+import { useAsync } from 'react-use';
 import { useRouter } from 'next/router';
+import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 export type OfferingCardProps = {
-  offering: Offering;
+  offering: Maybe<Offering> | undefined;
 };
 
 const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const router = useRouter();
-  const { name, shortDescription, id, details, image, offeringEntity } = offering;
-  const currentPrice = details && getLowestOrderPrice(offering.orders, offering.details?.priceStart);
+  const { name, shortDescription, id, details, image, offeringEntity, orders, smartContractSets } =
+    offering as Offering;
+  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
+
+  const contractSet = smartContractSets?.slice(-1)[0];
+  const swapContract = contractSet?.swapContract;
+  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+
+  const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
+
+  useAsync(async () => {
+    const contractSaleList =
+      orders &&
+      paymentTokenDecimals &&
+      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
+    contractSaleList && setContractSaleList(contractSaleList);
+  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
+
+  const currentPrice = details && getLowestOrderPrice(contractSaleList, offering?.details?.priceStart);
   const organizationId = offeringEntity?.organization.id;
   const organizationImg = offeringEntity?.organization.logo;
 
@@ -28,12 +49,12 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
       }}
     >
       <Card className="md:mr-5 md:w-96 rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer">
-        <img src={image} className="object-cover w-full h-24 absolute" />
+        <img src={image as string} className="object-cover w-full h-24 absolute" />
         <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />
         <div className="flex justify-between absolute left-4 top-5 right-4 items-center">
           <h2 className="text-xl font-bold text-white ">{name}</h2>
           <img
-            src={organizationImg}
+            src={organizationImg as string}
             referrerPolicy="no-referrer"
             className="w-16 h-16 border-2 border-white rounded-full"
           />

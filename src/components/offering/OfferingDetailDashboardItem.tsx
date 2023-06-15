@@ -20,7 +20,7 @@ const OfferingDetailDashboardItem: FC<OfferingDetailDashboardItemProps> = ({
     <div className={cn(className ? className : 'flex flex-col justify-center')}>
       <div
         className={cn(color ? '' : 'text-green-600', 'flex  text-lg justify-center')}
-        style={color && { color: color }}
+        style={color ? { color: color } : undefined}
       >
         {children}
       </div>

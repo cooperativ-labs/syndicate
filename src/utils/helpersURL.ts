@@ -4,7 +4,7 @@ export const getBaseUrl = () => {
   return base_url;
 };
 
-export const copyTextToClipboard = async (text) => {
+export const copyTextToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text);
   } catch (err) {

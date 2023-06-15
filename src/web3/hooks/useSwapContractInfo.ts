@@ -3,18 +3,18 @@ import { String0x } from '../helpersChain';
 import { swapContractABI } from '../generated';
 
 export type SwapContractInfoType = {
-  shareTokenAddress: String0x;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  swapApprovalsEnabled: boolean;
-  txnApprovalsEnabled: boolean;
-  nextOrderId: number;
-  swapContractVersion: string;
-  isLoading: boolean;
+  shareTokenAddress: String0x | undefined;
+  paymentTokenAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
+  swapApprovalsEnabled: boolean | undefined;
+  txnApprovalsEnabled: boolean | undefined;
+  nextOrderId: number | undefined;
+  swapContractVersion: string | undefined;
+  isLoading: boolean | undefined;
   refetchSwapContract: () => void;
 };
 
-export const useSwapContractInfo = (swapContractId: String0x): SwapContractInfoType | undefined => {
+export const useSwapContractInfo = (swapContractId: String0x): SwapContractInfoType => {
   const baseContractInfo = {
     address: swapContractId,
     abi: swapContractABI,

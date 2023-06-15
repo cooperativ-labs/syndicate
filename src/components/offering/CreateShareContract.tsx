@@ -15,7 +15,7 @@ import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
 
 type CreateShareContractProps = {
-  contractCreatorId: string;
+  contractCreatorId: string | undefined;
 };
 
 const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }) => {
@@ -32,7 +32,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
 
   const [, deploy] = useAsyncFn(async () => {
     setButtonStep('submitting');
-    const protocol = MatchSupportedChains(chainId).protocol;
+    const protocol = MatchSupportedChains(chainId)?.protocol;
     dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
     try {
       const contract = await deployShareContract(userWalletAddress, chain);

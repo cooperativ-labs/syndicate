@@ -1,7 +1,7 @@
 import Checkbox from '../form-components/Checkbox';
 import Input from '../form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { currentDate, makeRemovalList, makeSubmissionList } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { LegalEntity, User } from 'types';
 import { UPDATE_USER } from '@src/utils/dGraphQueries/user';

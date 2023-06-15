@@ -3,15 +3,15 @@ import DocumentListItem from './DocumentListItem';
 import React, { FC, useContext, useState } from 'react';
 import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { Document } from 'types';
+import { Document, Maybe } from 'types';
 import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 type DocumentListProps = {
-  documents: Document[];
+  documents: Maybe<Document>[] | null | undefined;
   isOfferingManager: boolean;
   offeringId?: string;
-  ownerEntityId?: string;
+  ownerEntityId?: string | undefined | null;
   hideUpload?: boolean;
 };
 
@@ -37,7 +37,7 @@ const DocumentList: FC<DocumentListProps> = ({
   return (
     <div className="col-span-2">
       <div className="flex flex-wrap">
-        {offeringDocs.map((document, i) => (
+        {offeringDocs?.map((document, i) => (
           <DocumentListItem key={i} document={document} offeringId={offeringId} deleteButton={isOfferingManager} />
         ))}
       </div>

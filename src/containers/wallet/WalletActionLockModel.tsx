@@ -12,8 +12,11 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { WalletActionLockModalOpen } = applicationStore;
   const windowSize = useWindowSize();
+  const windowWidth = windowSize && windowSize.width;
+  const isDesktop = windowWidth && windowWidth > 768 ? true : false;
+
   useEffect(() => {
-    if (WalletActionLockModalOpen && windowSize.width > 768) {
+    if (WalletActionLockModalOpen && isDesktop) {
       // setScrollY(window.scrollY);
       document.body.style.position = 'fixed';
       document.body.style.top = `-${window.scrollY}px`;
@@ -23,7 +26,7 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
       document.body.style.top = '';
       // window.scrollTo(0, parseInt(scrollY));
     }
-  }, [WalletActionLockModalOpen, windowSize.width]);
+  }, [WalletActionLockModalOpen, isDesktop]);
 
   if (WalletActionLockModalOpen) {
     return (

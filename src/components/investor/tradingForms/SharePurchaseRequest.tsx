@@ -29,7 +29,7 @@ export type SharePurchaseRequestProps = {
   refetchAllContracts: () => void;
 };
 
-const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: string }> = ({
+const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: string | undefined }> = ({
   offering,
   order,
   price,
@@ -52,7 +52,8 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
     return numUnits * price;
   };
 
-  const purchaseString = (numUnitsPurchase) => {
+  const purchaseString = (numUnitsPurchase: string | undefined) => {
+    if (!numUnitsPurchase) return '0';
     return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)));
   };
 
@@ -69,9 +70,9 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
           if (!values.numUnitsPurchase) {
             errors.numUnitsPurchase = 'You must choose a number of shares to purchase.';
             if (order.minUnits) {
-              if (values.numUnitsPurchase < order.minUnits) {
+              if (values.numUnitsPurchase && values.numUnitsPurchase < order.minUnits) {
                 errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
-              } else if (values.numUnitsPurchase > order.maxUnits) {
+              } else if (values.numUnitsPurchase && order.maxUnits && values.numUnitsPurchase > order.maxUnits) {
                 errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
               }
             }
@@ -85,6 +86,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
+          if (values.numUnitsPurchase === null) return;
           setSubmitting(true);
           await acceptOrder({
             swapContractAddress: swapContractAddress,
@@ -93,7 +95,6 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
             refetchAllContracts: refetchAllContracts,
             setButtonStep: setButtonStep,
           });
-          // await acceptOffer(swapContractAddress, order.contractIndex, setButtonStep);
           setSubmitting(false);
         }}
       >
@@ -112,13 +113,15 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                 <>
                   {values.numUnitsPurchase &&
                     `${purchaseString(values.numUnitsPurchase)} ${
-                      offering.details.investmentCurrency &&
-                      getCurrencyOption(offering.details.investmentCurrency).symbol
+                      offering.details?.investmentCurrency &&
+                      getCurrencyOption(offering.details?.investmentCurrency)?.symbol
                     }`}
                 </>
               </NonInput>
               <div className="col-span-2" />
-              <div className="col-span-1 text-xs pl-2">{`Current balance: ${floatWithCommas(myBacBalance)}`}</div>
+              <div className="col-span-1 text-xs pl-2">{`Current balance: ${floatWithCommas(
+                myBacBalance as string
+              )}`}</div>
             </div>
             <hr className="my-6" />
             {/* Disclosures */}
@@ -162,7 +165,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                     onClick={(e) => {
                       e.preventDefault();
                       DownloadFile(
-                        standardSaleDisclosuresText,
+                        standardSaleDisclosuresText as string,
                         `${offering.name} - Download Risks & Considerations.md`
                       );
                     }}
@@ -209,16 +212,17 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                 }
               />
             </div>
-            {tocOpen && (
+            {tocOpen && !!offering.documents && (
               <div className="my-2 p-4 rounded-md bg-slate-100">
-                <PresentLegalText text={offering.documents[0].text} />
+                <PresentLegalText text={offering.documents[0]?.text} />
                 <div className="flex">
                   <StandardButton
                     className="mt-5"
                     outlined
                     onClick={(e) => {
                       e.preventDefault();
-                      DownloadFile(offering.documents[0].text, `${offering.name} - Terms & Conditions.md`);
+                      //@ts-ignore
+                      DownloadFile(offering.documents[0]?.text as string, `${offering.name} - Terms & Conditions.md`);
                     }}
                     text="Download Terms & Conditions"
                   />
@@ -240,7 +244,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                 idleText={`Request to purchase ${values.numUnitsPurchase ?? ''} shares ${
                   values.numUnitsPurchase
                     ? `for ${purchaseString(values.numUnitsPurchase)} ${
-                        getCurrencyOption(offering.details.investmentCurrency).symbol
+                        getCurrencyOption(offering.details?.investmentCurrency)?.symbol
                       } `
                     : ''
                 }`}

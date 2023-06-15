@@ -87,7 +87,7 @@ const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({ property, 
             name="closingCosts"
           />
           <MajorActionButton type="submit" disabled={isSubmitting}>
-            {`Update ${property.address.line1}`}
+            {`Update ${property.address?.line1}`}
           </MajorActionButton>
         </Form>
       )}

@@ -1,10 +1,10 @@
-import { Document, DocumentFormat, DocumentType } from 'types';
+import { Document, DocumentFormat, DocumentType, Maybe } from 'types';
 
 export type urlToDatabaseProps = (
   url: string,
   fileId: string,
   title: string,
-  docType: DocumentType,
+  docType: DocumentType | undefined,
   format: DocumentFormat
 ) => void;
 
@@ -24,6 +24,6 @@ export const getFileFormat = (file: File) => {
   }
 };
 
-export const getDocumentsOfType = (documents: Document[], type: DocumentType) => {
-  return documents.filter((document) => document.type.includes(type));
+export const getDocumentsOfType = (documents: Maybe<Maybe<Document>[]> | undefined, type: DocumentType) => {
+  return documents?.filter((document) => document?.type?.includes(type));
 };

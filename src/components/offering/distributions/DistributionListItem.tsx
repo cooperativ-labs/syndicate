@@ -1,8 +1,9 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
 import React, { FC } from 'react';
+import { Address, useAccount, useChainId, useContractRead } from 'wagmi';
 import { claimDistribution } from '@src/web3/contractDistributionCall';
-import { Currency, CurrencyCode, OfferingDistribution } from 'types';
+import { Currency, CurrencyCode, Maybe, OfferingDistribution } from 'types';
 import { dividendContractABI } from '@src/web3/generated';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
@@ -10,14 +11,13 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
-import { useAccount, useChainId, useContractRead } from 'wagmi';
 import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
 
 export type DistributionListItemProps = {
   distributionContractAddress: String0x;
   isDistributor?: boolean;
   hideTransactionId?: boolean;
-  walletAddress: String0x;
+  walletAddress: String0x | undefined;
 };
 
 const DistributionListItem: FC<DistributionListItemProps & { distribution: OfferingDistribution }> = ({
@@ -30,6 +30,7 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
   const chainId = useChainId();
 
   const { transactionHash, contractIndex } = distribution;
+
   const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
 
   const {
@@ -48,10 +49,10 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
     address: distributionContractAddress,
     abi: dividendContractABI,
     functionName: 'getClaimableAmount',
-    args: [walletAddress, BigInt(contractIndex)],
+    args: [walletAddress as String0x, BigInt(contractIndex)],
   });
 
-  const amountToClaim = data ? toNormalNumber(data, getCurrencyById(payoutTokenAddress).decimals) : undefined;
+  const amountToClaim = data ? toNormalNumber(data, getCurrencyById(payoutTokenAddress)?.decimals) : undefined;
 
   const handleClaim = async () => {
     claimDistribution({ distributionContractAddress, distributionContractIndex: contractIndex, setButtonStep });
@@ -60,7 +61,7 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
   return (
     <div className="relative bg-white shadow-md md:grid grid-cols-8 gap-3 items-center pl-3 p-1 rounded-lg ">
       <div className="col-span-2">
-        <div className="font-bold text-base ">{getHumanDate(recordDate)}</div>
+        <div className="font-bold text-base ">{recordDate && getHumanDate(recordDate)}</div>
       </div>
       {!hideTransactionId && (
         <div className="col-span-2 mt-3 md:mt-0">
@@ -71,7 +72,7 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
       )}
       <div className="col-span-2 mt-3 md:mt-0">
         <div className="md:w-auto font-medium ">
-          {dividendAmount} {getCurrencyById(payoutTokenAddress).symbol}
+          {dividendAmount} {getCurrencyById(payoutTokenAddress)?.symbol}
         </div>
       </div>
 

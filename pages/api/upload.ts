@@ -1,6 +1,7 @@
 // upload.ts
 import nextConnect from 'next-connect';
 import { NextApiRequest, NextApiResponse } from 'next';
+//@ts-ignore
 import { Multer } from 'multer';
 import { upload } from './file/upload';
 import { getServerSession } from 'next-auth/next';
@@ -29,7 +30,7 @@ const handler = nextConnect<NextApiRequestWithFile, NextApiResponse>()
     }
     try {
       res.status(200).json({ url: req.file.path, fileId: req.file.filename });
-    } catch (error) {
+    } catch (error: any) {
       res.status(500).json({ error: error.message });
     }
   });

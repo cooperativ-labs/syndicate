@@ -12,7 +12,7 @@ import { IconName } from '@fortawesome/fontawesome-svg-core';
 type FileUploadProps = {
   uploaderText: string;
   baseUploadUrl?: string;
-  docType?: DocumentType;
+  docType?: DocumentType | undefined;
   accept: string[];
   allowMultiple?: boolean;
   imagePreview?: string;
@@ -35,14 +35,14 @@ const FileUpload: FC<FileUploadProps> = ({
   const [progressAmt, setProgressAmt] = useState<number>(0);
   const [uploading, setUploading] = useState<boolean>(false);
 
-  function handleUploadFile(file) {
+  function handleUploadFile(file: File) {
     const onUploadSuccess = (url: string, fileId: string) => {
       urlToDatabase(url, fileId, file.name, docType, getFileFormat(file));
       setProgressAmt(0);
       setUploading(false);
     };
 
-    const uploadFile = async (file) => {
+    const uploadFile = async (file: File) => {
       if (!file) {
         return;
       }
@@ -62,7 +62,7 @@ const FileUpload: FC<FileUploadProps> = ({
 
         const data = await response.json();
         onUploadSuccess?.(data.url, data.fileId);
-      } catch (error) {
+      } catch (error: any) {
         throw new Error('Error details:', error);
       }
     };
@@ -90,7 +90,7 @@ const FileUpload: FC<FileUploadProps> = ({
       {imagePreview ? (
         <div className="relative">
           <div className="absolute -right-2 -top-2">
-            <DeleteButton onDelete={() => setImagePreview('')} />
+            {setImagePreview && <DeleteButton onDelete={() => setImagePreview('')} />}
           </div>
           <img className="h-40 object-scale-down" src={imagePreview} />
         </div>

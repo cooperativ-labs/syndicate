@@ -5,7 +5,6 @@ import ManagerWrapper from '@src/containers/ManagerWrapper';
 import React from 'react';
 import router from 'next/router';
 
-import UpdateContractStatus from '@src/admin/UpdateContractStatus';
 import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
 import { NextPage } from 'next';
 import { useQuery } from '@apollo/client';
@@ -23,7 +22,7 @@ const Admin: NextPage = () => {
     <div data-test="component-create-project-page" className="h-full flex">
       <ManagerWrapper>
         <FormCard center>
-          <UpdateContractStatus offering={offering} />
+          <></>
         </FormCard>
       </ManagerWrapper>
     </div>

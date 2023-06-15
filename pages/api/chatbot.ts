@@ -31,7 +31,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const assistantMessage = response.data.choices[0].message.content;
 
       res.status(200).json({ message: assistantMessage });
-    } catch (error) {
+    } catch (error: any) {
       console.error('OpenAI API Error:', error.response.data, error.response.message);
       res.status(500).json({ message: 'I am having trouble connecting to my server. Try sending me another message.' });
     }

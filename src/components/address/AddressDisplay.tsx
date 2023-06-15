@@ -1,14 +1,14 @@
 import React, { FC } from 'react';
-import { Address } from 'types';
+import { Address, Maybe } from 'types';
 
 type AddressProps = {
-  address: Address;
+  address: Maybe<Address> | undefined;
   className?: string;
   withLabel?: boolean;
   withCountry?: boolean;
 };
 export const AddressDisplay: FC<AddressProps> = ({ address, withLabel, withCountry, className }) => {
-  const { label, line1, line2, line3, city, postalCode, stateProvince, country } = address;
+  const { label, line1, line2, city, postalCode, stateProvince, country } = address as Address;
   if (address) {
     return (
       <div className={className}>
@@ -27,6 +27,6 @@ export const AddressDisplay: FC<AddressProps> = ({ address, withLabel, withCount
       </div>
     );
   }
-  return;
+  return null;
 };
 export default AddressDisplay;

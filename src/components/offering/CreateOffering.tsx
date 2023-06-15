@@ -14,7 +14,8 @@ import { ADD_OFFERING, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { useMutation } from '@apollo/client';
 
-import { Organization } from 'types';
+import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
+import { LegalEntity, Organization } from 'types';
 import { useRouter } from 'next/router';
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
@@ -35,8 +36,8 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
     setEntityModal(false);
   };
 
-  const entityOptions = [...organization.legalEntities].reverse();
-  const spvEntityOptions = entityOptions.filter((entity) => entity.offerings.length === 0);
+  const entityOptions = organization && getEntityOptionsList(organization.legalEntities as LegalEntity[]);
+  const spvEntityOptions = entityOptions.filter((entity) => entity.offerings?.length === 0);
 
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -77,7 +78,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
     router.push(`/${organization.id}/offerings/${offeringId}`);
   }
 
-  const handleSubmit = async (values) => {
+  const handleSubmit = async (values: { managingEntityId: string; offeringEntityId: string; name: string }) => {
     try {
       await addOffering({
         variables: {
@@ -89,7 +90,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
           brandColor: '#275A8F',
         },
       });
-    } catch (e) {
+    } catch (e: any) {
       alert(`Oops. Looks like something went wrong: ${e.message}`);
     }
   };

@@ -8,7 +8,7 @@ import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
-import { OfferingParticipant } from 'types';
+import { Maybe, OfferingParticipant } from 'types';
 import { readContract } from 'wagmi/actions';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
@@ -19,7 +19,7 @@ import { useMutation } from '@apollo/client';
 type ForceTransferFormProps = {
   shareContractAddress: String0x;
   partitions: String0x[];
-  offeringParticipants: OfferingParticipant[];
+  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
   target: String0x;
   refetchContracts: () => void;
 };
@@ -37,15 +37,15 @@ const ForceTransferForm = ({
   const [targetBalance, setTargetBalance] = React.useState<number>(0);
   const [addIssuance] = useMutation(ADD_ISSUANCE_OR_TRADE);
 
-  const recipientOptions = offeringParticipants.filter((participant) => {
-    return participant.walletAddress !== target;
+  const recipientOptions = offeringParticipants?.filter((participant) => {
+    return participant?.walletAddress !== target;
   });
 
   const { data: isOperator, refetch } = useContractRead({
     address: shareContractAddress,
     abi: shareContractABI,
     functionName: 'isOperator',
-    args: [userWalletAddress],
+    args: [userWalletAddress as String0x],
   });
 
   useAsync(async () => {
@@ -114,13 +114,13 @@ const ForceTransferForm = ({
           <Select className={'mt-3'} name={'recipient'} labelText="Receives Shares">
             <option value="">Select recipient</option>
 
-            {recipientOptions.map((participant, i) => {
+            {recipientOptions?.map((participant, i) => {
               const presentableAddress = addressWithoutEns({
-                address: participant.walletAddress,
-                userName: participant.name,
+                address: participant?.walletAddress,
+                userName: participant?.name,
               });
               return (
-                <option key={i} value={participant.walletAddress}>
+                <option key={i} value={participant?.walletAddress}>
                   {presentableAddress}
                 </option>
               );

@@ -1,4 +1,5 @@
 import AnalyticsContext from '@context/analytics';
+//@ts-ignore
 import TagManager from 'react-gtm-module';
 import { DEFAULT_BLUR_ACTION, DEFAULT_CLICK_ACTION, DEFAULT_FOCUS_ACTION } from '@src/utils/analytics/config';
 import { parseCustomDimensions, parseDataAttributes, parseOverwriteObject } from '@src/utils/analytics/helpers';
@@ -14,7 +15,7 @@ import { trackInteraction } from '@src/utils/analytics/index.ts';
  * @param {object} overwriteProps
  * @return {object} Contains core analytics {event, category, action, label, value} as well as custom dimensions {rest}
  */
-function generateAnalyticsPayload(element, overwriteProps, dynamicDimensions) {
+function generateAnalyticsPayload(element: any, overwriteProps: any, dynamicDimensions: any) {
   const overwrite = overwriteProps ? parseOverwriteObject(overwriteProps) : { core: {}, rest: {} };
   const { core, rest } = parseDataAttributes(element.target);
   const parsedRest = parseCustomDimensions(rest);
@@ -30,17 +31,17 @@ function generateAnalyticsPayload(element, overwriteProps, dynamicDimensions) {
  * @param {HTMLElement} element
  * @param {object} overwriteProps
  */
-function interactionHandler(type, element, overwriteProps, dynamicDimensions) {
+function interactionHandler(type: any, element: any, overwriteProps: any, dynamicDimensions: any) {
   const { core, rest } = generateAnalyticsPayload(element, overwriteProps, dynamicDimensions);
   trackInteraction(type, core, rest);
 }
 
 export function useAnalytics() {
   const router = useRouter();
-  const [dynamicDimensions, setDynamicDimensions] = useState(null);
+  const [dynamicDimensions, setDynamicDimensions] = useState<any>(null);
   const [pageTracked, setPageTracked] = useState(false);
-  const setCurrentDynamicDimensions = useCallback((currentDimensions) => {
-    setDynamicDimensions({ ...currentDimensions, ...dynamicDimensions });
+  const setCurrentDynamicDimensions = useCallback((currentDimensions: any) => {
+    setDynamicDimensions({ ...currentDimensions, ...(dynamicDimensions as any) });
   }, []);
 
   const gtmProperties = {
@@ -55,7 +56,7 @@ export function useAnalytics() {
       try {
         setTimeout(() => {
           const data = { userId: 1234567890 };
-          setDynamicDimensions(data);
+          setDynamicDimensions(data as any);
           return data;
         }, 500);
       } catch (e) {
@@ -73,7 +74,7 @@ export function useAnalytics() {
       trackPageView(document.title, window.location.pathname, dynamicDimensions);
       setPageTracked(true);
     }
-    const handleRouteChange = (url) => {
+    const handleRouteChange = (url: string) => {
       if (dynamicDimensions) {
         trackPageView(document.title, url, dynamicDimensions);
         setPageTracked(true);
@@ -109,7 +110,9 @@ export function useAnalyticsImpression(
   const observer = useRef(null);
 
   useEffect(() => {
+    //@ts-ignore
     if (observer.current) observer.current.disconnect();
+    //@ts-ignore
     observer.current = new window.IntersectionObserver(
       ([entry]) => {
         setEntry(entry);
@@ -127,9 +130,10 @@ export function useAnalyticsImpression(
       { root, rootMargin, threshold }
     );
     const { current: currentObserver } = observer;
-
+    //@ts-ignore
     if (node) currentObserver.observe(node);
 
+    //@ts-ignore
     return () => currentObserver.disconnect();
   }, [node, root, rootMargin, threshold, dynamicDimensions, once ? impressionFired : null]);
 
@@ -147,6 +151,7 @@ export function useAnalyticsImpression(
 export function useAnalyticsClick() {
   const { dynamicDimensions } = useContext(AnalyticsContext);
   const handler = useCallback(
+    //@ts-ignore
     (e, overwrite) => {
       if (dynamicDimensions) {
         interactionHandler(DEFAULT_CLICK_ACTION, e, overwrite, dynamicDimensions);
@@ -168,6 +173,7 @@ export function useAnalyticsClick() {
 export function useAnalyticsFocus() {
   const { dynamicDimensions } = useContext(AnalyticsContext);
   const handler = useCallback(
+    //@ts-ignore
     (e, overwrite) => {
       if (dynamicDimensions) {
         interactionHandler(DEFAULT_FOCUS_ACTION, e, overwrite, dynamicDimensions);
@@ -189,6 +195,7 @@ export function useAnalyticsFocus() {
 export function useAnalyticsBlur() {
   const { dynamicDimensions } = useContext(AnalyticsContext);
   const handler = useCallback(
+    //@ts-ignore
     (e, overwrite) => {
       if (dynamicDimensions) {
         interactionHandler(DEFAULT_BLUR_ACTION, e, overwrite, dynamicDimensions);

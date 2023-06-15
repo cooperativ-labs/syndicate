@@ -9,19 +9,21 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
+import { Maybe } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
+import toast from 'react-hot-toast';
 
 type OfferingDashboardTitleProps = {
-  profileVisibility: boolean;
-  isOfferingManager: boolean;
+  profileVisibility: Maybe<boolean> | undefined;
+  isOfferingManager: Maybe<boolean> | undefined;
   offeringId: string;
-  organizationId: string;
-  accessCode: string;
+  organizationId: string | undefined;
+  accessCode: Maybe<string> | undefined;
   offeringName: string;
   shareContractAddress: String0x;
-  chainId: number;
+  chainId: Maybe<number> | undefined;
 };
 
 const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
@@ -65,8 +67,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         },
       });
       setNameEditOn(false);
-    } catch {
-      alert(`Oops. Looks like something went wrong: ${error.message}`);
+    } catch (error: any) {
+      toast.error(`Oops. Looks like something went wrong: ${error.message}`);
       setAlerted(true);
     }
   };
@@ -81,8 +83,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           offeringId: offeringId,
         },
       });
-    } catch {
-      alert(`Oops. Looks like something went wrong: ${error.message}`);
+    } catch (error: any) {
+      toast.error(`Oops. Looks like something went wrong: ${error.message}`);
       setAlerted(true);
     }
   };

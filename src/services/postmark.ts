@@ -13,7 +13,7 @@ export async function sendEmail(to: string, subject: string, htmlBody: string, t
       TextBody: textBody,
       MessageStream: 'outbound',
     });
-  } catch (error) {
+  } catch (error: any) {
     throw new Error('Error sending email:', error);
   }
 }

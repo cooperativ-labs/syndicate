@@ -4,7 +4,7 @@ import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_DISTRIBUTION_CONTRACT, CREATE_SWAP_CONTRACT } from '@src/utils/dGraphQueries/crypto';
-import { Currency, OfferingSmartContractSet, SmartContractType } from 'types';
+import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from 'types';
 import { MatchSupportedChains } from '@src/web3/connectors';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
@@ -16,9 +16,9 @@ import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
 
 type CreateDistributionContractProps = {
-  contractSet: OfferingSmartContractSet;
-  investmentCurrency: Currency;
-  contractOwnerEntityId: string;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  investmentCurrency: Currency | null | undefined;
+  contractOwnerEntityId: string | undefined;
 };
 
 const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
@@ -42,7 +42,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
   const [, deploy] = useAsyncFn(
     async (paymentTokenAddress) => {
       setButtonStep('submitting');
-      const protocol = MatchSupportedChains(chainId).protocol;
+      const protocol = MatchSupportedChains(chainId)?.protocol;
       dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
       try {
         const contract = await deployDividendContract(userWalletAddress, chain, shareContractAddress);
@@ -54,7 +54,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
             type: SmartContractType.Distribution,
             protocol: protocol,
             ownerId: contractOwnerEntityId,
-            contractSetId: contractSet.id,
+            contractSetId: contractSet?.id,
           },
         });
 
@@ -84,7 +84,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
         ) : (
           <Formik
             initialValues={{
-              investmentCurrencyAddress: getCurrencyOption(investmentCurrency).address,
+              investmentCurrencyAddress: getCurrencyOption(investmentCurrency)?.address,
             }}
             validate={(values) => {
               const errors: any = {}; /** @TODO : Shape */

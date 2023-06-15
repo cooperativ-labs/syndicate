@@ -26,7 +26,7 @@ const handleAddEmailAddress = async (address: string, completionUrl: string) => 
   try {
     await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
   } catch (error) {
-    throw new Error(error);
+    console.error(error);
   }
 };
 

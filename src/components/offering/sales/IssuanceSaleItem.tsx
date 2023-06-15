@@ -11,16 +11,16 @@ import { useAsync } from 'react-use';
 import { useChainId, usePublicClient, useTransaction } from 'wagmi';
 
 export type IssuanceSaleProps = {
-  paymentTokenDecimals: number;
+  paymentTokenDecimals: number | undefined;
 };
 
 const IssuanceSale: FC<IssuanceSaleProps & { issuance: ShareIssuanceTrade }> = ({ issuance, paymentTokenDecimals }) => {
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const { transactionHash, recipientAddress, amount, partition, type, senderAddress, price } = issuance;
-  const [blockTime, setBlockTime] = React.useState<Date>(null);
+  const [blockTime, setBlockTime] = React.useState<Date | null>(null);
 
-  const humanPrice = price && toNormalNumber(BigInt(price), paymentTokenDecimals);
+  const humanPrice = price && paymentTokenDecimals && toNormalNumber(BigInt(price), paymentTokenDecimals);
 
   const { data: transactionData } = useTransaction({
     hash: transactionHash as String0x,
@@ -28,7 +28,7 @@ const IssuanceSale: FC<IssuanceSaleProps & { issuance: ShareIssuanceTrade }> = (
 
   useAsync(async () => {
     const block = await publicClient.getBlock({
-      blockHash: transactionData.blockHash,
+      blockHash: transactionData?.blockHash as String0x,
     });
     const time = new Date(Number(block?.timestamp) * 1000);
     setBlockTime(time);
@@ -38,11 +38,11 @@ const IssuanceSale: FC<IssuanceSaleProps & { issuance: ShareIssuanceTrade }> = (
   return (
     <div className="relative md:grid grid-cols-12 gap-3 items-center p-3 border-b-2 ">
       <div className="col-span-2">
-        <div className="font-medium text-base ">{getHumanDate(blockTime)}</div>
+        <div className="font-medium text-base ">{blockTime ? getHumanDate(blockTime) : ''}</div>
       </div>
 
       <FormattedCryptoAddress
-        className={`font-medium text-${getIssuanceTradeOption(type).color} col-span-2`}
+        className={`font-medium text-${getIssuanceTradeOption(type)?.color} col-span-2`}
         chainId={chainId}
         address={senderAddress}
       />

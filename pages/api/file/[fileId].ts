@@ -6,6 +6,7 @@ import path from 'path';
 import { initializeApollo } from '@src/utils/apolloClient';
 import { GET_USER_PERMISSIONS } from '@src/utils/dGraphQueries/user';
 import { GET_DOCUMENT_EDITORS } from '@src/utils/dGraphQueries/document';
+import { OrganizationUser } from 'types';
 
 const keyFilePath = path.join(process.cwd(), '/syndicate-cloud-key-staging.json');
 
@@ -14,7 +15,7 @@ const storage = new Storage({
   keyFilename: keyFilePath,
 });
 
-const bucket = storage.bucket(process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET);
+const bucket = storage.bucket(process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET as string);
 
 const handler = nextConnect<NextApiRequest, NextApiResponse>();
 
@@ -55,9 +56,9 @@ handler.delete(async (req, res) => {
     });
     const isDocEditor =
       data?.queryDocument
-        ?.map((document) => document.owner.organization.users)
+        ?.map((document: any) => document.owner.organization.users)
         .flat()
-        .filter((organizationUser) => {
+        .filter((organizationUser: OrganizationUser) => {
           return organizationUser.user.id === userId;
         }).length > 0;
 

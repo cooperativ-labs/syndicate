@@ -18,13 +18,11 @@ import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
 import { useAccount, useChainId } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import IssuanceSaleList from '@src/components/offering/sales/IssuanceSaleList';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
@@ -51,7 +49,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
-  const distributionContract = contractSet?.distributionContract;
 
   const { data: issuanceData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
     variables: { shareContractAddress: shareContractAddress },
@@ -61,8 +58,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const partitions = shareContract?.partitions as String0x[];
   const owners = offeringEntity?.owners;
   const documents = offering?.documents;
-  const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
-  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
+  const legalLinkTexts = documents && getDocumentsOfType(documents, DocumentType.ShareLink);
+  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
   const [transactionHistoryPanel, setTransactionHistoryPanel] = useState<boolean>(false);
@@ -76,9 +73,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     isLoading: shareIsLoading,
     refetchShareContract,
   } = useShareContractInfo(shareContractAddress, userWalletAddress);
-
-  const fundsDistributed = 20000;
-  const numDistributions = 4;
 
   const {
     shareTokenAddress,
@@ -102,23 +96,24 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const hasContract = !!contractOwner;
   const isContractOwner = contractOwner === userWalletAddress;
   const contractOwnerMatches = isContractOwner === !!isOfferingManager;
-  const offeringDocs = getDocumentsOfType(offering.documents, DocumentType.OfferingDocument);
-  const latestDistribution = getLatestDistribution(offering);
-  const myDistToClaim = getMyDistToClaim(offering, sharesOutstanding, myShares, userWalletAddress);
+  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
 
-  const offeringParticipant = participants.find((participant) => {
-    return participant.addressOfferingId === userWalletAddress + id;
+  const offeringParticipant = participants?.find((participant) => {
+    return participant?.addressOfferingId === userWalletAddress + id;
   });
 
   // NOTE: This is set up to accept multiple orders from the DB, but `saleDetails`
   // currently refers to the single order the contract can currently offer
-  const contractOrders = orders.filter((order) => {
-    return order.swapContractAddress === swapContractAddress;
+  const contractOrders = orders?.filter((order) => {
+    return order?.swapContractAddress === swapContractAddress;
   });
 
   useAsync(async () => {
-    const contractSaleList = await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals);
-    setContractSaleList(contractSaleList);
+    const contractSaleList =
+      orders &&
+      paymentTokenDecimals &&
+      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
+    contractSaleList && setContractSaleList(contractSaleList);
   }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
   const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details?.priceStart);
@@ -139,7 +134,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
       </RightSideBar>
       <RightSideBar formOpen={descriptionSettingsPanel} onClose={() => setDescriptionSettingsPanel(false)}>
         <>
-          <OfferingProfileSettings offering={offering} userId={userId} />
+          {userId && <OfferingProfileSettings offering={offering} userId={userId} />}
           <hr className="my-4" />
           <OfferingDescriptionSettings offering={offering} />
         </>
@@ -162,7 +157,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
         {!contractMatchesCurrentChain && (
           <AlertBanner
             text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
-              MatchSupportedChains(shareContract.cryptoAddress.chainId).name
+              MatchSupportedChains(shareContract?.cryptoAddress.chainId)?.name
             }.`}
           />
         )}
@@ -175,7 +170,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
             <OfferingDashboardTitle
               profileVisibility={isPublic}
               offeringId={id}
-              organizationId={offeringEntity.organization.id}
+              organizationId={offeringEntity?.organization.id}
               accessCode={accessCode}
               offeringName={name}
               isOfferingManager={isOfferingManager}
@@ -198,7 +193,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                 }}
               />
             ) : isOfferingManager ? (
-              <BasicOfferingDetailsForm offeringId={id} operatingCurrency={offeringEntity.operatingCurrency} />
+              <BasicOfferingDetailsForm offeringId={id} operatingCurrency={offeringEntity?.operatingCurrency} />
             ) : (
               'This offering has no details yet.'
             )}
@@ -259,13 +254,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         isContractOwner={isContractOwner}
                         partitions={partitions}
                         refetchMainContracts={refetchMainContracts}
-                        distributionId={latestDistribution.id}
-                        myDistToClaim={myDistToClaim}
                         permittedEntity={offeringParticipant}
                         currentSalePrice={currentSalePrice}
                         myShares={myShares}
-                        investmentCurrency={offering.details.investmentCurrency}
-                        chainId={0}
                       />
                     )}
                   </div>
@@ -301,10 +292,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
               documents={offeringDocs}
               isOfferingManager={isOfferingManager}
               offeringId={offering.id}
-              ownerEntityId={owners[0].id}
+              ownerEntityId={owners && owners[0]?.id}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkTexts.length > 0 && allDocuments?.length > 0 && (
+            {legalLinkTexts && legalLinkTexts.length > 0 && allDocuments?.length > 0 && (
               <HashInstructions
                 contractDocuments={allDocuments}
                 agreementTexts={legalLinkTexts}

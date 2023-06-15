@@ -15,7 +15,6 @@ import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '
 import { DocumentType, Offering } from 'types';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { getLatestDistribution, getMyDistToClaim } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractRead, useNetwork } from 'wagmi';
@@ -50,7 +49,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
     smartContractSets,
   } = offering;
 
-  const { minUnitsPerInvestor, maxUnitsPerInvestor } = details;
+  const minUnitsPerInvestor = details?.minUnitsPerInvestor;
 
   const contractSet = smartContractSets?.slice(-1)[0];
   const shareContract = contractSet?.shareContract;
@@ -94,31 +93,32 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
     address: shareContractAddress,
     abi: shareContractABI,
     functionName: 'partitionsOf',
-    args: [userWalletAddress],
+    args: [userWalletAddress as String0x],
   });
 
   const isLoading = shareIsLoading || swapIsLoading;
 
   const documents = offering?.documents;
-  const legalLinkTexts = getDocumentsOfType(documents, DocumentType.ShareLink);
+  const legalLinkTexts = documents && getDocumentsOfType(documents, DocumentType.ShareLink);
 
-  const offeringParticipant = participants.find((participant) => {
-    return participant.addressOfferingId === userWalletAddress + offeringId;
+  const offeringParticipant = participants?.find((participant) => {
+    return participant?.addressOfferingId === userWalletAddress + offeringId;
   });
 
   useAsync(async () => {
-    const contractSaleList = await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals);
-    setContractSaleList(contractSaleList);
+    const contractSaleList =
+      orders &&
+      paymentTokenDecimals &&
+      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
+    contractSaleList && setContractSaleList(contractSaleList);
   }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
-  const contractOrders = orders.filter((order) => {
-    return order.swapContractAddress === swapContractAddress;
+  const contractOrders = orders?.filter((order) => {
+    return order?.swapContractAddress === swapContractAddress;
   });
 
-  const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details.priceStart);
-  const offeringDocs = getDocumentsOfType(offering.documents, DocumentType.OfferingDocument);
-  const latestDistribution = getLatestDistribution(offering);
-  const myDistToClaim = getMyDistToClaim(offering, sharesOutstanding, myShares, userWalletAddress);
+  const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details?.priceStart);
+  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
 
   if (!offeringParticipant) {
     return (
@@ -215,8 +215,8 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
           <div className="mt-4 ">
             <DistributionList
               distributionContractAddress={distributionContractAddress}
-              distributions={offering.distributions}
-              walletAddress={userWalletAddress}
+              distributions={offering?.distributions}
+              walletAddress={userWalletAddress as String0x}
             />
             <div className="mt-20 flex">
               <ProfileTabContainer offering={offering} />
@@ -226,7 +226,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3  ">Offering documents</h1>
             <DocumentList documents={offeringDocs} isOfferingManager={false} offeringId={offering.id} />{' '}
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkTexts.length > 0 && allDocuments?.length > 0 && (
+            {legalLinkTexts && allDocuments && legalLinkTexts?.length > 0 && allDocuments?.length > 0 && (
               <HashInstructions
                 contractDocuments={allDocuments}
                 agreementTexts={legalLinkTexts}

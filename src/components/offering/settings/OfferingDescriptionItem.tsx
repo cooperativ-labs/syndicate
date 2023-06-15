@@ -4,15 +4,14 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/dGraphQueries/offering';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getTabSectionOption } from '@src/utils/enumConverters';
-import { Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
 import { useMutation } from '@apollo/client';
 
 type OfferingDescriptionItemProps = {
   offering: Offering;
-  description: OfferingDescriptionText;
-  order: number;
-  tab: OfferingTabSection;
+  description: Maybe<OfferingDescriptionText> | undefined;
+  order: number | undefined;
+  tab: OfferingTabSection | undefined;
 };
 const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, description, order, tab }) => {
   const [open, setOpen] = useState<boolean>(false);
@@ -22,7 +21,7 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, d
   const [alerted, setAlerted] = useState<boolean>(false);
 
   if (errorUpdate || errorDelete) {
-    alert(`Oops. Looks like something went wrong: ${errorUpdate ? errorUpdate.message : errorDelete.message}`);
+    alert(`Oops. Looks like something went wrong: ${errorUpdate ? errorUpdate.message : errorDelete?.message}`);
   }
   if ((dataUpdate && !alerted) || (dataDelete && !alerted)) {
     setAlerted(true);
@@ -33,7 +32,7 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, d
       <div className="flex justify-between items-center">
         <div className="grid grid-cols-11">
           <div className="flex col-span-8 ">
-            <div className="font-medium text-lg"> {description.title} </div>
+            <div className="font-medium text-lg"> {description?.title} </div>
           </div>
         </div>
         <div className="col-span-3 flex ">
@@ -70,7 +69,7 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, d
           <button
             onClick={() =>
               deleteDescription({
-                variables: { offeringId: offering.id, descriptionId: description.id, currentDate: currentDate },
+                variables: { offeringId: offering.id, descriptionId: description?.id, currentDate: currentDate },
               })
             }
             className="p-3 border-2 border-red-800 rounded-md w-full text-red-800 font-bold uppercase -mt-10"

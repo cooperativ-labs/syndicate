@@ -4,7 +4,7 @@ import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React, { FC, useState } from 'react';
-import { Currency } from 'types';
+import { Currency, Maybe } from 'types';
 import { Form, Formik } from 'formik';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
@@ -18,21 +18,26 @@ import { submitSwap } from '@src/web3/contractSwapCalls';
 import { toContractNumber, toNormalNumber } from '@src/web3/util';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
+import { getSharesRemaining } from '@src/utils/helpersOffering';
 
 export type PostInitialSaleProps = {
-  sharesIssued: number;
-  sharesOutstanding: number;
-  offeringId: string;
-  swapContractAddress: String0x;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  offeringMin: number;
-  priceStart: number;
-  shareContractId: string;
+  sharesOutstanding: number | undefined;
+  paymentTokenAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
   partitions: String0x[];
+};
+
+type WithAdditionalProps = PostInitialSaleProps & {
+  sharesIssued: Maybe<number> | undefined;
+  priceStart: Maybe<number> | undefined;
+  offeringId: string;
+  offeringMin: Maybe<number> | undefined;
+  shareContractId: string;
+  swapContractAddress: String0x | undefined;
   refetchAllContracts: () => void;
 };
-const PostInitialSale: FC<PostInitialSaleProps> = ({
+
+const PostInitialSale: FC<WithAdditionalProps> = ({
   sharesIssued,
   sharesOutstanding,
   offeringId,
@@ -50,9 +55,12 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
   const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
 
-  const sharesRemaining = sharesIssued - sharesOutstanding;
+  const sharesRemaining = getSharesRemaining({ sharesOutstanding, sharesIssued });
 
-  const formButtonText = (values) => {
+  const formButtonText = (values: { numShares: number | undefined }) => {
+    if (!sharesIssued) {
+      return;
+    }
     return `Offer ${
       values.numShares
         ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%) for sale`
@@ -60,11 +68,13 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
     } `;
   };
 
-  const saleCalculator = (numUnits: number, price: number) => {
+  const offerCalculator = (numUnits: number, price: number) => {
     return numUnits * price;
   };
-  const saleString = (numShares, price: number) => {
-    return numberWithCommas(saleCalculator(parseInt(numShares, 10), price));
+
+  const saleAmountString = (numUnits: string, price: Maybe<number> | undefined) => {
+    if (!price) return '0';
+    return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
   };
 
   return (
@@ -80,21 +90,22 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
+        const { numShares, minUnits, maxUnits } = values;
         if (!values.numShares) {
           errors.numShares = 'Please indicate how many shares you want to send';
         } else if (values.numShares > sharesRemaining) {
           errors.numShares = `You only have ${sharesRemaining} remaining shares to send.`;
         }
-        if (values.maxUnits > values.numShares) {
+        if (maxUnits && numShares && maxUnits > numShares) {
           errors.maxUnits = 'Maximum must be less then the total shares listed for sale';
         }
-        if (values.maxUnits < 1 || values.maxUnits < values.minUnits) {
+        if ((maxUnits && minUnits && maxUnits < 1) || (maxUnits && minUnits && maxUnits < minUnits)) {
           errors.maxUnits = 'Maximum must be greater than minimum';
         }
-        if (values.minUnits < 1 || values.minUnits > values.maxUnits) {
+        if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
           errors.minUnits = 'Minimum must be less than maximum';
         }
-        if (values.minUnits < offeringMin) {
+        if (minUnits && offeringMin && minUnits < offeringMin) {
           errors.minUnits = `Must be at least ${offeringMin}`;
         }
         if (!values.partition) {
@@ -111,6 +122,10 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
         const isAsk = true;
         const isIssuance = true;
         const isErc20Payment = true;
+        if (!values.numShares || !values.price) {
+          setSubmitting(false);
+          return;
+        }
         await submitSwap({
           numShares: values.numShares,
           price: values.price,
@@ -121,7 +136,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
           visible: values.visible,
           swapContractAddress: swapContractAddress,
           shareContractId: shareContractId,
-          paymentTokenDecimals: paymentTokenDecimals,
+          paymentTokenDecimals: paymentTokenDecimals as number,
           offeringId: offeringId,
           isContractOwner: isContractOwner,
           isAsk: isAsk,
@@ -149,7 +164,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
           <div className="md:grid grid-cols-2 gap-3">
             <Input
               className={defaultFieldDiv}
-              labelText={`Price (${getCurrencyById(paymentTokenAddress).symbol})`}
+              labelText={`Price (${getCurrencyById(paymentTokenAddress)?.symbol})`}
               name="price"
               type="number"
               placeholder="1300"
@@ -158,8 +173,8 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
             <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText="Total sale:">
               <>
                 {values.numShares &&
-                  `${saleString(values.numShares, values.price)} ${
-                    paymentTokenAddress && getCurrencyById(paymentTokenAddress).symbol
+                  `${saleAmountString(values.numShares, values.price)} ${
+                    paymentTokenAddress && getCurrencyById(paymentTokenAddress)?.symbol
                   }`}
               </>
             </NonInput>
@@ -194,7 +209,7 @@ const PostInitialSale: FC<PostInitialSaleProps> = ({
             <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
               <LoadingButtonText
                 state={buttonStep}
-                idleText={formButtonText(values)}
+                idleText={formButtonText(values) as string}
                 submittingText="Creating sale..."
                 confirmedText="Confirmed!"
                 failedText="Transaction failed"

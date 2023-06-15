@@ -8,11 +8,11 @@ import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
-import { CurrencyCode, Organization } from 'types';
+import { CurrencyCode, LegalEntity, Organization } from 'types';
 import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
 import { useMutation } from '@apollo/client';
 
 export type CreateEntityType = {
@@ -23,8 +23,8 @@ export type CreateEntityType = {
 
 const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionOnCompletion }) => {
   const [addLegalEntity, { data, error }] = useMutation(ADD_ENTITY);
-  const [latLang, setLatLang] = useState({ lat: null, lng: null });
-  const [autocompleteResults, setAutocompleteResults] = useState([null]);
+  const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
+  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
 
   const setDefaultLogo = defaultLogo ? defaultLogo : '/assets/images/logos/company-placeholder.jpeg';
@@ -55,7 +55,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
     return <></>;
   }
 
-  const entityOptions = [...organization.legalEntities].reverse();
+  const entityOptions = organization && getEntityOptionsList(organization.legalEntities as LegalEntity[]);
 
   const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
     normalizeGeoAddress(autocompleteResults);

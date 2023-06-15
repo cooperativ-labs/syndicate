@@ -11,7 +11,7 @@ import { getAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { Offering, User } from 'types';
 import { useAsync } from 'react-use';
-import { useNetwork } from 'wagmi';
+import { useChainId, useNetwork } from 'wagmi';
 
 export type AgreementContentType = {
   signature: string;
@@ -28,8 +28,7 @@ type LinkLegalProps = {
 };
 
 const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
-  const { chain } = useNetwork();
-  const chainId = chain?.id;
+  const chainId = useChainId();
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
     signature: '',
   });
@@ -41,9 +40,10 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
 
   const { signature } = agreementContent;
   const offeringEntity = offering.offeringEntity;
-  const orgLegalName = offeringEntity.legalName;
-  const offerEntityGP = offeringEntity.owners[0];
-  const availableContract = getAvailableContracts(offeringEntity.smartContracts, chainId)[0];
+  const orgLegalName = offeringEntity?.legalName;
+  const offerEntityGP = offeringEntity?.owners && offeringEntity.owners[0];
+  const availableContract =
+    offeringEntity?.smartContracts && getAvailableContracts(offeringEntity.smartContracts, chainId)[0];
   const backingToken = availableContract?.backingToken;
   const bacToken = getCurrencyOption(backingToken);
   const bacValue = bacToken?.value;
@@ -56,7 +56,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
     {
       offeringId: offering.id,
       spvEntityName: orgLegalName,
-      gpEntityName: offerEntityGP.legalName,
+      gpEntityName: offerEntityGP?.legalName,
       contractAddress: availableContract?.cryptoAddress.address,
       chainName: MatchSupportedChains(chainId)?.name,
       bacName: bacName,
@@ -74,7 +74,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
       <h1 className="font-semibold text-lg">Create shares of {orgLegalName}</h1>
       {!availableContract ? (
         <div className="mt-5">
-          <CreateShareContract contractCreatorId={offeringEntity.id} />
+          <CreateShareContract contractCreatorId={offeringEntity?.id} />
         </div>
       ) : (
         <div className="my-3">

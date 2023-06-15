@@ -15,8 +15,11 @@ const WalletChooserModal: FC<WalletChooserModalProps> = ({ noModal }) => {
   const { dispatch: dispatchWalletModal, WalletModalOpen } = applicationStore;
 
   const windowSize = useWindowSize();
+  const windowWidth = windowSize && windowSize.width;
+  const isDesktop = windowWidth && windowWidth > 768 ? true : false;
+
   useEffect(() => {
-    if (WalletModalOpen && windowSize.width > 768) {
+    if (WalletModalOpen && isDesktop) {
       // setScrollY(window.scrollY);
       document.body.style.position = 'fixed';
       document.body.style.top = `-${window.scrollY}px`;
@@ -26,7 +29,7 @@ const WalletChooserModal: FC<WalletChooserModalProps> = ({ noModal }) => {
       document.body.style.top = '';
       // window.scrollTo(0, parseInt(scrollY));
     }
-  }, [WalletModalOpen, windowSize]);
+  }, [WalletModalOpen, windowSize, isDesktop]);
 
   if (WalletModalOpen) {
     return (

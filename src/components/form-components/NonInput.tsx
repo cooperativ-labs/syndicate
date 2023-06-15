@@ -1,12 +1,12 @@
 import cn from 'classnames';
-import React, { ReactChild } from 'react';
+import React, { ReactNode } from 'react';
 import { defaultFieldLabelClass } from './Inputs';
 
 export type CustomNonInputProps = {
   labelText?: string;
   fieldLabelClass?: string;
   className?: string;
-  children: ReactChild;
+  children: ReactNode;
 };
 
 export const NonInput: React.FC<CustomNonInputProps> = ({ labelText, fieldLabelClass, className, children }) => {

@@ -1,4 +1,4 @@
-import { CryptoAddressProtocol } from 'types';
+import { CryptoAddressProtocol, Maybe } from 'types';
 import { configureChains, createConfig, sepolia, mainnet } from 'wagmi';
 import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
@@ -49,7 +49,7 @@ export const SupportedChains = [mainnet, sepolia, goerli, polygon, polygonMumbai
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
   // publicProvider(),
-  infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY }),
+  infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
 ]);
 
 export const wagmiConfig = createConfig({
@@ -166,17 +166,18 @@ export const SupportedChainsAddendum = [
   // },
 ];
 
-export const MatchSupportedChains = (chainId) => {
+export const MatchSupportedChains = (chainId: Maybe<number> | undefined) => {
   return SupportedChainsAddendum.find((chain) => chain.id === chainId);
 };
 
-export const isAlgorand = (chainId) => MatchSupportedChains(chainId).protocol === CryptoAddressProtocol.Algo;
+export const isAlgorand = (chainId: Maybe<number> | undefined) =>
+  MatchSupportedChains(chainId)?.protocol === CryptoAddressProtocol.Algo;
 
 const supportedChainIds = chains.map((chain) => chain.id);
 
 export const CustomWalletConnectConnector = async () => {
   return await EthereumProvider.init({
-    projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+    projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
     chains: supportedChainIds,
     showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
     // methods, // OPTIONAL ethereum methods
@@ -221,7 +222,7 @@ export const SupportedEthConnectors = [
     description: 'Link wallet with a QR code',
     connector: new WalletConnectConnector({
       options: {
-        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID,
+        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
         isNewChainsStale: false,
       },
     }),
@@ -238,7 +239,7 @@ export const SupportedEthConnectors = [
   },
 ];
 
-export const GetEthConnector = (id) => {
+export const GetEthConnector = (id: 'injected' | 'walletconnect' | 'coinbase' | 'ledger') => {
   switch (id) {
     case 'injected':
       return SupportedEthConnectors[0].connector;
@@ -312,16 +313,3 @@ export const SupportedAlgoConnectors = [
 // };
 
 // export type ConnectorIdType = 'injected' | 'walletlink' | 'walletconnect' | 'pera' | 'myAlgo' | 'algoSigner';
-
-export const GetAlgoConnector = (id, providerEnv) => {
-  switch (id) {
-    case 'pera':
-      return undefined;
-    case 'myAlgo':
-      return undefined;
-    // case 'algoSigner':
-    //   return AlgoSignerConnect;
-    default:
-      return undefined;
-  }
-};

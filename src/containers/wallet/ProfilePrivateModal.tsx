@@ -7,15 +7,16 @@ import { ApplicationStoreProps, store } from '@context/store';
 
 type ProfilePrivateModalProps = {
   offeringId: string;
-  accessCode: string;
+  accessCode: string | undefined | null;
 };
 
 const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessCode }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: setPrivacyModal, ProfilePrivateModalOn } = applicationStore;
-  const [accessState, setAccessState] = useState(undefined);
+  const [accessState, setAccessState] = useState<Storage | undefined>(undefined);
 
   const windowSize = useWindowSize();
+  const isDesktop = windowSize.width && windowSize.width > 768;
 
   const handleCodeSubmission = (code: string) => {
     if (code === accessCode) {
@@ -30,7 +31,7 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
     if (accessCode && accessCode !== pageAccess) {
       setPrivacyModal({ type: 'SET_PROFILE_PRIVATE_MODAL_ON' });
     }
-    if (ProfilePrivateModalOn && windowSize.width > 768) {
+    if (ProfilePrivateModalOn && isDesktop) {
       // setScrollY(window.scrollY);
       document.body.style.position = 'fixed';
       document.body.style.top = `-${window.scrollY}px`;
@@ -40,7 +41,7 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
       document.body.style.top = '';
       // window.scrollTo(0, parseInt(scrollY));
     }
-  }, [ProfilePrivateModalOn, windowSize, accessCode, offeringId, setPrivacyModal]);
+  }, [ProfilePrivateModalOn, windowSize, accessCode, offeringId, setPrivacyModal, isDesktop]);
 
   if (ProfilePrivateModalOn) {
     return (

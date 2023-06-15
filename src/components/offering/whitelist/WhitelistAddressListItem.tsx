@@ -2,13 +2,13 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import React, { FC, useContext } from 'react';
 
-import { OfferingParticipant } from 'types';
+import { Maybe, OfferingParticipant } from 'types';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractRead } from 'wagmi';
 type WhitelistAddressListItemProps = {
-  participant: OfferingParticipant;
+  participant: Maybe<OfferingParticipant>;
   shareContractAddress: String0x;
   setSelectedParticipant: (participantId: string) => void;
 };
@@ -24,11 +24,15 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
     address: shareContractAddress as String0x,
     abi: shareContractABI,
     functionName: 'balanceOf',
-    args: [participant.walletAddress as String0x],
+    args: [participant?.walletAddress as String0x],
   });
 
-  const isYou = participant.walletAddress === userWalletAddress;
+  const isYou = participant?.walletAddress === userWalletAddress;
   const numShares = isLoading ? 'loading...' : data ? toNormalNumber(data, shareContractDecimals) : 0;
+
+  if (!participant) {
+    return <></>;
+  }
 
   return (
     <div

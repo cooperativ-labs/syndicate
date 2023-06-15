@@ -9,7 +9,7 @@ import OrganizationSpecifications, {
   EditOrganizationSelectionType,
 } from '@src/components/organization/OrganizationSpecifications';
 import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 import RoundedImage from '@src/components/RoundedImage';
 import SectionBlock from '@src/containers/SectionBlock';
 import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
@@ -22,7 +22,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dGraphQueries/organization';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { Organization } from 'types';
+import { Maybe, Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
@@ -72,16 +72,10 @@ const OrganizationSettings: FC = () => {
     linkedAccounts,
   } = organization;
 
-  const isAdmin = getIsAdmin(userId, organization);
+  const isAdmin = userId && getIsAdmin(userId, organization);
   const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
 
-  const offerings = legalEntities
-    .map((entity) => {
-      return entity.offerings;
-    })
-    .flat();
-
-  const handleNameChange = (values: { name: string }) => {
+  const handleNameChange = (values: { name: Maybe<string> | undefined }) => {
     updateOrganization({
       variables: {
         currentDate: currentDate,
@@ -137,16 +131,12 @@ const OrganizationSettings: FC = () => {
     });
   };
 
-  const submissionCompletion = (setModal) => {
-    setModal(false);
-  };
-
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
       <FormModal formOpen={imageModal} onClose={() => setImageModal(false)}>
         <div className=" grid grid-cols-3 gap-4">
           <div className="flex flex-col col-span-1 justify-center">
-            <img className="h-32 object-scale-down" src={logo} />
+            <img className="h-32 object-scale-down" src={logo as string} />
             <FileUpload
               uploaderText="Add logo"
               urlToDatabase={addLogoToDB}
@@ -155,7 +145,7 @@ const OrganizationSettings: FC = () => {
             />
           </div>
           <div className="col-span-2">
-            <img className="h-32 w-full object-cover" src={bannerImage} />
+            <img className="h-32 w-full object-cover" src={bannerImage as string} />
             <FileUpload
               uploaderText="Add banner image"
               urlToDatabase={addBannerImageToDb}
@@ -167,12 +157,12 @@ const OrganizationSettings: FC = () => {
       </FormModal>
 
       <div className="flex items-center relative">
-        <img src={bannerImage} className="object-cover h-64 w-full absolute" />
+        <img src={bannerImage as string} className="object-cover h-64 w-full absolute" />
         <div className="flex backdrop-opacity-10 backdrop-invert w-full h-64 bg-gray-800/50 items-center">
           <div className="ml-4 flex items-center ">
             <RoundedImage
               className="h-40 w-40 bg-gray-800 backdrop-opacity-10  border-2 border-gray-100 mr-4"
-              src={logo}
+              src={logo as string}
               onClick={() => isEditorOrAdmin && setImageModal(true)}
             />
 

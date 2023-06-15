@@ -23,7 +23,7 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
     toast.error(error.message);
   }
 
-  const handleAddShareClass = async (partition) => {
+  const handleAddShareClass = async (partition: string) => {
     setButtonStep('submitting');
     await addPartition({
       variables: {

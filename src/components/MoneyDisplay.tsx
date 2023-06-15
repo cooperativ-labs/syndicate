@@ -6,7 +6,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 
 type MoneyDisplayProps = {
-  amount: number;
+  amount: number | undefined | null;
   paymentToken?: String0x;
   currency?: Currency;
   className?: string;
@@ -14,7 +14,8 @@ type MoneyDisplayProps = {
 
 const MoneyDisplay: FC<MoneyDisplayProps> = ({ amount, paymentToken, currency, className }) => {
   const isUsd =
-    getCurrencyById(paymentToken).value === CurrencyCode.Usd || getCurrencyOption(currency)?.value === CurrencyCode.Usd;
+    getCurrencyById(paymentToken)?.value === CurrencyCode.Usd ||
+    getCurrencyOption(currency)?.value === CurrencyCode.Usd;
   const normalizedCurrency = paymentToken ? getCurrencyById(paymentToken) : currency && getCurrencyOption(currency);
 
   const currencyLogo = normalizedCurrency?.logo;

@@ -30,7 +30,7 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
   const { setFieldValue } = useFormikContext();
   const [field] = useField(name);
 
-  const MyContainer = ({ className, children }) => {
+  const MyContainer = ({ className, children }: { className: string; children: React.ReactNode[] }) => {
     return (
       <div style={{ color: '#fff' }}>
         <CalendarContainer className={className}>

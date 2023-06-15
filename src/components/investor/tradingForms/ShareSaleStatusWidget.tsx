@@ -9,10 +9,10 @@ import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 type ShareSaleStatusWidgetProps = {
   order: ShareOrder;
   offeringId: string;
-  swapContractAddress: String0x;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  txnApprovalsEnabled: boolean;
+  swapContractAddress: String0x | undefined;
+  paymentTokenAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
+  txnApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;
   refetchMainContracts: () => void;
 };
@@ -53,7 +53,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
       txnApprovalsEnabled,
     });
 
-  const sharesRemaining = amount - filledAmount;
+  const sharesRemaining = amount && filledAmount ? amount - filledAmount : 0;
 
   function refetchAllContracts() {
     refetchMainContracts();
