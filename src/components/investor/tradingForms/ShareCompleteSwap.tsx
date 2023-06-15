@@ -52,12 +52,12 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
     address: paymentTokenAddress,
     abi: erc20ABI,
     functionName: 'allowance',
-    args: [userWalletAddress, swapContractAddress],
+    args: [userWalletAddress as String0x, swapContractAddress],
   });
 
   const allowance = allowanceData && toNormalNumber(allowanceData, paymentTokenDecimals);
   const allowanceRequiredForPurchase = orderQty * price;
-  const isAllowanceSufficient = allowance >= allowanceRequiredForPurchase;
+  const isAllowanceSufficient = !!allowance ? allowance >= allowanceRequiredForPurchase : false;
 
   const recipient = isAsk ? filler : initiator;
   const sender = isAsk ? initiator : filler;

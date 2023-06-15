@@ -1,7 +1,8 @@
 import cn from 'classnames';
-import React, { FC, use, useState } from 'react';
-import { Country, State } from 'country-state-city';
+import React, { ChangeEvent, FC, use, useState } from 'react';
+import { Country, IState, State } from 'country-state-city';
 import { ErrorMessage, Field } from 'formik';
+import { Maybe } from 'types';
 
 type JurisdictionSelectProps = {
   id?: any;
@@ -13,8 +14,8 @@ type JurisdictionSelectProps = {
   fieldClass?: string;
   fieldLabelClass?: string;
   values: {
-    jurCountry: string;
-    jurProvince?: string;
+    jurCountry: string | undefined;
+    jurProvince?: Maybe<string> | undefined;
     [key: string]: any;
   };
 };
@@ -33,7 +34,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
   values,
 }) => {
   const countries = Country.getAllCountries();
-  const [states, setStates] = useState(undefined);
+  const [states, setStates] = useState<IState[]>([]);
   const hasStates = states && states.length > 0;
 
   return (
@@ -54,7 +55,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
         name={'jurCountry'}
         multiple={multiple}
         required={required}
-        onChange={(e) => {
+        onChange={(e: ChangeEvent<HTMLInputElement>) => {
           setStates(State.getStatesOfCountry(e.target.value));
           values.jurCountry = e.target.value;
         }}

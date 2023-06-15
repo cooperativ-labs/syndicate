@@ -16,9 +16,9 @@ import { toNormalNumber } from '@src/web3/util';
 import { useMutation } from '@apollo/client';
 
 type SubmitDistributionProps = {
-  distributionContractAddress: String0x;
-  distributionTokenDecimals: number;
-  distributionTokenAddress: String0x;
+  distributionContractAddress: String0x | undefined;
+  distributionTokenDecimals: number | undefined;
+  distributionTokenAddress: String0x | undefined;
   partitions: String0x[];
   offeringId: string;
   // refetchMainContracts: () => void;
@@ -50,7 +50,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         address: distributionTokenAddress,
         abi: erc20ABI,
         functionName: 'allowance',
-        args: [userWalletAddress, distributionContractAddress],
+        args: [userWalletAddress as String0x, distributionContractAddress as String0x],
       },
       {
         address: distributionContractAddress,
@@ -60,7 +60,8 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     ],
   });
 
-  const allowance = reads && toNormalNumber(reads[0].result, distributionTokenDecimals);
+  const rawAllowance = reads && reads[0].result;
+  const allowance = reads && toNormalNumber(rawAllowance as bigint, distributionTokenDecimals);
 
   return (
     <Formik
@@ -101,7 +102,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
             />
             <div className="mt-4" />
 
-            {allowance < parseInt(values.amount, 10) ? (
+            {allowance && allowance < parseInt(values.amount, 10) ? (
               <SetAllowanceForm
                 paymentTokenAddress={distributionTokenAddress}
                 paymentTokenDecimals={distributionTokenDecimals}

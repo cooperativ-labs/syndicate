@@ -18,7 +18,7 @@ type AgreementText = {
 type AgreementContentType = {
   isCompany: boolean;
   walletAddress: string;
-  numUnitsPurchase: number;
+  numUnitsPurchase: number | undefined;
   purchaseMethod: string;
   minPledge?: number;
   maxPledge?: number;
@@ -40,7 +40,7 @@ type AgreementContentType = {
   purchaserPhone: string;
   taxId: string;
   purchaserEntityJurisdiction: string;
-  purchaserAge: number;
+  purchaserAge: number | undefined;
   purchaserPrincipleResidence: string;
   purchaserResidenceHistory: string;
   purchaserTaxState: string;
@@ -76,7 +76,7 @@ export const GeneratedApplicationText = (
   agreementContent: AgreementContentType,
   // isNonHuman: boolean,
   offering: Offering,
-  purchaserAddressLine1: string,
+  purchaserAddressLine1: string | undefined,
   purchaserAddressLine2: string,
   purchaserCity: string,
   purchaserStateProvince: string,
@@ -112,8 +112,8 @@ export const GeneratedApplicationText = (
   const { value: considerationsText } = useAsync(getConsiderations, []);
 
   const offeringEntity = offering.offeringEntity;
-  const offeringPrice = offering.details.priceStart;
-  const offeringCurrency = offering.details.investmentCurrency.code;
+  const offeringPrice = offering.details?.priceStart;
+  const offeringCurrency = offering.details?.investmentCurrency.code;
   // const contractAddress = cryptoAddress.address;
 
   const {
@@ -168,7 +168,7 @@ export const GeneratedApplicationText = (
   const ApplicationSummary = GenerateInvestorApplicationSummary(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity.legalName,
+      offeringEntityName: offeringEntity?.legalName,
       purchaserEntityName: purchaserEntityName,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
@@ -195,7 +195,7 @@ export const GeneratedApplicationText = (
       isNonHuman: isCompany,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
-      offeringEntityName: offeringEntity.legalName,
+      offeringEntityName: offeringEntity?.legalName,
       purchaserEntityName: purchaserEntityName,
       purchaserAge: purchaserAge ? numberWithCommas(purchaserAge) : '',
       purchaserPrincipleResidence: purchaserPrincipleResidence,
@@ -204,11 +204,11 @@ export const GeneratedApplicationText = (
       purchaserAccredited: purchaserAccredited,
       purchaserNetWorth: purchaserNetWorth,
       purchaserIncome: purchaserIncome,
-      purchaserAccreditedType: purchaserAccredited && purchaserAccreditedType,
-      purchaserAccreditedTypeOther: purchaserAccredited && purchaserAccreditedTypeOther,
+      purchaserAccreditedType: purchaserAccredited ? purchaserAccreditedType : '',
+      purchaserAccreditedTypeOther: purchaserAccredited ? purchaserAccreditedTypeOther : '',
       purchaserSophisticated: purchaserSophisticated,
       purchaserSophisticatedSelf: purchaserSophisticated && purchaserSophisticatedSelf,
-      purchaserExperienceFinancial: purchaserAccredited && purchaserExperienceFinancial,
+      purchaserExperienceFinancial: purchaserAccredited ? purchaserExperienceFinancial : '',
       purchaserExperienceSecurities: purchaserExperienceSecurities,
       purchaserExperienceLLCs: purchaserExperienceLLCs,
       purchaserExperienceOther: purchaserExperienceOther,
@@ -229,8 +229,8 @@ export const GeneratedApplicationText = (
       advisor_country: advisor_country,
       maxPledge: maxPledge,
       minPledge: minPledge,
-      pricePerUnit: offering.details.priceStart,
-      investmentCurrency: getCurrencyOption(offering.details.investmentCurrency).symbol,
+      pricePerUnit: offering.details?.priceStart,
+      investmentCurrency: getCurrencyOption(offering.details?.investmentCurrency)?.symbol,
     },
     applicantSuitabilityAttestationText ?? ''
   );
@@ -238,11 +238,12 @@ export const GeneratedApplicationText = (
   const PurchaseAttestation = GenerateSubscriptionPurchaseAttestation(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity.legalName,
+      offeringEntityName: offeringEntity?.legalName,
       numUnitsPurchase: numUnitsPurchase ? numberWithCommas(numUnitsPurchase) : '',
-      offeringPrice: numberWithCommas(offeringPrice / 100),
-      purchasePrice: numUnitsPurchase ? numberWithCommas((numUnitsPurchase * offeringPrice) / 100) : '',
-      purchaseCurrency: offeringCurrency,
+      offeringPrice: offeringPrice ? numberWithCommas(offeringPrice / 100) : '',
+      purchasePrice:
+        numUnitsPurchase && offeringPrice ? numberWithCommas((numUnitsPurchase * offeringPrice) / 100) : '',
+      purchaseCurrency: offeringCurrency as string,
       purchaseMethod: purchaseMethod,
       purchaserEntityName: purchaserEntityName,
       purchaserEntityManager: purchaserEntityManager,

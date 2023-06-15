@@ -8,8 +8,6 @@ import { GET_RE_PROPERTY } from '@src/utils/dGraphQueries/reProperty';
 import { NextPage } from 'next';
 import { useQuery } from '@apollo/client';
 
-// const storage = getStorage(fireApp);
-
 const PropertyPage: NextPage = () => {
   const propertyId = router.query.propertyId;
   const { data: propertyData } = useQuery(GET_RE_PROPERTY, { variables: { id: propertyId } });

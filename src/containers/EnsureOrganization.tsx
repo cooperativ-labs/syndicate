@@ -8,9 +8,10 @@ type EnsureProfileCompletionProps = {
 };
 
 const EnsureOrganization: FC<EnsureProfileCompletionProps> = ({ children, explainerText, user }) => {
+  const organizations = user.organizations;
   return (
     <>
-      {user.organizations.length > 0 ? (
+      {organizations && organizations.length > 0 ? (
         <>{children}</>
       ) : (
         <>

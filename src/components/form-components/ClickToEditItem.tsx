@@ -2,14 +2,16 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
+import { Maybe } from 'types';
+import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
 
 type ClickToEditItemProps = {
   label: string;
-  currentValue: string;
+  currentValue: Maybe<string> | undefined;
   form: any;
-  editOn: EditEntitySelectionType | EditOrganizationSelectionType | string;
+  editOn: EditEntitySelectionType | EditOrganizationSelectionType | ParticipantSpecItemType | string | undefined;
   itemType: EditEntitySelectionType | EditOrganizationSelectionType | string;
-  isManager: boolean;
+  isManager: boolean | undefined;
   setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType | string) => void;
 };
 const ClickToEditItem: FC<ClickToEditItemProps> = ({

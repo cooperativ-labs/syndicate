@@ -1,34 +1,28 @@
-import { SmartContract, SmartContractType } from 'types';
+import { Maybe, SmartContract, SmartContractType } from 'types';
 
-const contractIsSameChain = (contract: SmartContract, chainId: number): boolean => {
+const contractIsSameChain = (contract: Maybe<SmartContract>, chainId: number): boolean => {
   return contract?.cryptoAddress.chainId === chainId;
 };
-export const getAvailableContracts = (unestablishedSmartContracts: SmartContract[], chainId: number) => {
-  let availableContracts = [];
-  unestablishedSmartContracts.map((contract) => {
-    if (contractIsSameChain(contract, chainId) && !contract.established) {
-      availableContracts.push(contract);
+export const getAvailableContracts = (unestablishedSmartContracts: Maybe<SmartContract>[], chainId: number) => {
+  return unestablishedSmartContracts.map((contract) => {
+    if (contractIsSameChain(contract, chainId) && !contract?.established) {
+      return contract;
     }
   });
-  return availableContracts;
 };
 
-export const getEstablishedContracts = (smartContracts: SmartContract[], chainId: number) => {
-  let establishedContracts = [];
-  smartContracts.map((contract) => {
-    if (contractIsSameChain(contract, chainId) && contract.established && contract?.type === SmartContractType.Share) {
-      establishedContracts.push(contract);
-    }
-  });
-  return establishedContracts;
-};
+// export const getEstablishedContracts = (smartContracts: SmartContract[], chainId: number) => {
+//   return smartContracts.map((contract) => {
+//     if (contractIsSameChain(contract, chainId) && contract.established && contract?.type === SmartContractType.Share) {
+//       return contract;
+//     }
+//   });
+// };
 
-export const getSwapContracts = (smartContracts: SmartContract[], chainId: number) => {
-  let swapContracts = [];
-  smartContracts.map((contract) => {
-    if (contractIsSameChain(contract, chainId) && contract?.type === SmartContractType.Swap) {
-      swapContracts.push(contract);
-    }
-  });
-  return swapContracts;
-};
+// export const getSwapContracts = (smartContracts: SmartContract[], chainId: number) => {
+//   return smartContracts.map((contract) => {
+//     if (contractIsSameChain(contract, chainId) && contract?.type === SmartContractType.Swap) {
+//       return contract;
+//     }
+//   });
+// };

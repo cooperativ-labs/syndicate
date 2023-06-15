@@ -16,7 +16,7 @@ type ResultProps = {
 
 const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
   const offering = result;
-  const orgId = offering.offeringEntity.organization.id;
+  const orgId = offering?.offeringEntity?.organization.id;
   const { name, shortDescription, sharingImage, id, isPublic, accessCode } = offering;
 
   return offering && isPublic ? (
@@ -26,7 +26,7 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta property="og:title" content={name} />
         <meta property="og:type" content="website" />
-        <meta property="og:description" content={shortDescription} />
+        <meta property="og:description" content={shortDescription as string} />
         <meta
           property="og:image"
           content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
@@ -34,7 +34,7 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
         <meta property="og:url" content={`https://cooperativ.io/${orgId}/offerings/${id}`}></meta>
         Twitter
         <meta name="twitter:title" content={name} />
-        <meta name="twitter:description" content={shortDescription} />
+        <meta name="twitter:description" content={shortDescription as string} />
         <meta
           name="twitter:image"
           content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
@@ -57,7 +57,7 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
 export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const apolloClient = initializeApollo();
 
-  const offeringId = params.offeringId;
+  const offeringId = params?.offeringId;
 
   try {
     const { data } = await apolloClient.query({

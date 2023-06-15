@@ -39,7 +39,7 @@
     ],
     "allowJs": true,
     "skipLibCheck": true,
-    "strict": false,
+    "strict": true,
     "forceConsistentCasingInFileNames": true,
     "noEmit": true,
     "esModuleInterop": true,
@@ -61,7 +61,7 @@
     "**/*.tsx",
     "context/store.tsx",
     "types"
-, "functions/src/index.js", "src/web3/ABI.ts",   ],
+, "functions/src/index.js", "src/web3/ABI.ts", "src/utils/analytics.js",   ],
   "exclude": [
     "node_modules"
   ]

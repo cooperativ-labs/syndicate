@@ -25,7 +25,7 @@ const EntitySelector: FC<EntitySelectorProps> = ({
   withAdd,
   className,
 }) => {
-  const createEntityList = (entities) => {
+  const createEntityList = (entities: LegalEntity[]) => {
     return entities.map((entity, i) => {
       if (excludeIndividuals) {
         if (entityNotHuman(entity)) {

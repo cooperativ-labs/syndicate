@@ -116,7 +116,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
     $displayName: String!
     $jurCountry: String!
     $jurProvince: String
-    $operatingCurrency: CurrencyCode!
+    $operatingCurrencyCode: CurrencyCode!
     $taxId: String
   ) {
     updateLegalEntity(
@@ -127,7 +127,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
           displayName: $displayName
           legalName: $legalName
           jurisdiction: { country: $jurCountry, province: $jurProvince }
-          operatingCurrency: { code: $operatingCurrency }
+          operatingCurrency: { code: $operatingCurrencyCode }
           taxId: $taxId
         }
       }

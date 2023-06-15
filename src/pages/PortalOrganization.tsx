@@ -6,6 +6,7 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { OfferingParticipant } from 'types';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -27,9 +28,11 @@ const PortalOrganization: FC = () => {
     );
   }
 
-  const participantOfferings = participantData?.queryOfferingParticipant.map((offeringParticipant) => {
-    return offeringParticipant.offering;
-  });
+  const participantOfferings = participantData?.queryOfferingParticipant.map(
+    (offeringParticipant: OfferingParticipant) => {
+      return offeringParticipant.offering;
+    }
+  );
 
   const offerings = organization && getOrgOfferingsFromEntity(organization);
   const hasOfferings = offerings?.length > 0;

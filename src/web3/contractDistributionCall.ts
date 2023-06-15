@@ -11,10 +11,10 @@ import toast from 'react-hot-toast';
 import { toContractNumber } from './util';
 
 type SubmitDistributionProps = {
-  distributionContractAddress: String0x;
-  amount: number;
-  distributionTokenDecimals: number;
-  distributionTokenAddress: String0x;
+  distributionContractAddress: String0x | undefined;
+  amount: number | undefined;
+  distributionTokenDecimals: number | undefined;
+  distributionTokenAddress: String0x | undefined;
   partition: String0x;
   offeringId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
@@ -42,12 +42,13 @@ export const submitDistribution = async ({
     const exDividendDate = blockTime;
     const recordDate = blockTime;
     const payoutDate = blockTimestamp + BigInt(50);
-    const amountInDecimal = toContractNumber(amount, distributionTokenDecimals);
-    const payoutToken = distributionTokenAddress;
+    const amountInDecimal =
+      amount && distributionTokenDecimals ? toContractNumber(amount, distributionTokenDecimals) : BigInt(0);
+    const payoutToken = distributionTokenAddress ? distributionTokenAddress : '0x0000000';
 
     try {
       const { request, result } = await prepareWriteContract({
-        address: distributionContractAddress,
+        address: distributionContractAddress as String0x,
         abi: dividendContractABI,
         functionName: 'depositDividend',
         args: [blockTime, exDividendDate, recordDate, payoutDate, amountInDecimal, payoutToken, partition],
@@ -91,7 +92,7 @@ export const claimDistribution = async ({
         address: distributionContractAddress,
         abi: dividendContractABI,
         functionName: 'claimDividend',
-        args: [distributionContractIndex],
+        args: [BigInt(distributionContractIndex)],
       });
       const { hash } = await writeContract(request);
       await waitForTransaction({

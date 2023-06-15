@@ -2,7 +2,7 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 
 export type ProfileVisibilityToggleProps = {
-  profileVisibility: boolean;
+  profileVisibility: boolean | undefined | null;
   handleToggle: (profileVisibility: boolean) => void;
 };
 const ProfileVisibilityToggle: FC<ProfileVisibilityToggleProps> = ({ profileVisibility, handleToggle }) => {

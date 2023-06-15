@@ -371,7 +371,7 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
     $walletAddress: String!
     $minPledge: Int
     $maxPledge: Int
-    $jurCountry: String!
+    $jurCountry: String
     $jurState: String
     $applicationText: String!
     $applicationTitle: String!
@@ -387,7 +387,7 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
         permitted: false
         minPledge: $minPledge
         maxPledge: $maxPledge
-        jurisdiction: { country: $jurCountry, state: $jurState }
+        # jurisdiction: { country: $jurCountry, state: $jurState }
         investorApplication: {
           creationDate: $currentDate
           applicationDoc: {
@@ -601,9 +601,13 @@ export const REMOVE_WAITLIST_OBJECT = gql`
 `;
 
 export const REMOVE_WHITELIST_OBJECT = gql`
-  mutation RemoveOfferingParticipant($offeringId: [ID!], $id: ID!, $currentDate: DateTime) {
+  mutation RemoveOfferingParticipant($offeringId: [ID!], $participantId: ID!, $currentDate: DateTime) {
     updateOffering(
-      input: { filter: { id: $offeringId }, remove: { participants: { id: $id } }, set: { lastUpdate: $currentDate } }
+      input: {
+        filter: { id: $offeringId }
+        remove: { participants: { id: $participantId } }
+        set: { lastUpdate: $currentDate }
+      }
     ) {
       numUids
       offering {

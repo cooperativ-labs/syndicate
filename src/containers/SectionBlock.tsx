@@ -1,9 +1,10 @@
 import cn from 'classnames';
 import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Maybe } from 'graphql/jsutils/Maybe';
 
 interface SectionBlockProps {
-  sectionTitle: string;
+  sectionTitle: string | Maybe<string> | undefined;
   children: React.ReactNode;
   className?: string;
   startOpen?: boolean;

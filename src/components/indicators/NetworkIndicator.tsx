@@ -3,7 +3,8 @@ import cn from 'classnames';
 import React, { FC, useContext } from 'react';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { useAccount, useNetwork } from 'wagmi';
+import { String0x } from '@src/web3/helpersChain';
+import { useAccount, useChainId, useNetwork } from 'wagmi';
 
 export const networkIcon = (chainId: number, walletAddress: string) => {
   if (!walletAddress) {
@@ -13,7 +14,7 @@ export const networkIcon = (chainId: number, walletAddress: string) => {
   return MatchSupportedChains(chainId)?.icon;
 };
 
-export const networkColor = (chainId, walletAddress) => {
+export const networkColor = (chainId: number | undefined, walletAddress: String0x | undefined) => {
   const color = MatchSupportedChains(chainId)?.color;
   if (!walletAddress) {
     return 'bg-white border-2 border-gray-300';
@@ -37,7 +38,7 @@ export const networkColor = (chainId, walletAddress) => {
 };
 type NetworkIndicatorDotProps = {
   chainId: number | undefined;
-  walletAddress: string;
+  walletAddress: String0x | undefined;
 };
 
 export const NetworkIndicatorDot: FC<NetworkIndicatorDotProps> = ({ chainId, walletAddress }) => {
@@ -45,17 +46,17 @@ export const NetworkIndicatorDot: FC<NetworkIndicatorDotProps> = ({ chainId, wal
 };
 
 const NetworkIndicator: FC = () => {
-  const { chain } = useNetwork();
+  const chainId = useChainId();
   const { address: userWalletAddress } = useAccount();
 
   // const whichWallet = `with ${user?.walletAddresses.find((userWallet) => userWallet.address === walletAddress)?.name}`;
 
-  const hoverColor = `hover:${networkColor(chain.id, userWalletAddress)}`;
+  const hoverColor = `hover:${networkColor(chainId, userWalletAddress)}`;
   const ChainName = () => {
     if (!userWalletAddress) {
       return 'Click here to connect a wallet';
     }
-    switch (chain.id) {
+    switch (chainId) {
       case 1:
         return `Ethereum`;
       case 3:
@@ -81,7 +82,7 @@ const NetworkIndicator: FC = () => {
         )}
       >
         <div className=" mx-auto px-2">{ChainName()}</div>
-        <NetworkIndicatorDot chainId={chain.id} walletAddress={userWalletAddress} />
+        <NetworkIndicatorDot chainId={chainId} walletAddress={userWalletAddress} />
       </div>
     </Button>
   );

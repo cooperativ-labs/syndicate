@@ -3,13 +3,16 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { EditButton } from '../form-components/ListItemButtons';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
-import { OrganizationPermissionType, OrganizationUser } from 'types';
+import { Maybe, OrganizationPermissionType, OrganizationUser } from 'types';
 
-type TeamMemberListItemProps = {
-  teamMember: OrganizationUser;
-  organizationId: string;
-  currentUserId: string;
-  isAdmin: boolean;
+export type TeamMemberBaseProps = {
+  organizationId: Maybe<string>;
+  currentUserId: Maybe<string> | undefined;
+  isAdmin: boolean | '' | undefined;
+};
+
+type TeamMemberListItemProps = TeamMemberBaseProps & {
+  teamMember: Maybe<OrganizationUser>;
   removeMember: (variables: any) => void;
 };
 
@@ -21,11 +24,11 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   removeMember,
 }) => {
   const [editOn, setEditOn] = useState<boolean>(false);
-  const { user, permissions, id } = teamMember;
+  const { user, permissions, id } = teamMember as OrganizationUser;
   const { name, email, id: userId, image } = user;
 
-  const makePermissionsChips = (permissions: OrganizationPermissionType[]) => {
-    return permissions.map((permission, i) => {
+  const makePermissionsChips = (permissions: Maybe<OrganizationPermissionType[]> | undefined) => {
+    return permissions?.map((permission, i) => {
       const { name, color } = getOrganizationPermissionOption(permission);
 
       // color refuses to render if I apply it directly to the class. It even appears in the CSS in the inspector, but it doesn't render. I have no idea why. The behavior is also inconsistent. Sometimes it works, sometimes it doesn't.
@@ -57,7 +60,11 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   return (
     <div className="md:flex lg:grid grid-cols-8 gap-1 p-3  border-2 rounded-lg items-center ">
       <div className="col-span-1">
-        <img src={image} referrerPolicy="no-referrer" className="w-8 h-8 border-2 border-white rounded-full" />
+        <img
+          src={image as string}
+          referrerPolicy="no-referrer"
+          className="w-8 h-8 border-2 border-white rounded-full"
+        />
       </div>
       <div className="col-span-5 mt-3 md:mt-0">
         <div className="md:w-auto text-sm font-medium ">{name}</div>

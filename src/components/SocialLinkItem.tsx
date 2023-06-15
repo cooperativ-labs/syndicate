@@ -6,8 +6,8 @@ import { IconName } from '@fortawesome/fontawesome-svg-core';
 import { LinkedAccountType } from 'types';
 
 type SocialLinkItemProps = {
-  type: LinkedAccountType;
-  url: string;
+  type: LinkedAccountType | null | undefined;
+  url: string | null | undefined;
   className?: string;
 };
 
@@ -25,7 +25,7 @@ const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
           )}
         >
           <FontAwesomeIcon
-            icon={[iconType, getSocialAccountOption(type).icon as IconName]}
+            icon={[iconType, getSocialAccountOption(type)?.icon as IconName]}
             // className="text-lg text-gray-100 mr-2"
           />
         </div>

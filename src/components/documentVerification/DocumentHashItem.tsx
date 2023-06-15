@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import StandardButton from '../buttons/StandardButton';
-import { Document } from 'types';
+import { Document, Maybe } from 'types';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
@@ -12,7 +12,7 @@ type HashInstructionsProps = {
 
 type DocumentHashItemProps = {
   hash: string;
-  text: string;
+  text: Maybe<string> | undefined;
 };
 
 const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
@@ -26,7 +26,7 @@ const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
         link=""
         color="blue"
         text="Download Agreement"
-        onClick={() => DownloadFile(text, 'agreement-text.md')}
+        onClick={() => text && DownloadFile(text, 'agreement-text.md')}
       />
       <span className="mb-1 mr-2">{`Agreement Hash: ${hash.slice(0, 7)}...${hash.slice(-7)}`}</span>
 

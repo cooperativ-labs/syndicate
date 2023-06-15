@@ -1,10 +1,11 @@
 import React, { FC } from 'react';
+import { Maybe } from 'types';
 
 type PercentageDisplayProps = {
   percent?: number;
-  secondPercent?: number;
+  secondPercent?: Maybe<number>;
   multiple?: number;
-  secondMultiple?: number;
+  secondMultiple?: Maybe<number> | undefined;
   className?: string;
 };
 

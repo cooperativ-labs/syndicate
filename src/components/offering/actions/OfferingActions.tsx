@@ -1,11 +1,9 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import Button, { LoadingButtonStateType } from '@src/components/buttons/Button';
 import CloseButton from '@src/components/buttons/CloseButton';
-import FormButton from '@src/components/buttons/FormButton';
 import FormModal from '@src/containers/FormModal';
-import LinkLegal from '@src/components/legal/LinkLegal';
 import Loading from '@src/components/loading/Loading';
-import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
-import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
+import PostBidAskForm, { PostBidAskFormProps } from '@src/components/investor/tradingForms/PostBidAskForm';
+import PostInitialSale, { PostInitialSaleProps } from '@src/components/investor/tradingForms/PostInitialSale';
 import React, { FC, useState } from 'react';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import SendShares from '../SendShares';
@@ -13,36 +11,26 @@ import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingParticipant, OfferingSmartContractSet, ShareOrder } from 'types';
+import { Maybe, ShareOrder } from 'types';
+import {} from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 
-import { useAccount, useChainId } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
-type OfferingActionsProps = SmartContractsSettingsProps & {
-  orders: ShareOrder[];
-  hasContract: boolean;
-  loading: boolean;
-  isOfferingManager: boolean;
-  retrievalIssue: boolean;
-  isContractOwner: boolean;
-  permittedEntity: OfferingParticipant;
-  currentSalePrice: number;
-  myShares: number;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  userId: string;
-  offering: Offering;
-  contractSet: OfferingSmartContractSet;
-  distributionId: string;
-  sharesOutstanding: number;
-  myDistToClaim: number;
-  partitions: String0x[];
-};
+type OfferingActionsProps = SmartContractsSettingsProps &
+  PostBidAskFormProps &
+  PostInitialSaleProps & {
+    orders: Maybe<ShareOrder>[] | undefined;
+    hasContract: boolean;
+    loading: boolean | undefined;
+    isOfferingManager: boolean;
+    retrievalIssue: boolean;
+    userId: string | undefined;
+  };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
   retrievalIssue,
@@ -58,8 +46,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   orders,
   contractSet,
   isContractOwner,
-  myDistToClaim,
-  distributionId,
   partitions,
   refetchMainContracts,
   permittedEntity,
@@ -67,7 +53,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   myShares,
   userId,
 }) => {
-  const chainId = useChainId();
   const { data: userData } = useQuery(GET_USER, { variables: { id: userId } });
   const user = userData?.queryUser[0];
   const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
@@ -88,8 +73,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
 
   const offeringName = offering.name;
-  const offeringMin = offering.details.minUnitsPerInvestor;
-  const investmentCurrency = offering.details.investmentCurrency;
+  const offeringMin = offering.details?.minUnitsPerInvestor;
+  const investmentCurrency = offering.details?.investmentCurrency;
   const sharesIssued = offering.details?.numUnits;
 
   const FormModals = (
@@ -124,7 +109,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         <SmartContractsSettings
           user={user}
           offering={offering}
-          chainId={chainId}
           partitions={partitions}
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
@@ -167,7 +151,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             sharesOutstanding={sharesOutstanding}
             offeringId={offering.id}
             offeringMin={offeringMin}
-            priceStart={offering.details.priceStart}
+            priceStart={offering.details?.priceStart}
             swapContractAddress={swapContractAddress}
             shareContractId={shareContractId}
             partitions={partitions}
@@ -253,22 +237,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           >
             Send shares
           </Button>
-          {myDistToClaim ? (
-            <>
-              <FormButton type="submit" disabled={myDistToClaim === 0} onClick={() => {}}>
-                <LoadingButtonText
-                  state={buttonStep}
-                  idleText={`${numberWithCommas(myDistToClaim, 2)} AVAILABLE TO CLAIM`}
-                  submittingText="Claiming - This can take time. Please do not refresh."
-                  confirmedText="Confirmed! (check your wallet)"
-                  failedText="Transaction failed"
-                  rejectedText="You rejected the transaction. Click here to try again."
-                />
-              </FormButton>
-            </>
-          ) : (
-            <></>
-          )}
         </>
       ) : (
         <div>The offeror has not yet created shares or your wallet is not connected.</div>
@@ -284,7 +252,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
     <>The offeror has not yet created shares or your wallet is not connected.</>
   );
 
-  const myOrder = orders?.find((order) => order.initiator === userWalletAddress);
+  const myOrder = orders && orders?.find((order) => order?.initiator === userWalletAddress);
 
   return (
     <>

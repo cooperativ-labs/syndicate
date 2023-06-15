@@ -22,14 +22,21 @@ const TotalReturns: FC<TotalReturnsProps> = ({ offeringDetails }) => {
     <div className="bg-white rounded-xl shadow-xl py-6 mb-8">
       <h1 className="font-bold text-xl px-4 lg:px-8 mb-8">Total Returns</h1>
       <div>
-        <FinancialFactItem label="Projected IRR" percent={projectedIrr / 100} secondPercent={projectedIrrMax / 100} />
-        <></>
+        {projectedIrr ? (
+          <FinancialFactItem
+            label="Projected IRR"
+            percent={projectedIrr / 100}
+            secondPercent={projectedIrrMax ? projectedIrrMax / 100 : undefined}
+          />
+        ) : (
+          <></>
+        )}
         {preferredReturn ? <FinancialFactItem label="Preferred Return" percent={preferredReturn / 100} /> : <></>}
         {targetEquityMultiple ? (
           <FinancialFactItem
             label="Target Equity Multiple"
             multiple={targetEquityMultiple / 100}
-            secondMultiple={targetEquityMultipleMax / 100}
+            secondMultiple={targetEquityMultipleMax ? targetEquityMultipleMax / 100 : undefined}
           />
         ) : (
           <></>

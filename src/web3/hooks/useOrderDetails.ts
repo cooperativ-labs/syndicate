@@ -4,28 +4,28 @@ import { String0x } from '../helpersChain';
 import { swapContractABI } from '../generated';
 
 export type OrderDetailsType = {
-  initiator: String0x | '';
-  partition: String0x | '';
-  amount: number;
-  price: number;
-  filledAmount: number;
-  filler: String0x | '';
-  isApproved: boolean;
-  isDisapproved: boolean;
-  isCancelled: boolean;
-  isAccepted: boolean;
-  isShareIssuance: boolean;
-  isAskOrder: boolean;
-  isErc20Payment: boolean;
-  isLoading: boolean;
+  initiator: String0x | '' | undefined;
+  partition: String0x | '' | undefined;
+  amount: number | undefined;
+  price: number | undefined;
+  filledAmount: number | undefined;
+  filler: String0x | '' | undefined;
+  isApproved: boolean | undefined;
+  isDisapproved: boolean | undefined;
+  isCancelled: boolean | undefined;
+  isAccepted: boolean | undefined;
+  isShareIssuance: boolean | undefined;
+  isAskOrder: boolean | undefined;
+  isErc20Payment: boolean | undefined;
+  isLoading: boolean | undefined;
   refetchOrderDetails: () => void;
 };
 
 export const useOrderDetails = (
-  swapContractAddress: String0x,
+  swapContractAddress: String0x | undefined,
   contractIndex: number,
-  paymentTokenDecimals: number
-): OrderDetailsType | undefined => {
+  paymentTokenDecimals: number | undefined
+): OrderDetailsType => {
   const {
     data,
     isLoading,
@@ -39,11 +39,14 @@ export const useOrderDetails = (
     args: [BigInt(contractIndex)],
   });
 
-  const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
+  const adjustTokenDecimalsForShareContract = paymentTokenDecimals
+    ? paymentTokenDecimals - shareContractDecimals
+    : undefined;
   const initiator = data && data[0];
   const partition = data && data[1];
   const amount = data && toNormalNumber(data[2], shareContractDecimals);
-  const price = data && toNormalNumber(data[3], adjustTokenDecimalsForShareContract);
+  const price =
+    data && adjustTokenDecimalsForShareContract && toNormalNumber(data[3], adjustTokenDecimalsForShareContract);
   const filledAmount = data && toNormalNumber(data[4], shareContractDecimals);
   const filler = data && (data[5] as String0x);
   const isApproved = data && data[7].isApproved;

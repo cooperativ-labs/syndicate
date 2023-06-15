@@ -1,12 +1,12 @@
 import CreateDistributionContract from '../CreateDistributionContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
-import { Currency, Offering, OfferingSmartContractSet } from 'types';
+import { Currency, Maybe, Offering, OfferingSmartContractSet } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
 export type DistributionContractSettingsProps = {
-  contractSet: OfferingSmartContractSet;
-  investmentCurrency: Currency;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  investmentCurrency: Currency | null | undefined;
   offering: Offering;
   chainId: number;
 };
@@ -26,7 +26,7 @@ const DistributionContractSettings: FC<DistributionContractSettingsProps> = ({
         <CreateDistributionContract
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
-          contractOwnerEntityId={offering.offeringEntity.id}
+          contractOwnerEntityId={offering.offeringEntity?.id}
         />
       ) : (
         <div className="flex items-center">

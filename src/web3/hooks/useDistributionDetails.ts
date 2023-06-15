@@ -5,25 +5,25 @@ import { shareContractDecimals, toNormalNumber } from '../util';
 import { getCurrencyById } from '@src/utils/enumConverters';
 
 export type DistributionDetailsType = {
-  dividendPartition: String0x;
-  blockTimestamp: BigInt;
-  exDividendDate: Date;
-  recordDate: Date;
-  payoutDate: Date;
-  dividendAmount: number;
-  // totalSupplyOfShares: number;
-  payoutTokenAddress: String0x;
-  isErc20Payout: boolean;
-  amountRemaining: number;
-  error: any;
-  isLoading: boolean;
+  dividendPartition: String0x | undefined;
+  blockTimestamp: BigInt | undefined;
+  exDividendDate: Date | undefined;
+  recordDate: Date | undefined;
+  payoutDate: Date | undefined;
+  dividendAmount: number | undefined;
+  // totalSupplyOfShares: number | undefined
+  payoutTokenAddress: String0x | undefined;
+  isErc20Payout: boolean | undefined;
+  amountRemaining: number | undefined;
+  error: any | undefined;
+  isLoading: boolean | undefined;
   refetchDistributionDetails: () => void;
 };
 
 export const useDistributionDetails = (
   dividendContactAddress: String0x,
   contractIndex: number
-): DistributionDetailsType | undefined => {
+): DistributionDetailsType => {
   const {
     data,
     error,
@@ -42,10 +42,10 @@ export const useDistributionDetails = (
   const recordDate = data ? new Date(Number(data[3]) * 1000) : undefined;
   const payoutDate = data ? new Date(Number(data[4]) * 1000) : undefined;
   const payoutTokenAddress = data ? data[7] : undefined;
-  const dividendAmount = data ? toNormalNumber(data[5], getCurrencyById(payoutTokenAddress).decimals) : undefined;
+  const dividendAmount = data ? toNormalNumber(data[5], getCurrencyById(payoutTokenAddress)?.decimals) : undefined;
   const totalSupplyOfShares = data ? toNormalNumber(data[6], shareContractDecimals) : undefined;
   const isErc20Payout = data ? data[8] : undefined;
-  const amountRemaining = data ? toNormalNumber(data[9], getCurrencyById(payoutTokenAddress).decimals) : undefined;
+  const amountRemaining = data ? toNormalNumber(data[9], getCurrencyById(payoutTokenAddress)?.decimals) : undefined;
 
   return {
     dividendPartition,

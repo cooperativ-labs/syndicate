@@ -3,12 +3,12 @@ import CreateEntity from './CreateEntity';
 import EntitySelector from '../form-components/EntitySelector';
 import FormButton from '../buttons/FormButton';
 import FormModal from '@src/containers/FormModal';
-import React, { FC, useContext, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import { ADD_ENTITY_OWNER } from '@src/utils/dGraphQueries/entity';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { Organization } from 'types';
+import { LegalEntity, Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
@@ -24,13 +24,15 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, organization
   const [addOwner, { data, error }] = useMutation(ADD_ENTITY_OWNER);
   const [entityModal, setEntityModal] = useState<boolean>(false);
 
-  const submissionCompletion = (setModal) => {
+  const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {
     setModal(false);
   };
 
   if (data) {
     // refetchOuter();
   }
+
+  const legalEntites = organization.legalEntities as LegalEntity[];
 
   return (
     <>
@@ -58,14 +60,16 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, organization
       >
         {({ isSubmitting, values }) => (
           <Form className="flex flex-col gap relative">
-            <EntitySelector
-              className="flex flex-col"
-              fieldName="addEntityOwner"
-              entities={organization.legalEntities}
-              setModal={setEntityModal}
-              label="Add a General Partner"
-              withAdd
-            />
+            {legalEntites && (
+              <EntitySelector
+                className="flex flex-col"
+                fieldName="addEntityOwner"
+                entities={legalEntites}
+                setModal={setEntityModal}
+                label="Add a General Partner"
+                withAdd
+              />
+            )}
             <Button
               type="submit"
               disabled={isSubmitting}

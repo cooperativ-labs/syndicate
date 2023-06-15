@@ -6,10 +6,10 @@ import { String0x } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 type SetAllowanceFormProps = {
-  amount: number;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  spenderAddress: String0x;
+  amount: number | undefined;
+  paymentTokenAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
+  spenderAddress: String0x | undefined;
   refetchAllowance: () => void;
 };
 

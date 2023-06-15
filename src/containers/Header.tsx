@@ -19,11 +19,11 @@ const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
 
   const shareURL = `${getBaseUrl()}/${id}`;
 
-  const offeringImages = offering.offeringEntity.realEstateProperties.map((property) => property.images).flat();
+  const offeringImages = offering.offeringEntity?.realEstateProperties?.map((property) => property?.images).flat();
 
   const desktopHeight = small ? 'h-64' : 'h-96';
   const mobileHeight = small ? 'h-24' : 'h-32';
-  const imageBannerHeight = windowSize.width < 768 ? mobileHeight : desktopHeight;
+  const imageBannerHeight = windowSize.width && windowSize.width < 768 ? mobileHeight : desktopHeight;
 
   return (
     <header data-test="molecule-header" className={cn('w-full relative overflow-hidden')}>
@@ -32,12 +32,12 @@ const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
           <div className={cn(imageBannerHeight, 'flex overflow-hidden w-full')}>
             <img className={'object-cover object-center w-full'} src={bannerImage} />
           </div>
-        ) : offeringImages.length > 0 ? (
+        ) : offeringImages && offeringImages.length > 0 ? (
           <div className={cn('grid w-full', `grid-cols-${offeringImages.slice(-4).length}`, imageBannerHeight)}>
             {offeringImages.slice(-4).map((image, i) => {
               return (
                 <div key={i} className={cn(imageBannerHeight, 'flex overflow-hidden col-span-1')}>
-                  <img className={'object-cover object-center w-full'} src={image.url} />
+                  {image && <img className={'object-cover object-center w-full'} src={image.url} />}
                 </div>
               );
             })}

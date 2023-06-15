@@ -7,11 +7,11 @@ import { String0x } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 type OfferingSummaryPanelProps = {
-  seller: string;
-  shareQtyRemaining: number;
+  seller: String0x | undefined | '';
+  shareQtyRemaining: number | undefined;
 
-  price: number;
-  paymentTokenAddress: String0x;
+  price: number | undefined;
+  paymentTokenAddress: String0x | undefined;
   className?: string;
 };
 
@@ -22,7 +22,7 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   paymentTokenAddress,
   className,
 }) => {
-  const presentCurrency = getCurrencyById(paymentTokenAddress).symbol;
+  const presentCurrency = getCurrencyById(paymentTokenAddress)?.symbol;
   const chainId = useChainId();
   return (
     <div className={className}>

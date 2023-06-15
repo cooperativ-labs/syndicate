@@ -58,7 +58,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
     loan,
   } = property;
 
-  const organization = owner.organization;
+  const organization = owner?.organization;
 
   const isEntityManager = getIsEditorOrAdmin(userId, organization);
 
@@ -89,8 +89,8 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
       <FormModal formOpen={addressModal} onClose={() => setAddressModal(false)} title={'Edit Address'}>
         <UpdateAddress
           address={address}
-          addressId={address.id}
-          addressLine1={address.line1}
+          addressId={address?.id}
+          addressLine1={address?.line1}
           updateAddress={updateAddress}
           setModal={() => setAddressModal(false)}
         />
@@ -114,7 +114,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
         />
       </FormModal>
       <div className=" z-10 md:z-10 min-h-screen w-full">
-        <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{address.line1}</h1>
+        <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{address?.line1}</h1>
         <Progress
           brandColor={'#275A8F'}
           lightBrand={false}
@@ -124,7 +124,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
 
         <div>
           <span className="font-semibold">Property type: </span>
-          {getPropertyTypeOption(propertyType).name}
+          {getPropertyTypeOption(propertyType)?.name}
         </div>
         <div>
           <span className="font-semibold">Description: </span>
@@ -136,7 +136,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
         <div>
           <h2 className="font-bold text-gray-700">Images</h2>
           <div className="flex">
-            {images.map((image, i) => {
+            {images?.map((image, i) => {
               return <PropertyImage key={i} image={image} propertyId={id} isOwner={isEntityManager} />;
             })}
           </div>
@@ -202,7 +202,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
                 aria-label="Delete this property"
                 onClick={() =>
                   deleteProperty({
-                    variables: { currentDate: currentDate, ownerId: property.owner.id, propertyId: property.id },
+                    variables: { currentDate: currentDate, ownerId: property.owner?.id, propertyId: property.id },
                   })
                 }
               >

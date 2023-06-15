@@ -4,7 +4,7 @@ import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_SWAP_CONTRACT } from '@src/utils/dGraphQueries/crypto';
-import { Currency, OfferingSmartContractSet, SmartContractType } from 'types';
+import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from 'types';
 import { MatchSupportedChains } from '@src/web3/connectors';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
@@ -21,10 +21,10 @@ import { useAsyncFn } from 'react-use';
 import { useMutation } from '@apollo/client';
 
 type CreateSwapContractProps = {
-  contractSet: OfferingSmartContractSet;
-  investmentCurrency: Currency;
-  contractOwnerEntityId: string;
-  offeringDetailsId: string;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  investmentCurrency: Currency | null | undefined;
+  contractOwnerEntityId: string | undefined;
+  offeringDetailsId: string | undefined;
 };
 
 const CreateSwapContract: FC<CreateSwapContractProps> = ({
@@ -36,7 +36,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const { address: userWalletAddress, connector } = useAccount();
+  const { address: userWalletAddress } = useAccount();
   const [addSwapContract, { data, error }] = useMutation(CREATE_SWAP_CONTRACT);
   const [updateInvestmentCurrency] = useMutation(UPDATE_INVESTMENT_CURRENCY);
   const chainId = useChainId();
@@ -50,31 +50,33 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   const [, deploy] = useAsyncFn(
     async (paymentTokenAddress) => {
       setButtonStep('submitting');
-      const protocol = MatchSupportedChains(chainId).protocol;
+      const protocol = MatchSupportedChains(chainId)?.protocol;
       dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
       try {
         const contract = await deploySwapContract(userWalletAddress, chain, shareContractAddress, paymentTokenAddress);
-        // Make this update the offering instead so that we can add the smart contract to the offering and update the investment currency
+        if (!contract.contractAddress) {
+          throw new Error('no contract address');
+        }
         await setContractOperator({
           shareContractAddress,
           operator: contract.contractAddress,
           setButtonStep,
           refetch: () => {},
         });
-
+        // Make this update the offering instead so that we can add the smart contract to the offering and update the investment currency
         await addSwapContract({
           variables: {
             cryptoAddress: contract.contractAddress,
             chainId: chainId,
-            backingToken: getCurrencyById(paymentTokenAddress).value,
+            backingToken: getCurrencyById(paymentTokenAddress)?.value,
             type: SmartContractType.Swap,
             protocol: protocol,
             ownerId: contractOwnerEntityId,
-            contractSetId: contractSet.id,
+            contractSetId: contractSet?.id,
           },
         });
-        const newCurrencyCode = getCurrencyById(paymentTokenAddress).value;
-        if (newCurrencyCode !== investmentCurrency.code) {
+        const newCurrencyCode = getCurrencyById(paymentTokenAddress)?.value;
+        if (newCurrencyCode !== investmentCurrency?.code) {
           await updateInvestmentCurrency({
             variables: {
               offeringDetailsId: offeringDetailsId,
@@ -108,7 +110,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
         ) : (
           <Formik
             initialValues={{
-              investmentCurrencyAddress: getCurrencyOption(investmentCurrency).address,
+              investmentCurrencyAddress: getCurrencyOption(investmentCurrency)?.address,
             }}
             validate={(values) => {
               const errors: any = {}; /** @TODO : Shape */
@@ -118,7 +120,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
               return errors;
             }}
             onSubmit={async (values, { setSubmitting }) => {
-              if (values.investmentCurrencyAddress !== getCurrencyOption(investmentCurrency).address) {
+              if (values.investmentCurrencyAddress !== getCurrencyOption(investmentCurrency)?.address) {
                 window.confirm(`Note that changing the currency here will also change it on the offering's profile.`);
               }
               setAlerted(false);

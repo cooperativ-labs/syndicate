@@ -10,7 +10,7 @@ import { distributionPeriodOptions, getCurrencyOption, StageOptions } from '@src
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering } from 'types';
+import { Offering, OfferingDetails } from 'types';
 import { UPDATE_OFFERING_FINANCIAL } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 
@@ -51,9 +51,9 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
     capRate,
     targetEquityMultiple,
     targetEquityMultipleMax,
-  } = details;
+  } = details as OfferingDetails;
 
-  const operatingCurrency = offering.offeringEntity.operatingCurrency;
+  const operatingCurrency = offering.offeringEntity?.operatingCurrency;
 
   if (error) {
     alert('Oops. Looks like something went wrong');
@@ -62,7 +62,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
     setAlerted(true);
   }
 
-  const maxRaise = priceStart * numUnits;
+  const maxRaise = priceStart && numUnits ? priceStart * numUnits : 0;
   return (
     <Formik
       initialValues={{
@@ -80,14 +80,14 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
         distributionCurrency: distributionCurrency,
         distributionDescription: distributionDescription,
         adminExpense: adminExpense,
-        projectedIrr: projectedIrr / 100,
-        projectedIrrMax: projectedIrrMax / 100,
-        preferredReturn: preferredReturn / 100,
-        cocReturn: cocReturn / 100,
-        projectedAppreciation: projectedAppreciation / 100,
-        capRate: capRate / 100,
-        targetEquityMultiple: targetEquityMultiple / 100,
-        targetEquityMultipleMax: targetEquityMultipleMax / 100,
+        projectedIrr: projectedIrr && projectedIrr / 100,
+        projectedIrrMax: projectedIrrMax && projectedIrrMax / 100,
+        preferredReturn: preferredReturn && preferredReturn / 100,
+        cocReturn: cocReturn && cocReturn / 100,
+        projectedAppreciation: projectedAppreciation && projectedAppreciation / 100,
+        capRate: capRate && capRate / 100,
+        targetEquityMultiple: targetEquityMultiple && targetEquityMultiple / 100,
+        targetEquityMultipleMax: targetEquityMultipleMax && targetEquityMultipleMax / 100,
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
@@ -118,14 +118,14 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               distributionCurrency: values.distributionCurrency,
               distributionDescription: values.distributionDescription,
               adminExpense: values.adminExpense,
-              projectedIrr: values.projectedIrr * 100,
-              projectedIrrMax: values.projectedIrrMax * 100,
-              preferredReturn: values.preferredReturn * 100,
-              targetEquityMultiple: values.targetEquityMultiple * 100,
-              targetEquityMultipleMax: values.targetEquityMultipleMax * 100,
-              cocReturn: values.cocReturn * 100,
-              projectedAppreciation: values.projectedAppreciation * 100,
-              capRate: values.capRate * 100,
+              projectedIrr: values.projectedIrr && values.projectedIrr * 100,
+              projectedIrrMax: values.projectedIrrMax && values.projectedIrrMax * 100,
+              preferredReturn: values.preferredReturn && values.preferredReturn * 100,
+              targetEquityMultiple: values.targetEquityMultiple && values.targetEquityMultiple * 100,
+              targetEquityMultipleMax: values.targetEquityMultipleMax && values.targetEquityMultipleMax * 100,
+              cocReturn: values.cocReturn && values.cocReturn * 100,
+              projectedAppreciation: values.projectedAppreciation && values.projectedAppreciation * 100,
+              capRate: values.capRate && values.capRate * 100,
             },
           });
           setButtonStep('confirmed');
@@ -152,7 +152,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
           <div className="md:grid grid-cols-2 gap-3">
             <Input
               className={defaultFieldDiv}
-              labelText={`Minimum raise (${investmentCurrency && getCurrencyOption(investmentCurrency).symbol})`}
+              labelText={`Minimum raise (${investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol})`}
               name="minRaise"
               type="number"
               placeholder="e.g. 2000000"
@@ -160,12 +160,14 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
 
             <NonInput
               className={`${defaultFieldDiv} col-span-1 pl-1`}
-              labelText={`Maximum raise (${investmentCurrency && getCurrencyOption(investmentCurrency).symbol})`}
+              labelText={`Maximum raise (${investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol})`}
             >
               <>
                 {priceStart &&
                   numUnits &&
-                  `${numberWithCommas(maxRaise)} ${investmentCurrency && getCurrencyOption(investmentCurrency).symbol}`}
+                  `${numberWithCommas(maxRaise)} ${
+                    investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
+                  }`}
               </>
             </NonInput>
           </div>
@@ -273,7 +275,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
           </div>
           <Input
             className={defaultFieldDiv}
-            labelText={`Administrative Expenses (${getCurrencyOption(operatingCurrency).symbol})`}
+            labelText={`Administrative Expenses (${getCurrencyOption(operatingCurrency)?.symbol})`}
             name="adminExpense"
             type="number"
           />

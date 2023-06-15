@@ -1,9 +1,9 @@
 import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 import React, { FC } from 'react';
-import { OfferingDistribution } from 'types';
+import { Maybe, OfferingDistribution } from 'types';
 
 type DistributionListProps = DistributionListItemProps & {
-  distributions: OfferingDistribution[];
+  distributions: Maybe<Maybe<OfferingDistribution>[]> | undefined;
 };
 
 const DistributionList: FC<DistributionListProps> = ({
@@ -28,11 +28,11 @@ const DistributionList: FC<DistributionListProps> = ({
           <div className="text-sm font-bold text-gray-700">Total Distribution</div>
         </div>
       </div>
-      {distributions.map((dist, i) => {
+      {distributions?.map((dist, i) => {
         return (
           <div className="mb-3" key={i}>
             <DistributionListItem
-              distribution={dist}
+              distribution={dist as OfferingDistribution}
               hideTransactionId={hideTransactionId}
               distributionContractAddress={distributionContractAddress}
               isDistributor={isDistributor}

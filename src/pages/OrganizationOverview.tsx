@@ -13,6 +13,7 @@ import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getIsAdmin, getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { OfferingParticipant } from 'types';
 import { toastExperiment } from '@src/components/indicators/Notifications';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
@@ -28,7 +29,7 @@ const OrganizationOverview: FC = () => {
   const { address: userWalletAddress } = useAccount();
   const router = useRouter();
   const orgId = router.query.organizationId;
-  const userId = session.user.id;
+  const userId = session?.user.id;
   const { data: organizationData, error, loading, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization = organizationData?.getOrganization;
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
@@ -43,14 +44,16 @@ const OrganizationOverview: FC = () => {
     );
   }
 
-  const participantOfferings = participantData?.queryOfferingParticipant.map((offeringParticipant) => {
-    return offeringParticipant.offering;
-  });
+  const participantOfferings = participantData?.queryOfferingParticipant.map(
+    (offeringParticipant: OfferingParticipant) => {
+      return offeringParticipant.offering;
+    }
+  );
 
   const offerings = organization && getOrgOfferingsFromEntity(organization);
   const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;
-  const isAdmin = getIsAdmin(userId, organization);
+  const isAdmin = userId && getIsAdmin(userId, organization);
   const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
 
   return (

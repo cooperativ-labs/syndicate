@@ -2,7 +2,7 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 
 type LoadingToggleProps = {
-  toggleSubject: boolean;
+  toggleSubject: boolean | undefined;
   isLoading?: boolean;
   onClick?: () => void;
 };
@@ -13,7 +13,7 @@ const LoadingToggle: FC<LoadingToggleProps> = ({ toggleSubject, isLoading, onCli
       className=" border-2 border-grey-100 shadow-inner rounded-full w-12 bg-white "
       onClick={(e) => {
         e.preventDefault();
-        onClick();
+        onClick && onClick();
       }}
     >
       {isLoading ? (

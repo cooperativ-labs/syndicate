@@ -5,16 +5,17 @@ import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersCh
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
 import { useAsync } from 'react-use';
+import { Maybe } from 'yup';
 
 type FormattedCryptoAddressProps = {
-  chainId: number;
-  address: string;
+  chainId: Maybe<number> | undefined;
+  address: string | String0x | undefined;
   label?: string;
   withCopy?: boolean;
   className?: string;
   showFull?: boolean;
   lookupType?: 'address' | 'tx';
-  userName?: string;
+  userName?: Maybe<string> | undefined;
   isYou?: boolean;
 };
 
@@ -31,13 +32,13 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
 }) => {
   const defaultAddress = addressWithoutEns({ address, isYou, isDesktop: false, userName, showFull });
   const [copied, setCopied] = useState<boolean>(false);
-  const [presentedAddress, setPresentedAddress] = useState<string>(defaultAddress);
-  const chain = chainId && MatchSupportedChains(chainId);
+  const [presentedAddress, setPresentedAddress] = useState<string | undefined>(defaultAddress ?? undefined);
+  const chain = chainId ? MatchSupportedChains(chainId) : undefined;
   const blockExplorer = chain?.blockExplorer;
   const windowSize = useWindowSize();
-  const isDesktop = windowSize.width > 768;
+  const isDesktop = windowSize.width ? windowSize.width > 768 : false;
 
-  const formURL = (chainId: number, lookupType: string) => {
+  const formURL = (chainId: Maybe<number> | undefined, lookupType?: string) => {
     const type = lookupType === 'tx' ? 'tx' : isAlgorand(chainId) ? 'application' : 'address';
     const url = `${blockExplorer}/${lookupType ? type : 'address'}/${address}`;
     return url;
@@ -54,7 +55,7 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
         {label}
         <span className="hover:underline whitespace-nowrap">{presentedAddress}</span>
       </a>
-      {withCopy && (
+      {withCopy && address && (
         <button
           className="ml-2"
           onClick={(e) => {

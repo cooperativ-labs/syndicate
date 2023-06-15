@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 
 type AccessCodeFormProps = {
-  accessCode: string;
+  accessCode: string | undefined | null;
   handleCodeSubmission: (arg0: string) => void;
   mini?: boolean;
   isOfferingManager?: boolean;
@@ -30,7 +30,7 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeS
       ) : (
         <Formik
           initialValues={{
-            code: code ?? '',
+            code: code ? code : '',
           }}
           validate={(values) => {
             const errors: any = {}; /** @TODO : Shape */

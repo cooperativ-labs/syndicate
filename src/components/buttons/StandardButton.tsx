@@ -41,7 +41,7 @@ const StandardButton: FC<StandardButtonProps> = ({
       )}
       aria-label={`button-${text}`}
       disabled={disabled}
-      onClick={(e) => onClick(e)}
+      onClick={(e) => onClick && onClick(e)}
     >
       <span className="uppercase">{text}</span>
     </Button>
@@ -50,7 +50,7 @@ const StandardButton: FC<StandardButtonProps> = ({
   return (
     <div className={className}>
       {link ? (
-        <a href={link} target={external && '_blank'} rel={external && 'noreferrer'}>
+        <a href={link} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>
           {ButtonWithoutLink}
         </a>
       ) : (

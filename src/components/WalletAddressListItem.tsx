@@ -3,7 +3,7 @@ import cn from 'classnames';
 import FormattedCryptoAddress from './FormattedCryptoAddress';
 import Input from './form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { CryptoAddress, CryptoAddressType } from 'types';
+import { CryptoAddress, CryptoAddressType, Maybe } from 'types';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { MarkPublic } from './form-components/ListItemButtons';
@@ -28,18 +28,18 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
 
   if ((error || deleteError) && !alerted) {
     setAlerted(true);
-    alert(`Oops, looks like something went wrong. ${error.message}`);
+    alert(`Oops, looks like something went wrong. ${error?.message}`);
   }
-  const getChainLogo = (chainId) => {
+  const getChainLogo = (chainId: Maybe<number> | undefined) => {
     return (
       <div className="flex">
         only:{' '}
-        {MatchSupportedChains(chainId).icon ? (
+        {MatchSupportedChains(chainId)?.icon ? (
           <div>
-            <img src={MatchSupportedChains(chainId).icon} className="ml-1 h-6" alt={name} />{' '}
+            <img src={MatchSupportedChains(chainId)?.icon} className="ml-1 h-6" alt={name as string} />{' '}
           </div>
         ) : (
-          MatchSupportedChains(chainId).name
+          MatchSupportedChains(chainId)?.name
         )}{' '}
       </div>
     );
@@ -125,7 +125,7 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                 )}
                 disabled={userWalletAddress === wallet.address}
                 aria-label="remove wallet from account"
-                onClick={() => deleteWallet({ variables: { entityId: owner.id, walletAddress: wallet.address } })}
+                onClick={() => deleteWallet({ variables: { entityId: owner?.id, walletAddress: wallet.address } })}
               >
                 {userWalletAddress === wallet.address
                   ? 'You cannot remove your login wallet'

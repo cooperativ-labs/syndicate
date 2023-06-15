@@ -18,8 +18,8 @@ type AddPropertyInfoProps = {
 };
 const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCurrency }) => {
   const [AddRePropertyInfo, { data, error }] = useMutation(ADD_RE_PROPERTY_INFO);
-  const [latLang, setLatLang] = useState({ lat: null, lng: null });
-  const [autocompleteResults, setAutocompleteResults] = useState([null]);
+  const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
+  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
   const [alerted, setAlerted] = useState<boolean>(false);
 
@@ -150,19 +150,19 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
           <Input
             className={defaultFieldDiv}
             type="number"
-            labelText={`Down payment (${getCurrencyOption(entityOperatingCurrency).symbol})`}
+            labelText={`Down payment (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
             name="downPayment"
           />
           <Input
             className={defaultFieldDiv}
             type="number"
-            labelText={`Lender's fees (${getCurrencyOption(entityOperatingCurrency).symbol})`}
+            labelText={`Lender's fees (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
             name="lenderFees"
           />
           <Input
             className={defaultFieldDiv}
             type="number"
-            labelText={`Closing costs (${getCurrencyOption(entityOperatingCurrency).symbol})`}
+            labelText={`Closing costs (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
             name="closingCosts"
           />
           <div>

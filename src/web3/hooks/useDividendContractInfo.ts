@@ -3,9 +3,9 @@ import { String0x } from '../helpersChain';
 import { dividendContractABI } from '../generated';
 
 export type DividendContractInfoType = {
-  shareTokenAddress: String0x;
-  reclaimTime: number;
-  dividendContractVersion: string;
+  shareTokenAddress: String0x | undefined;
+  reclaimTime: number | undefined;
+  dividendContractVersion: string | undefined;
   isLoading: boolean;
   refetchSwapContract: () => void;
 };

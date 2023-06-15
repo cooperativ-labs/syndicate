@@ -21,13 +21,12 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
   const [status, setStatus] = useState<string>('');
 
   const handleClick = async () => {
-    if (typeof window.ethereum !== 'undefined') {
+    if (window.ethereum && typeof window.ethereum !== 'undefined') {
       try {
-        const wasAdded = await window.ethereum.request({
-          // @ts-ignore
+        // @ts-ignore
+        await window.ethereum.request({
           method: 'wallet_watchAsset',
           params: {
-            // @ts-ignore
             type: 'ERC20',
             options: {
               address: tokenAddress,
@@ -37,7 +36,7 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
             },
           },
         });
-      } catch (error) {
+      } catch (error: any) {
         throw new Error(error);
       }
     }

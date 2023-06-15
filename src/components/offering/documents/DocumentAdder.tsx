@@ -22,14 +22,20 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) =>
   const userId = session?.user?.id;
   const [addFile, { data, error, loading }] = useMutation(ADD_OFFERING_DOCUMENT);
   const [alerted, setAlerted] = useState<boolean>(false);
-  const [fileFormat, setFileFormat] = useState<DocumentFormat>(null);
+  const [fileFormat, setFileFormat] = useState<DocumentFormat | undefined>();
 
   if (error && !alerted) {
     alert(error.message);
     setAlerted(true);
   }
 
-  const addFileToDB = (url: string, fileId: string, title: string, docType: DocumentType, format: DocumentFormat) => {
+  const addFileToDB = (
+    url: string,
+    fileId: string,
+    title: string,
+    docType: DocumentType | undefined,
+    format: DocumentFormat | undefined
+  ) => {
     addFile({
       variables: {
         offeringId: offeringId,
@@ -128,7 +134,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) =>
                     disabled={isSubmitting}
                     className="mb-2 bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase px-2 h-11 rounded w-full"
                   >
-                    {`Link ${getDocFormatOption(fileFormat).name}`}
+                    {`Link ${getDocFormatOption(fileFormat)?.name}`}
                   </Button>
                 </Form>
               )}

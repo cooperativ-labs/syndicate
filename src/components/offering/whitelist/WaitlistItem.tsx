@@ -12,6 +12,7 @@ type WaitlistItemProps = {
 };
 
 const WaitlistItem: FC<WaitlistItemProps> = ({ waitlistMember, offeringId, removeMember }) => {
+  const memberApplicationText = waitlistMember.investorApplication?.applicationDoc.text;
   return (
     <div className="md:flex lg:grid grid-cols-6 gap-3 p-3  border-2 rounded-lg ">
       <div className="col-span-2 mt-3 md:mt-0">
@@ -38,18 +39,15 @@ const WaitlistItem: FC<WaitlistItemProps> = ({ waitlistMember, offeringId, remov
       </div>
       <div className=" md:mt-0 flex col-span-2 justify-end min-w-max">
         <div className="flex">
-          <button
-            className="border-2 border-cLightBlue hover:bg-cDarkBlue text-cLightBlue hover:text-white font-bold text-sm uppercase rounded-lg p-1 px-2 whitespace-nowrap w-full"
-            aria-label="review application"
-            onClick={() =>
-              DownloadFile(
-                waitlistMember.investorApplication.applicationDoc.text,
-                `${waitlistMember.name} - application.md`
-              )
-            }
-          >
-            Review Application
-          </button>
+          {memberApplicationText && (
+            <button
+              className="border-2 border-cLightBlue hover:bg-cDarkBlue text-cLightBlue hover:text-white font-bold text-sm uppercase rounded-lg p-1 px-2 whitespace-nowrap w-full"
+              aria-label="review application"
+              onClick={() => DownloadFile(memberApplicationText, `${waitlistMember.name} - application.md`)}
+            >
+              Review Application
+            </button>
+          )}
           <button
             className="border-2 border-red-900 hover:bg-red-800 text-red-900 hover:text-white font-bold text-sm uppercase mt-2 md:mt-0 md:ml-2 p-2 rounded-full w-12 whitespace-nowrap "
             aria-label="remove wallet from whitelist"

@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { OfferingParticipant } from 'types';
+import { Maybe, OfferingParticipant } from 'types';
 
 import { addressWithENS, addressWithoutEns, splitAddress, String0x } from '@src/web3/helpersChain';
 import { sendShares } from '@src/web3/contractShareCalls';
@@ -16,15 +16,16 @@ import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
+import { getSharesRemaining } from '@src/utils/helpersOffering';
 
 export type SendSharesProps = {
-  sharesIssued: number;
-  sharesOutstanding: number;
+  sharesIssued: Maybe<number> | undefined;
+  sharesOutstanding: number | undefined;
   shareContractId: string;
   shareContractAddress: String0x;
-  offeringParticipants: OfferingParticipant[];
+  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
   partitions: String0x[];
-  myShares: number;
+  myShares: number | undefined;
   refetchMainContracts: () => void;
 };
 
@@ -39,16 +40,16 @@ const SendShares: FC<SendSharesProps> = ({
   refetchMainContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const [recipient, setRecipient] = useState<string | String0x>(undefined);
+  const [recipient, setRecipient] = useState<string | String0x | undefined>(undefined);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
   const [addIssuance, { error: issuanceError }] = useMutation(ADD_ISSUANCE_OR_TRADE);
 
-  const sharesRemaining = sharesIssued - sharesOutstanding;
+  const sharesRemaining = getSharesRemaining({ sharesOutstanding, sharesIssued });
 
   const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
     const recipient = addressWithoutEns({ address: values.recipient });
-    if (recipient) {
+    if (recipient && sharesIssued) {
       return `Send ${
         values.numShares
           ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%)`
@@ -100,7 +101,7 @@ const SendShares: FC<SendSharesProps> = ({
           shareContractId,
           numShares: parseInt(values.numShares, 10),
           recipient: values.recipient,
-          sender: userWalletAddress,
+          sender: userWalletAddress as String0x,
           partition: values.partition,
           newPartition: values.newPartition,
           isIssuance,
@@ -132,13 +133,15 @@ const SendShares: FC<SendSharesProps> = ({
           )}
           <Select className={'mt-3'} name={'recipient'} labelText="Investor's wallet address">
             <option value="">Select recipient</option>
-            {offeringParticipants.map((participant, i) => {
-              const presentableAddress = addressWithoutEns({
-                address: participant.walletAddress,
-                userName: participant.name,
-              });
+            {offeringParticipants?.map((participant, i) => {
+              const presentableAddress =
+                participant &&
+                addressWithoutEns({
+                  address: participant.walletAddress,
+                  userName: participant.name,
+                });
               return (
-                <option key={i} value={participant.walletAddress}>
+                <option key={i} value={participant?.walletAddress}>
                   {presentableAddress}
                 </option>
               );

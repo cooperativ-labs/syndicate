@@ -2,20 +2,19 @@ import MoneyDisplay from './../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React, { FC } from 'react';
-import { OfferingDetails, ShareOrder } from 'types';
+import { Maybe, OfferingDetails, ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
 export type ContractViewDetails = {
-  sharesOutstanding: number;
-
-  myShares: number;
-  paymentToken: String0x;
+  sharesOutstanding: number | undefined;
+  myShares: number | undefined;
+  paymentToken: String0x | undefined;
 };
 
 export type OfferingDetailsDisplayProps = {
-  offeringDetails: OfferingDetails;
-  currentSalePrice: number;
-  isOfferingManager: boolean;
+  offeringDetails: Maybe<OfferingDetails> | undefined;
+  currentSalePrice: Maybe<number> | undefined;
+  isOfferingManager: boolean | undefined;
   contractViewDetails: ContractViewDetails;
   className?: string;
 };
@@ -39,17 +38,14 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
     targetEquityMultiple,
     targetEquityMultipleMax,
     investmentCurrency,
-  } = offeringDetails;
+  } = offeringDetails as OfferingDetails;
 
+  const totalValue = numUnits && currentSalePrice ? numUnits * currentSalePrice : undefined;
   return (
     <div className={className}>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         <OfferingDetailDashboardItem title="Deal size">
-          <MoneyDisplay
-            amount={currentSalePrice * numUnits}
-            paymentToken={paymentToken}
-            currency={investmentCurrency}
-          />
+          <MoneyDisplay amount={totalValue} paymentToken={paymentToken} currency={investmentCurrency} />
         </OfferingDetailDashboardItem>
 
         {/* <div className="flex justify-center">
@@ -77,7 +73,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
         ) : (
           <OfferingDetailDashboardItem title="Share value">
             <MoneyDisplay
-              amount={myShares * currentSalePrice}
+              amount={currentSalePrice && myShares ? currentSalePrice * myShares : undefined}
               paymentToken={paymentToken}
               currency={investmentCurrency}
             />

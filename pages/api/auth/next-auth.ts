@@ -18,21 +18,21 @@ const options: AuthOptions = {
     encode: async ({ secret, token }) => {
       const jwtPayload = {
         ...token,
-        id: token.sub || token.sub, // Use 'sub' value as 'id'
-        userId: token.sub,
+        id: token?.sub || token?.sub, // Use 'sub' value as 'id'
+        userId: token?.sub,
       };
       return jwt.sign(jwtPayload, secret, {
         algorithm: 'HS256',
       });
     },
     decode: async ({ secret, token }) => {
-      return jwt.verify(token, secret, { algorithms: ['HS256'] });
+      return jwt.verify(token as string, secret, { algorithms: ['HS256'] }) as JWT;
     },
   },
   providers: [
     GoogleProvider({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
-      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET,
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET as string,
     }),
 
     // ---- Azure provider sends the user to a standard login page, not a microsoft login page, even though I have it set up with only the Microsoft provider in the Azure AD B2C tenant.
@@ -121,8 +121,8 @@ const options: AuthOptions = {
   ],
 
   adapter: DgraphAdapter({
-    endpoint: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT,
-    authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY,
+    endpoint: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT as string,
+    authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY as string,
     authHeader: process.env.NEXT_PUBLIC_AUTH_HEADER,
     jwtSecret: process.env.NEXT_PUBLIC_SECRET,
   }),
@@ -134,6 +134,7 @@ const options: AuthOptions = {
     newUser: '/welcome',
   },
   callbacks: {
+    //@ts-ignore
     async jwt({
       token,
       user,
@@ -157,7 +158,7 @@ const options: AuthOptions = {
     },
     async session({ session, user, token }: { session: any; user: User; token: JWT }): Promise<Session> {
       session.user.id = token.id;
-      session.encodedJwt = jwt.sign(token, process.env.NEXT_PUBLIC_SECRET, {
+      session.encodedJwt = jwt.sign(token, process.env.NEXT_PUBLIC_SECRET as string, {
         algorithm: 'HS256',
       });
       return session;

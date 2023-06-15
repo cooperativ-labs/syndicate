@@ -2,18 +2,18 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
-import { LinkedAccount } from 'types';
+import { LinkedAccount, Maybe } from 'types';
 
 import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/dGraphQueries/organization';
 import { useMutation } from '@apollo/client';
 
 type LinkedAccountListProps = {
-  account: LinkedAccount;
-  isOrganizationManager?: boolean;
+  account: Maybe<LinkedAccount>;
+  isOrganizationManager?: boolean | undefined;
 };
 
 const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganizationManager }) => {
-  const { organization, id, url, type, hidden, verified } = account;
+  const { organization, id, url, type, hidden, verified } = account as LinkedAccount;
   const [alerted, setAlerted] = useState<Boolean>(false);
   const [deleteSocial, { error }] = useMutation(REMOVE_ORGANIZATION_SOCIAL_ACCOUNT);
 
@@ -24,7 +24,7 @@ const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganiza
 
   return (
     <div className="grid grid-cols-3">
-      <div className="col-span-1">{getSocialAccountOption(type).name}</div> <div className="col-span-1">{url}</div>
+      <div className="col-span-1">{getSocialAccountOption(type)?.name}</div> <div className="col-span-1">{url}</div>
       {isOrganizationManager && (
         <button
           onClick={() => {

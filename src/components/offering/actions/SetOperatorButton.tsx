@@ -21,7 +21,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({ shareContractAddr
     e.preventDefault();
     await setContractOperator({
       shareContractAddress,
-      operator: userWalletAddress,
+      operator: userWalletAddress as String0x,
       setButtonStep,
       refetch,
     });

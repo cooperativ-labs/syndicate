@@ -11,7 +11,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
 
 import { waitForTransaction, writeContract, prepareWriteContract } from 'wagmi/actions';
-import { parseUnits } from 'viem';
+import { TransactionReceipt, parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
@@ -164,15 +164,22 @@ export const sendShares = async ({
   addPartition,
   addIssuance,
   refetchMainContracts,
-}: SendSharesProps) => {
+}: SendSharesProps): Promise<TransactionReceipt> => {
   const amt = toContractNumber(numShares, shareContractDecimals);
 
-  let transactionDetails = undefined;
+  let transactionDetails = {} as TransactionReceipt;
   const call = async () => {
     setButtonStep('submitting');
     const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
     const setFunctionName = isIssuance ? 'issueByPartition' : 'operatorTransferByPartition';
-    const setArgs = isIssuance ? [setPartition, recipient, amt] : [setPartition, sender, recipient, amt];
+    const issueByPartitionArgs = [setPartition, recipient, amt] as readonly [String0x, String0x, bigint];
+    const operatorTransferByPartitionArgs = [setPartition, sender, recipient, amt] as readonly [
+      String0x,
+      String0x,
+      String0x,
+      bigint
+    ];
+    const setArgs = isIssuance ? issueByPartitionArgs : operatorTransferByPartitionArgs;
     try {
       const { request } = await prepareWriteContract({
         address: shareContractAddress,

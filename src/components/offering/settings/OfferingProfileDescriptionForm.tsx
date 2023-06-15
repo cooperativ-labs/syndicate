@@ -6,18 +6,18 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 export type OfferingProfileDescriptionFormProps = {
   offering: Offering;
-  description?: OfferingDescriptionText;
+  description?: Maybe<OfferingDescriptionText>;
   addDescription?: any;
   updateDescription?: any;
   setAlerted: any;
-  tab: OfferingTabSection;
+  tab: OfferingTabSection | undefined;
   onSubmit?: () => void;
 };
 const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = ({
@@ -37,9 +37,11 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
     (option) => option.value !== OfferingTabSection.Financials
   );
 
-  const nextOrder = getDescriptionsByTab(offering, tab)?.length + 1;
+  const descriptionsByTab = getDescriptionsByTab(offering, tab);
 
-  function handleSubmission(values) {
+  const nextOrder = descriptionsByTab.length ? descriptionsByTab.length + 1 : 0;
+
+  function handleSubmission(values: { title: string; text: string; tab: OfferingTabSection | undefined }) {
     description
       ? updateDescription({
           variables: {

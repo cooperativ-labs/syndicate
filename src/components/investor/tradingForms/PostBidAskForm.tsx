@@ -14,32 +14,36 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
+import { Maybe, Offering, OfferingParticipant } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingParticipant } from 'types';
 
 import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
-type PostBidAskFormProps = {
+export type PostBidAskFormProps = {
   offering: Offering;
-  swapContractAddress: String0x;
-  swapApprovalsEnabled: boolean;
+  swapApprovalsEnabled: Maybe<boolean> | undefined;
   partitions: String0x[];
-  paymentTokenDecimals: number;
-  walletAddress: string;
-  myShares: number;
-  permittedEntity: OfferingParticipant;
+  paymentTokenDecimals: Maybe<number> | undefined;
+  myShares: number | undefined;
+  permittedEntity: Maybe<OfferingParticipant> | undefined;
   isContractOwner: boolean;
-  offeringMin: number;
-  sharesOutstanding: number;
-  currentSalePrice: number;
+
+  sharesOutstanding: number | undefined;
+  currentSalePrice: Maybe<number> | undefined;
+};
+
+type WithAdditionalProps = PostBidAskFormProps & {
+  walletAddress: string;
+  swapContractAddress: String0x;
+  offeringMin: Maybe<number> | undefined;
   setModal: (x: boolean) => void;
   refetchAllContracts: () => void;
 };
 
-const PostBidAskForm: FC<PostBidAskFormProps> = ({
+const PostBidAskForm: FC<WithAdditionalProps> = ({
   offering,
   walletAddress,
   swapContractAddress,
@@ -64,13 +68,14 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
   const sharesIssued = details?.numUnits;
 
   const outstanding = sharesOutstanding ?? 0;
-  const sharesUnissued = sharesIssued - outstanding;
+  const sharesUnissued = sharesIssued ? sharesIssued - outstanding : 0;
 
   const offerCalculator = (numUnits: number, price: number) => {
     return numUnits * price;
   };
 
-  const saleAmountString = (numUnits, price) => {
+  const saleAmountString = (numUnits: string, price: Maybe<number> | undefined) => {
+    if (!price) return '0';
     return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
   };
 
@@ -90,28 +95,30 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
-          if (!values.numUnits) {
+          const { numUnits, price, approvalRequired, minUnits, maxUnits, toc } = values;
+          if (!numUnits) {
             errors.numUnits = `You must choose a number of shares to ${isAsk ? 'sell' : 'buy'}.`;
           }
+
           if (isContractOwner) {
-            if (values.maxUnits > values.numUnits) {
+            if (maxUnits && numUnits && maxUnits > numUnits) {
               errors.maxUnits = 'Maximum must be less then the total shares listed for sale';
             }
-            if (values.maxUnits < 1 || values.maxUnits < values.minUnits) {
+            if ((maxUnits && minUnits && maxUnits < 1) || (maxUnits && minUnits && maxUnits < minUnits)) {
               errors.maxUnits = 'Maximum must be greater than minimum';
             }
-            if (values.minUnits < 1 || values.minUnits > values.maxUnits) {
+            if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
               errors.minUnits = 'Minimum must be less than maximum';
             }
-            if (values.minUnits < offeringMin) {
+            if (minUnits && offeringMin && minUnits < offeringMin) {
               errors.minUnits = `Must be at least ${offeringMin}`;
             }
-          } else if (isAsk && values.numUnits > myShares) {
+          } else if (isAsk && numUnits && myShares && numUnits > myShares) {
             errors.numUnits = `You cannot sell more than ${myShares} shares.`;
-            if (!values.approvalRequired) {
+            if (!approvalRequired) {
               errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
             }
-            if (values.toc === true) {
+            if (toc === true) {
               errors.toc = "You must accept this offering's Terms & Conditions";
             }
           }
@@ -122,7 +129,10 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
           const isAsk = true;
           const isIssuance = false;
           const isErc20Payment = true;
-
+          if (!values.numUnits || !values.price) {
+            setSubmitting(false);
+            return;
+          }
           await submitSwap({
             numShares: values.numUnits,
             price: values.price,
@@ -132,7 +142,7 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
             swapContractAddress: swapContractAddress,
             visible: !swapApprovalsEnabled,
             toc: values.toc,
-            paymentTokenDecimals: paymentTokenDecimals,
+            paymentTokenDecimals: paymentTokenDecimals as number,
             offeringId: offering.id,
             isContractOwner: isContractOwner,
             isAsk: isAsk,
@@ -157,7 +167,7 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
                 <FormattedCryptoAddress chainId={chainId} address={walletAddress} className="font-semibold" />
               </div>
               <hr className="my-6" />
-              {!isContractOwner && myShares < 1 && isAsk ? (
+              {!isContractOwner && myShares && myShares < 1 && isAsk ? (
                 <div>You do not have any shares to sell </div>
               ) : (
                 <>
@@ -177,7 +187,7 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
                     <Input
                       className={cn(defaultFieldDiv, 'col-span-2')}
                       labelText={`At what price per share? (${
-                        details.investmentCurrency && getCurrencyOption(details.investmentCurrency).symbol
+                        details?.investmentCurrency && getCurrencyOption(details?.investmentCurrency)?.symbol
                       })`}
                       name="price"
                       type="number"
@@ -191,7 +201,7 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
                       <>
                         {values.numUnits &&
                           `${saleAmountString(values.numUnits, values.price)} ${
-                            details.investmentCurrency && getCurrencyOption(details.investmentCurrency).symbol
+                            details?.investmentCurrency && getCurrencyOption(details?.investmentCurrency)?.symbol
                           }`}
                       </>
                     </NonInput>
@@ -251,16 +261,16 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
                           }
                         />
                       </div>
-                      {tocOpen && (
+                      {tocOpen && documents && (
                         <div className="my-2 p-4 rounded-md bg-slate-100">
-                          <PresentLegalText text={documents[0].text} />
+                          <PresentLegalText text={documents[0]?.text} />
                           <div className="flex">
                             <StandardButton
                               className="mt-5"
                               outlined
                               onClick={(e) => {
                                 e.preventDefault();
-                                DownloadFile(documents[0].text, `${name} - Terms & Conditions.md`);
+                                DownloadFile(documents[0]?.text as string, `${name} - Terms & Conditions.md`);
                               }}
                               text="Download Terms & Conditions"
                             />
@@ -285,7 +295,7 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
                           sideLabel
                           labelText={`${permittedEntity?.name} understands that this ${
                             isAsk ? 'sale' : 'purchase'
-                          } requires approval from ${offeringEntity.legalName}.`}
+                          } requires approval from ${offeringEntity?.legalName}.`}
                         />
                       </div>
                     </>
@@ -298,7 +308,7 @@ const PostBidAskForm: FC<PostBidAskFormProps> = ({
                       } shares ${
                         values.numUnits
                           ? `for ${saleAmountString(values.numUnits, values.price)} ${
-                              getCurrencyOption(details.investmentCurrency).symbol
+                              getCurrencyOption(details?.investmentCurrency)?.symbol
                             } `
                           : ''
                       }`}

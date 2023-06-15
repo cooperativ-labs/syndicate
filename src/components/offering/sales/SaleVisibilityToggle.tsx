@@ -5,7 +5,7 @@ import { UPDATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { useMutation } from '@apollo/client';
 
 type OrderVisibilityToggleProps = {
-  orderVisibility: boolean;
+  orderVisibility: boolean | undefined | null;
   id: string;
 };
 const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({ orderVisibility, id }) => {

@@ -3,8 +3,8 @@ import React, { FC, useState } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Maybe, Offering, OfferingParticipant, ShareOrder } from 'types';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { Offering, OfferingParticipant, ShareOrder } from 'types';
 import { useAccount } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
@@ -17,14 +17,14 @@ export type OrderStatusType = {
 
 export type ShareSaleListItemProps = {
   offering: Offering;
-  swapContractAddress: String0x;
-  shareContractAddress: String0x;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  txnApprovalsEnabled: boolean;
-  permittedEntity: OfferingParticipant;
+  swapContractAddress: String0x | undefined;
+  shareContractAddress: String0x | undefined;
+  paymentTokenAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
+  txnApprovalsEnabled: boolean | undefined;
+  permittedEntity: Maybe<OfferingParticipant> | undefined;
   isContractOwner: boolean;
-  setShareSaleManagerModal: (boolean) => void;
+  setShareSaleManagerModal: (x: boolean) => void;
   refetchMainContracts: () => void;
 };
 
@@ -74,7 +74,7 @@ const ShareSaleListItem: FC<Addendum> = ({
   }
 
   const isOfferor = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
-  const shareQtyRemaining = amount - filledAmount;
+  const shareQtyRemaining = amount && filledAmount && amount - filledAmount;
 
   return (
     <>
@@ -121,7 +121,7 @@ const ShareSaleListItem: FC<Addendum> = ({
                   isFilled={shareQtyRemaining === 0}
                   isAskOrder={isAskOrder}
                   filler={filler}
-                  initiator={initiator}
+                  initiator={initiator as String0x}
                   order={order}
                   amount={amount}
                   swapContractAddress={swapContractAddress}
@@ -134,23 +134,23 @@ const ShareSaleListItem: FC<Addendum> = ({
                 <SharePurchaseSteps
                   offering={offering}
                   order={order}
-                  shareQtyRemaining={shareQtyRemaining}
-                  price={price}
-                  swapContractAddress={swapContractAddress}
-                  isAsk={isAskOrder}
-                  permittedEntity={permittedEntity}
-                  refetchAllContracts={refetchAllContracts}
-                  isApproved={isApproved}
-                  isDisapproved={isDisapproved}
-                  isCancelled={isCancelled}
-                  isAccepted={isAccepted}
-                  filler={filler}
-                  paymentTokenAddress={paymentTokenAddress}
-                  paymentTokenDecimals={paymentTokenDecimals}
-                  txnApprovalsEnabled={txnApprovalsEnabled}
-                  shareContractAddress={shareContractAddress}
+                  shareQtyRemaining={shareQtyRemaining as number}
+                  price={price as number}
+                  swapContractAddress={swapContractAddress as String0x}
+                  isAsk={isAskOrder as boolean}
+                  permittedEntity={permittedEntity as OfferingParticipant}
+                  refetchAllContracts={refetchAllContracts as () => void}
+                  isApproved={isApproved as boolean}
+                  isDisapproved={isDisapproved as boolean}
+                  isCancelled={isCancelled as boolean}
+                  isAccepted={isAccepted as boolean}
+                  filler={filler as String0x}
+                  paymentTokenAddress={paymentTokenAddress as String0x}
+                  paymentTokenDecimals={paymentTokenDecimals as number}
+                  txnApprovalsEnabled={txnApprovalsEnabled as boolean}
+                  shareContractAddress={shareContractAddress as String0x}
                   partition={partition as String0x}
-                  initiator={initiator}
+                  initiator={initiator as String0x}
                 />
               )}
             </div>

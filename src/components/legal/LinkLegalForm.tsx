@@ -11,18 +11,18 @@ import { getBaseUrl } from '@src/utils/helpersURL';
 import { hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { setDocument } from '@src/web3/contractShareCalls';
-import { SmartContract } from 'types';
+import { CurrencyCode, Maybe, SmartContract } from 'types';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
   availableContract: SmartContract;
-  bacValue: string;
-  bacName: string;
-  bacId: string;
+  bacValue: CurrencyCode | undefined;
+  bacName: string | undefined;
+  bacId: string | undefined;
   agreement: string;
-  spvEntityName: string;
+  spvEntityName: Maybe<string> | undefined;
   offeringId: string;
   entityId: string;
   organizationId: string;
@@ -55,7 +55,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
-  const createDocHash = async (signature) => {
+  const createDocHash = async (signature: string) => {
     setButtonStep('submitting');
     const handleEstablish = async () => {
       try {

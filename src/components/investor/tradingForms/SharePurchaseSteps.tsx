@@ -51,7 +51,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'acceptedOrderQty',
-    args: [userWalletAddress, BigInt(order.contractIndex)],
+    args: [userWalletAddress as String0x, BigInt(order.contractIndex)],
   });
 
   const { data: bacBalanceData } = useBalance({
@@ -76,7 +76,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     <div className="flex flex-col w-full gap-3">
       {currentUserPending ? (
         <div className="p-3 border-2 border-green-600 rounded-lg">
-          {`Your request for ${numberWithCommas(acceptedOrderQty)} shares is pending`}
+          {`Your request for ${numberWithCommas(acceptedOrderQty as number)} shares is pending`}
         </div>
       ) : (
         otherOrderPending && (
@@ -107,7 +107,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
             initiator={initiator as String0x}
             swapContractAddress={swapContractAddress}
             txnApprovalsEnabled={txnApprovalsEnabled}
-            acceptedOrderQty={acceptedOrderQty}
+            acceptedOrderQty={acceptedOrderQty as number}
             price={price}
             paymentTokenDecimals={paymentTokenDecimals}
             contractIndex={order.contractIndex}

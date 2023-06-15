@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 
 import DocumentHashItem from './DocumentHashItem';
-import { Document } from 'types';
+import { Document, Maybe } from 'types';
 import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
 import { shareContractABI } from '@src/web3/generated';
 import { useContractReads } from 'wagmi';
 
 type HashInstructionsProps = {
-  agreementTexts: Document[];
+  agreementTexts: Maybe<Document>[] | undefined;
   contractDocuments: string[];
   shareContractAddress: string;
 };
@@ -26,7 +26,7 @@ const HashInstructions: FC<HashInstructionsProps> = ({ agreementTexts, contractD
     contracts: chainDocs,
   });
 
-  const hashTextArray = data && getHashTextPairs(data, agreementTexts);
+  const hashTextArray = data && agreementTexts && getHashTextPairs(data, agreementTexts);
 
   return (
     <div className="p-3 border-2 border-cLightBlue bg-gray-100 rounded-md">

@@ -95,7 +95,7 @@ library.add(fas, faEnvelope);
 library.add(fas, faPhone);
 library.add(fas, faLink);
 
-export default function MyApp({ Component, pageProps: { session, ...pageProps } }): ReactElement {
+export default function MyApp({ Component, pageProps: { session, ...pageProps } }: any): ReactElement {
   const [cookiesApproved, setCookiesApproved] = useState<null | string>(null);
 
   useEffect(() => {

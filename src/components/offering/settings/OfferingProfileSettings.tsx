@@ -163,7 +163,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
         <div className="flex min-w-max gap-3">
           <div>
             <div className="h-36">
-              <img src={offering.bannerImage} className="object-cover h-36" />
+              <img src={offering.bannerImage as string} className="object-cover h-36" />
             </div>
             <FileUpload
               uploaderText="Add Banner"
@@ -174,7 +174,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
           </div>
           <div>
             <div className="h-36">
-              <img src={offering.image} className="object-cover h-36" />
+              <img src={offering.image as string} className="object-cover h-36" />
             </div>
             <FileUpload
               uploaderText="Add Logo"

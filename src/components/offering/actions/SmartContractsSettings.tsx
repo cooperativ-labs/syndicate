@@ -2,20 +2,28 @@ import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC } from 'react';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-import { User } from 'types';
+import { Currency, User } from 'types';
 
 import DistributionContractSettings from './DistributionContractSettings';
 import NewClassForm from './NewClassForm';
-import SwapContractSettings, { SwapContractSettingsProps } from './SwapContractSettings';
+import SwapContractSettings, {
+  SwapContractSettingsProps,
+  SwapContractsSettingsAdditional,
+} from './SwapContractSettings';
+import { useChainId } from 'wagmi';
 
 export type SmartContractsSettingsProps = SwapContractSettingsProps & {
   partitions: String0x[];
 };
 
-const SmartContractsSettings: FC<SmartContractsSettingsProps & { user: User }> = ({
+type SmartContractsSettingsAdditional = SmartContractsSettingsProps &
+  SwapContractsSettingsAdditional & {
+    user: User;
+  };
+
+const SmartContractsSettings: FC<SmartContractsSettingsAdditional> = ({
   user,
   offering,
-  chainId,
   contractSet,
   swapApprovalsEnabled,
   txnApprovalsEnabled,
@@ -23,6 +31,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { user: User }> =
   investmentCurrency,
   refetchMainContracts,
 }) => {
+  const chainId = useChainId();
   const shareContract = contractSet?.shareContract;
   const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
   return (
@@ -65,7 +74,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { user: User }> =
           {stringFromBytes32(partition)}
         </div>
       ))}
-      {shareContractAddress && <NewClassForm shareContractId={shareContract.id} />}
+      {shareContractAddress && shareContract && <NewClassForm shareContractId={shareContract.id} />}
     </>
   );
 };

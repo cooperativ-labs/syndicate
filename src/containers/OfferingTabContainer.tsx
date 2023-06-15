@@ -10,18 +10,18 @@ import Tab from '@src/components/offering/tabs/Tab';
 import Waitlist from '@src/components/offering/whitelist/Waitlist';
 import WhitelistAddressList from '@src/components/offering/whitelist/WhitelistAddressList';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { LegalEntity, Offering, OfferingSmartContractSet } from 'types';
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
 
 type OfferingTabContainerProps = {
   offering: Offering;
-  contractSet: OfferingSmartContractSet;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
   contractOwnerMatches: boolean;
   isContractOwner: boolean;
-  offeringEntity: LegalEntity;
+  offeringEntity: Maybe<LegalEntity> | undefined;
   isOfferingManager: boolean;
-  currentSalePrice: number;
+  currentSalePrice: Maybe<number> | undefined;
   partitions: String0x[];
   issuances: any[];
   refetchContracts: () => void;
@@ -47,8 +47,10 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const distributions = offering.distributions;
-  const investmentCurrency = offering.details.investmentCurrency;
-  const startingTab = isOfferingManager ? 'investors' : distributions.length > 0 ? 'distributions' : 'properties';
+  const investmentCurrency = offering.details?.investmentCurrency;
+  const distArraylength = distributions?.length;
+  const hasDistributions = distArraylength && distArraylength > 0;
+  const startingTab = isOfferingManager ? 'investors' : hasDistributions ? 'distributions' : 'properties';
   const [activeTab, setActiveTab] = useState<string>(startingTab);
   const investorTabOptions = TabOptions.filter((tab) => tab.showInvestors);
   const tabList = isOfferingManager ? TabOptions : investorTabOptions;
@@ -56,8 +58,8 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
-  const distributionTokenDecimals = getCurrencyOption(offering.details?.investmentCurrency).decimals;
-  const distributionTokenAddress = getCurrencyOption(offering.details?.investmentCurrency).address as String0x;
+  const distributionTokenDecimals = getCurrencyOption(offering.details?.investmentCurrency)?.decimals;
+  const distributionTokenAddress = getCurrencyOption(offering.details?.investmentCurrency)?.address as String0x;
 
   return (
     <div>
@@ -144,7 +146,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
               distributionContractAddress={distributionContractAddress}
               distributions={offering.distributions}
               isDistributor
-              walletAddress={userWalletAddress}
+              walletAddress={userWalletAddress as String0x}
             />
           </div>
         )}

@@ -8,7 +8,7 @@ import { Form, Formik } from 'formik';
 import ClickToEditItem from '../form-components/ClickToEditItem';
 import cn from 'classnames';
 
-import { CurrencyCode, Organization } from 'types';
+import { CurrencyCode, Maybe, Organization } from 'types';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 
 export type EditOrganizationSelectionType =
@@ -24,7 +24,12 @@ export const changeForm = (
   organization: Organization,
 
   setEditOn: (editOn: EditOrganizationSelectionType) => void,
-  handleChange: (values: { name: string; description?: string; country: string; shortDescription?: string }) => void
+  handleChange: (values: {
+    country: Maybe<string> | undefined;
+    name: Maybe<string> | undefined;
+    description: Maybe<string> | undefined;
+    shortDescription: Maybe<string> | undefined;
+  }) => void
 ) => {
   const { name, shortDescription, description, country } = organization;
   return (
@@ -88,8 +93,8 @@ export const changeForm = (
 
 type OrganizationSpecificationsProps = {
   organization: Organization;
-  isOrganizationManager: boolean;
-  updateOrganization: (any) => void;
+  isOrganizationManager: boolean | undefined;
+  updateOrganization: (x: any) => void;
 };
 
 const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
@@ -97,18 +102,16 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
   isOrganizationManager,
   updateOrganization,
 }) => {
-  const [editOn, setEditOn] = useState<EditOrganizationSelectionType | EditEntitySelectionType>('none');
+  const [editOn, setEditOn] = useState<EditOrganizationSelectionType | EditEntitySelectionType | string>('none');
   const { id, name, country, description, shortDescription } = organization;
 
   const handleChange = async (values: {
-    name: string;
-    country: string;
-    description: string;
-    operatingCurrency: CurrencyCode;
-    taxId: string;
-    shortDescription: string;
+    name: Maybe<string> | undefined;
+    country: Maybe<string> | undefined;
+    description: Maybe<string> | undefined;
+    shortDescription: Maybe<string> | undefined;
   }) => {
-    const { name, country, description, operatingCurrency, taxId, shortDescription } = values;
+    const { name, country, description, shortDescription } = values;
     try {
       updateOrganization({
         variables: {
@@ -117,13 +120,11 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
           country: country,
           name: name,
           description: description,
-          operatingCurrency: operatingCurrency,
-          taxId: taxId,
           shortDescription: shortDescription,
         },
       });
       setEditOn('none');
-    } catch (e) {
+    } catch (e: any) {
       alert(`Oops. Looks like something went wrong: ${e.message}`);
     }
   };
@@ -141,7 +142,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
       />
       <ClickToEditItem
         label="Country"
-        currentValue={Country.getCountryByCode(country).name}
+        currentValue={Country.getCountryByCode(country as string)?.name}
         form={changeForm('country', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="country"

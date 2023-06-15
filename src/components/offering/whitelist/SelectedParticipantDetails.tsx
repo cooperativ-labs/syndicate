@@ -8,12 +8,12 @@ import IssuanceSaleList from '../sales/IssuanceSaleList';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
-import { Currency, OfferingParticipant, OfferingSmartContractSet } from 'types';
+import { Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
+
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
@@ -24,17 +24,20 @@ import { useSession } from 'next-auth/react';
 
 type SelectedParticipantProps = {
   selection: string;
-  participants: OfferingParticipant[];
-  contractSet: OfferingSmartContractSet;
-  currentSalePrice: number;
-  paymentTokenDecimals: number;
+  participants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  currentSalePrice: Maybe<number> | undefined;
+  paymentTokenDecimals: number | undefined;
   offeringId: string;
   partitions: String0x[];
   issuanceList: any[];
-  removeMember: (variables) => void;
+  removeMember: (x: {
+    variables: { offeringId: string; participantId: string | undefined; currentDate: string };
+  }) => void;
   refetchContracts: () => void;
 };
 
+export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   selection,
   participants,
@@ -54,7 +57,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const [approveOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
-  const participant = participants?.find((p) => p.id === selection);
+  const participant = participants?.find((p) => p?.id === selection);
   const participantWallet = participant?.walletAddress as String0x;
 
   const issuances = issuanceList.filter((issuance) => {
@@ -77,7 +80,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   });
 
   const removeFromDb = () => {
-    removeMember({ variables: { offeringId, id: participant?.id, currentDate: currentDate } });
+    removeMember({ variables: { offeringId, participantId: participant?.id, currentDate: currentDate } });
   };
 
   const { write: removeWrite } = useContractWrite({
@@ -138,9 +141,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
     participant;
   const distributions = offering.distributions;
-  const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity.organization);
+  const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity?.organization);
 
-  const updateInvestorForm = (itemType) => {
+  const updateInvestorForm = (itemType: ParticipantSpecItemType) => {
     return (
       <Formik
         initialValues={{
@@ -248,16 +251,20 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     </div>
   );
 
+  const investorApplicationText = investorApplication?.applicationDoc.text;
+
   const buttonSection = (
     <>
       <div className="flex gap-3">
-        <button
-          className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
-          aria-label="review application"
-          onClick={() => DownloadFile(investorApplication.applicationDoc.text, `${name} - application.md`)}
-        >
-          Review Investor Application
-        </button>
+        {investorApplicationText && (
+          <button
+            className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
+            aria-label="review application"
+            onClick={() => DownloadFile(investorApplicationText, `${name} - application.md`)}
+          >
+            Review Investor Application
+          </button>
+        )}
         {permitted ? (
           <button
             className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
@@ -290,7 +297,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
           </button>
         )}
       </div>
-      {shareBalanceData > 0 && (
+      {shareBalanceData && shareBalanceData > 0 && (
         <div className="mt-4 border-2 rounded-md px-2">
           <SectionBlock className="font-bold" sectionTitle={'Force transfer or clawback'} mini asAccordion>
             <ForceTransferForm

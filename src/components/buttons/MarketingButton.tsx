@@ -28,7 +28,7 @@ const MarketingButton: React.FC<MarketingButtonProps> = ({
 
   return (
     <div className={className}>
-      <a href={link} target={external && '_blank'} rel={external && 'noreferrer'}>
+      <a href={link} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>
         <Button
           className={cn(
             [outlined ? outlinedClass : standardClass],

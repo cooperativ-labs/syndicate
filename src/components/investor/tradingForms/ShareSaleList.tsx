@@ -3,10 +3,10 @@ import Button from '@src/components/buttons/Button';
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
 
-import { ShareOrder } from 'types';
+import { Maybe, ShareOrder } from 'types';
 
 type ShareSaleListProps = ShareSaleListItemProps & {
-  orders: ShareOrder[];
+  orders: Maybe<ShareOrder>[] | undefined;
   setSaleFormModal: Dispatch<SetStateAction<boolean>>;
 };
 
@@ -35,20 +35,20 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     </Button>
   );
 
-  if (offers.length < 1) {
+  if (offers && offers.length < 1) {
     return <>{saleButton}</>;
   }
 
   return (
     <>
       <h2 className="text-xl text-blue-900 font-semibold">{`Offers`}</h2>
-      {offers.map((order, i) => {
+      {offers?.map((order, i) => {
         return (
           <div key={i}>
             <ShareSaleListItem
               index={i}
               offering={offering}
-              order={order}
+              order={order as ShareOrder}
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}

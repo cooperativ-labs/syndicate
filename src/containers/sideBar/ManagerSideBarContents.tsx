@@ -6,7 +6,7 @@ import React, { FC } from 'react';
 export type ManagerSideBarItemSelectionType = 'Overview' | 'Offerings' | 'Entities' | 'Settings' | 'None';
 
 type ManagerSideBarContentsProps = {
-  organizationId: string;
+  organizationId: string | null;
 };
 
 const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationId }) => {

@@ -1,19 +1,25 @@
-import { currencyOptions, getCurrencyOption } from '@src/utils/enumConverters';
+import { getCurrencyOption } from '@src/utils/enumConverters';
 
-import { CurrencyCode } from 'types';
+import { Currency } from 'types';
 import { parseUnits } from 'viem';
 
 export const shareContractDecimals = 2;
 
 export type Decimals = number;
 
-export const toDecimalByToken = (amt: number, currency?: CurrencyCode): number => {
+export const toDecimalByToken = (amt: number, currency?: Currency): number => {
   const decimal = getCurrencyOption(currency)?.decimals;
+  if (!decimal) {
+    throw new Error('nDecimals is undefined');
+  }
   const multiplier = Math.pow(10, decimal);
   return amt * multiplier;
 };
 
-export const toNormalNumber = (n: bigint, nDecimals: Decimals): number => {
+export const toNormalNumber = (n: bigint | undefined, nDecimals: Decimals | undefined): number => {
+  if (!nDecimals) {
+    throw new Error('nDecimals is undefined');
+  }
   return Number(n) / Math.pow(10, nDecimals);
 };
 

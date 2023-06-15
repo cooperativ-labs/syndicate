@@ -5,7 +5,7 @@ import { Currency, RealEstateProperty } from 'types';
 type TotalInvestmentValueDataProps = {
   propertyDetails: RealEstateProperty;
   operatingCurrency: Currency;
-  name?: string;
+  name?: string | null;
 };
 
 const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({ propertyDetails, operatingCurrency, name }) => {
@@ -35,7 +35,7 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({ propertyD
           <FinancialFactItem
             label="Amount borrowed"
             amount={loan}
-            percent={loan / assetValue}
+            percent={assetValue ? loan / assetValue : 0}
             currency={operatingCurrency}
           />
         )}
@@ -60,7 +60,7 @@ const TotalInvestmentValue: FC<TotalInvestmentValueProps> = ({ OfferingRePropert
                 return (
                   <div key={i} className="bg-gray-100 m-4 rounded-lg py-6">
                     <TotalInvestmentValueData
-                      name={property.address.line1}
+                      name={property.address?.line1}
                       operatingCurrency={operatingCurrency}
                       propertyDetails={property}
                     />
