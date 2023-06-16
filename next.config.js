@@ -16,7 +16,7 @@ const GRAPHQL_ENDPOINT = getEndpoint();
 
 module.exports = {
   env: {
-    NEXT_PUBLIC_GRAPHQL_ENDPOINT: GRAPHQL_ENDPOINT,
+    NEXT_PUBLIC_DGRAPH_ENDPOINT: GRAPHQL_ENDPOINT,
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     //this is to fix an issue with webpack not finding the electron module

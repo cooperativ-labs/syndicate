@@ -11,7 +11,7 @@ import router from 'next/router';
 import { ADD_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { ApplicationStoreProps, store } from '@context/store';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 export type CreateOrganizationType = {
@@ -49,22 +49,26 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
         dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
-        const result = await addOrganization({
-          variables: {
-            userId: userId,
-            logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
-            website: values.website,
-            name: values.name,
-            shortDescription: values.shortDescription,
-            country: values.country,
-            currentDate: currentDate,
-          },
-        });
-        const orgId = result.data.addOrganization.organization[0].id;
-        window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
-        router.reload();
-        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
-        actionOnCompletion && actionOnCompletion();
+        try {
+          const result = await addOrganization({
+            variables: {
+              userId: userId,
+              logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
+              website: values.website,
+              name: values.name,
+              shortDescription: values.shortDescription,
+              country: values.country,
+              currentDate: currentDate,
+            },
+          });
+          const orgId = result.data.addOrganization.organization[0].id;
+          window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
+          router.reload();
+          dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
+          actionOnCompletion && actionOnCompletion();
+        } catch (error) {
+          console.log(error);
+        }
         setSubmitting(false);
       }}
     >

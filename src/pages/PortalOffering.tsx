@@ -205,7 +205,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               isOfferingManager={false}
               contractViewDetails={{
                 sharesOutstanding: sharesOutstanding,
-
+                totalDistributed: fundsDistributed,
                 myShares: myShares,
                 paymentToken: paymentTokenAddress,
               }}
