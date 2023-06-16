@@ -45,8 +45,9 @@ export const useOrderDetails = (
   const initiator = data && data[0];
   const partition = data && data[1];
   const amount = data && toNormalNumber(data[2], shareContractDecimals);
-  const price =
-    data && adjustTokenDecimalsForShareContract && toNormalNumber(data[3], adjustTokenDecimalsForShareContract);
+  const price = data
+    ? adjustTokenDecimalsForShareContract && toNormalNumber(data[3], adjustTokenDecimalsForShareContract)
+    : undefined;
   const filledAmount = data && toNormalNumber(data[4], shareContractDecimals);
   const filler = data && (data[5] as String0x);
   const isApproved = data && data[7].isApproved;

@@ -38,6 +38,7 @@ export const ADD_ISSUANCE_OR_TRADE = gql`
           transactionHash: $transactionHash
           partition: $partition
           type: $type
+          archived: false
         }
       ]
     ) {
@@ -121,7 +122,7 @@ export const CREATE_ORDER = gql`
     $swapContractAddress: String!
     $minUnits: Int
     $maxUnits: Int
-    $visible: Boolean
+    $visible: Boolean!
     $initiator: String!
     $transactionHash: String!
   ) {
@@ -173,8 +174,8 @@ export const RETRIEVE_SALES = gql`
 `;
 
 export const UPDATE_ORDER = gql`
-  mutation UpdateSale($currentDate: DateTime!, $orderId: [ID!], $visible: Boolean) {
-    updateShareOrder(input: { filter: { id: $orderId }, set: { lastUpdate: $currentDate, visible: $visible } }) {
+  mutation UpdateSale($currentDate: DateTime!, $orderId: ID!, $visible: Boolean) {
+    updateShareOrder(input: { filter: { id: [$orderId] }, set: { lastUpdate: $currentDate, visible: $visible } }) {
       shareOrder {
         id
         lastUpdate

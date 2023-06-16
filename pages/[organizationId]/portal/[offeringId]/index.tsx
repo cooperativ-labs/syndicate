@@ -27,7 +27,7 @@ const PortalOfferingPage: FC = () => {
       className="bg-gradient-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
     >
       <PortalWrapper>
-        <PortalOffering offering={offering} refetch={refetch} />
+        <PortalOffering offering={offering} refetchOffering={refetch} />
       </PortalWrapper>
     </div>
   );

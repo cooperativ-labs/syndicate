@@ -14,9 +14,9 @@ import { sendShares } from '@src/web3/contractShareCalls';
 import NewClassInputs from '../form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
-import { getSharesRemaining } from '@src/utils/helpersOffering';
 
 export type SendSharesProps = {
   sharesIssued: Maybe<number> | undefined;
@@ -45,7 +45,7 @@ const SendShares: FC<SendSharesProps> = ({
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
   const [addIssuance, { error: issuanceError }] = useMutation(ADD_ISSUANCE_OR_TRADE);
 
-  const sharesRemaining = getSharesRemaining({ sharesOutstanding, sharesIssued });
+  const sharesRemaining = getAmountRemaining({ x: sharesOutstanding, minus: sharesIssued });
 
   const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
     const recipient = addressWithoutEns({ address: values.recipient });

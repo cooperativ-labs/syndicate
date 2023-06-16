@@ -8,11 +8,11 @@ import IssuanceSaleList from '../sales/IssuanceSaleList';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
-import { Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
 
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';

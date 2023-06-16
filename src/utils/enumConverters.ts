@@ -16,6 +16,7 @@ import {
   ShareIssuanceTradeType,
   Maybe,
 } from 'types';
+import { getAmountRemaining } from './helpersOffering';
 
 // ===== PROFILE ======
 
@@ -186,7 +187,7 @@ export const SwapStatusOptions = [
   { value: 'initiated', name: 'requires approval', color: 'orange-600' },
   { value: 'partiallyFilled', name: 'live', color: 'green-600' },
   { value: 'approved', name: 'live', color: 'green-600' },
-  { value: 'disapproved', name: 'disapproved', color: 'red-600' },
+  { value: 'disapproved', name: 'disapproved', color: 'red-800' },
   { value: 'cancelled', name: 'cancelled', color: 'gray-600' },
   { value: 'complete', name: 'complete', color: 'blue-600' },
 ];
@@ -212,15 +213,17 @@ export const getSwapStatusOption = ({
 }: SwapStatusOptionProps) => {
   const initiated = !isAccepted && !isApproved && !isDisapproved && !isCancelled && !txnApprovalsEnabled;
   const isFilledAmount = filledAmount ? filledAmount > 0 : false;
-  const filledLessthanAmount = filledAmount && amount ? filledAmount < amount : false;
-  const partiallyFilled = isFilledAmount && filledLessthanAmount;
-  const approved = (txnApprovalsEnabled && !isApproved) || (isApproved && !isDisapproved && !isCancelled);
-  const disapproved = isDisapproved && !isCancelled;
+  const filledLessThanAmount = filledAmount && amount ? filledAmount < amount : false;
+  const partiallyFilled = isFilledAmount && filledLessThanAmount;
+  const awaitingApproval = txnApprovalsEnabled && isAccepted && !isApproved && !isDisapproved && !isCancelled;
+  const approved =
+    (txnApprovalsEnabled && !isApproved && !isDisapproved) || (isApproved && !isDisapproved && !isCancelled);
+  const disapproved = isDisapproved;
   const cancelled = isCancelled;
   const complete = filledAmount === amount;
 
   switch (true) {
-    case initiated:
+    case initiated || awaitingApproval:
       return SwapStatusOptions[0];
     case partiallyFilled:
       return SwapStatusOptions[1];
@@ -244,6 +247,7 @@ export const IssuanceTradeOptions = [
   { value: ShareIssuanceTradeType.Issue, name: 'Issuance', color: 'green-600' },
   { value: ShareIssuanceTradeType.Forced, name: 'Forced', color: 'red-600' },
   { value: ShareIssuanceTradeType.Transfer, name: 'Transfer', color: 'black' },
+  { value: ShareIssuanceTradeType.Disapprove, name: 'Disapproval', color: 'red-600' },
 ];
 
 export const getIssuanceTradeOption = (tradeType: ShareIssuanceTradeType) => {

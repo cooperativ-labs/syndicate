@@ -19,7 +19,7 @@ const OfferingPage: FC = () => {
   return (
     <div data-test="component-create-project-page" className="h-full flex">
       <ManagerWrapper>
-        <OfferingDetails offering={offering} refetch={refetch} />
+        <OfferingDetails offering={offering} refetchOffering={refetch} />
       </ManagerWrapper>
     </div>
   );

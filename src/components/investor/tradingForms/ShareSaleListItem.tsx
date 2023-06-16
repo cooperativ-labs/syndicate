@@ -1,8 +1,9 @@
 import OfferingSummaryPanel from './OfferingSummaryPanel';
 import React, { FC, useState } from 'react';
-import SaleManagerPanel from './ShareManagerPanel';
+import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { Maybe, Offering, OfferingParticipant, ShareOrder } from 'types';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
@@ -15,25 +16,20 @@ export type OrderStatusType = {
   isCancelled: boolean;
 };
 
-export type ShareSaleListItemProps = {
+export type ShareSaleListItemProps = SaleMangerPanelProps & {
   offering: Offering;
-  swapContractAddress: String0x | undefined;
   shareContractAddress: String0x | undefined;
-  paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
-  txnApprovalsEnabled: boolean | undefined;
   permittedEntity: Maybe<OfferingParticipant> | undefined;
-  isContractOwner: boolean;
-  setShareSaleManagerModal: (x: boolean) => void;
+  setShareSaleManagerModal: (value: boolean) => void;
   refetchMainContracts: () => void;
 };
 
-type Addendum = ShareSaleListItemProps & {
+type AdditionalShareSaleListItemProps = ShareSaleListItemProps & {
   index: number;
   order: ShareOrder;
 };
 
-const ShareSaleListItem: FC<Addendum> = ({
+const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   index,
   offering,
   order,
@@ -46,6 +42,7 @@ const ShareSaleListItem: FC<Addendum> = ({
   isContractOwner,
   setShareSaleManagerModal,
   refetchMainContracts,
+  refetchOffering,
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [open, setOpen] = useState<boolean>(false);
@@ -74,7 +71,8 @@ const ShareSaleListItem: FC<Addendum> = ({
   }
 
   const isOfferor = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
-  const shareQtyRemaining = amount && filledAmount && amount - filledAmount;
+
+  const shareQtyRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
 
   return (
     <>
@@ -124,11 +122,15 @@ const ShareSaleListItem: FC<Addendum> = ({
                   initiator={initiator as String0x}
                   order={order}
                   amount={amount}
+                  price={price}
+                  shareContractAddress={shareContractAddress}
+                  partition={partition}
                   swapContractAddress={swapContractAddress}
                   txnApprovalsEnabled={txnApprovalsEnabled}
                   paymentTokenAddress={paymentTokenAddress}
                   paymentTokenDecimals={paymentTokenDecimals}
                   refetchAllContracts={refetchAllContracts}
+                  refetchOffering={refetchOffering}
                 />
               ) : (
                 <SharePurchaseSteps

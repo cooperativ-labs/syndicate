@@ -4,8 +4,8 @@ import useWindowSize from '@hooks/useWindowSize';
 import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
-import { useAsync } from 'react-use';
 import { Maybe } from 'yup';
+import { useAsync } from 'react-use';
 
 type FormattedCryptoAddressProps = {
   chainId: Maybe<number> | undefined;

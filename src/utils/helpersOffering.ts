@@ -17,9 +17,11 @@ export const getDescriptionsByTab = (
 };
 
 type SharesRemainingProps = {
-  sharesIssued: Maybe<number> | undefined;
-  sharesOutstanding: Maybe<number> | undefined;
+  x: Maybe<number> | undefined | number;
+  minus: Maybe<number> | undefined | number;
 };
-export const getSharesRemaining = ({ sharesIssued, sharesOutstanding }: SharesRemainingProps) => {
-  return sharesIssued && sharesOutstanding ? sharesIssued - sharesOutstanding : 0;
+export const getAmountRemaining = ({ x, minus }: SharesRemainingProps) => {
+  const thisNumber = x || 0;
+  const minusThisNummber = minus || 0;
+  return thisNumber - minusThisNummber;
 };

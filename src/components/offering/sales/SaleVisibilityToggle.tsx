@@ -15,7 +15,7 @@ const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({ orderVisibility
     updateOrderObject({
       variables: {
         currentDate: currentDate,
-        id: id,
+        orderId: id,
         visible: !orderVisibility,
       },
     });

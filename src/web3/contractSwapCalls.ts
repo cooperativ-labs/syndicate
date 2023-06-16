@@ -244,6 +244,26 @@ export const setAllowance = async ({
 // };
 
 type ApproveRejectSwapProps = {
+  disapproveArgs?: {
+    shareContractAddress: String0x | undefined;
+    recipientAddress: '' | `0x${string}` | undefined;
+    senderAddress: String0x | undefined | '';
+    numShares: number | undefined;
+    price: number | undefined;
+    partition: String0x | undefined | '';
+    addDisapprovalRecord: (arg0: {
+      variables: {
+        shareContractAddress: String0x | undefined;
+        recipientAddress: '' | `0x${string}` | undefined;
+        senderAddress: String0x | undefined | '';
+        amount: number | undefined;
+        price: number | undefined;
+        partition: String0x | undefined | '';
+        transactionHash: String0x;
+        type: ShareIssuanceTradeType;
+      };
+    }) => Promise<any> | undefined;
+  };
   swapContractAddress: String0x | undefined;
   contractIndex: number;
   isDisapprove: boolean;
@@ -252,6 +272,7 @@ type ApproveRejectSwapProps = {
   refetchAllContracts: () => void;
 };
 export const approveRejectSwap = async ({
+  disapproveArgs,
   swapContractAddress,
   contractIndex,
   isDisapprove,
@@ -273,9 +294,32 @@ export const approveRejectSwap = async ({
         args: [BigInt(contractIndex)],
       });
       const { hash } = await writeContract(request);
-      await waitForTransaction({
+      const transactionDetails = await waitForTransaction({
         hash: hash,
       });
+      if (isDisapprove && disapproveArgs) {
+        const {
+          shareContractAddress,
+          recipientAddress,
+          senderAddress,
+          numShares,
+          price,
+          partition,
+          addDisapprovalRecord,
+        } = disapproveArgs;
+        await addDisapprovalRecord({
+          variables: {
+            shareContractAddress: shareContractAddress,
+            recipientAddress: recipientAddress,
+            senderAddress: senderAddress,
+            amount: numShares,
+            price: price,
+            transactionHash: transactionDetails.transactionHash,
+            partition: partition,
+            type: ShareIssuanceTradeType.Disapprove,
+          },
+        });
+      }
       setButtonStep('confirmed');
       toast.success(`You have ${isDisapprove ? 'disapproved' : 'approved'} the swap.`);
       refetchAllContracts();

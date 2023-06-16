@@ -1,3 +1,4 @@
+import {} from '@src/utils/helpersMoney';
 import Button, { LoadingButtonStateType } from '@src/components/buttons/Button';
 import CloseButton from '@src/components/buttons/CloseButton';
 import FormModal from '@src/containers/FormModal';
@@ -7,12 +8,11 @@ import PostInitialSale, { PostInitialSaleProps } from '@src/components/investor/
 import React, { FC, useState } from 'react';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import SendShares from '../SendShares';
-import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
+import ShareSaleList, { ShareSaleListProps } from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { Maybe, ShareOrder } from 'types';
-import {} from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 
 import { useAccount } from 'wagmi';
@@ -30,6 +30,7 @@ type OfferingActionsProps = SmartContractsSettingsProps &
     isOfferingManager: boolean;
     retrievalIssue: boolean;
     userId: string | undefined;
+    refetchOffering: () => void;
   };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
@@ -48,6 +49,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   isContractOwner,
   partitions,
   refetchMainContracts,
+  refetchOffering,
   permittedEntity,
   currentSalePrice,
   myShares,
@@ -76,6 +78,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const offeringMin = offering.details?.minUnitsPerInvestor;
   const investmentCurrency = offering.details?.investmentCurrency;
   const sharesIssued = offering.details?.numUnits;
+  const hasOrders = orders && orders.length > 0;
 
   const FormModals = (
     <>
@@ -98,6 +101,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             refetchMainContracts={refetchMainContracts}
             txnApprovalsEnabled={txnApprovalsEnabled}
             shareContractAddress={shareContractAddress}
+            refetchOffering={refetchOffering}
           />
         )}
       </FormModal>
@@ -210,6 +214,14 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             Configure shares & trading
           </Button>
 
+          <Button
+            onClick={() => {
+              setShowActionPanel('send');
+            }}
+            className={standardClass}
+          >
+            Send shares
+          </Button>
           {swapContractAddress ? (
             <Button
               onClick={() => {
@@ -229,14 +241,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
               Configure trading
             </Button>
           )}
-          <Button
-            onClick={() => {
-              setShowActionPanel('send');
-            }}
-            className={standardClass}
-          >
-            Send shares
-          </Button>
         </>
       ) : (
         <div>The offeror has not yet created shares or your wallet is not connected.</div>
@@ -266,16 +270,14 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       ) : (
         <>
           <div className="">{!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}</div>
-          {myOrder && (
+          {hasOrders && (
             <ShareSaleStatusWidget
-              order={myOrder}
-              offeringId={offering.id}
+              orders={orders}
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}
               paymentTokenDecimals={paymentTokenDecimals}
               txnApprovalsEnabled={txnApprovalsEnabled}
               isContractOwner={isContractOwner}
-              refetchMainContracts={refetchMainContracts}
             />
           )}
         </>

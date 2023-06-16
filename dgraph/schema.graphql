@@ -642,6 +642,7 @@ enum ShareIssuanceTradeType	{
 	SELL
 	FORCED
 	TRANSFER
+	DISAPPROVE
 }
 
 type ShareIssuanceTrade	{
@@ -654,6 +655,7 @@ type ShareIssuanceTrade	{
 	partition: String! @search
 	transactionHash: String!
 	type: ShareIssuanceTradeType!
+	archived: Boolean!
 }
 
 type ShareOrder {

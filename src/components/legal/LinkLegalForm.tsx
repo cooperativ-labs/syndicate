@@ -5,13 +5,13 @@ import PresentLegalText from './PresentLegalText';
 import React, { FC, useState } from 'react';
 import router from 'next/router';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
+import { CurrencyCode, Maybe, SmartContract } from 'types';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { setDocument } from '@src/web3/contractShareCalls';
-import { CurrencyCode, Maybe, SmartContract } from 'types';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 

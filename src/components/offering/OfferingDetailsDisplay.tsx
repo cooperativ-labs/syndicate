@@ -9,6 +9,7 @@ export type ContractViewDetails = {
   sharesOutstanding: number | undefined;
   myShares: number | undefined;
   paymentToken: String0x | undefined;
+  totalDistributed: number | undefined;
 };
 
 export type OfferingDetailsDisplayProps = {
@@ -24,9 +25,10 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
   currentSalePrice,
   isOfferingManager,
   contractViewDetails,
+
   className,
 }) => {
-  const { sharesOutstanding, myShares, paymentToken } = contractViewDetails;
+  const { sharesOutstanding, myShares, paymentToken, totalDistributed } = contractViewDetails;
   const {
     numUnits,
     projectedIrr,
@@ -68,7 +70,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
 
         {isOfferingManager ? (
           <OfferingDetailDashboardItem title="Funds Distributed">
-            {/* <MoneyDisplay amount={fundsDistributed} paymentToken={paymentToken} currency={investmentCurrency} /> */}
+            <MoneyDisplay amount={totalDistributed} paymentToken={paymentToken} currency={investmentCurrency} />
           </OfferingDetailDashboardItem>
         ) : (
           <OfferingDetailDashboardItem title="Share value">

@@ -26,10 +26,10 @@ import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 type PortalOfferingProps = {
   offering: Offering;
-  refetch: () => void;
+  refetchOffering: () => void;
 };
 
-const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
+const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) => {
   const { address: userWalletAddress } = useAccount();
   const { chain } = useNetwork();
   const router = useRouter();
@@ -194,6 +194,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetch }) => {
               paymentTokenDecimals={paymentTokenDecimals}
               txnApprovalsEnabled={txnApprovalsEnabled}
               shareContractAddress={shareContractAddress}
+              refetchOffering={refetchOffering}
             />
           </DashboardCard>
           <DashboardCard>

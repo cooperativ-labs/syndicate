@@ -57,7 +57,9 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
 
   const allowance = allowanceData && toNormalNumber(allowanceData, paymentTokenDecimals);
   const allowanceRequiredForPurchase = orderQty * price;
-  const isAllowanceSufficient = !!allowance ? allowance >= allowanceRequiredForPurchase : false;
+  // const allowanceRequiredForPurchase = ((orderQty as number) * price) as number;
+
+  const isAllowanceSufficient = allowance ? allowance >= allowanceRequiredForPurchase : false;
 
   const recipient = isAsk ? filler : initiator;
   const sender = isAsk ? initiator : filler;

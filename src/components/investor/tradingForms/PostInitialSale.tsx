@@ -4,21 +4,21 @@ import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React, { FC, useState } from 'react';
-import { Currency, Maybe } from 'types';
 import { Form, Formik } from 'formik';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { Maybe } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { toContractNumber, toNormalNumber } from '@src/web3/util';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
-import { getSharesRemaining } from '@src/utils/helpersOffering';
 
 export type PostInitialSaleProps = {
   sharesOutstanding: number | undefined;
@@ -55,7 +55,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
   const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
 
-  const sharesRemaining = getSharesRemaining({ sharesOutstanding, sharesIssued });
+  const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
 
   const formButtonText = (values: { numShares: number | undefined }) => {
     if (!sharesIssued) {
@@ -155,7 +155,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
           <NewClassInputs partitions={partitions} values={values} />
           <Input
             className={defaultFieldDiv}
-            labelText={`Number of list for sale (${sharesRemaining} available )`}
+            labelText={`Shares to list for sale (${sharesRemaining} available )`}
             name="numShares"
             type="number"
             placeholder="800"

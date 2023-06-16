@@ -5,6 +5,7 @@ import FormattedCryptoAddress from '../FormattedCryptoAddress';
 import Input from '../form-components/Inputs';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
 import React, { FC, useState } from 'react';
+import toast from 'react-hot-toast';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
@@ -13,7 +14,6 @@ import { Maybe } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
-import toast from 'react-hot-toast';
 
 type OfferingDashboardTitleProps = {
   profileVisibility: Maybe<boolean> | undefined;

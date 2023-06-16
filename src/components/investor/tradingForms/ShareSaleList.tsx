@@ -2,17 +2,15 @@ import Button from '@src/components/buttons/Button';
 
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
-
 import { Maybe, ShareOrder } from 'types';
-
-type ShareSaleListProps = ShareSaleListItemProps & {
+export type ShareSaleListProps = ShareSaleListItemProps & {
   orders: Maybe<ShareOrder>[] | undefined;
   setSaleFormModal: Dispatch<SetStateAction<boolean>>;
 };
 
 const ShareSaleList: FC<ShareSaleListProps> = ({
   offering,
-  orders: offers,
+  orders,
   swapContractAddress,
   shareContractAddress,
   paymentTokenAddress,
@@ -23,6 +21,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   setSaleFormModal,
   setShareSaleManagerModal,
   refetchMainContracts,
+  refetchOffering,
 }) => {
   const saleButton = (
     <Button
@@ -35,14 +34,14 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     </Button>
   );
 
-  if (offers && offers.length < 1) {
+  if (orders && orders.length < 1) {
     return <>{saleButton}</>;
   }
 
   return (
     <>
       <h2 className="text-xl text-blue-900 font-semibold">{`Offers`}</h2>
-      {offers?.map((order, i) => {
+      {orders?.map((order, i) => {
         return (
           <div key={i}>
             <ShareSaleListItem
@@ -58,6 +57,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               refetchMainContracts={refetchMainContracts}
               paymentTokenDecimals={paymentTokenDecimals}
               shareContractAddress={shareContractAddress}
+              refetchOffering={refetchOffering}
             />
           </div>
         );

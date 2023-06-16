@@ -18,6 +18,7 @@ import { Maybe, Offering, OfferingParticipant } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
@@ -67,9 +68,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   const { id, name, details, documents, offeringEntity } = offering;
   const sharesIssued = details?.numUnits;
 
-  const outstanding = sharesOutstanding ?? 0;
-  const sharesUnissued = sharesIssued ? sharesIssued - outstanding : 0;
-
+  const sharesUnissued = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
   const offerCalculator = (numUnits: number, price: number) => {
     return numUnits * price;
   };
@@ -157,7 +156,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
       >
         {({ isSubmitting, values }) => (
           <>
-            <Button className="w-full" onClick={() => setIsAsk(!isAsk)}>
+            <Button className="w-full p-2 border-2 rounded-md" onClick={() => setIsAsk(!isAsk)}>
               {`Switch to ${isAsk ? 'Bid' : 'Ask'}`}
             </Button>
 
@@ -248,7 +247,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                               }}
                             >
                               <div className="flex text-left">
-                                {permittedEntity?.name} {`accepts this offering's Terms and Conditions`}
+                                {`I accept this offering's Terms and Conditions`}
                                 <div className="ml-2">
                                   {tocOpen ? (
                                     <FontAwesomeIcon icon="chevron-up" />
@@ -293,9 +292,9 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                           name="approvalRequired"
                           checked={values.approvalRequired}
                           sideLabel
-                          labelText={`${permittedEntity?.name} understands that this ${
-                            isAsk ? 'sale' : 'purchase'
-                          } requires approval from ${offeringEntity?.legalName}.`}
+                          labelText={`I understand that this ${isAsk ? 'sale' : 'purchase'} requires approval from ${
+                            offeringEntity?.legalName
+                          }.`}
                         />
                       </div>
                     </>

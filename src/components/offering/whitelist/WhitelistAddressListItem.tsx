@@ -37,7 +37,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   return (
     <div
       className={cn(
-        isYou && 'bg-gray-50',
+        isYou && 'bg-gray-100',
         'relative md:grid grid-cols-11 gap-3 items-center  p-3  border-2 rounded-lg hover:shadow-md cursor-pointer z-0'
       )}
       onClick={(e) => {

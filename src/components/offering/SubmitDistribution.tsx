@@ -76,6 +76,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         }
       }}
       onSubmit={async (values, { setSubmitting }) => {
+        setSubmitting(true);
         await submitDistribution({
           distributionContractAddress,
           amount: parseInt(values.amount, 10),
@@ -87,6 +88,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
           setButtonStep,
           addDistribution,
         });
+        setSubmitting(false);
       }}
     >
       {({ isSubmitting, values }) => (
@@ -102,7 +104,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
             />
             <div className="mt-4" />
 
-            {allowance && allowance < parseInt(values.amount, 10) ? (
+            {!allowance || allowance < parseInt(values.amount, 10) ? (
               <SetAllowanceForm
                 paymentTokenAddress={distributionTokenAddress}
                 paymentTokenDecimals={distributionTokenDecimals}

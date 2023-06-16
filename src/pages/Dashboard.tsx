@@ -1,15 +1,15 @@
+import Card from '@src/components/cards/Card';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import CreateOrganization from '@src/components/organization/CreateOrganization';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC, useState } from 'react';
+import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import CreateOrganization from '@src/components/organization/CreateOrganization';
-import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { OfferingParticipant } from 'types';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import Card from '@src/components/cards/Card';
 
 const Dashboard: FC = () => {
   const { data: session, status } = useSession();

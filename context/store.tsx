@@ -1,5 +1,5 @@
 // store.js
-import React, { ReactNode, createContext, useReducer } from 'react';
+import React, { createContext, ReactNode, useReducer } from 'react';
 
 export interface ApplicationStoreProps {
   ManagerSidebarOpen: boolean;

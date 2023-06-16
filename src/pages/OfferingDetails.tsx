@@ -18,14 +18,17 @@ import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useAccount, useChainId } from 'wagmi';
+import { useAccount, useChainId, useContractRead } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
+import { dividendContractABI } from '@src/web3/generated';
+import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
+import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
 import { useQuery } from '@apollo/client';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
@@ -34,10 +37,10 @@ import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 type OfferingDetailsProps = {
   offering: Offering;
-  refetch: () => void;
+  refetchOffering: () => void;
 };
 
-const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
+const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }) => {
   const { address: userWalletAddress } = useAccount();
   const { data: session } = useSession();
   const userId = session?.user?.id;
@@ -49,6 +52,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
+  const distributionPaymentToken = getCurrencyOption(details?.investmentCurrency);
+  const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
+  const distributionPaymentTokenDecimals = distributionPaymentToken?.decimals;
 
   const { data: issuanceData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
     variables: { shareContractAddress: shareContractAddress },
@@ -84,6 +91,14 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
     isLoading: swapIsLoading,
     refetchSwapContract,
   } = useSwapContractInfo(swapContractAddress);
+
+  const { data: distributionData } = useContractRead({
+    address: distributionContractAddress,
+    abi: dividendContractABI,
+    functionName: 'balances',
+    args: [distributionPaymentTokenAddress as String0x],
+  });
+  const totalDistributed = toNormalNumber(distributionData, distributionPaymentTokenDecimals);
 
   const refetchMainContracts = () => {
     refetchShareContract();
@@ -190,10 +205,17 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                   sharesOutstanding: sharesOutstanding,
                   myShares: myShares,
                   paymentToken: paymentTokenAddress,
+                  totalDistributed: totalDistributed,
                 }}
               />
             ) : isOfferingManager ? (
-              <BasicOfferingDetailsForm offeringId={id} operatingCurrency={offeringEntity?.operatingCurrency} />
+              !userWalletAddress ? (
+                <div className="flex mt-4">
+                  <ChooseConnectorButton buttonText={'Connect wallet to continue'} large />
+                </div>
+              ) : (
+                <BasicOfferingDetailsForm offeringId={id} operatingCurrency={offeringEntity?.operatingCurrency} />
+              )
             ) : (
               'This offering has no details yet.'
             )}
@@ -254,6 +276,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetch }) => {
                         isContractOwner={isContractOwner}
                         partitions={partitions}
                         refetchMainContracts={refetchMainContracts}
+                        refetchOffering={refetchOffering}
                         permittedEntity={offeringParticipant}
                         currentSalePrice={currentSalePrice}
                         myShares={myShares}

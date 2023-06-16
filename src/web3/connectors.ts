@@ -48,12 +48,78 @@ declare let window: any;
 export const SupportedChains = [mainnet, sepolia, goerli, polygon, polygonMumbai];
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
-  // publicProvider(),
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
 ]);
 
+export type SupportedEthConnectorType = {
+  id: string;
+  name: string;
+  logo: string;
+  experimental: boolean;
+  description: string;
+  connector: any;
+};
+
+export const SupportedEthConnectors = [
+  {
+    id: 'injected',
+    name: 'MetaMask',
+    logo: '/assets/images/wallet-logos/metamask-fox.svg',
+    experimental: false,
+    description: 'Mobile app and extension',
+    connector: new InjectedConnector({
+      chains: SupportedChains,
+    }),
+  },
+  {
+    id: 'coinbasewallet',
+    name: 'Coinbase Wallet',
+    logo: '/assets/images/wallet-logos/coinbasewallet-logo.png',
+    isSquare: true,
+    experimental: false,
+    description: 'Link to Coinbase Wallet',
+    connector: new CoinbaseWalletConnector({
+      chains: SupportedChains,
+      options: {
+        appName: 'Syndicate by Cooperativ Labs',
+        jsonRpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+      },
+    }),
+  },
+  {
+    id: 'walletconnect',
+    name: 'WalletConnect',
+    logo: '/assets/images/wallet-logos/walletconnect-logo.svg',
+    experimental: false,
+    description: 'Link wallet with a QR code',
+    connector: new WalletConnectConnector({
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+        isNewChainsStale: false,
+      },
+    }),
+  },
+  {
+    id: 'ledger',
+    name: 'Ledger Connect',
+    logo: '/assets/images/wallet-logos/ledgerconnect-alternative.webp',
+    experimental: false,
+    description: 'Connect to Ledger',
+    connector: new LedgerConnector({
+      chains: SupportedChains,
+    }),
+  },
+];
+
+const setConfigConnectors = (connectors: SupportedEthConnectorType[]) => {
+  return connectors.map((connector) => {
+    return connector.connector;
+  });
+};
+
 export const wagmiConfig = createConfig({
   autoConnect: true,
+  connectors: setConfigConnectors(SupportedEthConnectors),
   publicClient,
   webSocketPublicClient,
 });
@@ -188,57 +254,6 @@ export const CustomWalletConnectConnector = async () => {
   });
 };
 
-export const SupportedEthConnectors = [
-  {
-    id: 'injected',
-    name: 'MetaMask',
-    logo: '/assets/images/wallet-logos/metamask-fox.svg',
-    experimental: false,
-    description: 'Mobile app and extension',
-    connector: new InjectedConnector({
-      chains: SupportedChains,
-    }),
-  },
-  {
-    id: 'coinbasewallet',
-    name: 'Coinbase Wallet',
-    logo: '/assets/images/wallet-logos/coinbasewallet-logo.png',
-    isSquare: true,
-    experimental: false,
-    description: 'Link to Coinbase Wallet',
-    connector: new CoinbaseWalletConnector({
-      chains: SupportedChains,
-      options: {
-        appName: 'Syndicate by Cooperativ Labs',
-        jsonRpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
-      },
-    }),
-  },
-  {
-    id: 'walletconnect',
-    name: 'WalletConnect',
-    logo: '/assets/images/wallet-logos/walletconnect-logo.svg',
-    experimental: false,
-    description: 'Link wallet with a QR code',
-    connector: new WalletConnectConnector({
-      options: {
-        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-        isNewChainsStale: false,
-      },
-    }),
-  },
-  {
-    id: 'ledger',
-    name: 'Ledger Connect',
-    logo: '/assets/images/wallet-logos/ledgerconnect-alternative.webp',
-    experimental: false,
-    description: 'Connect to Ledger',
-    connector: new LedgerConnector({
-      chains: SupportedChains,
-    }),
-  },
-];
-
 export const GetEthConnector = (id: 'injected' | 'walletconnect' | 'coinbase' | 'ledger') => {
   switch (id) {
     case 'injected':
@@ -266,23 +281,23 @@ export const disconnectWallet = async (callback?: () => void) => {
 
 // ================ ALGO ================
 
-export const SupportedAlgoConnectors = [
-  {
-    id: 'pera',
-    name: 'Pera Wallet',
-    logo: '/assets/images/wallet-logos/pera-logo.png',
-    experimental: false,
-    description: 'Connect to Pera app',
-  },
-  {
-    id: 'myAlgo',
-    name: 'MyAlgo',
-    logo: '/assets/images/wallet-logos/myalgo-logo.png',
-    isSquare: true,
-    experimental: false,
-    description: 'Connect to MyAlgo',
-  },
-];
+// export const SupportedAlgoConnectors = [
+//   {
+//     id: 'pera',
+//     name: 'Pera Wallet',
+//     logo: '/assets/images/wallet-logos/pera-logo.png',
+//     experimental: false,
+//     description: 'Connect to Pera app',
+//   },
+//   {
+//     id: 'myAlgo',
+//     name: 'MyAlgo',
+//     logo: '/assets/images/wallet-logos/myalgo-logo.png',
+//     isSquare: true,
+//     experimental: false,
+//     description: 'Connect to MyAlgo',
+//   },
+// ];
 
 // const useMyAlgo = async (providerEnv) => {
 //   // We delete the wallet to guarantee we get MyAlgo

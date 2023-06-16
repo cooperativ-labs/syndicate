@@ -142,7 +142,8 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                     }}
                   >
                     <div className="flex">
-                      {permittedEntity?.name} {`has read this offering's Risks & Considerations`}
+                      {permittedEntity?.name ? `${permittedEntity?.name} has` : 'I have'}
+                      {` read this offering's Risks & Considerations`}
                       <div className="ml-2">
                         {disclosuresOpen ? (
                           <FontAwesomeIcon icon="chevron-up" />
@@ -202,7 +203,8 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                   >
                     <div className="flex">
                       <div className="">
-                        {permittedEntity?.name} {`accepts this offering's Terms and Conditions`}
+                        {permittedEntity?.name ? `${permittedEntity?.name} accepts` : 'I accept'}
+                        {` this offering's Terms and Conditions`}
                       </div>
                       <div className="ml-2">
                         {tocOpen ? <FontAwesomeIcon icon="chevron-up" /> : <FontAwesomeIcon icon="chevron-down" />}
