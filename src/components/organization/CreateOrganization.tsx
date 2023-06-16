@@ -1,6 +1,7 @@
 import React, { FC, useContext, useState } from 'react';
 
 import { Form, Formik } from 'formik';
+import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
@@ -19,9 +20,9 @@ export type CreateOrganizationType = {
 };
 
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const userId = session?.user.id;
-  const [addOrganization, { data, error, loading }] = useMutation(ADD_ORGANIZATION);
+  const [addOrganization, { data, error }] = useMutation(ADD_ORGANIZATION);
   const [logoUrl, setLogoUrl] = useState<string>('');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;

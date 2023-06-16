@@ -16,7 +16,6 @@ const Dashboard: FC = () => {
   const { address: userWalletAddress } = useAccount();
   const { data: userData, error } = useQuery(GET_USER, { variables: { id: session?.user.id } });
   const user = userData?.queryUser[0];
-  const [showCreateOrganization, setShowCreateOrganization] = useState(false);
 
   const organizations = cleanOrganizationArray(user?.organizations);
   const hasOrganizations = organizations?.length > 0;

@@ -12,7 +12,7 @@ export const GET_ORGANIZATION = gql`
 
 export const ADD_ORGANIZATION = gql`
   ${CORE_ORGANIZATION_FIELDS}
-  mutation AddLegalORGANIZATION(
+  mutation AddLegalOrganization(
     $currentDate: DateTime!
     $userId: ID!
     $name: String!

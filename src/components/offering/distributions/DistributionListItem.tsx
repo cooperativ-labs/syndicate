@@ -1,5 +1,5 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import FormButton from '@src/components/buttons/FormButton';
+
 import React, { FC } from 'react';
 import { Address, useAccount, useChainId, useContractRead } from 'wagmi';
 import { claimDistribution } from '@src/web3/contractDistributionCall';
@@ -7,11 +7,12 @@ import { Currency, CurrencyCode, Maybe, OfferingDistribution } from 'types';
 import { dividendContractABI } from '@src/web3/generated';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
+import cn from 'classnames';
 
 export type DistributionListItemProps = {
   distributionContractAddress: String0x;
@@ -28,6 +29,8 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
   walletAddress,
 }) => {
   const chainId = useChainId();
+  const { address: userWalletAddress } = useAccount();
+  const isMyDistribution = userWalletAddress === walletAddress;
 
   const { transactionHash, contractIndex } = distribution;
 
@@ -77,16 +80,26 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
       </div>
 
       <div className="col-span-2 flex mt-3 md:mt-0 justify-end">
-        <FormButton onClick={() => handleClaim()}>
-          <LoadingButtonText
-            state={buttonStep}
-            idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
-            submittingText="Submitting..."
-            confirmedText="Confirmed!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
-          />
-        </FormButton>
+        {isMyDistribution ? (
+          <Button
+            onClick={() => handleClaim()}
+            disabled={!isMyDistribution}
+            className={cn(
+              `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white text-sm p-3 px-6 font-semibold rounded-md relative`
+            )}
+          >
+            <LoadingButtonText
+              state={buttonStep}
+              idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
+              submittingText="Submitting..."
+              confirmedText="Confirmed!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
+          </Button>
+        ) : (
+          <div> {numberWithCommas(amountToClaim, 2)} to claim</div>
+        )}
       </div>
     </div>
   );
