@@ -1,8 +1,16 @@
 import { ApolloClient, createHttpLink, InMemoryCache } from '@apollo/client';
 import { useMemo } from 'react';
 
+const getEndpoint = () => {
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
+  } else {
+    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT_UNSECURED;
+  }
+};
+
 const publichttpLink = createHttpLink({
-  uri: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT,
+  uri: getEndpoint(),
   credentials: 'same-origin',
 });
 
@@ -42,4 +50,4 @@ export function initializeApollo(initialState = null) {
 //   return store;
 // }
 
-// export default useApollo;
+export default initializeApollo;

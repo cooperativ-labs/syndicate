@@ -146,7 +146,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
           myShares={myShares}
           swapContractAddress={swapContractAddress}
           swapApprovalsEnabled={swapApprovalsEnabled}
-          permittedEntity={offeringParticipant}
           isContractOwner={false}
           currentSalePrice={currentSalePrice}
           setModal={setSaleFormModal}
@@ -185,7 +184,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               offering={offering}
               orders={contractOrders}
               swapContractAddress={swapContractAddress}
-              permittedEntity={offeringParticipant}
               isContractOwner={false}
               setShareSaleManagerModal={setShareSaleManagerModal}
               setSaleFormModal={setSaleFormModal}
@@ -205,7 +203,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               isOfferingManager={false}
               contractViewDetails={{
                 sharesOutstanding: sharesOutstanding,
-                totalDistributed: fundsDistributed,
+                totalDistributed: undefined,
                 myShares: myShares,
                 paymentToken: paymentTokenAddress,
               }}

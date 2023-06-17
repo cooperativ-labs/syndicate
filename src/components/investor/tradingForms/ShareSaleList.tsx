@@ -16,7 +16,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
-  permittedEntity,
+
   isContractOwner,
   setSaleFormModal,
   setShareSaleManagerModal,
@@ -51,7 +51,6 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}
-              permittedEntity={permittedEntity}
               isContractOwner={isContractOwner}
               setShareSaleManagerModal={setShareSaleManagerModal}
               refetchMainContracts={refetchMainContracts}

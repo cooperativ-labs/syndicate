@@ -50,7 +50,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   partitions,
   refetchMainContracts,
   refetchOffering,
-  permittedEntity,
+
   currentSalePrice,
   myShares,
   userId,
@@ -94,7 +94,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             swapContractAddress={swapContractAddress}
             paymentTokenAddress={paymentTokenAddress}
             paymentTokenDecimals={paymentTokenDecimals}
-            permittedEntity={permittedEntity}
             isContractOwner={isContractOwner === !!isOfferingManager}
             setShareSaleManagerModal={setShareSaleManagerModal}
             setSaleFormModal={setSaleFormModal}
@@ -140,7 +139,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             walletAddress={userWalletAddress as String0x}
             myShares={myShares}
             swapContractAddress={swapContractAddress}
-            permittedEntity={permittedEntity}
             isContractOwner={isContractOwner === !!isOfferingManager}
             currentSalePrice={currentSalePrice}
             setModal={setSaleFormModal}
@@ -154,7 +152,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             sharesIssued={sharesIssued}
             sharesOutstanding={sharesOutstanding}
             offeringId={offering.id}
-            offeringMin={offeringMin}
             priceStart={offering.details?.priceStart}
             swapContractAddress={swapContractAddress}
             shareContractId={shareContractId}
@@ -287,45 +284,3 @@ const OfferingActions: FC<OfferingActionsProps> = ({
 };
 
 export default OfferingActions;
-
-{
-  /* <Button
-            onClick={() => {
-              setShowActionPanel('distribute');
-            }}
-            className={standardClass}
-          >
-            Create Distribution
-          </Button> */
-}
-{
-  /* {myDistToClaim ? (
-            <>
-              <FormButton
-                type="submit"
-                disabled={myDistToClaim === 0}
-                onClick={() =>
-                  claimDistribution(
-                    reachLib,
-                    shareContractAddress,
-                    distributionId,
-                    setButtonStep,
-                    setRecallContract,
-                    updateDistribution
-                  )
-                }
-              >
-                <LoadingButtonText
-                  state={buttonStep}
-                  idleText={`${numberWithCommas(myDistToClaim, 2)} AVAILABLE TO CLAIM`}
-                  submittingText="Claiming - This can take time. Please do not refresh."
-                  confirmedText="Confirmed! (check your wallet)"
-                  failedText="Transaction failed"
-                  rejectedText="You rejected the transaction. Click here to try again."
-                />
-              </FormButton>
-            </>
-          ) : (
-            <></>
-          )} */
-}

@@ -29,9 +29,7 @@ export type PostBidAskFormProps = {
   partitions: String0x[];
   paymentTokenDecimals: Maybe<number> | undefined;
   myShares: number | undefined;
-  permittedEntity: Maybe<OfferingParticipant> | undefined;
   isContractOwner: boolean;
-
   sharesOutstanding: number | undefined;
   currentSalePrice: Maybe<number> | undefined;
 };
@@ -52,7 +50,6 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   partitions,
   paymentTokenDecimals,
   myShares,
-  permittedEntity,
   isContractOwner,
   offeringMin,
   sharesOutstanding,
@@ -108,9 +105,6 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             }
             if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
               errors.minUnits = 'Minimum must be less than maximum';
-            }
-            if (minUnits && offeringMin && minUnits < offeringMin) {
-              errors.minUnits = `Must be at least ${offeringMin}`;
             }
           } else if (isAsk && numUnits && myShares && numUnits > myShares) {
             errors.numUnits = `You cannot sell more than ${myShares} shares.`;

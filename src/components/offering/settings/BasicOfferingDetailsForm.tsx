@@ -34,8 +34,8 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
           initialPrice: '',
           investmentCurrencyCode: '' as CurrencyCode,
           numUnits: '',
-          minUnitsPerInvestor: '',
-          maxUnitsPerInvestor: '',
+          // minUnitsPerInvestor: '',
+          // maxUnitsPerInvestor: '',
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
@@ -58,8 +58,8 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
               offeringId: offeringId,
               offeringDetailsType: OfferingDetailsType.RealEstate,
               numUnits: values.numUnits,
-              minUnitsPerInvestor: values.minUnitsPerInvestor,
-              maxUnitsPerInvestor: values.maxUnitsPerInvestor,
+              // minUnitsPerInvestor: values.minUnitsPerInvestor,
+              // maxUnitsPerInvestor: values.maxUnitsPerInvestor,
               investmentCurrencyCode: values.investmentCurrencyCode,
               distributionCurrencyCode: values.investmentCurrencyCode,
               priceStart: parseInt(values.initialPrice, 10),
@@ -104,7 +104,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
                 required
               />
             </div>
-            <Input
+            {/* <Input
               className={`${defaultFieldDiv} col-span-1`}
               labelText="Minimum number of shares per investor"
               name="minUnitsPerInvestor"
@@ -119,7 +119,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
               type="number"
               placeholder="e.g. 120"
               required
-            />
+            /> */}
 
             <NonInput className={`pt-3 col-span-1 pl-1`} labelText={'Total raise'}>
               <>

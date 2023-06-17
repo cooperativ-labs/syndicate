@@ -16,7 +16,6 @@ import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { submitSwap } from '@src/web3/contractSwapCalls';
-import { toContractNumber, toNormalNumber } from '@src/web3/util';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
@@ -31,7 +30,6 @@ type WithAdditionalProps = PostInitialSaleProps & {
   sharesIssued: Maybe<number> | undefined;
   priceStart: Maybe<number> | undefined;
   offeringId: string;
-  offeringMin: Maybe<number> | undefined;
   shareContractId: string;
   swapContractAddress: String0x | undefined;
   refetchAllContracts: () => void;
@@ -41,7 +39,6 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   sharesIssued,
   sharesOutstanding,
   offeringId,
-  offeringMin,
   priceStart,
   swapContractAddress,
   shareContractId,
@@ -104,9 +101,6 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         }
         if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
           errors.minUnits = 'Minimum must be less than maximum';
-        }
-        if (minUnits && offeringMin && minUnits < offeringMin) {
-          errors.minUnits = `Must be at least ${offeringMin}`;
         }
         if (!values.partition) {
           errors.partition = 'Please select a partition';

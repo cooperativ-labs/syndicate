@@ -116,11 +116,17 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
         <div className="text-xs text-gray-500 whitespace-nowrap">{`${percentPledged}% funded`}</div>
       </div>
       {/* <hr className="mt-5 mb-2 col-span-3" /> */}
-      <div className="my-8 flex flex-col gap-4">
-        <ShareOfferPanelItem title="Projected IRR" note="This is an estimate. Returns are not guaranteed.">
-          {projectedIrr ? `${projectedIrr / 100}` : 'undetermined '}
-          {projectedIrrMax ? ` - ${projectedIrrMax / 100}` : ''}%
-        </ShareOfferPanelItem>
+      <div className="my-2 flex flex-col gap-4">
+        {projectedIrr ? (
+          <div className="my-6">
+            <ShareOfferPanelItem title="Projected IRR" note="This is an estimate. Returns are not guaranteed.">
+              {`${projectedIrr / 100}`}
+              {projectedIrrMax ? ` - ${projectedIrrMax / 100}` : ''}%
+            </ShareOfferPanelItem>
+          </div>
+        ) : (
+          <></>
+        )}
         {preferredReturn ? (
           <ShareOfferPanelItem title="Preferred Return" note="Cumulative, Non-Compounding">
             <div className="col-span-1">{preferredReturn / 100}% </div>

@@ -36,7 +36,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
-  permittedEntity,
+
   isApproved,
   isDisapproved,
   isCancelled,
@@ -92,7 +92,6 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
             price={price}
             myBacBalance={myBacBalance}
             swapContractAddress={swapContractAddress}
-            permittedEntity={permittedEntity}
             refetchAllContracts={refetchAllPlusAccepted}
           />
         </div>

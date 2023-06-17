@@ -1,10 +1,9 @@
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import Select from '../form-components/Select';
+
 import { currentDate } from '@utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import CreateEntity from '../entity/CreateEntity';
 import EntitySelector from '../form-components/EntitySelector';
@@ -44,43 +43,9 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
     setAlerted(true);
   }
 
-  // const addParticipant = async (offeringId, offeringEntity) => {
-  //   try {
-  //     await addOfferingParticipant({
-  //       variables: {
-  //         currentDate: currentDate,
-  //         addressOfferingId: userWalletAddress + offeringId,
-  //         chainId: chainId,
-  //         offeringId: offeringId,
-  //         name: `${offeringEntity.fullName}`,
-  //         applicantId: offeringEntity.id,
-  //         walletAddress: userWalletAddress,
-  //         permitted: false,
-  //       },
-  //     });
-  //     router.push(`/offerings/${offeringId}`);
-  //   } catch (e) {
-  //     return;
-  //     // alert(`Oops. Looks like something went wrong with adding you as a participant: ${e.message}`);
-  //   }
-  // };
-
-  // const offeringId = data?.addOffering.offering[0].id;
-  // const offeringEntity = data?.addOffering.offering[0].offeringEntity;
-
-  // if (offeringId && offeringEntity && !alerted) {
-  //   addParticipant(offeringId, offeringEntity);
-  // }
-
-  if (data && !alerted) {
-    const offeringId = data?.addOffering.offering[0].id;
-    setAlerted(true);
-    router.push(`/${organization.id}/offerings/${offeringId}`);
-  }
-
   const handleSubmit = async (values: { managingEntityId: string; offeringEntityId: string; name: string }) => {
     try {
-      await addOffering({
+      const result = await addOffering({
         variables: {
           currentDate: currentDate,
           managingEntityId: values.managingEntityId,
@@ -90,6 +55,8 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
           brandColor: '#275A8F',
         },
       });
+      const offeringId = result.data?.addOffering.offering[0].id;
+      router.push(`/${organization.id}/offerings/${offeringId}`);
     } catch (e: any) {
       alert(`Oops. Looks like something went wrong: ${e.message}`);
     }

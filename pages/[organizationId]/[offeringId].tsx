@@ -65,10 +65,12 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       variables: { id: offeringId },
     });
     const result = data.getOffering;
+
     return {
       props: { result },
     };
   } catch (error) {
+    console.log('error', error);
     // throw new Error(error);
     return {
       props: {

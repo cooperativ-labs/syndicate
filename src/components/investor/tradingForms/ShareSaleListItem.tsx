@@ -19,7 +19,7 @@ export type OrderStatusType = {
 export type ShareSaleListItemProps = SaleMangerPanelProps & {
   offering: Offering;
   shareContractAddress: String0x | undefined;
-  permittedEntity: Maybe<OfferingParticipant> | undefined;
+
   setShareSaleManagerModal: (value: boolean) => void;
   refetchMainContracts: () => void;
 };
@@ -38,7 +38,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
-  permittedEntity,
+
   isContractOwner,
   setShareSaleManagerModal,
   refetchMainContracts,
@@ -140,7 +140,6 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   price={price as number}
                   swapContractAddress={swapContractAddress as String0x}
                   isAsk={isAskOrder as boolean}
-                  permittedEntity={permittedEntity as OfferingParticipant}
                   refetchAllContracts={refetchAllContracts as () => void}
                   isApproved={isApproved as boolean}
                   isDisapproved={isDisapproved as boolean}

@@ -24,7 +24,7 @@ import { useSession } from 'next-auth/react';
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import { dividendContractABI } from '@src/web3/generated';
-import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
+import { getCurrencyOption } from '@src/utils/enumConverters';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
@@ -55,7 +55,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
   const distributionPaymentToken = getCurrencyOption(details?.investmentCurrency);
   const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
-  const distributionPaymentTokenDecimals = distributionPaymentToken?.decimals;
+  const distributionPaymentTokenDecimals = distributionPaymentToken ? distributionPaymentToken?.decimals : 18;
 
   const { data: issuanceData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
     variables: { shareContractAddress: shareContractAddress },
@@ -277,7 +277,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                         partitions={partitions}
                         refetchMainContracts={refetchMainContracts}
                         refetchOffering={refetchOffering}
-                        permittedEntity={offeringParticipant}
                         currentSalePrice={currentSalePrice}
                         myShares={myShares}
                       />

@@ -25,7 +25,7 @@ export type SharePurchaseRequestProps = {
   order: ShareOrder;
   price: number;
   swapContractAddress: String0x;
-  permittedEntity: OfferingParticipant;
+
   refetchAllContracts: () => void;
 };
 
@@ -35,7 +35,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
   price,
   myBacBalance,
   swapContractAddress,
-  permittedEntity,
+
   refetchAllContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
@@ -142,8 +142,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                     }}
                   >
                     <div className="flex">
-                      {permittedEntity?.name ? `${permittedEntity?.name} has` : 'I have'}
-                      {` read this offering's Risks & Considerations`}
+                      {`I have read this offering's Risks & Considerations`}
                       <div className="ml-2">
                         {disclosuresOpen ? (
                           <FontAwesomeIcon icon="chevron-up" />
@@ -202,10 +201,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
                     }}
                   >
                     <div className="flex">
-                      <div className="">
-                        {permittedEntity?.name ? `${permittedEntity?.name} accepts` : 'I accept'}
-                        {` this offering's Terms and Conditions`}
-                      </div>
+                      <div className="">{`I accept this offering's Terms and Conditions`}</div>
                       <div className="ml-2">
                         {tocOpen ? <FontAwesomeIcon icon="chevron-up" /> : <FontAwesomeIcon icon="chevron-down" />}
                       </div>
