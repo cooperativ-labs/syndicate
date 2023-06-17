@@ -2,21 +2,16 @@
 
 //here we need a way to set endpoint bu something other than NODE_ENV
 const getEndpoint = () => {
-  switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-    case 'production':
-      return '--';
-    case 'staging':
-      return '--';
-    default:
-      return 'http://localhost:8080/graphql';
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
+  } else {
+    return 'http://localhost:8080/graphql';
   }
 };
 
-const GRAPHQL_ENDPOINT = getEndpoint();
-
 module.exports = {
   env: {
-    NEXT_PUBLIC_DGRAPH_ENDPOINT: GRAPHQL_ENDPOINT,
+    NEXT_PUBLIC_DGRAPH_ENDPOINT: getEndpoint(),
   },
   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
     //this is to fix an issue with webpack not finding the electron module

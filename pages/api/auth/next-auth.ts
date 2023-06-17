@@ -9,6 +9,14 @@ import { AuthOptions, Session, User } from 'next-auth';
 import * as jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
 
+const getEndpoint = () => {
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
+  } else {
+    return 'http://172.20.0.4:8080/graphql';
+  }
+};
+
 const options: AuthOptions = {
   session: {
     strategy: 'jwt',
@@ -121,7 +129,7 @@ const options: AuthOptions = {
   ],
 
   adapter: DgraphAdapter({
-    endpoint: process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT as string,
+    endpoint: getEndpoint() as string, //referencing process.env from next.config.js does not work with localhost
     authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY as string,
     authHeader: process.env.NEXT_PUBLIC_AUTH_HEADER,
     jwtSecret: process.env.NEXT_PUBLIC_SECRET,
