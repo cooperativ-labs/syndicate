@@ -18,5 +18,4 @@
     NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'cooperativ-filestore'
     NEXT_PUBLIC_AUTH_HEADER = 'X-Auth-Token'
     NEXT_PUBLIC_DGRAPH_ENDPOINT = 'https://blue-surf-960058.us-east-1.aws.cloud.dgraph.io/graphql'
-    NEXT_PUBLIC_DGRAPH_HEADER_KEY = "YmJlNDcwNjUxMDcxMGVjMWMxMDU5NTk3NTFkMjg5YjQ="
 
