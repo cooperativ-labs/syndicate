@@ -247,7 +247,7 @@ export const IssuanceTradeOptions = [
   { value: ShareIssuanceTradeType.Issue, name: 'Issuance', color: 'green-600' },
   { value: ShareIssuanceTradeType.Forced, name: 'Forced', color: 'red-600' },
   { value: ShareIssuanceTradeType.Transfer, name: 'Transfer', color: 'black' },
-  { value: ShareIssuanceTradeType.Disapprove, name: 'Disapproval', color: 'red-600' },
+  // { value: ShareIssuanceTradeType.Disapprove, name: 'Disapproval', color: 'red-600' },
 ];
 
 export const getIssuanceTradeOption = (tradeType: ShareIssuanceTradeType) => {
