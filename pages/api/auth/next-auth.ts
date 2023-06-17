@@ -13,7 +13,7 @@ const getEndpoint = () => {
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
     return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
   } else {
-    return 'http://172.20.0.4:8080/graphql';
+    return process.env.DGRAPH_PATH;
   }
 };
 
