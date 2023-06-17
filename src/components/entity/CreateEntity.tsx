@@ -1,13 +1,14 @@
 import React, { FC, useEffect, useState } from 'react';
 
 import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
-import { Form, Formik } from 'formik';
+import { Form, Formik, useFormikContext } from 'formik';
 
 import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
+import toast from 'react-hot-toast';
 import { CurrencyCode, LegalEntity, Organization } from 'types';
 import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
@@ -55,8 +56,6 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
     return <></>;
   }
 
-  const entityOptions = organization && getEntityOptionsList(organization.legalEntities as LegalEntity[]);
-
   const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
     normalizeGeoAddress(autocompleteResults);
 
@@ -101,31 +100,35 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         }
         return errors;
       }}
-      onSubmit={(values, { setSubmitting }) => {
+      onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-
-        addLegalEntity({
-          variables: {
-            organizationId: organization.id,
-            displayName: values.legalName,
-            legalName: values.legalName,
-            entityPurpose: values.entityPurpose,
-            addressLabel: 'Primary Operating Address',
-            addressLine1: firstAddressLine,
-            addressLine2: secondAddressLine,
-            city: city,
-            stateProvince: state,
-            postalCode: postalCode,
-            country: country,
-            lat: latLang.lat,
-            lng: latLang.lng,
-            operatingCurrency: values.operatingCurrency,
-            jurCountry: values.jurCountry,
-            jurProvince: values.jurProvince,
-            type: values.type,
-            currentDate: currentDate,
-          },
-        });
+        try {
+          await addLegalEntity({
+            variables: {
+              organizationId: organization.id,
+              displayName: values.legalName,
+              legalName: values.legalName,
+              entityPurpose: values.entityPurpose,
+              addressLabel: 'Primary Operating Address',
+              addressLine1: firstAddressLine,
+              addressLine2: secondAddressLine,
+              city: city,
+              stateProvince: state,
+              postalCode: postalCode,
+              country: country,
+              lat: latLang.lat,
+              lng: latLang.lng,
+              operatingCurrency: values.operatingCurrency,
+              jurCountry: values.jurCountry,
+              jurProvince: values.jurProvince,
+              type: values.type,
+              currentDate: currentDate,
+            },
+          });
+          actionOnCompletion();
+        } catch (error: any) {
+          toast.error(error.message);
+        }
         setSubmitting(false);
       }}
     >

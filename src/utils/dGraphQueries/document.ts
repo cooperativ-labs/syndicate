@@ -21,7 +21,7 @@ export const ADD_OFFERING_DOCUMENT = gql`
   ${CORE_DOCUMENT_FIELDS}
   mutation AddOfferingDocument(
     $offeringId: ID!
-    $ownerEntityId: ID!
+    $entityId: ID!
     $offeringUniqueId: String!
     $currentDate: DateTime!
     $title: String!
@@ -40,7 +40,7 @@ export const ADD_OFFERING_DOCUMENT = gql`
         type: $docType
         format: $format
         offering: { id: $offeringId }
-        owner: { id: $ownerEntityId }
+        owner: { id: $entityId }
         offeringUniqueId: $offeringUniqueId
       }
       upsert: true

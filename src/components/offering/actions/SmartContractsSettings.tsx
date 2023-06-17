@@ -6,6 +6,7 @@ import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import DistributionContractSettings from './DistributionContractSettings';
 import NewClassForm from './NewClassForm';
+import ShareContractSettings from './ShareContractSettings';
 import SwapContractSettings, {
   SwapContractSettingsProps,
   SwapContractsSettingsAdditional,
@@ -31,25 +32,12 @@ const SmartContractsSettings: FC<SmartContractsSettingsAdditional> = ({
   investmentCurrency,
   refetchMainContracts,
 }) => {
-  const chainId = useChainId();
   const shareContract = contractSet?.shareContract;
   const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
   return (
     <>
-      {!shareContract ? (
-        user && <LinkLegal user={user} offering={offering} />
-      ) : (
-        <div className="flex items-center">
-          1. Share contract:{' '}
-          <FormattedCryptoAddress
-            chainId={chainId}
-            className="text-base font-medium ml-2"
-            showFull
-            withCopy
-            address={shareContractAddress}
-          />{' '}
-        </div>
-      )}
+      <ShareContractSettings user={user} offering={offering} shareContract={shareContract} partitions={partitions} />
+
       <hr className="my-5" />
       <SwapContractSettings
         refetchMainContracts={refetchMainContracts}
@@ -58,23 +46,13 @@ const SmartContractsSettings: FC<SmartContractsSettingsAdditional> = ({
         contractSet={contractSet}
         investmentCurrency={investmentCurrency}
         offering={offering}
-        chainId={chainId}
       />
       <hr className="my-5" />
       <DistributionContractSettings
         investmentCurrency={investmentCurrency}
         offering={offering}
         contractSet={contractSet}
-        chainId={chainId}
       />
-      <hr className="my-5" />
-      4. Share classes:
-      {partitions?.map((partition) => (
-        <div key={partition} className="flex items-center">
-          {stringFromBytes32(partition)}
-        </div>
-      ))}
-      {shareContractAddress && shareContract && <NewClassForm shareContractId={shareContract.id} />}
     </>
   );
 };

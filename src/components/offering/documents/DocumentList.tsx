@@ -1,51 +1,29 @@
 import DocumentAdder from './DocumentAdder';
 import DocumentListItem from './DocumentListItem';
-import React, { FC, useContext, useState } from 'react';
-import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import React, { FC } from 'react';
 import { Document, Maybe } from 'types';
-import { useMutation } from '@apollo/client';
-import { useSession } from 'next-auth/react';
 
 type DocumentListProps = {
   documents: Maybe<Document>[] | null | undefined;
   isOfferingManager: boolean;
   offeringId?: string;
-  ownerEntityId?: string | undefined | null;
+  entityId?: string | undefined | null;
   hideUpload?: boolean;
 };
 
-const DocumentList: FC<DocumentListProps> = ({
-  documents,
-  isOfferingManager,
-  offeringId,
-  hideUpload,
-  ownerEntityId,
-}) => {
-  const { data: session, status } = useSession();
-
-  const [addFile, { data, error, loading }] = useMutation(ADD_OFFERING_DOCUMENT);
-  const [alerted, setAlerted] = useState<boolean>(false);
-
-  const offeringDocs = documents;
-
-  if (error && !alerted) {
-    alert(error.message);
-    setAlerted(true);
-  }
-
+const DocumentList: FC<DocumentListProps> = ({ documents, isOfferingManager, offeringId, hideUpload, entityId }) => {
   return (
     <div className="col-span-2">
       <div className="flex flex-wrap">
-        {offeringDocs?.map((document, i) => (
+        {documents?.map((document, i) => (
           <DocumentListItem key={i} document={document} offeringId={offeringId} deleteButton={isOfferingManager} />
         ))}
       </div>
 
       {/* </div> */}
-      {!hideUpload && isOfferingManager && !!offeringId && !!ownerEntityId && (
+      {!hideUpload && isOfferingManager && !!offeringId && !!entityId && (
         //SElECT FILE TYPE
-        <DocumentAdder offeringId={offeringId} ownerEntityId={ownerEntityId} />
+        <DocumentAdder offeringId={offeringId} entityId={entityId} />
       )}
     </div>
   );

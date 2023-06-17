@@ -63,7 +63,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   const issuances = issuanceData?.queryShareIssuanceTrade;
 
   const partitions = shareContract?.partitions as String0x[];
-  const owners = offeringEntity?.owners;
   const documents = offering?.documents;
   const legalLinkTexts = documents && getDocumentsOfType(documents, DocumentType.ShareLink);
   const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
@@ -314,7 +313,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
               documents={offeringDocs}
               isOfferingManager={isOfferingManager}
               offeringId={offering.id}
-              ownerEntityId={owners && owners[0]?.id}
+              entityId={offeringEntity?.id}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
             {legalLinkTexts && legalLinkTexts.length > 0 && allDocuments?.length > 0 && (

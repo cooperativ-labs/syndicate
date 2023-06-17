@@ -5,8 +5,9 @@ import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from 'types
 import { String0x } from '@src/web3/helpersChain';
 
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
+import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
-import { useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import { useChainId, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
 
 export type SwapContractSettingsProps = {
   swapApprovalsEnabled: boolean | undefined;
@@ -20,15 +21,16 @@ export type SwapContractsSettingsAdditional = SwapContractSettingsProps & {
   investmentCurrency: Currency | undefined | null;
 };
 
-const SwapContractSettings: FC<SwapContractsSettingsAdditional & { chainId: number }> = ({
+const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
   swapApprovalsEnabled,
   txnApprovalsEnabled,
   contractSet,
   investmentCurrency,
   offering,
-  chainId,
+
   refetchMainContracts,
 }) => {
+  const chainId = useChainId();
   const [isLoading, setIsLoading] = useState<'txn' | 'listing' | ''>('');
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
@@ -99,6 +101,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional & { chainId: numb
   );
   return (
     <>
+      {!shareContractAddress && 'Trading contract:'}
       {shareContractAddress && !swapContractAddress && (
         <CreateSwapContract
           contractSet={contractSet}
@@ -110,7 +113,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional & { chainId: numb
       {swapContractAddress && (
         <div className="flex flex-col">
           <div className="flex items-center">
-            2. Swap contract:{' '}
+            <div className="font-semibold"> Trading contract: </div>
             <FormattedCryptoAddress
               chainId={chainId}
               className="text-base font-medium ml-2"
@@ -119,10 +122,14 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional & { chainId: numb
               address={swapContractAddress}
             />
           </div>
-          <div className="flex flex-col mt-4 ml-10">
-            {swapApproval}
-            <hr className="my-4" />
-            {txnApproval}
+          <div className="mt-4 border-2 rounded-md px-2">
+            <SectionBlock className="" sectionTitle={'Trade approval settings'} mini asAccordion>
+              <div className="flex flex-col my-4 ml-10">
+                {swapApproval}
+                <hr className="my-4" />
+                {txnApproval}
+              </div>
+            </SectionBlock>
           </div>
         </div>
       )}

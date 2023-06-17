@@ -59,6 +59,9 @@ export const ADD_ENTITY = gql`
         ...entityData
         organization {
           id
+          legalEntities {
+            id
+          }
           users {
             user {
               id

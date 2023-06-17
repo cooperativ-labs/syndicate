@@ -22,14 +22,10 @@ export type CreateOrganizationType = {
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
   const { data: session, status } = useSession();
   const userId = session?.user.id;
-  const [addOrganization, { data, error }] = useMutation(ADD_ORGANIZATION);
+  const [addOrganization] = useMutation(ADD_ORGANIZATION);
   const [logoUrl, setLogoUrl] = useState<string>('');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
-
-  if (error) {
-    alert(`Oops. Looks like something went wrong: ${error.message}`);
-  }
 
   return (
     <Formik
@@ -63,11 +59,14 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
           });
           const orgId = result.data.addOrganization.organization[0].id;
           window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
-          router.reload();
+          router.push(`/${orgId}/overview`).then(() => {
+            router.reload();
+            dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
+            actionOnCompletion && actionOnCompletion();
+          });
+        } catch (error: any) {
+          alert(`Oops. Looks like something went wrong: ${error.message}`);
           dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
-          actionOnCompletion && actionOnCompletion();
-        } catch (error) {
-          console.log(error);
         }
         setSubmitting(false);
       }}

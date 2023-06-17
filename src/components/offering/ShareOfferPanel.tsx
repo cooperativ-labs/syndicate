@@ -1,7 +1,6 @@
 import cn from 'classnames';
 import React, { FC, useState } from 'react';
 import router from 'next/router';
-import useWindowSize from '@hooks/useWindowSize';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { Maybe } from 'yup';
@@ -50,7 +49,6 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
   const permittedEntity = participants?.find((participant) => {
     return participant?.addressOfferingId === currentUser + offering.id;
   });
-  const windowSize = useWindowSize();
 
   const sharesPledged = participants
     ? participants.reduce((acc, participant) => {

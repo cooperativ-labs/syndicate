@@ -3,20 +3,20 @@ import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
 import { Currency, Maybe, Offering, OfferingSmartContractSet } from 'types';
 import { String0x } from '@src/web3/helpersChain';
+import { useChainId } from 'wagmi';
 
 export type DistributionContractSettingsProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
   investmentCurrency: Currency | null | undefined;
   offering: Offering;
-  chainId: number;
 };
 
 const DistributionContractSettings: FC<DistributionContractSettingsProps> = ({
   contractSet,
   investmentCurrency,
   offering,
-  chainId,
 }) => {
+  const chainId = useChainId();
   const shareContract = contractSet?.shareContract;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
 
@@ -30,7 +30,7 @@ const DistributionContractSettings: FC<DistributionContractSettingsProps> = ({
         />
       ) : (
         <div className="flex items-center">
-          3. Distribution contract:{' '}
+          <div className="font-semibold">Distribution contract: </div>
           <FormattedCryptoAddress
             chainId={chainId}
             className="text-base font-medium ml-2"

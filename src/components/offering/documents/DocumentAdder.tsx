@@ -14,10 +14,10 @@ import { useSession } from 'next-auth/react';
 
 type DocumentAdderProps = {
   offeringId?: string;
-  ownerEntityId?: string;
+  entityId?: string;
 };
 
-const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) => {
+const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
   const [addFile, { data, error, loading }] = useMutation(ADD_OFFERING_DOCUMENT);
@@ -39,7 +39,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, ownerEntityId }) =>
     addFile({
       variables: {
         offeringId: offeringId,
-        ownerEntityId: ownerEntityId,
+        entityId: entityId,
         currentDate: currentDate,
         title: title,
         docUrl: url,

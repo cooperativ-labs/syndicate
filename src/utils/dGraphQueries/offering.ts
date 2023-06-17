@@ -5,7 +5,6 @@ export const ADD_OFFERING = gql`
   ${CORE_OFFERING_FIELDS}
   mutation AddOffering(
     $currentDate: DateTime!
-    $managingEntityId: ID!
     $offeringEntityId: ID!
     $name: String!
     $brandColor: String
@@ -30,23 +29,6 @@ export const ADD_OFFERING = gql`
     ) {
       offering {
         ...offeringData
-      }
-    }
-    updateLegalEntity(
-      input: {
-        filter: { id: [$offeringEntityId] }
-        set: { lastUpdate: $currentDate, owners: { id: $managingEntityId } }
-      }
-    ) {
-      legalEntity {
-        id
-        legalName
-        subsidiaries {
-          id
-          offerings {
-            id
-          }
-        }
       }
     }
   }

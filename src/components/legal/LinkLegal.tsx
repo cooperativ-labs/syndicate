@@ -1,6 +1,5 @@
 import axios from 'axios';
 import LinkLegalForm from './LinkLegalForm';
-import PresentLegalText from './PresentLegalText';
 import React, { useState } from 'react';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 
@@ -11,7 +10,7 @@ import { getAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { Offering, User } from 'types';
 import { useAsync } from 'react-use';
-import { useChainId, useNetwork } from 'wagmi';
+import { useChainId } from 'wagmi';
 
 export type AgreementContentType = {
   signature: string;
@@ -41,7 +40,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const { signature } = agreementContent;
   const offeringEntity = offering.offeringEntity;
   const orgLegalName = offeringEntity?.legalName;
-  const offerEntityGP = offeringEntity?.owners && offeringEntity.owners[0];
+  const offerEntityGP = offeringEntity?.owners ? offeringEntity.owners[0]?.legalName : orgLegalName;
   const availableContract =
     offeringEntity?.smartContracts && getAvailableContracts(offeringEntity.smartContracts, chainId)[0];
   const backingToken = availableContract?.backingToken;
@@ -56,7 +55,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
     {
       offeringId: offering.id,
       spvEntityName: orgLegalName,
-      gpEntityName: offerEntityGP?.legalName,
+      gpEntityName: offerEntityGP,
       contractAddress: availableContract?.cryptoAddress.address,
       chainName: MatchSupportedChains(chainId)?.name,
       bacName: bacName,
