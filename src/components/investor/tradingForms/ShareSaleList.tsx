@@ -3,9 +3,10 @@ import Button from '@src/components/buttons/Button';
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
 import { Maybe, ShareOrder } from 'types';
+import { ManagerModalType } from '@src/utils/helpersOffering';
 export type ShareSaleListProps = ShareSaleListItemProps & {
   orders: Maybe<ShareOrder>[] | undefined;
-  setSaleFormModal: Dispatch<SetStateAction<boolean>>;
+  setModal: Dispatch<SetStateAction<ManagerModalType>>;
 };
 
 const ShareSaleList: FC<ShareSaleListProps> = ({
@@ -18,8 +19,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   txnApprovalsEnabled,
 
   isContractOwner,
-  setSaleFormModal,
-  setShareSaleManagerModal,
+  setModal,
   refetchMainContracts,
   refetchOffering,
 }) => {
@@ -27,7 +27,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     <Button
       className="mt-4 p-3 shadow-md rounded-md bg-slate-300 w-full uppercase font-semibold"
       onClick={() => {
-        setSaleFormModal(true), setShareSaleManagerModal(false);
+        setModal('saleForm');
       }}
     >
       Post Bid/Ask
@@ -52,7 +52,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               paymentTokenAddress={paymentTokenAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}
               isContractOwner={isContractOwner}
-              setShareSaleManagerModal={setShareSaleManagerModal}
+              setModal={setModal}
               refetchMainContracts={refetchMainContracts}
               paymentTokenDecimals={paymentTokenDecimals}
               shareContractAddress={shareContractAddress}

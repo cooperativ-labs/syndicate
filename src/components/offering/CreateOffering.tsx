@@ -70,7 +70,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
       </FormModal>
       <Formik
         initialValues={{
-          offeringEntityId: entitiesWithoutOfferings[0].id ?? '',
+          offeringEntityId: '',
           name: '',
         }}
         validate={(values) => {

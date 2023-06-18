@@ -57,6 +57,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
         if (!contract.contractAddress) {
           throw new Error('no contract address');
         }
+        setButtonStep('step2');
         await setContractOperator({
           shareContractAddress,
           operator: contract.contractAddress,
@@ -149,6 +150,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
                   state={buttonStep}
                   idleText={`Publish trading contract on ${chainName}`}
                   submittingText="Deploying - This can take time. Please do not refresh."
+                  step2Text="Setting contract operator"
                   confirmedText="Confirmed!"
                   failedText="Transaction failed"
                   rejectedText="You rejected the transaction. Click here to try again."

@@ -17,6 +17,7 @@ import { String0x } from '@src/web3/helpersChain';
 
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
+import { ManagerModalType } from '@src/utils/helpersOffering';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
@@ -57,11 +58,10 @@ const OfferingActions: FC<OfferingActionsProps> = ({
 }) => {
   const { data: userData } = useQuery(GET_USER, { variables: { id: userId } });
   const user = userData?.queryUser[0];
-  const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
-  const [smartContractsSettingsModal, setSmartContractsSettingsModal] = useState<boolean>(false);
-  const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
+
+  const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
+
   const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
-  const [bidFormModel, setBidFormModel] = useState<boolean>(false);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
 
@@ -83,8 +83,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const FormModals = (
     <>
       <FormModal
-        formOpen={shareSaleManagerModal}
-        onClose={() => setShareSaleManagerModal(false)}
+        formOpen={managerModal === 'shareSaleList'}
+        onClose={() => setManagerModal('none')}
         title={`Manage shares of ${offeringName}`}
       >
         {userWalletAddress && (
@@ -95,8 +95,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             paymentTokenAddress={paymentTokenAddress}
             paymentTokenDecimals={paymentTokenDecimals}
             isContractOwner={isContractOwner === !!isOfferingManager}
-            setShareSaleManagerModal={setShareSaleManagerModal}
-            setSaleFormModal={setSaleFormModal}
+            setModal={setManagerModal}
             refetchMainContracts={refetchMainContracts}
             txnApprovalsEnabled={txnApprovalsEnabled}
             shareContractAddress={shareContractAddress}
@@ -105,8 +104,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         )}
       </FormModal>
       <FormModal
-        formOpen={smartContractsSettingsModal}
-        onClose={() => setSmartContractsSettingsModal(false)}
+        formOpen={managerModal === 'smartContractsSettings'}
+        onClose={() => setManagerModal('none')}
         title={`Smart contract settings`}
       >
         <SmartContractsSettings
@@ -121,8 +120,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         />
       </FormModal>
       <FormModal
-        formOpen={saleFormModal}
-        onClose={() => setSaleFormModal(false)}
+        formOpen={managerModal === 'saleForm'}
+        onClose={() => setManagerModal('none')}
         title={`${isExistingShares ? 'Sell' : 'Offer new'} shares of ${offeringName}`}
       >
         <button
@@ -141,7 +140,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             swapContractAddress={swapContractAddress}
             isContractOwner={isContractOwner === !!isOfferingManager}
             currentSalePrice={currentSalePrice}
-            setModal={setSaleFormModal}
+            setModal={setManagerModal}
             partitions={partitions}
             paymentTokenDecimals={paymentTokenDecimals}
             refetchAllContracts={refetchMainContracts}
@@ -158,6 +157,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             partitions={partitions}
             paymentTokenAddress={paymentTokenAddress}
             paymentTokenDecimals={paymentTokenDecimals}
+            setModal={setManagerModal}
             refetchAllContracts={refetchMainContracts}
           />
         )}
@@ -206,7 +206,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         <>
           <Button
             className="p-3 bg-cLightBlue rounded-md text-white"
-            onClick={() => setSmartContractsSettingsModal(true)}
+            onClick={() => setManagerModal('smartContractsSettings')}
           >
             Configure shares & trading
           </Button>
@@ -222,7 +222,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           {swapContractAddress ? (
             <Button
               onClick={() => {
-                setShareSaleManagerModal(true);
+                setManagerModal('shareSaleList');
               }}
               className={standardClass}
             >
@@ -231,7 +231,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           ) : (
             <Button
               onClick={() => {
-                setSmartContractsSettingsModal(true);
+                setManagerModal('smartContractsSettings');
               }}
               className={standardClass}
             >
@@ -246,7 +246,10 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   );
 
   const NoContract = isOfferingManager ? (
-    <Button className="p-3 bg-cLightBlue rounded-md text-white" onClick={() => setSmartContractsSettingsModal(true)}>
+    <Button
+      className="p-3 bg-cLightBlue rounded-md text-white"
+      onClick={() => setManagerModal('smartContractsSettings')}
+    >
       Configure shares & trading
     </Button>
   ) : (

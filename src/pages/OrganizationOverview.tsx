@@ -65,11 +65,11 @@ const OrganizationOverview: FC = () => {
         Make me a toast
       </button> */}
       <TwoColumnLayout twoThirdsLayout>
-        {isEditorOrAdmin && (
-          <DashboardCard>
-            <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
-            <CreateOffering organization={organization} refetch={refetch} />
-          </DashboardCard>
+        {hasOfferings && (
+          <div>
+            <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your current offerings: </h2>
+            <OfferingsList offerings={offerings} />
+          </div>
         )}
         <DashboardCard>
           <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">{`${isAdmin ? 'Manage ' : ''}Team`}</h2>
@@ -85,11 +85,11 @@ const OrganizationOverview: FC = () => {
             </SectionBlock>
           </div>
         </DashboardCard>
-        {hasOfferings && (
-          <div>
-            <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your current offerings: </h2>
-            <OfferingsList offerings={offerings} />
-          </div>
+        {isEditorOrAdmin && (
+          <DashboardCard>
+            <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
+            <CreateOffering organization={organization} refetch={refetch} />
+          </DashboardCard>
         )}
       </TwoColumnLayout>
     </div>

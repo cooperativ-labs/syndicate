@@ -45,7 +45,7 @@ const SendShares: FC<SendSharesProps> = ({
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
   const [addIssuance, { error: issuanceError }] = useMutation(ADD_ISSUANCE_OR_TRADE);
 
-  const sharesRemaining = getAmountRemaining({ x: sharesOutstanding, minus: sharesIssued });
+  const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
 
   const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
     const recipient = addressWithoutEns({ address: values.recipient });
@@ -96,26 +96,30 @@ const SendShares: FC<SendSharesProps> = ({
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
         const isIssuance = values.isIssuance === 'yes' ? true : false;
-        const transactionDetails = await sendShares({
-          shareContractAddress,
-          shareContractId,
-          numShares: parseInt(values.numShares, 10),
-          recipient: values.recipient,
-          sender: userWalletAddress as String0x,
-          partition: values.partition,
-          newPartition: values.newPartition,
-          isIssuance,
-          addIssuance,
-          setButtonStep,
-          addPartition,
-          refetchMainContracts,
-        });
-        if (transactionDetails) {
-          toast.success(
-            `${values.numShares} shares sent to ${addressWithoutEns({
-              address: recipient,
-            })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
-          );
+        try {
+          const transactionDetails = await sendShares({
+            shareContractAddress,
+            shareContractId,
+            numShares: parseInt(values.numShares, 10),
+            recipient: values.recipient,
+            sender: userWalletAddress as String0x,
+            partition: values.partition,
+            newPartition: values.newPartition,
+            isIssuance,
+            addIssuance,
+            setButtonStep,
+            addPartition,
+            refetchMainContracts,
+          });
+          if (transactionDetails) {
+            toast.success(
+              `${values.numShares} shares sent to ${addressWithoutEns({
+                address: recipient,
+              })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
+            );
+          }
+        } catch (e: any) {
+          toast.error(`Error sending shares: ${e.message}`);
         }
 
         setSubmitting(false);

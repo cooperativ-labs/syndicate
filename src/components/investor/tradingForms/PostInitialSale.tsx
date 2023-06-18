@@ -3,7 +3,7 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import React, { FC, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
@@ -13,7 +13,7 @@ import { String0x } from '@src/web3/helpersChain';
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
-import { getAmountRemaining } from '@src/utils/helpersOffering';
+import { ManagerModalType, getAmountRemaining } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount } from 'wagmi';
@@ -32,6 +32,7 @@ type WithAdditionalProps = PostInitialSaleProps & {
   offeringId: string;
   shareContractId: string;
   swapContractAddress: String0x | undefined;
+  setModal: Dispatch<SetStateAction<ManagerModalType>>;
   refetchAllContracts: () => void;
 };
 
@@ -45,6 +46,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   partitions,
+  setModal,
   refetchAllContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
@@ -53,6 +55,8 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
+
+  console.log({ sharesRemaining, sharesIssued, sharesOutstanding });
 
   const formButtonText = (values: { numShares: number | undefined }) => {
     if (!sharesIssued) {
@@ -120,27 +124,32 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
           setSubmitting(false);
           return;
         }
-        await submitSwap({
-          numShares: values.numShares,
-          price: values.price,
-          partition: values.partition,
-          newPartition: values.newPartition,
-          minUnits: values.minUnits,
-          maxUnits: values.maxUnits,
-          visible: values.visible,
-          swapContractAddress: swapContractAddress,
-          shareContractId: shareContractId,
-          paymentTokenDecimals: paymentTokenDecimals as number,
-          offeringId: offeringId,
-          isContractOwner: isContractOwner,
-          isAsk: isAsk,
-          isIssuance: isIssuance,
-          isErc20Payment: isErc20Payment,
-          setButtonStep: setButtonStep,
-          createOrder: createOrder,
-          addPartition: addPartition,
-          refetchAllContracts,
-        });
+        try {
+          await submitSwap({
+            numShares: values.numShares,
+            price: values.price,
+            partition: values.partition,
+            newPartition: values.newPartition,
+            minUnits: values.minUnits,
+            maxUnits: values.maxUnits,
+            visible: values.visible,
+            swapContractAddress: swapContractAddress,
+            shareContractId: shareContractId,
+            paymentTokenDecimals: paymentTokenDecimals as number,
+            offeringId: offeringId,
+            isContractOwner: isContractOwner,
+            isAsk: isAsk,
+            isIssuance: isIssuance,
+            isErc20Payment: isErc20Payment,
+            setButtonStep: setButtonStep,
+            createOrder: createOrder,
+            addPartition: addPartition,
+            refetchAllContracts,
+          });
+          setModal('shareSaleList');
+        } catch (e: any) {
+          throw new Error(e);
+        }
         setSubmitting(false);
       }}
     >

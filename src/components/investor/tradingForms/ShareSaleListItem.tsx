@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getAmountRemaining } from '@src/utils/helpersOffering';
+import { ManagerModalType, getAmountRemaining } from '@src/utils/helpersOffering';
 import { Maybe, Offering, OfferingParticipant, ShareOrder } from 'types';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
@@ -20,7 +20,7 @@ export type ShareSaleListItemProps = SaleMangerPanelProps & {
   offering: Offering;
   shareContractAddress: String0x | undefined;
 
-  setShareSaleManagerModal: (value: boolean) => void;
+  setModal: (value: ManagerModalType) => void;
   refetchMainContracts: () => void;
 };
 
@@ -40,7 +40,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   txnApprovalsEnabled,
 
   isContractOwner,
-  setShareSaleManagerModal,
+  setModal,
   refetchMainContracts,
   refetchOffering,
 }) => {
@@ -87,6 +87,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
               <OfferingSummaryPanel
                 seller={initiator}
                 shareQtyRemaining={shareQtyRemaining}
+                partition={partition}
                 price={price}
                 paymentTokenAddress={paymentTokenAddress}
               />

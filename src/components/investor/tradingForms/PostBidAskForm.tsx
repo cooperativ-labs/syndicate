@@ -18,7 +18,7 @@ import { Maybe, Offering, OfferingParticipant } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
-import { getAmountRemaining } from '@src/utils/helpersOffering';
+import { ManagerModalType, getAmountRemaining } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
@@ -38,7 +38,7 @@ type WithAdditionalProps = PostBidAskFormProps & {
   walletAddress: string;
   swapContractAddress: String0x;
   offeringMin: Maybe<number> | undefined;
-  setModal: (x: boolean) => void;
+  setModal: Dispatch<SetStateAction<ManagerModalType>>;
   refetchAllContracts: () => void;
 };
 
@@ -106,14 +106,19 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
               errors.minUnits = 'Minimum must be less than maximum';
             }
-          } else if (isAsk && numUnits && myShares && numUnits > myShares) {
+          }
+          if (isAsk && numUnits && myShares && numUnits > myShares) {
             errors.numUnits = `You cannot sell more than ${myShares} shares.`;
-            if (!approvalRequired) {
-              errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
-            }
-            if (toc === true) {
-              errors.toc = "You must accept this offering's Terms & Conditions";
-            }
+          }
+          if (!isAsk && numUnits && sharesUnissued && numUnits > sharesUnissued) {
+            errors.numUnits = `You cannot buy more than ${sharesUnissued} shares.`;
+          }
+
+          if (!approvalRequired) {
+            errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
+          }
+          if (toc === true) {
+            errors.toc = "You must accept this offering's Terms & Conditions";
           }
           return errors;
         }}
@@ -126,25 +131,31 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             setSubmitting(false);
             return;
           }
-          await submitSwap({
-            numShares: values.numUnits,
-            price: values.price,
-            partition: values.partition,
-            minUnits: values.minUnits,
-            maxUnits: values.maxUnits,
-            swapContractAddress: swapContractAddress,
-            visible: !swapApprovalsEnabled,
-            toc: values.toc,
-            paymentTokenDecimals: paymentTokenDecimals as number,
-            offeringId: offering.id,
-            isContractOwner: isContractOwner,
-            isAsk: isAsk,
-            isIssuance: isIssuance,
-            isErc20Payment: isErc20Payment,
-            setButtonStep: setButtonStep,
-            createOrder: createOrder,
-            refetchAllContracts,
-          });
+          try {
+            await submitSwap({
+              numShares: values.numUnits,
+              price: values.price,
+              partition: values.partition,
+              minUnits: values.minUnits,
+              maxUnits: values.maxUnits,
+              swapContractAddress: swapContractAddress,
+              visible: !swapApprovalsEnabled,
+              toc: values.toc,
+              paymentTokenDecimals: paymentTokenDecimals as number,
+              offeringId: offering.id,
+              isContractOwner: isContractOwner,
+              isAsk: isAsk,
+              isIssuance: isIssuance,
+              isErc20Payment: isErc20Payment,
+              setButtonStep: setButtonStep,
+              createOrder: createOrder,
+              refetchAllContracts,
+            });
+            setModal('shareSaleList');
+          } catch (e) {
+            throw e;
+          }
+
           setSubmitting(false);
         }}
       >
