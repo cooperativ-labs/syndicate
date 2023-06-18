@@ -27,7 +27,7 @@ import { dividendContractABI } from '@src/web3/generated';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { RETRIEVE_ISSUANCES_AND_TRADES } from '@src/utils/dGraphQueries/trades';
+import { RETRIEVE_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
 import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
 import { useQuery } from '@apollo/client';
@@ -57,10 +57,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
   const distributionPaymentTokenDecimals = distributionPaymentToken ? distributionPaymentToken?.decimals : 18;
 
-  const { data: issuanceData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_ISSUANCES_AND_TRADES, {
+  const { data: transferEventData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_TRANSFER_EVENT, {
     variables: { shareContractAddress: shareContractAddress },
   });
-  const issuances = issuanceData?.queryShareIssuanceTrade;
+  const transferEvents = transferEventData?.queryShareTransferEvent;
 
   const partitions = shareContract?.partitions as String0x[];
   const documents = offering?.documents;
@@ -141,7 +141,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   return (
     <>
       <RightSideBar formOpen={transactionHistoryPanel} onClose={() => setTransactionHistoryPanel(false)}>
-        <FullTransactionHistory issuances={issuances} paymentTokenDecimals={paymentTokenDecimals} />
+        <FullTransactionHistory transferEvents={transferEvents} paymentTokenDecimals={paymentTokenDecimals} />
       </RightSideBar>
       <RightSideBar formOpen={financialSettingsPanel} onClose={() => setFinancialSettingsPanel(false)}>
         <OfferingFinancialSettings offering={offering} />
@@ -301,7 +301,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                 contractSet={contractSet}
                 currentSalePrice={currentSalePrice}
                 partitions={partitions}
-                issuances={issuances}
+                transferEvents={transferEvents}
                 refetchContracts={refetchMainContracts}
               />
             )}

@@ -128,7 +128,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           className="p-2 border-2 border-gray-300 text-sm text-gray-800 rounded-md"
           onClick={() => setIsExistingShares(!isExistingShares)}
         >{`${
-          isExistingShares ? 'Create a fresh offering of orders' : 'Sell existing shares form your wallet instead.'
+          isExistingShares ? 'Create a fresh offering of orders' : 'Sell existing shares from your wallet instead.'
         }`}</button>
         {isExistingShares ? (
           <PostBidAskForm

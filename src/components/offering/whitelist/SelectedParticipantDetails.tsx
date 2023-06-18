@@ -4,7 +4,7 @@ import DistributionList from '../distributions/DistributionList';
 import ForceTransferForm from '../actions/ForceTransferForm';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';
-import IssuanceSaleList from '../sales/IssuanceSaleList';
+
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { FC, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
@@ -21,6 +21,7 @@ import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { useContractRead, useContractWrite } from 'wagmi';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import TransferEventList from '../sales/TransferEventList';
 
 type SelectedParticipantProps = {
   selection: string;
@@ -30,7 +31,7 @@ type SelectedParticipantProps = {
   paymentTokenDecimals: number | undefined;
   offeringId: string;
   partitions: String0x[];
-  issuanceList: any[];
+  transferEventList: any[];
   removeMember: (x: {
     variables: { offeringId: string; participantId: string | undefined; currentDate: string };
   }) => void;
@@ -46,7 +47,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   currentSalePrice,
   offeringId,
   partitions,
-  issuanceList,
+  transferEventList,
   removeMember,
   refetchContracts,
 }) => {
@@ -60,8 +61,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const participant = participants?.find((p) => p?.id === selection);
   const participantWallet = participant?.walletAddress as String0x;
 
-  const issuances = issuanceList.filter((issuance) => {
-    return issuance.recipientAddress === participantWallet || issuance.senderAddress === participantWallet;
+  const transferEvents = transferEventList.filter((transferEvent) => {
+    return transferEvent.recipientAddress === participantWallet || transferEvent.senderAddress === participantWallet;
   });
 
   //-----------------Contract Interactions---------------------
@@ -246,8 +247,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         isDistributor
         walletAddress={participantWallet}
       />
-      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Issuances</h1>
-      <IssuanceSaleList issuances={issuances} paymentTokenDecimals={paymentTokenDecimals} />
+      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Transfers</h1>
+      <TransferEventList transferEvents={transferEvents} paymentTokenDecimals={paymentTokenDecimals} />
     </div>
   );
 

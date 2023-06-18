@@ -16,7 +16,7 @@ type WhitelistAddressListProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
   currentSalePrice: Maybe<number> | undefined;
   investmentCurrency: Maybe<Currency> | undefined;
-  issuances: any[];
+  transferEvents: any[];
   refetchContracts: () => void;
 };
 
@@ -26,7 +26,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
   contractSet,
   currentSalePrice,
   investmentCurrency,
-  issuances,
+  transferEvents,
   refetchContracts,
 }) => {
   const [removeMember, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_WHITELIST_OBJECT);
@@ -48,7 +48,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
               removeMember={removeMember}
               partitions={partitions}
               offeringId={offeringId}
-              issuanceList={issuances}
+              transferEventList={transferEvents}
               refetchContracts={refetchContracts}
             />
           )}

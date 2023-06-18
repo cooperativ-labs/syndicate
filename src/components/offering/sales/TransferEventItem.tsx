@@ -2,22 +2,27 @@ import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useEffect } from 'react';
 
 import { getHumanDate } from '@src/utils/helpersGeneral';
-import { getIssuanceTradeOption } from '@src/utils/enumConverters';
+
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ShareIssuanceTrade } from 'types';
+
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
 import { useChainId, usePublicClient, useTransaction } from 'wagmi';
+import { ShareTransferEvent } from 'types';
+import { getTransferEventOption } from '@src/utils/enumConverters';
 
-export type IssuanceSaleProps = {
+export type TransferEventProps = {
   paymentTokenDecimals: number | undefined;
 };
 
-const IssuanceSale: FC<IssuanceSaleProps & { issuance: ShareIssuanceTrade }> = ({ issuance, paymentTokenDecimals }) => {
+const TransferEvent: FC<TransferEventProps & { transferEvent: ShareTransferEvent }> = ({
+  transferEvent,
+  paymentTokenDecimals,
+}) => {
   const chainId = useChainId();
   const publicClient = usePublicClient();
-  const { transactionHash, recipientAddress, amount, partition, type, senderAddress, price } = issuance;
+  const { transactionHash, recipientAddress, amount, partition, type, senderAddress, price } = transferEvent;
   const [blockTime, setBlockTime] = React.useState<Date | null>(null);
 
   const humanPrice = price && paymentTokenDecimals && toNormalNumber(BigInt(price), paymentTokenDecimals);
@@ -36,37 +41,44 @@ const IssuanceSale: FC<IssuanceSaleProps & { issuance: ShareIssuanceTrade }> = (
   }, [publicClient, setBlockTime, transactionData]);
 
   return (
-    <div className="relative md:grid grid-cols-12 gap-3 items-center p-3 border-b-2 ">
-      <div className="col-span-2">
+    <div className="relative md:grid grid-cols-7 gap-3 items-center p-3 border-b-2 ">
+      <div className="flex col-span-1 justify-start">
         <div className="font-medium text-base ">{blockTime ? getHumanDate(blockTime) : ''}</div>
       </div>
 
       <FormattedCryptoAddress
-        className={`font-medium text-${getIssuanceTradeOption(type)?.color} col-span-2`}
+        className={`font-medium text-${getTransferEventOption(type)?.color} flex col-span-1 justify-center`}
         chainId={chainId}
         address={senderAddress}
       />
 
-      <FormattedCryptoAddress className={'font-medium col-span-2'} chainId={chainId} address={recipientAddress} />
+      <FormattedCryptoAddress
+        className={'font-medium flex col-span-1 justify-center'}
+        chainId={chainId}
+        address={recipientAddress}
+      />
 
-      <div className="col-span-2">
+      <div className="flex col-span-1 justify-center">
         <div className="font-medium ">
           {amount} ({stringFromBytes32(partition as String0x)})
         </div>
       </div>
 
       <FormattedCryptoAddress
-        className={'font-medium col-span-3 '}
+        className={'font-medium flex col-span-1 justify-center '}
         chainId={chainId}
         address={transactionHash}
         lookupType="tx"
       />
 
-      <div className="col-span-1">
+      <div className={`font-medium text-${getTransferEventOption(type)?.color} flex col-span-1 justify-center`}>
+        <div className={`font-medium`}>{type}</div>
+      </div>
+      <div className="flex col-span-1 justify-center">
         <div className={`font-medium`}>{price ? numberWithCommas(humanPrice) : 'N/A'}</div>
       </div>
     </div>
   );
 };
 
-export default IssuanceSale;
+export default TransferEvent;

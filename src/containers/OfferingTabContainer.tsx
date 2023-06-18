@@ -23,7 +23,7 @@ type OfferingTabContainerProps = {
   isOfferingManager: boolean;
   currentSalePrice: Maybe<number> | undefined;
   partitions: String0x[];
-  issuances: any[];
+  transferEvents: any[];
   refetchContracts: () => void;
 };
 
@@ -42,7 +42,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   isOfferingManager,
   currentSalePrice,
   partitions,
-  issuances,
+  transferEvents,
   refetchContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
@@ -116,7 +116,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}
                   offeringId={offering.id}
-                  issuances={issuances}
+                  transferEvents={transferEvents}
                   refetchContracts={refetchContracts}
                 />
                 <hr className="mt-5" />

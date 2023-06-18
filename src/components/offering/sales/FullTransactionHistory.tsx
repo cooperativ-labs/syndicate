@@ -1,11 +1,11 @@
-import IssuanceSaleList, { IssuanceSaleListProps } from './IssuanceSaleList';
+import TransferEventList, { TransferEventListProps } from './TransferEventList';
 import React, { FC } from 'react';
 
-export const FullTransactionHistory: FC<IssuanceSaleListProps> = ({ issuances, paymentTokenDecimals }) => {
+export const FullTransactionHistory: FC<TransferEventListProps> = ({ transferEvents, paymentTokenDecimals }) => {
   return (
     <>
       <h2 className="text-xl md:my-8 text-blue-900 font-semibold">Transaction History</h2>
-      <IssuanceSaleList issuances={issuances} paymentTokenDecimals={paymentTokenDecimals} />
+      <TransferEventList transferEvents={transferEvents} paymentTokenDecimals={paymentTokenDecimals} />
     </>
   );
 };

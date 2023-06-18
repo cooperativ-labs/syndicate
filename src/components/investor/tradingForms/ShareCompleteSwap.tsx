@@ -1,5 +1,5 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
 import { fillOrder } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
 import { toContractNumber, toNormalNumber } from '@src/web3/util';
@@ -44,7 +44,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
 }) => {
   const [amount, setAmount] = useState<number>(0);
   const [buttonStatus, setButtonStatus] = useState<LoadingButtonStateType>('idle');
-  const [addTrade, { error: issuanceError }] = useMutation(ADD_ISSUANCE_OR_TRADE);
+  const [addTrade, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
   const orderQty = txnApprovalsEnabled ? acceptedOrderQty : amount;
   const { address: userWalletAddress } = useAccount();
 

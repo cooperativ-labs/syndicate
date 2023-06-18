@@ -13,7 +13,7 @@ import {
   OfferingTabSection,
   OrganizationPermissionType,
   Currency,
-  ShareIssuanceTradeType,
+  ShareTransferEventType,
   Maybe,
 } from 'types';
 import { getAmountRemaining } from './helpersOffering';
@@ -242,16 +242,17 @@ export const getSwapStatusOption = ({
 
 // ===== Trades =====
 
-export const IssuanceTradeOptions = [
-  { value: ShareIssuanceTradeType.Sell, name: 'Sale', color: 'Purple-600' },
-  { value: ShareIssuanceTradeType.Issue, name: 'Issuance', color: 'green-600' },
-  { value: ShareIssuanceTradeType.Forced, name: 'Forced', color: 'red-600' },
-  { value: ShareIssuanceTradeType.Transfer, name: 'Transfer', color: 'black' },
-  { value: ShareIssuanceTradeType.Disapprove, name: 'Disapproval', color: 'red-600' },
+export const TransferEventOptions = [
+  { value: ShareTransferEventType.Trade, name: 'Trade', color: 'Purple-600' },
+  { value: ShareTransferEventType.Issuance, name: 'Issuance', color: 'blue-600' },
+  { value: ShareTransferEventType.Forced, name: 'Forced', color: 'red-600' },
+  { value: ShareTransferEventType.Transfer, name: 'Transfer', color: 'black' },
+  { value: ShareTransferEventType.Disapproval, name: 'Disapproval', color: 'red-600' },
+  { value: ShareTransferEventType.Approval, name: 'Approval', color: 'green-600' },
 ];
 
-export const getIssuanceTradeOption = (tradeType: ShareIssuanceTradeType) => {
-  return IssuanceTradeOptions.find((option) => (option.value === tradeType ? option : null));
+export const getTransferEventOption = (tradeType: ShareTransferEventType) => {
+  return TransferEventOptions.find((option) => (option.value === tradeType ? option : null));
 };
 
 // ===== CURRENCY =====

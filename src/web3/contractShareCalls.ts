@@ -15,7 +15,7 @@ import { TransactionReceipt, parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
-import { ShareIssuanceTradeType } from 'types';
+import { ShareTransferEventType } from 'types';
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
@@ -201,7 +201,7 @@ export const sendShares = async ({
           amount: numShares,
           transactionHash: transactionDetails.transactionHash,
           partition: setPartition,
-          type: isIssuance ? ShareIssuanceTradeType.Issue : ShareIssuanceTradeType.Transfer,
+          type: isIssuance ? ShareTransferEventType.Issue : ShareTransferEventType.Transfer,
         },
       });
       if (partition === '0xNew')
@@ -297,7 +297,7 @@ export const forceTransfer = async ({
         amount: amount,
         transactionHash: details.transactionHash,
         partition: partition,
-        type: ShareIssuanceTradeType.Forced,
+        type: ShareTransferEventType.Forced,
       },
     });
     refetchContracts();

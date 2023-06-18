@@ -7,10 +7,10 @@ import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contract
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { ADD_ISSUANCE_OR_TRADE, DELETE_ORDER, UPDATE_ORDER } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT, DELETE_ORDER, UPDATE_ORDER } from '@src/utils/dGraphQueries/trades';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
 import { ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
@@ -75,7 +75,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const chainId = useChainId();
   const [deleteOrderObject] = useMutation(DELETE_ORDER);
   const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
-  const [addDisapprovalRecord, { error: issuanceError }] = useMutation(ADD_ISSUANCE_OR_TRADE);
+  const [addApprovalRecord, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -107,43 +107,36 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
   const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
   const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
+  const decimalAdjustedPrice = Number(toContractNumber(price as number, paymentTokenDecimals as number));
 
-  const handleApprove = async () => {
+  const handleApprove = async ({ isDisapprove }: { isDisapprove: boolean }) => {
     await approveRejectSwap({
-      swapContractAddress,
-      contractIndex: order.contractIndex,
-      isDisapprove: false,
-      setButtonStep: setApproveButtonStep,
-      refetchAllContracts,
-    });
-    updateOrderObject({
-      variables: {
-        currentDate: currentDate,
-        orderId: order.id,
-        visible: true,
-      },
-    });
-  };
-
-  const handleDisapprove = async () => {
-    await approveRejectSwap({
-      disapproveArgs: txnApprovalsEnabled // This adds a disapproval record
+      transferEventArgs: txnApprovalsEnabled // This adds a disapproval record
         ? {
             shareContractAddress,
             recipientAddress,
             senderAddress,
             numShares,
-            price,
+            decimalAdjustedPrice: decimalAdjustedPrice,
             partition,
-            addDisapprovalRecord,
+            addApprovalRecord,
           }
         : undefined,
       swapContractAddress,
       contractIndex: order.contractIndex,
-      isDisapprove: true,
-      setButtonStep: setDisapproveButtonStep,
+      isDisapprove: isDisapprove,
+      setButtonStep: setApproveButtonStep,
       refetchAllContracts,
     });
+    if (!isDisapprove && !txnApprovalsEnabled) {
+      updateOrderObject({
+        variables: {
+          currentDate: currentDate,
+          orderId: order.id,
+          visible: true,
+        },
+      });
+    }
   };
 
   const handleCancel = async () => {
@@ -212,7 +205,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       {(!txnApprovalsEnabled || isAccepted) && isContractOwner && !isDisapproved && (
         <div className=" mt-3 grid grid-cols-2 gap-3">
           {!isApproved && (
-            <Button className={buttonClass} onClick={handleApprove} disabled={approveButtonStep === 'submitting'}>
+            <Button
+              className={buttonClass}
+              onClick={() => handleApprove({ isDisapprove: false })}
+              disabled={approveButtonStep === 'submitting'}
+            >
               <LoadingButtonText
                 state={approveButtonStep}
                 idleText={`Approve ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
@@ -224,7 +221,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
             </Button>
           )}
           <div>
-            <Button className={buttonClass} onClick={handleDisapprove} disabled={approveButtonStep === 'submitting'}>
+            <Button
+              className={buttonClass}
+              onClick={() => handleApprove({ isDisapprove: true })}
+              disabled={approveButtonStep === 'submitting'}
+            >
               <LoadingButtonText
                 state={disapproveButtonStep}
                 idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}

@@ -1,8 +1,8 @@
 import gql from 'graphql-tag';
 
-export const RETRIEVE_ISSUANCES_AND_TRADES = gql`
-  query RetrieveIssuances($shareContractAddress: String!) {
-    queryShareIssuanceTrade(filter: { shareContractAddress: { anyofterms: $shareContractAddress } }) {
+export const RETRIEVE_TRANSFER_EVENT = gql`
+  query RetrieveTransferEvents($shareContractAddress: String!) {
+    queryShareTransferEvent(filter: { shareContractAddress: { anyofterms: $shareContractAddress } }) {
       id
       shareContractAddress
       recipientAddress
@@ -16,8 +16,8 @@ export const RETRIEVE_ISSUANCES_AND_TRADES = gql`
   }
 `;
 
-export const ADD_ISSUANCE_OR_TRADE = gql`
-  mutation AddIssuance(
+export const ADD_TRANSFER_EVENT = gql`
+  mutation AddTransferEvent(
     $shareContractAddress: String!
     $recipientAddress: String!
     $senderAddress: String!
@@ -25,9 +25,9 @@ export const ADD_ISSUANCE_OR_TRADE = gql`
     $price: Int
     $transactionHash: String!
     $partition: String!
-    $type: ShareIssuanceTradeType!
+    $type: ShareTransferEventType!
   ) {
-    addShareIssuanceTrade(
+    addShareTransferEvent(
       input: [
         {
           shareContractAddress: $shareContractAddress
@@ -42,7 +42,7 @@ export const ADD_ISSUANCE_OR_TRADE = gql`
         }
       ]
     ) {
-      shareIssuanceTrade {
+      shareTransferEvent {
         id
         shareContractAddress
         recipientAddress

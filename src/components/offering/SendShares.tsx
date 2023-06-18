@@ -13,7 +13,7 @@ import { sendShares } from '@src/web3/contractShareCalls';
 
 import NewClassInputs from '../form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
-import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';
@@ -43,7 +43,7 @@ const SendShares: FC<SendSharesProps> = ({
   const [recipient, setRecipient] = useState<string | String0x | undefined>(undefined);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
-  const [addIssuance, { error: issuanceError }] = useMutation(ADD_ISSUANCE_OR_TRADE);
+  const [addIssuance, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
 

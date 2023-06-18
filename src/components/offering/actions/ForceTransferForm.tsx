@@ -4,7 +4,7 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React from 'react';
 import Select from '@src/components/form-components/Select';
 import SetOperatorButton from './SetOperatorButton';
-import { ADD_ISSUANCE_OR_TRADE } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
@@ -35,7 +35,7 @@ const ForceTransferForm = ({
   const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
   const [partition, setPartition] = React.useState<String0x>(partitions[0]);
   const [targetBalance, setTargetBalance] = React.useState<number>(0);
-  const [addIssuance] = useMutation(ADD_ISSUANCE_OR_TRADE);
+  const [addIssuance] = useMutation(ADD_TRANSFER_EVENT);
 
   const recipientOptions = offeringParticipants?.filter((participant) => {
     return participant?.walletAddress !== target;

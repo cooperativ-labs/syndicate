@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
 import { erc20ABI } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ShareIssuanceTradeType } from 'types';
+import { ShareTransferEventType } from 'types';
 
 type SubmitSwapProps = {
   numShares: number;
@@ -244,14 +244,14 @@ export const setAllowance = async ({
 // };
 
 type ApproveRejectSwapProps = {
-  disapproveArgs?: {
+  transferEventArgs?: {
     shareContractAddress: String0x | undefined;
     recipientAddress: '' | `0x${string}` | undefined;
     senderAddress: String0x | undefined | '';
     numShares: number | undefined;
-    price: number | undefined;
+    decimalAdjustedPrice: number | undefined;
     partition: String0x | undefined | '';
-    addDisapprovalRecord: (arg0: {
+    addApprovalRecord: (arg0: {
       variables: {
         shareContractAddress: String0x | undefined;
         recipientAddress: '' | `0x${string}` | undefined;
@@ -260,7 +260,7 @@ type ApproveRejectSwapProps = {
         price: number | undefined;
         partition: String0x | undefined | '';
         transactionHash: String0x;
-        type: ShareIssuanceTradeType;
+        type: ShareTransferEventType;
       };
     }) => Promise<any> | undefined;
   };
@@ -272,7 +272,7 @@ type ApproveRejectSwapProps = {
   refetchAllContracts: () => void;
 };
 export const approveRejectSwap = async ({
-  disapproveArgs,
+  transferEventArgs,
   swapContractAddress,
   contractIndex,
   isDisapprove,
@@ -297,26 +297,27 @@ export const approveRejectSwap = async ({
       const transactionDetails = await waitForTransaction({
         hash: hash,
       });
-      if (isDisapprove && disapproveArgs) {
+      if (transferEventArgs) {
         const {
           shareContractAddress,
           recipientAddress,
           senderAddress,
           numShares,
-          price,
+          decimalAdjustedPrice,
           partition,
-          addDisapprovalRecord,
-        } = disapproveArgs;
-        await addDisapprovalRecord({
+          addApprovalRecord,
+        } = transferEventArgs;
+
+        await addApprovalRecord({
           variables: {
             shareContractAddress: shareContractAddress,
             recipientAddress: recipientAddress,
             senderAddress: senderAddress,
             amount: numShares,
-            price: price,
+            price: decimalAdjustedPrice,
             transactionHash: transactionDetails.transactionHash,
             partition: partition,
-            type: ShareIssuanceTradeType.Disapprove,
+            type: isDisapprove ? ShareTransferEventType.Disapproval : ShareTransferEventType.Approval,
           },
         });
       }
@@ -473,7 +474,7 @@ export const fillOrder = async ({
           price: price,
           transactionHash: transactionDetails.transactionHash,
           partition: partition,
-          type: ShareIssuanceTradeType.Sell,
+          type: ShareTransferEventType.Trade,
         },
       });
       setButtonStep('confirmed');

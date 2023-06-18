@@ -23,6 +23,7 @@ import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import { ManagerModalType } from '@src/utils/helpersOffering';
 
 type PortalOfferingProps = {
   offering: Offering;
@@ -58,9 +59,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
 
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
-  const [shareSaleManagerModal, setShareSaleManagerModal] = useState<boolean>(false);
-  const [saleFormModal, setSaleFormModal] = useState<boolean>(false);
-  const [bidFormModel, setBidFormModel] = useState<boolean>(false);
+  const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
   const {
@@ -134,8 +133,8 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
   return (
     <div data-test="component-PortalOffering" className="flex flex-col w-full h-full mx-auto px-4 pt-10">
       <FormModal
-        formOpen={saleFormModal}
-        onClose={() => setSaleFormModal(false)}
+        formOpen={managerModal === 'saleForm'}
+        onClose={() => setManagerModal('none')}
         title={`Sell shares of ${offeringName}`}
       >
         <PostBidAskForm
@@ -148,7 +147,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
           swapApprovalsEnabled={swapApprovalsEnabled}
           isContractOwner={false}
           currentSalePrice={currentSalePrice}
-          setModal={setSaleFormModal}
+          setModal={setManagerModal}
           partitions={partitions as String0x[]}
           paymentTokenDecimals={paymentTokenDecimals}
           refetchAllContracts={refetchMainContracts}
@@ -185,8 +184,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               orders={contractOrders}
               swapContractAddress={swapContractAddress}
               isContractOwner={false}
-              setShareSaleManagerModal={setShareSaleManagerModal}
-              setSaleFormModal={setSaleFormModal}
+              setModal={setManagerModal}
               refetchMainContracts={refetchMainContracts}
               paymentTokenAddress={paymentTokenAddress}
               paymentTokenDecimals={paymentTokenDecimals}

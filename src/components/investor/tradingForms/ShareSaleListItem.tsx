@@ -74,6 +74,8 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
 
   const shareQtyRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
 
+  console.log(price);
+
   return (
     <>
       {isOfferor || isContractOwner || order.visible ? (

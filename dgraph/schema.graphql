@@ -637,15 +637,16 @@ type InvestorApplication {
 	creationDate: DateTime!
 }
 
-enum ShareIssuanceTradeType	{
-	ISSUE
-	SELL
+enum ShareTransferEventType	{
+	ISSUANCE
+	TRADE
 	FORCED
 	TRANSFER
-	DISAPPROVE
+	DISAPPROVAL
+	APPROVAL
 }
 
-type ShareIssuanceTrade	{
+type ShareTransferEvent	{
 	id: ID!
 	shareContractAddress: String! @search
 	recipientAddress: String! @search
@@ -654,7 +655,7 @@ type ShareIssuanceTrade	{
 	price:	Int
 	partition: String! @search
 	transactionHash: String!
-	type: ShareIssuanceTradeType!
+	type: ShareTransferEventType!
 	archived: Boolean!
 }
 
