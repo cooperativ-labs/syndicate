@@ -14,22 +14,22 @@ import { emailNotificationContent } from '@src/services/postmark';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import axios from 'axios';
 
-const handleEmailNotification = async (address: string, completionUrl: string) => {
-  const notificationText = 'Someone has applied to purchase shares in your offering.';
-  const url = `${getBaseUrl()}/offerings/${offeringId}`;
+// const handleEmailNotification = async (address: string, completionUrl: string) => {
+//   const notificationText = 'Someone has applied to purchase shares in your offering.';
+//   const url = `${getBaseUrl()}/offerings/${offeringId}`;
 
-  const to = address;
-  const subject = 'Welcome to Cooperativ.io';
-  const { html, text } = emailNotificationContent(notificationText, url);
-  const htmlBody = html;
-  const textBody = text;
+//   const to = address;
+//   const subject = 'Welcome to Cooperativ.io';
+//   const { html, text } = emailNotificationContent(notificationText, url);
+//   const htmlBody = html;
+//   const textBody = text;
 
-  try {
-    await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
-  } catch (error) {
-    console.error(error);
-  }
-};
+//   try {
+//     await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
+//   } catch (error) {
+//     console.error(error);
+//   }
+// };
 
 type SubmitSwapProps = {
   numShares: number;
