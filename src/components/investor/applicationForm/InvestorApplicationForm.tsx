@@ -13,7 +13,7 @@ import Input, { defaultFieldDiv, defaultFieldLabelClass } from '@src/components/
 import InvestorApplicationPledgeFields from './InvestorApplicationPledgeFields';
 import PrimaryApplicationFields from './PrimaryApplicationFields';
 import PurchaserSummaryDisplay from './PurchaserSummaryDisplay';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/dGraphQueries/offering';
 import { checkDateInPast } from '@src/utils/helpersGeneral';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';

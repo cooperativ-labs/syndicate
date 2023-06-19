@@ -8,6 +8,7 @@ import { DgraphAdapter } from '@next-auth/dgraph-adapter';
 import { AuthOptions, Session, User } from 'next-auth';
 import * as jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
+import { postmarkClient } from '@src/services/postmark';
 
 const getEndpoint = () => {
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
@@ -82,26 +83,26 @@ const options: AuthOptions = {
       //   });
       // },
 
-      // sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
-      //   if (!email) {
-      //     throw new Error(`Invalid email address: ${email}`);
-      //   }
-      //   if (email.split('@').length > 2) {
-      //     throw new Error('Only one email allowed');
-      //   }
-      //   const result = postmarkClient.sendEmail({
-      //     To: email,
-      //     From: from,
-      //     MessageStream: 'magic-link-stream',
-      //     Subject: 'Sign in to your account',
-      //     TextBody: `Sign in to your account: ${url}`,
-      //     HtmlBody: `<html><body><p>Sign in to your account:</p><p><a href="${url}">${url}</a></p></body></html>`,
-      //   });
+      sendVerificationRequest({ identifier: email, url, provider: { server, from } }) {
+        if (!email) {
+          throw new Error(`Invalid email address: ${email}`);
+        }
+        if (email.split('@').length > 2) {
+          throw new Error('Only one email allowed');
+        }
+        const result = postmarkClient.sendEmail({
+          To: email,
+          From: from,
+          MessageStream: 'magic-link-stream',
+          Subject: 'Sign in to your account',
+          TextBody: `Sign in to your account: ${url}`,
+          HtmlBody: `<html><body><p>Sign in to your account:</p><p><a href="${url}">${url}</a></p></body></html>`,
+        });
 
-      //   if (result.ErrorCode) {
-      //     throw new Error('here', result.Message);
-      //   }
-      // },
+        if (result.ErrorCode) {
+          throw new Error('here', result.Message);
+        }
+      },
     }),
     // CredentialsProvider({
     //   name: 'test-credentials',
