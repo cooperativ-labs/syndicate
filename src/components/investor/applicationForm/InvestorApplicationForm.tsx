@@ -1,4 +1,3 @@
-import * as backendCtc from '../../../web3/ABI';
 import AdditionalApplicationFields from './AdditionalApplicationFields';
 import AdvisorFields from './AdvisorFields';
 import Checkbox from '@src/components/form-components/Checkbox';
@@ -24,9 +23,7 @@ import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { Maybe, Offering } from 'types';
-
 import { numberWithCommas } from '@src/utils/helpersMoney';
-
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useRouter } from 'next/router';
