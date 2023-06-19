@@ -13,11 +13,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Offering, OfferingParticipant, ShareOrder } from 'types';
+import { Offering, ShareOrder } from 'types';
 
 import { acceptOrder } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useBalance } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useAsync } from 'react-use';
 
 export type SharePurchaseRequestProps = {
@@ -25,7 +25,6 @@ export type SharePurchaseRequestProps = {
   order: ShareOrder;
   price: number;
   swapContractAddress: String0x;
-
   refetchAllContracts: () => void;
 };
 
@@ -35,7 +34,6 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
   price,
   myBacBalance,
   swapContractAddress,
-
   refetchAllContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
@@ -92,6 +90,8 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
             swapContractAddress: swapContractAddress,
             contractIndex: order.contractIndex,
             amount: values.numUnitsPurchase,
+            offeringId: offering.id,
+            organization: offering.offeringEntity?.organization,
             refetchAllContracts: refetchAllContracts,
             setButtonStep: setButtonStep,
           });

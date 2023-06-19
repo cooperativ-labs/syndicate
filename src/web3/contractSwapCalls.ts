@@ -9,27 +9,12 @@ import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
 import { erc20ABI } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ShareTransferEventType } from 'types';
-import { emailNotificationContent } from '@src/services/postmark';
+import { Organization, ShareTransferEventType } from 'types';
 import { getBaseUrl } from '@src/utils/helpersURL';
-import axios from 'axios';
-
-// const handleEmailNotification = async (address: string, completionUrl: string) => {
-//   const notificationText = 'Someone has applied to purchase shares in your offering.';
-//   const url = `${getBaseUrl()}/offerings/${offeringId}`;
-
-//   const to = address;
-//   const subject = 'Welcome to Cooperativ.io';
-//   const { html, text } = emailNotificationContent(notificationText, url);
-//   const htmlBody = html;
-//   const textBody = text;
-
-//   try {
-//     await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
-//   } catch (error) {
-//     console.error(error);
-//   }
-// };
+import {
+  handleOfferingRequestNotification,
+  handleTradeExecutionNotification,
+} from '@src/components/notifications/notificationFunctions';
 
 type SubmitSwapProps = {
   numShares: number;
@@ -150,6 +135,8 @@ type AcceptOrderProps = {
   swapContractAddress: String0x;
   amount: number;
   contractIndex: number;
+  offeringId: string;
+  organization: Organization;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
@@ -159,6 +146,8 @@ export const acceptOrder = async ({
   swapContractAddress,
   amount,
   contractIndex,
+  offeringId,
+  organization,
   setButtonStep,
   refetchAllContracts,
   setModal,
@@ -181,6 +170,11 @@ export const acceptOrder = async ({
       const { hash } = await writeContract(request);
       await waitForTransaction({
         hash: hash,
+      });
+      await handleOfferingRequestNotification({
+        organization,
+        completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
+        notificationText: 'Someone has applied to purchase shares in your offering.',
       });
       refetchAllContracts();
       setButtonStep('confirmed');
@@ -442,10 +436,13 @@ type FillOrderProps = {
   shareContractAddress: String0x | undefined;
   amount: number;
   price: number;
+  paymentTokenDecimals: number;
   contractIndex: number;
   partition: String0x;
   recipient: String0x;
   sender: String0x;
+  offeringId: string;
+  organization: Organization;
   addTrade: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
@@ -458,11 +455,14 @@ export const fillOrder = async ({
   swapContractAddress,
   amount,
   price,
+  paymentTokenDecimals,
   contractIndex,
   partition,
   recipient,
   sender,
   shareContractAddress,
+  offeringId,
+  organization,
   addTrade,
   setButtonStep,
   refetchAllContracts,
@@ -485,18 +485,27 @@ export const fillOrder = async ({
       const transactionDetails = await waitForTransaction({
         hash: hash,
       });
-      addTrade({
+      await addTrade({
         variables: {
           shareContractAddress,
           recipientAddress: recipient,
           senderAddress: sender,
           amount: amount,
-          price: price,
+          price: Number(toContractNumber(price, paymentTokenDecimals)),
           transactionHash: transactionDetails.transactionHash,
           partition: partition,
           type: ShareTransferEventType.Trade,
         },
       });
+      await handleTradeExecutionNotification({
+        organization,
+        completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
+        notificationText: `${sender} has sold ${amount} shares to ${recipient} at ${numberWithCommas(
+          price,
+          2
+        )} per share. The transaction hash is ${transactionDetails.transactionHash}.`,
+      });
+
       setButtonStep('confirmed');
       toast.success(`You have completed the swap.`);
       refetchAllContracts();

@@ -15,7 +15,9 @@ import { TransactionReceipt, parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
-import { ShareTransferEventType } from 'types';
+import { Organization, ShareTransferEventType } from 'types';
+import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
+import { getBaseUrl } from '@src/utils/helpersURL';
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
@@ -24,6 +26,7 @@ type AddWhitelistMemberProps = {
   chainId: number;
   name: string;
   externalId: string;
+  organization: Organization;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addWhitelistObject: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
@@ -38,6 +41,7 @@ export const addWhitelistMember = async ({
   chainId,
   name,
   externalId,
+  organization,
   setButtonStep,
   addWhitelistObject,
   refetchMainContracts,
@@ -77,6 +81,11 @@ export const addWhitelistMember = async ({
         hash: hash,
       });
       await addToDb();
+      await handleWhitelistUpdateNotification({
+        organization,
+        completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
+        notificationText: `${walletAddress} was added to your offering's whitelist.`,
+      });
       setButtonStep('confirmed');
     } catch (e) {
       const parsedError = ChainErrorResponses(e, walletAddress);

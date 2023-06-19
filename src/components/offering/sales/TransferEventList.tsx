@@ -1,5 +1,5 @@
-import TransferEventItem, { TransferEventProps } from './TransferEventItem';
 import React, { FC } from 'react';
+import TransferEventItem, { TransferEventProps } from './TransferEventItem';
 import { ShareTransferEvent } from 'types';
 
 export type TransferEventListProps = TransferEventProps & { transferEvents: ShareTransferEvent[] };

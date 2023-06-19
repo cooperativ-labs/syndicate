@@ -271,6 +271,18 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
             user {
               id
             }
+            notificationConfigurations {
+              id
+              notificationRecipientType
+              notificationMethod
+              notificationSubject
+              organizationUser {
+                id
+                organization {
+                  id
+                }
+              }
+            }
           }
         }
       }
@@ -323,6 +335,18 @@ export const CORE_ENTITY_FIELDS = gql`
           id
           name
           email
+        }
+        notificationConfigurations {
+          id
+          notificationRecipientType
+          notificationMethod
+          notificationSubject
+          organizationUser {
+            id
+            organization {
+              id
+            }
+          }
         }
       }
     }
@@ -538,11 +562,24 @@ export const CORE_ORGANIZATION_FIELDS = gql`
     users {
       id
       permissions
+
       user {
         id
         name
         email
         image
+      }
+      notificationConfigurations {
+        id
+        notificationRecipientType
+        notificationMethod
+        notificationSubject
+        organizationUser {
+          id
+          organization {
+            id
+          }
+        }
       }
     }
     legalEntities {

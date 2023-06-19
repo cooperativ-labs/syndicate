@@ -131,6 +131,73 @@ export const UPDATE_ORGANIZATION_INFORMATION = gql`
   }
 `;
 
+// ----------------Notifications----------------
+
+export const ADD_NOTIFICATION_RULE = gql`
+  mutation AddNotificationRule(
+    $organizationUserId: ID!
+    $notificationRecipientType: NotificationRecipientType!
+    $NotificationMethod: NotificationMethod!
+    $notificationSubject: NotificationSubject!
+  ) {
+    addNotificationConfiguration(
+      input: {
+        organizationUser: { id: $organizationUserId }
+        notificationRecipientType: $notificationRecipientType
+        notificationMethod: $NotificationMethod
+        notificationSubject: $notificationSubject
+      }
+    ) {
+      notificationConfiguration {
+        id
+        notificationRecipientType
+        notificationMethod
+        notificationSubject
+        organizationUser {
+          id
+          organization {
+            id
+            users {
+              id
+              notificationConfigurations {
+                id
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
+
+export const REMOVE_NOTIFICATION_RULE = gql`
+  mutation RemoveNotificationRule($organizationUserId: [ID!], $notificationConfigurationId: ID!) {
+    updateOrganizationUser(
+      input: {
+        filter: { id: $organizationUserId }
+        remove: { notificationConfigurations: { id: $notificationConfigurationId } }
+      }
+    ) {
+      numUids
+      organizationUser {
+        id
+        organization {
+          id
+          users {
+            id
+            notificationConfigurations {
+              id
+            }
+          }
+        }
+      }
+    }
+    deleteNotificationConfiguration(filter: { id: [$notificationConfigurationId] }) {
+      msg
+    }
+  }
+`;
+
 // --------------- Email ----------------
 
 export const ADD_ORGANIZATION_EMAIL = gql`

@@ -13,15 +13,19 @@ import React, { FC, useState } from 'react';
 import RoundedImage from '@src/components/RoundedImage';
 import SectionBlock from '@src/containers/SectionBlock';
 import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
-import SettingsAddTeamMember from '@src/components/entity/SettingsAddTeamMember';
+
+import NotificationConfigList from '@src/components/organization/NotificationConfigList';
+import SettingsAddNotification from '@src/components/organization/SettingsAddNotification';
+import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamMember';
 import SettingsSocial from '@src/components/account/SettingsSocial';
-import TeamMemberList from '@src/components/entity/TeamMemberList';
+import TeamMemberList from '@src/components/organization/TeamMemberList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dGraphQueries/organization';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { getOrganizationUser } from '@src/utils/helpersOrganization';
 import { Maybe, Organization } from 'types';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
@@ -72,6 +76,7 @@ const OrganizationSettings: FC = () => {
     linkedAccounts,
   } = organization;
 
+  const organizationCurrentUser = getOrganizationUser(userId, organization);
   const isAdmin = userId && getIsAdmin(userId, organization);
   const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
 
@@ -239,6 +244,16 @@ const OrganizationSettings: FC = () => {
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
             <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
               <SettingsAddTeamMember organizationId={organization.id} />
+            </SectionBlock>
+          </div>
+        </>
+        <></>
+        <>
+          <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Email Notifications</h2>
+          <NotificationConfigList organizationUser={organizationCurrentUser} />
+          <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
+            <SectionBlock className="font-bold " sectionTitle={'Add Notification Rule'} mini asAccordion>
+              <SettingsAddNotification organizationUserId={organizationCurrentUser?.id} />
             </SectionBlock>
           </div>
         </>

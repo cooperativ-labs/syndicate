@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ManagerModalType, getAmountRemaining } from '@src/utils/helpersOffering';
+import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { Maybe, Offering, OfferingParticipant, ShareOrder } from 'types';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
@@ -73,8 +73,6 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   const isOfferor = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
 
   const shareQtyRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
-
-  console.log(price);
 
   return (
     <>

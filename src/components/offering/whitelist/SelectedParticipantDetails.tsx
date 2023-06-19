@@ -14,6 +14,7 @@ import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 import { Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
 
+import TransferEventList from '../sales/TransferEventList';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
@@ -21,7 +22,6 @@ import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { useContractRead, useContractWrite } from 'wagmi';
 import { useMutation, useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import TransferEventList from '../sales/TransferEventList';
 
 type SelectedParticipantProps = {
   selection: string;

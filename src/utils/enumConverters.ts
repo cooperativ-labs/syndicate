@@ -15,6 +15,7 @@ import {
   Currency,
   ShareTransferEventType,
   Maybe,
+  NotificationSubject,
 } from 'types';
 import { getAmountRemaining } from './helpersOffering';
 
@@ -56,21 +57,6 @@ export const getSocialAccountOption = (type: LinkedAccountType | null | undefine
   return option;
 };
 
-// ===== ENTITY ======
-
-export const entityTypeOptions = [
-  { value: LegalEntityType.Individual, name: 'Individual' },
-  { value: LegalEntityType.Llc, name: 'LLC' },
-  { value: LegalEntityType.Corporation, name: 'Corporation' },
-];
-
-export const getEntityTypeOptions = (nonHuman: boolean) => {
-  if (nonHuman) {
-    return entityTypeOptions.filter((option) => option.value !== LegalEntityType.Individual);
-  }
-  return [{ value: LegalEntityType.Individual, name: 'Individual' }];
-};
-
 export const organizationPermissionOptions = [
   { value: OrganizationPermissionType.Admin, name: 'Admin', color: 'blue-500' },
   { value: OrganizationPermissionType.Editor, name: 'Editor', color: 'emerald-600' },
@@ -91,6 +77,36 @@ export const getOrganizationPermissionOption = (
   });
 
   return option || defaultOption;
+};
+
+export const notificationSubjectOptions = [
+  { value: NotificationSubject.OfferingDistribution, name: 'Distribution Submitted' },
+  { value: NotificationSubject.ProceedsClaim, name: 'Proceeds Claimed' },
+  { value: NotificationSubject.TransactionRequest, name: 'Transaction Approval Requested' },
+  { value: NotificationSubject.TradeExecution, name: 'Trade Executed' },
+  { value: NotificationSubject.WhitelistApproval, name: 'Investor Added' },
+];
+
+export const getNotificationSubjectOption = (notificationSubject: NotificationSubject) => {
+  const option = notificationSubjectOptions.find((option) => {
+    return option.value === notificationSubject ? option : null;
+  });
+  return option;
+};
+
+// ===== ENTITY ======
+
+export const entityTypeOptions = [
+  { value: LegalEntityType.Individual, name: 'Individual' },
+  { value: LegalEntityType.Llc, name: 'LLC' },
+  { value: LegalEntityType.Corporation, name: 'Corporation' },
+];
+
+export const getEntityTypeOptions = (nonHuman: boolean) => {
+  if (nonHuman) {
+    return entityTypeOptions.filter((option) => option.value !== LegalEntityType.Individual);
+  }
+  return [{ value: LegalEntityType.Individual, name: 'Individual' }];
 };
 
 export const docFormatOptions = [

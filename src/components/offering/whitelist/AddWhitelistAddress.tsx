@@ -7,14 +7,16 @@ import { Form, Formik } from 'formik';
 import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
 import { isAddress } from 'viem';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { Organization } from 'types';
 import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 export type AddWhitelistAddressProps = {
+  organization: Organization;
   shareContractAddress: String0x;
   offeringId: string;
 };
-const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddress, offeringId }) => {
+const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddress, offeringId, organization }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
@@ -48,6 +50,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
           chainId,
           name: values.name,
           externalId: values.externalId,
+          organization,
           setButtonStep,
           addWhitelistObject,
         });

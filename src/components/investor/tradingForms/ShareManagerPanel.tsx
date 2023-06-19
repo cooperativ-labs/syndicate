@@ -73,7 +73,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const [deleteOrderObject] = useMutation(DELETE_ORDER);
+  const [deleteOrderObject, { data: deleteData }] = useMutation(DELETE_ORDER);
   const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
   const [addApprovalRecord, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -157,7 +157,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 
   const handleDelete = async () => {
     deleteOrderObject({ variables: { orderId: order.id } });
-    refetchOffering();
+    // refetchOffering();
   };
 
   const buttonClass =

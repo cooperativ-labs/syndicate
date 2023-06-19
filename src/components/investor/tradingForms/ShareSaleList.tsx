@@ -2,8 +2,8 @@ import Button from '@src/components/buttons/Button';
 
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
-import { Maybe, ShareOrder } from 'types';
 import { ManagerModalType } from '@src/utils/helpersOffering';
+import { Maybe, ShareOrder } from 'types';
 export type ShareSaleListProps = ShareSaleListItemProps & {
   orders: Maybe<ShareOrder>[] | undefined;
   setModal: Dispatch<SetStateAction<ManagerModalType>>;

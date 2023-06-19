@@ -120,7 +120,11 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   refetchContracts={refetchContracts}
                 />
                 <hr className="mt-5" />
-                <AddWhitelistAddress shareContractAddress={shareContractAddress} offeringId={offering.id} />
+                <AddWhitelistAddress
+                  shareContractAddress={shareContractAddress}
+                  offeringId={offering.id}
+                  organization={offering.offeringEntity.organization}
+                />
               </div>
             ) : (
               <div>You must create a share contract before you can add investors.</div>

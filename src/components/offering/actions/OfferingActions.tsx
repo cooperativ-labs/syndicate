@@ -15,9 +15,9 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { Maybe, ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
+import { ManagerModalType } from '@src/utils/helpersOffering';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
-import { ManagerModalType } from '@src/utils/helpersOffering';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';

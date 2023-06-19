@@ -1,5 +1,5 @@
-import TransferEventList, { TransferEventListProps } from './TransferEventList';
 import React, { FC } from 'react';
+import TransferEventList, { TransferEventListProps } from './TransferEventList';
 
 export const FullTransactionHistory: FC<TransferEventListProps> = ({ transferEvents, paymentTokenDecimals }) => {
   return (

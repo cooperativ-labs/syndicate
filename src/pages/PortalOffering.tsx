@@ -15,6 +15,7 @@ import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '
 import { DocumentType, Offering } from 'types';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
+import { ManagerModalType } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractRead, useNetwork } from 'wagmi';
@@ -23,7 +24,6 @@ import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-import { ManagerModalType } from '@src/utils/helpersOffering';
 
 type PortalOfferingProps = {
   offering: Offering;

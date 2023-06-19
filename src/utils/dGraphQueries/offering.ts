@@ -599,7 +599,7 @@ export const REMOVE_WHITELIST_OBJECT = gql`
         }
       }
     }
-    deleteOfferingParticipant(filter: { id: [$id] }) {
+    deleteOfferingParticipant(filter: { id: [$participantId] }) {
       msg
     }
   }

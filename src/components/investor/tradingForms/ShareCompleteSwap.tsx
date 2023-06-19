@@ -2,12 +2,13 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
 import { fillOrder } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
-import { toContractNumber, toNormalNumber } from '@src/web3/util';
+import { toNormalNumber } from '@src/web3/util';
 import { useMutation } from '@apollo/client';
 
 import React, { FC, useState } from 'react';
 import SetAllowanceForm from './SetAllowanceForm';
 import { erc20ABI, useAccount, useContractRead } from 'wagmi';
+import { Organization } from 'types';
 
 type ShareCompleteSwapProps = {
   contractIndex: number;
@@ -22,7 +23,8 @@ type ShareCompleteSwapProps = {
   shareContractAddress: String0x;
   paymentTokenAddress: String0x;
   partition: String0x;
-
+  offeringId: string;
+  organization: Organization;
   refetchAllContracts: () => void;
 };
 
@@ -39,7 +41,8 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
   filler,
   initiator,
   partition,
-
+  offeringId,
+  organization,
   refetchAllContracts,
 }) => {
   const [amount, setAmount] = useState<number>(0);
@@ -64,8 +67,6 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
   const recipient = isAsk ? filler : initiator;
   const sender = isAsk ? initiator : filler;
 
-  const decimalAdjustedPrice = Number(toContractNumber(price, paymentTokenDecimals));
-
   return (
     <div>
       {!txnApprovalsEnabled && (
@@ -85,11 +86,13 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
               shareContractAddress,
               contractIndex,
               amount: txnApprovalsEnabled ? orderQty : amount,
-
-              price: decimalAdjustedPrice,
+              price,
+              paymentTokenDecimals,
               recipient,
               sender,
               partition,
+              offeringId,
+              organization,
               addTrade: addTrade,
               setButtonStep: setButtonStatus,
               refetchAllContracts: refetchAllContracts,

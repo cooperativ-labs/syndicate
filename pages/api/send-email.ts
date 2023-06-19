@@ -2,6 +2,7 @@ import { sendEmail } from '@src/services/postmark';
 import type { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+  console.log('req.method', req.method);
   if (req.method === 'POST') {
     const { to, subject, htmlBody, textBody } = req.body;
     try {

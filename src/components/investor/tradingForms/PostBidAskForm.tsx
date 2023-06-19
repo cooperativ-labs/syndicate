@@ -18,7 +18,7 @@ import { Maybe, Offering, OfferingParticipant } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
-import { ManagerModalType, getAmountRemaining } from '@src/utils/helpersOffering';
+import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
@@ -131,30 +131,26 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             setSubmitting(false);
             return;
           }
-          try {
-            await submitSwap({
-              numShares: values.numUnits,
-              price: values.price,
-              partition: values.partition,
-              minUnits: values.minUnits,
-              maxUnits: values.maxUnits,
-              swapContractAddress: swapContractAddress,
-              visible: !swapApprovalsEnabled,
-              toc: values.toc,
-              paymentTokenDecimals: paymentTokenDecimals as number,
-              offeringId: offering.id,
-              isContractOwner: isContractOwner,
-              isAsk: isAsk,
-              isIssuance: isIssuance,
-              isErc20Payment: isErc20Payment,
-              setButtonStep: setButtonStep,
-              createOrder: createOrder,
-              refetchAllContracts,
-            });
-            setModal('shareSaleList');
-          } catch (e) {
-            throw e;
-          }
+          await submitSwap({
+            numShares: values.numUnits,
+            price: values.price,
+            partition: values.partition,
+            minUnits: values.minUnits,
+            maxUnits: values.maxUnits,
+            swapContractAddress: swapContractAddress,
+            visible: !swapApprovalsEnabled,
+            toc: values.toc,
+            paymentTokenDecimals: paymentTokenDecimals as number,
+            offeringId: offering.id,
+            isContractOwner: isContractOwner,
+            isAsk: isAsk,
+            isIssuance: isIssuance,
+            isErc20Payment: isErc20Payment,
+            setButtonStep: setButtonStep,
+            createOrder: createOrder,
+            refetchAllContracts,
+          });
+          setModal('shareSaleList');
 
           setSubmitting(false);
         }}

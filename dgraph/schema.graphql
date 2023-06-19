@@ -451,7 +451,7 @@ add:
 	lightBrand: Boolean
 	website: String 
 	shortDescription: String
-	offeringEntity: LegalEntity @hasInverse(field:offerings) 
+	offeringEntity: LegalEntity! @hasInverse(field:offerings) 
 	smartContractSets: [OfferingSmartContractSet] @hasInverse(field:offering)
 	details: OfferingDetails @hasInverse(field:offering)
 	profileDescriptions: [OfferingDescriptionText] @hasInverse(field:offering)
@@ -860,6 +860,73 @@ add:{rule: """
 	organization: Organization @hasInverse(field:emailAddresses)
 }
 
+enum NotificationRecipientType	{
+	MANAGER
+	PARTICIPANT
+}
+
+enum NotificationMethod	{
+EMAIL
+}
+
+enum NotificationSubject	{
+	TRANSACTION_REQUEST
+	OFFERING_DISTRIBUTION
+	TRADE_EXECUTION
+	WHITELIST_APPROVAL
+	PROCEEDS_CLAIM
+}
+
+type NotificationConfiguration @auth (
+add:{rule: """
+						query($userId: ID!){ 
+								queryNotificationConfiguration{
+									organizationUser{
+													organization{
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+								}
+						}"""
+			}
+			update:{rule: """
+						query($userId: ID!){ 
+								queryNotificationConfiguration{
+									organizationUser{
+													organization{
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+								}
+						}"""
+			}
+			delete:{rule: """
+						query($userId: ID!){ 
+								queryNotificationConfiguration{
+									organizationUser{
+													organization{
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+								}
+						}"""
+			}
+
+)
+{
+	id: ID!
+	notificationRecipientType: NotificationRecipientType!
+	notificationMethod: NotificationMethod!
+	notificationSubject: NotificationSubject!
+	organizationUser: OrganizationUser! @hasInverse(field:notificationConfigurations)
+}
+
 
 enum LinkedAccountType  {
 	LINKEDIN
@@ -1064,6 +1131,7 @@ type OrganizationUser
 	organization: Organization! @hasInverse(field:users) 
 	user: User! @hasInverse(field:organizations) 
 	permissions: [OrganizationPermissionType!] @search
+	notificationConfigurations: [NotificationConfiguration] @hasInverse(field:organizationUser)
 	# role: [OrganizationUserRole] @search
 	# title: String
 }
@@ -1115,7 +1183,7 @@ update:{rule: """
 	emailAddresses: [EmailAddress] @hasInverse(field:organization)
 	linkedAccounts: [LinkedAccount] @hasInverse(field:organization) 
 	website: String 
-	users: [OrganizationUser] @hasInverse(field:organization)
+	users: [OrganizationUser!] @hasInverse(field:organization)
 	legalEntities: [LegalEntity] @hasInverse(field:organization)
 	creationDate: DateTime!
 	lastUpdate: DateTime!

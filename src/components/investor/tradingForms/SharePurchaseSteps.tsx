@@ -36,7 +36,6 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
-
   isApproved,
   isDisapproved,
   isCancelled,
@@ -114,6 +113,8 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
             shareContractAddress={shareContractAddress}
             paymentTokenAddress={paymentTokenAddress}
             partition={partition}
+            offeringId={offering.id}
+            organization={offering.offeringEntity.organization}
           />
         )}
       </div>
