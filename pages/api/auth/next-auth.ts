@@ -90,6 +90,7 @@ const options: AuthOptions = {
         if (email.split('@').length > 2) {
           throw new Error('Only one email allowed');
         }
+
         const result = postmarkClient.sendEmail({
           To: email,
           From: from,
@@ -98,7 +99,7 @@ const options: AuthOptions = {
           TextBody: `Sign in to your account: ${url}`,
           HtmlBody: `<html><body><p>Sign in to your account:</p><p><a href="${url}">${url}</a></p></body></html>`,
         });
-
+        console.log('result', result);
         if (result.ErrorCode) {
           throw new Error('here', result.Message);
         }
