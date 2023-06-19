@@ -45,7 +45,23 @@ declare let window: any;
 //   80001: 'https://polygon-mumbai.infura.io/v3/',
 // };
 
-export const SupportedChains = [mainnet, sepolia, goerli, polygon, polygonMumbai];
+const getEndpoint = () => {
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
+  } else {
+    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT_UNSECURED;
+  }
+};
+
+export const getSupportedChains = () => {
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+    return [sepolia, polygonMumbai];
+  } else {
+    return [mainnet, sepolia, goerli, polygon, polygonMumbai];
+  }
+};
+
+export const SupportedChains = getSupportedChains();
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),

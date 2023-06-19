@@ -14,6 +14,7 @@ import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { Organization, OrganizationUser, User } from 'types';
 import { signOut, useSession } from 'next-auth/react';
 import { useApolloClient } from '@apollo/client';
+import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 
 // const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
