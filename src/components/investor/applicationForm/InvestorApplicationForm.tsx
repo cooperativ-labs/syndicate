@@ -24,7 +24,7 @@ import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { Maybe, Offering } from 'types';
-import { ALGO_MyAlgoConnect as MyAlgoConnect } from '@reach-sh/stdlib';
+
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 import { useAccount, useChainId } from 'wagmi';

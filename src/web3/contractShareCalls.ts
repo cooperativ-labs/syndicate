@@ -201,7 +201,7 @@ export const sendShares = async ({
           amount: numShares,
           transactionHash: transactionDetails.transactionHash,
           partition: setPartition,
-          type: isIssuance ? ShareTransferEventType.Issue : ShareTransferEventType.Transfer,
+          type: isIssuance ? ShareTransferEventType.Issuance : ShareTransferEventType.Transfer,
         },
       });
       if (partition === '0xNew')
