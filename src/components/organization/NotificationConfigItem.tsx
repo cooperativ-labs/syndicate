@@ -23,7 +23,7 @@ const NotificationConfigItem: FC<NotificationConfigItemProps> = ({
   const { data: session } = useSession();
 
   const [editOn, setEditOn] = useState<boolean>(false);
-  const { id, emailAddress, notificationRecipientType, notificationMethod, notificationSubject } =
+  const { id, notificationRecipientType, notificationMethod, notificationSubject } =
     notificationConfig as NotificationConfiguration;
 
   return (
