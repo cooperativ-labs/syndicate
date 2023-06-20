@@ -25,8 +25,9 @@ export const handleAddEmailAddress = async (address: string, completionUrl: stri
   const { html, text } = emailConfirmationContent(confirmationLink);
   const htmlBody = html;
   const textBody = text;
+  const messageStream = 'outbound';
   try {
-    await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
+    await axios.post('/api/send-email', { to, subject, htmlBody, textBody, messageStream });
   } catch (error) {
     console.error(error);
   }
@@ -50,8 +51,9 @@ export const handleContractNotification = async ({
     const { html, text } = emailNotificationContent(notificationText, completionUrl);
     const htmlBody = html;
     const textBody = text;
+    const messageStream = 'notifications';
     try {
-      await axios.post('/api/send-email', { to, subject, htmlBody, textBody });
+      await axios.post('/api/send-email', { to, subject, htmlBody, textBody, messageStream });
     } catch (error) {
       console.error(error);
     }
