@@ -10,6 +10,8 @@ import { swapContractAddress } from '@src/web3/generated';
 import { useAsync } from 'react-use';
 import { useRouter } from 'next/router';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import { useQuery } from '@apollo/client';
+import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
 
 export type OfferingCardProps = {
   offering: Maybe<Offering> | undefined;
@@ -17,8 +19,7 @@ export type OfferingCardProps = {
 
 const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const router = useRouter();
-  const { name, shortDescription, id, details, image, offeringEntity, orders, smartContractSets } =
-    offering as Offering;
+  const { name, shortDescription, id, details, image, offeringEntity, smartContractSets } = offering as Offering;
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
 
   const contractSet = smartContractSets?.slice(-1)[0];
@@ -26,6 +27,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
 
   const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
+
+  const { data: orders, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
+    variables: { swapContractAddress: swapContractAddress },
+  });
 
   useAsync(async () => {
     const contractSaleList =
