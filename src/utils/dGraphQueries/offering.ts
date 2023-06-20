@@ -17,7 +17,7 @@ export const ADD_OFFERING = gql`
         {
           creationDate: $currentDate
           lastUpdate: $currentDate
-          waitlistOn: true
+          waitlistOn: false
           name: $name
           shortDescription: $shortDescription
           brandColor: $brandColor
@@ -480,87 +480,6 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
           id
         }
       }
-    }
-  }
-`;
-
-// ======== TEMPORARY =============
-export const ADD_OFFERING_WAITLIST_MEMBER = gql`
-  mutation AddOfferingWaitlistMember(
-    $currentDate: DateTime!
-    $dateSigned: DateTime!
-    $name: String
-    $minPledge: Int
-    $maxPledge: Int
-    $nonUS: Boolean
-    $offeringId: ID!
-    $offeringEntityId: ID!
-    $offeringUniqueId: String!
-    $walletAddress: String
-    $applicationText: String!
-    $applicationTitle: String!
-    $signature: String!
-  ) {
-    addWaitlistMember(
-      input: {
-        lastUpdate: $currentDate
-        name: $name
-        offering: { id: $offeringId }
-        walletAddress: $walletAddress
-        minPledge: $minPledge
-        maxPledge: $maxPledge
-        nonUS: $nonUS
-        investorApplication: {
-          creationDate: $currentDate
-          applicationDoc: {
-            creationDate: $currentDate
-            title: $applicationTitle
-            text: $applicationText
-            date: $currentDate
-            type: AGREEMENT
-            owner: { id: $offeringEntityId }
-            offeringUniqueId: $offeringUniqueId
-            lastUpdate: $currentDate
-            signatories: { signature: $signature, date: $dateSigned, archived: false }
-          }
-        }
-      }
-    ) {
-      waitlistMember {
-        id
-        offering {
-          id
-        }
-        investorApplication {
-          id
-          applicationDoc {
-            id
-          }
-        }
-      }
-    }
-  }
-`;
-
-export const REMOVE_WAITLIST_OBJECT = gql`
-  mutation RemoveWaitlistMember($offeringId: [ID!], $id: ID!, $currentDate: DateTime) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        remove: { waitlistMembers: { id: $id } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      offering {
-        id
-        waitlistMembers {
-          id
-        }
-      }
-    }
-    deleteWaitlistMember(filter: { id: [$id] }) {
-      msg
     }
   }
 `;

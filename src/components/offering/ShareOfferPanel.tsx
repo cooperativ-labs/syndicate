@@ -78,7 +78,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
     minUnitsPerInvestor: undefined,
   };
 
-  const buttonText = !permittedEntity ? 'Manage Investment' : offering.waitlistOn ? 'Join Waitlist' : 'Apply to Invest';
+  const buttonText = !permittedEntity ? 'Manage Investment' : 'Apply to Invest';
   const buttonLink =
     !permittedEntity && organization
       ? `/${organization.id}/portal/${offering.id}`

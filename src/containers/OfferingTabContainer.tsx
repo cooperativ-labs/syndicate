@@ -7,7 +7,7 @@ import OfferingProperties from '@src/components/properties/OfferingProperties';
 import React, { FC, useState } from 'react';
 import SubmitDistribution from '@src/components/offering/SubmitDistribution';
 import Tab from '@src/components/offering/tabs/Tab';
-import Waitlist from '@src/components/offering/whitelist/Waitlist';
+
 import WhitelistAddressList from '@src/components/offering/whitelist/WhitelistAddressList';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from 'types';
@@ -96,17 +96,6 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
         )}
         {activeTab === 'investors' && (
           <div className="mt-8">
-            {/* {isOfferingManager && (
-              <>
-                <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investor Waitlist</h1>
-                {offering.waitlistMembers?.length > 0 && (
-                  <Waitlist // MUST WORK ON THIS
-                    offeringWaitlistMembers={offering.waitlistMembers}
-                    offeringId={offering.id}
-                  />
-                )}
-              </>
-            )} */}
             {shareContractAddress ? (
               <div>
                 <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
