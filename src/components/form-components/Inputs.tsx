@@ -3,6 +3,8 @@ import React, { WheelEvent } from 'react';
 import { ErrorMessage, Field } from 'formik';
 
 export const defaultFieldLabelClass = 'text-sm text-blue-900 font-semibold text-opacity-80';
+export const defaultFieldClass =
+  'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none';
 export const defaultFieldDiv = 'pt-3 bg-opacity-0';
 export const addressFieldDiv = 'pt-2 my-2 bg-opacity-0';
 

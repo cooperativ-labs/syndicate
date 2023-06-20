@@ -17,7 +17,6 @@ import {
   Maybe,
   NotificationSubject,
 } from 'types';
-import { getAmountRemaining } from './helpersOffering';
 
 // ===== PROFILE ======
 
@@ -230,12 +229,12 @@ export const getSwapStatusOption = ({
   const initiated = !isAccepted && !isApproved && !isDisapproved && !isCancelled && !txnApprovalsEnabled;
   const isFilledAmount = filledAmount ? filledAmount > 0 : false;
   const filledLessThanAmount = filledAmount && amount ? filledAmount < amount : false;
-  const partiallyFilled = isFilledAmount && filledLessThanAmount;
+  const partiallyFilled = isFilledAmount && filledLessThanAmount && !isCancelled && !isDisapproved;
   const awaitingApproval = txnApprovalsEnabled && isAccepted && !isApproved && !isDisapproved && !isCancelled;
   const approved =
     (txnApprovalsEnabled && !isApproved && !isDisapproved) || (isApproved && !isDisapproved && !isCancelled);
-  const disapproved = isDisapproved;
-  const cancelled = isCancelled;
+  const disapproved = isDisapproved && !isCancelled;
+  const cancelled = isCancelled && !isDisapproved;
   const complete = filledAmount === amount;
 
   switch (true) {

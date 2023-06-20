@@ -118,7 +118,6 @@ export const CREATE_ORDER = gql`
   mutation CreateOrder(
     $currentDate: DateTime!
     $contractIndex: Int!
-    $offeringId: ID!
     $swapContractAddress: String!
     $minUnits: Int
     $maxUnits: Int
@@ -148,12 +147,6 @@ export const CREATE_ORDER = gql`
         contractIndex
         initiator
         transactionHash
-        relatedOffering {
-          id
-          orders {
-            id
-          }
-        }
       }
     }
   }
@@ -162,13 +155,16 @@ export const CREATE_ORDER = gql`
 export const RETRIEVE_ORDERS = gql`
   query RetrieveOrders($swapContractAddress: String!) {
     queryShareOrder(filter: { swapContractAddress: { anyofterms: $swapContractAddress } }) {
-      shareOrder {
-        id
-        creationDate
-        contractIndex
-        initiator
-        transactionHash
-      }
+      id
+      creationDate
+      contractIndex
+      initiator
+      transactionHash
+      swapContractAddress
+      minUnits
+      maxUnits
+      visible
+      archived
     }
   }
 `;
@@ -204,12 +200,6 @@ export const DELETE_ORDER = gql`
       numUids
       shareOrder {
         id
-        relatedOffering {
-          id
-          orders {
-            id
-          }
-        }
       }
     }
   }

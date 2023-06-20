@@ -7,6 +7,7 @@ import NonInput from '../../form-components/NonInput';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import React, { FC, useState } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
+import { acceptOrder, setAllowance } from '@src/web3/contractSwapCalls';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -14,10 +15,11 @@ import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { Offering, ShareOrder } from 'types';
-
-import { acceptOrder } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount } from 'wagmi';
+
+import WalletActionModal, { WalletActionStepType } from '@src/containers/wallet/WalletActionModal';
+import { erc20ABI, useAccount, useContractRead } from 'wagmi';
+import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
 
 export type SharePurchaseRequestProps = {
@@ -25,18 +27,34 @@ export type SharePurchaseRequestProps = {
   order: ShareOrder;
   price: number;
   swapContractAddress: String0x;
+  txnApprovalsEnabled: boolean;
+  paymentTokenAddress: String0x;
+  paymentTokenDecimals: number;
   refetchAllContracts: () => void;
 };
 
-const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: string | undefined }> = ({
+type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {
+  myBacBalance: string | undefined;
+  callFillOrder: (args: {
+    amount: number;
+    setButtonStep: React.Dispatch<React.SetStateAction<LoadingButtonStateType>>;
+  }) => void;
+};
+
+const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
   offering,
   order,
   price,
   myBacBalance,
   swapContractAddress,
+  txnApprovalsEnabled,
+  paymentTokenAddress,
+  paymentTokenDecimals,
   refetchAllContracts,
+  callFillOrder,
 }) => {
   const { address: userWalletAddress } = useAccount();
+  const [walletActionStep, setWalletActionStep] = useState<WalletActionStepType>('none');
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -55,8 +73,72 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
     return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)));
   };
 
+  //ABSTRACT THE ALLOWANCE BIT
+
+  const { data: allowanceData, refetch } = useContractRead({
+    address: paymentTokenAddress,
+    abi: erc20ABI,
+    functionName: 'allowance',
+    args: [userWalletAddress as String0x, swapContractAddress],
+  });
+
+  // ABSTRACT THIS OUT
+
+  const handleAllowance = async (amount: number, allowanceRequiredForPurchase: number) => {
+    await setAllowance({
+      paymentTokenAddress,
+      paymentTokenDecimals,
+      spenderAddress: swapContractAddress,
+      amount: allowanceRequiredForPurchase,
+      setButtonStep: () => {},
+    });
+    refetch();
+    return;
+  };
+
+  const handlePurchaseRequest = async (values: any) => {
+    const amountToBuy = values.numUnitsPurchase;
+    if (txnApprovalsEnabled) {
+      await acceptOrder({
+        swapContractAddress: swapContractAddress,
+        contractIndex: order.contractIndex,
+        amount: amountToBuy,
+        offeringId: offering.id,
+        organization: offering.offeringEntity?.organization,
+        refetchAllContracts: refetchAllContracts,
+        setButtonStep: setButtonStep,
+      });
+    } else {
+      const allowance = allowanceData && toNormalNumber(allowanceData, paymentTokenDecimals);
+      const allowanceRequiredForPurchase = amountToBuy * price;
+      const isAllowanceSufficient = allowance ? allowance >= allowanceRequiredForPurchase : false;
+      if (!isAllowanceSufficient) {
+        setWalletActionStep('step1');
+        await handleAllowance(amountToBuy, allowanceRequiredForPurchase);
+      }
+      setWalletActionStep('step2');
+      callFillOrder({
+        amount: amountToBuy,
+        setButtonStep: setButtonStep,
+      });
+      setWalletActionStep('step2');
+    }
+    setWalletActionStep('none');
+  };
+
+  const step1 = walletActionStep === 'none' || 'step1' ? 'pending' : 'success';
+  const step2 = walletActionStep === 'none' || 'step1' ? 'waiting' : 'step2' ? 'pending' : 'success';
+
   return (
     <>
+      <WalletActionModal
+        step={walletActionStep}
+        step1Text="Permitting the swap contract to spend your tokens"
+        step2Text="Executing trade"
+        step1Status={step1}
+        step2Status={step2}
+      />
+
       <Formik
         initialValues={{
           numUnitsPurchase: null,
@@ -86,15 +168,7 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
         onSubmit={async (values, { setSubmitting }) => {
           if (values.numUnitsPurchase === null) return;
           setSubmitting(true);
-          await acceptOrder({
-            swapContractAddress: swapContractAddress,
-            contractIndex: order.contractIndex,
-            amount: values.numUnitsPurchase,
-            offeringId: offering.id,
-            organization: offering.offeringEntity?.organization,
-            refetchAllContracts: refetchAllContracts,
-            setButtonStep: setButtonStep,
-          });
+          handlePurchaseRequest(values);
           setSubmitting(false);
         }}
       >
@@ -239,15 +313,18 @@ const SharePurchaseRequest: FC<SharePurchaseRequestProps & { myBacBalance: strin
             <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
               <LoadingButtonText
                 state={buttonStep}
-                idleText={`Request to purchase ${values.numUnitsPurchase ?? ''} shares ${
+                idleText={`${txnApprovalsEnabled ? 'Request to p' : 'P'}urchase ${
+                  values.numUnitsPurchase ?? ''
+                } shares ${
                   values.numUnitsPurchase
                     ? `for ${purchaseString(values.numUnitsPurchase)} ${
                         getCurrencyOption(offering.details?.investmentCurrency)?.symbol
                       } `
                     : ''
                 }`}
-                submittingText="Submitting..."
-                confirmedText="Submitted!"
+                submittingText="Setting contract allowance..."
+                step2Text="Executing transaction..."
+                confirmedText="Executed!"
                 failedText="Transaction failed"
                 rejectedText="You rejected the transaction. Click here to try again."
               />

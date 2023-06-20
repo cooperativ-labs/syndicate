@@ -31,7 +31,6 @@ type ShareOrder {
 	minUnits: Int
 	maxUnits: Int
 	visible: Boolean
-	relatedOffering: Offering! @hasInverse(field:orders) 
 	swapContractAddress: String! @search
 	initiator: String!
 	contractIndex: Int!
@@ -503,7 +502,6 @@ add:
 	smartContractSets: [OfferingSmartContractSet] @hasInverse(field:offering)
 	details: OfferingDetails @hasInverse(field:offering)
 	profileDescriptions: [OfferingDescriptionText] @hasInverse(field:offering)
-	orders: [ShareOrder] @hasInverse(field:relatedOffering)
 	participants: [OfferingParticipant] @hasInverse(field:offering)
 	distributions: [OfferingDistribution]
 	documents: [Document] @hasInverse(field:offering)

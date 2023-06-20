@@ -6,17 +6,19 @@ import { useMutation } from '@apollo/client';
 
 type OrderVisibilityToggleProps = {
   orderVisibility: boolean | undefined | null;
-  id: string;
+  orderArchived: boolean | undefined | null;
+  orderId: string;
 };
-const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({ orderVisibility, id }) => {
+const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({ orderVisibility, orderArchived, orderId }) => {
   const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
 
   const handleToggle = () => {
     updateOrderObject({
       variables: {
         currentDate: currentDate,
-        orderId: id,
+        orderId: orderId,
         visible: !orderVisibility,
+        archived: orderArchived,
       },
     });
   };

@@ -24,6 +24,7 @@ export type PostInitialSaleProps = {
   paymentTokenAddress: String0x | undefined;
   paymentTokenDecimals: number | undefined;
   partitions: String0x[];
+  refetchOfferingInfo: () => void;
 };
 
 type WithAdditionalProps = PostInitialSaleProps & {
@@ -48,6 +49,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   partitions,
   setModal,
   refetchAllContracts,
+  refetchOfferingInfo,
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -83,16 +85,17 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         price: priceStart,
         minUnits: undefined,
         maxUnits: undefined,
-        visible: true,
         partition: partitions[0],
         newPartition: '',
+        visible: true,
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
         const { numShares, minUnits, maxUnits } = values;
-        if (!values.numShares) {
+
+        if (!numShares) {
           errors.numShares = 'Please indicate how many shares you want to send';
-        } else if (values.numShares > sharesRemaining) {
+        } else if (numShares > sharesRemaining) {
           errors.numShares = `You only have ${sharesRemaining} remaining shares to send.`;
         }
         if (maxUnits && numShares && maxUnits > numShares) {
@@ -143,6 +146,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
             createOrder: createOrder,
             addPartition: addPartition,
             refetchAllContracts,
+            refetchOfferingInfo,
           });
           setModal('shareSaleList');
         } catch (e: any) {

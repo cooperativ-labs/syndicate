@@ -1,12 +1,16 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import SetAllowanceForm from './SetAllowanceForm';
 import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseRequest, { SharePurchaseRequestProps } from './SharePurchaseRequest';
+import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { erc20ABI, useAccount, useBalance, useContractRead, useContractReads } from 'wagmi';
+import { fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
+import { useMutation } from '@apollo/client';
 
 type SharePurchaseStepsProps = SharePurchaseRequestProps & {
   isApproved: boolean;
@@ -45,6 +49,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   refetchAllContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
+  const [addTrade, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
 
   const { data: orderQtyData, refetch } = useContractRead({
     address: swapContractAddress,
@@ -63,13 +68,42 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     refetch();
   };
 
+  const organization = offering.offeringEntity.organization;
+  const recipient = (isAsk ? filler : initiator) as String0x;
+  const sender = (isAsk ? initiator : filler) as String0x;
+
   const myBacBalance = bacBalanceData?.formatted;
   const acceptedOrderQty = orderQtyData && toNormalNumber(orderQtyData, shareContractDecimals);
   const currentUserFiller = userWalletAddress === filler;
   const currentUserPending = isAccepted && currentUserFiller;
-  const otherOrderPending = isAccepted && !currentUserFiller;
-  const showRequestForm = !isAccepted && txnApprovalsEnabled && shareQtyRemaining > 0;
-  const showTradeExecutionForm = (isAccepted || !txnApprovalsEnabled) && isApproved;
+  const otherOrderPending = txnApprovalsEnabled && isAccepted && !currentUserFiller;
+  const showRequestForm = (!isAccepted && txnApprovalsEnabled) || (!txnApprovalsEnabled && shareQtyRemaining > 0);
+  const showTradeExecutionForm = txnApprovalsEnabled && isApproved && !showRequestForm;
+
+  const callFillOrder = async ({
+    setButtonStep,
+    amount,
+  }: {
+    setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
+    amount: number;
+  }) => {
+    await fillOrder({
+      swapContractAddress,
+      shareContractAddress,
+      contractIndex: order.contractIndex,
+      amount,
+      price,
+      paymentTokenDecimals,
+      recipient,
+      sender,
+      partition,
+      offeringId: offering.id,
+      organization,
+      addTrade: addTrade,
+      setButtonStep: setButtonStep,
+      refetchAllContracts: refetchAllContracts,
+    });
+  };
 
   return (
     <div className="flex flex-col w-full gap-3">
@@ -84,40 +118,38 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
       )}
       {showRequestForm && (
         <div className="p-3 border-2 rounded-lg">
-          1. Apply to purchase shares
+          {` ${txnApprovalsEnabled ? '1. Apply to p' : ' P'}urchase shares`}
           <SharePurchaseRequest
+            txnApprovalsEnabled={txnApprovalsEnabled}
             offering={offering}
             order={order}
             price={price}
             myBacBalance={myBacBalance}
             swapContractAddress={swapContractAddress}
             refetchAllContracts={refetchAllPlusAccepted}
+            callFillOrder={callFillOrder}
+            paymentTokenAddress={paymentTokenAddress}
+            paymentTokenDecimals={paymentTokenDecimals}
           />
         </div>
       )}
 
-      <div className="p-3 border-2 rounded-lg">
-        2. Confirm your trade
-        {showTradeExecutionForm && (
-          <ShareCompleteSwap
-            isAsk={isAsk}
-            filler={filler as String0x}
-            initiator={initiator as String0x}
-            swapContractAddress={swapContractAddress}
-            txnApprovalsEnabled={txnApprovalsEnabled}
-            acceptedOrderQty={acceptedOrderQty as number}
-            price={price}
-            paymentTokenDecimals={paymentTokenDecimals}
-            contractIndex={order.contractIndex}
-            refetchAllContracts={refetchAllPlusAccepted}
-            shareContractAddress={shareContractAddress}
-            paymentTokenAddress={paymentTokenAddress}
-            partition={partition}
-            offeringId={offering.id}
-            organization={offering.offeringEntity.organization}
-          />
-        )}
-      </div>
+      {txnApprovalsEnabled && (
+        <div className="p-3 border-2 rounded-lg">
+          2. Confirm your trade
+          {showTradeExecutionForm && (
+            <ShareCompleteSwap
+              swapContractAddress={swapContractAddress}
+              acceptedOrderQty={acceptedOrderQty as number}
+              price={price}
+              paymentTokenDecimals={paymentTokenDecimals}
+              contractIndex={order.contractIndex}
+              paymentTokenAddress={paymentTokenAddress}
+              callFillOrder={callFillOrder}
+            />
+          )}
+        </div>
+      )}
     </div>
   );
 };

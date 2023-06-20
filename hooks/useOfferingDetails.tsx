@@ -1,25 +1,26 @@
-import { useQuery } from '@apollo/client';
-import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
+import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
+import { dividendContractABI } from '@src/web3/generated';
+import { DocumentType, Offering, ShareOrder } from 'types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { dividendContractABI } from '@src/web3/generated';
-import { String0x, normalizeEthAddress } from '@src/web3/helpersChain';
-import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
-import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { toNormalNumber } from '@src/web3/util';
-import React, { useState } from 'react';
-import { useAsync } from 'react-use';
-import { DocumentType, Offering, ShareOrder } from 'types';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
+import { useAsync } from 'react-use';
+import { useQuery } from '@apollo/client';
+import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
+import { useState } from 'react';
+import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 const useOfferingDetails = (offering: Offering, userId?: string | undefined) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
   const { details, smartContractSets } = offering;
-  const contractSet = smartContractSets?.slice(-1)[0];
+  const [contractOrderList, setContractOrderList] = useState<ContractOrder[]>([]);
 
+  const contractSet = smartContractSets?.slice(-1)[0];
   const shareContract = contractSet?.shareContract;
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
@@ -29,22 +30,25 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
   const distributionPaymentTokenDecimals = distributionPaymentToken ? distributionPaymentToken?.decimals : 18;
 
-  const { data: orders, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
+  const {
+    data: ordersData,
+    error,
+    refetch: refetchOrders,
+  } = useQuery(RETRIEVE_ORDERS, {
     variables: { swapContractAddress: swapContractAddress },
   });
+
+  const orders = ordersData?.queryShareOrder;
 
   const { data: transferEventData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_TRANSFER_EVENT, {
     variables: { shareContractAddress: shareContractAddress },
   });
+
   const transferEvents = transferEventData?.queryShareTransferEvent;
 
   const partitions = shareContract?.partitions as String0x[];
   const documents = offering?.documents;
   const legalLinkTexts = documents && getDocumentsOfType(documents, DocumentType.ShareLink);
-
-  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
-
-  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
 
   const {
     contractOwner,
@@ -75,23 +79,22 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   const totalDistributed = toNormalNumber(distributionData, distributionPaymentTokenDecimals);
 
   useAsync(async () => {
-    const contractSaleList =
+    const list =
       orders &&
       paymentTokenDecimals &&
       (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
-    contractSaleList && setContractSaleList(contractSaleList);
+    setContractOrderList(list);
   }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
-  const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details?.priceStart);
+  const currentSalePrice = getCurrentOrderPrice(contractOrderList, offering.details?.priceStart);
 
-  // NOTE: This is set up to accept multiple orders from the DB, but `saleDetails`
-  // currently refers to the single order the contract can currently offer
   const contractOrders = orders?.filter((order: ShareOrder) => {
     return order?.swapContractAddress === swapContractAddress;
   });
 
   const hasContract = !!contractOwner;
   const isContractOwner = contractOwner === userWalletAddress;
+  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
   const contractOwnerMatches = isContractOwner === !!isOfferingManager;
 
   const swapContractMatches = !swapContract
@@ -124,7 +127,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     partitions,
     legalLinkTexts,
     isOfferingManager,
-    contractSaleList,
+    contractOrderList,
     currentSalePrice,
     contractOwner,
     myShares,

@@ -43,6 +43,7 @@ type SubmitSwapProps = {
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   refetchAllContracts: () => void;
+  refetchOfferingInfo: () => void;
 };
 
 export const submitSwap = async ({
@@ -68,6 +69,7 @@ export const submitSwap = async ({
   createOrder,
   addPartition,
   refetchAllContracts,
+  refetchOfferingInfo,
 }: SubmitSwapProps) => {
   setButtonStep('submitting');
   const call = async () => {
@@ -106,7 +108,6 @@ export const submitSwap = async ({
         variables: {
           currentDate: currentDate,
           contractIndex: contractIndex,
-          offeringId: offeringId,
           swapContractAddress: swapContractAddress,
           minUnits: minUnits,
           maxUnits: maxUnits,
@@ -116,6 +117,7 @@ export const submitSwap = async ({
         },
       });
       refetchAllContracts();
+      refetchOfferingInfo();
       setButtonStep('confirmed');
       toast.success(`You have offered ${!isAsk ? 'to purchase ' : ''}${numShares} shares.`);
       setModal && setModal(false);

@@ -32,6 +32,7 @@ export type PostBidAskFormProps = {
   isContractOwner: boolean;
   sharesOutstanding: number | undefined;
   currentSalePrice: Maybe<number> | undefined;
+  refetchOfferingInfo: () => void;
 };
 
 type WithAdditionalProps = PostBidAskFormProps & {
@@ -56,6 +57,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   currentSalePrice,
   setModal,
   refetchAllContracts,
+  refetchOfferingInfo,
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -149,6 +151,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             setButtonStep: setButtonStep,
             createOrder: createOrder,
             refetchAllContracts,
+            refetchOfferingInfo,
           });
           setModal('shareSaleList');
 

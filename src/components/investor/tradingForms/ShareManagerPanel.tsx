@@ -3,12 +3,12 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useState } from 'react';
 
-import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
+import { approveRejectSwap, cancelSwap } from '@src/web3/contractSwapCalls';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { ADD_TRANSFER_EVENT, DELETE_ORDER, UPDATE_ORDER } from '@src/utils/dGraphQueries/orders';
-import { getCurrencyById } from '@src/utils/enumConverters';
+import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/dGraphQueries/orders';
+
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
 import { ShareOrder } from 'types';
@@ -159,10 +159,6 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     refetchOfferingInfo();
   };
 
-  const handleClaimProceeds = async () => {
-    await claimProceeds({ swapContractAddress, setButtonStep: setClaimProceedsButton });
-  };
-
   const buttonClass =
     'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
   return (
@@ -183,24 +179,15 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
             />
           </Button>
         )}
-        {isOfferor && proceeds !== 0 && (
-          <Button className={buttonClass} onClick={handleClaimProceeds} disabled={claimProceedsButton === 'submitting'}>
-            <LoadingButtonText
-              state={claimProceedsButton}
-              idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-              submittingText="Claiming Proceeds..."
-              confirmedText="Proceeds Claimed!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </Button>
-        )}
+
         {(isCancelled || isFilled) && proceeds === 0 && (
           <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'submitting'}>
             {`Delete completed swap`}
           </Button>
         )}
-        {isContractOwner && order && <OrderVisibilityToggle orderVisibility={order.visible} id={order.id} />}
+        {isContractOwner && order && (
+          <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} />
+        )}
       </div>
       {/* if swapsApprovals are enabled but txnApprovals are not - show approve button (or disapprove if already approved) */}
       {/* if both txnApprovals are turned on, then only show button when enabled  */}

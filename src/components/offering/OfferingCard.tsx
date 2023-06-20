@@ -5,13 +5,13 @@ import PercentageDisplay from '../PercentageDisplay';
 import React, { useState } from 'react';
 import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { Maybe, Offering } from 'types';
+import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractAddress } from '@src/web3/generated';
 import { useAsync } from 'react-use';
+import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-import { useQuery } from '@apollo/client';
-import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
 
 export type OfferingCardProps = {
   offering: Maybe<Offering> | undefined;
@@ -28,9 +28,11 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
 
   const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
 
-  const { data: orders, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
+  const { data: ordersData, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
     variables: { swapContractAddress: swapContractAddress },
   });
+
+  const orders = ordersData?.queryShareOrder;
 
   useAsync(async () => {
     const contractSaleList =

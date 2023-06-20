@@ -4,6 +4,8 @@ import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
+import { getSwapStatusOption } from '@src/utils/enumConverters';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { Maybe, Offering, OfferingParticipant, ShareOrder } from 'types';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
@@ -70,28 +72,32 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   }
 
   const isOfferor = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
-
   const shareQtyRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
+
+  const status =
+    order &&
+    getSwapStatusOption({
+      amount,
+      filledAmount,
+      isApproved,
+      isDisapproved,
+      isCancelled,
+      isAccepted,
+      txnApprovalsEnabled,
+    });
 
   return (
     <>
       {order.archived && order.visible && (
         <div className="items-center shadow-md rounded-md my-5 ">
-          <div
-            className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
-            onClick={() => setOpen(!open)}
-          >
-            <OfferingSummaryPanel
-              seller={initiator}
-              shareQtyRemaining={shareQtyRemaining}
-              partition={partition}
-              price={price}
-              paymentTokenAddress={paymentTokenAddress}
-            />
+          <div className="p-3 rounded-md bg-slate-100 items-center">
+            <div> Archived/Completed Swap - need to design </div>
+            <div> Order index: {order.contractIndex}</div>
+            <div> status: {status.name}</div>
           </div>
         </div>
       )}
-      {(!order.archived && isOfferor) || isContractOwner || order.visible ? (
+      {!order.archived && (isOfferor || isContractOwner || order.visible) ? (
         <div className="items-center shadow-md rounded-md my-5 ">
           <div
             className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
@@ -106,6 +112,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                 price={price}
                 paymentTokenAddress={paymentTokenAddress}
               />
+              Order index: {order.contractIndex}
               <div className="flex items-center p-1">
                 {isOfferor && (
                   <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">

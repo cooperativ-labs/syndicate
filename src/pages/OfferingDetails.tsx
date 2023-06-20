@@ -21,8 +21,8 @@ import { useSession } from 'next-auth/react';
 
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import { MatchSupportedChains } from '@src/web3/connectors';
 import useOfferingDetails from '@hooks/useOfferingDetails';
+import { MatchSupportedChains } from '@src/web3/connectors';
 // import { ABI } from '@src/web3/ABI';
 
 type OfferingDetailsProps = {
@@ -76,7 +76,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     refetchShareContract();
     refetchSwapContract();
     refetchTransactionHistory();
-    refetchOrders();
   };
 
   const refetchOfferingInfo = () => {

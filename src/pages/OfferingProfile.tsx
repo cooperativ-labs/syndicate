@@ -21,6 +21,8 @@ import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useChainId } from 'wagmi';
 import { useAsync } from 'react-use';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
+import { useQuery } from '@apollo/client';
 
 type OfferingProfileProps = {
   offering: Offering;
@@ -38,7 +40,6 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
     distributions,
     smartContractSets,
     documents,
-    orders,
   } = offering;
 
   const contractSet = smartContractSets?.slice(-1)[0];
@@ -57,6 +58,12 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const shareURL = `${getBaseUrl()}/${offeringId}`;
 
   const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
+
+  const { data: ordersData, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
+    variables: { swapContractAddress: swapContractAddress },
+  });
+
+  const orders = ordersData?.queryShareOrder;
 
   useAsync(async () => {
     const contractSaleList =

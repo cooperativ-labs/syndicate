@@ -11,6 +11,7 @@ import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import React, { FC, useState } from 'react';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
+import useOfferingDetails from '@hooks/useOfferingDetails';
 import { DocumentType, Offering } from 'types';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
@@ -20,7 +21,6 @@ import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractRead, useNetwork } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import useOfferingDetails from '@hooks/useOfferingDetails';
 
 type PortalOfferingProps = {
   offering: Offering;
@@ -130,6 +130,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
           setModal={setManagerModal}
           partitions={partitions as String0x[]}
           paymentTokenDecimals={paymentTokenDecimals}
+          refetchOfferingInfo={refetchOfferingInfo}
           refetchAllContracts={refetchMainContracts}
         />
       </FormModal>

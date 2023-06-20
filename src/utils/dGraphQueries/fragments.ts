@@ -81,26 +81,6 @@ export const CORE_APPLICATION_FIELDS = gql`
   }
 `;
 
-export const CORE_PURCHASE_REQUEST_FIELDS = gql`
-  ${CORE_DOCUMENT_FIELDS}
-  fragment purchaseRequestData on PurchaseRequest {
-    id
-    creationDate
-    numUnits
-    relatedOffering {
-      id
-      name
-    }
-    purchaser {
-      id
-      legalName
-    }
-    purchaseDocument {
-      ...documentData
-    }
-  }
-`;
-
 export const SMART_CONTRACT_FIELDS = gql`
   fragment smartContractData on SmartContract {
     id
@@ -365,12 +345,12 @@ export const CORE_ENTITY_FIELDS = gql`
         details {
           ...offeringDetailsData
         }
-        orders {
-          swapContractAddress
-          initiator
-          contractIndex
-          transactionHash
-        }
+        # orders {
+        #   swapContractAddress
+        #   initiator
+        #   contractIndex
+        #   transactionHash
+        # }
       }
       organization {
         id
@@ -477,22 +457,19 @@ export const CORE_OFFERING_FIELDS = gql`
     offeringEntity {
       ...entityData
     }
-    # purchaseRequests {
-    #   ...purchaseRequestData
+    # orders {
+    #   id
+    #   minUnits
+    #   maxUnits
+    #   visible
+    #   swapContractAddress
+    #   initiator
+    #   contractIndex
+    #   transactionHash
+    #   relatedOffering {
+    #     id
+    #   }
     # }
-    orders {
-      id
-      minUnits
-      maxUnits
-      visible
-      swapContractAddress
-      initiator
-      contractIndex
-      transactionHash
-      relatedOffering {
-        id
-      }
-    }
     participants {
       ...participantData
     }

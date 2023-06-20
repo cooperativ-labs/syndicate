@@ -1,5 +1,4 @@
-import {} from '@src/utils/helpersMoney';
-import Button, { LoadingButtonStateType } from '@src/components/buttons/Button';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import CloseButton from '@src/components/buttons/CloseButton';
 import FormModal from '@src/containers/FormModal';
 import Loading from '@src/components/loading/Loading';
@@ -13,10 +12,15 @@ import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSa
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { Maybe, ShareOrder } from 'types';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 
+import { claimProceeds } from '@src/web3/contractSwapCalls';
+import { getCurrencyById } from '@src/utils/enumConverters';
 import { ManagerModalType } from '@src/utils/helpersOffering';
-import { useAccount } from 'wagmi';
+import { swapContractABI } from '@src/web3/generated';
+import { toNormalNumber } from '@src/web3/util';
+import { useAccount, useContractRead } from 'wagmi';
 import { useQuery } from '@apollo/client';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
@@ -31,7 +35,6 @@ type OfferingActionsProps = SmartContractsSettingsProps &
     isOfferingManager: boolean;
     retrievalIssue: boolean;
     userId: string | undefined;
-    refetchOfferingInfo: () => void;
   };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
@@ -62,7 +65,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
   const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
   const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
 
   // const [updateDistribution, { data: updateDistributionData }] = useMutation(UPDATE_DISTRIBUTION);
@@ -79,6 +82,20 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const investmentCurrency = offering.details?.investmentCurrency;
   const sharesIssued = offering.details?.numUnits;
   const hasOrders = orders && orders.length > 0;
+
+  const { data: contractData } = useContractRead({
+    address: swapContractAddress,
+    abi: swapContractABI,
+    functionName: 'unclaimedProceeds',
+    args: [userWalletAddress as String0x],
+  });
+
+  const rawProceeds = contractData && contractData[1];
+  const proceeds = paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
+
+  const handleClaimProceeds = async () => {
+    await claimProceeds({ swapContractAddress, setButtonStep: setClaimProceedsButton });
+  };
 
   const FormModals = (
     <>
@@ -144,6 +161,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             partitions={partitions}
             paymentTokenDecimals={paymentTokenDecimals}
             refetchAllContracts={refetchMainContracts}
+            refetchOfferingInfo={refetchOfferingInfo}
             swapApprovalsEnabled={swapApprovalsEnabled}
           />
         ) : (
@@ -159,6 +177,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             paymentTokenDecimals={paymentTokenDecimals}
             setModal={setManagerModal}
             refetchAllContracts={refetchMainContracts}
+            refetchOfferingInfo={refetchOfferingInfo}
           />
         )}
       </FormModal>
@@ -236,6 +255,22 @@ const OfferingActions: FC<OfferingActionsProps> = ({
               className={standardClass}
             >
               Configure trading
+            </Button>
+          )}
+          {proceeds !== 0 && (
+            <Button
+              className={standardClass}
+              onClick={handleClaimProceeds}
+              disabled={claimProceedsButton === 'submitting'}
+            >
+              <LoadingButtonText
+                state={claimProceedsButton}
+                idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
+                submittingText="Claiming Proceeds..."
+                confirmedText="Proceeds Claimed!"
+                failedText="Transaction failed"
+                rejectedText="You rejected the transaction. Click here to try again."
+              />
             </Button>
           )}
         </>

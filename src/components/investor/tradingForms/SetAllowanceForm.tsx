@@ -44,7 +44,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
     >
       <LoadingButtonText
         state={buttonStep}
-        idleText={`You must first permit the smart contract access your funds`}
+        idleText={`First permit the smart contract access your funds`}
         submittingText="Setting allowance..."
         confirmedText="Confirmed!"
         failedText="Transaction failed"
