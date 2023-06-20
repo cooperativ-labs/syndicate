@@ -1,8 +1,56 @@
+"""
+INDEPENDENT CHAIN DATA	MODEL ==================================================================
+These nodes are not connected to the main graph, but are used to store data from the chain
+"""
+
+enum ShareTransferEventType	{
+	ISSUANCE
+	TRADE
+	FORCED
+	TRANSFER
+	DISAPPROVAL
+	APPROVAL
+}
 
 
+type ShareTransferEvent	{
+	id: ID!
+	shareContractAddress: String! @search
+	recipientAddress: String! @search
+	senderAddress: String! @search
+	amount: Int!
+	price:	Int
+	partition: String! @search
+	transactionHash: String!
+	type: ShareTransferEventType!
+	archived: Boolean!
+}
+
+type ShareOrder {
+	id: ID!
+	minUnits: Int
+	maxUnits: Int
+	visible: Boolean
+	relatedOffering: Offering! @hasInverse(field:orders) 
+	swapContractAddress: String! @search
+	initiator: String!
+	contractIndex: Int!
+	creationDate: DateTime!
+	lastUpdate: DateTime!
+	transactionHash: String!
+	archived: Boolean!
+}
+
+type OfferingDistribution {
+	id: ID!
+	contractIndex: Int!
+	transactionHash: String!
+}
+
 """
-DOCUMENT MODEL
+PRIMARY	MODEL ==================================================================
 """
+
 enum DocumentFormat {
 	GOOGLE_DRIVE
 	GOOGLE_DOC
@@ -220,8 +268,8 @@ add:{rule: """
 enum SmartContractType {
 	C2
 	C3
-	EXCHANGE_MANAGER
-	SHARE
+	ERC1410
+	ERC20
 	SWAP
 	DISTRIBUTION
 	OTHER
@@ -461,7 +509,6 @@ add:
 	documents: [Document] @hasInverse(field:offering)
 	isPublic: Boolean
 	waitlistOn: Boolean
-	waitlistMembers: [WaitlistMember] @hasInverse(field:offering)
 	accessCode: String
 }
 
@@ -571,19 +618,6 @@ add:{rule: """
  capRate: Int
 }
 
-# TEMPORARY
-type WaitlistMember {
-	id: ID!
-	name: String
-	offering: Offering! @hasInverse(field:waitlistMembers)
-	walletAddress: String
-	minPledge: Int 
-	maxPledge: Int
-	investorApplication: InvestorApplication
-	nonUS: Boolean
-	lastUpdate: DateTime!
-}
-
 type OfferingParticipant @auth (
 					# update:{rule: """
 					# 	query($userId: ID!) { 
@@ -618,6 +652,7 @@ type OfferingParticipant @auth (
 	id: ID!
 	addressOfferingId: String! @id
 	walletAddress: String! @search(by:[fulltext]) 
+	emailAddress: String 
 	chainId: Int!
 	permitted: Boolean!
 	name: String
@@ -637,47 +672,7 @@ type InvestorApplication {
 	creationDate: DateTime!
 }
 
-enum ShareTransferEventType	{
-	ISSUANCE
-	TRADE
-	FORCED
-	TRANSFER
-	DISAPPROVAL
-	APPROVAL
-}
 
-type ShareTransferEvent	{
-	id: ID!
-	shareContractAddress: String! @search
-	recipientAddress: String! @search
-	senderAddress: String! @search
-	amount: Int!
-	price:	Int
-	partition: String! @search
-	transactionHash: String!
-	type: ShareTransferEventType!
-	archived: Boolean!
-}
-
-type ShareOrder {
-	id: ID!
-	minUnits: Int
-	maxUnits: Int
-	visible: Boolean
-	relatedOffering: Offering! @hasInverse(field:orders) 
-	swapContractAddress: String!
-	initiator: String!
-	contractIndex: Int!
-	creationDate: DateTime!
-	lastUpdate: DateTime
-	transactionHash: String!
-}
-
-type OfferingDistribution {
-	id: ID!
-	contractIndex: Int!
-	transactionHash: String!
-}
 
 """
 REAL ESTATE PROPERTY MODEL
@@ -875,6 +870,7 @@ enum NotificationSubject	{
 	TRADE_EXECUTION
 	WHITELIST_APPROVAL
 	PROCEEDS_CLAIM
+	NEW_ORDER_LIVE
 }
 
 type NotificationConfiguration @auth (

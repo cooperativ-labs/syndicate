@@ -21,7 +21,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   isContractOwner,
   setModal,
   refetchMainContracts,
-  refetchOffering,
+  refetchOfferingInfo,
 }) => {
   const saleButton = (
     <Button
@@ -56,7 +56,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               refetchMainContracts={refetchMainContracts}
               paymentTokenDecimals={paymentTokenDecimals}
               shareContractAddress={shareContractAddress}
-              refetchOffering={refetchOffering}
+              refetchOfferingInfo={refetchOfferingInfo}
             />
           </div>
         );

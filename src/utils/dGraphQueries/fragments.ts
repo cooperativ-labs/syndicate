@@ -227,20 +227,6 @@ export const CORE_RE_PROPERTY_FIELDS = gql`
   }
 `;
 
-export const CORE_WAITLIST_MEMBER_FIELDS = gql`
-  ${CORE_APPLICATION_FIELDS}
-  fragment waitlistMemberData on WaitlistMember {
-    id
-    name
-    minPledge
-    maxPledge
-    nonUS
-    investorApplication {
-      ...applicationData
-    }
-  }
-`;
-
 export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
   ${CORE_APPLICATION_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
@@ -426,9 +412,7 @@ export const CORE_ENTITY_FIELDS = gql`
         id
         walletAddress
       }
-      # purchaseRequests {
-      #   ...purchaseRequestData
-      # }
+
       distributions {
         id
         contractIndex
@@ -449,7 +433,6 @@ export const CORE_OFFERING_FIELDS = gql`
   ${CORE_INVESTMENT_OFFERING_FIELDS}
   ${CORE_ENTITY_FIELDS}
   ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
-  ${CORE_WAITLIST_MEMBER_FIELDS}
 
   ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
@@ -459,9 +442,7 @@ export const CORE_OFFERING_FIELDS = gql`
     isPublic
     accessCode
     waitlistOn
-    waitlistMembers {
-      ...waitlistMemberData
-    }
+
     image
     bannerImage
     primaryVideo

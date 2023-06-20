@@ -351,9 +351,7 @@ type CancelOrderProps = {
   contractIndex: number;
   orderId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  deleteOrderObject: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
-  ) => Promise<any>;
+  handleArchive: () => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
 };
@@ -363,7 +361,7 @@ export const cancelSwap = async ({
   contractIndex,
   orderId,
   setButtonStep,
-  deleteOrderObject,
+  handleArchive,
   setModal,
   refetchAllContracts,
 }: CancelOrderProps) => {
@@ -383,7 +381,7 @@ export const cancelSwap = async ({
       await waitForTransaction({
         hash: hash,
       });
-      deleteOrderObject && (await deleteOrderObject({ variables: { orderId: orderId } }));
+      handleArchive && handleArchive();
       setButtonStep('confirmed');
       toast.success(`You have cancelled your sale.`);
       setModal && setModal(false);

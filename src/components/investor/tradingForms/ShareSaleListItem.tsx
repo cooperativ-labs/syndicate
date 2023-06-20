@@ -38,11 +38,10 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
-
   isContractOwner,
   setModal,
   refetchMainContracts,
-  refetchOffering,
+  refetchOfferingInfo,
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [open, setOpen] = useState<boolean>(false);
@@ -76,7 +75,23 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
 
   return (
     <>
-      {isOfferor || isContractOwner || order.visible ? (
+      {order.archived && order.visible && (
+        <div className="items-center shadow-md rounded-md my-5 ">
+          <div
+            className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
+            onClick={() => setOpen(!open)}
+          >
+            <OfferingSummaryPanel
+              seller={initiator}
+              shareQtyRemaining={shareQtyRemaining}
+              partition={partition}
+              price={price}
+              paymentTokenAddress={paymentTokenAddress}
+            />
+          </div>
+        </div>
+      )}
+      {(!order.archived && isOfferor) || isContractOwner || order.visible ? (
         <div className="items-center shadow-md rounded-md my-5 ">
           <div
             className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
@@ -131,7 +146,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   paymentTokenAddress={paymentTokenAddress}
                   paymentTokenDecimals={paymentTokenDecimals}
                   refetchAllContracts={refetchAllContracts}
-                  refetchOffering={refetchOffering}
+                  refetchOfferingInfo={refetchOfferingInfo}
                 />
               ) : (
                 <SharePurchaseSteps

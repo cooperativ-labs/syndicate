@@ -1,8 +1,6 @@
 import { emailConfirmationContent, emailNotificationContent } from '@src/services/postmark';
-
 import axios from 'axios';
 import { sha256 } from 'js-sha256';
-import { useAsync } from 'react-use';
 import { NotificationSubject, Organization } from 'types';
 
 const getRecipientEmails = (organization: Organization, notificationSubject: NotificationSubject): string[] => {

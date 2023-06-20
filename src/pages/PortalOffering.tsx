@@ -11,7 +11,6 @@ import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import React, { FC, useState } from 'react';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
@@ -19,11 +18,9 @@ import { ManagerModalType } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractRead, useNetwork } from 'wagmi';
-import { useAsync } from 'react-use';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
-import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
-import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import useOfferingDetails from '@hooks/useOfferingDetails';
 
 type PortalOfferingProps = {
   offering: Offering;
@@ -37,6 +34,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
   const orgId = router.query.organizationId;
   const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization = organizationData?.getOrganization;
+
   const {
     details,
     brandColor,
@@ -46,47 +44,32 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     id: offeringId,
     distributions,
     participants,
-    orders,
+
     smartContractSets,
   } = offering;
 
   const minUnitsPerInvestor = details?.minUnitsPerInvestor;
-
-  const contractSet = smartContractSets?.slice(-1)[0];
-  const shareContract = contractSet?.shareContract;
-  const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
-  const swapContract = contractSet?.swapContract;
-  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
-
-  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
-  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
   const {
+    shareContractAddress,
+    swapContractAddress,
+    distributionContractAddress,
+    contractOrders,
+    legalLinkTexts,
+    currentSalePrice,
     myShares,
     sharesOutstanding,
-    allDocuments,
-    isLoading: shareIsLoading,
-    refetchShareContract,
-  } = useShareContractInfo(shareContractAddress, userWalletAddress);
-
-  const myBacBalance = 234000;
-  const fundsDistributed = 20000;
-  const numDistributions = 4;
-
-  const {
+    smartContractDocuments,
     paymentTokenAddress,
     paymentTokenDecimals,
-    txnApprovalsEnabled,
     swapApprovalsEnabled,
-    isLoading: swapIsLoading,
+    txnApprovalsEnabled,
+    refetchShareContract,
     refetchSwapContract,
-  } = useSwapContractInfo(swapContractAddress);
-
-  const refetchMainContracts = () => {
-    refetchShareContract();
-    refetchSwapContract();
-  };
+    refetchOrders,
+    refetchTransactionHistory,
+  } = useOfferingDetails(offering);
 
   const { data: partitions, error } = useContractRead({
     address: shareContractAddress,
@@ -95,28 +78,25 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     args: [userWalletAddress as String0x],
   });
 
-  const isLoading = shareIsLoading || swapIsLoading;
+  const refetchMainContracts = () => {
+    refetchShareContract();
+    refetchSwapContract();
+    refetchTransactionHistory();
+    refetchOrders();
+  };
+
+  const refetchOfferingInfo = () => {
+    refetchOffering();
+    refetchTransactionHistory();
+    refetchOrders();
+  };
 
   const documents = offering?.documents;
-  const legalLinkTexts = documents && getDocumentsOfType(documents, DocumentType.ShareLink);
 
   const offeringParticipant = participants?.find((participant) => {
     return participant?.addressOfferingId === userWalletAddress + offeringId;
   });
 
-  useAsync(async () => {
-    const contractSaleList =
-      orders &&
-      paymentTokenDecimals &&
-      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
-    contractSaleList && setContractSaleList(contractSaleList);
-  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
-
-  const contractOrders = orders?.filter((order) => {
-    return order?.swapContractAddress === swapContractAddress;
-  });
-
-  const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details?.priceStart);
   const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
 
   if (!offeringParticipant) {
@@ -154,25 +134,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
         />
       </FormModal>
 
-      {/* <FormModal
-        formOpen={shareSaleManagerModal}
-        onClose={() => setShareSaleManagerModal(false)}
-        title={`Manage your shares of ${offeringName}`}
-      >
-        <ShareSaleList
-          offering={offering}
-          walletAddress={userWalletAddress}
-          orders={contractOrders}
-          permittedEntity={offeringParticipant}
-          isContractOwner={false}
-          setShareSaleManagerModal={setShareSaleManagerModal}
-          setSaleFormModal={setSaleFormModal}
-          refetchMainContracts={refetchMainContracts}
-          swapContractAddress={swapContractAddress}
-          paymentTokenAddress={paymentTokenAddress}
-          txnApprovalsEnabled={txnApprovalsEnabled}
-        />
-      </FormModal> */}
       <Container>
         <h2 className="text-4xl  text-blue-900 font-semibold mb-4">{offeringName}</h2>
       </Container>
@@ -190,7 +151,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               paymentTokenDecimals={paymentTokenDecimals}
               txnApprovalsEnabled={txnApprovalsEnabled}
               shareContractAddress={shareContractAddress}
-              refetchOffering={refetchOffering}
+              refetchOfferingInfo={refetchOfferingInfo}
             />
           </DashboardCard>
           <DashboardCard>
@@ -223,13 +184,16 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3  ">Offering documents</h1>
             <DocumentList documents={offeringDocs} isOfferingManager={false} offeringId={offering.id} />{' '}
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkTexts && allDocuments && legalLinkTexts?.length > 0 && allDocuments?.length > 0 && (
-              <HashInstructions
-                contractDocuments={allDocuments}
-                agreementTexts={legalLinkTexts}
-                shareContractAddress={shareContractAddress}
-              />
-            )}
+            {legalLinkTexts &&
+              smartContractDocuments &&
+              legalLinkTexts?.length > 0 &&
+              smartContractDocuments?.length > 0 && (
+                <HashInstructions
+                  contractDocuments={smartContractDocuments}
+                  agreementTexts={legalLinkTexts}
+                  shareContractAddress={shareContractAddress}
+                />
+              )}
           </div>
         </TwoColumnLayout>
       </Container>

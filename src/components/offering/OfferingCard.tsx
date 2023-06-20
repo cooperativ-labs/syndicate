@@ -3,7 +3,7 @@ import MoneyDisplay from '../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React, { useState } from 'react';
-import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
+import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { Maybe, Offering } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractAddress } from '@src/web3/generated';

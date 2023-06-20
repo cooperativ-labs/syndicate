@@ -8,7 +8,7 @@ import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { String0x } from '@src/web3/helpersChain';
 
 import SetAllowanceForm from '../investor/tradingForms/SetAllowanceForm';
-import { ADD_DISTRIBUTION } from '@src/utils/dGraphQueries/trades';
+import { ADD_DISTRIBUTION } from '@src/utils/dGraphQueries/orders';
 import { dividendContractABI } from '@src/web3/generated';
 import { erc20ABI, useAccount, useContractRead, useContractReads } from 'wagmi';
 import { submitDistribution } from '@src/web3/contractDistributionCall';

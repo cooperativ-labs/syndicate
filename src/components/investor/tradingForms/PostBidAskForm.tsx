@@ -17,7 +17,7 @@ import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { Maybe, Offering, OfferingParticipant } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
-import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
+import { CREATE_ORDER } from '@src/utils/dGraphQueries/orders';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';

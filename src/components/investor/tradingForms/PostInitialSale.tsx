@@ -12,7 +12,7 @@ import { String0x } from '@src/web3/helpersChain';
 
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
-import { CREATE_ORDER } from '@src/utils/dGraphQueries/trades';
+import { CREATE_ORDER } from '@src/utils/dGraphQueries/orders';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { submitSwap } from '@src/web3/contractSwapCalls';

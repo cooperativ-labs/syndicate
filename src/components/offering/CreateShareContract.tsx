@@ -40,7 +40,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
         variables: {
           cryptoAddress: contract.contractAddress,
           chainId: chainId,
-          type: SmartContractType.Share,
+          type: SmartContractType.Erc1410,
           protocol: protocol,
           ownerId: contractCreatorId,
         },

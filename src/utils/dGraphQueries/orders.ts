@@ -129,16 +129,16 @@ export const CREATE_ORDER = gql`
     addShareOrder(
       input: [
         {
-          relatedOffering: { id: $offeringId }
           creationDate: $currentDate
-          contractIndex: $contractIndex
           lastUpdate: $currentDate
+          contractIndex: $contractIndex
           swapContractAddress: $swapContractAddress
           minUnits: $minUnits
           maxUnits: $maxUnits
-          visible: $visible
           initiator: $initiator
           transactionHash: $transactionHash
+          visible: $visible
+          archived: false
         }
       ]
     ) {
@@ -159,8 +159,8 @@ export const CREATE_ORDER = gql`
   }
 `;
 
-export const RETRIEVE_SALES = gql`
-  query RetrieveIssuances($swapContractAddress: String!) {
+export const RETRIEVE_ORDERS = gql`
+  query RetrieveOrders($swapContractAddress: String!) {
     queryShareOrder(filter: { swapContractAddress: { anyofterms: $swapContractAddress } }) {
       shareOrder {
         id
@@ -174,8 +174,10 @@ export const RETRIEVE_SALES = gql`
 `;
 
 export const UPDATE_ORDER = gql`
-  mutation UpdateSale($currentDate: DateTime!, $orderId: ID!, $visible: Boolean) {
-    updateShareOrder(input: { filter: { id: [$orderId] }, set: { lastUpdate: $currentDate, visible: $visible } }) {
+  mutation UpdateSale($currentDate: DateTime!, $orderId: ID!, $visible: Boolean!, $archived: Boolean!) {
+    updateShareOrder(
+      input: { filter: { id: [$orderId] }, set: { lastUpdate: $currentDate, archived: $archived, visible: $visible } }
+    ) {
       shareOrder {
         id
         lastUpdate

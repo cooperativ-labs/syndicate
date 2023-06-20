@@ -5,7 +5,11 @@ const contractIsSameChain = (contract: Maybe<SmartContract>, chainId: number): b
 };
 export const getAvailableContracts = (unestablishedSmartContracts: Maybe<SmartContract>[], chainId: number) => {
   return unestablishedSmartContracts.map((contract) => {
-    if (contractIsSameChain(contract, chainId) && !contract?.established) {
+    if (
+      contractIsSameChain(contract, chainId) &&
+      !contract?.established &&
+      contract?.type === SmartContractType.Erc1410
+    ) {
       return contract;
     }
   });

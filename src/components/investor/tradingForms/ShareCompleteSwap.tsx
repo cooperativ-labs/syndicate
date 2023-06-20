@@ -1,5 +1,5 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { fillOrder } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';

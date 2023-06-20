@@ -13,7 +13,7 @@ import { sendShares } from '@src/web3/contractShareCalls';
 
 import NewClassInputs from '../form-components/NewClassInputs';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
-import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client';

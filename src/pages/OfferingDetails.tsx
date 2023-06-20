@@ -14,25 +14,15 @@ import OfferingTabContainer from '@src/containers/OfferingTabContainer';
 import React, { FC, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useAccount, useChainId, useContractRead } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import { dividendContractABI } from '@src/web3/generated';
-import { getCurrencyOption } from '@src/utils/enumConverters';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { RETRIEVE_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
-import { toNormalNumber } from '@src/web3/util';
-import { useAsync } from 'react-use';
-import { useQuery } from '@apollo/client';
-import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
-import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import useOfferingDetails from '@hooks/useOfferingDetails';
 // import { ABI } from '@src/web3/ABI';
 
 type OfferingDetailsProps = {
@@ -44,99 +34,56 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   const { address: userWalletAddress } = useAccount();
   const { data: session } = useSession();
   const userId = session?.user?.id;
-  const { id, name, offeringEntity, participants, orders, details, isPublic, accessCode, smartContractSets } = offering;
-  const contractSet = smartContractSets?.slice(-1)[0];
-  const chainId = useChainId();
 
-  const shareContract = contractSet?.shareContract;
-  const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
-  const swapContract = contractSet?.swapContract;
-  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
-  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
-  const distributionPaymentToken = getCurrencyOption(details?.investmentCurrency);
-  const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
-  const distributionPaymentTokenDecimals = distributionPaymentToken ? distributionPaymentToken?.decimals : 18;
+  const { id, name, offeringEntity, details, isPublic, accessCode, documents } = offering;
+  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
 
-  const { data: transferEventData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_TRANSFER_EVENT, {
-    variables: { shareContractAddress: shareContractAddress },
-  });
-  const transferEvents = transferEventData?.queryShareTransferEvent;
-
-  const partitions = shareContract?.partitions as String0x[];
-  const documents = offering?.documents;
-  const legalLinkTexts = documents && getDocumentsOfType(documents, DocumentType.ShareLink);
-  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
   const [transactionHistoryPanel, setTransactionHistoryPanel] = useState<boolean>(false);
-  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
 
   const {
-    contractOwner,
+    hasContract,
+    isContractOwner,
+    contractOwnerMatches,
+    swapContractMatches,
+    contractMatchesCurrentChain,
+    contractSet,
+    shareContract,
+    shareContractAddress,
+    contractOrders,
+    transferEvents,
+    partitions,
+    legalLinkTexts,
+    isOfferingManager,
+    currentSalePrice,
     myShares,
     sharesOutstanding,
-    allDocuments,
-    isLoading: shareIsLoading,
-    refetchShareContract,
-  } = useShareContractInfo(shareContractAddress, userWalletAddress);
-
-  const {
-    shareTokenAddress,
+    smartContractDocuments,
+    isLoading,
     paymentTokenAddress,
     paymentTokenDecimals,
     swapApprovalsEnabled,
     txnApprovalsEnabled,
-    nextOrderId,
-    isLoading: swapIsLoading,
+    totalDistributed,
+    refetchShareContract,
     refetchSwapContract,
-  } = useSwapContractInfo(swapContractAddress);
-
-  const { data: distributionData } = useContractRead({
-    address: distributionContractAddress,
-    abi: dividendContractABI,
-    functionName: 'balances',
-    args: [distributionPaymentTokenAddress as String0x],
-  });
-  const totalDistributed = toNormalNumber(distributionData, distributionPaymentTokenDecimals);
+    refetchOrders,
+    refetchTransactionHistory,
+  } = useOfferingDetails(offering, userId);
 
   const refetchMainContracts = () => {
     refetchShareContract();
     refetchSwapContract();
     refetchTransactionHistory();
+    refetchOrders();
   };
 
-  const isLoading = shareIsLoading || swapIsLoading;
-
-  const hasContract = !!contractOwner;
-  const isContractOwner = contractOwner === userWalletAddress;
-  const contractOwnerMatches = isContractOwner === !!isOfferingManager;
-  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
-
-  const offeringParticipant = participants?.find((participant) => {
-    return participant?.addressOfferingId === userWalletAddress + id;
-  });
-
-  // NOTE: This is set up to accept multiple orders from the DB, but `saleDetails`
-  // currently refers to the single order the contract can currently offer
-  const contractOrders = orders?.filter((order) => {
-    return order?.swapContractAddress === swapContractAddress;
-  });
-
-  useAsync(async () => {
-    const contractSaleList =
-      orders &&
-      paymentTokenDecimals &&
-      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
-    contractSaleList && setContractSaleList(contractSaleList);
-  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
-
-  const currentSalePrice = getCurrentOrderPrice(contractSaleList, offering.details?.priceStart);
-
-  const swapContractMatches = !swapContract
-    ? true
-    : normalizeEthAddress(shareTokenAddress) === normalizeEthAddress(shareContractAddress);
-
-  const contractMatchesCurrentChain = !shareContract ? true : shareContract.cryptoAddress.chainId === chainId;
+  const refetchOfferingInfo = () => {
+    refetchOffering();
+    refetchTransactionHistory();
+    refetchOrders();
+  };
 
   return (
     <>
@@ -154,28 +101,27 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
         </>
       </RightSideBar>
       <div className="md:mx-4">
-        {hasContract && !contractOwnerMatches && !isLoading && (
-          <AlertBanner
-            text={`${
-              isContractOwner
-                ? 'Your account does not manage this offering, but the connected wallet manages the associated shares.'
-                : 'Your account manages this offering, but the connected wallet does not manage the associated shares. To manage shares, please switch to the appropriate wallet.'
-            }`}
-          />
-        )}
-        {!swapContractMatches && contractMatchesCurrentChain && (
-          <AlertBanner
-            text={`The swap contract for this offering does not match the share contract. Please contact Cooperativ Support.`}
-          />
-        )}
-        {!contractMatchesCurrentChain && (
-          <AlertBanner
-            text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
-              MatchSupportedChains(shareContract?.cryptoAddress.chainId)?.name
-            }.`}
-          />
-        )}
-
+        <AlertBanner
+          show={hasContract && !contractOwnerMatches && !isLoading}
+          color="orange-600"
+          text={`${
+            isContractOwner
+              ? 'Your account does not manage this offering, but the connected wallet manages the associated shares.'
+              : 'Your account manages this offering, but the connected wallet does not manage the associated shares. To manage shares, please switch to the appropriate wallet.'
+          }`}
+        />
+        <AlertBanner
+          show={!swapContractMatches && contractMatchesCurrentChain}
+          color="orange-600"
+          text={`The swap contract for this offering does not match the share contract. Please contact Cooperativ Support.`}
+        />
+        <AlertBanner
+          show={!contractMatchesCurrentChain}
+          color="orange-600"
+          text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
+            MatchSupportedChains(shareContract?.cryptoAddress.chainId)?.name
+          }.`}
+        />
         {/* MAIN CONTENT  */}
 
         <TwoColumnLayout twoThirdsLayout gap="12">
@@ -275,7 +221,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                         isContractOwner={isContractOwner}
                         partitions={partitions}
                         refetchMainContracts={refetchMainContracts}
-                        refetchOffering={refetchOffering}
+                        refetchOfferingInfo={refetchOfferingInfo}
                         currentSalePrice={currentSalePrice}
                         myShares={myShares}
                       />
@@ -316,9 +262,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
               entityId={offeringEntity?.id}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
-            {legalLinkTexts && legalLinkTexts.length > 0 && allDocuments?.length > 0 && (
+            {legalLinkTexts && legalLinkTexts.length > 0 && smartContractDocuments?.length > 0 && (
               <HashInstructions
-                contractDocuments={allDocuments}
+                contractDocuments={smartContractDocuments}
                 agreementTexts={legalLinkTexts}
                 shareContractAddress={shareContractAddress}
               />

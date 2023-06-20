@@ -11,10 +11,12 @@ import WithAuthentication from './WithAuthentication';
 import { ApplicationStoreProps, store } from '@context/store';
 import { disconnectWallet } from '@src/web3/connectors';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { Organization, OrganizationUser, User } from 'types';
+import { OrganizationUser, User } from 'types';
 import { signOut, useSession } from 'next-auth/react';
 import { useApolloClient } from '@apollo/client';
-import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
+
+import AlertBanner from '@src/components/alerts/AlertBanner';
+import { useAccount, useNetwork } from 'wagmi';
 
 // const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
@@ -87,6 +89,8 @@ type ManagerWrapperProps = {
 const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { PageIsLoading } = applicationStore;
+  const { isConnected } = useAccount();
+  const { chain } = useNetwork();
 
   return (
     <div className="h-full">
@@ -96,6 +100,13 @@ const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
           <NewOrganizationModal />
           {/* <WalletActionLockModel /> */}
           {PageIsLoading && <LoadingModal />}
+          <AlertBanner
+            show={!!isConnected && !!chain?.unsupported}
+            color="red-600"
+            text={
+              ' The blockchain you are using is not compatible with Cooperativ. Please switch to Sepolia for testing or Mainnet or Polygon for real transactions'
+            }
+          />
           <AlertPopup text="This is an alpha version. Please use with caution." />
           <Manager>{children}</Manager>
         </WithAuthentication>

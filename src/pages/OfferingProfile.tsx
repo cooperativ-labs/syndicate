@@ -16,7 +16,7 @@ import { getBaseUrl } from '@src/utils/helpersURL';
 
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 
-import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersMoney';
+import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useChainId } from 'wagmi';
 import { useAsync } from 'react-use';

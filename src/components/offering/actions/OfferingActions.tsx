@@ -31,7 +31,7 @@ type OfferingActionsProps = SmartContractsSettingsProps &
     isOfferingManager: boolean;
     retrievalIssue: boolean;
     userId: string | undefined;
-    refetchOffering: () => void;
+    refetchOfferingInfo: () => void;
   };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
@@ -50,7 +50,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   isContractOwner,
   partitions,
   refetchMainContracts,
-  refetchOffering,
+  refetchOfferingInfo,
 
   currentSalePrice,
   myShares,
@@ -99,7 +99,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             refetchMainContracts={refetchMainContracts}
             txnApprovalsEnabled={txnApprovalsEnabled}
             shareContractAddress={shareContractAddress}
-            refetchOffering={refetchOffering}
+            refetchOfferingInfo={refetchOfferingInfo}
           />
         )}
       </FormModal>

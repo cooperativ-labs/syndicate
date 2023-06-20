@@ -7,7 +7,7 @@ import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contract
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { ADD_TRANSFER_EVENT, DELETE_ORDER, UPDATE_ORDER } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT, DELETE_ORDER, UPDATE_ORDER } from '@src/utils/dGraphQueries/orders';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
@@ -23,7 +23,7 @@ export type SaleMangerPanelProps = {
   paymentTokenDecimals: number | undefined;
   txnApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;
-  refetchOffering: () => void;
+  refetchOfferingInfo: () => void;
 };
 
 type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
@@ -69,11 +69,10 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   isContractOwner,
   small,
   refetchAllContracts,
-  refetchOffering,
+  refetchOfferingInfo,
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const [deleteOrderObject, { data: deleteData }] = useMutation(DELETE_ORDER);
   const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
   const [addApprovalRecord, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -134,9 +133,18 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
           currentDate: currentDate,
           orderId: order.id,
           visible: true,
+          archived: order.archived,
         },
       });
+      refetchOfferingInfo();
     }
+  };
+
+  const handleArchive = async () => {
+    updateOrderObject({
+      variables: { currentDate: currentDate, orderId: order.id, visible: order.visible, archived: true },
+    });
+    refetchOfferingInfo();
   };
 
   const handleCancel = async () => {
@@ -145,19 +153,14 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       contractIndex: order.contractIndex,
       orderId: order.id,
       setButtonStep: setCancelButtonStep,
-      deleteOrderObject,
+      handleArchive,
       refetchAllContracts,
     });
-    refetchOffering();
+    refetchOfferingInfo();
   };
 
   const handleClaimProceeds = async () => {
     await claimProceeds({ swapContractAddress, setButtonStep: setClaimProceedsButton });
-  };
-
-  const handleDelete = async () => {
-    deleteOrderObject({ variables: { orderId: order.id } });
-    // refetchOffering();
   };
 
   const buttonClass =
@@ -193,7 +196,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
           </Button>
         )}
         {(isCancelled || isFilled) && proceeds === 0 && (
-          <Button className={buttonClass} onClick={handleDelete} disabled={claimProceedsButton === 'submitting'}>
+          <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'submitting'}>
             {`Delete completed swap`}
           </Button>
         )}

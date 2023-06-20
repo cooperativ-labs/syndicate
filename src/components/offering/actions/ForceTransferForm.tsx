@@ -4,7 +4,7 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React from 'react';
 import Select from '@src/components/form-components/Select';
 import SetOperatorButton from './SetOperatorButton';
-import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/trades';
+import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
