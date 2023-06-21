@@ -18,7 +18,7 @@ import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 
 import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useChainId } from 'wagmi';
+import { useAccount } from 'wagmi';
 import { useAsync } from 'react-use';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
