@@ -1,12 +1,12 @@
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import SetAllowanceForm from './SetAllowanceForm';
 import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseRequest, { SharePurchaseRequestProps } from './SharePurchaseRequest';
 import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
-import { erc20ABI, useAccount, useBalance, useContractRead, useContractReads } from 'wagmi';
-import { fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
+import { fillOrder } from '@src/web3/contractSwapCalls';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { numberWithCommas } from '@src/utils/helpersMoney';
+import { useAccount, useBalance, useContractRead } from 'wagmi';
+
+import OrderStatusBar from './OrderStatusBar';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
@@ -18,6 +18,7 @@ type SharePurchaseStepsProps = SharePurchaseRequestProps & {
   isCancelled: boolean;
   isAccepted: boolean;
   filler: String0x | '';
+  filledAmount: number;
   initiator: String0x | '';
   shareQtyRemaining: number;
   shareContractAddress: String0x;
@@ -42,8 +43,8 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   txnApprovalsEnabled,
   isApproved,
   isDisapproved,
-  isCancelled,
   isAccepted,
+  filledAmount,
   filler,
   initiator,
   refetchAllContracts,
@@ -73,10 +74,10 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const sender = (isAsk ? initiator : filler) as String0x;
 
   const myBacBalance = bacBalanceData?.formatted;
-  const acceptedOrderQty = orderQtyData && toNormalNumber(orderQtyData, shareContractDecimals);
+  const acceptedOrderQty = toNormalNumber(orderQtyData, shareContractDecimals);
   const currentUserFiller = userWalletAddress === filler;
-  const currentUserPending = isAccepted && currentUserFiller;
-  const otherOrderPending = txnApprovalsEnabled && isAccepted && !currentUserFiller;
+  const isCompleted = filledAmount === acceptedOrderQty;
+
   const showRequestForm = (!isAccepted && txnApprovalsEnabled) || (!txnApprovalsEnabled && shareQtyRemaining > 0);
   const showTradeExecutionForm = txnApprovalsEnabled && isApproved && !showRequestForm;
 
@@ -107,16 +108,17 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
 
   return (
     <div className="flex flex-col w-full gap-3">
-      {currentUserPending ? (
-        <div className="p-3 border-2 border-green-600 rounded-lg">
-          {`Your request for ${numberWithCommas(acceptedOrderQty as number)} shares is pending`}
-        </div>
-      ) : (
-        otherOrderPending && (
-          <div className="p-3 border-2 border-orange-600 rounded-lg">{`Another investor's request is pending`}</div>
-        )
-      )}
-      {showRequestForm && (
+      <OrderStatusBar
+        isApproved={isApproved}
+        isDisapproved={isDisapproved}
+        isAccepted={isAccepted}
+        isCompleted={isCompleted}
+        acceptedOrderQty={acceptedOrderQty}
+        txnApprovalsEnabled={txnApprovalsEnabled}
+        currentUserFiller={currentUserFiller}
+      />
+
+      {!isCompleted && showRequestForm && (
         <div className="p-3 border-2 rounded-lg">
           {` ${txnApprovalsEnabled ? '1. Apply to p' : ' P'}urchase shares`}
           <SharePurchaseRequest
@@ -134,10 +136,9 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         </div>
       )}
 
-      {txnApprovalsEnabled && (
+      {txnApprovalsEnabled && !isCompleted && (
         <div className="p-3 border-2 rounded-lg">
-          2. Confirm your trade
-          {showTradeExecutionForm && (
+          {showTradeExecutionForm ? (
             <ShareCompleteSwap
               swapContractAddress={swapContractAddress}
               acceptedOrderQty={acceptedOrderQty as number}
@@ -147,6 +148,8 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
               paymentTokenAddress={paymentTokenAddress}
               callFillOrder={callFillOrder}
             />
+          ) : (
+            <> {`2. Confirm your trade`}</>
           )}
         </div>
       )}

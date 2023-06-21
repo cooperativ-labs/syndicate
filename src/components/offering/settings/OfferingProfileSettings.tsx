@@ -75,7 +75,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setButtonStep('submitting');
+              setButtonStep('step1');
               setAlerted(false);
               setSubmitting(true);
               try {
@@ -151,7 +151,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
                   <LoadingButtonText
                     state={buttonStep}
                     idleText={`Update ${values.name}`}
-                    submittingText="Saving"
+                    step1Text="Saving"
                     confirmedText={`${values.name} updated!`}
                     failedText="Oops. Something went wrong"
                   />

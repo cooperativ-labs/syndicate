@@ -31,7 +31,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
   const chainName = MatchSupportedChains(chainId)?.name;
 
   const [, deploy] = useAsyncFn(async () => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     const protocol = MatchSupportedChains(chainId)?.protocol;
     dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
     try {
@@ -70,7 +70,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
             <LoadingButtonText
               state={buttonStep}
               idleText={`Create share smart contract on ${chainName}`}
-              submittingText="Deploying - This can take time. Please do not refresh."
+              step1Text="Deploying - This can take time. Please do not refresh."
               confirmedText="Confirmed!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."

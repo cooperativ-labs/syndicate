@@ -97,7 +97,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   });
 
   const removeWhitelistMember = async () => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     removeWrite();
   };
 
@@ -125,7 +125,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   });
 
   const approveWhiteListMember = async () => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     try {
       addWrite();
     } catch (e) {
@@ -275,7 +275,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
             <LoadingButtonText
               state={buttonStep}
               idleText="Remove this this investor from the whitelist"
-              submittingText="Removing..."
+              step1Text="Removing..."
               confirmedText="Investor Removed!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
@@ -290,7 +290,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
             <LoadingButtonText
               state={buttonStep}
               idleText="Approve Investor"
-              submittingText="Updating..."
+              step1Text="Updating..."
               confirmedText="Investor Approved!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."

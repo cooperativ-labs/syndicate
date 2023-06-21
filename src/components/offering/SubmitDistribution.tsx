@@ -7,10 +7,12 @@ import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 import { String0x } from '@src/web3/helpersChain';
 
-import SetAllowanceForm from '../investor/tradingForms/SetAllowanceForm';
+import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
+import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { ADD_DISTRIBUTION } from '@src/utils/dGraphQueries/orders';
-import { dividendContractABI } from '@src/web3/generated';
-import { erc20ABI, useAccount, useContractRead, useContractReads } from 'wagmi';
+import { erc20ABI, useAccount, useContractRead } from 'wagmi';
+import { isMetaMask } from '@src/web3/connectors';
+import { setAllowance } from '@src/web3/contractSwapCalls';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { toNormalNumber } from '@src/web3/util';
 import { useMutation } from '@apollo/client';
@@ -21,7 +23,7 @@ type SubmitDistributionProps = {
   distributionTokenAddress: String0x | undefined;
   partitions: String0x[];
   offeringId: string;
-  // refetchMainContracts: () => void;
+  refetchContracts: () => void;
 };
 const SubmitDistribution: FC<SubmitDistributionProps> = ({
   distributionContractAddress,
@@ -29,105 +31,114 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
   distributionTokenAddress,
   partitions,
   offeringId,
+  refetchContracts,
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress, connector } = useAccount();
+
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [addDistribution, { data, error }] = useMutation(ADD_DISTRIBUTION);
+  const [addDistribution, { error }] = useMutation(ADD_DISTRIBUTION);
 
-  const handleAddDistribution = () => {
-    addDistribution({
-      variables: {
-        offeringId: offeringId,
-        transactionHash: '0x2f5c3962440f03a0181099238f3689e5155b5e6a03a8382f2d50da902d89b5d7',
-        contractIndex: 0,
-      },
-    });
-  };
-
-  const { data: reads, refetch } = useContractReads({
-    contracts: [
-      {
-        address: distributionTokenAddress,
-        abi: erc20ABI,
-        functionName: 'allowance',
-        args: [userWalletAddress as String0x, distributionContractAddress as String0x],
-      },
-      {
-        address: distributionContractAddress,
-        abi: dividendContractABI,
-        functionName: 'sharesToken',
-      },
-    ],
+  const { data: rawAllowance } = useContractRead({
+    address: distributionTokenAddress,
+    abi: erc20ABI,
+    functionName: 'allowance',
+    args: [userWalletAddress as String0x, distributionContractAddress as String0x],
   });
 
-  const rawAllowance = reads && reads[0].result;
-  const allowance = reads && toNormalNumber(rawAllowance as bigint, distributionTokenDecimals);
+  const handleSubmitDistribution = async ({ amount, partition }: any) => {
+    const allowance = rawAllowance && toNormalNumber(rawAllowance as bigint, distributionTokenDecimals);
+    const allowanceRequiredForPurchase = amount;
+    const isAllowanceSufficient = allowance ? allowance >= allowanceRequiredForPurchase : false;
 
+    const callSubmitDistribution = async () => {
+      await submitDistribution({
+        distributionContractAddress,
+        amount: parseInt(amount, 10),
+        distributionTokenDecimals,
+        distributionTokenAddress,
+        partition: partition,
+        offeringId: offeringId,
+        setButtonStep,
+        addDistribution,
+      });
+    };
+
+    if (!isAllowanceSufficient) {
+      setButtonStep('step1');
+      await setAllowance({
+        paymentTokenAddress: distributionTokenAddress,
+        paymentTokenDecimals: distributionTokenDecimals,
+        spenderAddress: distributionContractAddress,
+        amount: allowanceRequiredForPurchase,
+        setButtonStep,
+      });
+      setButtonStep('step2');
+      await callSubmitDistribution();
+    } else if (isAllowanceSufficient) {
+      setButtonStep('step2');
+      await callSubmitDistribution();
+    }
+    refetchContracts();
+  };
   return (
-    <Formik
-      initialValues={{
-        amount: '',
-        partition: partitions[0],
-      }}
-      validate={(values) => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.amount) {
-          errors.type = 'Please indicate how many shares you want to send';
-        }
-      }}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
-        await submitDistribution({
-          distributionContractAddress,
-          amount: parseInt(values.amount, 10),
-          distributionTokenDecimals,
-          distributionTokenAddress,
-          partition: values.partition,
-          offeringId: offeringId,
+    <>
+      <WalletActionModal
+        open={buttonStep === 'step1' || buttonStep === 'step2'}
+        metaMaskWarning={isMetaMask(connector)}
+      >
+        <WalletActionIndicator
+          step={buttonStep}
+          step1Text="Permitting the contract to spend your tokens"
+          step1SubText="This will permit the contract to create a distribution"
+          step2Text="Submitting distribution"
+          step2SubText="This will submit the distribution to the contract"
+        />
+      </WalletActionModal>
 
-          setButtonStep,
-          addDistribution,
-        });
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting, values }) => (
-        <>
-          <Form className="flex flex-col gap relative">
-            <Input
-              className={defaultFieldDiv}
-              labelText="Amount to distribute"
-              name="amount"
-              type="number"
-              placeholder="2000"
-              required
-            />
-            <div className="mt-4" />
-
-            {!allowance || allowance < parseInt(values.amount, 10) ? (
-              <SetAllowanceForm
-                paymentTokenAddress={distributionTokenAddress}
-                paymentTokenDecimals={distributionTokenDecimals}
-                spenderAddress={distributionContractAddress}
-                amount={parseInt(values.amount, 10)}
-                refetchAllowance={refetch}
+      <Formik
+        initialValues={{
+          amount: '',
+          partition: partitions[0],
+        }}
+        validate={(values) => {
+          const errors: any = {}; /** @TODO : Shape */
+          if (!values.amount) {
+            errors.type = 'Please indicate how many shares you want to send';
+          }
+        }}
+        onSubmit={async (values, { setSubmitting }) => {
+          setSubmitting(true);
+          await handleSubmitDistribution(values);
+          setSubmitting(false);
+        }}
+      >
+        {({ isSubmitting, values }) => (
+          <>
+            <Form className="flex flex-col gap relative">
+              <Input
+                className={defaultFieldDiv}
+                labelText="Amount to distribute"
+                name="amount"
+                type="number"
+                placeholder="2000"
+                required
               />
-            ) : (
-              <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+              <div className="mt-4" />
+              <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
                 <LoadingButtonText
                   state={buttonStep}
                   idleText={`Distribute funds to shareholders`}
-                  submittingText="Submitting..."
+                  step1Text="Submitting..."
                   confirmedText="Confirmed!"
                   failedText="Transaction failed"
                   rejectedText="You rejected the transaction. Click here to try again."
                 />
               </FormButton>
-            )}
-          </Form>
-        </>
-      )}
-    </Formik>
+            </Form>
+          </>
+        )}
+      </Formik>
+    </>
   );
 };
 

@@ -15,18 +15,18 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
   const windowWidth = windowSize && windowSize.width;
   const isDesktop = windowWidth && windowWidth > 768 ? true : false;
 
-  useEffect(() => {
-    if (WalletActionLockModalOpen && isDesktop) {
-      // setScrollY(window.scrollY);
-      document.body.style.position = 'fixed';
-      document.body.style.top = `-${window.scrollY}px`;
-    } else {
-      // const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
-      // window.scrollTo(0, parseInt(scrollY));
-    }
-  }, [WalletActionLockModalOpen, isDesktop]);
+  // useEffect(() => {
+  //   if (WalletActionLockModalOpen && isDesktop) {
+  //     // setScrollY(window.scrollY);
+  //     document.body.style.position = 'fixed';
+  //     document.body.style.top = `-${window.scrollY}px`;
+  //   } else {
+  //     // const scrollY = document.body.style.top;
+  //     document.body.style.position = '';
+  //     document.body.style.top = '';
+  //     // window.scrollTo(0, parseInt(scrollY));
+  //   }
+  // }, [WalletActionLockModalOpen, isDesktop]);
 
   if (WalletActionLockModalOpen) {
     return (
@@ -40,8 +40,8 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
           )}
         >
           <Card
-            className="mx-4 p-6 absolute right-0 left-0 top-32 md:top-0 md:relative flex-col md:w-96 rounded-xl md:rounded-lg shadow-modal"
-            style={{ overflow: 'smooth' }}
+            className="mx-4 p-6 absolute right-0 left-0 top-32 md:top-0 md:relative flex-col  rounded-xl md:rounded-lg shadow-modal bg-white"
+            style={{ overflow: 'smooth', maxWidth: '500px' }}
           >
             <div>
               <div className="animate-pulse">

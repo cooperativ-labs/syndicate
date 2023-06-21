@@ -75,7 +75,7 @@ const ForceTransferForm = ({
         recipient: Yup.string().required('Required'),
       })}
       onSubmit={async (values, { setSubmitting }) => {
-        setButtonStep('submitting');
+        setButtonStep('step1');
         await forceTransfer({
           shareContractAddress,
           partition: values.partition as String0x,
@@ -141,7 +141,7 @@ const ForceTransferForm = ({
                     ? `Force Transfer to ${addressWithoutEns({ address: values.recipient })}`
                     : 'Force Transfer'
                 }
-                submittingText="Transferring..."
+                step1Text="Transferring..."
                 confirmedText="Shares transferred!"
                 failedText="Transaction failed"
                 rejectedText="You rejected the transaction. Click here to try again."

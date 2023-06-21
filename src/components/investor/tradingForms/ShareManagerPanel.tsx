@@ -124,7 +124,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       swapContractAddress,
       contractIndex: order.contractIndex,
       isDisapprove: isDisapprove,
-      setButtonStep: setApproveButtonStep,
+      setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
       refetchAllContracts,
     });
     if (!isDisapprove && !txnApprovalsEnabled) {
@@ -168,11 +168,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       {!!maxPurchase && <hr className="my-4" />}
       <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
         {!isCancelled && !isFilled && isOfferor && proceeds === 0 && (
-          <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'submitting'}>
+          <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'step1'}>
             <LoadingButtonText
               state={cancelButtonStep}
               idleText="Cancel Offer"
-              submittingText="Canceling Sale..."
+              step1Text="Canceling Sale..."
               confirmedText="Sale Cancelled!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
@@ -181,7 +181,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         )}
 
         {(isCancelled || isFilled) && proceeds === 0 && (
-          <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'submitting'}>
+          <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'step1'}>
             {`Delete completed swap`}
           </Button>
         )}
@@ -198,12 +198,12 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
             <Button
               className={buttonClass}
               onClick={() => handleApprove({ isDisapprove: false })}
-              disabled={approveButtonStep === 'submitting'}
+              disabled={approveButtonStep === 'step1'}
             >
               <LoadingButtonText
                 state={approveButtonStep}
                 idleText={`Approve ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
-                submittingText="Approving..."
+                step1Text="Approving..."
                 confirmedText="Confirmed"
                 failedText="Transaction failed"
                 rejectedText="You rejected the transaction. Click here to try again."
@@ -214,12 +214,12 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
             <Button
               className={buttonClass}
               onClick={() => handleApprove({ isDisapprove: true })}
-              disabled={approveButtonStep === 'submitting'}
+              disabled={approveButtonStep === 'step1'}
             >
               <LoadingButtonText
                 state={disapproveButtonStep}
                 idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
-                submittingText="Disapprove..."
+                step1Text="Disapprove..."
                 confirmedText="Confirmed"
                 failedText="Transaction failed"
                 rejectedText="You rejected the transaction. Click here to try again."

@@ -50,7 +50,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({ shareContractAddr
         <LoadingButtonText
           state={buttonStep}
           idleText={`You must first set yourself as an operator for the contract`}
-          submittingText="Setting operator..."
+          step1Text="Setting operator..."
           confirmedText="Confirmed!"
           failedText="Transaction failed"
           rejectedText="You rejected the transaction. Click here to try again."

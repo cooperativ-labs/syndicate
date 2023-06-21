@@ -16,6 +16,7 @@ import { signOut, useSession } from 'next-auth/react';
 import { useApolloClient } from '@apollo/client';
 
 import AlertBanner from '@src/components/alerts/AlertBanner';
+import WalletActionLockModel from './wallet/WalletActionLockModel';
 import { useAccount, useNetwork } from 'wagmi';
 
 // const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';

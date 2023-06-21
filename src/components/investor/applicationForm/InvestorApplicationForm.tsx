@@ -206,7 +206,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     signature: string;
   }) => {
     const appTitle = `${values.purchaserEntityName}'s requests approval to invest in ${offering.name}`;
-    setButtonStep('submitting');
+    setButtonStep('step1');
     try {
       await addOfferingParticipant({
         variables: {
@@ -500,11 +500,11 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                 </div>
                 <hr className="mb-6 mt-10" />
                 {userWalletAddress ? (
-                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
                     <LoadingButtonText
                       state={buttonStep}
                       idleText={`Apply to become a ${offering.offeringEntity?.legalName} investor`}
-                      submittingText="Applying..."
+                      step1Text="Applying..."
                       step2Text="Setting distribution token..."
                       confirmedText="Confirmed!"
                       failedText="Transaction failed"

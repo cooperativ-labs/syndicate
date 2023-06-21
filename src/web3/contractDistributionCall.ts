@@ -9,6 +9,8 @@ import { waitForTransaction, writeContract, prepareWriteContract, getPublicClien
 import { dividendContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { toContractNumber } from './util';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getCurrencyById } from '@src/utils/enumConverters';
 
 type SubmitDistributionProps = {
   distributionContractAddress: String0x | undefined;
@@ -33,7 +35,6 @@ export const submitDistribution = async ({
   setButtonStep,
   addDistribution,
 }: SubmitDistributionProps) => {
-  setButtonStep('submitting');
   const call = async () => {
     const publicClient = getPublicClient();
     const block = await publicClient.getBlock();
@@ -45,7 +46,7 @@ export const submitDistribution = async ({
     const amountInDecimal =
       amount && distributionTokenDecimals ? toContractNumber(amount, distributionTokenDecimals) : BigInt(0);
     const payoutToken = distributionTokenAddress ? distributionTokenAddress : '0x0000000';
-
+    const payoutTokenSymbol = getCurrencyById(distributionTokenAddress)?.symbol;
     try {
       const { request, result } = await prepareWriteContract({
         address: distributionContractAddress as String0x,
@@ -58,7 +59,10 @@ export const submitDistribution = async ({
         hash: hash,
       });
       const contractIndex = Number(result);
-      console.log({ contractIndex });
+      if (!contractIndex) {
+        toast.error('Something went wrong, please try again');
+        return;
+      }
       await addDistribution({
         variables: {
           offeringId: offeringId,
@@ -67,6 +71,7 @@ export const submitDistribution = async ({
         },
       });
       setButtonStep('confirmed');
+      toast.success(`${numberWithCommas(amount)} ${payoutTokenSymbol} has been distributed`);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -85,7 +90,7 @@ export const claimDistribution = async ({
   distributionContractIndex,
   setButtonStep,
 }: ClaimDividendProps) => {
-  setButtonStep('submitting');
+  setButtonStep('step1');
   const call = async () => {
     try {
       const { request } = await prepareWriteContract({

@@ -211,11 +211,11 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
           {!userWalletAddress ? (
             <ChooseConnectorButton buttonText={'Connect Wallet'} />
           ) : (
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
               <LoadingButtonText
                 state={buttonStep}
                 idleText={formButtonText(values) as string}
-                submittingText="Creating sale..."
+                step1Text="Creating sale..."
                 confirmedText="Confirmed!"
                 failedText="Transaction failed"
                 rejectedText="You rejected the transaction. Click here to try again."

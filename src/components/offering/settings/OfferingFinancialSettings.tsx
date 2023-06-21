@@ -97,7 +97,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
-        setButtonStep('submitting');
+        setButtonStep('step1');
         setAlerted(false);
         setSubmitting(true);
         try {
@@ -296,7 +296,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
             <LoadingButtonText
               state={buttonStep}
               idleText={`Update ${offering.name}`}
-              submittingText="Saving"
+              step1Text="Saving"
               confirmedText={`${offering.name} updated!`}
               failedText="Oops. Something went wrong"
             />

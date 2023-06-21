@@ -41,7 +41,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
 
   const [, deploy] = useAsyncFn(
     async (paymentTokenAddress) => {
-      setButtonStep('submitting');
+      setButtonStep('step1');
       const protocol = MatchSupportedChains(chainId)?.protocol;
       dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
       try {
@@ -119,7 +119,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
                 <LoadingButtonText
                   state={buttonStep}
                   idleText={`Publish distribution contract on ${chainName}`}
-                  submittingText="Deploying - This can take time. Please do not refresh."
+                  step1Text="Deploying - This can take time. Please do not refresh."
                   confirmedText="Confirmed!"
                   failedText="Transaction failed"
                   rejectedText="You rejected the transaction. Click here to try again."

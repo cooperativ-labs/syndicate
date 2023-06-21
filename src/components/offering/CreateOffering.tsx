@@ -83,7 +83,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          setButtonStep('submitting');
+          setButtonStep('step1');
           handleSubmit(values);
           setSubmitting(false);
         }}
@@ -113,7 +113,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
               <LoadingButtonText
                 state={buttonStep}
                 idleText={`Create ${values.name}`}
-                submittingText={`Creating ${values.name}`}
+                step1Text={`Creating ${values.name}`}
                 confirmedText="Created!"
                 failedText="Oops. Something went wrong"
               />

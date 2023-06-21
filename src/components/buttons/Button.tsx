@@ -11,11 +11,11 @@ export type ButtonProps = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-export type LoadingButtonStateType = 'idle' | 'submitting' | 'step2' | 'step3' | 'confirmed' | 'failed' | 'rejected';
+export type LoadingButtonStateType = 'idle' | 'step1' | 'step2' | 'step3' | 'confirmed' | 'failed' | 'rejected';
 export type LoadingButtonTextType = {
   state: LoadingButtonStateType;
   idleText: string;
-  submittingText: string;
+  step1Text: string;
   step2Text?: string;
   step3Text?: string;
   confirmedText: string;
@@ -26,7 +26,7 @@ export type LoadingButtonTextType = {
 export const LoadingButtonText = ({
   state,
   idleText,
-  submittingText,
+  step1Text,
   step2Text,
   step3Text,
   confirmedText,
@@ -36,7 +36,7 @@ export const LoadingButtonText = ({
   switch (state) {
     case 'idle':
       return <>{idleText}</>;
-    case 'submitting':
+    case 'step1':
       return (
         <div className="flex justify-center items-center ">
           <img
@@ -44,7 +44,7 @@ export const LoadingButtonText = ({
             aria-label="loading"
             className="h-6 mr-1 animate-spin bg-white rounded-full"
           />
-          <span>{submittingText}</span>
+          <span>{step1Text}</span>
         </div>
       );
     case 'step2':

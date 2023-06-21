@@ -24,7 +24,7 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
   }
 
   const handleAddShareClass = async (partition: string) => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     await addPartition({
       variables: {
         smartContractId: shareContractId,
@@ -62,11 +62,11 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
             placeholder="Class A"
             required
           />
-          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
             <LoadingButtonText
               state={buttonStep}
               idleText={`Add new share class`}
-              submittingText="Sending shares..."
+              step1Text="Sending shares..."
               confirmedText="Confirmed!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."

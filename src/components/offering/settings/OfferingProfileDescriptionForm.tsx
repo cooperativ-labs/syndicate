@@ -89,7 +89,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         return errors;
       }}
       onSubmit={(values, { setSubmitting, resetForm }) => {
-        setButtonStep('submitting');
+        setButtonStep('step1');
         setAlerted(false);
         setSubmitting(true);
         try {
@@ -153,7 +153,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
             <LoadingButtonText
               state={buttonStep}
               idleText={`Update ${isUpdate ? 'Description' : offering.name}`}
-              submittingText="Saving"
+              step1Text="Saving"
               confirmedText={`${isUpdate ? 'Description' : offering.name} updated!`}
               failedText="Oops. Something went wrong"
             />

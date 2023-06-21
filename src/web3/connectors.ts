@@ -1,5 +1,5 @@
 import { CryptoAddressProtocol, Maybe } from 'types';
-import { configureChains, createConfig, sepolia, mainnet } from 'wagmi';
+import { configureChains, createConfig, sepolia, mainnet, Connector } from 'wagmi';
 import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
@@ -45,13 +45,7 @@ declare let window: any;
 //   80001: 'https://polygon-mumbai.infura.io/v3/',
 // };
 
-const getEndpoint = () => {
-  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
-    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT;
-  } else {
-    return process.env.NEXT_PUBLIC_DGRAPH_ENDPOINT_UNSECURED;
-  }
-};
+export const isMetaMask = (connector: any) => connector?.name === 'MetaMask'; // for some reason connector comes out of useAccount as any
 
 export const getSupportedChains = () => {
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {

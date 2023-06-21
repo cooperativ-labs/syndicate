@@ -10,6 +10,8 @@ import { MatchSupportedChains } from '@src/web3/connectors';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 import Select from '../form-components/Select';
+import WalletActionIndicator, { WalletActionStepType } from '@src/containers/wallet/WalletActionIndicator';
+import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { defaultFieldDiv } from '../form-components/Inputs';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { Form, Formik } from 'formik';
@@ -49,7 +51,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
 
   const [, deploy] = useAsyncFn(
     async (paymentTokenAddress) => {
-      setButtonStep('submitting');
+      setButtonStep('step1');
       const protocol = MatchSupportedChains(chainId)?.protocol;
       dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
       try {
@@ -100,83 +102,80 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   }
 
   return (
-    <div>
-      <h1 className="font-semibold text-lg">Deploy trading contract</h1>
-      <p className="text-sm text-gray-500">
-        This contract will allow you to sell shares and to manage trading amongst your whitelisted investors.
-      </p>
-      <div>
-        {!userWalletAddress ? (
-          <ChooseConnectorButton buttonText={'Connect Wallet'} />
-        ) : (
-          <Formik
-            initialValues={{
-              investmentCurrencyAddress: getCurrencyOption(investmentCurrency)?.address,
-            }}
-            validate={(values) => {
-              const errors: any = {}; /** @TODO : Shape */
-              if (!values.investmentCurrencyAddress) {
-                errors.investmentCurrencyAddress = 'You must choose a currency to use for buying and selling shares';
-              }
-              return errors;
-            }}
-            onSubmit={async (values, { setSubmitting }) => {
-              if (values.investmentCurrencyAddress !== getCurrencyOption(investmentCurrency)?.address) {
-                window.confirm(`Note that changing the currency here will also change it on the offering's profile.`);
-              }
-              setAlerted(false);
-              setSubmitting(true);
-              deploy(values.investmentCurrencyAddress);
-              setSubmitting(false);
-            }}
-          >
-            <Form className="flex flex-col gap relative">
-              <Select
-                className={defaultFieldDiv}
-                required
-                name="investmentCurrencyAddress"
-                labelText="Payment for shares will be accepted in"
-              >
-                {chainBacs.map((option, i) => {
-                  return (
-                    <option key={i} value={option.address}>
-                      {option.symbol}
-                    </option>
-                  );
-                })}
-              </Select>
-              <Button className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium" type="submit">
-                <LoadingButtonText
-                  state={buttonStep}
-                  idleText={`Publish trading contract on ${chainName}`}
-                  submittingText="Deploying - This can take time. Please do not refresh."
-                  step2Text="Setting contract operator"
-                  confirmedText="Confirmed!"
-                  failedText="Transaction failed"
-                  rejectedText="You rejected the transaction. Click here to try again."
-                />
-              </Button>
-            </Form>
-          </Formik>
-        )}
-      </div>
-    </div>
-  );
+    <>
+      <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
+        <WalletActionIndicator
+          step={buttonStep}
+          step1Text="Deploying swap contract"
+          step1SubText="The swap contract will allow you to manage trades between investors."
+          step2Text="Setting contract operator"
+          step2SubText="This allows the swap contract to transfer shares."
+        />
+      </WalletActionModal>
 
-  // return (
-  //   <Formik
-  //     validate={(values) => {
-  //       const errors: any = {}; /** @TODO : Shape */
-  //     }}
-  //     onSubmit={async (values, { setSubmitting }) => {
-  //       setSubmitting(true);
-  //       await deploy(investmentCurrency);
-  //       setSubmitting(false);
-  //     }}
-  //   >
-  //     {({ isSubmitting }) => <Form className="flex flex-col gap relative"></Form>}
-  //   </Formik>
-  // );
+      <div>
+        <h1 className="font-semibold text-lg">Deploy trading contract</h1>
+        <p className="text-sm text-gray-500">
+          This contract will allow you to sell shares and to manage trading amongst your whitelisted investors.
+        </p>
+        <div>
+          {!userWalletAddress ? (
+            <ChooseConnectorButton buttonText={'Connect Wallet'} />
+          ) : (
+            <Formik
+              initialValues={{
+                investmentCurrencyAddress: getCurrencyOption(investmentCurrency)?.address,
+              }}
+              validate={(values) => {
+                const errors: any = {}; /** @TODO : Shape */
+                if (!values.investmentCurrencyAddress) {
+                  errors.investmentCurrencyAddress = 'You must choose a currency to use for buying and selling shares';
+                }
+                return errors;
+              }}
+              onSubmit={async (values, { setSubmitting }) => {
+                if (values.investmentCurrencyAddress !== getCurrencyOption(investmentCurrency)?.address) {
+                  window.confirm(`Note that changing the currency here will also change it on the offering's profile.`);
+                }
+                setAlerted(false);
+                setSubmitting(true);
+                deploy(values.investmentCurrencyAddress);
+                setSubmitting(false);
+              }}
+            >
+              <Form className="flex flex-col gap relative">
+                <Select
+                  className={defaultFieldDiv}
+                  required
+                  name="investmentCurrencyAddress"
+                  labelText="Payment for shares will be accepted in"
+                >
+                  {chainBacs.map((option, i) => {
+                    return (
+                      <option key={i} value={option.address}>
+                        {option.symbol}
+                      </option>
+                    );
+                  })}
+                </Select>
+                <Button className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium" type="submit">
+                  <LoadingButtonText
+                    state={buttonStep}
+                    idleText={`Publish trading contract on ${chainName}`}
+                    step1Text="Deploying - This can take time. Please do not refresh."
+                    step2Text="Setting contract operator"
+                    confirmedText="Confirmed!"
+                    failedText="Transaction failed"
+                    rejectedText="You rejected the transaction. Click here to try again."
+                  />
+                </Button>
+              </Form>
+            </Formik>
+          )}
+        </div>
+      </div>
+    </>
+  );
 };
 
 export default CreateSwapContract;

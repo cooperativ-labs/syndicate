@@ -50,12 +50,12 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     <Button
       className={'mt-4 p-3 shadow-md rounded-md bg-slate-300 w-full uppercase font-semibold'}
       onClick={handleClaimProceeds}
-      disabled={claimProceedsButton === 'submitting'}
+      disabled={claimProceedsButton === 'step1'}
     >
       <LoadingButtonText
         state={claimProceedsButton}
         idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-        submittingText="Claiming Proceeds..."
+        step1Text="Claiming Proceeds..."
         confirmedText="Proceeds Claimed!"
         failedText="Transaction failed"
         rejectedText="You rejected the transaction. Click here to try again."

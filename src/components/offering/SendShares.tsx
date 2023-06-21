@@ -166,12 +166,12 @@ const SendShares: FC<SendSharesProps> = ({
           />
           <hr className="bg-grey-600 my-3 mb-4" />
 
-          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
             <LoadingButtonText
               state={buttonStep}
               idleText={formButtonText({ numShares: parseInt(values.numShares, 10), recipient: values.recipient })}
-              submittingText="Sending shares..."
-              confirmedText="Confirmed!"
+              step1Text="Sending shares..."
+              confirmedText="Sent!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />

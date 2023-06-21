@@ -75,6 +75,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
             distributionTokenAddress={distributionTokenAddress}
             partitions={partitions}
             offeringId={offering.id}
+            refetchContracts={refetchContracts}
           />
         </FormModal>
       )}

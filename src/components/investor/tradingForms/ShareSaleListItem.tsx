@@ -5,9 +5,8 @@ import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { Maybe, Offering, OfferingParticipant, ShareOrder } from 'types';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { Offering, ShareOrder } from 'types';
 import { useAccount } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
@@ -168,6 +167,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   isDisapproved={isDisapproved as boolean}
                   isCancelled={isCancelled as boolean}
                   isAccepted={isAccepted as boolean}
+                  filledAmount={filledAmount as number}
                   filler={filler as String0x}
                   paymentTokenAddress={paymentTokenAddress as String0x}
                   paymentTokenDecimals={paymentTokenDecimals as number}

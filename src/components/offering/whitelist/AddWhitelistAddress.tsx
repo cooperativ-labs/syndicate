@@ -41,7 +41,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         const address = await getAddressFromEns(values.address);
-        setButtonStep('submitting');
+        setButtonStep('step1');
         setSubmitting(true);
         const transactionHash = await addWhitelistMember({
           shareContractAddress,
@@ -85,11 +85,11 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
               placeholder="934834 (optional)"
             />
           </div>
-          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
             <LoadingButtonText
               state={buttonStep}
               idleText={`Approve ${values.address}`}
-              submittingText="Adding member to whitelist..."
+              step1Text="Adding member to whitelist..."
               confirmedText="Added!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."

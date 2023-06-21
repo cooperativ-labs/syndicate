@@ -17,8 +17,10 @@ import { LoadingButtonStateType, LoadingButtonText } from '@src/components/butto
 import { Offering, ShareOrder } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
-import WalletActionModal, { WalletActionStepType } from '@src/containers/wallet/WalletActionModal';
+import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
+import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { erc20ABI, useAccount, useContractRead } from 'wagmi';
+import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
 import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
 
@@ -54,7 +56,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
   callFillOrder,
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const [walletActionStep, setWalletActionStep] = useState<WalletActionStepType>('none');
+
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -84,21 +86,21 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
 
   // ABSTRACT THIS OUT
 
-  const handleAllowance = async (amount: number, allowanceRequiredForPurchase: number) => {
+  const handleAllowance = async (allowanceRequiredForPurchase: number) => {
     await setAllowance({
       paymentTokenAddress,
       paymentTokenDecimals,
       spenderAddress: swapContractAddress,
       amount: allowanceRequiredForPurchase,
-      setButtonStep: () => {},
+      setButtonStep,
     });
     refetch();
-    return;
   };
 
   const handlePurchaseRequest = async (values: any) => {
     const amountToBuy = values.numUnitsPurchase;
     if (txnApprovalsEnabled) {
+      setButtonStep('step1');
       await acceptOrder({
         swapContractAddress: swapContractAddress,
         contractIndex: order.contractIndex,
@@ -109,50 +111,54 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
         setButtonStep: setButtonStep,
       });
     } else {
-      const allowance = allowanceData && toNormalNumber(allowanceData, paymentTokenDecimals);
+      const allowance = toNormalNumber(allowanceData, paymentTokenDecimals);
       const allowanceRequiredForPurchase = amountToBuy * price;
-      const isAllowanceSufficient = allowance ? allowance >= allowanceRequiredForPurchase : false;
+      const isAllowanceSufficient = getIsAllowanceSufficient(allowance, allowanceRequiredForPurchase);
       if (!isAllowanceSufficient) {
-        setWalletActionStep('step1');
-        await handleAllowance(amountToBuy, allowanceRequiredForPurchase);
+        setButtonStep('step1');
+        await handleAllowance(allowanceRequiredForPurchase);
       }
-      setWalletActionStep('step2');
-      callFillOrder({
-        amount: amountToBuy,
-        setButtonStep: setButtonStep,
-      });
-      setWalletActionStep('step2');
+      if (isAllowanceSufficient) {
+        setButtonStep('step2');
+        callFillOrder({
+          amount: amountToBuy,
+          setButtonStep: setButtonStep,
+        });
+        setButtonStep('confirmed');
+      }
     }
-    setWalletActionStep('none');
+    setButtonStep('idle');
   };
-
-  const step1 = walletActionStep === 'none' || 'step1' ? 'pending' : 'success';
-  const step2 = walletActionStep === 'none' || 'step1' ? 'waiting' : 'step2' ? 'pending' : 'success';
 
   return (
     <>
-      <WalletActionModal
-        step={walletActionStep}
-        step1Text="Permitting the swap contract to spend your tokens"
-        step2Text="Executing trade"
-        step1Status={step1}
-        step2Status={step2}
-      />
+      {!txnApprovalsEnabled && (
+        <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
+          <WalletActionIndicator
+            step={buttonStep}
+            step1Text="Setting contract allowance"
+            step1SubText="This will allow the contract to spend your tokens on your behalf"
+            step2Text="Executing trade"
+            step2SubText="This will execute the trade and purchase the shares"
+          />
+        </WalletActionModal>
+      )}
 
       <Formik
         initialValues={{
-          numUnitsPurchase: null,
+          numUnitsPurchase: '',
           disclosures: false,
           toc: false,
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
           if (!values.numUnitsPurchase) {
+            const numUnitsPurchase = parseInt(values.numUnitsPurchase, 10);
             errors.numUnitsPurchase = 'You must choose a number of shares to purchase.';
             if (order.minUnits) {
-              if (values.numUnitsPurchase && values.numUnitsPurchase < order.minUnits) {
+              if (numUnitsPurchase && numUnitsPurchase < order.minUnits) {
                 errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
-              } else if (values.numUnitsPurchase && order.maxUnits && values.numUnitsPurchase > order.maxUnits) {
+              } else if (numUnitsPurchase && order.maxUnits && numUnitsPurchase > order.maxUnits) {
                 errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
               }
             }
@@ -166,7 +172,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
-          if (values.numUnitsPurchase === null) return;
+          if (values.numUnitsPurchase === '') return;
           setSubmitting(true);
           handlePurchaseRequest(values);
           setSubmitting(false);
@@ -310,7 +316,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
                 </div>
               </div>
             )}
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
               <LoadingButtonText
                 state={buttonStep}
                 idleText={`${txnApprovalsEnabled ? 'Request to p' : 'P'}urchase ${
@@ -322,7 +328,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
                       } `
                     : ''
                 }`}
-                submittingText="Setting contract allowance..."
+                step1Text={txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'}
                 step2Text="Executing transaction..."
                 confirmedText="Executed!"
                 failedText="Transaction failed"

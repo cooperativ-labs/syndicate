@@ -26,6 +26,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
 
   const handleAllowance = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
+    setButtonStep('step1');
     await setAllowance({
       paymentTokenAddress,
       paymentTokenDecimals,
@@ -33,6 +34,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
       amount,
       setButtonStep,
     });
+    setButtonStep('confirmed');
     refetchAllowance();
     return;
   };
@@ -45,7 +47,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
       <LoadingButtonText
         state={buttonStep}
         idleText={`First permit the smart contract access your funds`}
-        submittingText="Setting allowance..."
+        step1Text="Setting allowance..."
         confirmedText="Confirmed!"
         failedText="Transaction failed"
         rejectedText="You rejected the transaction. Click here to try again."

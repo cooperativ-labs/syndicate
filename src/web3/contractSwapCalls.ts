@@ -71,7 +71,7 @@ export const submitSwap = async ({
   refetchAllContracts,
   refetchOfferingInfo,
 }: SubmitSwapProps) => {
-  setButtonStep('submitting');
+  setButtonStep('step1');
   const call = async () => {
     const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
     try {
@@ -154,7 +154,6 @@ export const acceptOrder = async ({
   refetchAllContracts,
   setModal,
 }: AcceptOrderProps) => {
-  setButtonStep('submitting');
   if (!swapContractAddress) {
     throw new Error('No swap contract address');
   }
@@ -205,7 +204,6 @@ export const setAllowance = async ({
   setButtonStep,
   setModal,
 }: SetAllowanceProps) => {
-  setButtonStep('submitting');
   const call = async () => {
     try {
       const { request } = await prepareWriteContract({
@@ -218,7 +216,7 @@ export const setAllowance = async ({
       await waitForTransaction({
         hash: hash,
       });
-      setButtonStep('confirmed');
+
       toast.success(`You have set contract allowance to ${numberWithCommas(amount)}.`);
       setModal && setModal(false);
     } catch (e) {
@@ -236,7 +234,7 @@ export const setAllowance = async ({
 //   setButtonStep,
 //   setModal,
 // }: SetAllowanceProps) => {
-//   setButtonStep('submitting');
+//   setButtonStep('step1');
 //   const call = async () => {
 //     try {
 //       const { request } = await prepareWriteContract({
@@ -296,7 +294,7 @@ export const approveRejectSwap = async ({
   refetchAllContracts,
   setModal,
 }: ApproveRejectSwapProps) => {
-  setButtonStep('submitting');
+  setButtonStep('step1');
   const contractFunctionName = isDisapprove ? 'disapproveOrder' : 'approveOrder';
   const call = async () => {
     if (!swapContractAddress) {
@@ -367,7 +365,7 @@ export const cancelSwap = async ({
   setModal,
   refetchAllContracts,
 }: CancelOrderProps) => {
-  setButtonStep('submitting');
+  setButtonStep('step1');
   const call = async () => {
     if (!swapContractAddress) {
       throw new Error('No swap contract address');
@@ -407,7 +405,7 @@ export const claimProceeds = async ({
   refetchAllContracts,
 }: ClaimProceedsProps) => {
   const call = async () => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     if (!swapContractAddress) {
       throw new Error('No swap contract address');
     }
@@ -468,7 +466,7 @@ export const fillOrder = async ({
   refetchAllContracts,
   setModal,
 }: FillOrderProps) => {
-  setButtonStep('submitting');
+  setButtonStep('step1');
   const call = async () => {
     if (!swapContractAddress || !shareContractAddress) {
       throw new Error('No swap or share contract address');

@@ -303,7 +303,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                       </div>
                     </>
                   )}
-                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'submitting'}>
+                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
                     <LoadingButtonText
                       state={buttonStep}
                       idleText={`${isContractOwner ? 'Sell' : `Propose ${isAsk ? 'sale' : 'purchase'} of`} ${
@@ -315,7 +315,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                             } `
                           : ''
                       }`}
-                      submittingText="Creating sale..."
+                      step1Text="Creating sale..."
                       confirmedText="Confirmed!"
                       failedText="Transaction failed"
                       rejectedText="You rejected the transaction. Click here to try again."

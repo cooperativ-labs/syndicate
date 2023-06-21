@@ -91,7 +91,7 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
             <LoadingButtonText
               state={buttonStep}
               idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
-              submittingText="Submitting..."
+              step1Text="Submitting..."
               confirmedText="Confirmed!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."

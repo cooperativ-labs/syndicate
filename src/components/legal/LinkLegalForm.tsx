@@ -56,7 +56,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const createDocHash = async (signature: string) => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     const handleEstablish = async () => {
       try {
         await addLegalLink({
@@ -148,7 +148,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
               <LoadingButtonText
                 state={buttonStep}
                 idleText="Sign"
-                submittingText="Signing (this could take a sec)"
+                step1Text="Signing (this could take a sec)"
                 confirmedText="Confirmed!"
                 rejectedText="You rejected the transaction. Click here to try again."
               />

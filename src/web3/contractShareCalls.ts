@@ -66,7 +66,7 @@ export const addWhitelistMember = async ({
 
   let transactionHash = '';
   const call = async () => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     try {
       const { request, result } = await prepareWriteContract({
         address: shareContractAddress,
@@ -178,7 +178,7 @@ export const sendShares = async ({
 
   let transactionDetails = {} as TransactionReceipt;
   const call = async () => {
-    setButtonStep('submitting');
+    setButtonStep('step1');
     const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
     const setFunctionName = isIssuance ? 'issueByPartition' : 'operatorTransferByPartition';
     const issueByPartitionArgs = [setPartition, recipient, amt] as readonly [String0x, String0x, bigint];
@@ -243,7 +243,6 @@ export const setContractOperator = async ({
   setButtonStep,
   refetch,
 }: SetContractOperatorProps) => {
-  setButtonStep('submitting');
   try {
     const { request } = await prepareWriteContract({
       address: shareContractAddress,
@@ -255,7 +254,6 @@ export const setContractOperator = async ({
     await waitForTransaction({
       hash: hash,
     });
-    setButtonStep('confirmed');
     refetch();
   } catch (e) {
     StandardChainErrorHandling(e, setButtonStep);
@@ -285,7 +283,7 @@ export const forceTransfer = async ({
   addIssuance,
   refetchContracts,
 }: ForceTransferProps) => {
-  setButtonStep('submitting');
+  setButtonStep('step1');
   const amt = toContractNumber(amount, shareContractDecimals);
   try {
     const { request } = await prepareWriteContract({
