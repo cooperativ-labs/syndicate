@@ -97,14 +97,10 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   });
 
   const acceptedOrderQty = acceptedQty && toNormalNumber(acceptedQty, shareContractDecimals);
-
-  // Note: contractData[0] is eth, contractData[1] is erc20
-  const rawProceeds = contractData && contractData[1];
+  const rawProceeds = contractData && contractData[1]; // Note: contractData[0] is eth, contractData[1] is erc20
   const proceeds = paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
-
   const minPurchase = order.minUnits;
   const maxPurchase = order.maxUnits;
-
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
   const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
   const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
@@ -161,75 +157,120 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     refetchOfferingInfo();
   };
 
-  const buttonClass =
-    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
-  return (
-    <div className="flex flex-col">
+  const minMaxSection = (
+    <>
       {!!minPurchase && <div>Minimum purchase: {numberWithCommas(minPurchase)} shares</div>}
       {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} shares</div>}
       {!!maxPurchase && <hr className="my-4" />}
+    </>
+  );
+
+  const buttonClass =
+    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
+
+  const cancelButton = (
+    <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'step1'}>
+      <LoadingButtonText
+        state={cancelButtonStep}
+        idleText="Cancel Offer"
+        step1Text="Canceling Sale..."
+        confirmedText="Sale Cancelled!"
+        failedText="Transaction failed"
+        rejectedText="You rejected the transaction. Click here to try again."
+      />
+    </Button>
+  );
+
+  const archiveButton = (
+    <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'step1'}>
+      {`Archive completed swap`}
+    </Button>
+  );
+
+  const approveButton = (
+    <Button
+      className={buttonClass}
+      onClick={() => handleApprove({ isDisapprove: false })}
+      disabled={approveButtonStep === 'step1'}
+    >
+      <LoadingButtonText
+        state={approveButtonStep}
+        idleText={`Approve ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
+        step1Text="Approving..."
+        confirmedText="Confirmed"
+        failedText="Transaction failed"
+        rejectedText="You rejected the transaction. Click here to try again."
+      />
+    </Button>
+  );
+
+  const disapproveButton = (
+    <Button
+      className={buttonClass}
+      onClick={() => handleApprove({ isDisapprove: true })}
+      disabled={approveButtonStep === 'step1'}
+    >
+      <LoadingButtonText
+        state={disapproveButtonStep}
+        idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
+        step1Text="Disapprove..."
+        confirmedText="Confirmed"
+        failedText="Transaction failed"
+        rejectedText="You rejected the transaction. Click here to try again."
+      />
+    </Button>
+  );
+
+  const visibilityToggle = (
+    <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} />
+  );
+
+  const baseInitiatorButtonSet = (
+    <>
+      {!isCancelled && !isFilled && isOfferor && proceeds === 0 && cancelButton}
+      {(isFilled || isCancelled) && proceeds === 0 && archiveButton}
+    </>
+  );
+
+  return (
+    <div className="flex flex-col">
+      {minMaxSection}
       <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
-        {!isCancelled && !isFilled && isOfferor && proceeds === 0 && (
-          <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'step1'}>
-            <LoadingButtonText
-              state={cancelButtonStep}
-              idleText="Cancel Offer"
-              step1Text="Canceling Sale..."
-              confirmedText="Sale Cancelled!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </Button>
+        {isContractOwner && (
+          <>
+            {!swapApprovalsEnabled &&
+              !txnApprovalsEnabled && ( // with no approvals
+                <>{baseInitiatorButtonSet}</>
+              )}
+            {swapApprovalsEnabled &&
+              !txnApprovalsEnabled && ( // with listing approvals
+                <>
+                  {!isApproved && approveButton}
+                  {isApproved && disapproveButton}
+                  {baseInitiatorButtonSet}
+                </>
+              )}
+            {swapApprovalsEnabled &&
+              txnApprovalsEnabled && ( // with txn approvals
+                <>
+                  {!isApproved && approveButton}
+                  {isApproved && disapproveButton}
+                  {baseInitiatorButtonSet}
+                </>
+              )}{' '}
+          </>
         )}
 
-        {(isCancelled || isFilled) && proceeds === 0 && (
-          <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'step1'}>
-            {`Archive completed swap`}
-          </Button>
-        )}
-
-        {isContractOwner && order && (
-          <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} />
-        )}
+        {!isCancelled && !isFilled && isOfferor && proceeds === 0 && cancelButton}
+        {(isCancelled || isFilled) && proceeds === 0 && archiveButton}
+        {isContractOwner && order && visibilityToggle}
       </div>
       {(isCancelled || isFilled) && proceeds !== 0 && <div>Completed swap. Please claim proceeds.</div>}
-      {/* if both txnApprovals are turned on, then only show button when enabled  */}
 
-      {/* if swapsApprovals are enabled but txnApprovals are not - show approve button (or disapprove if already approved) */}
       {(!txnApprovalsEnabled || isAccepted) && isContractOwner && !isDisapproved && (
         <div className=" mt-3 grid grid-cols-2 gap-3">
-          {!isApproved && (
-            <Button
-              className={buttonClass}
-              onClick={() => handleApprove({ isDisapprove: false })}
-              disabled={approveButtonStep === 'step1'}
-            >
-              <LoadingButtonText
-                state={approveButtonStep}
-                idleText={`Approve ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
-                step1Text="Approving..."
-                confirmedText="Confirmed"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </Button>
-          )}
-          <div>
-            <Button
-              className={buttonClass}
-              onClick={() => handleApprove({ isDisapprove: true })}
-              disabled={approveButtonStep === 'step1'}
-            >
-              <LoadingButtonText
-                state={disapproveButtonStep}
-                idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
-                step1Text="Disapprove..."
-                confirmedText="Confirmed"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </Button>
-          </div>
+          {!isApproved && approveButton}
+          {disapproveButton}
 
           {
             <div className="flex flex-col">
@@ -248,3 +289,35 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 };
 
 export default SaleManagerPanel;
+
+/* Panel scenarios
+As the Manager: 
+  - SwapApprovals are not enabled
+    - If the order is not filled or cancelled, show the cancel button
+    - If the order is filled or cancelled, show the archive button
+  - SwapApprovals are enabled
+    - If the order is not approved, show the "Approve Listing" button (replaces visibility toggle)
+    - If the order is approved, show the disapprove button
+    - If the order is filled or cancelled, show the archive button
+  - TxnApprovals are enabled
+    - If swapApprovals are enabled, show the "Approve Listing" ( just toggles visibility ) and "Disapprove" buttons 
+    - If swapApprovals are not enabled, show visibility toggle
+    - If the order is filled or cancelled, show the archive button
+As the Initiator:
+  - SwapApprovals are not enabled
+    - If the order is not filled or cancelled, show the cancel button
+    - If the order is filled or cancelled, show the archive button
+  - SwapApprovals are enabled
+    - Show cancel button
+    - If the order is filled or cancelled, show the archive button
+  - TxnApprovals are enabled
+    - if not approved, show "Awaiting approval"
+    - if approved, show cancel button
+As the Investor
+  - SwapApprovals are not enabled
+    - show purchase form
+  - SwapApprovals are enabled
+    - item does not appear
+  - TxnApprovals are enabled
+    - show purchase steps
+*/

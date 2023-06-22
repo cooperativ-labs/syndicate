@@ -112,7 +112,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                 price={price}
                 paymentTokenAddress={paymentTokenAddress}
               />
-              Order index: {order.contractIndex}
+
               <div className="flex items-center p-1">
                 {isOfferor && (
                   <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
