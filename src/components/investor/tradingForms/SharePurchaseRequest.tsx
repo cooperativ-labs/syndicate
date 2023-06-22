@@ -21,6 +21,7 @@ import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator'
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { erc20ABI, useAccount, useContractRead } from 'wagmi';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
+import { isMetaMask } from '@src/web3/connectors';
 import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
 
@@ -40,7 +41,7 @@ type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {
   callFillOrder: (args: {
     amount: number;
     setButtonStep: React.Dispatch<React.SetStateAction<LoadingButtonStateType>>;
-  }) => void;
+  }) => Promise<void>;
 };
 
 const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
@@ -55,7 +56,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
   refetchAllContracts,
   callFillOrder,
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress, connector } = useAccount();
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
@@ -117,10 +118,15 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
       if (!isAllowanceSufficient) {
         setButtonStep('step1');
         await handleAllowance(allowanceRequiredForPurchase);
-      }
-      if (isAllowanceSufficient) {
         setButtonStep('step2');
-        callFillOrder({
+        await callFillOrder({
+          amount: amountToBuy,
+          setButtonStep: setButtonStep,
+        });
+        setButtonStep('confirmed');
+      } else if (isAllowanceSufficient) {
+        setButtonStep('step2');
+        await callFillOrder({
           amount: amountToBuy,
           setButtonStep: setButtonStep,
         });
@@ -133,7 +139,10 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
   return (
     <>
       {!txnApprovalsEnabled && (
-        <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
+        <WalletActionModal
+          open={buttonStep === 'step1' || buttonStep === 'step2'}
+          metaMaskWarning={isMetaMask(connector)}
+        >
           <WalletActionIndicator
             step={buttonStep}
             step1Text="Setting contract allowance"

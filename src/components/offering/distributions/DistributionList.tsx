@@ -13,6 +13,7 @@ const DistributionList: FC<DistributionListProps> = ({
   hideTransactionId,
   walletAddress,
 }) => {
+  const hasDistributions = distributions && distributions.length > 0;
   return (
     <div className="p-3  border-t-8 rounded-lg w-full">
       <div className="hidden md:grid grid-cols-8 gap-3 items-center mb-5">
@@ -28,19 +29,25 @@ const DistributionList: FC<DistributionListProps> = ({
           <div className="text-sm font-bold text-gray-700">Total Distribution</div>
         </div>
       </div>
-      {distributions?.map((dist, i) => {
-        return (
-          <div className="mb-3" key={i}>
-            <DistributionListItem
-              distribution={dist as OfferingDistribution}
-              hideTransactionId={hideTransactionId}
-              distributionContractAddress={distributionContractAddress}
-              isDistributor={isDistributor}
-              walletAddress={walletAddress}
-            />
-          </div>
-        );
-      })}
+      {hasDistributions ? (
+        distributions.map((dist, i) => {
+          return (
+            <div className="mb-3" key={i}>
+              <DistributionListItem
+                distribution={dist as OfferingDistribution}
+                hideTransactionId={hideTransactionId}
+                distributionContractAddress={distributionContractAddress}
+                isDistributor={isDistributor}
+                walletAddress={walletAddress}
+              />
+            </div>
+          );
+        })
+      ) : (
+        <div className="flex bg-white shadow-md items-center pl-3 p-3 rounded-lg ">
+          This offering has not made any distributions.
+        </div>
+      )}
     </div>
   );
 };

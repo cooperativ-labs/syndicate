@@ -321,6 +321,7 @@ export const ADD_OFFERING_PARTICIPANT = gql`
     addOfferingParticipant(
       input: {
         lastUpdate: $currentDate
+        creationDate: $currentDate
         addressOfferingId: $addressOfferingId
         name: $name
         offering: { id: $offeringId }
@@ -332,7 +333,6 @@ export const ADD_OFFERING_PARTICIPANT = gql`
       offeringParticipant {
         id
         name
-
         offering {
           id
         }
@@ -372,6 +372,7 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
         # jurisdiction: { country: $jurCountry, state: $jurState }
         investorApplication: {
           creationDate: $currentDate
+          lastUpdate: $currentDate
           applicationDoc: {
             creationDate: $currentDate
             title: $applicationTitle
@@ -416,6 +417,7 @@ export const ADD_WHITELIST_MEMBER = gql`
     addOfferingParticipant(
       input: {
         lastUpdate: $currentDate
+        creationDate: $currentDate
         addressOfferingId: $addressOfferingId
         walletAddress: $walletAddress
         chainId: $chainId
@@ -503,6 +505,19 @@ export const REMOVE_WHITELIST_OBJECT = gql`
     }
     deleteOfferingParticipant(filter: { id: [$participantId] }) {
       msg
+    }
+  }
+`;
+
+export const ARCHIVE_OFFERING_PARTICIPANT = gql`
+  mutation ArchiveOfferingParticipant($currentDate: DateTime!, $participantId: [ID!]) {
+    updateOfferingParticipant(
+      input: { filter: { id: $participantId }, set: { lastUpdate: $currentDate, archived: true } }
+    ) {
+      offeringParticipant {
+        id
+        archived
+      }
     }
   }
 `;

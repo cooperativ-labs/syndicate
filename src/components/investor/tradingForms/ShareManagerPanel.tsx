@@ -22,6 +22,7 @@ export type SaleMangerPanelProps = {
   paymentTokenAddress: String0x | undefined;
   paymentTokenDecimals: number | undefined;
   txnApprovalsEnabled: boolean | undefined;
+  swapApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;
   refetchOfferingInfo: () => void;
 };
@@ -66,6 +67,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
+  swapApprovalsEnabled,
   isContractOwner,
   small,
   refetchAllContracts,
@@ -182,16 +184,18 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 
         {(isCancelled || isFilled) && proceeds === 0 && (
           <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'step1'}>
-            {`Delete completed swap`}
+            {`Archive completed swap`}
           </Button>
         )}
+
         {isContractOwner && order && (
           <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} />
         )}
       </div>
-      {/* if swapsApprovals are enabled but txnApprovals are not - show approve button (or disapprove if already approved) */}
+      {(isCancelled || isFilled) && proceeds !== 0 && <div>Completed swap. Please claim proceeds.</div>}
       {/* if both txnApprovals are turned on, then only show button when enabled  */}
 
+      {/* if swapsApprovals are enabled but txnApprovals are not - show approve button (or disapprove if already approved) */}
       {(!txnApprovalsEnabled || isAccepted) && isContractOwner && !isDisapproved && (
         <div className=" mt-3 grid grid-cols-2 gap-3">
           {!isApproved && (

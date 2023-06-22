@@ -62,7 +62,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
-  const [isAsk, setIsAsk] = useState<boolean>(false);
+  const [isAsk, setIsAsk] = useState<boolean>(true);
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
   const { id, name, details, documents, offeringEntity } = offering;
   const sharesIssued = details?.numUnits;
@@ -89,7 +89,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
           minUnits: undefined,
           maxUnits: undefined,
           partition: partitions[0],
-          toc: true,
+          toc: false,
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
@@ -119,7 +119,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
           if (!approvalRequired) {
             errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
           }
-          if (toc === true) {
+          if (toc === false) {
             errors.toc = "You must accept this offering's Terms & Conditions";
           }
           return errors;

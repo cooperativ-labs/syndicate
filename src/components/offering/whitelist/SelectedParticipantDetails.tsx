@@ -6,7 +6,7 @@ import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import Input from '@src/components/form-components/Inputs';
 
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
-import React, { FC, useState } from 'react';
+import React, { Dispatch, FC, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
@@ -32,13 +32,12 @@ type SelectedParticipantProps = {
   offeringId: string;
   partitions: String0x[];
   transferEventList: any[];
-  removeMember: (x: {
-    variables: { offeringId: string; participantId: string | undefined; currentDate: string };
-  }) => void;
   refetchContracts: () => void;
+  setSelectedParticipant: Dispatch<React.SetStateAction<string | undefined>>;
 };
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
+
 const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   selection,
   participants,
@@ -48,14 +47,12 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   offeringId,
   partitions,
   transferEventList,
-  removeMember,
   refetchContracts,
 }) => {
   const { data: session } = useSession();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
   const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
-  const [approveOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
   const participant = participants?.find((p) => p?.id === selection);
@@ -80,16 +77,18 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     args: [participantWallet as String0x],
   });
 
-  const removeFromDb = () => {
-    removeMember({ variables: { offeringId, participantId: participant?.id, currentDate: currentDate } });
-  };
-
   const { write: removeWrite } = useContractWrite({
     ...sharedContractSpecs,
     functionName: 'removeFromWhitelist',
     args: [participantWallet as String0x],
     onSuccess: (data) => {
-      removeFromDb();
+      updateOfferingParticipant({
+        variables: {
+          currentDate: currentDate,
+          id: id,
+          permitted: false,
+        },
+      });
     },
     onError: (e) => {
       StandardChainErrorHandling(e, setButtonStep);
@@ -104,7 +103,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   // -----------------Approve Whitelist Participant---------------------
 
   const updateDb = async () => {
-    await approveOfferingParticipant({
+    await updateOfferingParticipant({
       variables: {
         currentDate: currentDate,
         id: id,

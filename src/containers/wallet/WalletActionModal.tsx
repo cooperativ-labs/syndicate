@@ -28,7 +28,7 @@ const WalletActionModal: FC<WalletActionModalProps> = ({ noModal, children, open
             >
               {metaMaskWarning && (
                 <div className="p-3 border-2 border-orange-600 rounded-lg items-center mb-4">
-                  {`Note: MetaMask will ask you to set a "custom spending cap". Please click`}
+                  {`Note: MetaMask will ask you to set a "custom spending cap". Please click: `}
                   <strong>{`use default`}</strong>.
                 </div>
               )}

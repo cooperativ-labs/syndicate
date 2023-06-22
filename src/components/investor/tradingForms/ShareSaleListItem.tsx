@@ -39,6 +39,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
+  swapApprovalsEnabled,
   isContractOwner,
   setModal,
   refetchMainContracts,
@@ -129,7 +130,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
           </div>
           {open && (
             <div className="p-2">
-              {isOfferor || isContractOwner ? (
+              {(isOfferor || isContractOwner) && (
                 <SaleManagerPanel
                   isOfferor={isOfferor}
                   isContractOwner={isContractOwner}
@@ -149,12 +150,14 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   partition={partition}
                   swapContractAddress={swapContractAddress}
                   txnApprovalsEnabled={txnApprovalsEnabled}
+                  swapApprovalsEnabled={swapApprovalsEnabled}
                   paymentTokenAddress={paymentTokenAddress}
                   paymentTokenDecimals={paymentTokenDecimals}
                   refetchAllContracts={refetchAllContracts}
                   refetchOfferingInfo={refetchOfferingInfo}
                 />
-              ) : (
+              )}
+              {!isOfferor && (
                 <SharePurchaseSteps
                   offering={offering}
                   order={order}

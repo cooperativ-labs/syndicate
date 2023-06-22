@@ -89,7 +89,7 @@ export const addWhitelistMember = async ({
       setButtonStep('confirmed');
     } catch (e) {
       const parsedError = ChainErrorResponses(e, walletAddress);
-      if (parsedError.code === 1000) {
+      if (parsedError.code === 1001) {
         await addToDb();
         refetchMainContracts && refetchMainContracts();
         setButtonStep('confirmed');
@@ -189,6 +189,7 @@ export const sendShares = async ({
       bigint
     ];
     const setArgs = isIssuance ? issueByPartitionArgs : operatorTransferByPartitionArgs;
+    const setType = isIssuance ? ShareTransferEventType.Issuance : ShareTransferEventType.Transfer;
     try {
       const { request } = await prepareWriteContract({
         address: shareContractAddress,
@@ -210,7 +211,7 @@ export const sendShares = async ({
           amount: numShares,
           transactionHash: transactionDetails.transactionHash,
           partition: setPartition,
-          type: isIssuance ? ShareTransferEventType.Issuance : ShareTransferEventType.Transfer,
+          type: setType,
         },
       });
       if (partition === '0xNew')

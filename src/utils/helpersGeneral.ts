@@ -21,6 +21,16 @@ export function getHumanDate(date: string | Date) {
   const dateObj = new Date(date);
   return dateObj?.toLocaleDateString(undefined, { year: 'numeric', month: 'short', day: 'numeric' });
 }
+export function getHumanDateTime(date: string | Date) {
+  const dateObj = new Date(date);
+  return dateObj?.toLocaleDateString(undefined, {
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric',
+  });
+}
 
 export function checkDateInPast(date: string) {
   const dateObj = new Date(date);

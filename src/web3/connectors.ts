@@ -47,7 +47,7 @@ declare let window: any;
 
 export const isMetaMask = (connector: any) => connector?.name === 'MetaMask'; // for some reason connector comes out of useAccount as any
 
-export const getSupportedChains = () => {
+export const getSupportedChains = (): any => {
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
     return [sepolia, polygonMumbai];
   } else {

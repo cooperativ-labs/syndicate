@@ -29,11 +29,9 @@ type PortalOfferingProps = {
 
 const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) => {
   const { address: userWalletAddress } = useAccount();
-  const { chain } = useNetwork();
   const router = useRouter();
   const orgId = router.query.organizationId;
   const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
-  const organization = organizationData?.getOrganization;
 
   const {
     details,
@@ -115,7 +113,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
       <FormModal
         formOpen={managerModal === 'saleForm'}
         onClose={() => setManagerModal('none')}
-        title={`Sell shares of ${offeringName}`}
+        title={`Buy or sell shares of ${offeringName}`}
       >
         <PostBidAskForm
           offering={offering}
@@ -151,6 +149,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               paymentTokenAddress={paymentTokenAddress}
               paymentTokenDecimals={paymentTokenDecimals}
               txnApprovalsEnabled={txnApprovalsEnabled}
+              swapApprovalsEnabled={swapApprovalsEnabled}
               shareContractAddress={shareContractAddress}
               refetchOfferingInfo={refetchOfferingInfo}
             />

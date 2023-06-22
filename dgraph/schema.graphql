@@ -617,20 +617,20 @@ add:{rule: """
 }
 
 type OfferingParticipant @auth (
-					# update:{rule: """
-					# 	query($userId: ID!) { 
-					# 			queryOfferingParticipant{
-					# 				offering{
-					# 					offeringEntity{
-						#      organization{
-				# 								users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
-					# 								user(filter: { id: [$userId] }) { id }
-					# 								}
-					# 							}}
-					# 						}
-					# 				}
-					# 		}"""
-					# }
+					update:{rule: """
+						query($userId: ID!) { 
+								queryOfferingParticipant{
+									offering{
+										offeringEntity{
+						     organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}}
+											}
+									}
+							}"""
+					}
 					
 					delete:{rule: """
 						query($userId: ID!) { 
@@ -655,19 +655,72 @@ type OfferingParticipant @auth (
 	permitted: Boolean!
 	name: String
 	offering: Offering! @hasInverse(field:participants)
-	investorApplication: InvestorApplication
+	investorApplication: InvestorApplication @hasInverse(field:offeringParticipant)
 	minPledge: Int
 	maxPledge: Int
 	jurisdiction: Jurisdiction
 	paid: Boolean
 	externalId: String
 	lastUpdate: DateTime!
+	creationDate: DateTime!
 }
 
-type InvestorApplication {
+type InvestorApplication @auth (
+			query: {rule: """
+						query($userId: ID!) { 
+								queryInvestorApplication{
+									offeringParticipant {
+									offering{
+										offeringEntity{
+											organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN, VIEWER, AUDITOR ] } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+													}
+												}}
+											}
+									}
+							}"""
+					}
+					update:{rule: """
+						query($userId: ID!) { 
+								queryInvestorApplication{
+									offeringParticipant {
+									offering{
+										offeringEntity{
+						     organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+													}
+												}}
+											}
+									}
+							}"""
+					}
+					
+					delete:{rule: """
+						query($userId: ID!) { 
+								queryInvestorApplication{
+									offeringParticipant {
+									offering{
+										offeringEntity{
+											organization{
+											users(filter: {permissions: { eq: ADMIN } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+													}
+												}}
+											}
+									}
+							}"""
+					}
+) {
 	id: ID!
+	offeringParticipant: OfferingParticipant! @hasInverse(field:investorApplication)
 	applicationDoc: Document!
 	creationDate: DateTime!
+	lastUpdate: DateTime!
 }
 
 
@@ -872,6 +925,19 @@ enum NotificationSubject	{
 }
 
 type NotificationConfiguration @auth (
+	query: { rule: """
+						query($userId: ID!){ 
+								queryNotificationConfiguration{
+									organizationUser{
+													organization{
+													users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+												}
+										}
+									}
+								}
+						}"""
+			}
 add:{rule: """
 						query($userId: ID!){ 
 								queryNotificationConfiguration{

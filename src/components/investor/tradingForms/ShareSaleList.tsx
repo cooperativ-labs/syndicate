@@ -12,6 +12,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { toNormalNumber } from '@src/web3/util';
 import { useAccount, useContractRead } from 'wagmi';
+
 export type ShareSaleListProps = ShareSaleListItemProps & {
   orders: Maybe<ShareOrder>[] | undefined;
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
@@ -25,6 +26,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
+  swapApprovalsEnabled,
   isContractOwner,
   setModal,
   refetchMainContracts,
@@ -65,12 +67,13 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   const saleButton = (
     <Button
-      className="mt-4 p-3 shadow-md rounded-md bg-slate-300 w-full uppercase font-semibold"
+      className="mt-4 p-3 shadow-md hover:shadow-xl disabled:shadow-none rounded-md bg-slate-600 text-white w-full uppercase font-semibold disabled:bg-gray-400"
       onClick={() => {
         setModal('saleForm');
       }}
+      disabled={!swapContractAddress}
     >
-      Post Bid/Ask
+      {!swapContractAddress ? 'Buying and selling is not enabled' : `Post Bid/Ask`}
     </Button>
   );
 
@@ -91,6 +94,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}
+              swapApprovalsEnabled={swapApprovalsEnabled}
               isContractOwner={isContractOwner}
               setModal={setModal}
               refetchMainContracts={refetchMainContracts}

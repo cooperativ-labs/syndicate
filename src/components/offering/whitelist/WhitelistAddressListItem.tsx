@@ -65,7 +65,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
         {participant.permitted ? (
           <div className="font-bold text-emerald-700 uppercase center self-center mr-4">approved</div>
         ) : (
-          <div className="font-bold text-red-700 uppercase center self-center mr-4">Applied</div>
+          <div className="font-bold text-red-700 uppercase center self-center mr-4">unapproved</div>
         )}
       </div>
     </div>

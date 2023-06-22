@@ -8,7 +8,7 @@ import { claimDistribution } from '@src/web3/contractDistributionCall';
 import { Currency, CurrencyCode, Maybe, OfferingDistribution } from 'types';
 import { dividendContractABI } from '@src/web3/generated';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { getHumanDate } from '@src/utils/helpersGeneral';
+import { getHumanDate, getHumanDateTime } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';

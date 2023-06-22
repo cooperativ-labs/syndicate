@@ -18,6 +18,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({ shareContractAddr
   const [operatorAddress, setOperatorAddress] = useState<String0x | ''>('');
 
   const handleSetOperator = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
+    setButtonStep('step1');
     e.preventDefault();
     await setContractOperator({
       shareContractAddress,
@@ -25,6 +26,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({ shareContractAddr
       setButtonStep,
       refetch,
     });
+    setButtonStep('confirmed');
     return;
   };
 

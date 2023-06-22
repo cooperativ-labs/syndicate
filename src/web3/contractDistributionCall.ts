@@ -38,11 +38,15 @@ export const submitDistribution = async ({
   const call = async () => {
     const publicClient = getPublicClient();
     const block = await publicClient.getBlock();
-    const blockTimestamp = block.timestamp;
-    const blockTime = blockTimestamp;
-    const exDividendDate = blockTime;
-    const recordDate = blockTime;
-    const payoutDate = blockTimestamp + BigInt(50);
+    if (!block) {
+      toast.error('Unable to get block number');
+      return;
+    }
+    const blockNumber = block.number as bigint;
+    const TimestampWithBuffer = block.timestamp + BigInt(40);
+    const exDividendDate = TimestampWithBuffer;
+    const recordDate = TimestampWithBuffer;
+    const payoutDate = TimestampWithBuffer;
     const amountInDecimal =
       amount && distributionTokenDecimals ? toContractNumber(amount, distributionTokenDecimals) : BigInt(0);
     const payoutToken = distributionTokenAddress ? distributionTokenAddress : '0x0000000';
@@ -52,17 +56,13 @@ export const submitDistribution = async ({
         address: distributionContractAddress as String0x,
         abi: dividendContractABI,
         functionName: 'depositDividend',
-        args: [blockTime, exDividendDate, recordDate, payoutDate, amountInDecimal, payoutToken, partition],
+        args: [blockNumber, exDividendDate, recordDate, payoutDate, amountInDecimal, payoutToken, partition],
       });
       const { hash } = await writeContract(request);
       const transaction = await waitForTransaction({
         hash: hash,
       });
       const contractIndex = Number(result);
-      if (!contractIndex) {
-        toast.error('Something went wrong, please try again');
-        return;
-      }
       await addDistribution({
         variables: {
           offeringId: offeringId,

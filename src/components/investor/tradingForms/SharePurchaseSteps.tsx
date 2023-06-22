@@ -1,9 +1,9 @@
+import Button, { LoadingButtonStateType } from '@src/components/buttons/Button';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseRequest, { SharePurchaseRequestProps } from './SharePurchaseRequest';
 import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { fillOrder } from '@src/web3/contractSwapCalls';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { useAccount, useBalance, useContractRead } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
@@ -76,9 +76,10 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const myBacBalance = bacBalanceData?.formatted;
   const acceptedOrderQty = toNormalNumber(orderQtyData, shareContractDecimals);
   const currentUserFiller = userWalletAddress === filler;
-  const isCompleted = filledAmount === acceptedOrderQty;
+  const isCompleted = filledAmount === acceptedOrderQty && acceptedOrderQty > 0;
 
   const showRequestForm = (!isAccepted && txnApprovalsEnabled) || (!txnApprovalsEnabled && shareQtyRemaining > 0);
+  // const showCancelForm = txnApprovalsEnabled && !isCompleted && !showRequestForm && isAccepted && currentUserFiller;
   const showTradeExecutionForm = txnApprovalsEnabled && isApproved && !showRequestForm;
 
   const callFillOrder = async ({
@@ -135,6 +136,12 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           />
         </div>
       )}
+
+      {/* {showCancelForm && (
+        <div className="p-3 border-2 rounded-lg">
+          <Button onClick={cancelRequest}>Cancel Request</Button>
+        </div>
+      )} */}
 
       {txnApprovalsEnabled && !isCompleted && (
         <div className="p-3 border-2 rounded-lg">

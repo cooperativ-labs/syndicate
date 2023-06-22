@@ -115,6 +115,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             setModal={setManagerModal}
             refetchMainContracts={refetchMainContracts}
             txnApprovalsEnabled={txnApprovalsEnabled}
+            swapApprovalsEnabled={swapApprovalsEnabled}
             shareContractAddress={shareContractAddress}
             refetchOfferingInfo={refetchOfferingInfo}
           />

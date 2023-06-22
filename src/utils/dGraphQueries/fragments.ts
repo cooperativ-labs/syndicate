@@ -75,6 +75,9 @@ export const CORE_APPLICATION_FIELDS = gql`
   fragment applicationData on InvestorApplication {
     id
     creationDate
+    offeringParticipant {
+      id
+    }
     applicationDoc {
       ...documentData
     }
