@@ -273,7 +273,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
           >
             <LoadingButtonText
               state={buttonStep}
-              idleText="Remove this this investor from the whitelist"
+              idleText="Remove this investor from the whitelist"
               step1Text="Removing..."
               confirmedText="Investor Removed!"
               failedText="Transaction failed"
