@@ -130,7 +130,7 @@ const SendShares: FC<SendSharesProps> = ({
           {myShares ? (
             <Select className={'mt-3'} name={'isIssuance'} labelText="Send type">
               <option value="yes">Issue new shares</option>
-              <option value="no">Issue held shares</option>
+              <option value="no">Transfer held shares</option>
             </Select>
           ) : (
             <></>
