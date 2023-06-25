@@ -7,7 +7,8 @@ import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 type OfferingSummaryPanelProps = {
-  seller: String0x | undefined | '';
+  isAskOrder: boolean | undefined;
+  initiator: String0x | undefined | '';
   shareQtyRemaining: number | undefined;
   partition: String0x | undefined | '';
   price: number | undefined;
@@ -16,7 +17,8 @@ type OfferingSummaryPanelProps = {
 };
 
 const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
-  seller,
+  isAskOrder,
+  initiator,
   price,
   shareQtyRemaining,
   paymentTokenAddress,
@@ -28,12 +30,14 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   return (
     <div className={className}>
       <div className="flex items-center">
-        Seller: <FormattedCryptoAddress className="ml-1" chainId={chainId} address={seller} withCopy />
+        {`${isAskOrder ? 'Seller' : 'Buyer'}`}{' '}
+        <FormattedCryptoAddress className="ml-1" chainId={chainId} address={initiator} withCopy />
       </div>
       <div>Share price: {` ${numberWithCommas(price)} ${presentCurrency}`}</div>
       {!!shareQtyRemaining && (
         <div>
-          Remaining for sale: {numberWithCommas(shareQtyRemaining)} ({stringFromBytes32(partition as String0x)}){' '}
+          {`${isAskOrder ? 'Remaining for sale' : 'Seeking to purchase'}`}: {numberWithCommas(shareQtyRemaining)} (
+          {stringFromBytes32(partition as String0x)}){' '}
         </div>
       )}
     </div>

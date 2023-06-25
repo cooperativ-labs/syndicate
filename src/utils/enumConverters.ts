@@ -198,15 +198,6 @@ export const getStageOption = (stage: OfferingStage) => {
   return StageOptions.find((st) => (st.value === stage ? st : null));
 };
 
-export const SwapStatusOptions = [
-  { value: 'initiated', name: 'requires approval', color: 'orange-600' },
-  { value: 'partiallyFilled', name: 'live', color: 'green-600' },
-  { value: 'approved', name: 'live', color: 'green-600' },
-  { value: 'disapproved', name: 'disapproved', color: 'red-800' },
-  { value: 'cancelled', name: 'cancelled', color: 'gray-600' },
-  { value: 'complete', name: 'complete', color: 'blue-600' },
-];
-
 type SwapStatusOptionProps = {
   isAccepted: boolean | undefined;
   isApproved: boolean | undefined;
@@ -214,7 +205,10 @@ type SwapStatusOptionProps = {
   isCancelled: boolean | undefined;
   amount: number | undefined;
   filledAmount: number | undefined;
+  isFiller: boolean | undefined;
   txnApprovalsEnabled: boolean | undefined;
+  swapApprovalsEnabled: boolean | undefined;
+  isVisible: Maybe<boolean> | undefined;
 };
 
 export const getSwapStatusOption = ({
@@ -222,36 +216,47 @@ export const getSwapStatusOption = ({
   isApproved,
   isDisapproved,
   isCancelled,
+  isVisible,
   amount,
   filledAmount,
+  isFiller,
   txnApprovalsEnabled,
+  swapApprovalsEnabled,
 }: SwapStatusOptionProps) => {
-  const initiated = !isAccepted && !isApproved && !isDisapproved && !isCancelled && !txnApprovalsEnabled;
-  const isFilledAmount = filledAmount ? filledAmount > 0 : false;
-  const filledLessThanAmount = filledAmount && amount ? filledAmount < amount : false;
-  const partiallyFilled = isFilledAmount && filledLessThanAmount && !isCancelled && !isDisapproved;
-  const awaitingApproval = txnApprovalsEnabled && isAccepted && !isApproved && !isDisapproved && !isCancelled;
-  const approved =
-    (txnApprovalsEnabled && !isApproved && !isDisapproved) || (isApproved && !isDisapproved && !isCancelled);
-  const disapproved = isDisapproved && !isCancelled;
+  const disapproved = isDisapproved && !isCancelled && !isApproved;
   const cancelled = isCancelled && !isDisapproved;
-  const complete = filledAmount === amount;
+  const fullyFilled = filledAmount === amount;
+  const error = isApproved && isDisapproved;
+  const ended = fullyFilled || cancelled || disapproved;
+
+  const awaitingListingApproval =
+    (swapApprovalsEnabled && txnApprovalsEnabled && !isVisible && !isApproved && !ended) ||
+    (swapApprovalsEnabled && !txnApprovalsEnabled && !isApproved && !ended);
+  const awaitingTxnApproval = txnApprovalsEnabled && isAccepted && !isApproved && !ended;
+  const awaitingExecution = txnApprovalsEnabled && isApproved && isFiller && !ended;
+  const filledLessThanAmount = filledAmount && amount ? filledAmount < amount : false && !ended;
+  const partiallyFilled = filledAmount && filledAmount > 0 && filledLessThanAmount && !ended;
 
   switch (true) {
-    case initiated || awaitingApproval:
-      return SwapStatusOptions[0];
-    case partiallyFilled:
-      return SwapStatusOptions[1];
-    case approved:
-      return SwapStatusOptions[2];
+    case error:
+      return { value: 'error', name: 'error', color: 'red-800' };
     case disapproved:
-      return SwapStatusOptions[3];
+      return { value: 'disapproved', name: 'disapproved', color: 'red-800' };
     case cancelled:
-      return SwapStatusOptions[4];
-    case complete:
-      return SwapStatusOptions[5];
+      return { value: 'cancelled', name: 'cancelled', color: 'gray-600' };
+    case fullyFilled:
+      return { value: 'complete', name: 'complete', color: 'blue-600' };
+    case awaitingListingApproval:
+      return { value: 'initiated', name: 'listing requested', color: 'orange-600' };
+    case awaitingTxnApproval:
+      return { value: 'pending', name: 'trade approval requested', color: 'orange-600' };
+    case awaitingExecution:
+      return { value: 'pending', name: 'trade pending', color: 'orange-600' };
+    case partiallyFilled:
+      return { value: 'partiallyFilled', name: 'live', color: 'green-600' };
+
     default:
-      return SwapStatusOptions[0];
+      return { value: 'approved', name: 'live', color: 'green-600' };
   }
 };
 

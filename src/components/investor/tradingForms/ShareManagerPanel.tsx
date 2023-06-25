@@ -16,6 +16,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
 import { useMutation } from '@apollo/client';
+import { getCurrencyById } from '@src/utils/enumConverters';
 
 export type SaleMangerPanelProps = {
   swapContractAddress: String0x | undefined;
@@ -28,8 +29,9 @@ export type SaleMangerPanelProps = {
 };
 
 type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
+  currentUserFiller: boolean | undefined;
+  currentUserInitiator: boolean | undefined;
   offeringId: string;
-  isOfferor: boolean;
   isApproved: boolean | undefined;
   isDisapproved: boolean | undefined;
   isAccepted: boolean | undefined;
@@ -49,7 +51,8 @@ type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
 
 const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   offeringId,
-  isOfferor,
+  currentUserFiller,
+  currentUserInitiator,
   isApproved,
   isDisapproved,
   isAccepted,
@@ -104,37 +107,39 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
   const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
   const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
-  const decimalAdjustedPrice = Number(toContractNumber(price as number, paymentTokenDecimals as number));
+  const contractPrice = Number(toContractNumber(price as number, paymentTokenDecimals as number));
+
+  const transferEventArgs = {
+    shareContractAddress,
+    recipientAddress,
+    senderAddress,
+    numShares,
+    contractPrice: contractPrice,
+    partition,
+    addApprovalRecord,
+  };
+
+  const listingIsApproved = isApproved || (txnApprovalsEnabled && order.visible);
 
   const handleApprove = async ({ isDisapprove }: { isDisapprove: boolean }) => {
-    await approveRejectSwap({
-      transferEventArgs: txnApprovalsEnabled // This adds a disapproval record
-        ? {
-            shareContractAddress,
-            recipientAddress,
-            senderAddress,
-            numShares,
-            decimalAdjustedPrice: decimalAdjustedPrice,
-            partition,
-            addApprovalRecord,
-          }
-        : undefined,
-      swapContractAddress,
-      contractIndex: order.contractIndex,
-      isDisapprove: isDisapprove,
-      setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
-      refetchAllContracts,
-    });
-    if (!isDisapprove && !txnApprovalsEnabled) {
-      updateOrderObject({
+    if (!txnApprovalsEnabled || isAccepted || isDisapprove) {
+      await approveRejectSwap({
+        transferEventArgs: transferEventArgs,
+        swapContractAddress,
+        contractIndex: order.contractIndex,
+        isDisapprove: isDisapprove,
+        setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
+        refetchAllContracts,
+      });
+    } else if (!isDisapprove) {
+      await updateOrderObject({
         variables: {
           currentDate: currentDate,
           orderId: order.id,
-          visible: true,
+          visible: !listingIsApproved,
           archived: order.archived,
         },
       });
-      refetchOfferingInfo();
     }
   };
 
@@ -164,6 +169,8 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       {!!maxPurchase && <hr className="my-4" />}
     </>
   );
+
+  // Buttons ==========================================================================================================
 
   const buttonClass =
     'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
@@ -195,9 +202,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     >
       <LoadingButtonText
         state={approveButtonStep}
-        idleText={`Approve ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
+        idleText={`${
+          txnApprovalsEnabled && isAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'
+        }`}
         step1Text="Approving..."
-        confirmedText="Confirmed"
+        confirmedText="Approved"
         failedText="Transaction failed"
         rejectedText="You rejected the transaction. Click here to try again."
       />
@@ -214,76 +223,87 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         state={disapproveButtonStep}
         idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
         step1Text="Disapprove..."
-        confirmedText="Confirmed"
+        confirmedText="Disapproved"
         failedText="Transaction failed"
         rejectedText="You rejected the transaction. Click here to try again."
       />
     </Button>
   );
 
-  const visibilityToggle = (
-    <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} />
-  );
-
   const baseInitiatorButtonSet = (
     <>
-      {!isCancelled && !isFilled && isOfferor && proceeds === 0 && cancelButton}
+      {!isCancelled && !isFilled && currentUserInitiator && proceeds === 0 && cancelButton}
       {(isFilled || isCancelled) && proceeds === 0 && archiveButton}
     </>
   );
 
+  const requestStatementText = (
+    <span className="flex mt-2">
+      <FormattedCryptoAddress
+        chainId={chainId}
+        address={isAskOrder ? recipientAddress : senderAddress}
+        className="text-base"
+      />
+      &nbsp;
+      {`${
+        txnApprovalsEnabled ? (isAskOrder ? 'is requesting to purchase' : 'is offering to sell') : 'is offering to sell'
+      } `}
+      {numShares} shares for {numberWithCommas(price)} {getCurrencyById(paymentTokenAddress)?.symbol} per share.
+    </span>
+  );
+
+  console.log({
+    isCancelled,
+    isFilled,
+    currentUserInitiator,
+    currentUserFiller,
+    proceeds,
+    isAccepted,
+    isDisapproved,
+    isApproved,
+    isAskOrder,
+    isContractOwner,
+    txnApprovalsEnabled,
+    swapApprovalsEnabled,
+    contractIndex: order.contractIndex,
+  });
+
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col mb-2">
       {minMaxSection}
-      <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
-        {isContractOwner && (
-          <>
-            {!swapApprovalsEnabled &&
-              !txnApprovalsEnabled && ( // with no approvals
-                <>{baseInitiatorButtonSet}</>
-              )}
-            {swapApprovalsEnabled &&
-              !txnApprovalsEnabled && ( // with listing approvals
-                <>
-                  {!isApproved && approveButton}
-                  {isApproved && disapproveButton}
-                  {baseInitiatorButtonSet}
-                </>
-              )}
-            {swapApprovalsEnabled &&
-              txnApprovalsEnabled && ( // with txn approvals
-                <>
-                  {!isApproved && approveButton}
-                  {isApproved && disapproveButton}
-                  {baseInitiatorButtonSet}
-                </>
-              )}{' '}
-          </>
-        )}
+      {isContractOwner ? (
+        <>
+          {isAccepted && <div className="pl-1 mb-2 font-semibold text-cDarkBlue">{requestStatementText} </div>}
+          <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
+            {(swapApprovalsEnabled || txnApprovalsEnabled) && (
+              <>
+                {!isApproved && !isDisapproved ? (
+                  <>
+                    {approveButton} {disapproveButton}
+                  </>
+                ) : (
+                  disapproveButton
+                )}
+              </>
+            )}
+            {baseInitiatorButtonSet}
+          </div>
 
-        {!isCancelled && !isFilled && isOfferor && proceeds === 0 && cancelButton}
-        {(isCancelled || isFilled) && proceeds === 0 && archiveButton}
-        {isContractOwner && order && visibilityToggle}
-      </div>
-      {(isCancelled || isFilled) && proceeds !== 0 && <div>Completed swap. Please claim proceeds.</div>}
-
-      {(!txnApprovalsEnabled || isAccepted) && isContractOwner && !isDisapproved && (
-        <div className=" mt-3 grid grid-cols-2 gap-3">
-          {!isApproved && approveButton}
-          {disapproveButton}
-
-          {
-            <div className="flex flex-col">
-              <FormattedCryptoAddress
-                chainId={chainId}
-                address={recipientAddress}
-                label={`${txnApprovalsEnabled ? (isAskOrder ? 'Requester' : 'Initiator') : 'Initiator'}: `}
+          {isAccepted && (
+            <>
+              <hr className="my-4" />
+              <OrderVisibilityToggle
+                orderVisibility={order.visible}
+                orderId={order.id}
+                orderArchived={order.archived}
               />
-              Shares {txnApprovalsEnabled ? (isAskOrder ? 'Requested' : 'Offered') : 'Offered'}: {numShares}
-            </div>
-          }
-        </div>
+            </>
+          )}
+        </>
+      ) : (
+        baseInitiatorButtonSet
       )}
+      {(isCancelled || isFilled) && proceeds !== 0 && <div>Completed swap. Please claim proceeds.</div>}
     </div>
   );
 };

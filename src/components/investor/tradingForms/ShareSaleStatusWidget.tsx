@@ -14,6 +14,7 @@ type ShareOrderStatusItemProps = {
   swapContractAddress: String0x | undefined;
   paymentTokenDecimals: number | undefined;
   txnApprovalsEnabled: boolean | undefined;
+  swapApprovalsEnabled: boolean | undefined;
 };
 
 const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
@@ -21,19 +22,11 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   swapContractAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
+  swapApprovalsEnabled,
 }) => {
   const contractIndex = order ? order?.contractIndex : 0;
-  const {
-    initiator,
-
-    amount,
-    filledAmount,
-    isApproved,
-    isDisapproved,
-    isCancelled,
-    isAccepted,
-    isAskOrder,
-  } = useOrderDetails(swapContractAddress, contractIndex, paymentTokenDecimals);
+  const { initiator, amount, filledAmount, isApproved, isDisapproved, isCancelled, isAccepted, isAskOrder, filler } =
+    useOrderDetails(swapContractAddress, contractIndex, paymentTokenDecimals);
   const chainId = useChainId();
   const sharesRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
   const status =
@@ -41,11 +34,14 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
     getSwapStatusOption({
       amount,
       filledAmount,
+      isFiller: !!filler,
       isApproved,
       isDisapproved,
       isCancelled,
       isAccepted,
       txnApprovalsEnabled,
+      swapApprovalsEnabled,
+      isVisible: order.visible,
     });
 
   const statusColor = status?.color;
@@ -74,18 +70,20 @@ type ShareSaleStatusWidgetProps = {
   paymentTokenAddress: String0x | undefined;
   paymentTokenDecimals: number | undefined;
   txnApprovalsEnabled: boolean | undefined;
+  swapApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;
 };
 
 const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
   orders,
   txnApprovalsEnabled,
+  swapApprovalsEnabled,
   paymentTokenDecimals,
   swapContractAddress,
   isContractOwner,
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const myOrders = orders && orders?.filter((order) => order?.initiator === userWalletAddress);
+  const myOrders = orders && orders?.filter((order) => order?.initiator === userWalletAddress || isContractOwner);
 
   return (
     <>
@@ -96,6 +94,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
           swapContractAddress={swapContractAddress}
           paymentTokenDecimals={paymentTokenDecimals}
           txnApprovalsEnabled={txnApprovalsEnabled}
+          swapApprovalsEnabled={swapApprovalsEnabled}
         />
       ))}
     </>

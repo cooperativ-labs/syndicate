@@ -58,14 +58,13 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
 
-  const formButtonText = (values: { numShares: number | undefined }) => {
+  const formButtonText = (values: { numShares: string }) => {
+    const numShares = parseInt(values.numShares, 10);
     if (!sharesIssued) {
       return;
     }
     return `Offer ${
-      values.numShares
-        ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%) for sale`
-        : 'shares'
+      numShares ? `${numShares} out of ${sharesIssued} (${(numShares / sharesIssued) * 100}%) for sale` : 'shares'
     } `;
   };
 
@@ -81,17 +80,19 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   return (
     <Formik
       initialValues={{
-        numShares: undefined,
+        numShares: '',
         price: priceStart,
-        minUnits: undefined,
-        maxUnits: undefined,
+        minUnits: '',
+        maxUnits: '',
         partition: partitions[0],
         newPartition: '',
-        visible: true,
       }}
       validate={(values) => {
         const errors: any = {}; /** @TODO : Shape */
-        const { numShares, minUnits, maxUnits } = values;
+
+        const numShares = parseInt(values.numShares, 10);
+        const maxUnits = parseInt(values.maxUnits, 10);
+        const minUnits = parseInt(values.minUnits, 10);
 
         if (!numShares) {
           errors.numShares = 'Please indicate how many shares you want to send';
@@ -127,13 +128,13 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         }
         try {
           await submitSwap({
-            numShares: values.numShares,
+            numShares: parseInt(values.numShares, 10),
             price: values.price,
             partition: values.partition,
             newPartition: values.newPartition,
-            minUnits: values.minUnits,
-            maxUnits: values.maxUnits,
-            visible: values.visible,
+            minUnits: parseInt(values.minUnits, 10),
+            maxUnits: parseInt(values.maxUnits, 10),
+            visible: false,
             swapContractAddress: swapContractAddress,
             shareContractId: shareContractId,
             paymentTokenDecimals: paymentTokenDecimals as number,
@@ -198,15 +199,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
               placeholder="e.g. 120"
             />
           </div>
-          <hr className="my-4" />
-          <Checkbox
-            fieldClass="text-sm bg-opacity-0 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
-            name="visible"
-            checked={values.visible}
-            sideLabel
-            fieldLabelClass="mb-2 text-blue-900 font-semibold text-opacity-80"
-            labelText="This sale should be visible to investors"
-          />
+
           <hr className="bg-grey-600 my-3 mb-4" />
           {!userWalletAddress ? (
             <ChooseConnectorButton buttonText={'Connect Wallet'} />

@@ -78,6 +78,7 @@ export const submitSwap = async ({
       if (!isContractOwner && numShares > myShares!) {
         toast.error('You do not have enough shares to sell.');
       }
+
       const { request, result } = await prepareWriteContract({
         address: swapContractAddress as String0x,
         abi: swapContractABI,
@@ -216,8 +217,6 @@ export const setAllowance = async ({
       await waitForTransaction({
         hash: hash,
       });
-
-      toast.success(`You have set contract allowance to ${numberWithCommas(amount)}.`);
       setModal && setModal(false);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
@@ -263,7 +262,7 @@ type ApproveRejectSwapProps = {
     recipientAddress: '' | `0x${string}` | undefined;
     senderAddress: String0x | undefined | '';
     numShares: number | undefined;
-    decimalAdjustedPrice: number | undefined;
+    contractPrice: number | undefined;
     partition: String0x | undefined | '';
     addApprovalRecord: (arg0: {
       variables: {
@@ -317,7 +316,7 @@ export const approveRejectSwap = async ({
           recipientAddress,
           senderAddress,
           numShares,
-          decimalAdjustedPrice,
+          contractPrice,
           partition,
           addApprovalRecord,
         } = transferEventArgs;
@@ -328,7 +327,7 @@ export const approveRejectSwap = async ({
             recipientAddress: recipientAddress,
             senderAddress: senderAddress,
             amount: numShares,
-            price: decimalAdjustedPrice,
+            price: contractPrice,
             transactionHash: transactionDetails.transactionHash,
             partition: partition,
             type: isDisapprove ? ShareTransferEventType.Disapproval : ShareTransferEventType.Approval,
@@ -466,7 +465,6 @@ export const fillOrder = async ({
   refetchAllContracts,
   setModal,
 }: FillOrderProps) => {
-  setButtonStep('step1');
   const call = async () => {
     if (!swapContractAddress || !shareContractAddress) {
       throw new Error('No swap or share contract address');
@@ -504,9 +502,9 @@ export const fillOrder = async ({
         )} per share. The transaction hash is ${transactionDetails.transactionHash}.`,
       });
 
-      setButtonStep('confirmed');
       toast.success(`You have completed the swap.`);
       refetchAllContracts();
+      setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
