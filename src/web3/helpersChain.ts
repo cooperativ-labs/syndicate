@@ -67,7 +67,6 @@ export const addressWithoutEns = ({ address, isYou, isDesktop, userName, showFul
 
 export const addressWithENS = async ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
   let ensName = undefined;
-
   ensName = await fetchEnsName({
     address: address as String0x,
     chainId: 1,

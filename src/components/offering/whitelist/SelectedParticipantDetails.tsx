@@ -15,14 +15,15 @@ import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAn
 import { Maybe, OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from 'types';
 
 import TransferEventList from '../sales/TransferEventList';
+import WhitelistTransactionItem from './WhitelistTransactionItem';
+import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/dGraphQueries/offering';
-import { useContractReads, useContractWrite } from 'wagmi';
+import { useContractReads } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
 
 type SelectedParticipantProps = {
   selection: string;
@@ -238,28 +239,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     </div>
   );
 
-  const whitelistSection = (
-    <div>
-      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Whitelist Events</h1>
-      {whitelistTransactions?.map((transaction, i) => {
-        return (
-          <div key={i} className="flex gap-2 p-2 border-2 rounded-md my-2">
-            <div className="flex gap-2">
-              <FormattedCryptoAddress
-                className={'text-sm font-medium flex col-span-1 justify-center '}
-                chainId={chainId}
-                address={transaction?.transactionHash}
-                label={transaction?.type}
-                lookupType="tx"
-                showFull
-              />
-            </div>
-          </div>
-        );
-      })}
-    </div>
-  );
-
   const buttonSection = (
     <>
       <div className="flex gap-3">
@@ -332,10 +311,15 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
       <div className="mb-4">
         <div>{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
+        <SectionBlock sectionTitle="Review approvals" mini>
+          {whitelistTransactions?.map((transaction, i) => (
+            <WhitelistTransactionItem key={i} transaction={transaction} chainId={chainId} />
+          ))}
+        </SectionBlock>
       </div>
       {specificationSection}
       {tradesSection}
-      {whitelistSection}
+
       <hr className="my-10" />
       {buttonSection}
     </div>

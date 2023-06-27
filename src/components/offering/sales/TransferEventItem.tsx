@@ -1,11 +1,8 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import React, { FC, useEffect } from 'react';
-
+import React, { FC } from 'react';
 import { getHumanDate } from '@src/utils/helpersGeneral';
-
-import { numberWithCommas } from '@src/utils/helpersMoney';
-
 import { getTransferEventOption } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ShareTransferEvent } from 'types';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
