@@ -4,18 +4,20 @@ import NewClassForm from './NewClassForm';
 import React, { FC } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
 import { Maybe, Offering, SmartContract, User } from 'types';
-import { shareContractAddress } from '@src/web3/generated';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 export type ShareContractSettingsProps = {
-  shareContract: Maybe<SmartContract> | undefined;
-  user: User;
-  offering: Offering;
   partitions: String0x[];
+  user: User;
 };
 
-const ShareContractSettings: FC<ShareContractSettingsProps> = ({ user, offering, shareContract, partitions }) => {
+type ShareContractSettingsLocal = ShareContractSettingsProps & {
+  shareContract: Maybe<SmartContract> | undefined;
+  offering: Offering;
+};
+
+const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ user, offering, shareContract, partitions }) => {
   const chainId = useChainId();
 
   if (!shareContract) {
