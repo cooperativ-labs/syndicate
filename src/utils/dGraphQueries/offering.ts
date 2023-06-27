@@ -411,6 +411,7 @@ export const ADD_WHITELIST_MEMBER = gql`
     $offering: ID!
     $externalId: String
     $transactionHash: String
+    $type: WhitelistTransactionType!
   ) {
     addOfferingParticipant(
       input: {
@@ -422,7 +423,7 @@ export const ADD_WHITELIST_MEMBER = gql`
         name: $name
         offering: { id: $offering }
         externalId: $externalId
-        transactionHashAdd: $transactionHash
+        whitelistTransactions: { transactionHash: $transactionHash, type: $type }
       }
       upsert: true
     ) {
@@ -448,23 +449,21 @@ export const UPDATE_WHITELIST = gql`
   mutation UpdateWhitelist(
     $currentDate: DateTime!
     $id: [ID!]
-    $transactionHashAdd: String
-    $transactionHashRemove: String
+    $transactionHash: String!
+    $type: WhitelistTransactionType!
   ) {
     updateOfferingParticipant(
       input: {
         filter: { id: $id }
-        set: {
-          lastUpdate: $currentDate
-          transactionHashAdd: $transactionHashAdd
-          transactionHashRemove: $transactionHashRemove
-        }
+        set: { lastUpdate: $currentDate, whitelistTransactions: { transactionHash: $transactionHash, type: $type } }
       }
     ) {
       offeringParticipant {
         id
-        transactionHashAdd
-        transactionHashRemove
+        whitelistTransactions {
+          transactionHash
+          type
+        }
         name
         offering {
           id

@@ -9,12 +9,12 @@ import { useChainId } from 'wagmi';
 
 export type ShareContractSettingsProps = {
   partitions: String0x[];
-  user: User;
 };
 
 type ShareContractSettingsLocal = ShareContractSettingsProps & {
   shareContract: Maybe<SmartContract> | undefined;
   offering: Offering;
+  user: User;
 };
 
 const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ user, offering, shareContract, partitions }) => {

@@ -1,6 +1,7 @@
 """
 INDEPENDENT CHAIN DATA	MODEL ==================================================================
 These nodes are not connected to the main graph, but are used to store data from the chain
+We may want to set up cooperativ-team-only and wallet-based auth for these nodes
 """
 
 enum ShareTransferEventType	{
@@ -13,7 +14,7 @@ enum ShareTransferEventType	{
 }
 
 
-type ShareTransferEvent	{
+type ShareTransferEvent {
 	id: ID!
 	shareContractAddress: String! @search
 	recipientAddress: String! @search
@@ -26,7 +27,7 @@ type ShareTransferEvent	{
 	archived: Boolean!
 }
 
-type ShareOrder {
+type ShareOrder{
 	id: ID!
 	minUnits: Int
 	maxUnits: Int
@@ -45,6 +46,13 @@ type OfferingDistribution {
 	contractIndex: Int!
 	transactionHash: String!
 }
+
+# type PartitionDetails {
+# 	# partitionID is partitionName + smartContractAddress
+# 	partitionId: String! @id 
+# 	partitionName: String!
+# 	partitionDescription: String!
+# }
 
 """
 PRIMARY	MODEL ==================================================================
@@ -660,10 +668,69 @@ type OfferingParticipant @auth (
 	jurisdiction: Jurisdiction
 	paid: Boolean
 	externalId: String
-	transactionHashAdd: String
-	transactionHashRemove: String
+	whitelistTransactions: [WhitelistTransaction] @hasInverse(field:offeringParticipant)
 	lastUpdate: DateTime!
 	creationDate: DateTime!
+}
+
+enum WhitelistTransactionType {
+	ADD
+	REMOVE
+}
+
+type WhitelistTransaction @auth (
+						add:{rule: """
+						query($userId: ID!) { 
+								queryWhitelistTransaction{
+									offeringParticipant{
+										offering{
+										offeringEntity{
+											organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}}
+											}
+										}
+									}
+							}"""
+					}
+					update:{rule: """
+						query($userId: ID!) { 
+								queryWhitelistTransaction{
+									offeringParticipant{
+										offering{
+										offeringEntity{
+											organization{
+												users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}}
+											}
+										}
+									}
+							}"""
+					}
+					delete:{rule: """
+						query($userId: ID!) { 
+								queryWhitelistTransaction{
+									offeringParticipant{
+										offering{
+										offeringEntity{
+											organization{
+											users(filter: {permissions: { eq: ADMIN } }) {
+													user(filter: { id: [$userId] }) { id }
+													}
+												}}
+											}
+										}
+									}
+							}"""
+					}
+){ 
+	transactionHash: String! @id
+	offeringParticipant: OfferingParticipant! @hasInverse(field:whitelistTransactions)
+	type: WhitelistTransactionType!
 }
 
 type InvestorApplication @auth (

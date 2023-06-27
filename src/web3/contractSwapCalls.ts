@@ -33,7 +33,7 @@ type SubmitSwapProps = {
   isAsk: boolean;
   isIssuance: boolean;
   isErc20Payment: boolean;
-  myShares?: number;
+  myShareQty?: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   createOrder: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
@@ -63,7 +63,7 @@ export const submitSwap = async ({
   isAsk,
   isIssuance,
   isErc20Payment,
-  myShares,
+  myShareQty,
   setModal,
   setButtonStep,
   createOrder,
@@ -75,7 +75,7 @@ export const submitSwap = async ({
   const call = async () => {
     const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
     try {
-      if (!isContractOwner && numShares > myShares!) {
+      if (!isContractOwner && numShares > myShareQty!) {
         toast.error('You do not have enough shares to sell.');
       }
 

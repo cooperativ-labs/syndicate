@@ -13,7 +13,7 @@ import SwapContractSettings, {
 
 export type SmartContractsSettingsProps = SwapContractSettingsProps & ShareContractSettingsProps;
 
-type SmartContractsSettingsLocal = SmartContractsSettingsProps & SwapContractsSettingsAdditional;
+type SmartContractsSettingsLocal = SmartContractsSettingsProps & SwapContractsSettingsAdditional & { user: User };
 
 const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
   user,

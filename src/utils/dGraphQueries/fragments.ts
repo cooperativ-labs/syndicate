@@ -226,8 +226,10 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
       province
     }
     externalId
-    transactionHashAdd
-    transactionHashRemove
+    whitelistTransactions {
+      transactionHash
+      type
+    }
     minPledge
     maxPledge
     investorApplication {

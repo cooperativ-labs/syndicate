@@ -12,7 +12,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import { Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
+import { Maybe, OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from 'types';
 
 import TransferEventList from '../sales/TransferEventList';
 import { shareContractABI } from '@src/web3/generated';
@@ -22,6 +22,7 @@ import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/dGraph
 import { useContractReads, useContractWrite } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
 
 type SelectedParticipantProps = {
   selection: string;
@@ -82,55 +83,27 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const shareBalanceData = data?.[0].result;
   const isWhitelisted = data?.[1].result;
 
-  const { write: removeWrite } = useContractWrite({
-    ...sharedContractSpecs,
-    functionName: 'removeFromWhitelist',
-    args: [participantWallet as String0x],
-    onSuccess: async (data) => {
-      await updateWhitelist({
-        variables: {
-          currentDate: currentDate,
-          id: id,
-          transactionHashRemove: data.hash,
-        },
-      });
-      setButtonStep('confirmed');
-    },
-    onError: (e) => {
-      StandardChainErrorHandling(e, setButtonStep);
-    },
-  });
-
-  const removeWhitelistMember = async () => {
-    setButtonStep('step1');
-    removeWrite();
-  };
-
   // -----------------Approve Whitelist Participant---------------------
 
-  const { data: addData, write: addWrite } = useContractWrite({
-    ...sharedContractSpecs,
-    functionName: 'addToWhitelist',
-    args: [participantWallet as String0x],
-    onSuccess: async (data) => {
-      await updateWhitelist({
-        variables: {
-          currentDate: currentDate,
-          id: id,
-          transactionHashAdd: data.hash,
-        },
-      });
-      setButtonStep('confirmed');
-    },
-    onError: (e) => {
-      StandardChainErrorHandling(e);
-    },
-  });
-
-  const approveWhiteListMember = async () => {
-    setButtonStep('step1');
+  const updateWhitelistMember = async (type: WhitelistTransactionType) => {
+    const baseVariables = {
+      offeringId: offeringId,
+      organization: offering.offeringEntity?.organization,
+      walletAddress: participantWallet,
+      shareContractAddress: shareContractAddress,
+      setButtonStep,
+      updateWhitelist,
+    };
     try {
-      addWrite();
+      if (type === WhitelistTransactionType.Add) {
+        addWhitelistMember({
+          ...baseVariables,
+        });
+      } else {
+        removeWhitelistMember({
+          ...baseVariables,
+        });
+      }
     } catch (e) {
       StandardChainErrorHandling(e);
     }
@@ -151,11 +124,12 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     investorApplication,
     offering,
     chainId,
-    transactionHashAdd,
-    transactionHashRemove,
+    whitelistTransactions,
   } = participant;
+
   const distributions = offering.distributions;
   const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity?.organization);
+  const investorApplicationText = investorApplication?.applicationDoc.text;
 
   const updateInvestorForm = (itemType: ParticipantSpecItemType) => {
     return (
@@ -264,7 +238,27 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     </div>
   );
 
-  const investorApplicationText = investorApplication?.applicationDoc.text;
+  const whitelistSection = (
+    <div>
+      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Whitelist Events</h1>
+      {whitelistTransactions?.map((transaction, i) => {
+        return (
+          <div key={i} className="flex gap-2 p-2 border-2 rounded-md my-2">
+            <div className="flex gap-2">
+              <FormattedCryptoAddress
+                className={'text-sm font-medium flex col-span-1 justify-center '}
+                chainId={chainId}
+                address={transaction?.transactionHash}
+                label={transaction?.type}
+                lookupType="tx"
+                showFull
+              />
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  );
 
   const buttonSection = (
     <>
@@ -282,7 +276,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
           <button
             className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
             aria-label="remove wallet from whitelist"
-            onClick={removeWhitelistMember}
+            onClick={() => updateWhitelistMember(WhitelistTransactionType.Remove)}
           >
             <LoadingButtonText
               state={buttonStep}
@@ -295,7 +289,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
           </button>
         ) : (
           <button
-            onClick={approveWhiteListMember}
+            onClick={() => updateWhitelistMember(WhitelistTransactionType.Add)}
             className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
             // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
           >
@@ -338,27 +332,10 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
       <div className="mb-4">
         <div>{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
-        {transactionHashAdd && (
-          <FormattedCryptoAddress
-            className={`text-base`}
-            chainId={chainId}
-            address={transactionHashAdd}
-            label="Whitelist addition: "
-            lookupType="tx"
-          />
-        )}
-        {transactionHashRemove && (
-          <FormattedCryptoAddress
-            className={`text-base`}
-            chainId={chainId}
-            address={transactionHashRemove}
-            label="Whitelist removal: "
-            lookupType="tx"
-          />
-        )}
       </div>
       {specificationSection}
       {tradesSection}
+      {whitelistSection}
       <hr className="my-10" />
       {buttonSection}
     </div>

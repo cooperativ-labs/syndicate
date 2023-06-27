@@ -56,7 +56,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     contractOrders,
     legalLinkTexts,
     currentSalePrice,
-    myShares,
+    myShareQty,
     sharesOutstanding,
     smartContractDocuments,
     paymentTokenAddress,
@@ -149,7 +149,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
           offeringMin={minUnitsPerInvestor}
           sharesOutstanding={sharesOutstanding}
           walletAddress={userWalletAddress as String0x}
-          myShares={myShares}
+          myShareQty={myShareQty}
           swapContractAddress={swapContractAddress}
           swapApprovalsEnabled={swapApprovalsEnabled}
           isContractOwner={false}
@@ -196,7 +196,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               contractViewDetails={{
                 sharesOutstanding: sharesOutstanding,
                 totalDistributed: undefined,
-                myShares: myShares,
+                myShareQty: myShareQty,
                 paymentToken: paymentTokenAddress,
               }}
             />
