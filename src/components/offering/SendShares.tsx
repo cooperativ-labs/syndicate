@@ -12,10 +12,12 @@ import { addressWithENS, addressWithoutEns, splitAddress, String0x } from '@src/
 import { sendShares } from '@src/web3/contractShareCalls';
 
 import NewClassInputs from '../form-components/NewClassInputs';
+import SetOperatorButton from './actions/SetOperatorButton';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
-import { useAccount } from 'wagmi';
+import { shareContractABI } from '@src/web3/generated';
+import { useAccount, useContractRead } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 export type SendSharesProps = {
@@ -25,7 +27,7 @@ export type SendSharesProps = {
   shareContractAddress: String0x;
   offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
   partitions: String0x[];
-  myShares: number | undefined;
+  myShareQty: number | undefined;
   refetchMainContracts: () => void;
 };
 
@@ -36,7 +38,7 @@ const SendShares: FC<SendSharesProps> = ({
   shareContractId,
   offeringParticipants,
   partitions,
-  myShares,
+  myShareQty,
   refetchMainContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
@@ -44,6 +46,13 @@ const SendShares: FC<SendSharesProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
   const [addIssuance, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
+
+  const { data: isOperator, refetch } = useContractRead({
+    address: shareContractAddress,
+    abi: shareContractABI,
+    functionName: 'isOperator',
+    args: [userWalletAddress as String0x],
+  });
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
 
@@ -97,7 +106,7 @@ const SendShares: FC<SendSharesProps> = ({
         setSubmitting(true);
         const isIssuance = values.isIssuance === 'yes' ? true : false;
         try {
-          const transactionDetails = await sendShares({
+          await sendShares({
             shareContractAddress,
             shareContractId,
             numShares: parseInt(values.numShares, 10),
@@ -111,13 +120,6 @@ const SendShares: FC<SendSharesProps> = ({
             addPartition,
             refetchMainContracts,
           });
-          if (transactionDetails) {
-            toast.success(
-              `${values.numShares} shares sent to ${addressWithoutEns({
-                address: recipient,
-              })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
-            );
-          }
         } catch (e: any) {
           toast.error(`Error sending shares: ${e.message}`);
         }
@@ -127,7 +129,7 @@ const SendShares: FC<SendSharesProps> = ({
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
-          {myShares ? (
+          {myShareQty ? (
             <Select className={'mt-3'} name={'isIssuance'} labelText="Send type">
               <option value="yes">Issue new shares</option>
               <option value="no">Transfer held shares</option>
@@ -157,7 +159,7 @@ const SendShares: FC<SendSharesProps> = ({
           <Input
             className={defaultFieldDiv}
             labelText={`Number of shares to send (${
-              values.isIssuance === 'yes' ? sharesRemaining : myShares
+              values.isIssuance === 'yes' ? sharesRemaining : myShareQty
             } available )`}
             name="numShares"
             type="number"
@@ -165,17 +167,20 @@ const SendShares: FC<SendSharesProps> = ({
             // required
           />
           <hr className="bg-grey-600 my-3 mb-4" />
-
-          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-            <LoadingButtonText
-              state={buttonStep}
-              idleText={formButtonText({ numShares: parseInt(values.numShares, 10), recipient: values.recipient })}
-              step1Text="Sending shares..."
-              confirmedText="Sent!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </FormButton>
+          {!isOperator && values.isIssuance === 'no' ? (
+            <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
+          ) : (
+            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
+              <LoadingButtonText
+                state={buttonStep}
+                idleText={formButtonText({ numShares: parseInt(values.numShares, 10), recipient: values.recipient })}
+                step1Text="Sending shares..."
+                confirmedText="Sent!"
+                failedText="Transaction failed"
+                rejectedText="You rejected the transaction. Click here to try again."
+              />
+            </FormButton>
+          )}
         </Form>
       )}
     </Formik>

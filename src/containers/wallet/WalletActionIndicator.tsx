@@ -1,7 +1,6 @@
 import React, { FC } from 'react';
-import { faClockFour } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faClockFour, faWaveSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 
 type StepStatusType = 'waiting' | 'pending' | 'success' | 'error';
@@ -16,16 +15,16 @@ const WalletActionStep: FC<{ stepStatus: StepStatusType; message?: string; subMe
   const icon =
     stepStatus === 'pending' ? (
       <img
-        src="/assets/images/loading-circle.jpeg"
+        src="/assets/images/loading-circle.png"
         aria-label="loading"
         className="h-10 mr-1 animate-spin bg-white rounded-full"
       />
     ) : stepStatus === 'success' ? (
-      <FontAwesomeIcon icon={'fa-solid fa-check' as IconProp} />
+      <FontAwesomeIcon icon={faCheck} />
     ) : stepStatus === 'error' ? (
-      <FontAwesomeIcon icon={'fa-solid fa-circle-xmark' as IconProp} />
+      <FontAwesomeIcon icon={faXmark} />
     ) : (
-      <FontAwesomeIcon icon={faClockFour} />
+      <FontAwesomeIcon icon={faWaveSquare} />
     );
 
   return (

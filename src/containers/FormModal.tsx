@@ -1,7 +1,7 @@
 import Card from '@src/components/cards/Card';
 import CloseButton from '@src/components/buttons/CloseButton';
 import cn from 'classnames';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
 
 type FormModalProps = {
@@ -14,19 +14,23 @@ type FormModalProps = {
 };
 
 const FormModal: FC<FormModalProps> = ({ noModal, formOpen, title, subTitle, onClose, children }) => {
-  const windowSize = useWindowSize();
-  // useEffect(() => {
-  //   if (formOpen && windowSize.width > 768) {
-  //     // setScrollY(window.scrollY);
-  //     document.body.style.position = '';
-  //     document.body.style.top = '';
-  //   } else {
-  //     // const scrollY = document.body.style.top;
-  //     document.body.style.position = '';
-  //     document.body.style.top = '';
-  //     // window.scrollTo(0, parseInt(scrollY));
-  //   }
-  // }, [formOpen]);
+  useEffect(() => {
+    let targetElement = document.getElementById('dialog-curtain');
+    function handleMouseDown(e: MouseEvent) {
+      if (e.target === targetElement) {
+        onClose();
+      }
+    }
+    function handleMouseUp(e: MouseEvent) {
+      e.stopPropagation();
+    }
+    targetElement?.addEventListener('mousedown', handleMouseDown);
+    targetElement?.addEventListener('mouseup', handleMouseUp, true);
+    return () => {
+      targetElement?.removeEventListener('mousedown', handleMouseDown);
+      targetElement?.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, [onClose]);
 
   if (formOpen) {
     return (

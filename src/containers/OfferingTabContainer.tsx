@@ -87,7 +87,9 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
       <div>
         {activeTab === 'properties' && (
           <div className="mt-8">
-            <h1 className="text-cDarkBlue text-2xl font-medium   mb-6 ">Properties</h1>
+            <div className="mb-6">
+              <h1 className="text-cDarkBlue text-2xl font-medium  ">Properties</h1>
+            </div>
             <OfferingProperties
               offeringEntity={offeringEntity}
               isOfferingManager={isOfferingManager}
@@ -99,7 +101,17 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
           <div className="mt-8">
             {shareContractAddress ? (
               <div>
-                <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
+                <div className="flex justify-between items-center mb-6">
+                  <h1 className="text-cDarkBlue text-2xl font-medium ">Investors</h1>
+                  <Button
+                    onClick={() => {
+                      setActiveTab('investors');
+                    }}
+                    className="h-12 bg-cLightBlue p-3 font-semibold text-white rounded-md"
+                  >
+                    Refresh
+                  </Button>
+                </div>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
                   contractSet={contractSet}
@@ -122,9 +134,9 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
           </div>
         )}
         {activeTab === 'distributions' && (
-          <div>
-            <div className="flex justify-between items-center">
-              <h1 className="text-cDarkBlue text-2xl font-medium mb-6 mt-8 ">Distributions</h1>
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-cDarkBlue text-2xl font-medium ">Distributions</h1>
               {contractOwnerMatches && isContractOwner && !!distributionContractAddress && (
                 <Button
                   onClick={() => {

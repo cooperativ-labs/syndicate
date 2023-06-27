@@ -18,7 +18,7 @@ import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useContractRead, useNetwork } from 'wagmi';
+import { useAccount, useContractRead, useContractReads, useNetwork } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
@@ -69,12 +69,28 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     refetchTransactionHistory,
   } = useOfferingDetails(offering);
 
-  const { data: partitions, error } = useContractRead({
+  const sharedContractSpecs = {
     address: shareContractAddress,
     abi: shareContractABI,
-    functionName: 'partitionsOf',
-    args: [userWalletAddress as String0x],
+  };
+
+  const { data, error } = useContractReads({
+    contracts: [
+      {
+        ...sharedContractSpecs,
+        functionName: 'partitionsOf',
+        args: [userWalletAddress as String0x],
+      },
+      {
+        ...sharedContractSpecs,
+        functionName: 'isWhitelisted',
+        args: [userWalletAddress as String0x],
+      },
+    ],
   });
+
+  const partitions = data?.[0].result;
+  const isWhitelisted = data?.[1].result;
 
   const refetchMainContracts = () => {
     refetchShareContract();
@@ -108,6 +124,19 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     );
   }
 
+  const removedFromWhitelist = (
+    <div className="flex justify-center items-center">
+      <div className="text-center">
+        <h1 className="text-2xl font-bold">You have been removed from this offering</h1>
+        <p className="text-lg">Please contact the fund manager for more information.</p>
+      </div>
+    </div>
+  );
+
+  if (!isWhitelisted) {
+    return <div className="w-screen h-screen flex justify-center items-center pb-32">{removedFromWhitelist}</div>;
+  }
+
   return (
     <div data-test="component-PortalOffering" className="flex flex-col w-full h-full mx-auto px-4 pt-10">
       <FormModal
@@ -139,20 +168,24 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
       <Container className="flex flex-col">
         <TwoColumnLayout>
           <DashboardCard>
-            <ShareSaleList
-              offering={offering}
-              orders={contractOrders}
-              swapContractAddress={swapContractAddress}
-              isContractOwner={false}
-              setModal={setManagerModal}
-              refetchMainContracts={refetchMainContracts}
-              paymentTokenAddress={paymentTokenAddress}
-              paymentTokenDecimals={paymentTokenDecimals}
-              txnApprovalsEnabled={txnApprovalsEnabled}
-              swapApprovalsEnabled={swapApprovalsEnabled}
-              shareContractAddress={shareContractAddress}
-              refetchOfferingInfo={refetchOfferingInfo}
-            />
+            {isWhitelisted ? (
+              <ShareSaleList
+                offering={offering}
+                orders={contractOrders}
+                swapContractAddress={swapContractAddress}
+                isContractOwner={false}
+                setModal={setManagerModal}
+                refetchMainContracts={refetchMainContracts}
+                paymentTokenAddress={paymentTokenAddress}
+                paymentTokenDecimals={paymentTokenDecimals}
+                txnApprovalsEnabled={txnApprovalsEnabled}
+                swapApprovalsEnabled={swapApprovalsEnabled}
+                shareContractAddress={shareContractAddress}
+                refetchOfferingInfo={refetchOfferingInfo}
+              />
+            ) : (
+              removedFromWhitelist
+            )}
           </DashboardCard>
           <DashboardCard>
             <OfferingDetailsDisplay
@@ -176,6 +209,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               distributions={offering?.distributions}
               walletAddress={userWalletAddress as String0x}
             />
+
             <div className="mt-20 flex">
               <ProfileTabContainer offering={offering} />
             </div>

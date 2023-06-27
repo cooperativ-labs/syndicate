@@ -57,7 +57,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     legalLinkTexts,
     isOfferingManager,
     currentSalePrice,
-    myShares,
+    myShareQty,
     sharesOutstanding,
     smartContractDocuments,
     isLoading,
@@ -147,7 +147,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                 isOfferingManager={isOfferingManager}
                 contractViewDetails={{
                   sharesOutstanding: sharesOutstanding,
-                  myShares: myShares,
+                  myShareQty: myShareQty,
                   paymentToken: paymentTokenAddress,
                   totalDistributed: totalDistributed,
                 }}
@@ -222,7 +222,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                         refetchMainContracts={refetchMainContracts}
                         refetchOfferingInfo={refetchOfferingInfo}
                         currentSalePrice={currentSalePrice}
-                        myShares={myShares}
+                        myShareQty={myShareQty}
                       />
                     )}
                   </div>

@@ -2,19 +2,39 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import React, { FC, useState } from 'react';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { useAccount } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { getCurrencyById } from '@src/utils/enumConverters';
 import { isMetaMask } from '@src/web3/connectors';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { String0x } from '@src/web3/helpersChain';
 
 type ShareCompleteSwapProps = {
   acceptedOrderQty: number;
+  sender: String0x;
+  recipient: String0x;
+  isAskOrder: boolean;
+
+  price: number;
+  paymentTokenAddress: String0x;
   callFillOrder: (args: {
     amount: number;
     setButtonStep: React.Dispatch<React.SetStateAction<LoadingButtonStateType>>;
   }) => Promise<void>;
 };
 
-const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({ acceptedOrderQty, callFillOrder }) => {
+const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
+  acceptedOrderQty,
+  sender,
+  recipient,
+  isAskOrder,
+
+  price,
+  paymentTokenAddress,
+  callFillOrder,
+}) => {
+  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { connector } = useAccount();
 
@@ -24,6 +44,17 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({ acceptedOrderQty, callF
       setButtonStep,
     });
   };
+
+  const saleStatementText = (
+    <span className="flex my-2 font-semibold">
+      You have an offer from &nbsp;
+      <FormattedCryptoAddress chainId={chainId} address={isAskOrder ? recipient : sender} className="text-base" />
+    </span>
+  );
+
+  const formButtonText = `Purchase ${acceptedOrderQty} shares for ${numberWithCommas(price * acceptedOrderQty)} ${
+    getCurrencyById(paymentTokenAddress)?.symbol
+  }`;
 
   return (
     <>
@@ -41,10 +72,11 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({ acceptedOrderQty, callF
       </WalletActionModal>
 
       <div className={'flex flex-col'}>
+        <div className="flex flex-col">{saleStatementText}</div>
         <Button className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium" onClick={handleClick}>
           <LoadingButtonText
             state={buttonStep}
-            idleText={'Execute trade'}
+            idleText={formButtonText}
             step1Text={'Executing...'}
             confirmedText={'Confirmed!'}
             failedText="Transaction failed"

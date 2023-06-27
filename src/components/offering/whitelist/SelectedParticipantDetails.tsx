@@ -18,9 +18,9 @@ import TransferEventList from '../sales/TransferEventList';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { useContractRead, useContractWrite } from 'wagmi';
-import { useMutation, useQuery } from '@apollo/client';
+import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/dGraphQueries/offering';
+import { useContractReads, useContractWrite } from 'wagmi';
+import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
 type SelectedParticipantProps = {
@@ -53,6 +53,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
   const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
+  const [updateWhitelist] = useMutation(UPDATE_WHITELIST);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
   const participant = participants?.find((p) => p?.id === selection);
@@ -71,24 +72,29 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     abi: shareContractABI,
   };
 
-  const { data: shareBalanceData } = useContractRead({
-    ...sharedContractSpecs,
-    functionName: 'balanceOf',
-    args: [participantWallet as String0x],
+  const { data } = useContractReads({
+    contracts: [
+      { ...sharedContractSpecs, functionName: 'balanceOf', args: [participantWallet as String0x] },
+      { ...sharedContractSpecs, functionName: 'isWhitelisted', args: [participantWallet as String0x] },
+    ],
   });
+
+  const shareBalanceData = data?.[0].result;
+  const isWhitelisted = data?.[1].result;
 
   const { write: removeWrite } = useContractWrite({
     ...sharedContractSpecs,
     functionName: 'removeFromWhitelist',
     args: [participantWallet as String0x],
-    onSuccess: (data) => {
-      updateOfferingParticipant({
+    onSuccess: async (data) => {
+      await updateWhitelist({
         variables: {
           currentDate: currentDate,
           id: id,
-          permitted: false,
+          transactionHashRemove: data.hash,
         },
       });
+      setButtonStep('confirmed');
     },
     onError: (e) => {
       StandardChainErrorHandling(e, setButtonStep);
@@ -102,22 +108,20 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
 
   // -----------------Approve Whitelist Participant---------------------
 
-  const updateDb = async () => {
-    await updateOfferingParticipant({
-      variables: {
-        currentDate: currentDate,
-        id: id,
-        permitted: true,
-      },
-    });
-    setButtonStep('confirmed');
-  };
-
   const { data: addData, write: addWrite } = useContractWrite({
     ...sharedContractSpecs,
-    functionName: 'removeFromWhitelist',
+    functionName: 'addToWhitelist',
     args: [participantWallet as String0x],
-    onSuccess: () => updateDb(),
+    onSuccess: async (data) => {
+      await updateWhitelist({
+        variables: {
+          currentDate: currentDate,
+          id: id,
+          transactionHashAdd: data.hash,
+        },
+      });
+      setButtonStep('confirmed');
+    },
     onError: (e) => {
       StandardChainErrorHandling(e);
     },
@@ -138,8 +142,18 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     return <div>Participant not found</div>;
   }
 
-  const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
-    participant;
+  const {
+    name,
+    walletAddress,
+    externalId,
+    id,
+    jurisdiction,
+    investorApplication,
+    offering,
+    chainId,
+    transactionHashAdd,
+    transactionHashRemove,
+  } = participant;
   const distributions = offering.distributions;
   const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity?.organization);
 
@@ -169,7 +183,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
               jurCountry: values.jurCountry,
               jurProvince: values.jurProvince,
               externalId: values.externalId,
-              permitted: permitted,
             },
           });
           setSpecEditOn('none');
@@ -265,7 +278,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
             Review Investor Application
           </button>
         )}
-        {permitted ? (
+        {isWhitelisted ? (
           <button
             className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
             aria-label="remove wallet from whitelist"
@@ -323,7 +336,27 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         showFull
       />
 
-      <div className="text-sm">{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
+      <div className="mb-4">
+        <div>{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
+        {transactionHashAdd && (
+          <FormattedCryptoAddress
+            className={`text-base`}
+            chainId={chainId}
+            address={transactionHashAdd}
+            label="Whitelist addition: "
+            lookupType="tx"
+          />
+        )}
+        {transactionHashRemove && (
+          <FormattedCryptoAddress
+            className={`text-base`}
+            chainId={chainId}
+            address={transactionHashRemove}
+            label="Whitelist removal: "
+            lookupType="tx"
+          />
+        )}
+      </div>
       {specificationSection}
       {tradesSection}
       <hr className="my-10" />

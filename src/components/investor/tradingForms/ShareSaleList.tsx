@@ -83,7 +83,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   return (
     <>
-      <h2 className="text-xl text-blue-900 font-semibold">{`Offers`}</h2>* show offer status * show if offer is yours
+      <h2 className="text-xl text-blue-900 font-semibold mb-2">{`Offers`}</h2>
       {orders?.map((order, i) => {
         return (
           <div key={i}>

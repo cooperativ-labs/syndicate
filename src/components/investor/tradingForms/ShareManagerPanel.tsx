@@ -9,6 +9,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
 import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/dGraphQueries/orders';
 
+import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
 import { ShareOrder } from 'types';
@@ -16,7 +17,6 @@ import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
 import { useMutation } from '@apollo/client';
-import { getCurrencyById } from '@src/utils/enumConverters';
 
 export type SaleMangerPanelProps = {
   swapContractAddress: String0x | undefined;
@@ -131,16 +131,15 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
         refetchAllContracts,
       });
-    } else if (!isDisapprove) {
-      await updateOrderObject({
-        variables: {
-          currentDate: currentDate,
-          orderId: order.id,
-          visible: !listingIsApproved,
-          archived: order.archived,
-        },
-      });
     }
+    await updateOrderObject({
+      variables: {
+        currentDate: currentDate,
+        orderId: order.id,
+        visible: !isDisapprove,
+        archived: order.archived,
+      },
+    });
   };
 
   const handleArchive = async () => {
@@ -248,25 +247,15 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       {`${
         txnApprovalsEnabled ? (isAskOrder ? 'is requesting to purchase' : 'is offering to sell') : 'is offering to sell'
       } `}
-      {numShares} shares for {numberWithCommas(price)} {getCurrencyById(paymentTokenAddress)?.symbol} per share.
+      {numShares} shares to &nbsp;
+      <FormattedCryptoAddress
+        chainId={chainId}
+        address={isAskOrder ? senderAddress : recipientAddress}
+        className="text-base"
+      />{' '}
+      &nbsp; for {numberWithCommas(price)} {getCurrencyById(paymentTokenAddress)?.symbol} per share.
     </span>
   );
-
-  console.log({
-    isCancelled,
-    isFilled,
-    currentUserInitiator,
-    currentUserFiller,
-    proceeds,
-    isAccepted,
-    isDisapproved,
-    isApproved,
-    isAskOrder,
-    isContractOwner,
-    txnApprovalsEnabled,
-    swapApprovalsEnabled,
-    contractIndex: order.contractIndex,
-  });
 
   return (
     <div className="flex flex-col mb-2">

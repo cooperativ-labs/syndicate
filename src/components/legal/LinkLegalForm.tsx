@@ -1,4 +1,3 @@
-import abi from '@src/web3/ABI';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import PresentLegalText from './PresentLegalText';
@@ -82,7 +81,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
             name: spvEntityName,
             walletAddress: userWalletAddress,
             chainId: chainId,
-            permitted: true,
           },
         });
 

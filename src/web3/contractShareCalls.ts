@@ -5,6 +5,8 @@ import {
   bytes32FromString,
   hashBytes32FromString,
   ChainErrorResponses,
+  addressWithoutEns,
+  splitAddress,
 } from './helpersChain';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
@@ -57,6 +59,7 @@ export const addWhitelistMember = async ({
           name: name,
           offering: offeringId,
           externalId: externalId,
+          transactionHash: transactionHash,
         },
       });
     } catch (error: any) {
@@ -222,8 +225,14 @@ export const sendShares = async ({
           },
         });
       refetchMainContracts();
+      toast.success(
+        `${numShares} shares sent to ${addressWithoutEns({
+          address: recipient,
+        })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
+      );
       setButtonStep('confirmed');
-    } catch (e) {
+    } catch (e: any) {
+      toast.error(`Error sending shares: ${e.message}`);
       StandardChainErrorHandling(e, setButtonStep, recipient);
     }
   };

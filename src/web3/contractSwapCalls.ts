@@ -140,6 +140,7 @@ type AcceptOrderProps = {
   contractIndex: number;
   offeringId: string;
   organization: Organization;
+  isAskOrder: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
@@ -151,6 +152,7 @@ export const acceptOrder = async ({
   contractIndex,
   offeringId,
   organization,
+  isAskOrder,
   setButtonStep,
   refetchAllContracts,
   setModal,
@@ -180,7 +182,7 @@ export const acceptOrder = async ({
       });
       refetchAllContracts();
       setButtonStep('confirmed');
-      toast.success(`You have applied to purchase shares.`);
+      toast.success(`You have applied to ${isAskOrder ? 'purchase' : 'sell'} shares.`);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -224,37 +226,6 @@ export const setAllowance = async ({
   };
   await call();
 };
-
-// export const adjustAllowance = async ({
-//   paymentTokenAddress,
-//   paymentTokenDecimals,
-//   spenderAddress,
-//   amount: amountIncrease,
-//   setButtonStep,
-//   setModal,
-// }: SetAllowanceProps) => {
-//   setButtonStep('step1');
-//   const call = async () => {
-//     try {
-//       const { request } = await prepareWriteContract({
-//         address: paymentTokenAddress,
-//         abi: erc20ABI,
-//         functionName: 'increaseAllowance',
-//         args: [spenderAddress, toContractNumber(amountIncrease, paymentTokenDecimals)],
-//       });
-//       const { hash } = await writeContract(request);
-//       await waitForTransaction({
-//         hash: hash,
-//       });
-//       setButtonStep('confirmed');
-//       toast.success(`You have increased contract allowance.`);
-//       setModal && setModal(false);
-//     } catch (e) {
-//       StandardChainErrorHandling(e, setButtonStep);
-//     }
-//   };
-//   await call();
-// };
 
 type ApproveRejectSwapProps = {
   transferEventArgs?: {

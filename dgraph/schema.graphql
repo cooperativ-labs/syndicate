@@ -652,7 +652,6 @@ type OfferingParticipant @auth (
 	walletAddress: String! @search(by:[fulltext]) 
 	emailAddress: String 
 	chainId: Int!
-	permitted: Boolean!
 	name: String
 	offering: Offering! @hasInverse(field:participants)
 	investorApplication: InvestorApplication @hasInverse(field:offeringParticipant)
@@ -661,6 +660,8 @@ type OfferingParticipant @auth (
 	jurisdiction: Jurisdiction
 	paid: Boolean
 	externalId: String
+	transactionHashAdd: String
+	transactionHashRemove: String
 	lastUpdate: DateTime!
 	creationDate: DateTime!
 }

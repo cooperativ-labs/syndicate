@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import OfferingSummaryPanel from './OfferingSummaryPanel';
 import React, { FC, useState } from 'react';
 import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
@@ -70,7 +71,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     refetchMainContracts();
     refetchOrderDetails();
   }
-
+  const isFiller = filler !== '0x0000000000000000000000000000000000000000';
   const currentUserFiller = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(filler);
   const currentUserInitiator = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
   const shareQtyRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
@@ -80,7 +81,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     getSwapStatusOption({
       amount,
       filledAmount,
-      isFiller: !!filler,
+      isFiller,
       isApproved,
       isDisapproved,
       isCancelled,
@@ -92,11 +93,17 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
 
   const showArchived = order.archived && (order.visible || currentUserInitiator || isContractOwner);
   const showLive = !order.archived && (order.visible || currentUserInitiator || isContractOwner);
+  const showPurchaseSteps = !order.archived && (!currentUserInitiator || (!isAskOrder && isFiller));
 
   return (
     <>
       {showArchived && (
-        <div className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer">
+        <div
+          className={cn(
+            currentUserInitiator && 'border-2 border-green-600',
+            'grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer'
+          )}
+        >
           <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
           <div className="col-span-11">
             <div> Archived/Completed Swap - need to design </div>
@@ -107,7 +114,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
         </div>
       )}
       {showLive && (
-        <div className="relative items-center shadow-md hover:shadow-lg rounded-md my-5 ">
+        <div className={'relative items-center shadow-md hover:shadow-lg rounded-md my-5 '}>
           <div className={`absolute top-2 right-2 p-1 px-2 rounded-md border-2 border-${status.color} text-xs`}>
             {status.name}
           </div>
@@ -167,7 +174,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   refetchOfferingInfo={refetchOfferingInfo}
                 />
               )}
-              {(isAskOrder ? !currentUserInitiator : currentUserInitiator) && (
+              {showPurchaseSteps && (
                 <SharePurchaseSteps
                   offering={offering}
                   order={order}

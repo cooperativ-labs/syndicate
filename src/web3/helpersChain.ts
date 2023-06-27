@@ -50,7 +50,7 @@ export const getAddressFromEns = async (input: string | String0x) => {
 };
 
 type AddressWithoutEnsProps = {
-  address: string | String0x | undefined;
+  address: string | String0x | undefined | Maybe<string>;
   isYou?: boolean;
   isDesktop?: boolean;
   userName?: Maybe<string> | undefined;

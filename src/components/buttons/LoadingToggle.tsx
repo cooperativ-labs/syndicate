@@ -18,7 +18,7 @@ const LoadingToggle: FC<LoadingToggleProps> = ({ toggleSubject, isLoading, onCli
     >
       {isLoading ? (
         <img
-          src="/assets/images/loading-circle.jpeg"
+          src="/assets/images/loading-circle.png"
           aria-label="loading"
           className="h-6 mr-1 animate-spin bg-white rounded-full"
         />

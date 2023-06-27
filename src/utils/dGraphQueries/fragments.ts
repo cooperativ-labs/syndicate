@@ -218,7 +218,7 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
     addressOfferingId
     walletAddress
     chainId
-    permitted
+
     name
     jurisdiction {
       id
@@ -226,6 +226,8 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
       province
     }
     externalId
+    transactionHashAdd
+    transactionHashRemove
     minPledge
     maxPledge
     investorApplication {

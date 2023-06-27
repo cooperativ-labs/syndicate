@@ -9,18 +9,12 @@ export type Decimals = number;
 
 export const toDecimalByToken = (amt: number, currency?: Currency): number => {
   const decimal = getCurrencyOption(currency)?.decimals;
-  if (!decimal) {
-    throw new Error('nDecimals is undefined');
-  }
-  const multiplier = Math.pow(10, decimal);
+  const multiplier = Math.pow(10, decimal as number);
   return amt * multiplier;
 };
 
 export const toNormalNumber = (n: bigint | undefined, nDecimals: Decimals | undefined): number => {
-  if (!nDecimals) {
-    throw new Error('nDecimals is undefined');
-  }
-  return Number(n) / Math.pow(10, nDecimals);
+  return Number(n) / Math.pow(10, nDecimals as number);
 };
 
 export const toReverseContractNumber = (n: number, nDecimals: Decimals): bigint => {

@@ -54,9 +54,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   partitions,
   refetchMainContracts,
   refetchOfferingInfo,
-
   currentSalePrice,
-  myShares,
+  myShareQty,
   userId,
 }) => {
   const { data: userData } = useQuery(GET_USER, { variables: { id: userId } });
@@ -154,7 +153,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             offeringMin={offeringMin}
             sharesOutstanding={sharesOutstanding}
             walletAddress={userWalletAddress as String0x}
-            myShares={myShares}
+            myShareQty={myShareQty}
             swapContractAddress={swapContractAddress}
             isContractOwner={isContractOwner === !!isOfferingManager}
             currentSalePrice={currentSalePrice}
@@ -213,7 +212,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           shareContractId={shareContractId}
           offeringParticipants={participants}
           partitions={partitions}
-          myShares={myShares}
+          myShareQty={myShareQty}
           refetchMainContracts={refetchMainContracts}
         />
       )}

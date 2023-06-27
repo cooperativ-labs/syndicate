@@ -9,7 +9,7 @@ import { useAsync } from 'react-use';
 
 type FormattedCryptoAddressProps = {
   chainId: Maybe<number> | undefined;
-  address: string | String0x | undefined;
+  address: Maybe<string> | string | String0x | undefined;
   label?: string;
   withCopy?: boolean;
   className?: string;
