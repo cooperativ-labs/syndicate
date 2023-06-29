@@ -6,7 +6,6 @@ import { getDocFormatOption } from '@src/utils/enumConverters';
 import { IconName } from '@fortawesome/free-solid-svg-icons';
 import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { useMutation } from '@apollo/client';
-import { useSession } from 'next-auth/react';
 
 const DocumentListItem: FC<{
   document: Maybe<Document>;
