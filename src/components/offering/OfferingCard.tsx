@@ -7,7 +7,6 @@ import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@
 import { Maybe, Offering } from 'types';
 import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
-import { swapContractAddress } from '@src/web3/generated';
 import { useAsync } from 'react-use';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';

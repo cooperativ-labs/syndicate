@@ -25,8 +25,11 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   swapApprovalsEnabled,
 }) => {
   const contractIndex = order ? order?.contractIndex : 0;
-  const { initiator, amount, filledAmount, isApproved, isDisapproved, isCancelled, isAccepted, isAskOrder, filler } =
-    useOrderDetails(swapContractAddress, contractIndex, paymentTokenDecimals);
+  const { initiator, amount, filledAmount, isApproved, isCancelled, isAccepted, isFilled, filler } = useOrderDetails(
+    swapContractAddress,
+    contractIndex,
+    paymentTokenDecimals
+  );
   const chainId = useChainId();
   const sharesRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
   const status =
@@ -36,7 +39,7 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
       filledAmount,
       isFiller: !!filler,
       isApproved,
-      isDisapproved,
+      isFilled,
       isCancelled,
       isAccepted,
       txnApprovalsEnabled,
