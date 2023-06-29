@@ -16,6 +16,8 @@ import { getBaseUrl } from '@src/utils/helpersURL';
 
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
 import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
@@ -89,7 +91,12 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
           {stage && <Progress brandColor={brandColor ?? '#275A8F'} lightBrand={false} stage={stage} className="flex" />}
         </section>
       </div> */}
-
+      <div className="absolute right-4 top-4 flex justify-end ">
+        <div className="flex items-center justify-center rounded-full bg-slate-50 shadow-sm">
+          <ChooseConnectorButton buttonText={'Connect Wallet'} />
+        </div>
+      </div>
+      <WalletChooserModal />
       <Container className="flex flex-col px-2 md:px-8 z-40 relative">
         <TwoColumnLayout twoThirdsLayout className="lg:-mt-24">
           {/* Slot 1 */}

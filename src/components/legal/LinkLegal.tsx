@@ -10,7 +10,7 @@ import { getAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { Offering, User } from 'types';
 import { useAsync } from 'react-use';
-import { useChainId } from 'wagmi';
+import { useChainId, useNetwork } from 'wagmi';
 
 export type AgreementContentType = {
   signature: string;
@@ -28,6 +28,8 @@ type LinkLegalProps = {
 
 const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const chainId = useChainId();
+  const { chain } = useNetwork();
+
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
     signature: '',
   });
@@ -41,15 +43,17 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const offeringEntity = offering.offeringEntity;
   const orgLegalName = offeringEntity?.legalName;
   const offerEntityGP = offeringEntity?.owners ? offeringEntity.owners[0]?.legalName : orgLegalName;
+
   const availableContract =
-    offeringEntity?.smartContracts && getAvailableContracts(offeringEntity.smartContracts, chainId)[0];
+    offeringEntity?.smartContracts && getAvailableContracts(offeringEntity.smartContracts, chainId);
+
   const backingToken = availableContract?.backingToken;
   const bacToken = getCurrencyOption(backingToken);
   const bacValue = bacToken?.value;
   const bacName = bacToken?.symbol;
   const bacId = bacToken?.address;
 
-  const isMainNet = availableContract?.cryptoAddress.chainId === 12345678;
+  const isTestNet = chain?.testnet;
 
   const agreement = GenerateLegalLink(
     {
@@ -61,7 +65,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
       bacName: bacName,
       bacAddress: bacId,
       signature: signature,
-      isNotMainnet: !isMainNet,
+      isNotMainnet: isTestNet as boolean,
       agreementCurrency: bacName,
       baseUrl: window.location.origin,
     },

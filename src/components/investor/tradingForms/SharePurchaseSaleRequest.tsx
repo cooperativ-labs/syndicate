@@ -22,7 +22,7 @@ import { useAccount } from 'wagmi';
 
 import { useAsync } from 'react-use';
 
-export type SharePurchaseRequestProps = {
+export type SharePurchaseSaleRequestProps = {
   offering: Offering;
   order: ShareOrder;
   isAskOrder: boolean;
@@ -32,7 +32,7 @@ export type SharePurchaseRequestProps = {
   myShareQty: number | undefined;
 };
 
-type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {
+type AdditionalSharePurchaseSaleRequestProps = SharePurchaseSaleRequestProps & {
   myBacBalance: string | undefined;
   callFillOrder: (args: {
     amount: number;
@@ -40,7 +40,7 @@ type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {
   }) => Promise<void>;
 };
 
-const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
+const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   offering,
   isAskOrder,
   order,
@@ -99,10 +99,14 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
         >
           <WalletActionIndicator
             step={buttonStep}
-            step1Text="Setting contract allowance"
-            step1SubText="This will allow the contract to spend your tokens on your behalf"
-            step2Text="Executing trade"
-            step2SubText="This will execute the trade and purchase the shares"
+            step1Text={isAskOrder ? 'Setting contract allowance' : 'Submitting Bid'}
+            step1SubText={
+              isAskOrder
+                ? 'This will allow the contract to spend your tokens on your behalf'
+                : 'Please confirm in our wallet'
+            }
+            step2Text={isAskOrder ? 'Executing purchase' : undefined}
+            step2SubText={isAskOrder ? 'This will execute the trade and purchase the shares' : undefined}
           />
         </WalletActionModal>
       )}
@@ -305,4 +309,4 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
   );
 };
 
-export default SharePurchaseRequest;
+export default SharePurchaseSaleRequest;

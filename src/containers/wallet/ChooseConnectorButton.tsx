@@ -19,7 +19,7 @@ const ChooseConnectorButton: FC<ChooseConnectorButtonProps> = ({ buttonText, lar
       className={cn(
         outlinedClass,
         large ? 'p-2 px-4' : 'text-xs p-1 px-3',
-        'font-semibold rounded-full relative mr-2 w-full'
+        'font-semibold rounded-full relative  w-full'
       )}
       onClick={(e) => {
         e.preventDefault();

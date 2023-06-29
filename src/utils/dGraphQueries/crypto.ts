@@ -81,6 +81,7 @@ export const CREATE_SHARE_CONTRACT = gql`
     ) {
       smartContract {
         id
+
         owner {
           id
           smartContracts {
@@ -137,6 +138,11 @@ export const CREATE_SWAP_CONTRACT = gql`
         }
         offering {
           id
+          details {
+            investmentCurrency {
+              code
+            }
+          }
         }
       }
     }

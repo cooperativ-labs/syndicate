@@ -1,19 +1,20 @@
-import Button, { LoadingButtonStateType } from '@src/components/buttons/Button';
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction } from 'react';
 import ShareCompleteSwap from './ShareCompleteSwap';
-import SharePurchaseRequest, { SharePurchaseRequestProps } from './SharePurchaseRequest';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
+
 import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
 import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { erc20ABI, useAccount, useBalance, useContractRead } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
+import SharePurchaseSaleRequest, { SharePurchaseSaleRequestProps } from './SharePurchaseSaleRequest';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useMutation } from '@apollo/client';
 
-type SharePurchaseStepsProps = SharePurchaseRequestProps & {
+type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   isApproved: boolean;
   isFilled: boolean;
   isCancelled: boolean;
@@ -106,7 +107,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
 
   const callFillOrder = async ({ amount, setButtonStep }: CallFillOrderType) => {
     if ((!isAskOrder && !currentUserInitiator) || (txnApprovalsEnabled && !isAccepted)) {
-      setButtonStep('step2');
+      setButtonStep('step1');
       await acceptOrder({
         swapContractAddress: swapContractAddress,
         contractIndex: order.contractIndex,
@@ -196,7 +197,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           <hr className="border-gray-300 my-2" />
           <div className="p-3 border-2 rounded-lg ">
             {` ${firstStepTitle()}`}
-            <SharePurchaseRequest
+            <SharePurchaseSaleRequest
               txnApprovalsEnabled={txnApprovalsEnabled}
               offering={offering}
               order={order}

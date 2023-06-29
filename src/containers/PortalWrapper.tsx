@@ -49,8 +49,6 @@ const PortalWrapper: FC<PortalWrapperProps> = ({ children }) => {
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
         <WalletChooserModal />
-
-        {/* <WalletActionLockModel /> */}
         {PageIsLoading && <LoadingModal />}
         <AlertPopup text="This is an alpha version. Please use with caution." />
         <EnsureCompatibleNetwork>

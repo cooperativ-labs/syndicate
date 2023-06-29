@@ -91,7 +91,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
         {({ isSubmitting, values }) => (
           <Form className="">
             <EntitySelector
-              entities={entitiesWithoutOfferings}
+              entities={entityOptions}
               fieldName="offeringEntityId"
               setModal={setEntityModal}
               label="In which entity are you offering shares?"

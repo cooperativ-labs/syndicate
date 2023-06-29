@@ -30,7 +30,6 @@ type LinkLegalFormProps = {
 const LinkLegalForm: FC<LinkLegalFormProps> = ({
   setAgreementContent,
   availableContract,
-
   agreement,
   spvEntityName,
   offeringId,

@@ -119,7 +119,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const listingIsApproved = isApproved || (txnApprovalsEnabled && order.visible);
   const transactionIsAccepted = txnApprovalsEnabled && isAccepted;
 
-  const allowVisibilityApproveDisapprove = transactionIsAccepted ? false : true;
+  const allowVisibilityApproveDisapprove = transactionIsAccepted ? false : true; // dont change visibility if transaction if Txn on and accepted, don't change visiblity of Txn off and
   const allowContractApproveDisapprove = !isFilled || !isCancelled;
 
   const updateListingVisibility = async (isDisapprove: boolean) => {
@@ -143,11 +143,10 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
         refetchAllContracts,
       });
+    }
+    if (allowVisibilityApproveDisapprove) {
       await updateListingVisibility(isDisapprove);
     }
-    // if (allowVisibilityApproveDisapprove) {
-
-    // }
   };
 
   const handleArchive = async () => {
@@ -312,6 +311,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
           Completed swap. Please claim proceeds.
         </div>
       )}
+      {/* <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} /> */}
     </div>
   );
 };

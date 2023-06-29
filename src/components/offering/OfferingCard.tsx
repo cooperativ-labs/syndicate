@@ -7,9 +7,11 @@ import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@
 import { Maybe, Offering } from 'types';
 import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
+import { useAccount } from 'wagmi';
 import { useAsync } from 'react-use';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
+import { useSession } from 'next-auth/react';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 export type OfferingCardProps = {
@@ -17,6 +19,8 @@ export type OfferingCardProps = {
 };
 
 const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
+  const { data: session, status } = useSession();
+  const { address: userWalletAddress } = useAccount();
   const router = useRouter();
   const { name, shortDescription, id, details, image, offeringEntity, smartContractSets } = offering as Offering;
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
@@ -45,8 +49,13 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const organizationId = offeringEntity?.organization.id;
   const organizationImg = offeringEntity?.organization.logo;
 
-  const publicFacing = router.pathname.includes('/portal');
-  const pushLink = publicFacing ? `/${organizationId}/portal/${id}` : `/${organizationId}/offerings/${id}`;
+  const loggedIn = !!session;
+  const toProfile = !userWalletAddress;
+  const pushLink = loggedIn
+    ? `/${organizationId}/offerings/${id}`
+    : toProfile
+    ? `/${organizationId}/${id}`
+    : `/${organizationId}/portal/${id}`;
   return (
     <div
       onClick={() => {

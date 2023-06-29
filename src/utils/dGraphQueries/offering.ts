@@ -261,6 +261,7 @@ export const ADD_LEGAL_SHARE_LINK = gql`
             text: $agreementText
             date: $currentDate
             type: SHARE_LINK
+            format: MARKDOWN
             owner: { id: $entityId }
             offeringUniqueId: $documentOfferingUniqueId
             lastUpdate: $currentDate

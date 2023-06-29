@@ -4,7 +4,7 @@ const contractIsSameChain = (contract: Maybe<SmartContract>, chainId: number): b
   return contract?.cryptoAddress.chainId === chainId;
 };
 export const getAvailableContracts = (unestablishedSmartContracts: Maybe<SmartContract>[], chainId: number) => {
-  return unestablishedSmartContracts.map((contract) => {
+  return unestablishedSmartContracts.find((contract) => {
     if (
       contractIsSameChain(contract, chainId) &&
       !contract?.established &&

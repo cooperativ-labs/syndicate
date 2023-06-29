@@ -1,4 +1,5 @@
 import BannerImage from '@src/components/organization/BannerImage';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import OfferingCard from '@src/components/offering/OfferingCard';
 import React, { FC } from 'react';
 import SocialLinkItem from '@src/components/SocialLinkItem';
@@ -22,10 +23,12 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
 
   return (
     <div className="flex min-h-screen ">
-      <div className="w-full pb-20">
-        {/* <div className="md:mx-6 ">
-          <NavBar organizationLogo={logo} organizationName={name} />
-        </div> */}
+      <div className="relative w-full pb-20">
+        <div className="absolute right-4 top-4 flex justify-end ">
+          <div className="flex items-center justify-center rounded-full bg-slate-50 shadow-sm">
+            <ChooseConnectorButton buttonText={'Connect Wallet'} />
+          </div>
+        </div>
         <BannerImage imageUrl={bannerImage as string} />
 
         <div className="md:mx-auto " style={{ maxWidth: '1280px' }}>

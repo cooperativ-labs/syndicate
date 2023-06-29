@@ -5,6 +5,7 @@ import OrganizationProfile from '@src/pages/OrganizationProfile';
 import PortalOrganization from '@src/pages/PortalOrganization';
 import PortalWrapper from '@src/containers/PortalWrapper';
 import React from 'react';
+import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GetServerSideProps, NextPage } from 'next';
 import { initializeApollo } from '@src/utils/apolloClient';
@@ -53,6 +54,7 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
         />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
+      <WalletChooserModal />
       {isParticipant ? (
         <PortalWrapper>
           <PortalOrganization />{' '}

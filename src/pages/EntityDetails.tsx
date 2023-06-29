@@ -51,17 +51,18 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     addresses,
     walletAddresses,
     subsidiaries,
-    taxId,
+    offerings,
     jurisdiction,
     operatingCurrency,
     owners,
   } = entity;
 
-  const offerings = subsidiaries
-    ?.map((entity) => {
+  const offeringsIncludingSubsidiaries = [
+    subsidiaries?.map((entity) => {
       if (entity) return entity.offerings;
-    })
-    .flat();
+    }),
+    offerings,
+  ].flat();
 
   const handleDisplayNameChange = (values: { displayName: Maybe<string> | undefined }) => {
     updateLegalEntity({
@@ -180,7 +181,11 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         </div>
         <></>
       </TwoColumnLayout>
-      <EntityTabContainer subsidiaries={subsidiaries} offerings={offerings as Offering[]} entity={entity} />
+      <EntityTabContainer
+        subsidiaries={subsidiaries}
+        offerings={offeringsIncludingSubsidiaries as Offering[]}
+        entity={entity}
+      />
     </div>
   );
 };

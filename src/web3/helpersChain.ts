@@ -105,6 +105,12 @@ export const ChainErrorResponses = (error: any, recipient: string | String0x | u
   if (error.message.includes('User rejected the request')) {
     return { code: 2000, message: 'User cancelled operation' };
   }
+  if (error.message.includes('Cannot convert undefined to a BigInt')) {
+    return {
+      code: 2001,
+      message: 'Cannot convert undefined to a BigInt. This may result you cancelling the operation',
+    };
+  }
   // if (error.message.includes('underflow on subtracting')) {
   //   return { code: 3000, message: 'User does not have enough of the asset to complete the transaction.' };
   // }
@@ -156,6 +162,10 @@ export const StandardChainErrorHandling = (
   }
   if (errorCode === 2000) {
     setButtonStep && setButtonStep('rejected');
+  }
+  if (errorCode === 2001) {
+    setButtonStep && setButtonStep('failed');
+    toast.error(errorMessage);
   } else {
     setButtonStep && setButtonStep('failed');
     alert(errorMessage);

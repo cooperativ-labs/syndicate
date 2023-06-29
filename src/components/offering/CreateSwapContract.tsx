@@ -69,6 +69,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
         // Make this update the offering instead so that we can add the smart contract to the offering and update the investment currency
         await addSwapContract({
           variables: {
+            offeringId: contractSet?.offering?.id,
             cryptoAddress: contract.contractAddress,
             chainId: chainId,
             backingToken: getCurrencyById(paymentTokenAddress)?.value,
@@ -83,7 +84,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
           await updateInvestmentCurrency({
             variables: {
               offeringDetailsId: offeringDetailsId,
-              investmentCurrency: newCurrencyCode,
+              investmentCurrencyCode: newCurrencyCode,
             },
           });
         }
