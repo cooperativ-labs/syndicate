@@ -50,7 +50,7 @@ export const getAddressFromEns = async (input: string | String0x) => {
 };
 
 type AddressWithoutEnsProps = {
-  address: string | String0x | undefined;
+  address: string | String0x | undefined | Maybe<string>;
   isYou?: boolean;
   isDesktop?: boolean;
   userName?: Maybe<string> | undefined;
@@ -67,7 +67,6 @@ export const addressWithoutEns = ({ address, isYou, isDesktop, userName, showFul
 
 export const addressWithENS = async ({ address, isYou, isDesktop, userName, showFull }: AddressWithoutEnsProps) => {
   let ensName = undefined;
-
   ensName = await fetchEnsName({
     address: address as String0x,
     chainId: 1,

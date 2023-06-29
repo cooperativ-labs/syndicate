@@ -28,7 +28,7 @@ export type PostBidAskFormProps = {
   swapApprovalsEnabled: Maybe<boolean> | undefined;
   partitions: String0x[];
   paymentTokenDecimals: Maybe<number> | undefined;
-  myShares: number | undefined;
+  myShareQty: number | undefined;
   isContractOwner: boolean;
   sharesOutstanding: number | undefined;
   currentSalePrice: Maybe<number> | undefined;
@@ -50,7 +50,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   swapApprovalsEnabled,
   partitions,
   paymentTokenDecimals,
-  myShares,
+  myShareQty,
   isContractOwner,
   offeringMin,
   sharesOutstanding,
@@ -77,7 +77,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
     return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
   };
 
-  const showSharesAvailable = `(${myShares} available)`;
+  const showSharesAvailable = `(${myShareQty} available)`;
 
   return (
     <>
@@ -109,8 +109,8 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
               errors.minUnits = 'Minimum must be less than maximum';
             }
           }
-          if (isAsk && numUnits && myShares && numUnits > myShares) {
-            errors.numUnits = `You cannot sell more than ${myShares} shares.`;
+          if (isAsk && numUnits && myShareQty && numUnits > myShareQty) {
+            errors.numUnits = `You cannot sell more than ${myShareQty} shares.`;
           }
           if (!isAsk && numUnits && sharesUnissued && numUnits > sharesUnissued) {
             errors.numUnits = `You cannot buy more than ${sharesUnissued} shares.`;
@@ -169,7 +169,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                 <FormattedCryptoAddress chainId={chainId} address={walletAddress} className="font-semibold" />
               </div>
               <hr className="my-6" />
-              {!isContractOwner && myShares && myShares < 1 && isAsk ? (
+              {!isContractOwner && myShareQty && myShareQty < 1 && isAsk ? (
                 <div>You do not have any shares to sell </div>
               ) : (
                 <>

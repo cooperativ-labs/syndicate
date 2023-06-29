@@ -1,34 +1,59 @@
 import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
-import React, { FC, useContext } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { Maybe, OfferingParticipant } from 'types';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useContractReads } from 'wagmi';
+
 type WhitelistAddressListItemProps = {
   participant: Maybe<OfferingParticipant>;
   shareContractAddress: String0x;
   setSelectedParticipant: (participantId: string) => void;
+  investorListRefreshTrigger: number;
 };
 
 const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   participant,
   shareContractAddress,
+  investorListRefreshTrigger,
   setSelectedParticipant,
 }) => {
   const { address: userWalletAddress } = useAccount();
 
-  const { data, isLoading } = useContractRead({
-    address: shareContractAddress as String0x,
+  const sharedContractBits = {
+    address: shareContractAddress,
     abi: shareContractABI,
-    functionName: 'balanceOf',
-    args: [participant?.walletAddress as String0x],
+  };
+
+  const { data, isLoading, refetch } = useContractReads({
+    contracts: [
+      {
+        ...sharedContractBits,
+        functionName: 'balanceOf',
+        args: [participant?.walletAddress as String0x],
+      },
+      {
+        ...sharedContractBits,
+        functionName: 'isWhitelisted',
+        args: [participant?.walletAddress as String0x],
+      },
+    ],
   });
 
+  useEffect(() => {
+    if (investorListRefreshTrigger) {
+      refetch();
+    }
+  }, [participant?.walletAddress, investorListRefreshTrigger, refetch]);
+
+  const balance = data?.[0].result;
+  const isWhitelisted = data?.[1].result;
+
   const isYou = participant?.walletAddress === userWalletAddress;
-  const numShares = isLoading ? 'loading...' : data ? toNormalNumber(data, shareContractDecimals) : 0;
+  const numShares = isLoading ? 'loading...' : data ? toNormalNumber(balance, shareContractDecimals) : 0;
 
   if (!participant) {
     return <></>;
@@ -62,7 +87,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
         <div className="md:w-auto  font-medium ">{participant.externalId}</div>
       </div>
       <div className="col-span-3 mt-3 md:mt-0 flex justify-end">
-        {participant.permitted ? (
+        {isWhitelisted ? (
           <div className="font-bold text-emerald-700 uppercase center self-center mr-4">approved</div>
         ) : (
           <div className="font-bold text-red-700 uppercase center self-center mr-4">unapproved</div>

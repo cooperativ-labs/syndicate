@@ -26,6 +26,7 @@ const WalletActionModal: FC<WalletActionModalProps> = ({ noModal, children, open
               className=" mx-4 p-6 mb-10 flex-col md:mx-auto rounded-xl md:rounded-lg shadow-modal bg-white "
               style={{ overflow: 'smooth', maxWidth: '500px' }}
             >
+              <h1 className="text-xl font-bold mb-4">Deploy Status</h1>
               {metaMaskWarning && (
                 <div className="p-3 border-2 border-orange-600 rounded-lg items-center mb-4">
                   {`Note: MetaMask will ask you to set a "custom spending cap". Please click: `}

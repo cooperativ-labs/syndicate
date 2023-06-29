@@ -5,24 +5,17 @@ import { Currency, User } from 'types';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import DistributionContractSettings from './DistributionContractSettings';
-import NewClassForm from './NewClassForm';
-import ShareContractSettings from './ShareContractSettings';
+import ShareContractSettings, { ShareContractSettingsProps } from './ShareContractSettings';
 import SwapContractSettings, {
   SwapContractSettingsProps,
   SwapContractsSettingsAdditional,
 } from './SwapContractSettings';
-import { useChainId } from 'wagmi';
 
-export type SmartContractsSettingsProps = SwapContractSettingsProps & {
-  partitions: String0x[];
-};
+export type SmartContractsSettingsProps = SwapContractSettingsProps & ShareContractSettingsProps;
 
-type SmartContractsSettingsAdditional = SmartContractsSettingsProps &
-  SwapContractsSettingsAdditional & {
-    user: User;
-  };
+type SmartContractsSettingsLocal = SmartContractsSettingsProps & SwapContractsSettingsAdditional & { user: User };
 
-const SmartContractsSettings: FC<SmartContractsSettingsAdditional> = ({
+const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
   user,
   offering,
   contractSet,
@@ -33,11 +26,10 @@ const SmartContractsSettings: FC<SmartContractsSettingsAdditional> = ({
   refetchMainContracts,
 }) => {
   const shareContract = contractSet?.shareContract;
-  const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
+
   return (
     <>
       <ShareContractSettings user={user} offering={offering} shareContract={shareContract} partitions={partitions} />
-
       <hr className="my-5" />
       <SwapContractSettings
         refetchMainContracts={refetchMainContracts}

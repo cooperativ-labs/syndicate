@@ -20,7 +20,6 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
-  const [transactionHash, setTransactionHash] = useState<string>('');
 
   return (
     <Formik
@@ -43,7 +42,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
         const address = await getAddressFromEns(values.address);
         setButtonStep('step1');
         setSubmitting(true);
-        const transactionHash = await addWhitelistMember({
+        await addWhitelistMember({
           shareContractAddress,
           offeringId,
           walletAddress: address as String0x,
@@ -52,9 +51,9 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
           externalId: values.externalId,
           organization,
           setButtonStep,
-          addWhitelistObject,
+          updateWhitelist: addWhitelistObject,
         });
-        setTransactionHash(transactionHash);
+
         setSubmitting(false);
         resetForm();
       }}

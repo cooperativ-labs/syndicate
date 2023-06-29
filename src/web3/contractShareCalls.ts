@@ -5,6 +5,8 @@ import {
   bytes32FromString,
   hashBytes32FromString,
   ChainErrorResponses,
+  addressWithoutEns,
+  splitAddress,
 } from './helpersChain';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
@@ -15,7 +17,7 @@ import { TransactionReceipt, parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
-import { Organization, ShareTransferEventType } from 'types';
+import { Organization, ShareTransferEventType, WhitelistTransactionType } from 'types';
 import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 
@@ -23,15 +25,16 @@ type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
   offeringId: string;
   walletAddress: String0x;
-  chainId: number;
-  name: string;
-  externalId: string;
+  chainId?: number;
+  name?: string;
+  externalId?: string;
   organization: Organization;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  addWhitelistObject: (
+  updateWhitelist: (
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   refetchMainContracts?: () => void;
+  triggerInvestorListRefresh?: () => void;
 };
 
 export const addWhitelistMember = async ({
@@ -43,12 +46,13 @@ export const addWhitelistMember = async ({
   externalId,
   organization,
   setButtonStep,
-  addWhitelistObject,
+  updateWhitelist,
   refetchMainContracts,
+  triggerInvestorListRefresh,
 }: AddWhitelistMemberProps) => {
-  const addToDb = async () => {
+  const addToDb = async (transactionHash: string) => {
     try {
-      addWhitelistObject({
+      updateWhitelist({
         variables: {
           currentDate: currentDate,
           addressOfferingId: walletAddress + offeringId,
@@ -57,14 +61,14 @@ export const addWhitelistMember = async ({
           name: name,
           offering: offeringId,
           externalId: externalId,
+          transactionHash: transactionHash,
+          type: WhitelistTransactionType.Add,
         },
       });
     } catch (error: any) {
       throw new Error(error);
     }
   };
-
-  let transactionHash = '';
   const call = async () => {
     setButtonStep('step1');
     try {
@@ -74,24 +78,25 @@ export const addWhitelistMember = async ({
         functionName: 'addToWhitelist',
         args: [walletAddress],
       });
-
       const { hash } = await writeContract(request);
-      transactionHash = hash;
       await waitForTransaction({
         hash: hash,
       });
-      await addToDb();
+      await addToDb(hash);
       await handleWhitelistUpdateNotification({
         organization,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
         notificationText: `${walletAddress} was added to your offering's whitelist.`,
       });
+      triggerInvestorListRefresh && triggerInvestorListRefresh();
+      refetchMainContracts && refetchMainContracts();
+      toast.success(`${walletAddress} was added to your offering's whitelist.`);
       setButtonStep('confirmed');
     } catch (e) {
       const parsedError = ChainErrorResponses(e, walletAddress);
       if (parsedError.code === 1001) {
-        await addToDb();
-        refetchMainContracts && refetchMainContracts();
+        await addToDb('unknown');
+
         setButtonStep('confirmed');
       } else {
         StandardChainErrorHandling(e, setButtonStep, walletAddress);
@@ -99,7 +104,66 @@ export const addWhitelistMember = async ({
     }
   };
   await call();
-  return transactionHash;
+};
+
+type RemoveWhitelistMemberProps = {
+  shareContractAddress: String0x;
+  offeringId: string;
+  walletAddress: String0x;
+  organization: Organization;
+  setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
+  updateWhitelist: (
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+  ) => Promise<any>;
+  refetchMainContracts?: () => void;
+  triggerInvestorListRefresh?: () => void;
+};
+
+export const removeWhitelistMember = async ({
+  shareContractAddress,
+  offeringId,
+  walletAddress,
+  organization,
+  setButtonStep,
+  updateWhitelist,
+  refetchMainContracts,
+  triggerInvestorListRefresh,
+}: RemoveWhitelistMemberProps) => {
+  const call = async () => {
+    setButtonStep('step1');
+    try {
+      const { request } = await prepareWriteContract({
+        address: shareContractAddress,
+        abi: shareContractABI,
+        functionName: 'removeFromWhitelist',
+        args: [walletAddress],
+      });
+      const { hash } = await writeContract(request);
+      await waitForTransaction({
+        hash: hash,
+      });
+      await updateWhitelist({
+        variables: {
+          currentDate: currentDate,
+          addressOfferingId: walletAddress + offeringId,
+          transactionHash: hash,
+          type: WhitelistTransactionType.Remove,
+        },
+      });
+      await handleWhitelistUpdateNotification({
+        organization,
+        completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
+        notificationText: `${walletAddress} was removed from your offering's whitelist.`,
+      });
+      refetchMainContracts && refetchMainContracts();
+      triggerInvestorListRefresh && triggerInvestorListRefresh();
+      toast.success(`${walletAddress} was removed from your offering's whitelist.`);
+      setButtonStep('confirmed');
+    } catch (e) {
+      StandardChainErrorHandling(e, setButtonStep, walletAddress);
+    }
+  };
+  await call();
 };
 
 type SetDocumentProps = {
@@ -222,8 +286,14 @@ export const sendShares = async ({
           },
         });
       refetchMainContracts();
+      toast.success(
+        `${numShares} shares sent to ${addressWithoutEns({
+          address: recipient,
+        })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
+      );
       setButtonStep('confirmed');
-    } catch (e) {
+    } catch (e: any) {
+      toast.error(`Error sending shares: ${e.message}`);
       StandardChainErrorHandling(e, setButtonStep, recipient);
     }
   };

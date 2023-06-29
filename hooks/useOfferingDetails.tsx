@@ -52,7 +52,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
 
   const {
     contractOwner,
-    myShares,
+    myShareQty,
     sharesOutstanding,
     smartContractDocuments,
     isLoading: shareIsLoading,
@@ -130,7 +130,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     contractOrderList,
     currentSalePrice,
     contractOwner,
-    myShares,
+    myShareQty,
     sharesOutstanding,
     smartContractDocuments,
     isLoading,
@@ -141,7 +141,6 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     txnApprovalsEnabled,
     nextOrderId,
     totalDistributed,
-
     refetchShareContract,
     refetchSwapContract,
     refetchOrders,

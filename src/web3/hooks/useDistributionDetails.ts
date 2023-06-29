@@ -3,8 +3,13 @@ import { String0x } from '../helpersChain';
 import { dividendContractABI } from '../generated';
 import { shareContractDecimals, toNormalNumber } from '../util';
 import { getCurrencyById } from '@src/utils/enumConverters';
+import { getPublicClient } from 'wagmi/actions';
+import { useState } from 'react';
+import { useAsync } from 'react-use';
+import { Block } from 'viem';
 
 export type DistributionDetailsType = {
+  // currentBlock: Block | undefined;
   dividendPartition: String0x | undefined;
   blockTimestamp: BigInt | undefined;
   exDividendDate: Date | undefined;
@@ -24,6 +29,14 @@ export const useDistributionDetails = (
   dividendContactAddress: String0x,
   contractIndex: number
 ): DistributionDetailsType => {
+  const [currentBlock, setCurrentBlock] = useState<Block | undefined>(undefined);
+
+  useAsync(async () => {
+    const publicClient = getPublicClient();
+    const block = await publicClient.getBlock();
+    setCurrentBlock(block);
+  }, [getPublicClient, setCurrentBlock]);
+
   const {
     data,
     error,
@@ -48,6 +61,7 @@ export const useDistributionDetails = (
   const amountRemaining = data ? toNormalNumber(data[9], getCurrencyById(payoutTokenAddress)?.decimals) : undefined;
 
   return {
+    // currentBlock,
     dividendPartition,
     blockTimestamp,
     exDividendDate,

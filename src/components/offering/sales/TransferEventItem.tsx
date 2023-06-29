@@ -1,11 +1,8 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import React, { FC, useEffect } from 'react';
-
+import React, { FC } from 'react';
 import { getHumanDate } from '@src/utils/helpersGeneral';
-
-import { numberWithCommas } from '@src/utils/helpersMoney';
-
 import { getTransferEventOption } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ShareTransferEvent } from 'types';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
@@ -39,6 +36,8 @@ const TransferEvent: FC<TransferEventProps & { transferEvent: ShareTransferEvent
     setBlockTime(time);
     return time;
   }, [publicClient, setBlockTime, transactionData]);
+
+  const executor = transactionData?.from;
 
   return (
     <div className="relative md:grid grid-cols-7 gap-3 items-center p-3 border-b-2 ">

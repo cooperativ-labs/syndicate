@@ -17,8 +17,8 @@ import { Offering, ShareOrder } from 'types';
 
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { useAccount } from 'wagmi';
 import { isMetaMask } from '@src/web3/connectors';
+import { useAccount } from 'wagmi';
 
 import { useAsync } from 'react-use';
 
@@ -29,6 +29,7 @@ export type SharePurchaseRequestProps = {
   price: number;
   txnApprovalsEnabled: boolean;
   shareQtyRemaining: number;
+  myShareQty: number | undefined;
 };
 
 type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {
@@ -47,6 +48,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
   myBacBalance,
   txnApprovalsEnabled,
   shareQtyRemaining,
+  myShareQty,
   callFillOrder,
 }) => {
   const { connector } = useAccount();
@@ -147,9 +149,9 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
             <div className="md:grid grid-cols-3 gap-3">
               <Input
                 className={cn(defaultFieldDiv, 'col-span-2')}
-                labelText={`How many units would you like to ${isAskOrder ? 'purchase' : 'sell'}? ${
-                  isAskOrder ? `(${shareQtyRemaining} available)` : ''
-                }`}
+                labelText={`How many units would you like to ${isAskOrder ? 'purchase' : 'sell'}? (${
+                  isAskOrder ? shareQtyRemaining : myShareQty
+                } available)`}
                 name="numUnitsPurchase"
                 type="number"
                 placeholder="e.g. 80"

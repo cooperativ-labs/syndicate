@@ -12,50 +12,58 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import { Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
+import { Maybe, OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from 'types';
 
 import TransferEventList from '../sales/TransferEventList';
+import WhitelistTransactionItem from './WhitelistTransactionItem';
+import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { UPDATE_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { useContractRead, useContractWrite } from 'wagmi';
-import { useMutation, useQuery } from '@apollo/client';
+import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/dGraphQueries/offering';
+import { useContractReads } from 'wagmi';
+import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-
-type SelectedParticipantProps = {
-  selection: string;
-  participants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  currentSalePrice: Maybe<number> | undefined;
-  paymentTokenDecimals: number | undefined;
-  offeringId: string;
-  partitions: String0x[];
-  transferEventList: any[];
-  refetchContracts: () => void;
-  setSelectedParticipant: Dispatch<React.SetStateAction<string | undefined>>;
-};
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
-const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
+export type SelectedParticipantProps = {
+  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
+  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  currentSalePrice: Maybe<number> | undefined;
+  offeringId: string;
+  transferEventList: any[];
+  refetchContracts: () => void;
+  triggerInvestorListRefresh: () => void;
+};
+
+type SelectedParticipantFormPropsLocal = SelectedParticipantProps & {
+  selection: string;
+  partitions: String0x[];
+  paymentTokenDecimals: number | undefined;
+  setSelectedParticipant: Dispatch<React.SetStateAction<string | undefined>>;
+};
+
+const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   selection,
-  participants,
+  offeringParticipants,
   contractSet,
   paymentTokenDecimals,
   currentSalePrice,
   offeringId,
   partitions,
   transferEventList,
+  triggerInvestorListRefresh,
   refetchContracts,
 }) => {
   const { data: session } = useSession();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
   const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
+  const [updateWhitelist] = useMutation(UPDATE_WHITELIST);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
-  const participant = participants?.find((p) => p?.id === selection);
+  const participant = offeringParticipants?.find((p) => p?.id === selection);
   const participantWallet = participant?.walletAddress as String0x;
 
   const transferEvents = transferEventList.filter((transferEvent) => {
@@ -71,62 +79,38 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     abi: shareContractABI,
   };
 
-  const { data: shareBalanceData } = useContractRead({
-    ...sharedContractSpecs,
-    functionName: 'balanceOf',
-    args: [participantWallet as String0x],
+  const { data } = useContractReads({
+    contracts: [
+      { ...sharedContractSpecs, functionName: 'balanceOf', args: [participantWallet as String0x] },
+      { ...sharedContractSpecs, functionName: 'isWhitelisted', args: [participantWallet as String0x] },
+    ],
   });
 
-  const { write: removeWrite } = useContractWrite({
-    ...sharedContractSpecs,
-    functionName: 'removeFromWhitelist',
-    args: [participantWallet as String0x],
-    onSuccess: (data) => {
-      updateOfferingParticipant({
-        variables: {
-          currentDate: currentDate,
-          id: id,
-          permitted: false,
-        },
-      });
-    },
-    onError: (e) => {
-      StandardChainErrorHandling(e, setButtonStep);
-    },
-  });
-
-  const removeWhitelistMember = async () => {
-    setButtonStep('step1');
-    removeWrite();
-  };
+  const shareBalanceData = data?.[0].result;
+  const isWhitelisted = data?.[1].result;
 
   // -----------------Approve Whitelist Participant---------------------
 
-  const updateDb = async () => {
-    await updateOfferingParticipant({
-      variables: {
-        currentDate: currentDate,
-        id: id,
-        permitted: true,
-      },
-    });
-    setButtonStep('confirmed');
-  };
-
-  const { data: addData, write: addWrite } = useContractWrite({
-    ...sharedContractSpecs,
-    functionName: 'removeFromWhitelist',
-    args: [participantWallet as String0x],
-    onSuccess: () => updateDb(),
-    onError: (e) => {
-      StandardChainErrorHandling(e);
-    },
-  });
-
-  const approveWhiteListMember = async () => {
-    setButtonStep('step1');
+  const updateWhitelistMember = async (type: WhitelistTransactionType) => {
+    const baseVariables = {
+      offeringId: offeringId,
+      organization: offering.offeringEntity?.organization,
+      walletAddress: participantWallet,
+      shareContractAddress: shareContractAddress,
+      setButtonStep,
+      updateWhitelist,
+      triggerInvestorListRefresh,
+    };
     try {
-      addWrite();
+      if (type === WhitelistTransactionType.Add) {
+        addWhitelistMember({
+          ...baseVariables,
+        });
+      } else {
+        removeWhitelistMember({
+          ...baseVariables,
+        });
+      }
     } catch (e) {
       StandardChainErrorHandling(e);
     }
@@ -138,10 +122,21 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     return <div>Participant not found</div>;
   }
 
-  const { name, walletAddress, externalId, permitted, id, jurisdiction, investorApplication, offering, chainId } =
-    participant;
+  const {
+    name,
+    walletAddress,
+    externalId,
+    id,
+    jurisdiction,
+    investorApplication,
+    offering,
+    chainId,
+    whitelistTransactions,
+  } = participant;
+
   const distributions = offering.distributions;
   const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity?.organization);
+  const investorApplicationText = investorApplication?.applicationDoc.text;
 
   const updateInvestorForm = (itemType: ParticipantSpecItemType) => {
     return (
@@ -169,7 +164,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
               jurCountry: values.jurCountry,
               jurProvince: values.jurProvince,
               externalId: values.externalId,
-              permitted: permitted,
             },
           });
           setSpecEditOn('none');
@@ -251,8 +245,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
     </div>
   );
 
-  const investorApplicationText = investorApplication?.applicationDoc.text;
-
   const buttonSection = (
     <>
       <div className="flex gap-3">
@@ -265,32 +257,32 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
             Review Investor Application
           </button>
         )}
-        {permitted ? (
+        {isWhitelisted ? (
           <button
             className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
             aria-label="remove wallet from whitelist"
-            onClick={removeWhitelistMember}
+            onClick={() => updateWhitelistMember(WhitelistTransactionType.Remove)}
           >
             <LoadingButtonText
               state={buttonStep}
               idleText="Remove this investor from the whitelist"
               step1Text="Removing..."
-              confirmedText="Investor Removed!"
+              confirmedText="Updated!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />
           </button>
         ) : (
           <button
-            onClick={approveWhiteListMember}
+            onClick={() => updateWhitelistMember(WhitelistTransactionType.Add)}
             className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
             // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
           >
             <LoadingButtonText
               state={buttonStep}
               idleText="Approve Investor"
-              step1Text="Updating..."
-              confirmedText="Investor Approved!"
+              step1Text="Approving..."
+              confirmedText="Updated!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />
@@ -304,7 +296,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
               shareContractAddress={shareContractAddress}
               partitions={partitions}
               target={participantWallet}
-              offeringParticipants={participants}
+              offeringParticipants={offeringParticipants}
               refetchContracts={refetchContracts}
             />
           </SectionBlock>
@@ -323,9 +315,17 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
         showFull
       />
 
-      <div className="text-sm">{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
+      <div className="mb-4">
+        <div>{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
+        <SectionBlock sectionTitle="Review approvals" mini>
+          {whitelistTransactions?.map((transaction, i) => (
+            <WhitelistTransactionItem key={i} transaction={transaction} chainId={chainId} />
+          ))}
+        </SectionBlock>
+      </div>
       {specificationSection}
       {tradesSection}
+
       <hr className="my-10" />
       {buttonSection}
     </div>

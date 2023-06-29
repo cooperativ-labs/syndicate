@@ -316,7 +316,6 @@ export const ADD_OFFERING_PARTICIPANT = gql`
     $offeringId: ID!
     $walletAddress: String!
     $chainId: Int!
-    $permitted: Boolean!
   ) {
     addOfferingParticipant(
       input: {
@@ -327,7 +326,6 @@ export const ADD_OFFERING_PARTICIPANT = gql`
         offering: { id: $offeringId }
         walletAddress: $walletAddress
         chainId: $chainId
-        permitted: $permitted
       } # upsert: true
     ) {
       offeringParticipant {
@@ -366,7 +364,6 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
         name: $name
         offering: { id: $offeringId }
         walletAddress: $walletAddress
-        permitted: false
         minPledge: $minPledge
         maxPledge: $maxPledge
         # jurisdiction: { country: $jurCountry, state: $jurState }
@@ -413,6 +410,8 @@ export const ADD_WHITELIST_MEMBER = gql`
     $name: String
     $offering: ID!
     $externalId: String
+    $transactionHash: String
+    $type: WhitelistTransactionType!
   ) {
     addOfferingParticipant(
       input: {
@@ -422,9 +421,9 @@ export const ADD_WHITELIST_MEMBER = gql`
         walletAddress: $walletAddress
         chainId: $chainId
         name: $name
-        permitted: true
         offering: { id: $offering }
         externalId: $externalId
+        whitelistTransactions: { transactionHash: $transactionHash, type: $type }
       }
       upsert: true
     ) {
@@ -446,6 +445,34 @@ export const ADD_WHITELIST_MEMBER = gql`
   }
 `;
 
+export const UPDATE_WHITELIST = gql`
+  mutation UpdateWhitelist(
+    $currentDate: DateTime!
+    $id: [ID!]
+    $transactionHash: String!
+    $type: WhitelistTransactionType!
+  ) {
+    updateOfferingParticipant(
+      input: {
+        filter: { id: $id }
+        set: { lastUpdate: $currentDate, whitelistTransactions: { transactionHash: $transactionHash, type: $type } }
+      }
+    ) {
+      offeringParticipant {
+        id
+        whitelistTransactions {
+          transactionHash
+          type
+        }
+        name
+        offering {
+          id
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_OFFERING_PARTICIPANT = gql`
   mutation UpdateOfferingParticipant(
     $currentDate: DateTime!
@@ -454,7 +481,6 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
     $externalId: String
     $jurCountry: String!
     $jurProvince: String
-    $permitted: Boolean!
   ) {
     updateOfferingParticipant(
       input: {
@@ -464,7 +490,6 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
           name: $name
           jurisdiction: { country: $jurCountry, province: $jurProvince }
           externalId: $externalId
-          permitted: $permitted
         }
       }
     ) {

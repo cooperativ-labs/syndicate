@@ -9,7 +9,7 @@ import { useAsync } from 'react-use';
 
 type FormattedCryptoAddressProps = {
   chainId: Maybe<number> | undefined;
-  address: string | String0x | undefined;
+  address: Maybe<string> | string | String0x | undefined;
   label?: string;
   withCopy?: boolean;
   className?: string;
@@ -30,13 +30,14 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   userName,
   isYou,
 }) => {
-  const defaultAddress = addressWithoutEns({ address, isYou, isDesktop: false, userName, showFull });
-  const [copied, setCopied] = useState<boolean>(false);
-  const [presentedAddress, setPresentedAddress] = useState<string | undefined>(defaultAddress ?? undefined);
-  const chain = chainId ? MatchSupportedChains(chainId) : undefined;
-  const blockExplorer = chain?.blockExplorer;
   const windowSize = useWindowSize();
   const isDesktop = windowSize.width ? windowSize.width > 768 : false;
+  const defaultAddress = addressWithoutEns({ address, isYou, isDesktop, userName, showFull });
+  const [copied, setCopied] = useState<boolean>(false);
+  const [presentedAddress, setPresentedAddress] = useState<string | undefined>(defaultAddress ?? undefined);
+
+  const chain = chainId ? MatchSupportedChains(chainId) : undefined;
+  const blockExplorer = chain?.blockExplorer;
 
   const formURL = (chainId: Maybe<number> | undefined, lookupType?: string) => {
     const type = lookupType === 'tx' ? 'tx' : isAlgorand(chainId) ? 'application' : 'address';
@@ -45,15 +46,16 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   };
 
   useAsync(async () => {
-    const presentedAddress = await addressWithENS({ address, isYou, isDesktop, userName, showFull });
-    setPresentedAddress(presentedAddress);
-  }, [address, isYou, isDesktop, userName, showFull]);
+    if (lookupType === 'tx') return;
+    const addressENS = await addressWithENS({ address, isYou, isDesktop, userName, showFull });
+    addressENS && setPresentedAddress(addressENS);
+  }, [address, isYou, isDesktop, userName, showFull, lookupType]);
 
   return (
     <span className={cn('flex', [className ? className : 'text-sm text-gray-700'])}>
       <a target="_blank" rel="noreferrer" href={formURL(chainId, lookupType)}>
         {label}
-        <span className="hover:underline whitespace-nowrap">{presentedAddress}</span>
+        <span className="hover:underline whitespace-nowrap">{showFull ? defaultAddress : presentedAddress}</span>
       </a>
       {withCopy && address && (
         <button

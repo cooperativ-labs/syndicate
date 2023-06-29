@@ -1,7 +1,7 @@
+import cn from 'classnames';
 import React, { FC } from 'react';
-import { faClockFour } from '@fortawesome/free-solid-svg-icons';
+import { faCheck, faClockFour, faWaveSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 
 type StepStatusType = 'waiting' | 'pending' | 'success' | 'error';
@@ -16,24 +16,29 @@ const WalletActionStep: FC<{ stepStatus: StepStatusType; message?: string; subMe
   const icon =
     stepStatus === 'pending' ? (
       <img
-        src="/assets/images/loading-circle.jpeg"
+        src="/assets/images/loading-circle.png"
         aria-label="loading"
         className="h-10 mr-1 animate-spin bg-white rounded-full"
       />
     ) : stepStatus === 'success' ? (
-      <FontAwesomeIcon icon={'fa-solid fa-check' as IconProp} />
+      <FontAwesomeIcon icon={faCheck} className="" />
     ) : stepStatus === 'error' ? (
-      <FontAwesomeIcon icon={'fa-solid fa-circle-xmark' as IconProp} />
+      <FontAwesomeIcon icon={faXmark} />
     ) : (
-      <FontAwesomeIcon icon={faClockFour} />
+      <FontAwesomeIcon icon={faWaveSquare} />
     );
 
   return (
-    <div className={'grid grid-cols-8 p-3 border-2 border-gray-200 rounded-lg items-center  '}>
+    <div
+      className={cn(
+        stepStatus === 'pending' ? 'border-gray-300 text-cDarkBlue' : 'border-gray-100 text-gray-500',
+        'grid grid-cols-8 p-3 border-2 rounded-lg items-center '
+      )}
+    >
       <div className="flex justify-center col-span-1 text-2xl">{icon}</div>
-      <div className="col-span-7 ">
-        <div className=" text-lg text-cDarkBlue">{message}</div>
-        {subMessage && <div className="font-medium text-sm text-cLightBlue">{subMessage}</div>}
+      <div className={'col-span-7'}>
+        <div className="font-semibold text-lg mb-1">{message}</div>
+        {subMessage && <div className="font-medium text-sm">{subMessage}</div>}
       </div>
     </div>
   );

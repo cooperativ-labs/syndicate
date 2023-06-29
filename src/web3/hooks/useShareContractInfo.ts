@@ -7,7 +7,7 @@ export type ShareContractInfoType = {
   contractOwner: string | undefined;
   isManager: boolean | undefined;
   isWhitelisted: boolean | undefined;
-  myShares: number | undefined;
+  myShareQty: number | undefined;
   sharesOutstanding: number | undefined;
   smartContractDocuments: any | undefined;
   firstPartition: String0x | undefined;
@@ -59,7 +59,7 @@ export const useShareContractInfo = (
   const contractOwner = data ? data[0].result : undefined;
   const isManager = data ? data[1].result : undefined;
   const isWhitelisted = data ? data[2].result : undefined;
-  const myShares = data ? toNormalNumber(data[3].result, shareContractDecimals) : undefined;
+  const myShareQty = data ? toNormalNumber(data[3].result, shareContractDecimals) : 0;
   const sharesOutstanding = data ? toNormalNumber(data[4].result, shareContractDecimals) : undefined;
   const smartContractDocuments = data ? data[5].result : undefined;
   const firstPartition = data ? (data[6].result as String0x) : undefined;
@@ -69,7 +69,7 @@ export const useShareContractInfo = (
     contractOwner,
     isManager,
     isWhitelisted,
-    myShares,
+    myShareQty,
     sharesOutstanding,
     smartContractDocuments,
     firstPartition,

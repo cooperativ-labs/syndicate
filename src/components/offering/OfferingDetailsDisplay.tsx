@@ -7,7 +7,7 @@ import { String0x } from '@src/web3/helpersChain';
 
 export type ContractViewDetails = {
   sharesOutstanding: number | undefined;
-  myShares: number | undefined;
+  myShareQty: number | undefined;
   paymentToken: String0x | undefined;
   totalDistributed: number | undefined;
 };
@@ -28,7 +28,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
 
   className,
 }) => {
-  const { sharesOutstanding, myShares, paymentToken, totalDistributed } = contractViewDetails;
+  const { sharesOutstanding, myShareQty, paymentToken, totalDistributed } = contractViewDetails;
   const {
     numUnits,
     projectedIrr,
@@ -64,7 +64,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
           </OfferingDetailDashboardItem>
         ) : (
           <OfferingDetailDashboardItem title="My shares">
-            <MoneyDisplay amount={myShares} />
+            <MoneyDisplay amount={myShareQty} />
           </OfferingDetailDashboardItem>
         )}
 
@@ -75,7 +75,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
         ) : (
           <OfferingDetailDashboardItem title="Share value">
             <MoneyDisplay
-              amount={currentSalePrice && myShares ? currentSalePrice * myShares : undefined}
+              amount={currentSalePrice && myShareQty ? currentSalePrice * myShareQty : undefined}
               paymentToken={paymentToken}
               currency={investmentCurrency}
             />

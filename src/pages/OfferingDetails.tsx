@@ -16,13 +16,15 @@ import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { DocumentType, Offering } from 'types';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { useAccount } from 'wagmi';
+import { readContracts, useAccount } from 'wagmi';
 import { useSession } from 'next-auth/react';
 
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import { MatchSupportedChains } from '@src/web3/connectors';
+import { shareContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
 // import { ABI } from '@src/web3/ABI';
 
 type OfferingDetailsProps = {
@@ -41,6 +43,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
   const [transactionHistoryPanel, setTransactionHistoryPanel] = useState<boolean>(false);
+  const [investorListRefreshTrigger, setInvestorListRefreshTrigger] = useState<number>(0); //this seems extremely hackish, but I can't figure out any other way to get the contract hooks in WhitelistAddressListItem to refresh.
 
   const {
     hasContract,
@@ -57,7 +60,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     legalLinkTexts,
     isOfferingManager,
     currentSalePrice,
-    myShares,
+    myShareQty,
     sharesOutstanding,
     smartContractDocuments,
     isLoading,
@@ -72,10 +75,15 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     refetchTransactionHistory,
   } = useOfferingDetails(offering, userId);
 
+  const triggerInvestorListRefresh = () => {
+    setInvestorListRefreshTrigger(investorListRefreshTrigger + 1);
+  };
+
   const refetchMainContracts = () => {
     refetchShareContract();
     refetchSwapContract();
     refetchTransactionHistory();
+    triggerInvestorListRefresh();
   };
 
   const refetchOfferingInfo = () => {
@@ -147,7 +155,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                 isOfferingManager={isOfferingManager}
                 contractViewDetails={{
                   sharesOutstanding: sharesOutstanding,
-                  myShares: myShares,
+                  myShareQty: myShareQty,
                   paymentToken: paymentTokenAddress,
                   totalDistributed: totalDistributed,
                 }}
@@ -222,7 +230,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                         refetchMainContracts={refetchMainContracts}
                         refetchOfferingInfo={refetchOfferingInfo}
                         currentSalePrice={currentSalePrice}
-                        myShares={myShares}
+                        myShareQty={myShareQty}
                       />
                     )}
                   </div>
@@ -248,6 +256,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                 partitions={partitions}
                 transferEvents={transferEvents}
                 refetchContracts={refetchMainContracts}
+                triggerInvestorListRefresh={triggerInvestorListRefresh}
+                investorListRefreshTrigger={investorListRefreshTrigger}
               />
             )}
           </div>

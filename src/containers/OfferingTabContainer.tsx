@@ -8,13 +8,15 @@ import React, { FC, useState } from 'react';
 import SubmitDistribution from '@src/components/offering/SubmitDistribution';
 import Tab from '@src/components/offering/tabs/Tab';
 
-import WhitelistAddressList from '@src/components/offering/whitelist/WhitelistAddressList';
+import WhitelistAddressList, {
+  WhitelistAddressListProps,
+} from '@src/components/offering/whitelist/WhitelistAddressList';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
 
-type OfferingTabContainerProps = {
+type OfferingTabContainerProps = WhitelistAddressListProps & {
   offering: Offering;
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
   contractOwnerMatches: boolean;
@@ -24,6 +26,7 @@ type OfferingTabContainerProps = {
   currentSalePrice: Maybe<number> | undefined;
   partitions: String0x[];
   transferEvents: any[];
+  investorListRefreshTrigger: number;
   refetchContracts: () => void;
 };
 
@@ -43,6 +46,8 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   currentSalePrice,
   partitions,
   transferEvents,
+  investorListRefreshTrigger,
+  triggerInvestorListRefresh,
   refetchContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
@@ -87,7 +92,9 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
       <div>
         {activeTab === 'properties' && (
           <div className="mt-8">
-            <h1 className="text-cDarkBlue text-2xl font-medium   mb-6 ">Properties</h1>
+            <div className="mb-6">
+              <h1 className="text-cDarkBlue text-2xl font-medium  ">Properties</h1>
+            </div>
             <OfferingProperties
               offeringEntity={offeringEntity}
               isOfferingManager={isOfferingManager}
@@ -99,14 +106,18 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
           <div className="mt-8">
             {shareContractAddress ? (
               <div>
-                <h1 className="text-cDarkBlue text-2xl font-medium  mb-6 mt-8 ">Investors</h1>
+                <div className="flex justify-between items-center mb-6">
+                  <h1 className="text-cDarkBlue text-2xl font-medium ">Investors</h1>
+                </div>
                 <WhitelistAddressList
                   offeringParticipants={offering.participants}
                   contractSet={contractSet}
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}
                   offeringId={offering.id}
-                  transferEvents={transferEvents}
+                  transferEventList={transferEvents}
+                  investorListRefreshTrigger={investorListRefreshTrigger}
+                  triggerInvestorListRefresh={triggerInvestorListRefresh}
                   refetchContracts={refetchContracts}
                 />
                 <hr className="mt-5" />
@@ -122,9 +133,9 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
           </div>
         )}
         {activeTab === 'distributions' && (
-          <div>
-            <div className="flex justify-between items-center">
-              <h1 className="text-cDarkBlue text-2xl font-medium mb-6 mt-8 ">Distributions</h1>
+          <div className="mt-8">
+            <div className="flex justify-between items-center mb-6">
+              <h1 className="text-cDarkBlue text-2xl font-medium ">Distributions</h1>
               {contractOwnerMatches && isContractOwner && !!distributionContractAddress && (
                 <Button
                   onClick={() => {
