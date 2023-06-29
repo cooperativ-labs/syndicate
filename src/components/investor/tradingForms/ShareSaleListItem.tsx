@@ -71,7 +71,8 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     refetchOrderDetails();
   }
 
-  const isOfferor = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
+  const currentUserFiller = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(filler);
+  const currentUserInitiator = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
   const shareQtyRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
 
   const status =
@@ -79,26 +80,37 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     getSwapStatusOption({
       amount,
       filledAmount,
+      isFiller: !!filler,
       isApproved,
       isDisapproved,
       isCancelled,
       isAccepted,
       txnApprovalsEnabled,
+      swapApprovalsEnabled,
+      isVisible: order.visible,
     });
+
+  const showArchived = order.archived && (order.visible || currentUserInitiator || isContractOwner);
+  const showLive = !order.archived && (order.visible || currentUserInitiator || isContractOwner);
 
   return (
     <>
-      {order.archived && order.visible && (
-        <div className="items-center shadow-md rounded-md my-5 ">
-          <div className="p-3 rounded-md bg-slate-100 items-center">
+      {showArchived && (
+        <div className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer">
+          <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
+          <div className="col-span-11">
             <div> Archived/Completed Swap - need to design </div>
             <div> Order index: {order.contractIndex}</div>
             <div> status: {status.name}</div>
+            <div> amount: {amount}</div>
           </div>
         </div>
       )}
-      {!order.archived && (isOfferor || isContractOwner || order.visible) ? (
-        <div className="items-center shadow-md rounded-md my-5 ">
+      {showLive && (
+        <div className="relative items-center shadow-md hover:shadow-lg rounded-md my-5 ">
+          <div className={`absolute top-2 right-2 p-1 px-2 rounded-md border-2 border-${status.color} text-xs`}>
+            {status.name}
+          </div>
           <div
             className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
             onClick={() => setOpen(!open)}
@@ -106,33 +118,31 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
             <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
             <div className="flex justify-between col-span-11">
               <OfferingSummaryPanel
-                seller={initiator}
+                isAskOrder={isAskOrder}
+                initiator={initiator}
                 shareQtyRemaining={shareQtyRemaining}
                 partition={partition}
                 price={price}
                 paymentTokenAddress={paymentTokenAddress}
               />
-              Order index: {order.contractIndex}
+
               <div className="flex items-center p-1">
-                {isOfferor && (
+                {/* {isOfferor && (
                   <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
                     Manage your offer
                   </button>
-                )}
-                {!isApproved && filler && txnApprovalsEnabled && isContractOwner && (
-                  <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
-                    Review order request
-                  </button>
-                )}
+                )} */}
+
                 {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
               </div>
             </div>
           </div>
           {open && (
             <div className="p-2">
-              {(isOfferor || isContractOwner) && (
+              {(currentUserInitiator || isContractOwner) && (
                 <SaleManagerPanel
-                  isOfferor={isOfferor}
+                  currentUserFiller={currentUserFiller}
+                  currentUserInitiator={currentUserInitiator}
                   isContractOwner={isContractOwner}
                   offeringId={offering.id}
                   isApproved={isApproved}
@@ -157,14 +167,14 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   refetchOfferingInfo={refetchOfferingInfo}
                 />
               )}
-              {!isOfferor && (
+              {(isAskOrder ? !currentUserInitiator : currentUserInitiator) && (
                 <SharePurchaseSteps
                   offering={offering}
                   order={order}
                   shareQtyRemaining={shareQtyRemaining as number}
                   price={price as number}
                   swapContractAddress={swapContractAddress as String0x}
-                  isAsk={isAskOrder as boolean}
+                  isAskOrder={isAskOrder as boolean}
                   refetchAllContracts={refetchAllContracts as () => void}
                   isApproved={isApproved as boolean}
                   isDisapproved={isDisapproved as boolean}
@@ -183,11 +193,112 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
             </div>
           )}
         </div>
-      ) : (
-        <></>
       )}
     </>
   );
 };
 
 export default ShareSaleListItem;
+
+/* 
+
+dead swap block {
+       - sees disapproved - isDisapproved && !isCancelled
+      - sees cancelled - isCancelled 
+      - sees filled - fullyFilled
+      - sees complete - This does not come from the contract. Perhaps we should show a transaction list 
+}
+
+const isDead = isDisapproved || isCancelled || fullyFilled;
+
+screens I need
+ - Propose 
+    - sale 
+    - bid
+- Status 
+  - txn required
+    - awaiting approval
+    - someone else is pending
+    - approved 
+  - swap approval
+    - awaiting approval
+    - 
+- Execute 
+    - sale
+    - bid
+
+ - Initiate sale
+ - Initiate bid
+ - 
+
+
+Is an ask order
+  - txn approvals enabled
+    - seller 
+      - can propose to offer - initiates the swap
+      - can cancel offer - isInitiator && isDead
+      - is waiting for listing approval - isAccepted && !isApproved && isDead
+    - buyer
+      - can propose to buy - !isAccepted && !isApproved && noPendingFiller && isDead
+      - is waiting for approval - isAccepted && !isApproved && isDead
+      - can execute - isAccepted && isApproved &&  currentUserFiller && isDead
+      - can cancelAcceptance - isAccepted && currentUserFiller && isDead
+    - both
+      - dead swap block
+
+  - txn approvals disabled
+    - seller
+      - can propose to offer - initiates
+      - can cancel offer - currentUserInitiator && isDead
+      - sale has taken place - find some way to show this
+    - buyer
+      - can buy - isApproved && isDead
+    - both
+      - dead swap block
+  - No approvals 
+    - seller
+      - can propose to offer - initiates
+      - can cancel offer - currentUserInitiator && isDead
+      - sale has taken place - find some way to show this
+    - buyer
+      - can buy - !isCancelled && !fullyFilled
+      - sees sale has taken place
+    - both
+      - isCancelled || fullyFilled
+
+Is a bid order
+  - txn approvals enabled
+    - buyer (as initiator)
+      - can propose to buy - initiates the swap
+      - can cancel offer - isInitiator && isDead
+      - is waiting for listing approval - this is frontend only
+      - seller has made offer, awaiting approval - isAccepted && !isApproved && isDead
+      - can execute - currentUserInitiator && isAccepted && isApproved && isDead
+    - seller (as filler)
+      - can propose to sell - !isAccepted && !isApproved && noPendingFiller && isDead
+      - is waiting for approval - currentUserFiller && isAccepted && !isApproved && isDead
+      - can cancelAcceptance - currentUserFiller && isAccepted && isDead
+      - claim proceeds = proceeds > 0 
+    - both
+      - dead swap block
+  - txn approvals disabled
+    - buyer (as initiator)
+      - can propose to buy - initiates
+      - can cancel offer - currentUserInitiator && isDead
+      - pending approval - !isApproved && isDead
+      - awaiting seller - currentUserInitiator && isApproved && isDead
+        - disapproved - find some way to show this 
+      - can execute - currentUserInitiator && isApproved && isDead
+    - seller (as filler)
+      - sees offer - isApproved && isDead
+      - can accept - isApproved && isDead
+      - can cancelAcceptance - currentUserFiller && isAccepted && isDead
+      - claim proceeds = proceeds > 0
+    - both
+      - dead swap block
+  - No approvals
+    - buyer (as initiator)
+      - can propose to buy - initiates
+      - can cancel offer - currentUserInitiator && isDead
+      - can execute - currentUserInitiator && isAccepted && isDead
+*/

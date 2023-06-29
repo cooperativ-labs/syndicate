@@ -309,6 +309,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
               paymentTokenAddress={paymentTokenAddress}
               paymentTokenDecimals={paymentTokenDecimals}
               txnApprovalsEnabled={txnApprovalsEnabled}
+              swapApprovalsEnabled={swapApprovalsEnabled}
               isContractOwner={isContractOwner}
             />
           )}

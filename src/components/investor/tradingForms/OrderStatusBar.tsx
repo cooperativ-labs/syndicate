@@ -7,9 +7,10 @@ type OrderStatusBarProps = {
   acceptedOrderQty: number | undefined;
   txnApprovalsEnabled: boolean | undefined;
   currentUserFiller: boolean | undefined;
+  currentUserInitiator: boolean | undefined;
+  isAskOrder: boolean | undefined;
   isApproved: boolean | undefined;
   isDisapproved: boolean | undefined;
-  isCompleted: boolean | undefined;
 };
 
 const OrderStatusBar: FC<OrderStatusBarProps> = ({
@@ -17,14 +18,16 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   acceptedOrderQty,
   txnApprovalsEnabled,
   currentUserFiller,
+  currentUserInitiator,
+  isAskOrder,
   isApproved,
   isDisapproved,
-  isCompleted,
 }) => {
-  const currentUserPending = isAccepted && currentUserFiller && !isApproved && !isDisapproved;
-  const currentUserApproved = txnApprovalsEnabled && isAccepted && isApproved;
-  const currentUserDisapproved = txnApprovalsEnabled && isAccepted && isDisapproved && currentUserFiller;
-  const otherOrderPending = txnApprovalsEnabled && isAccepted && !currentUserFiller;
+  const manOfAction = isAskOrder ? currentUserFiller : currentUserInitiator;
+  const currentUserPending = isAccepted && (currentUserFiller || currentUserInitiator) && !isApproved && !isDisapproved;
+  const currentUserApproved = txnApprovalsEnabled && isAccepted && isApproved && manOfAction;
+  const currentUserDisapproved = txnApprovalsEnabled && isAccepted && isDisapproved && manOfAction;
+  const otherOrderPending = txnApprovalsEnabled && isAccepted && !manOfAction;
 
   const cases = () => {
     if (currentUserPending) {
@@ -44,20 +47,15 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
       };
     } else if (otherOrderPending) {
       return { color: 'border-yellow-600 text-yellow-600', text: `Another investor's request is pending` };
-    } else if (isCompleted) {
-      return {
-        color: 'border-green-600 text-green-600',
-        text: `Order completed: ${numberWithCommas(acceptedOrderQty as number)} shares transferred`,
-      };
     } else {
-      return { color: undefined, text: undefined };
+      return undefined;
     }
   };
 
-  const color = cases().color;
-  const className = cn(color, 'border-2 font-semibold p-3 rounded-lg');
+  const { color, text } = cases() || { color: undefined, text: undefined };
+  const className = cn(color, 'border-2 font-semibold p-3 rounded-lg ');
 
-  return <div className={className}>{cases().text}</div>;
+  return cases() ? <div className={className}>{text}</div> : <></>;
 };
 
 export default OrderStatusBar;

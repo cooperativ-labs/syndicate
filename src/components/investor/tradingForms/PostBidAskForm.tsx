@@ -64,7 +64,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const [isAsk, setIsAsk] = useState<boolean>(true);
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
-  const { id, name, details, documents, offeringEntity } = offering;
+  const { name, details, documents, offeringEntity } = offering;
   const sharesIssued = details?.numUnits;
 
   const sharesUnissued = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
@@ -77,7 +77,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
     return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
   };
 
-  const showSharesAvailable = `(${isContractOwner ? sharesUnissued : myShares} available)`;
+  const showSharesAvailable = `(${myShares} available)`;
 
   return (
     <>
@@ -126,7 +126,6 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          const isAsk = true;
           const isIssuance = false;
           const isErc20Payment = true;
           if (!values.numUnits || !values.price) {

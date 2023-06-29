@@ -7,7 +7,6 @@ import NonInput from '../../form-components/NonInput';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import React, { FC, useState } from 'react';
 import StandardButton from '@src/components/buttons/StandardButton';
-import { acceptOrder, setAllowance } from '@src/web3/contractSwapCalls';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -15,25 +14,21 @@ import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { Offering, ShareOrder } from 'types';
-import { String0x } from '@src/web3/helpersChain';
 
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { erc20ABI, useAccount, useContractRead } from 'wagmi';
-import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
+import { useAccount } from 'wagmi';
 import { isMetaMask } from '@src/web3/connectors';
-import { toNormalNumber } from '@src/web3/util';
+
 import { useAsync } from 'react-use';
 
 export type SharePurchaseRequestProps = {
   offering: Offering;
   order: ShareOrder;
+  isAskOrder: boolean;
   price: number;
-  swapContractAddress: String0x;
   txnApprovalsEnabled: boolean;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number;
-  refetchAllContracts: () => void;
+  shareQtyRemaining: number;
 };
 
 type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {
@@ -46,17 +41,15 @@ type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {
 
 const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
   offering,
+  isAskOrder,
   order,
   price,
   myBacBalance,
-  swapContractAddress,
   txnApprovalsEnabled,
-  paymentTokenAddress,
-  paymentTokenDecimals,
-  refetchAllContracts,
+  shareQtyRemaining,
   callFillOrder,
 }) => {
-  const { address: userWalletAddress, connector } = useAccount();
+  const { connector } = useAccount();
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
@@ -76,64 +69,23 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
     return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)));
   };
 
-  //ABSTRACT THE ALLOWANCE BIT
-
-  const { data: allowanceData, refetch } = useContractRead({
-    address: paymentTokenAddress,
-    abi: erc20ABI,
-    functionName: 'allowance',
-    args: [userWalletAddress as String0x, swapContractAddress],
-  });
-
-  // ABSTRACT THIS OUT
-
-  const handleAllowance = async (allowanceRequiredForPurchase: number) => {
-    await setAllowance({
-      paymentTokenAddress,
-      paymentTokenDecimals,
-      spenderAddress: swapContractAddress,
-      amount: allowanceRequiredForPurchase,
-      setButtonStep,
-    });
-    refetch();
+  const handlePurchaseSaleRequest = async (values: any) => {
+    const amountToBuySell = values.numUnitsPurchase;
+    callFillOrder({ amount: amountToBuySell, setButtonStep });
   };
 
-  const handlePurchaseRequest = async (values: any) => {
-    const amountToBuy = values.numUnitsPurchase;
-    if (txnApprovalsEnabled) {
-      setButtonStep('step1');
-      await acceptOrder({
-        swapContractAddress: swapContractAddress,
-        contractIndex: order.contractIndex,
-        amount: amountToBuy,
-        offeringId: offering.id,
-        organization: offering.offeringEntity?.organization,
-        refetchAllContracts: refetchAllContracts,
-        setButtonStep: setButtonStep,
-      });
-    } else {
-      const allowance = toNormalNumber(allowanceData, paymentTokenDecimals);
-      const allowanceRequiredForPurchase = amountToBuy * price;
-      const isAllowanceSufficient = getIsAllowanceSufficient(allowance, allowanceRequiredForPurchase);
-      if (!isAllowanceSufficient) {
-        setButtonStep('step1');
-        await handleAllowance(allowanceRequiredForPurchase);
-        setButtonStep('step2');
-        await callFillOrder({
-          amount: amountToBuy,
-          setButtonStep: setButtonStep,
-        });
-        setButtonStep('confirmed');
-      } else if (isAllowanceSufficient) {
-        setButtonStep('step2');
-        await callFillOrder({
-          amount: amountToBuy,
-          setButtonStep: setButtonStep,
-        });
-        setButtonStep('confirmed');
-      }
+  const formButtonText = (numUnitsPurchase: string) => {
+    function capitalizeFirstLetter(str: string) {
+      return str.charAt(0).toUpperCase() + str.slice(1);
     }
-    setButtonStep('idle');
+    const action = isAskOrder ? 'purchase' : 'sell';
+    const mainText = txnApprovalsEnabled ? `Request to ${action}` : `${capitalizeFirstLetter(action)}`;
+
+    return `${mainText} ${numUnitsPurchase ?? ''} shares ${
+      numUnitsPurchase
+        ? `for ${purchaseString(numUnitsPurchase)} ${getCurrencyOption(offering.details?.investmentCurrency)?.symbol} `
+        : ''
+    }`;
   };
 
   return (
@@ -161,15 +113,18 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
         }}
         validate={(values) => {
           const errors: any = {}; /** @TODO : Shape */
+          const numUnitsPurchase = parseInt(values.numUnitsPurchase, 10);
           if (!values.numUnitsPurchase) {
-            const numUnitsPurchase = parseInt(values.numUnitsPurchase, 10);
             errors.numUnitsPurchase = 'You must choose a number of shares to purchase.';
-            if (order.minUnits) {
-              if (numUnitsPurchase && numUnitsPurchase < order.minUnits) {
-                errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
-              } else if (numUnitsPurchase && order.maxUnits && numUnitsPurchase > order.maxUnits) {
-                errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
-              }
+          }
+          if (numUnitsPurchase && numUnitsPurchase > shareQtyRemaining) {
+            errors.numUnitsPurchase = `There are only ${shareQtyRemaining} for sale.`;
+          }
+          if (order.minUnits) {
+            if (numUnitsPurchase && numUnitsPurchase < order.minUnits) {
+              errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
+            } else if (numUnitsPurchase && order.maxUnits && numUnitsPurchase > order.maxUnits) {
+              errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
             }
           }
           if (!values.disclosures) {
@@ -183,7 +138,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
         onSubmit={async (values, { setSubmitting }) => {
           if (values.numUnitsPurchase === '') return;
           setSubmitting(true);
-          handlePurchaseRequest(values);
+          handlePurchaseSaleRequest(values);
           setSubmitting(false);
         }}
       >
@@ -192,13 +147,18 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
             <div className="md:grid grid-cols-3 gap-3">
               <Input
                 className={cn(defaultFieldDiv, 'col-span-2')}
-                labelText="How many units would you like to purchase?"
+                labelText={`How many units would you like to ${isAskOrder ? 'purchase' : 'sell'}? ${
+                  isAskOrder ? `(${shareQtyRemaining} available)` : ''
+                }`}
                 name="numUnitsPurchase"
                 type="number"
                 placeholder="e.g. 80"
                 required
               />
-              <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText="Purchase Price:">
+              <NonInput
+                className={`${defaultFieldDiv} col-span-1 pl-1`}
+                labelText={`${isAskOrder ? 'Purchase' : 'Sale'} Price:`}
+              >
                 <>
                   {values.numUnitsPurchase &&
                     `${purchaseString(values.numUnitsPurchase)} ${
@@ -328,15 +288,7 @@ const SharePurchaseRequest: FC<AdditionalSharePurchaseRequestProps> = ({
             <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
               <LoadingButtonText
                 state={buttonStep}
-                idleText={`${txnApprovalsEnabled ? 'Request to p' : 'P'}urchase ${
-                  values.numUnitsPurchase ?? ''
-                } shares ${
-                  values.numUnitsPurchase
-                    ? `for ${purchaseString(values.numUnitsPurchase)} ${
-                        getCurrencyOption(offering.details?.investmentCurrency)?.symbol
-                      } `
-                    : ''
-                }`}
+                idleText={formButtonText(values.numUnitsPurchase)}
                 step1Text={txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'}
                 step2Text="Executing transaction..."
                 confirmedText="Executed!"
