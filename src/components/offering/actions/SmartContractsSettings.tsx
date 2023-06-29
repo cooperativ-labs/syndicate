@@ -26,11 +26,10 @@ const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
   refetchMainContracts,
 }) => {
   const shareContract = contractSet?.shareContract;
-  const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
+
   return (
     <>
       <ShareContractSettings user={user} offering={offering} shareContract={shareContract} partitions={partitions} />
-
       <hr className="my-5" />
       <SwapContractSettings
         refetchMainContracts={refetchMainContracts}

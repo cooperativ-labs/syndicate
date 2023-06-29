@@ -117,6 +117,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             swapApprovalsEnabled={swapApprovalsEnabled}
             shareContractAddress={shareContractAddress}
             refetchOfferingInfo={refetchOfferingInfo}
+            myShareQty={myShareQty}
           />
         )}
       </FormModal>

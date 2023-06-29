@@ -13,12 +13,14 @@ import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import { DocumentType, Offering } from 'types';
+import { floatWithCommas } from '@src/utils/helpersMoney';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useContractRead, useContractReads, useNetwork } from 'wagmi';
+import { toNormalNumber } from '@src/web3/util';
+import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 
@@ -74,7 +76,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     abi: shareContractABI,
   };
 
-  const { data, error } = useContractReads({
+  const { data } = useContractReads({
     contracts: [
       {
         ...sharedContractSpecs,
@@ -89,13 +91,22 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     ],
   });
 
+  const { data: bacBalanceData, refetch: refetchUserBalance } = useBalance({
+    address: userWalletAddress,
+    token: paymentTokenAddress,
+  });
+  const myBacBalance = bacBalanceData?.formatted;
+  const bacSymbol = bacBalanceData?.symbol;
+
   const partitions = data?.[0].result;
+  const isWhitelistError = data?.[1].error;
   const isWhitelisted = data?.[1].result;
 
   const refetchMainContracts = () => {
     refetchShareContract();
     refetchSwapContract();
     refetchTransactionHistory();
+    refetchUserBalance();
     refetchOrders();
   };
 
@@ -117,23 +128,36 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     return (
       <div className="w-screen h-screen flex justify-center items-center pb-32">
         <div className="text-center">
-          <h1 className="text-2xl font-bold">You are not a participant of this offering</h1>
+          <h1 className="text-2xl font-bold">You are not a participant of this offering.</h1>
           <p className="text-lg">Please contact the fund manager for more information.</p>
         </div>
       </div>
     );
   }
 
+  const whitelistError = (
+    <div className="w-screen h-screen flex justify-center items-center pb-32">
+      <div className="flex justify-center items-center">
+        <div className="text-center">
+          <h1 className="text-2xl font-bold">Error retrieving allowlist status.</h1>
+          <p className="text-lg">Please make sure your wallet is set to the same network as this offering.</p>
+        </div>
+      </div>
+    </div>
+  );
+
   const removedFromWhitelist = (
     <div className="flex justify-center items-center">
       <div className="text-center">
-        <h1 className="text-2xl font-bold">You have been removed from this offering</h1>
+        <h1 className="text-2xl font-bold">You have been removed from this offering.</h1>
         <p className="text-lg">Please contact the fund manager for more information.</p>
       </div>
     </div>
   );
 
-  if (!isWhitelisted) {
+  if (isWhitelistError) {
+    return whitelistError;
+  } else if (!isWhitelisted) {
     return <div className="w-screen h-screen flex justify-center items-center pb-32">{removedFromWhitelist}</div>;
   }
 
@@ -182,6 +206,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
                 swapApprovalsEnabled={swapApprovalsEnabled}
                 shareContractAddress={shareContractAddress}
                 refetchOfferingInfo={refetchOfferingInfo}
+                myShareQty={myShareQty}
               />
             ) : (
               removedFromWhitelist
@@ -200,6 +225,11 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
                 paymentToken: paymentTokenAddress,
               }}
             />
+            <hr className="mt-6 mb-4" />
+            <div className="flex text-xs font-medium uppercase">
+              {`Your wallet balance: ${floatWithCommas(myBacBalance as string, 2)} ${bacSymbol}
+               `}
+            </div>
           </DashboardCard>
         </TwoColumnLayout>
         <TwoColumnLayout twoThirdsLayout>

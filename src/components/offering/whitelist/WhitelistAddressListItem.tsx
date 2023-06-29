@@ -1,41 +1,53 @@
 import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
-import React, { FC, useContext } from 'react';
+import React, { FC, useEffect } from 'react';
 
 import { Maybe, OfferingParticipant } from 'types';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractReads } from 'wagmi';
+
 type WhitelistAddressListItemProps = {
   participant: Maybe<OfferingParticipant>;
   shareContractAddress: String0x;
   setSelectedParticipant: (participantId: string) => void;
+  investorListRefreshTrigger: number;
 };
 
 const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   participant,
   shareContractAddress,
+  investorListRefreshTrigger,
   setSelectedParticipant,
 }) => {
   const { address: userWalletAddress } = useAccount();
 
-  const { data, isLoading } = useContractReads({
+  const sharedContractBits = {
+    address: shareContractAddress,
+    abi: shareContractABI,
+  };
+
+  const { data, isLoading, refetch } = useContractReads({
     contracts: [
       {
-        address: shareContractAddress as String0x,
-        abi: shareContractABI,
+        ...sharedContractBits,
         functionName: 'balanceOf',
         args: [participant?.walletAddress as String0x],
       },
       {
-        address: shareContractAddress as String0x,
-        abi: shareContractABI,
+        ...sharedContractBits,
         functionName: 'isWhitelisted',
         args: [participant?.walletAddress as String0x],
       },
     ],
   });
+
+  useEffect(() => {
+    if (investorListRefreshTrigger) {
+      refetch();
+    }
+  }, [participant?.walletAddress, investorListRefreshTrigger, refetch]);
 
   const balance = data?.[0].result;
   const isWhitelisted = data?.[1].result;

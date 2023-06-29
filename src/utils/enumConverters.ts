@@ -201,7 +201,7 @@ export const getStageOption = (stage: OfferingStage) => {
 type SwapStatusOptionProps = {
   isAccepted: boolean | undefined;
   isApproved: boolean | undefined;
-  isDisapproved: boolean | undefined;
+  isFilled: boolean | undefined;
   isCancelled: boolean | undefined;
   amount: number | undefined;
   filledAmount: number | undefined;
@@ -214,7 +214,7 @@ type SwapStatusOptionProps = {
 export const getSwapStatusOption = ({
   isAccepted,
   isApproved,
-  isDisapproved,
+  isFilled,
   isCancelled,
   isVisible,
   amount,
@@ -223,10 +223,10 @@ export const getSwapStatusOption = ({
   txnApprovalsEnabled,
   swapApprovalsEnabled,
 }: SwapStatusOptionProps) => {
-  const disapproved = isDisapproved && !isCancelled && !isApproved;
-  const cancelled = isCancelled && !isDisapproved;
+  const disapproved = false; // needs logic from DB
+  const cancelled = isCancelled && !isFilled;
   const fullyFilled = filledAmount === amount;
-  const error = isApproved && isDisapproved;
+  const error = isCancelled && isFilled;
   const ended = fullyFilled || cancelled || disapproved;
 
   const awaitingListingApproval =
@@ -240,8 +240,8 @@ export const getSwapStatusOption = ({
   switch (true) {
     case error:
       return { value: 'error', name: 'error', color: 'red-800' };
-    case disapproved:
-      return { value: 'disapproved', name: 'disapproved', color: 'red-800' };
+    // case disapproved:
+    //   return { value: 'disapproved', name: 'disapproved', color: 'red-800' };
     case cancelled:
       return { value: 'cancelled', name: 'cancelled', color: 'gray-600' };
     case fullyFilled:

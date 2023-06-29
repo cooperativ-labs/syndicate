@@ -11,9 +11,9 @@ export type OrderDetailsType = {
   filledAmount: number | undefined;
   filler: String0x | '' | undefined;
   isApproved: boolean | undefined;
-  isDisapproved: boolean | undefined;
   isCancelled: boolean | undefined;
   isAccepted: boolean | undefined;
+  isFilled: boolean | undefined;
   isShareIssuance: boolean | undefined;
   isAskOrder: boolean | undefined;
   isErc20Payment: boolean | undefined;
@@ -42,6 +42,7 @@ export const useOrderDetails = (
   const adjustTokenDecimalsForShareContract = paymentTokenDecimals
     ? paymentTokenDecimals - shareContractDecimals
     : undefined;
+
   const initiator = data && data[0];
   const partition = data && data[1];
   const amount = data && toNormalNumber(data[2], shareContractDecimals);
@@ -51,12 +52,12 @@ export const useOrderDetails = (
   const filledAmount = data && toNormalNumber(data[4], shareContractDecimals);
   const filler = data && (data[5] as String0x);
   const isApproved = data && data[7].isApproved;
-  const isDisapproved = data && data[7].isDisapproved;
   const isCancelled = data && data[7].isCancelled;
   const isAccepted = data && data[7].orderAccepted;
   const isShareIssuance = data && data[6].isShareIssuance;
   const isAskOrder = data && data[6].isAskOrder;
   const isErc20Payment = data && data[6].isErc20Payment;
+  const isFilled = !!amount && !!filledAmount && amount === filledAmount;
 
   return {
     initiator,
@@ -65,10 +66,10 @@ export const useOrderDetails = (
     price,
     filledAmount,
     filler,
-    isApproved,
-    isDisapproved,
-    isCancelled,
     isAccepted,
+    isApproved,
+    isFilled,
+    isCancelled,
     isShareIssuance,
     isAskOrder,
     isErc20Payment,

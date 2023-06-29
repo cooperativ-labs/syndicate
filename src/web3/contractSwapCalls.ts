@@ -265,7 +265,7 @@ export const approveRejectSwap = async ({
   setModal,
 }: ApproveRejectSwapProps) => {
   setButtonStep('step1');
-  const contractFunctionName = isDisapprove ? 'disapproveOrder' : 'approveOrder';
+  const contractFunctionName = isDisapprove ? 'managerResetOrder' : 'approveOrder';
   const call = async () => {
     if (!swapContractAddress) {
       throw new Error('No swap contract address');
@@ -393,7 +393,7 @@ export const claimProceeds = async ({
       refetchAllContracts && refetchAllContracts();
       toast.success(`You have claimed your proceeds.`);
     } catch (e) {
-      StandardChainErrorHandling(e);
+      StandardChainErrorHandling(e, setButtonStep);
     }
   };
   await call();
@@ -436,10 +436,13 @@ export const fillOrder = async ({
   refetchAllContracts,
   setModal,
 }: FillOrderProps) => {
+  const contractAmount = toContractNumber(amount, shareContractDecimals);
+  console.log('contractAmount', contractAmount);
   const call = async () => {
     if (!swapContractAddress || !shareContractAddress) {
       throw new Error('No swap or share contract address');
     }
+
     try {
       const { request } = await prepareWriteContract({
         address: swapContractAddress,

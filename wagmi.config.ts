@@ -1,7 +1,5 @@
 import { defineConfig } from '@wagmi/cli';
 import { distributionABI, shareABI, swapABI } from '@src/web3/ABI';
-import { goerli, mainnet, polygon, polygonMumbai, sepolia } from 'wagmi/chains';
-import { sourcify } from '@wagmi/cli/plugins';
 
 export default defineConfig({
   out: 'src/web3/generated.ts',

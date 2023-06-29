@@ -3,7 +3,7 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useState } from 'react';
 
-import { approveRejectSwap, cancelSwap } from '@src/web3/contractSwapCalls';
+import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
@@ -33,7 +33,7 @@ type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
   currentUserInitiator: boolean | undefined;
   offeringId: string;
   isApproved: boolean | undefined;
-  isDisapproved: boolean | undefined;
+
   isAccepted: boolean | undefined;
   isCancelled: boolean | undefined;
   isAskOrder: boolean | undefined;
@@ -50,11 +50,8 @@ type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
 };
 
 const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
-  offeringId,
-  currentUserFiller,
   currentUserInitiator,
   isApproved,
-  isDisapproved,
   isAccepted,
   isCancelled,
   isAskOrder,
@@ -120,18 +117,12 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   };
 
   const listingIsApproved = isApproved || (txnApprovalsEnabled && order.visible);
+  const transactionIsAccepted = txnApprovalsEnabled && isAccepted;
 
-  const handleApprove = async ({ isDisapprove }: { isDisapprove: boolean }) => {
-    if (!txnApprovalsEnabled || isAccepted || isDisapprove) {
-      await approveRejectSwap({
-        transferEventArgs: transferEventArgs,
-        swapContractAddress,
-        contractIndex: order.contractIndex,
-        isDisapprove: isDisapprove,
-        setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
-        refetchAllContracts,
-      });
-    }
+  const allowVisibilityApproveDisapprove = transactionIsAccepted ? false : true;
+  const allowContractApproveDisapprove = !isFilled || !isCancelled;
+
+  const updateListingVisibility = async (isDisapprove: boolean) => {
     await updateOrderObject({
       variables: {
         currentDate: currentDate,
@@ -140,6 +131,23 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         archived: order.archived,
       },
     });
+  };
+
+  const handleApprove = async ({ isDisapprove }: { isDisapprove: boolean }) => {
+    if (allowContractApproveDisapprove) {
+      await approveRejectSwap({
+        transferEventArgs: transferEventArgs,
+        swapContractAddress,
+        contractIndex: order.contractIndex,
+        isDisapprove: isDisapprove,
+        setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
+        refetchAllContracts,
+      });
+      await updateListingVisibility(isDisapprove);
+    }
+    // if (allowVisibilityApproveDisapprove) {
+
+    // }
   };
 
   const handleArchive = async () => {
@@ -178,7 +186,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'step1'}>
       <LoadingButtonText
         state={cancelButtonStep}
-        idleText="Cancel Offer"
+        idleText="Cancel Remaining Offer"
         step1Text="Canceling Sale..."
         confirmedText="Sale Cancelled!"
         failedText="Transaction failed"
@@ -196,14 +204,18 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const approveButton = (
     <Button
       className={buttonClass}
-      onClick={() => handleApprove({ isDisapprove: false })}
+      onClick={() =>
+        transactionIsAccepted || !txnApprovalsEnabled
+          ? handleApprove({ isDisapprove: false })
+          : listingIsApproved
+          ? updateListingVisibility(true)
+          : updateListingVisibility(false)
+      }
       disabled={approveButtonStep === 'step1'}
     >
       <LoadingButtonText
         state={approveButtonStep}
-        idleText={`${
-          txnApprovalsEnabled && isAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'
-        }`}
+        idleText={`${transactionIsAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'}`}
         step1Text="Approving..."
         confirmedText="Approved"
         failedText="Transaction failed"
@@ -220,8 +232,8 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     >
       <LoadingButtonText
         state={disapproveButtonStep}
-        idleText={`Disapprove ${txnApprovalsEnabled ? 'Trade' : 'Listing'}`}
-        step1Text="Disapprove..."
+        idleText={`Disapprove ${transactionIsAccepted ? 'Trade' : 'Listing'}`}
+        step1Text="Disapproving..."
         confirmedText="Disapproved"
         failedText="Transaction failed"
         rejectedText="You rejected the transaction. Click here to try again."
@@ -231,7 +243,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 
   const baseInitiatorButtonSet = (
     <>
-      {!isCancelled && !isFilled && currentUserInitiator && proceeds === 0 && cancelButton}
+      {!isCancelled && !isFilled && currentUserInitiator && cancelButton}
       {(isFilled || isCancelled) && proceeds === 0 && archiveButton}
     </>
   );
@@ -260,15 +272,15 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   return (
     <div className="flex flex-col mb-2">
       {minMaxSection}
-      {isContractOwner ? (
+      {isContractOwner && !isCancelled && !isFilled ? (
         <>
           {isAccepted && <div className="pl-1 mb-2 font-semibold text-cDarkBlue">{requestStatementText} </div>}
           <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
             {(swapApprovalsEnabled || txnApprovalsEnabled) && (
               <>
-                {!isApproved && !isDisapproved ? (
+                {!isApproved ? (
                   <>
-                    {approveButton} {disapproveButton}
+                    {approveButton} {allowContractApproveDisapprove && disapproveButton}
                   </>
                 ) : (
                   disapproveButton
@@ -292,7 +304,14 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       ) : (
         baseInitiatorButtonSet
       )}
-      {(isCancelled || isFilled) && proceeds !== 0 && <div>Completed swap. Please claim proceeds.</div>}
+      {(isCancelled || isFilled) && proceeds !== 0 && (
+        <div className="flex">
+          {isContractOwner && (isFilled || isCancelled) && (
+            <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} />
+          )}
+          Completed swap. Please claim proceeds.
+        </div>
+      )}
     </div>
   );
 };

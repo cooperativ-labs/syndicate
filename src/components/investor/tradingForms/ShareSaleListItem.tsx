@@ -21,7 +21,7 @@ export type OrderStatusType = {
 export type ShareSaleListItemProps = SaleMangerPanelProps & {
   offering: Offering;
   shareContractAddress: String0x | undefined;
-
+  myShareQty: number | undefined;
   setModal: (value: ManagerModalType) => void;
   refetchMainContracts: () => void;
 };
@@ -35,6 +35,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   index,
   offering,
   order,
+  myShareQty,
   swapContractAddress,
   shareContractAddress,
   paymentTokenAddress,
@@ -57,7 +58,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     filledAmount,
     filler,
     isApproved,
-    isDisapproved,
+    isFilled,
     isCancelled,
     isAccepted,
     isShareIssuance,
@@ -83,7 +84,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
       filledAmount,
       isFiller,
       isApproved,
-      isDisapproved,
+      isFilled,
       isCancelled,
       isAccepted,
       txnApprovalsEnabled,
@@ -120,7 +121,10 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
           </div>
           <div
             className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
-            onClick={() => setOpen(!open)}
+            onClick={() => {
+              setOpen(!open);
+              refetchMainContracts();
+            }}
           >
             <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
             <div className="flex justify-between col-span-11">
@@ -128,6 +132,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                 isAskOrder={isAskOrder}
                 initiator={initiator}
                 shareQtyRemaining={shareQtyRemaining}
+                shareQtyOffered={amount}
                 partition={partition}
                 price={price}
                 paymentTokenAddress={paymentTokenAddress}
@@ -153,10 +158,9 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   isContractOwner={isContractOwner}
                   offeringId={offering.id}
                   isApproved={isApproved}
-                  isDisapproved={isDisapproved}
                   isAccepted={isAccepted}
                   isCancelled={isCancelled}
-                  isFilled={shareQtyRemaining === 0}
+                  isFilled={isFilled}
                   isAskOrder={isAskOrder}
                   filler={filler}
                   initiator={initiator as String0x}
@@ -184,7 +188,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   isAskOrder={isAskOrder as boolean}
                   refetchAllContracts={refetchAllContracts as () => void}
                   isApproved={isApproved as boolean}
-                  isDisapproved={isDisapproved as boolean}
+                  isFilled={isFilled as boolean}
                   isCancelled={isCancelled as boolean}
                   isAccepted={isAccepted as boolean}
                   filledAmount={filledAmount as number}
@@ -195,6 +199,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   shareContractAddress={shareContractAddress as String0x}
                   partition={partition as String0x}
                   initiator={initiator as String0x}
+                  myShareQty={myShareQty}
                 />
               )}
             </div>

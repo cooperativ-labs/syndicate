@@ -37,6 +37,8 @@ const TransferEvent: FC<TransferEventProps & { transferEvent: ShareTransferEvent
     return time;
   }, [publicClient, setBlockTime, transactionData]);
 
+  const executor = transactionData?.from;
+
   return (
     <div className="relative md:grid grid-cols-7 gap-3 items-center p-3 border-b-2 ">
       <div className="flex col-span-1 justify-start">

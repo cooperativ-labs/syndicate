@@ -34,6 +34,7 @@ type AddWhitelistMemberProps = {
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   refetchMainContracts?: () => void;
+  triggerInvestorListRefresh?: () => void;
 };
 
 export const addWhitelistMember = async ({
@@ -47,6 +48,7 @@ export const addWhitelistMember = async ({
   setButtonStep,
   updateWhitelist,
   refetchMainContracts,
+  triggerInvestorListRefresh,
 }: AddWhitelistMemberProps) => {
   const addToDb = async (transactionHash: string) => {
     try {
@@ -86,12 +88,15 @@ export const addWhitelistMember = async ({
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
         notificationText: `${walletAddress} was added to your offering's whitelist.`,
       });
+      triggerInvestorListRefresh && triggerInvestorListRefresh();
+      refetchMainContracts && refetchMainContracts();
+      toast.success(`${walletAddress} was added to your offering's whitelist.`);
       setButtonStep('confirmed');
     } catch (e) {
       const parsedError = ChainErrorResponses(e, walletAddress);
       if (parsedError.code === 1001) {
         await addToDb('unknown');
-        refetchMainContracts && refetchMainContracts();
+
         setButtonStep('confirmed');
       } else {
         StandardChainErrorHandling(e, setButtonStep, walletAddress);
@@ -111,6 +116,7 @@ type RemoveWhitelistMemberProps = {
     options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   refetchMainContracts?: () => void;
+  triggerInvestorListRefresh?: () => void;
 };
 
 export const removeWhitelistMember = async ({
@@ -121,6 +127,7 @@ export const removeWhitelistMember = async ({
   setButtonStep,
   updateWhitelist,
   refetchMainContracts,
+  triggerInvestorListRefresh,
 }: RemoveWhitelistMemberProps) => {
   const call = async () => {
     setButtonStep('step1');
@@ -149,6 +156,8 @@ export const removeWhitelistMember = async ({
         notificationText: `${walletAddress} was removed from your offering's whitelist.`,
       });
       refetchMainContracts && refetchMainContracts();
+      triggerInvestorListRefresh && triggerInvestorListRefresh();
+      toast.success(`${walletAddress} was removed from your offering's whitelist.`);
       setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep, walletAddress);

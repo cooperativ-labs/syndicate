@@ -10,7 +10,7 @@ type OrderStatusBarProps = {
   currentUserInitiator: boolean | undefined;
   isAskOrder: boolean | undefined;
   isApproved: boolean | undefined;
-  isDisapproved: boolean | undefined;
+  isFilled: boolean | undefined;
 };
 
 const OrderStatusBar: FC<OrderStatusBarProps> = ({
@@ -21,18 +21,20 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   currentUserInitiator,
   isAskOrder,
   isApproved,
-  isDisapproved,
+  isFilled,
 }) => {
   const manOfAction = isAskOrder ? currentUserFiller : currentUserInitiator;
-  const currentUserPending = isAccepted && (currentUserFiller || currentUserInitiator) && !isApproved && !isDisapproved;
+  const currentUserPending = isAccepted && (currentUserFiller || currentUserInitiator) && !isApproved && !isFilled;
   const currentUserApproved = txnApprovalsEnabled && isAccepted && isApproved && manOfAction;
-  const currentUserDisapproved = txnApprovalsEnabled && isAccepted && isDisapproved && manOfAction;
+  const currentUserDisapproved = txnApprovalsEnabled && manOfAction && false;
   const otherOrderPending = txnApprovalsEnabled && isAccepted && !manOfAction;
+
+  //check transaction events for disapproval
 
   const cases = () => {
     if (currentUserPending) {
       return {
-        color: 'border-yellow-600 text-yellow-600',
+        color: 'border-orange-600 text-orange-600',
         text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares is pending`,
       };
     } else if (currentUserApproved) {

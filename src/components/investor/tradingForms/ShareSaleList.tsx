@@ -21,6 +21,7 @@ export type ShareSaleListProps = ShareSaleListItemProps & {
 const ShareSaleList: FC<ShareSaleListProps> = ({
   offering,
   orders,
+  myShareQty,
   swapContractAddress,
   shareContractAddress,
   paymentTokenAddress,
@@ -45,12 +46,16 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   const proceeds = paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
 
   const handleClaimProceeds = async () => {
-    await claimProceeds({ swapContractAddress, setButtonStep: setClaimProceedsButton });
+    await claimProceeds({
+      swapContractAddress,
+      setButtonStep: setClaimProceedsButton,
+      refetchAllContracts: refetchMainContracts,
+    });
   };
 
   const proceedsButton = proceeds !== 0 && (
     <Button
-      className={'mt-4 p-3 shadow-md rounded-md bg-slate-300 w-full uppercase font-semibold'}
+      className={'mt-4 p-3 shadow-md rounded-md bg-blue-600 text-white w-full uppercase font-semibold'}
       onClick={handleClaimProceeds}
       disabled={claimProceedsButton === 'step1'}
     >
@@ -91,6 +96,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
               index={i}
               offering={offering}
               order={order as ShareOrder}
+              myShareQty={myShareQty}
               swapContractAddress={swapContractAddress}
               paymentTokenAddress={paymentTokenAddress}
               txnApprovalsEnabled={txnApprovalsEnabled}

@@ -988,6 +988,25 @@ export const swapABI = [
     inputs: [
       {
         indexed: true,
+        internalType: 'uint256',
+        name: 'orderId',
+        type: 'uint256',
+      },
+      {
+        indexed: false,
+        internalType: 'uint256',
+        name: 'timestamp',
+        type: 'uint256',
+      },
+    ],
+    name: 'OrderReset',
+    type: 'event',
+  },
+  {
+    anonymous: false,
+    inputs: [
+      {
+        indexed: true,
         internalType: 'address',
         name: 'recipient',
         type: 'address',
@@ -1172,19 +1191,6 @@ export const swapABI = [
         name: 'orderId',
         type: 'uint256',
       },
-    ],
-    name: 'disapproveOrder',
-    outputs: [],
-    stateMutability: 'nonpayable',
-    type: 'function',
-  },
-  {
-    inputs: [
-      {
-        internalType: 'uint256',
-        name: 'orderId',
-        type: 'uint256',
-      },
       {
         internalType: 'uint256',
         name: 'amt',
@@ -1237,6 +1243,19 @@ export const swapABI = [
         type: 'uint256',
       },
     ],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'orderId',
+        type: 'uint256',
+      },
+    ],
+    name: 'managerResetOrder',
+    outputs: [],
     stateMutability: 'nonpayable',
     type: 'function',
   },
@@ -1320,11 +1339,6 @@ export const swapABI = [
           {
             internalType: 'bool',
             name: 'isApproved',
-            type: 'bool',
-          },
-          {
-            internalType: 'bool',
-            name: 'isDisapproved',
             type: 'bool',
           },
           {

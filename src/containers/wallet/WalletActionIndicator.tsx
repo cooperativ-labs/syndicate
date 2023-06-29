@@ -1,3 +1,4 @@
+import cn from 'classnames';
 import React, { FC } from 'react';
 import { faCheck, faClockFour, faWaveSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -20,7 +21,7 @@ const WalletActionStep: FC<{ stepStatus: StepStatusType; message?: string; subMe
         className="h-10 mr-1 animate-spin bg-white rounded-full"
       />
     ) : stepStatus === 'success' ? (
-      <FontAwesomeIcon icon={faCheck} />
+      <FontAwesomeIcon icon={faCheck} className="" />
     ) : stepStatus === 'error' ? (
       <FontAwesomeIcon icon={faXmark} />
     ) : (
@@ -28,11 +29,16 @@ const WalletActionStep: FC<{ stepStatus: StepStatusType; message?: string; subMe
     );
 
   return (
-    <div className={'grid grid-cols-8 p-3 border-2 border-gray-200 rounded-lg items-center  '}>
+    <div
+      className={cn(
+        stepStatus === 'pending' ? 'border-gray-300 text-cDarkBlue' : 'border-gray-100 text-gray-500',
+        'grid grid-cols-8 p-3 border-2 rounded-lg items-center '
+      )}
+    >
       <div className="flex justify-center col-span-1 text-2xl">{icon}</div>
-      <div className="col-span-7 ">
-        <div className=" text-lg text-cDarkBlue">{message}</div>
-        {subMessage && <div className="font-medium text-sm text-cLightBlue">{subMessage}</div>}
+      <div className={'col-span-7'}>
+        <div className="font-semibold text-lg mb-1">{message}</div>
+        {subMessage && <div className="font-medium text-sm">{subMessage}</div>}
       </div>
     </div>
   );

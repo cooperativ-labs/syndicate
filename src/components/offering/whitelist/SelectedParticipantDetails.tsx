@@ -25,30 +25,35 @@ import { useContractReads } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
 
-type SelectedParticipantProps = {
-  selection: string;
-  participants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
+export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
+
+export type SelectedParticipantProps = {
+  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
   currentSalePrice: Maybe<number> | undefined;
-  paymentTokenDecimals: number | undefined;
   offeringId: string;
-  partitions: String0x[];
   transferEventList: any[];
   refetchContracts: () => void;
+  triggerInvestorListRefresh: () => void;
+};
+
+type SelectedParticipantFormPropsLocal = SelectedParticipantProps & {
+  selection: string;
+  partitions: String0x[];
+  paymentTokenDecimals: number | undefined;
   setSelectedParticipant: Dispatch<React.SetStateAction<string | undefined>>;
 };
 
-export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
-
-const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
+const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   selection,
-  participants,
+  offeringParticipants,
   contractSet,
   paymentTokenDecimals,
   currentSalePrice,
   offeringId,
   partitions,
   transferEventList,
+  triggerInvestorListRefresh,
   refetchContracts,
 }) => {
   const { data: session } = useSession();
@@ -58,7 +63,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
   const [updateWhitelist] = useMutation(UPDATE_WHITELIST);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
-  const participant = participants?.find((p) => p?.id === selection);
+  const participant = offeringParticipants?.find((p) => p?.id === selection);
   const participantWallet = participant?.walletAddress as String0x;
 
   const transferEvents = transferEventList.filter((transferEvent) => {
@@ -94,6 +99,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
       shareContractAddress: shareContractAddress,
       setButtonStep,
       updateWhitelist,
+      triggerInvestorListRefresh,
     };
     try {
       if (type === WhitelistTransactionType.Add) {
@@ -261,7 +267,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
               state={buttonStep}
               idleText="Remove this investor from the whitelist"
               step1Text="Removing..."
-              confirmedText="Investor Removed!"
+              confirmedText="Updated!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />
@@ -275,8 +281,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
             <LoadingButtonText
               state={buttonStep}
               idleText="Approve Investor"
-              step1Text="Updating..."
-              confirmedText="Investor Approved!"
+              step1Text="Approving..."
+              confirmedText="Updated!"
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />
@@ -290,7 +296,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantProps> = ({
               shareContractAddress={shareContractAddress}
               partitions={partitions}
               target={participantWallet}
-              offeringParticipants={participants}
+              offeringParticipants={offeringParticipants}
               refetchContracts={refetchContracts}
             />
           </SectionBlock>

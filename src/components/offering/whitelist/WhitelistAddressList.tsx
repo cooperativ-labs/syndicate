@@ -1,28 +1,31 @@
 import React, { FC } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
-import SelectedParticipantDetails from './SelectedParticipantDetails';
+import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
 import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 
-type WhitelistAddressListProps = {
-  offeringId: string;
-  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  currentSalePrice: Maybe<number> | undefined;
-  investmentCurrency: Maybe<Currency> | undefined;
-  transferEvents: any[];
-  refetchContracts: () => void;
+export type WhitelistAddressListProps = {
+  investorListRefreshTrigger: number;
+  triggerInvestorListRefresh: () => void;
 };
 
-const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
+type WhitelistAddressListPropsLocal = SelectedParticipantProps &
+  WhitelistAddressListProps & {
+    offeringId: string;
+    investmentCurrency: Maybe<Currency> | undefined;
+  };
+
+const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
   offeringId,
   offeringParticipants,
   contractSet,
   currentSalePrice,
   investmentCurrency,
-  transferEvents,
+  transferEventList,
+  investorListRefreshTrigger,
+  triggerInvestorListRefresh,
   refetchContracts,
 }) => {
   const [selectedParticipant, setSelectedParticipant] = React.useState<string | undefined>(undefined);
@@ -36,15 +39,16 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
           {selectedParticipant && (
             <SelectedParticipantDetails
               selection={selectedParticipant}
-              participants={offeringParticipants}
+              offeringParticipants={offeringParticipants}
               contractSet={contractSet}
               currentSalePrice={currentSalePrice}
               paymentTokenDecimals={getCurrencyOption(investmentCurrency)?.decimals}
               partitions={partitions}
               offeringId={offeringId}
-              transferEventList={transferEvents}
+              transferEventList={transferEventList}
               refetchContracts={refetchContracts}
               setSelectedParticipant={setSelectedParticipant}
+              triggerInvestorListRefresh={triggerInvestorListRefresh}
             />
           )}
         </div>
@@ -54,6 +58,7 @@ const WhitelistAddressList: FC<WhitelistAddressListProps> = ({
           return (
             <div className="mb-3" key={i}>
               <WhitelistAddressListItem
+                investorListRefreshTrigger={investorListRefreshTrigger}
                 participant={participant}
                 shareContractAddress={shareContractAddress}
                 setSelectedParticipant={setSelectedParticipant}

@@ -29,7 +29,7 @@ export type SharePurchaseRequestProps = {
   price: number;
   txnApprovalsEnabled: boolean;
   shareQtyRemaining: number;
-  myShareQty: number;
+  myShareQty: number | undefined;
 };
 
 type AdditionalSharePurchaseRequestProps = SharePurchaseRequestProps & {

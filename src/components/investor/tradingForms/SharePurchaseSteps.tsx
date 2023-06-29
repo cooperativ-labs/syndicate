@@ -8,14 +8,14 @@ import { erc20ABI, useAccount, useBalance, useContractRead } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useMutation } from '@apollo/client';
 
 type SharePurchaseStepsProps = SharePurchaseRequestProps & {
   isApproved: boolean;
-  isDisapproved: boolean;
+  isFilled: boolean;
   isCancelled: boolean;
   isAccepted: boolean;
   filler: String0x | '';
@@ -44,9 +44,9 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   paymentTokenDecimals,
   txnApprovalsEnabled,
   isApproved,
-  isDisapproved,
+  isFilled,
   isAccepted,
-  filledAmount,
+  isCancelled,
   filler,
   initiator,
   myShareQty,
@@ -54,6 +54,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [addTrade] = useMutation(ADD_TRANSFER_EVENT);
+  const isEnded = isCancelled || isFilled;
 
   const { data: orderQtyData, refetch } = useContractRead({
     address: swapContractAddress,
@@ -86,8 +87,10 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const showRequestForm =
     (!currentUserInitiator && !isAccepted && txnApprovalsEnabled) ||
     (!currentUserInitiator && !txnApprovalsEnabled && shareQtyRemaining > 0);
-  // const showCancelForm = txnApprovalsEnabled && !isCompleted && !showRequestForm && isAccepted && currentUserFiller;
-  const showTradeExecutionForm = isApproved && (isAskOrder ? currentUserFiller : currentUserInitiator && isFiller);
+  // const showCancelForm = txnApprovalsEnabled && !isFilled && !showRequestForm && isAccepted && currentUserFiller;
+  const showTradeExecutionForm = (!isEnded && txnApprovalsEnabled) || (isFiller && !txnApprovalsEnabled);
+  const isTradeExecutionStep =
+    !isCancelled && !isFilled && isApproved && (isAskOrder ? currentUserFiller : currentUserInitiator && isFiller);
 
   const { data: allowanceData } = useContractRead({
     address: paymentTokenAddress,
@@ -170,10 +173,8 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     function capitalizeFirstLetter(str: string) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
-
     const action = isAskOrder ? 'purchase' : 'sell';
     const mainText = txnApprovalsEnabled ? `1. Request to ${action}` : `1. ${capitalizeFirstLetter(action)}`;
-
     return `${mainText} shares`;
   };
 
@@ -181,7 +182,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     <div className="flex flex-col w-full gap-3">
       <OrderStatusBar
         isApproved={isApproved}
-        isDisapproved={isDisapproved}
+        isFilled={isFilled}
         isAccepted={isAccepted}
         acceptedOrderQty={acceptedOrderQty}
         txnApprovalsEnabled={txnApprovalsEnabled}
@@ -216,9 +217,10 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         </div>
       )} */}
 
-      <div className="p-3 border-2 rounded-lg">
-        {showTradeExecutionForm ? (
+      {showTradeExecutionForm && (
+        <div className="p-3 border-2 rounded-lg">
           <ShareCompleteSwap
+            isTradeExecutionStep={isTradeExecutionStep}
             acceptedOrderQty={acceptedOrderQty as number}
             callFillOrder={callFillOrder}
             sender={sender}
@@ -227,10 +229,8 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
             price={price}
             paymentTokenAddress={paymentTokenAddress}
           />
-        ) : (
-          <> {`2. Confirm your trade`}</>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -1,5 +1,6 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useEffect } from 'react';
+import { get } from 'http';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { String0x } from '@src/web3/helpersChain';
 import { usePublicClient, useTransaction } from 'wagmi';
@@ -21,20 +22,19 @@ const WhitelistTransactionItem: FC<WhitelistTransactionItemProps> = ({ chainId, 
 
   const from = data?.from;
 
-  const getBlockTime = async () => {
-    try {
-      const block = await publicClient.getBlock({
-        blockHash: data?.hash as String0x,
-      });
-      const time = new Date(Number(block?.timestamp) * 1000);
-
-      setBlockTime(time);
-    } catch (e) {
-      return null;
-    }
-  };
-
   useEffect(() => {
+    async function getBlockTime() {
+      try {
+        const block = await publicClient.getBlock({
+          blockHash: data?.hash as String0x,
+        });
+        const time = new Date(Number(block?.timestamp) * 1000);
+
+        setBlockTime(time);
+      } catch (e) {
+        return null;
+      }
+    }
     getBlockTime();
   }, [publicClient, setBlockTime, transactionHash, data]);
 

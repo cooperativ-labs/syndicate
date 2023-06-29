@@ -55,18 +55,19 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
 
   const { data: swapTransactionData } = useWaitForTransaction({
     hash: swapApprovalData?.hash,
+    onSuccess: () => {
+      refetchMainContracts();
+      setIsLoading('');
+    },
   });
 
   const { data: txnTransactionData } = useWaitForTransaction({
     hash: txnApprovalData?.hash,
-  });
-
-  useEffect(() => {
-    if (swapTransactionData || txnTransactionData) {
+    onSuccess: () => {
       refetchMainContracts();
       setIsLoading('');
-    }
-  }, [swapTransactionData, txnTransactionData, refetchMainContracts, setIsLoading]);
+    },
+  });
 
   const handleSwapToggle = async () => {
     setIsLoading('listing');
