@@ -5,10 +5,12 @@ export const RETRIEVE_TRANSFER_EVENT = gql`
     queryShareTransferEvent(filter: { shareContractAddress: { anyofterms: $shareContractAddress } }) {
       id
       shareContractAddress
+      orderIndex
       recipientAddress
       senderAddress
       amount
       price
+      currencyCode
       transactionHash
       partition
       type
@@ -19,10 +21,12 @@ export const RETRIEVE_TRANSFER_EVENT = gql`
 export const ADD_TRANSFER_EVENT = gql`
   mutation AddTransferEvent(
     $shareContractAddress: String!
+    $orderIndex: Int
     $recipientAddress: String!
     $senderAddress: String!
     $amount: Int!
-    $price: Int
+    $price: String
+    $currencyCode: CurrencyCode
     $transactionHash: String!
     $partition: String!
     $type: ShareTransferEventType!
@@ -31,10 +35,12 @@ export const ADD_TRANSFER_EVENT = gql`
       input: [
         {
           shareContractAddress: $shareContractAddress
+          orderIndex: $orderIndex
           recipientAddress: $recipientAddress
           senderAddress: $senderAddress
           amount: $amount
           price: $price
+          currencyCode: $currencyCode
           transactionHash: $transactionHash
           partition: $partition
           type: $type
@@ -45,9 +51,12 @@ export const ADD_TRANSFER_EVENT = gql`
       shareTransferEvent {
         id
         shareContractAddress
+        orderIndex
         recipientAddress
         senderAddress
         amount
+        price
+        currencyCode
         transactionHash
         partition
         type

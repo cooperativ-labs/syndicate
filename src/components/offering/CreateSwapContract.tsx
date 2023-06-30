@@ -163,7 +163,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
                   <LoadingButtonText
                     state={buttonStep}
                     idleText={`Publish trading contract on ${chainName}`}
-                    step1Text="Deploying - This can take time. Please do not refresh."
+                    step1Text="Deploying (check status in your wallet)"
                     step2Text="Setting contract operator"
                     confirmedText="Confirmed!"
                     failedText="Transaction failed"

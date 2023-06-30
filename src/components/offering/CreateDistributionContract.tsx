@@ -119,7 +119,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
                 <LoadingButtonText
                   state={buttonStep}
                   idleText={`Publish distribution contract on ${chainName}`}
-                  step1Text="Deploying - This can take time. Please do not refresh."
+                  step1Text="Deploying (check status in your wallet)"
                   confirmedText="Confirmed!"
                   failedText="Transaction failed"
                   rejectedText="You rejected the transaction. Click here to try again."

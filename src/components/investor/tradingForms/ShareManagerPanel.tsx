@@ -104,14 +104,14 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
   const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
   const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
-  const contractPrice = Number(toContractNumber(price as number, paymentTokenDecimals as number));
 
   const transferEventArgs = {
     shareContractAddress,
     recipientAddress,
     senderAddress,
     numShares,
-    contractPrice: contractPrice,
+    price,
+    currencyCode: getCurrencyById(paymentTokenAddress)?.value,
     partition,
     addApprovalRecord,
   };
@@ -138,6 +138,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       await approveRejectSwap({
         transferEventArgs: transferEventArgs,
         swapContractAddress,
+        paymentTokenDecimals,
         contractIndex: order.contractIndex,
         isDisapprove: isDisapprove,
         setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,

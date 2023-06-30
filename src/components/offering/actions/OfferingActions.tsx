@@ -207,6 +207,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       </div>
       {showActionPanel === 'send' && (
         <SendShares
+          investmentCurrency={investmentCurrency}
+          currentSalePrice={currentSalePrice}
           sharesIssued={details?.numUnits}
           sharesOutstanding={sharesOutstanding}
           shareContractAddress={shareContractAddress}

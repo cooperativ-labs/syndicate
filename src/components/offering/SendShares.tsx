@@ -1,23 +1,26 @@
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { FC, use, useState } from 'react';
+import React, { FC, useState } from 'react';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
 
+import { Currency, CurrencyCode, Maybe, OfferingParticipant } from 'types';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { Maybe, OfferingParticipant } from 'types';
 
-import { addressWithENS, addressWithoutEns, splitAddress, String0x } from '@src/web3/helpersChain';
+import { addressWithoutEns, String0x } from '@src/web3/helpersChain';
 import { sendShares } from '@src/web3/contractShareCalls';
 
 import NewClassInputs from '../form-components/NewClassInputs';
 import SetOperatorButton from './actions/SetOperatorButton';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
+import { adjustUserEnteredDecimalsToMatchCurrency } from '@src/web3/util';
+import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractABI } from '@src/web3/generated';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useChainId, useContractRead } from 'wagmi';
 import { useMutation } from '@apollo/client';
 
 export type SendSharesProps = {
@@ -28,6 +31,8 @@ export type SendSharesProps = {
   offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
   partitions: String0x[];
   myShareQty: number | undefined;
+  investmentCurrency: Currency | undefined;
+  currentSalePrice: Maybe<number> | undefined;
   refetchMainContracts: () => void;
 };
 
@@ -39,10 +44,12 @@ const SendShares: FC<SendSharesProps> = ({
   offeringParticipants,
   partitions,
   myShareQty,
+  investmentCurrency,
+  currentSalePrice,
   refetchMainContracts,
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const [recipient, setRecipient] = useState<string | String0x | undefined>(undefined);
+  const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
   const [addIssuance, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
@@ -55,6 +62,7 @@ const SendShares: FC<SendSharesProps> = ({
   });
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
+  const purchaseCurrencyOptions = [bacOptions.filter((bac) => bac.chainId === chainId), fiatOptions].flat();
 
   const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
     const recipient = addressWithoutEns({ address: values.recipient });
@@ -74,12 +82,15 @@ const SendShares: FC<SendSharesProps> = ({
       initialValues={{
         isIssuance: 'yes',
         numShares: '',
+        price: currentSalePrice,
+        currencyCode: investmentCurrency?.code as CurrencyCode,
         recipient: '' as String0x,
         partition: partitions[0],
         newPartition: '',
       }}
       validate={(values) => {
-        setRecipient(values.recipient);
+        const paymentTokenDecimals = getCurrencyByCode(values.currencyCode)?.decimals;
+
         const errors: any = {}; /** @TODO : Shape */
         if (!values.numShares) {
           errors.numShares = 'Please indicate how many shares you want to send';
@@ -89,7 +100,9 @@ const SendShares: FC<SendSharesProps> = ({
         if (!values.recipient) {
           errors.recipient = 'Please indicate who you want to send shares to';
         }
-
+        if (!values.price) {
+          errors.price = 'Please set a price';
+        }
         if (!values.partition) {
           if (!values.newPartition) {
             errors.partition = 'Please specify a class of shares';
@@ -103,13 +116,17 @@ const SendShares: FC<SendSharesProps> = ({
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
+        const paymentTokenDecimals = getCurrencyByCode(values.currencyCode)?.decimals;
         setSubmitting(true);
         const isIssuance = values.isIssuance === 'yes' ? true : false;
         try {
           await sendShares({
             shareContractAddress,
+            paymentTokenDecimals,
             shareContractId,
             numShares: parseInt(values.numShares, 10),
+            price: values.price as number,
+            currencyCode: values.currencyCode,
             recipient: values.recipient,
             sender: userWalletAddress as String0x,
             partition: values.partition,
@@ -155,11 +172,33 @@ const SendShares: FC<SendSharesProps> = ({
           </Select>
 
           <NewClassInputs partitions={partitions} values={values} />
+          <Input
+            className={defaultFieldDiv}
+            labelText={`Price per share`}
+            name="price"
+            type="number"
+            placeholder="100"
+            required
+          />
+          {values.isIssuance === 'yes' ? (
+            <Select className={'mt-3'} name={'currencyCode'} labelText="Currency">
+              <option value="">Currency used for purchase</option>
+              {purchaseCurrencyOptions.map((option, i) => {
+                return (
+                  <option key={i} value={option.value}>
+                    {option.symbol}
+                  </option>
+                );
+              })}
+            </Select>
+          ) : (
+            <></>
+          )}
 
           <Input
             className={defaultFieldDiv}
             labelText={`Number of shares to send (${
-              values.isIssuance === 'yes' ? sharesRemaining : myShareQty
+              values.isIssuance === 'yes' ? numberWithCommas(sharesRemaining) : numberWithCommas(myShareQty)
             } available )`}
             name="numShares"
             type="number"

@@ -145,7 +145,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
               <LoadingButtonText
                 state={buttonStep}
                 idleText="Sign"
-                step1Text="Signing (this could take a sec)"
+                step1Text="Signing (check status in your wallet)"
                 confirmedText="Confirmed!"
                 rejectedText="You rejected the transaction. Click here to try again."
               />
