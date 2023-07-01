@@ -332,7 +332,7 @@ type CancelOrderProps = {
   contractIndex: number;
   orderId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  handleArchive: () => Promise<any>;
+  handleArchive: (archive: boolean) => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
 };
@@ -362,7 +362,7 @@ export const cancelSwap = async ({
       await waitForTransaction({
         hash: hash,
       });
-      handleArchive && handleArchive();
+      handleArchive && handleArchive(true);
       setButtonStep('confirmed');
       toast.success(`You have cancelled your sale.`);
       setModal && setModal(false);

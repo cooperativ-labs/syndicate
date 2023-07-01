@@ -10,6 +10,7 @@ import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibility
 import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/dGraphQueries/orders';
 
 import { getCurrencyById } from '@src/utils/enumConverters';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
 import { ShareOrder } from 'types';
@@ -150,9 +151,9 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     }
   };
 
-  const handleArchive = async () => {
+  const handleArchive = async (archive: boolean) => {
     updateOrderObject({
-      variables: { currentDate: currentDate, orderId: order.id, visible: order.visible, archived: true },
+      variables: { currentDate: currentDate, orderId: order.id, visible: order.visible, archived: archive },
     });
     refetchOfferingInfo();
   };
@@ -180,7 +181,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   // Buttons ==========================================================================================================
 
   const buttonClass =
-    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
+    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
 
   const cancelButton = (
     <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'step1'}>
@@ -196,8 +197,12 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   );
 
   const archiveButton = (
-    <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'step1'}>
-      {`Archive completed swap`}
+    <Button
+      className={buttonClass}
+      onClick={() => handleArchive(!order.archived)}
+      disabled={claimProceedsButton === 'step1'}
+    >
+      {order.archived ? 'Unarchive' : `Archive completed swap`}
     </Button>
   );
 
@@ -244,7 +249,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const baseInitiatorButtonSet = (
     <>
       {!isCancelled && !isFilled && currentUserInitiator && cancelButton}
-      {(isFilled || isCancelled) && proceeds === 0 && archiveButton}
+      {(isFilled || isCancelled) && proceeds === 0 && isContractOwner && archiveButton}
     </>
   );
 

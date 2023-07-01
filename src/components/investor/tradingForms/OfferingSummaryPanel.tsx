@@ -27,18 +27,19 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   partition,
 }) => {
   const presentCurrency = getCurrencyById(paymentTokenAddress)?.symbol;
-  const chainId = useChainId();
   return (
     <div className={className}>
-      <div className="flex items-center">
+      {/* <div className="flex items-center">
         {`${isAskOrder ? 'Seller' : 'Buyer'}`}{' '}
         <FormattedCryptoAddress className="ml-1" chainId={chainId} address={initiator} withCopy />
-      </div>
-      <div>Share price: {` ${numberWithCommas(price)} ${presentCurrency}`}</div>
+      </div> */}
+      <span className="font-semibold text-xl">{` ${numberWithCommas(price)} ${presentCurrency}`}</span>
+      <span className="text-sm"> per {partition && stringFromBytes32(partition as String0x)} share</span>
 
-      <div>
-        {`${isAskOrder ? 'Remaining for sale' : 'Remaining for purchase'}`}: {numberWithCommas(shareQtyRemaining)} of{' '}
-        {numberWithCommas(shareQtyOffered)} ({partition && stringFromBytes32(partition as String0x)}){' '}
+      <div className="mt-2">
+        {numberWithCommas(isAskOrder ? shareQtyOffered : shareQtyRemaining)} of{' '}
+        {numberWithCommas(isAskOrder ? shareQtyRemaining : shareQtyOffered)}{' '}
+        {`remaining for ${isAskOrder ? 'sale' : 'purchase'}`}
       </div>
     </div>
   );

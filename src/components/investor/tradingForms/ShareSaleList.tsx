@@ -1,7 +1,9 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import SectionBlock from '@src/containers/SectionBlock';
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
+import { arch } from 'os';
 import { claimProceeds } from '@src/web3/contractSwapCalls';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { ManagerModalType } from '@src/utils/helpersOffering';
@@ -55,7 +57,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   const proceedsButton = proceeds !== 0 && (
     <Button
-      className={'mt-4 p-3 shadow-md rounded-md bg-blue-600 text-white w-full uppercase font-semibold'}
+      className={'p-3 shadow-md rounded-md bg-blue-600 text-white text-sm uppercase font-medium'}
       onClick={handleClaimProceeds}
       disabled={claimProceedsButton === 'step1'}
     >
@@ -72,7 +74,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   const saleButton = (
     <Button
-      className="mt-4 p-3 shadow-md hover:shadow-xl disabled:shadow-none rounded-md bg-slate-600 text-white w-full uppercase font-semibold disabled:bg-gray-400"
+      className="p-3 shadow-md hover:shadow-xl disabled:shadow-none rounded-md bg-slate-600 text-white text-sm  uppercase font-medium disabled:bg-gray-400"
       onClick={() => {
         setModal('saleForm');
       }}
@@ -86,33 +88,74 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     return <>{saleButton}</>;
   }
 
+  const currentOrders = orders?.filter((order) => !order?.archived);
+  const archivedOrders = orders?.filter((order) => order?.archived);
+
   return (
     <>
-      <h2 className="text-xl text-blue-900 font-semibold mb-2">{`Offers`}</h2>
-      {orders?.map((order, i) => {
+      <div className="flex flex-row justify-between items-center">
+        <h2 className="text-xl text-blue-900 font-semibold ">{`Offers`}</h2>
+        <div className="flex gap-3">
+          {saleButton}
+          {proceedsButton}
+        </div>
+      </div>
+      {currentOrders?.map((order, i) => {
         return (
-          <div key={i}>
-            <ShareSaleListItem
-              index={i}
-              offering={offering}
-              order={order as ShareOrder}
-              myShareQty={myShareQty}
-              swapContractAddress={swapContractAddress}
-              paymentTokenAddress={paymentTokenAddress}
-              txnApprovalsEnabled={txnApprovalsEnabled}
-              swapApprovalsEnabled={swapApprovalsEnabled}
-              isContractOwner={isContractOwner}
-              setModal={setModal}
-              refetchMainContracts={refetchMainContracts}
-              paymentTokenDecimals={paymentTokenDecimals}
-              shareContractAddress={shareContractAddress}
-              refetchOfferingInfo={refetchOfferingInfo}
-            />
-          </div>
+          <ShareSaleListItem
+            key={i}
+            index={i}
+            offering={offering}
+            order={order as ShareOrder}
+            myShareQty={myShareQty}
+            swapContractAddress={swapContractAddress}
+            paymentTokenAddress={paymentTokenAddress}
+            txnApprovalsEnabled={txnApprovalsEnabled}
+            swapApprovalsEnabled={swapApprovalsEnabled}
+            isContractOwner={isContractOwner}
+            setModal={setModal}
+            refetchMainContracts={refetchMainContracts}
+            paymentTokenDecimals={paymentTokenDecimals}
+            shareContractAddress={shareContractAddress}
+            refetchOfferingInfo={refetchOfferingInfo}
+          />
         );
       })}
-      {<>{saleButton}</>}
-      {<>{proceedsButton}</>}
+      <div className="w-full border-2 border-slate-600 rounded-md">
+        <SectionBlock
+          className={'p-3 bg-slate-600 text-white rounded-sm w-full font-semibold  '}
+          sectionTitle={'Archived offers'}
+          mini
+        >
+          <div className=" items-center px-3 w-full">
+            {archivedOrders?.length === 0 ? (
+              <div className="text-sm text-gray-400">No archived offers</div>
+            ) : (
+              archivedOrders?.map((order, i) => {
+                return (
+                  <ShareSaleListItem
+                    key={i}
+                    index={i}
+                    offering={offering}
+                    order={order as ShareOrder}
+                    myShareQty={myShareQty}
+                    swapContractAddress={swapContractAddress}
+                    paymentTokenAddress={paymentTokenAddress}
+                    txnApprovalsEnabled={txnApprovalsEnabled}
+                    swapApprovalsEnabled={swapApprovalsEnabled}
+                    isContractOwner={isContractOwner}
+                    setModal={setModal}
+                    refetchMainContracts={refetchMainContracts}
+                    paymentTokenDecimals={paymentTokenDecimals}
+                    shareContractAddress={shareContractAddress}
+                    refetchOfferingInfo={refetchOfferingInfo}
+                  />
+                );
+              })
+            )}
+          </div>
+        </SectionBlock>
+      </div>
     </>
   );
 };
