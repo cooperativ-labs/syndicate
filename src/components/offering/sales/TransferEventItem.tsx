@@ -1,6 +1,6 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
-import { Currency, ShareTransferEvent } from 'types';
+import { ShareTransferEvent } from 'types';
 import { getCurrencyByCode, getTransferEventOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';

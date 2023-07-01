@@ -245,7 +245,7 @@ type ApproveRejectSwapProps = {
         recipientAddress: '' | `0x${string}` | undefined;
         senderAddress: String0x | undefined | '';
         amount: number | undefined;
-        price: bigint | undefined;
+        price: string | undefined;
         currencyCode: CurrencyCode | undefined;
         partition: String0x | undefined | '';
         transactionHash: String0x;
@@ -308,7 +308,7 @@ export const approveRejectSwap = async ({
             recipientAddress: recipientAddress,
             senderAddress: senderAddress,
             amount: numShares,
-            price: toContractNumber(price as number, paymentTokenDecimals as number),
+            price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
             currencyCode: currencyCode,
             transactionHash: transactionDetails.transactionHash,
             partition: partition,
