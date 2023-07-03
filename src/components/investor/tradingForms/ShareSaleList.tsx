@@ -30,6 +30,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   txnApprovalsEnabled,
   swapApprovalsEnabled,
   isContractOwner,
+  transferEvents,
   setModal,
   refetchMainContracts,
   refetchOfferingInfo,
@@ -88,6 +89,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
       className=" text-blue-800 text-xl "
       onClick={() => {
         refetchOfferingInfo();
+        refetchMainContracts();
       }}
     >
       <FontAwesomeIcon icon="sync" className="mr-2" />
@@ -129,6 +131,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
             paymentTokenDecimals={paymentTokenDecimals}
             shareContractAddress={shareContractAddress}
             refetchOfferingInfo={refetchOfferingInfo}
+            transferEvents={transferEvents}
           />
         );
       })}
@@ -158,6 +161,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
                     paymentTokenDecimals={paymentTokenDecimals}
                     shareContractAddress={shareContractAddress}
                     refetchOfferingInfo={refetchOfferingInfo}
+                    transferEvents={transferEvents}
                   />
                 );
               })}

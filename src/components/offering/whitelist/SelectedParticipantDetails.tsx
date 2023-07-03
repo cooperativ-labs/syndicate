@@ -48,6 +48,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   selection,
   offeringParticipants,
   contractSet,
+  paymentTokenDecimals,
+
   offeringId,
   partitions,
   transferEventList,
@@ -239,7 +241,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         walletAddress={participantWallet}
       />
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Transfers</h1>
-      <TransferEventList transferEvents={transferEvents} />
+      <TransferEventList transferEvents={transferEvents} paymentTokenDecimals={paymentTokenDecimals} />
     </div>
   );
 

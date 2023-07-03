@@ -11,7 +11,7 @@ import ShareSaleList, { ShareSaleListProps } from '@src/components/investor/trad
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { Maybe, ShareOrder } from 'types';
+import { Maybe, ShareOrder, ShareTransferEvent } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 
@@ -35,6 +35,7 @@ type OfferingActionsProps = SmartContractsSettingsProps &
     isOfferingManager: boolean;
     retrievalIssue: boolean;
     userId: string | undefined;
+    transferEvents: ShareTransferEvent[] | undefined;
   };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
@@ -53,6 +54,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   isContractOwner,
   noLiveOrders,
   partitions,
+  transferEvents,
   refetchMainContracts,
   refetchOfferingInfo,
   currentSalePrice,
@@ -119,6 +121,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             shareContractAddress={shareContractAddress}
             refetchOfferingInfo={refetchOfferingInfo}
             myShareQty={myShareQty}
+            transferEvents={transferEvents}
           />
         )}
       </FormModal>

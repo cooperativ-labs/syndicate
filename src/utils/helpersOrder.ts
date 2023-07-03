@@ -1,6 +1,6 @@
 import { String0x } from '@src/web3/helpersChain';
 import { readContract } from 'wagmi/actions';
-import { Maybe, ShareOrder } from 'types';
+import { Maybe, ShareOrder, ShareTransferEvent, ShareTransferEventType } from 'types';
 import { swapContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 
@@ -83,3 +83,18 @@ export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]) => {
   );
   return !activeOrders;
 };
+
+export const getDisapprovedTransferEvents = (
+  transferEvents: ShareTransferEvent[] | undefined,
+  order: ShareOrder,
+  userWalletAddress: String0x | undefined
+) =>
+  transferEvents?.filter((transferEvent) => {
+    const { orderIndex, recipientAddress, senderAddress, type } = transferEvent;
+    if (
+      orderIndex === order.contractIndex &&
+      recipientAddress === userWalletAddress &&
+      type === ShareTransferEventType.Disapproval
+    )
+      return transferEvent;
+  });

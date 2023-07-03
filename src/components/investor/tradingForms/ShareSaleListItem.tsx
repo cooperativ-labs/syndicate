@@ -6,9 +6,10 @@ import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
+import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { Offering, ShareOrder } from 'types';
+import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from 'types';
 import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
@@ -23,6 +24,7 @@ export type ShareSaleListItemProps = SaleMangerPanelProps & {
   offering: Offering;
   shareContractAddress: String0x | undefined;
   myShareQty: number | undefined;
+  transferEvents: ShareTransferEvent[] | undefined;
   setModal: (value: ManagerModalType) => void;
   refetchMainContracts: () => void;
 };
@@ -44,6 +46,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   txnApprovalsEnabled,
   swapApprovalsEnabled,
   isContractOwner,
+  transferEvents,
   setModal,
   refetchMainContracts,
   refetchOfferingInfo,
@@ -67,6 +70,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     isAskOrder,
     isErc20Payment,
     isLoading,
+
     refetchOrderDetails,
   } = useOrderDetails(swapContractAddress, order.contractIndex, paymentTokenDecimals);
 
@@ -94,6 +98,10 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
       isVisible: order.visible,
     });
 
+  const disapprovedTransferEvents = getDisapprovedTransferEvents(transferEvents, order, userWalletAddress);
+  const isDisapproved = !isAccepted && disapprovedTransferEvents?.length ? true : false;
+  const disapprovedTransferEvent = disapprovedTransferEvents?.slice(-1)[0];
+
   const showOrder = order.visible || currentUserInitiator || isContractOwner;
   const showPurchaseSteps = !order.archived && !isFilled && (!currentUserInitiator || (!isAskOrder && isFiller));
 
@@ -112,6 +120,11 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
               {currentUserInitiator && (
                 <div className="flex justify-end items-center pr-3 border-b-2 border-green-600 text-green-600 text-xs uppercase font-semibold rounded-t-md ">
                   <div className="">{`Your ${isAskOrder ? 'sell' : 'purchase'} offer`}</div>
+                </div>
+              )}
+              {isDisapproved && (
+                <div className="flex justify-end items-center pr-3 border-b-2 border-red-700 text-red-700 text-xs uppercase font-semibold rounded-t-md ">
+                  {`Manager rejected your proposal to purchase ${disapprovedTransferEvent?.amount} shares`}
                 </div>
               )}
               <div className="grid grid-cols-12 p-3">
@@ -147,6 +160,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   <div className={` p-1 px-2 items-center text-xs`}>offer Id: {order.contractIndex}</div>
                 </div>
               </div>
+
               <div className="p-2 pt-4 bg-slate-100">
                 {(currentUserInitiator || isContractOwner) && (
                   <SaleManagerPanel

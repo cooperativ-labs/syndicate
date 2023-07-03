@@ -69,6 +69,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     refetchSwapContract,
     refetchOrders,
     refetchTransactionHistory,
+    transferEvents,
   } = useOfferingDetails(offering);
 
   const sharedContractSpecs = {
@@ -207,6 +208,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
                 shareContractAddress={shareContractAddress}
                 refetchOfferingInfo={refetchOfferingInfo}
                 myShareQty={myShareQty}
+                transferEvents={transferEvents}
               />
             ) : (
               removedFromWhitelist

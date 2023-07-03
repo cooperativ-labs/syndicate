@@ -9,7 +9,7 @@ import { erc20ABI, useAccount, useBalance, useContractRead } from 'wagmi';
 import OrderStatusBar from './OrderStatusBar';
 import SharePurchaseSaleRequest, { SharePurchaseSaleRequestProps } from './SharePurchaseSaleRequest';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
-import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useMutation } from '@apollo/client';

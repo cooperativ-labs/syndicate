@@ -23,9 +23,6 @@ import FullTransactionHistory from '@src/components/offering/sales/FullTransacti
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { shareContractABI } from '@src/web3/generated';
-import { String0x } from '@src/web3/helpersChain';
-// import { ABI } from '@src/web3/ABI';
 
 type OfferingDetailsProps = {
   offering: Offering;
@@ -69,7 +66,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     swapApprovalsEnabled,
     txnApprovalsEnabled,
     totalDistributed,
-    contractOrderList,
     noLiveOrders,
     refetchShareContract,
     refetchSwapContract,
@@ -234,6 +230,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                         refetchOfferingInfo={refetchOfferingInfo}
                         currentSalePrice={currentSalePrice}
                         myShareQty={myShareQty}
+                        transferEvents={transferEvents}
                       />
                     )}
                   </div>
