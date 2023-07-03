@@ -102,7 +102,7 @@ export const ChainErrorResponses = (error: any, recipient: string | String0x | u
   if (error.message.includes('Balance not zero') && error.message.includes('removeFromWhitelist')) {
     return { code: 1003, message: 'This user cannot be removed from the whitelist because they still hold shares.' };
   }
-  if (error.message.includes('User rejected the request')) {
+  if (error.message.includes('User rejected the request' || 'User cancelled operation')) {
     return { code: 2000, message: 'User cancelled operation' };
   }
   if (error.message.includes('Cannot convert undefined to a BigInt')) {
@@ -142,6 +142,7 @@ export const StandardChainErrorHandling = (
   setButtonStep?: Dispatch<SetStateAction<LoadingButtonStateType>>,
   recipient?: String0x
 ) => {
+  console.log('error', error);
   const errorCode = ChainErrorResponses(error, recipient).code;
   const errorMessage = ChainErrorResponses(error, recipient).message;
 

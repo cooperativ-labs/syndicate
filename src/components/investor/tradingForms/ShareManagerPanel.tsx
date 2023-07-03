@@ -3,7 +3,7 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useState } from 'react';
 
-import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
+import { approveRejectSwap, cancelAcceptance, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
@@ -162,7 +162,6 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     await cancelSwap({
       swapContractAddress,
       contractIndex: order.contractIndex,
-      orderId: order.id,
       setButtonStep: setCancelButtonStep,
       handleArchive,
       refetchAllContracts,
@@ -249,7 +248,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const baseInitiatorButtonSet = (
     <>
       {!isCancelled && !isFilled && currentUserInitiator && cancelButton}
-      {(isFilled || isCancelled) && proceeds === 0 && isContractOwner && archiveButton}
+      {(isFilled || isCancelled) && isContractOwner && archiveButton}
     </>
   );
 

@@ -330,7 +330,6 @@ export const approveRejectSwap = async ({
 type CancelOrderProps = {
   swapContractAddress: String0x | undefined;
   contractIndex: number;
-  orderId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   handleArchive: (archive: boolean) => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
@@ -340,7 +339,6 @@ type CancelOrderProps = {
 export const cancelSwap = async ({
   swapContractAddress,
   contractIndex,
-  orderId,
   setButtonStep,
   handleArchive,
   setModal,
@@ -365,6 +363,48 @@ export const cancelSwap = async ({
       handleArchive && handleArchive(true);
       setButtonStep('confirmed');
       toast.success(`You have cancelled your sale.`);
+      setModal && setModal(false);
+      refetchAllContracts();
+    } catch (e) {
+      StandardChainErrorHandling(e, setButtonStep);
+    }
+  };
+  await call();
+};
+
+type CancelAcceptanceProps = {
+  swapContractAddress: String0x | undefined;
+  contractIndex: number;
+  setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
+  setModal?: Dispatch<SetStateAction<boolean>>;
+  refetchAllContracts: () => void;
+};
+
+export const cancelAcceptance = async ({
+  swapContractAddress,
+  contractIndex,
+  setButtonStep,
+  setModal,
+  refetchAllContracts,
+}: CancelAcceptanceProps) => {
+  setButtonStep('step1');
+  const call = async () => {
+    if (!swapContractAddress) {
+      throw new Error('No swap contract address');
+    }
+    try {
+      const { request } = await prepareWriteContract({
+        address: swapContractAddress,
+        abi: swapContractABI,
+        functionName: 'cancelAcceptance',
+        args: [BigInt(contractIndex)],
+      });
+      const { hash } = await writeContract(request);
+      await waitForTransaction({
+        hash: hash,
+      });
+      setButtonStep('confirmed');
+      toast.success(`You have cancelled your offer.`);
       setModal && setModal(false);
       refetchAllContracts();
     } catch (e) {

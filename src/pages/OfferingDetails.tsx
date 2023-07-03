@@ -69,6 +69,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     swapApprovalsEnabled,
     txnApprovalsEnabled,
     totalDistributed,
+    contractOrderList,
+    noLiveOrders,
     refetchShareContract,
     refetchSwapContract,
     refetchOrders,
@@ -226,6 +228,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                         txnApprovalsEnabled={txnApprovalsEnabled}
                         sharesOutstanding={sharesOutstanding}
                         isContractOwner={isContractOwner}
+                        noLiveOrders={noLiveOrders}
                         partitions={partitions}
                         refetchMainContracts={refetchMainContracts}
                         refetchOfferingInfo={refetchOfferingInfo}

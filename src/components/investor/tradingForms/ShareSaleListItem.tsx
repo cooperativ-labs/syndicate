@@ -111,7 +111,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
             <div className="flex flex-col">
               {currentUserInitiator && (
                 <div className="flex justify-end items-center pr-3 border-b-2 border-green-600 text-green-600 text-xs uppercase font-semibold rounded-t-md ">
-                  <div className="">Your offer</div>
+                  <div className="">{`Your ${isAskOrder ? 'sell' : 'purchase'} offer`}</div>
                 </div>
               )}
               <div className="grid grid-cols-12 p-3">

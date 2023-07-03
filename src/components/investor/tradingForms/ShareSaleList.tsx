@@ -3,13 +3,12 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
-import { arch } from 'os';
 import { claimProceeds } from '@src/web3/contractSwapCalls';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { Maybe, ShareOrder } from 'types';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { standardClass } from '@src/components/offering/actions/OfferingActions';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { toNormalNumber } from '@src/web3/util';
@@ -84,8 +83,19 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     </Button>
   );
 
+  const refreshButton = (
+    <Button
+      className=" text-blue-800 text-xl "
+      onClick={() => {
+        refetchOfferingInfo();
+      }}
+    >
+      <FontAwesomeIcon icon="sync" className="mr-2" />
+    </Button>
+  );
+
   if (orders && orders.length < 1) {
-    return <>{saleButton}</>;
+    return <div className="w-full">{saleButton}</div>;
   }
 
   const currentOrders = orders?.filter((order) => !order?.archived);
@@ -98,6 +108,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
         <div className="flex gap-3">
           {saleButton}
           {proceedsButton}
+          {refreshButton}
         </div>
       </div>
       {currentOrders?.map((order, i) => {
@@ -121,17 +132,15 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
           />
         );
       })}
-      <div className="w-full border-2 border-slate-600 rounded-md">
-        <SectionBlock
-          className={'p-3 bg-slate-600 text-white rounded-sm w-full font-semibold  '}
-          sectionTitle={'Archived offers'}
-          mini
-        >
-          <div className=" items-center px-3 w-full">
-            {archivedOrders?.length === 0 ? (
-              <div className="text-sm text-gray-400">No archived offers</div>
-            ) : (
-              archivedOrders?.map((order, i) => {
+      {archivedOrders?.length !== 0 && (
+        <div className="w-full mt-4 border-2 border-slate-600 rounded-md">
+          <SectionBlock
+            className={'p-3 bg-slate-600 text-white rounded-sm w-full font-semibold  '}
+            sectionTitle={'Archived offers'}
+            mini
+          >
+            <div className=" items-center px-3 w-full">
+              {archivedOrders?.map((order, i) => {
                 return (
                   <ShareSaleListItem
                     key={i}
@@ -151,11 +160,11 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
                     refetchOfferingInfo={refetchOfferingInfo}
                   />
                 );
-              })
-            )}
-          </div>
-        </SectionBlock>
-      </div>
+              })}
+            </div>
+          </SectionBlock>
+        </div>
+      )}
     </>
   );
 };

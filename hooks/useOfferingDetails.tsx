@@ -1,4 +1,9 @@
-import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
+import {
+  confirmNoLiveOrders,
+  ContractOrder,
+  getCurrentOrderPrice,
+  getOrderArrayFromContract,
+} from '@src/utils/helpersOrder';
 import { dividendContractABI } from '@src/web3/generated';
 import { DocumentType, Offering, ShareOrder } from 'types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
@@ -87,6 +92,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
   const currentSalePrice = getCurrentOrderPrice(contractOrderList, offering.details?.priceStart);
+  const noLiveOrders = confirmNoLiveOrders(contractOrderList);
 
   const contractOrders = orders?.filter((order: ShareOrder) => {
     return order?.swapContractAddress === swapContractAddress;
@@ -128,6 +134,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     legalLinkTexts,
     isOfferingManager,
     contractOrderList,
+    noLiveOrders,
     currentSalePrice,
     contractOwner,
     myShareQty,

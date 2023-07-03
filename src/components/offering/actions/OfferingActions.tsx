@@ -51,6 +51,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   orders,
   contractSet,
   isContractOwner,
+  noLiveOrders,
   partitions,
   refetchMainContracts,
   refetchOfferingInfo,
@@ -131,6 +132,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           offering={offering}
           partitions={partitions}
           contractSet={contractSet}
+          noLiveOrders={noLiveOrders}
           investmentCurrency={investmentCurrency}
           swapApprovalsEnabled={swapApprovalsEnabled}
           txnApprovalsEnabled={txnApprovalsEnabled}

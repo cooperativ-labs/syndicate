@@ -192,6 +192,9 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         currentUserFiller={currentUserFiller}
         currentUserInitiator={currentUserInitiator}
         isAskOrder={isAskOrder}
+        swapContractAddress={swapContractAddress}
+        contractIndex={order.contractIndex}
+        refetchAllContracts={refetchAllContracts}
       />
 
       {showRequestForm && (
