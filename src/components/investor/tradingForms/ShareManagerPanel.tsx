@@ -3,13 +3,14 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useState } from 'react';
 
-import { approveRejectSwap, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
+import { approveRejectSwap, cancelAcceptance, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
 import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/dGraphQueries/orders';
 
 import { getCurrencyById } from '@src/utils/enumConverters';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
 import { ShareOrder } from 'types';
@@ -104,14 +105,14 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
   const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
   const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
-  const contractPrice = Number(toContractNumber(price as number, paymentTokenDecimals as number));
 
   const transferEventArgs = {
     shareContractAddress,
     recipientAddress,
     senderAddress,
     numShares,
-    contractPrice: contractPrice,
+    price,
+    currencyCode: getCurrencyById(paymentTokenAddress)?.value,
     partition,
     addApprovalRecord,
   };
@@ -138,6 +139,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       await approveRejectSwap({
         transferEventArgs: transferEventArgs,
         swapContractAddress,
+        paymentTokenDecimals,
         contractIndex: order.contractIndex,
         isDisapprove: isDisapprove,
         setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
@@ -149,9 +151,9 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     }
   };
 
-  const handleArchive = async () => {
+  const handleArchive = async (archive: boolean) => {
     updateOrderObject({
-      variables: { currentDate: currentDate, orderId: order.id, visible: order.visible, archived: true },
+      variables: { currentDate: currentDate, orderId: order.id, visible: order.visible, archived: archive },
     });
     refetchOfferingInfo();
   };
@@ -160,7 +162,6 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     await cancelSwap({
       swapContractAddress,
       contractIndex: order.contractIndex,
-      orderId: order.id,
       setButtonStep: setCancelButtonStep,
       handleArchive,
       refetchAllContracts,
@@ -179,7 +180,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   // Buttons ==========================================================================================================
 
   const buttonClass =
-    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
+    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
 
   const cancelButton = (
     <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'step1'}>
@@ -195,8 +196,12 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   );
 
   const archiveButton = (
-    <Button className={buttonClass} onClick={handleArchive} disabled={claimProceedsButton === 'step1'}>
-      {`Archive completed swap`}
+    <Button
+      className={buttonClass}
+      onClick={() => handleArchive(!order.archived)}
+      disabled={claimProceedsButton === 'step1'}
+    >
+      {order.archived ? 'Unarchive' : `Archive completed swap`}
     </Button>
   );
 
@@ -243,7 +248,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const baseInitiatorButtonSet = (
     <>
       {!isCancelled && !isFilled && currentUserInitiator && cancelButton}
-      {(isFilled || isCancelled) && proceeds === 0 && archiveButton}
+      {(isFilled || isCancelled) && isContractOwner && archiveButton}
     </>
   );
 

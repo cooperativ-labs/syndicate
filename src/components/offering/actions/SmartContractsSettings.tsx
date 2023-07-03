@@ -23,6 +23,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
   txnApprovalsEnabled,
   partitions,
   investmentCurrency,
+  noLiveOrders,
   refetchMainContracts,
 }) => {
   const shareContract = contractSet?.shareContract;
@@ -38,6 +39,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
         contractSet={contractSet}
         investmentCurrency={investmentCurrency}
         offering={offering}
+        noLiveOrders={noLiveOrders}
       />
       <hr className="my-5" />
       <DistributionContractSettings

@@ -1,7 +1,7 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
+import { getCurrencyByCode, getTransferEventOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
-import { getTransferEventOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ShareTransferEvent } from 'types';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
@@ -9,20 +9,15 @@ import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
 import { useChainId, usePublicClient, useTransaction } from 'wagmi';
 
-export type TransferEventProps = {
-  paymentTokenDecimals: number | undefined;
-};
-
-const TransferEvent: FC<TransferEventProps & { transferEvent: ShareTransferEvent }> = ({
-  transferEvent,
-  paymentTokenDecimals,
-}) => {
+const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEvent }) => {
   const chainId = useChainId();
   const publicClient = usePublicClient();
-  const { transactionHash, recipientAddress, amount, partition, type, senderAddress, price } = transferEvent;
+  const { transactionHash, recipientAddress, amount, partition, type, senderAddress, price, currencyCode } =
+    transferEvent;
   const [blockTime, setBlockTime] = React.useState<Date | null>(null);
 
-  const humanPrice = price && paymentTokenDecimals && toNormalNumber(BigInt(price), paymentTokenDecimals);
+  const paymentTokenDecimals = getCurrencyByCode(currencyCode)?.decimals;
+  const humanPrice = price && paymentTokenDecimals ? toNormalNumber(BigInt(price), paymentTokenDecimals) : null;
 
   const { data: transactionData } = useTransaction({
     hash: transactionHash as String0x,
@@ -74,7 +69,7 @@ const TransferEvent: FC<TransferEventProps & { transferEvent: ShareTransferEvent
         <div className={`font-medium`}>{type}</div>
       </div>
       <div className="flex col-span-1 justify-center">
-        <div className={`font-medium`}>{price ? numberWithCommas(humanPrice) : 'N/A'}</div>
+        <div className={`font-medium`}>{price ? numberWithCommas(humanPrice, 2) : 'N/A'}</div>
       </div>
     </div>
   );

@@ -17,7 +17,7 @@ import { TransactionReceipt, parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
-import { Organization, ShareTransferEventType, WhitelistTransactionType } from 'types';
+import { Currency, CurrencyCode, Organization, ShareTransferEventType, WhitelistTransactionType } from 'types';
 import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 
@@ -207,8 +207,11 @@ export const setDocument = async ({
 
 type SendSharesProps = {
   shareContractAddress: String0x;
+  paymentTokenDecimals: number | undefined;
   shareContractId: string;
   numShares: number;
+  price: number;
+  currencyCode: CurrencyCode;
   recipient: String0x;
   sender: String0x;
   partition: string;
@@ -226,8 +229,11 @@ type SendSharesProps = {
 
 export const sendShares = async ({
   shareContractAddress,
+  paymentTokenDecimals,
   shareContractId,
   numShares,
+  price,
+  currencyCode,
   recipient,
   sender,
   partition,
@@ -273,6 +279,8 @@ export const sendShares = async ({
           recipientAddress: recipient,
           senderAddress: sender,
           amount: numShares,
+          currencyCode,
+          price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
           transactionHash: transactionDetails.transactionHash,
           partition: setPartition,
           type: setType,
@@ -361,7 +369,7 @@ export const forceTransfer = async ({
       address: shareContractAddress,
       abi: shareContractABI,
       functionName: 'operatorTransferByPartition',
-      args: [partition, target, recipient, toContractNumber(amount, shareContractDecimals)],
+      args: [partition, target, recipient, amt],
     });
     const { hash } = await writeContract(request);
     const details = await waitForTransaction({

@@ -1140,6 +1140,19 @@ export const swapABI = [
         type: 'uint256',
       },
     ],
+    name: 'cancelAcceptance',
+    outputs: [],
+    stateMutability: 'nonpayable',
+    type: 'function',
+  },
+  {
+    inputs: [
+      {
+        internalType: 'uint256',
+        name: 'orderId',
+        type: 'uint256',
+      },
+    ],
     name: 'cancelOrder',
     outputs: [],
     stateMutability: 'nonpayable',

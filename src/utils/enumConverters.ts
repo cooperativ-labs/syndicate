@@ -428,8 +428,10 @@ export const currencyOptionsExcludeCredits = currencyOptions.filter(
 );
 
 export const getCurrencyOption = (currency: Maybe<Currency> | undefined) => {
-  // console.log('getCurrencyOption', currency);
   return currencyOptions.find((cur) => (cur.value === currency?.code ? cur : null));
+};
+export const getCurrencyByCode = (currencyCode: Maybe<CurrencyCode> | undefined) => {
+  return currencyOptions.find((cur) => (cur.value === currencyCode ? cur : null));
 };
 
 export const getCurrencyById = (id: String0x | undefined) => {

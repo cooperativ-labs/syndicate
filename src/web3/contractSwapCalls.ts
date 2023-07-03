@@ -9,12 +9,13 @@ import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
 import { erc20ABI } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Organization, ShareTransferEventType } from 'types';
+import { Currency, CurrencyCode, Organization, ShareTransferEventType } from 'types';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import {
   handleOfferingRequestNotification,
   handleTradeExecutionNotification,
 } from '@src/components/notifications/notificationFunctions';
+import { getCurrencyById } from '@src/utils/enumConverters';
 
 type SubmitSwapProps = {
   numShares: number;
@@ -230,18 +231,22 @@ export const setAllowance = async ({
 type ApproveRejectSwapProps = {
   transferEventArgs?: {
     shareContractAddress: String0x | undefined;
+
     recipientAddress: '' | `0x${string}` | undefined;
     senderAddress: String0x | undefined | '';
     numShares: number | undefined;
-    contractPrice: number | undefined;
+    price: number | undefined;
+    currencyCode: CurrencyCode | undefined;
     partition: String0x | undefined | '';
     addApprovalRecord: (arg0: {
       variables: {
         shareContractAddress: String0x | undefined;
+        orderIndex: number;
         recipientAddress: '' | `0x${string}` | undefined;
         senderAddress: String0x | undefined | '';
         amount: number | undefined;
-        price: number | undefined;
+        price: string | undefined;
+        currencyCode: CurrencyCode | undefined;
         partition: String0x | undefined | '';
         transactionHash: String0x;
         type: ShareTransferEventType;
@@ -249,6 +254,7 @@ type ApproveRejectSwapProps = {
     }) => Promise<any> | undefined;
   };
   swapContractAddress: String0x | undefined;
+  paymentTokenDecimals: number | undefined;
   contractIndex: number;
   isDisapprove: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
@@ -258,6 +264,7 @@ type ApproveRejectSwapProps = {
 export const approveRejectSwap = async ({
   transferEventArgs,
   swapContractAddress,
+  paymentTokenDecimals,
   contractIndex,
   isDisapprove,
   setButtonStep,
@@ -265,6 +272,7 @@ export const approveRejectSwap = async ({
   setModal,
 }: ApproveRejectSwapProps) => {
   setButtonStep('step1');
+
   const contractFunctionName = isDisapprove ? 'managerResetOrder' : 'approveOrder';
   const call = async () => {
     if (!swapContractAddress) {
@@ -287,7 +295,8 @@ export const approveRejectSwap = async ({
           recipientAddress,
           senderAddress,
           numShares,
-          contractPrice,
+          price,
+          currencyCode,
           partition,
           addApprovalRecord,
         } = transferEventArgs;
@@ -295,10 +304,12 @@ export const approveRejectSwap = async ({
         await addApprovalRecord({
           variables: {
             shareContractAddress: shareContractAddress,
+            orderIndex: contractIndex,
             recipientAddress: recipientAddress,
             senderAddress: senderAddress,
             amount: numShares,
-            price: contractPrice,
+            price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
+            currencyCode: currencyCode,
             transactionHash: transactionDetails.transactionHash,
             partition: partition,
             type: isDisapprove ? ShareTransferEventType.Disapproval : ShareTransferEventType.Approval,
@@ -319,9 +330,8 @@ export const approveRejectSwap = async ({
 type CancelOrderProps = {
   swapContractAddress: String0x | undefined;
   contractIndex: number;
-  orderId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  handleArchive: () => Promise<any>;
+  handleArchive: (archive: boolean) => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
 };
@@ -329,7 +339,6 @@ type CancelOrderProps = {
 export const cancelSwap = async ({
   swapContractAddress,
   contractIndex,
-  orderId,
   setButtonStep,
   handleArchive,
   setModal,
@@ -351,9 +360,51 @@ export const cancelSwap = async ({
       await waitForTransaction({
         hash: hash,
       });
-      handleArchive && handleArchive();
+      handleArchive && handleArchive(true);
       setButtonStep('confirmed');
       toast.success(`You have cancelled your sale.`);
+      setModal && setModal(false);
+      refetchAllContracts();
+    } catch (e) {
+      StandardChainErrorHandling(e, setButtonStep);
+    }
+  };
+  await call();
+};
+
+type CancelAcceptanceProps = {
+  swapContractAddress: String0x | undefined;
+  contractIndex: number;
+  setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
+  setModal?: Dispatch<SetStateAction<boolean>>;
+  refetchAllContracts: () => void;
+};
+
+export const cancelAcceptance = async ({
+  swapContractAddress,
+  contractIndex,
+  setButtonStep,
+  setModal,
+  refetchAllContracts,
+}: CancelAcceptanceProps) => {
+  setButtonStep('step1');
+  const call = async () => {
+    if (!swapContractAddress) {
+      throw new Error('No swap contract address');
+    }
+    try {
+      const { request } = await prepareWriteContract({
+        address: swapContractAddress,
+        abi: swapContractABI,
+        functionName: 'cancelAcceptance',
+        args: [BigInt(contractIndex)],
+      });
+      const { hash } = await writeContract(request);
+      await waitForTransaction({
+        hash: hash,
+      });
+      setButtonStep('confirmed');
+      toast.success(`You have cancelled your offer.`);
       setModal && setModal(false);
       refetchAllContracts();
     } catch (e) {
@@ -402,6 +453,7 @@ export const claimProceeds = async ({
 type FillOrderProps = {
   swapContractAddress: String0x | undefined;
   shareContractAddress: String0x | undefined;
+  paymentTokenAddress: String0x | undefined;
   amount: number;
   price: number;
   paymentTokenDecimals: number;
@@ -423,6 +475,7 @@ export const fillOrder = async ({
   swapContractAddress,
   amount,
   price,
+  paymentTokenAddress,
   paymentTokenDecimals,
   contractIndex,
   partition,
@@ -437,7 +490,6 @@ export const fillOrder = async ({
   setModal,
 }: FillOrderProps) => {
   const contractAmount = toContractNumber(amount, shareContractDecimals);
-  console.log('contractAmount', contractAmount);
   const call = async () => {
     if (!swapContractAddress || !shareContractAddress) {
       throw new Error('No swap or share contract address');
@@ -448,7 +500,7 @@ export const fillOrder = async ({
         address: swapContractAddress,
         abi: swapContractABI,
         functionName: 'fillOrder',
-        args: [BigInt(contractIndex), toContractNumber(amount, shareContractDecimals)],
+        args: [BigInt(contractIndex), contractAmount],
         value: BigInt(0),
       });
       const { hash } = await writeContract(request);
@@ -461,7 +513,8 @@ export const fillOrder = async ({
           recipientAddress: recipient,
           senderAddress: sender,
           amount: amount,
-          price: Number(toContractNumber(price, paymentTokenDecimals)),
+          price: contractAmount.toString(),
+          currencyCode: getCurrencyById(paymentTokenAddress)?.value,
           transactionHash: transactionDetails.transactionHash,
           partition: partition,
           type: ShareTransferEventType.Trade,

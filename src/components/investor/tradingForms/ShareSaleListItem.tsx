@@ -1,4 +1,5 @@
 import cn from 'classnames';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OfferingSummaryPanel from './OfferingSummaryPanel';
 import React, { FC, useState } from 'react';
 import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
@@ -8,7 +9,7 @@ import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering
 import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { Offering, ShareOrder } from 'types';
-import { useAccount } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
 export type OrderStatusType = {
@@ -48,6 +49,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   refetchOfferingInfo,
 }) => {
   const { address: userWalletAddress } = useAccount();
+  const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
 
   const {
@@ -92,116 +94,112 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
       isVisible: order.visible,
     });
 
-  const showArchived = order.archived && (order.visible || currentUserInitiator || isContractOwner);
-  const showLive = !order.archived && (order.visible || currentUserInitiator || isContractOwner);
-  const showPurchaseSteps = !order.archived && (!currentUserInitiator || (!isAskOrder && isFiller));
+  const showOrder = order.visible || currentUserInitiator || isContractOwner;
+  const showPurchaseSteps = !order.archived && !isFilled && (!currentUserInitiator || (!isAskOrder && isFiller));
 
   return (
     <>
-      {showArchived && (
-        <div
-          className={cn(
-            currentUserInitiator && 'border-2 border-green-600',
-            'grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer'
-          )}
-        >
-          <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
-          <div className="col-span-11">
-            <div> Archived/Completed Swap - need to design </div>
-            <div> Order index: {order.contractIndex}</div>
-            <div> status: {status.name}</div>
-            <div> amount: {amount}</div>
-          </div>
-        </div>
-      )}
-      {showLive && (
+      {showOrder && (
         <div className={'relative items-center shadow-md hover:shadow-lg rounded-md my-5 '}>
-          <div className={`absolute top-2 right-2 p-1 px-2 rounded-md border-2 border-${status.color} text-xs`}>
-            {status.name}
-          </div>
           <div
-            className="grid grid-cols-12 p-3 rounded-md bg-slate-100 items-center hover:cursor-pointer"
+            className="rounded-md bg-slate-100 items-center hover:cursor-pointer"
             onClick={() => {
               setOpen(!open);
               refetchMainContracts();
             }}
           >
-            <div className="flex justify-center font-semibold text-lg">{index + 1}.</div>
-            <div className="flex justify-between col-span-11">
-              <OfferingSummaryPanel
-                isAskOrder={isAskOrder}
-                initiator={initiator}
-                shareQtyRemaining={shareQtyRemaining}
-                shareQtyOffered={amount}
-                partition={partition}
-                price={price}
-                paymentTokenAddress={paymentTokenAddress}
-              />
+            <div className="flex flex-col">
+              {currentUserInitiator && (
+                <div className="flex justify-end items-center pr-3 border-b-2 border-green-600 text-green-600 text-xs uppercase font-semibold rounded-t-md ">
+                  <div className="">{`Your ${isAskOrder ? 'sell' : 'purchase'} offer`}</div>
+                </div>
+              )}
+              <div className="grid grid-cols-12 p-3">
+                <div className="flex col-span-8">
+                  <OfferingSummaryPanel
+                    isAskOrder={isAskOrder}
+                    initiator={initiator}
+                    shareQtyRemaining={shareQtyRemaining}
+                    shareQtyOffered={amount}
+                    partition={partition}
+                    price={price}
+                    paymentTokenAddress={paymentTokenAddress}
+                  />
+                </div>
+                <div className="flex col-span-3 justify-end items-center">
+                  <div className={`p-2  rounded-md text-${status.color} text-sm uppercase`}>{status.name}</div>
+                </div>
 
-              <div className="flex items-center p-1">
-                {/* {isOfferor && (
-                  <button className="flex items-center p-1 px-2 mr-4 border-2 border-cDarkBlue rounded-md">
-                    Manage your offer
-                  </button>
-                )} */}
-
-                {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
+                <div className="flex items-center p-1 justify-end">
+                  {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
+                </div>
               </div>
             </div>
           </div>
           {open && (
-            <div className="p-2">
-              {(currentUserInitiator || isContractOwner) && (
-                <SaleManagerPanel
-                  currentUserFiller={currentUserFiller}
-                  currentUserInitiator={currentUserInitiator}
-                  isContractOwner={isContractOwner}
-                  offeringId={offering.id}
-                  isApproved={isApproved}
-                  isAccepted={isAccepted}
-                  isCancelled={isCancelled}
-                  isFilled={isFilled}
-                  isAskOrder={isAskOrder}
-                  filler={filler}
-                  initiator={initiator as String0x}
-                  order={order}
-                  amount={amount}
-                  price={price}
-                  shareContractAddress={shareContractAddress}
-                  partition={partition}
-                  swapContractAddress={swapContractAddress}
-                  txnApprovalsEnabled={txnApprovalsEnabled}
-                  swapApprovalsEnabled={swapApprovalsEnabled}
-                  paymentTokenAddress={paymentTokenAddress}
-                  paymentTokenDecimals={paymentTokenDecimals}
-                  refetchAllContracts={refetchAllContracts}
-                  refetchOfferingInfo={refetchOfferingInfo}
-                />
-              )}
-              {showPurchaseSteps && (
-                <SharePurchaseSteps
-                  offering={offering}
-                  order={order}
-                  shareQtyRemaining={shareQtyRemaining as number}
-                  price={price as number}
-                  swapContractAddress={swapContractAddress as String0x}
-                  isAskOrder={isAskOrder as boolean}
-                  refetchAllContracts={refetchAllContracts as () => void}
-                  isApproved={isApproved as boolean}
-                  isFilled={isFilled as boolean}
-                  isCancelled={isCancelled as boolean}
-                  isAccepted={isAccepted as boolean}
-                  filledAmount={filledAmount as number}
-                  filler={filler as String0x}
-                  paymentTokenAddress={paymentTokenAddress as String0x}
-                  paymentTokenDecimals={paymentTokenDecimals as number}
-                  txnApprovalsEnabled={txnApprovalsEnabled as boolean}
-                  shareContractAddress={shareContractAddress as String0x}
-                  partition={partition as String0x}
-                  initiator={initiator as String0x}
-                  myShareQty={myShareQty}
-                />
-              )}
+            <div>
+              <div className="flex items-center border-b-2 bg-slate-200">
+                <div className=" p-1 pl-3 flex justify-between text-sm w-full">
+                  <div className="flex items-center">
+                    {`${isAskOrder ? 'Seller' : 'Buyer'}`}
+                    <FormattedCryptoAddress className="ml-1" chainId={chainId} address={initiator} withCopy />
+                  </div>
+                  <div className={` p-1 px-2 items-center text-xs`}>offer Id: {order.contractIndex}</div>
+                </div>
+              </div>
+              <div className="p-2 pt-4 bg-slate-100">
+                {(currentUserInitiator || isContractOwner) && (
+                  <SaleManagerPanel
+                    currentUserFiller={currentUserFiller}
+                    currentUserInitiator={currentUserInitiator}
+                    isContractOwner={isContractOwner}
+                    offeringId={offering.id}
+                    isApproved={isApproved}
+                    isAccepted={isAccepted}
+                    isCancelled={isCancelled}
+                    isFilled={isFilled}
+                    isAskOrder={isAskOrder}
+                    filler={filler}
+                    initiator={initiator as String0x}
+                    order={order}
+                    amount={amount}
+                    price={price}
+                    shareContractAddress={shareContractAddress}
+                    partition={partition}
+                    swapContractAddress={swapContractAddress}
+                    txnApprovalsEnabled={txnApprovalsEnabled}
+                    swapApprovalsEnabled={swapApprovalsEnabled}
+                    paymentTokenAddress={paymentTokenAddress}
+                    paymentTokenDecimals={paymentTokenDecimals}
+                    refetchAllContracts={refetchAllContracts}
+                    refetchOfferingInfo={refetchOfferingInfo}
+                  />
+                )}
+                {showPurchaseSteps && (
+                  <SharePurchaseSteps
+                    offering={offering}
+                    order={order}
+                    shareQtyRemaining={shareQtyRemaining as number}
+                    price={price as number}
+                    swapContractAddress={swapContractAddress as String0x}
+                    isAskOrder={isAskOrder as boolean}
+                    refetchAllContracts={refetchAllContracts as () => void}
+                    isApproved={isApproved as boolean}
+                    isFilled={isFilled as boolean}
+                    isCancelled={isCancelled as boolean}
+                    isAccepted={isAccepted as boolean}
+                    filledAmount={filledAmount as number}
+                    filler={filler as String0x}
+                    paymentTokenAddress={paymentTokenAddress as String0x}
+                    paymentTokenDecimals={paymentTokenDecimals as number}
+                    txnApprovalsEnabled={txnApprovalsEnabled as boolean}
+                    shareContractAddress={shareContractAddress as String0x}
+                    partition={partition as String0x}
+                    initiator={initiator as String0x}
+                    myShareQty={myShareQty}
+                  />
+                )}
+              </div>
             </div>
           )}
         </div>

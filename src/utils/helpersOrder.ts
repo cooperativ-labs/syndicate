@@ -10,6 +10,11 @@ export type ContractOrder = {
   price: number;
   initiator: String0x | null;
   partition: String0x | null;
+  isCancelled: boolean | null;
+  isFilled: boolean | null;
+  isAccepted: boolean | null;
+  isApproved: boolean | null;
+  filler: String0x | null;
 };
 
 export function getOrdersByPrice(contractOrderList: ContractOrder[]) {
@@ -45,16 +50,36 @@ export async function getOrderArrayFromContract(
     const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
     const initiator = data && data[0];
     const price = data ? toNormalNumber(data[3], adjustTokenDecimalsForShareContract) : 0;
+    const amount = data && toNormalNumber(data[2], shareContractDecimals);
     const partition = data && data[1];
     const orderId = order?.id;
     const contractIndex = order?.contractIndex;
+    const filledAmount = data && toNormalNumber(data[4], shareContractDecimals);
+    const filler = data && (data[5] as String0x);
+    const isCancelled = data && data[7].isCancelled;
+    const isAccepted = data && data[7].orderAccepted;
+    const isApproved = data && data[7].isApproved;
+    const isFilled = !!amount && !!filledAmount && amount === filledAmount;
     return {
       orderId,
       contractIndex,
       price,
       initiator,
       partition,
+      isCancelled,
+      isFilled,
+      isAccepted,
+      isApproved,
+      filler,
     };
   });
   return Promise.all(orderArray);
 }
+
+export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]) => {
+  const liveOrders = contractOrderList?.filter((order) => !order.isCancelled && !order.isFilled);
+  const activeOrders = liveOrders?.find(
+    (order) => order.isAccepted || order.filler !== '0x0000000000000000000000000000000000000000' || order.isApproved
+  );
+  return !activeOrders;
+};

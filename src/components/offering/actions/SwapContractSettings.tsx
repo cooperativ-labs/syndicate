@@ -14,6 +14,7 @@ export type SwapContractSettingsProps = {
   txnApprovalsEnabled: boolean | undefined;
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
   offering: Offering;
+  noLiveOrders: boolean;
   refetchMainContracts: () => void;
 };
 
@@ -27,7 +28,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
   contractSet,
   investmentCurrency,
   offering,
-
+  noLiveOrders,
   refetchMainContracts,
 }) => {
   const chainId = useChainId();
@@ -125,11 +126,19 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
           </div>
           <div className="mt-4 border-2 rounded-md px-2">
             <SectionBlock className="" sectionTitle={'Trade approval settings'} mini startOpen asAccordion>
-              <div className="flex flex-col my-4 ml-10">
-                {swapApproval}
-                <hr className="my-4" />
-                {txnApproval}
-              </div>
+              {noLiveOrders ? (
+                <div className="flex flex-col my-4 ml-10">
+                  {swapApproval}
+                  <hr className="my-4" />
+                  {txnApproval}
+                </div>
+              ) : (
+                <div className="flex flex-col my-4 ml-10">
+                  <div className="text-sm font-medium text-gray-700 mr-2">
+                    Please complete or cancel all orders before changing approval settings.
+                  </div>
+                </div>
+              )}
             </SectionBlock>
           </div>
         </div>

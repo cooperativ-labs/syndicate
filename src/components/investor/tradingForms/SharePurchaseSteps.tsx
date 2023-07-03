@@ -127,6 +127,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         await fillOrder({
           swapContractAddress,
           shareContractAddress,
+          paymentTokenAddress,
           contractIndex: order.contractIndex,
           amount: amount,
           price,
@@ -153,6 +154,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         await fillOrder({
           swapContractAddress,
           shareContractAddress,
+          paymentTokenAddress,
           contractIndex: order.contractIndex,
           amount: amount,
           price,
@@ -190,6 +192,9 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         currentUserFiller={currentUserFiller}
         currentUserInitiator={currentUserInitiator}
         isAskOrder={isAskOrder}
+        swapContractAddress={swapContractAddress}
+        contractIndex={order.contractIndex}
+        refetchAllContracts={refetchAllContracts}
       />
 
       {showRequestForm && (

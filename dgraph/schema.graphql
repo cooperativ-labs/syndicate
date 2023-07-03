@@ -17,10 +17,12 @@ enum ShareTransferEventType	{
 type ShareTransferEvent {
 	id: ID!
 	shareContractAddress: String! @search
+	orderIndex: Int
 	recipientAddress: String! @search
 	senderAddress: String! @search
 	amount: Int!
-	price:	Int
+	price:	String
+	currencyCode: CurrencyCode
 	partition: String! @search
 	transactionHash: String!
 	type: ShareTransferEventType!
