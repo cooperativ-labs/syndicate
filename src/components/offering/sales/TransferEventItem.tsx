@@ -18,7 +18,6 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
 
   const paymentTokenDecimals = getCurrencyByCode(currencyCode)?.decimals;
   const humanPrice = price && paymentTokenDecimals ? toNormalNumber(BigInt(price), paymentTokenDecimals) : null;
-  console.log({ price, type });
 
   const { data: transactionData } = useTransaction({
     hash: transactionHash as String0x,
