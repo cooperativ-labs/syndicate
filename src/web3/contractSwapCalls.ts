@@ -490,6 +490,7 @@ export const fillOrder = async ({
   setModal,
 }: FillOrderProps) => {
   const contractAmount = toContractNumber(amount, shareContractDecimals);
+  const contractPrice = toContractNumber(price, paymentTokenDecimals);
   const call = async () => {
     if (!swapContractAddress || !shareContractAddress) {
       throw new Error('No swap or share contract address');
@@ -513,7 +514,7 @@ export const fillOrder = async ({
           recipientAddress: recipient,
           senderAddress: sender,
           amount: amount,
-          price: contractAmount.toString(),
+          price: contractPrice.toString(),
           currencyCode: getCurrencyById(paymentTokenAddress)?.value,
           transactionHash: transactionDetails.transactionHash,
           partition: partition,
