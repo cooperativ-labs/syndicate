@@ -97,7 +97,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   return (
     <>
       <RightSideBar formOpen={transactionHistoryPanel} onClose={() => setTransactionHistoryPanel(false)}>
-        <FullTransactionHistory transferEvents={transferEvents} paymentTokenDecimals={paymentTokenDecimals} />
+        <FullTransactionHistory transferEvents={transferEvents} />
       </RightSideBar>
       <RightSideBar formOpen={financialSettingsPanel} onClose={() => setFinancialSettingsPanel(false)}>
         <OfferingFinancialSettings offering={offering} />

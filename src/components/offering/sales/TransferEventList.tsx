@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
-import TransferEventItem, { TransferEventProps } from './TransferEventItem';
+import TransferEventItem from './TransferEventItem';
 import { ShareTransferEvent } from 'types';
 
-export type TransferEventListProps = TransferEventProps & { transferEvents: ShareTransferEvent[] };
+export type TransferEventListProps = { transferEvents: ShareTransferEvent[] };
 
-const TransferEventList: FC<TransferEventListProps> = ({ transferEvents, paymentTokenDecimals }) => {
+const TransferEventList: FC<TransferEventListProps> = ({ transferEvents }) => {
   return (
     <>
       <div className="md:grid grid-cols-7 gap-3 items-center pl-3 p-1 mb-2 ">
@@ -33,8 +33,8 @@ const TransferEventList: FC<TransferEventListProps> = ({ transferEvents, payment
           <div className="text-sm font-bold text-gray-700">Price</div>
         </div>
       </div>
-      {transferEvents?.map((transferEvent: ShareTransferEvent, i) => {
-        return <TransferEventItem key={i} transferEvent={transferEvent} paymentTokenDecimals={paymentTokenDecimals} />;
+      {transferEvents?.map((transferEvent: ShareTransferEvent, i: number) => {
+        return <TransferEventItem key={i} transferEvent={transferEvent} />;
       })}
     </>
   );
