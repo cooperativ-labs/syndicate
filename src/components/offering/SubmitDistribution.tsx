@@ -5,7 +5,7 @@ import React, { FC, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
-import { String0x } from '@src/web3/helpersChain';
+import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
@@ -16,6 +16,7 @@ import { setAllowance } from '@src/web3/contractSwapCalls';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { toNormalNumber } from '@src/web3/util';
 import { useMutation } from '@apollo/client';
+import Select from '../form-components/Select';
 
 type SubmitDistributionProps = {
   distributionContractAddress: String0x | undefined;
@@ -123,6 +124,17 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
                 placeholder="2000"
                 required
               />
+              <Select className={'mt-3'} name="partition" labelText="Share class">
+                <option value="">Select class</option>
+
+                {partitions.map((partition, i) => {
+                  return (
+                    <option key={i} value={partition}>
+                      {stringFromBytes32(partition)}
+                    </option>
+                  );
+                })}
+              </Select>
               <div className="mt-4" />
               <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
                 <LoadingButtonText
