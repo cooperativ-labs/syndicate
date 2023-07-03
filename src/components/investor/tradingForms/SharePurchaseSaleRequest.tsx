@@ -68,7 +68,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
 
   const purchaseString = (numUnitsPurchase: string | undefined) => {
     if (!numUnitsPurchase) return '0';
-    return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)));
+    return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)), 2);
   };
 
   const handlePurchaseSaleRequest = async (values: any) => {

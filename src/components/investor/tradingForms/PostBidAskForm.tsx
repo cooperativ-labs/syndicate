@@ -74,7 +74,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
 
   const saleAmountString = (numUnits: string, price: Maybe<number> | undefined) => {
     if (!price) return '0';
-    return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
+    return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price), 2);
   };
 
   const showSharesAvailable = `(${myShareQty} available)`;

@@ -52,7 +52,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
     </span>
   );
 
-  const formButtonText = `Purchase ${acceptedOrderQty} shares for ${numberWithCommas(price * acceptedOrderQty)} ${
+  const formButtonText = `Purchase ${acceptedOrderQty} shares for ${numberWithCommas(price * acceptedOrderQty, 2)} ${
     getCurrencyById(paymentTokenAddress)?.symbol
   }`;
 
