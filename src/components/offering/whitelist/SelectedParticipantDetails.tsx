@@ -241,7 +241,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         walletAddress={participantWallet}
       />
       <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Transfers</h1>
-      <TransferEventList transferEvents={transferEvents} paymentTokenDecimals={paymentTokenDecimals} />
+      <TransferEventList transferEvents={transferEvents} />
     </div>
   );
 
