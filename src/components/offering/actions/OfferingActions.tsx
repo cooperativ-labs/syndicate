@@ -288,7 +288,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
 
   const NoContract = isOfferingManager ? (
     <>
-      {(issueReachingContract.share || issueReachingContract.swap) && (
+      {(issueReachingContract.share || issueReachingContract.swap) && !!shareContractAddress && (
         <div className="text-sm text-red-700 font-semibold mb-2">
           There was an issue reaching the contract. Please contact your administrator.
         </div>
