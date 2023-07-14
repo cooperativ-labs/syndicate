@@ -34,6 +34,7 @@ type OfferingActionsProps = SmartContractsSettingsProps &
     loading: boolean | undefined;
     isOfferingManager: boolean;
     retrievalIssue: boolean;
+    issueReachingContract: { share: boolean; swap: boolean };
     userId: string | undefined;
     transferEvents: ShareTransferEvent[] | undefined;
   };
@@ -41,6 +42,7 @@ type OfferingActionsProps = SmartContractsSettingsProps &
 const OfferingActions: FC<OfferingActionsProps> = ({
   retrievalIssue,
   hasContract,
+  issueReachingContract,
   loading,
   isOfferingManager,
   offering,
@@ -285,12 +287,19 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   );
 
   const NoContract = isOfferingManager ? (
-    <Button
-      className="p-3 bg-cLightBlue rounded-md text-white"
-      onClick={() => setManagerModal('smartContractsSettings')}
-    >
-      Configure shares & trading
-    </Button>
+    <>
+      {(issueReachingContract.share || issueReachingContract.swap) && (
+        <div className="text-sm text-red-700 font-semibold mb-2">
+          There was an issue reaching the contract. Please contact your administrator.
+        </div>
+      )}
+      <Button
+        className="p-3 bg-cLightBlue rounded-md text-white"
+        onClick={() => setManagerModal('smartContractsSettings')}
+      >
+        Configure shares & trading
+      </Button>
+    </>
   ) : (
     <>The offeror has not yet created shares or your wallet is not connected.</>
   );

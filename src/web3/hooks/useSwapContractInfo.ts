@@ -11,12 +11,13 @@ export type SwapContractInfoType = {
   nextOrderId: number | undefined;
   swapContractVersion: string | undefined;
   isLoading: boolean | undefined;
+  issueReachingSwapContract: boolean;
   refetchSwapContract: () => void;
 };
 
-export const useSwapContractInfo = (swapContractId: String0x): SwapContractInfoType => {
+export const useSwapContractInfo = (swapContractAddress: String0x): SwapContractInfoType => {
   const baseContractInfo = {
-    address: swapContractId,
+    address: swapContractAddress,
     abi: swapContractABI,
   };
 
@@ -43,6 +44,7 @@ export const useSwapContractInfo = (swapContractId: String0x): SwapContractInfoT
   const txnApprovalsEnabled = data ? data[3].result : undefined;
   const nextOrderId = data ? Number(data[4].result) : undefined;
   const swapContractVersion = data ? data[5].result : undefined;
+  const issueReachingSwapContract = !!swapContractAddress && !swapContractVersion;
 
   const { data: paymentTokenDecimals } = useContractRead({
     address: paymentTokenAddress,
@@ -59,6 +61,7 @@ export const useSwapContractInfo = (swapContractId: String0x): SwapContractInfoT
     nextOrderId,
     swapContractVersion,
     isLoading,
+    issueReachingSwapContract,
     refetchSwapContract,
   };
 };

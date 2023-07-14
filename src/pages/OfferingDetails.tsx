@@ -67,6 +67,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     txnApprovalsEnabled,
     totalDistributed,
     noLiveOrders,
+    issueReachingContract,
     refetchShareContract,
     refetchSwapContract,
     refetchOrders,
@@ -218,6 +219,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                         orders={contractOrders}
                         offering={offering}
                         contractSet={contractSet}
+                        issueReachingContract={issueReachingContract}
                         paymentTokenAddress={paymentTokenAddress}
                         paymentTokenDecimals={paymentTokenDecimals}
                         swapApprovalsEnabled={swapApprovalsEnabled}

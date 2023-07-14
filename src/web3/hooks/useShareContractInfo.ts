@@ -13,15 +13,16 @@ export type ShareContractInfoType = {
   firstPartition: String0x | undefined;
   shareContractVersion: string | undefined;
   isLoading: boolean | undefined;
+  issueReaching1410: boolean;
   refetchShareContract: () => void;
 };
 
 export const useShareContractInfo = (
-  shareContractId: String0x,
+  shareContractAddress: String0x,
   userWalletAddress: String0x | undefined
 ): ShareContractInfoType => {
   const baseContractInfo = {
-    address: shareContractId,
+    address: shareContractAddress,
     abi: shareContractABI,
   };
 
@@ -64,6 +65,7 @@ export const useShareContractInfo = (
   const smartContractDocuments = data ? data[5].result : undefined;
   const firstPartition = data ? (data[6].result as String0x) : undefined;
   const shareContractVersion = data ? data[7].result : undefined;
+  const issueReaching1410 = !!shareContractABI && !shareContractVersion;
 
   return {
     contractOwner,
@@ -75,6 +77,7 @@ export const useShareContractInfo = (
     firstPartition,
     shareContractVersion,
     isLoading,
+    issueReaching1410,
     refetchShareContract,
   };
 };

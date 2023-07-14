@@ -59,6 +59,7 @@ export const SupportedChains = getSupportedChains();
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
+  // publicProvider(),
 ]);
 
 export type SupportedEthConnectorType = {

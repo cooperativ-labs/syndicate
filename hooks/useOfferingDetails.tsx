@@ -60,6 +60,8 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     myShareQty,
     sharesOutstanding,
     smartContractDocuments,
+    shareContractVersion,
+    issueReaching1410,
     isLoading: shareIsLoading,
     refetchShareContract,
   } = useShareContractInfo(shareContractAddress, userWalletAddress);
@@ -71,6 +73,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     swapApprovalsEnabled,
     txnApprovalsEnabled,
     nextOrderId,
+    issueReachingSwapContract,
     isLoading: swapIsLoading,
     refetchSwapContract,
   } = useSwapContractInfo(swapContractAddress);
@@ -111,6 +114,8 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
 
   const isLoading = shareIsLoading || swapIsLoading;
 
+  const issueReachingContract = { swap: issueReachingSwapContract, share: issueReaching1410 };
+
   //NOTE: This does not return any objects the user can get directly from the Offering node in the DB.
   return {
     hasContract,
@@ -148,6 +153,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     txnApprovalsEnabled,
     nextOrderId,
     totalDistributed,
+    issueReachingContract,
     refetchShareContract,
     refetchSwapContract,
     refetchOrders,
