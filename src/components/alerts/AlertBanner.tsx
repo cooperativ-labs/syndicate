@@ -11,11 +11,11 @@ const AlertBanner: FC<AlertBannerProps> = ({ text, show, color }) => {
     return <></>;
   }
   return (
-    <a className={`bg-${color} "bg-opacity-90 flex p-2 shadow-xl"`} href="/" target="_blank" rel="noreferrer">
+    <div className={`bg-${color} "bg-opacity-90 flex p-2 shadow-xl"`}>
       <div className="font-medium text-white text-xs md:text-sm mx-auto px-2 ">
         <div>{text}</div>
       </div>
-    </a>
+    </div>
   );
 };
 

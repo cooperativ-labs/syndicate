@@ -7,6 +7,7 @@ import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractReads } from 'wagmi';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 
 type WhitelistAddressListItemProps = {
   participant: Maybe<OfferingParticipant>;
@@ -53,7 +54,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   const isWhitelisted = data?.[1].result;
 
   const isYou = participant?.walletAddress === userWalletAddress;
-  const numShares = isLoading ? 'loading...' : data ? toNormalNumber(balance, shareContractDecimals) : 0;
+  const numShares = data ? toNormalNumber(balance, shareContractDecimals) : 0;
 
   if (!participant) {
     return <></>;
@@ -78,7 +79,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
           userName={participant.name}
           isYou={isYou}
         />
-        <div className="text-sm">{`Shares: ${numShares}`}</div>
+        <div className="text-sm">{`Shares: ${numberWithCommas(numShares)}`}</div>
         {/* <PresentWalletUser className="md:w-auto mt-2 font-medium" walletAddress={participant.address} /> */}
       </div>
 

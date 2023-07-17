@@ -19,7 +19,7 @@ import { useAccount } from 'wagmi';
 type OfferingTabContainerProps = WhitelistAddressListProps & {
   offering: Offering;
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  contractOwnerMatches: boolean;
+  contractManagerMatches: boolean;
   isContractOwner: boolean;
   offeringEntity: Maybe<LegalEntity> | undefined;
   isOfferingManager: boolean;
@@ -39,7 +39,7 @@ const TabOptions = [
 const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   offering,
   contractSet,
-  contractOwnerMatches,
+  contractManagerMatches,
   isContractOwner,
   offeringEntity,
   isOfferingManager,
@@ -136,7 +136,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
           <div className="mt-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-cDarkBlue text-2xl font-medium ">Distributions</h1>
-              {contractOwnerMatches && isContractOwner && !!distributionContractAddress && (
+              {contractManagerMatches && isContractOwner && !!distributionContractAddress && (
                 <Button
                   onClick={() => {
                     setSubmitDistributionModal(true);

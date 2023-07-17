@@ -24,6 +24,7 @@ import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/dGraph
 import { useContractReads } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
@@ -88,6 +89,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
 
   const shareBalanceData = data?.[0].result;
   const isWhitelisted = data?.[1].result;
+  const numShares = toNormalNumber(shareBalanceData, shareContractDecimals);
 
   // -----------------Approve Whitelist Participant---------------------
 
@@ -316,7 +318,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       />
 
       <div className="mb-4">
-        <div>{`Shares: ${toNormalNumber(shareBalanceData, shareContractDecimals)} `}</div>
+        <div>{`Shares: ${numberWithCommas(numShares)} `}</div>
         <SectionBlock sectionTitle="Review approvals" mini>
           {whitelistTransactions?.map((transaction, i) => (
             <WhitelistTransactionItem key={i} transaction={transaction} chainId={chainId} />

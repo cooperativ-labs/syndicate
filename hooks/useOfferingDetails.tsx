@@ -57,6 +57,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
 
   const {
     contractOwner,
+    isManager,
     myShareQty,
     sharesOutstanding,
     smartContractDocuments,
@@ -104,7 +105,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   const hasContract = !!contractOwner;
   const isContractOwner = contractOwner === userWalletAddress;
   const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
-  const contractOwnerMatches = isContractOwner === !!isOfferingManager;
+  const contractManagerMatches = isContractOwner === !!isOfferingManager || isManager === !!isOfferingManager;
 
   const swapContractMatches = !swapContract
     ? true
@@ -120,7 +121,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   return {
     hasContract,
     isContractOwner,
-    contractOwnerMatches,
+    contractManagerMatches,
     swapContractMatches,
     contractMatchesCurrentChain,
     contractSet,

@@ -31,8 +31,7 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
       <span className="text-sm"> per {partition && stringFromBytes32(partition as String0x)} share</span>
 
       <div className="mt-2">
-        {numberWithCommas(shareQtyRemaining)} of {numberWithCommas(shareQtyOffered)}{' '}
-        {`remaining for ${isAskOrder ? 'sale' : 'purchase'}`}
+        {numberWithCommas(shareQtyRemaining)} of {numberWithCommas(shareQtyOffered)} remaining
       </div>
     </div>
   );

@@ -116,12 +116,13 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             errors.numUnits = `You cannot buy more than ${sharesUnissued} shares.`;
           }
 
-          if (!approvalRequired) {
+          if (!isContractOwner && !approvalRequired) {
             errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
           }
-          if (toc === false) {
+          if (!isContractOwner && toc === false) {
             errors.toc = "You must accept this offering's Terms & Conditions";
           }
+          console.log(errors);
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
@@ -305,9 +306,11 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                   <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
                     <LoadingButtonText
                       state={buttonStep}
-                      idleText={`${isContractOwner ? 'Sell' : `Propose ${isAsk ? 'sale' : 'purchase'} of`} ${
-                        values.numUnits ?? ''
-                      } shares ${
+                      idleText={`${
+                        isContractOwner
+                          ? `${isAsk ? 'Sell' : 'Propose to purchase'}`
+                          : `Propose ${isAsk ? 'sale' : 'purchase'} of`
+                      } ${values.numUnits ?? ''} shares ${
                         values.numUnits
                           ? `for ${saleAmountString(values.numUnits, values.price)} ${
                               getCurrencyOption(details?.investmentCurrency)?.symbol

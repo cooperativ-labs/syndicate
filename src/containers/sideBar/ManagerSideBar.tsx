@@ -16,8 +16,9 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar, ManagerSidebarOpen } = applicationStore;
   const windowSize = useWindowSize();
-  const orgId = router.query.organizationId;
+  const orgId = router.query.organizationId as string;
   const OrganizationIdFromSessionStorage = sessionStorage.getItem('CHOSEN_ORGANIZATION');
+  const setOrgId = OrganizationIdFromSessionStorage ?? orgId;
 
   const currentOrganizationName = orgId && organizations?.find((org) => org.id === orgId)?.name;
 
@@ -44,7 +45,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
       <div className="hidden md:flex col-span-5  bg-gray-100 w-48 z-10 min-h-full">
         <div className="h-full bg-opacity-0 p-1 pr-2">
           <div className="mb-5 text-lg font-bold px-2 pr-4 md:mt-4 ">{currentOrganizationName}</div>
-          <ManagerSideBarContents organizationId={OrganizationIdFromSessionStorage} />
+          <ManagerSideBarContents organizationId={setOrgId} />
         </div>
       </div>
     </div>

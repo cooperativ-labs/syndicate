@@ -4,7 +4,7 @@ import NewClassForm from './NewClassForm';
 import React, { FC } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
 import { Maybe, Offering, SmartContract, User } from 'types';
-import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import { String0x, addressWithoutEns, stringFromBytes32 } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 export type ShareContractSettingsProps = {
@@ -42,7 +42,8 @@ const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ user, offering,
         <SectionBlock className="" sectionTitle={'Share classes'} mini asAccordion>
           {partitions?.map((partition) => (
             <div key={partition} className="flex items-center">
-              - {stringFromBytes32(partition)}
+              - {stringFromBytes32(partition)} (
+              <FormattedCryptoAddress address={partition} chainId={chainId} label="id: " withCopy />)
             </div>
           ))}
           <NewClassForm shareContractId={shareContract.id} />

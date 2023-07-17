@@ -83,7 +83,7 @@ const Dashboard: FC = () => {
                 );
               })}
             </div>
-            {isParticipant ? (
+            {/* {isParticipant ? (
               <div>
                 <h2 className="text-xl md:mt-8 mb-5  text-blue-900 font-semibold">Your Investments: </h2>
                 <OfferingsList offerings={participantOfferings} />
@@ -92,7 +92,7 @@ const Dashboard: FC = () => {
               <div className="flex mt-4">
                 {!userWalletAddress && <ChooseConnectorButton buttonText={'Connect wallet to see investments'} large />}
               </div>
-            )}
+            )} */}
           </div>
         </div>
       )}

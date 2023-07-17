@@ -45,7 +45,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   const {
     hasContract,
     isContractOwner,
-    contractOwnerMatches,
+    contractManagerMatches,
     swapContractMatches,
     contractMatchesCurrentChain,
     contractSet,
@@ -108,7 +108,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
       </RightSideBar>
       <div className="md:mx-4">
         <AlertBanner
-          show={hasContract && !contractOwnerMatches && !isLoading}
+          show={hasContract && !contractManagerMatches && !isLoading}
           color="orange-600"
           text={`${
             isContractOwner
@@ -249,7 +249,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
             {details && (
               <OfferingTabContainer
                 offering={offering}
-                contractOwnerMatches={contractOwnerMatches}
+                contractManagerMatches={contractManagerMatches}
                 isContractOwner={isContractOwner}
                 offeringEntity={offeringEntity}
                 isOfferingManager={isOfferingManager}
