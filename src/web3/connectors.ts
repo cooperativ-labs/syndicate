@@ -4,7 +4,6 @@ import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { LedgerConnector } from 'wagmi/connectors/ledger';
-import { EthereumProvider } from '@walletconnect/ethereum-provider';
 import { publicProvider } from 'wagmi/providers/public';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { InjectedConnector } from 'wagmi/connectors/injected';
@@ -118,6 +117,9 @@ export const SupportedEthConnectors = [
     description: 'Connect to Ledger',
     connector: new LedgerConnector({
       chains: SupportedChains,
+      options: {
+        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+      },
     }),
   },
 ];
@@ -250,20 +252,20 @@ export const MatchSupportedChains = (chainId: Maybe<number> | undefined) => {
 export const isAlgorand = (chainId: Maybe<number> | undefined) =>
   MatchSupportedChains(chainId)?.protocol === CryptoAddressProtocol.Algo;
 
-const supportedChainIds = chains.map((chain) => chain.id);
+// const supportedChainIds = chains.map((chain) => chain.id);
 
-export const CustomWalletConnectConnector = async () => {
-  return await EthereumProvider.init({
-    projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-    chains: supportedChainIds,
-    showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
-    // methods, // OPTIONAL ethereum methods
-    // events, // OPTIONAL ethereum events
-    // rpcMap, // OPTIONAL rpc urls for each chain
-    // metadata, // OPTIONAL metadata of your app
-    // qrModalOptions // OPTIONAL - `undefined` by default, see https://docs.walletconnect.com/2.0/web3modal/options
-  });
-};
+// export const CustomWalletConnectConnector = async () => {
+//   return await EthereumProvider.init({
+//     projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+//     chains: supportedChainIds,
+//     showQrModal: true, // REQUIRED set to "true" to use @web3modal/standalone,
+//     // methods, // OPTIONAL ethereum methods
+//     // events, // OPTIONAL ethereum events
+//     // rpcMap, // OPTIONAL rpc urls for each chain
+//     // metadata, // OPTIONAL metadata of your app
+//     // qrModalOptions // OPTIONAL - `undefined` by default, see https://docs.walletconnect.com/2.0/web3modal/options
+//   });
+// };
 
 export const GetEthConnector = (id: 'injected' | 'walletconnect' | 'coinbase' | 'ledger') => {
   switch (id) {
@@ -289,52 +291,3 @@ export const disconnectWallet = async (callback?: () => void) => {
     callback();
   }
 };
-
-// ================ ALGO ================
-
-// export const SupportedAlgoConnectors = [
-//   {
-//     id: 'pera',
-//     name: 'Pera Wallet',
-//     logo: '/assets/images/wallet-logos/pera-logo.png',
-//     experimental: false,
-//     description: 'Connect to Pera app',
-//   },
-//   {
-//     id: 'myAlgo',
-//     name: 'MyAlgo',
-//     logo: '/assets/images/wallet-logos/myalgo-logo.png',
-//     isSquare: true,
-//     experimental: false,
-//     description: 'Connect to MyAlgo',
-//   },
-// ];
-
-// const useMyAlgo = async (providerEnv) => {
-//   // We delete the wallet to guarantee we get MyAlgo
-//   delete window.algorand;
-//   // We load a fresh stdlib, to clear out any state from before
-//   let reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
-//   // We load MyAlgo
-//   reachLib.setWalletFallback(
-//     reachLib.walletFallback({
-//       providerEnv,
-//       MyAlgoConnect,
-//     })
-//   );
-//   return reachLib;
-// };
-
-// const usePeraConnect = async (providerEnv) => {
-//   delete window.algorand;
-//   let reachLib = loadStdlib({ REACH_CONNECTOR_MODE: 'ALGO' });
-//   reachLib.setWalletFallback(
-//     reachLib.walletFallback({
-//       providerEnv: providerEnv,
-//       WalletConnect: MakePeraConnect(PeraWalletConnect),
-//     })
-//   );
-//   return reachLib;
-// };
-
-// export type ConnectorIdType = 'injected' | 'walletlink' | 'walletconnect' | 'pera' | 'myAlgo' | 'algoSigner';
