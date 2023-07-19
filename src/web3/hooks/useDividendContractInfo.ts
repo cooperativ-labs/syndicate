@@ -30,9 +30,9 @@ export const useDividendContractInfo = (dividendContactAddress: String0x): Divid
     ],
   });
 
-  const shareTokenAddress = data ? data[0].result : undefined;
+  const shareTokenAddress = data ? (data[0].result as String0x) : undefined;
   const reclaimTime = data ? Number(data[1].result) : undefined;
-  const dividendContractVersion = data ? data[2].result : undefined;
+  const dividendContractVersion = data ? (data[2].result as string) : undefined;
 
   return {
     shareTokenAddress,

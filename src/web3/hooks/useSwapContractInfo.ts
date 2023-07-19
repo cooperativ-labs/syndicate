@@ -38,12 +38,12 @@ export const useSwapContractInfo = (swapContractAddress: String0x): SwapContract
     ],
   });
 
-  const shareTokenAddress = data ? data[0].result : undefined;
-  const paymentTokenAddress = data ? data[1].result : undefined;
-  const swapApprovalsEnabled = data ? data[2].result : undefined;
-  const txnApprovalsEnabled = data ? data[3].result : undefined;
+  const shareTokenAddress = data ? (data[0].result as String0x) : undefined;
+  const paymentTokenAddress = data ? (data[1].result as String0x) : undefined;
+  const swapApprovalsEnabled = data ? (data[2].result as boolean) : undefined;
+  const txnApprovalsEnabled = data ? (data[3].result as boolean) : undefined;
   const nextOrderId = data ? Number(data[4].result) : undefined;
-  const swapContractVersion = data ? data[5].result : undefined;
+  const swapContractVersion = data ? (data[5].result as string) : undefined;
   const issueReachingSwapContract = !!swapContractAddress && !swapContractVersion;
 
   const { data: paymentTokenDecimals } = useContractRead({

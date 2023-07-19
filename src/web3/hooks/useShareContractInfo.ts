@@ -57,14 +57,14 @@ export const useShareContractInfo = (
     ],
   });
 
-  const contractOwner = data ? data[0].result : undefined;
-  const isManager = data ? data[1].result : undefined;
-  const isWhitelisted = data ? data[2].result : undefined;
-  const myShareQty = data ? toNormalNumber(data[3].result, shareContractDecimals) : 0;
-  const sharesOutstanding = data ? toNormalNumber(data[4].result, shareContractDecimals) : undefined;
+  const contractOwner = data ? (data[0].result as String0x) : undefined;
+  const isManager = data ? (data[1].result as boolean) : undefined;
+  const isWhitelisted = data ? (data[2].result as boolean) : undefined;
+  const myShareQty = data ? toNormalNumber(data[3].result as bigint, shareContractDecimals) : 0;
+  const sharesOutstanding = data ? toNormalNumber(data[4].result as bigint, shareContractDecimals) : undefined;
   const smartContractDocuments = data ? data[5].result : undefined;
   const firstPartition = data ? (data[6].result as String0x) : undefined;
-  const shareContractVersion = data ? data[7].result : undefined;
+  const shareContractVersion = data ? (data[7].result as string) : undefined;
   const issueReaching1410 = !!shareContractABI && !shareContractVersion;
 
   return {

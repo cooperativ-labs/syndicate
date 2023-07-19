@@ -87,7 +87,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
     ],
   });
 
-  const shareBalanceData = data?.[0].result;
+  const shareBalanceData = data?.[0].result as bigint;
   const isWhitelisted = data?.[1].result;
   const numShares = toNormalNumber(shareBalanceData, shareContractDecimals);
 

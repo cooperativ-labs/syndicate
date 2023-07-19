@@ -50,7 +50,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
     }
   }, [participant?.walletAddress, investorListRefreshTrigger, refetch]);
 
-  const balance = data?.[0].result;
+  const balance = data?.[0].result as bigint;
   const isWhitelisted = data?.[1].result;
 
   const isYou = participant?.walletAddress === userWalletAddress;
