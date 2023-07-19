@@ -77,11 +77,11 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
   }, [isBeforePayoutDate, refetch]);
 
   const amountToClaim = data
-    ? toNormalNumber(data[0].result, getCurrencyById(payoutTokenAddress)?.decimals)
+    ? toNormalNumber(data[0].result as bigint, getCurrencyById(payoutTokenAddress)?.decimals)
     : undefined;
 
   const claimedAmount = data
-    ? toNormalNumber(data[1].result, getCurrencyById(payoutTokenAddress)?.decimals)
+    ? toNormalNumber(data[1].result as bigint, getCurrencyById(payoutTokenAddress)?.decimals)
     : undefined;
 
   const handleClaim = async () => {
