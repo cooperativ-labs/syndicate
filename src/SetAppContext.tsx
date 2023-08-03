@@ -24,7 +24,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
         return {
           headers: {
             ...headers,
-            'X-Auth-Token': token ? `bearer ${token}` : '',
+            'Db-Auth-Token': token ? `bearer ${token}` : '',
             'DG-Auth': key,
           },
         };
@@ -32,7 +32,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
         return {
           headers: {
             ...headers,
-            'X-Auth-Token': token ? `bearer ${token}` : '',
+            'Db-Auth-Token': token ? `bearer ${token}` : '',
           },
         };
       }

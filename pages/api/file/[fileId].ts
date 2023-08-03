@@ -11,7 +11,7 @@ import { OrganizationUser } from 'types';
 const keyFilePath = path.join(process.cwd(), '/syndicate-cloud-key-staging.json');
 
 const storage = new Storage({
-  projectId: process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID,
+  projectId: process.env.NEXT_PRIVATE_GOOGLE_CLOUD_PROJECT_ID,
   keyFilename: keyFilePath,
 });
 
