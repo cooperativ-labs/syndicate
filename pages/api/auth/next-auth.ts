@@ -23,7 +23,7 @@ const options: AuthOptions = {
     strategy: 'jwt',
   },
   jwt: {
-    secret: process.env.NEXT_PRIVATE_SECRET,
+    secret: process.env.NEXT_PUBLIC_SECRET,
     encode: async ({ secret, token }) => {
       const jwtPayload = {
         ...token,
@@ -40,8 +40,8 @@ const options: AuthOptions = {
   },
   providers: [
     GoogleProvider({
-      clientId: process.env.NEXT_PRIVATE_GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_PRIVATE_GOOGLE_SECRET as string,
+      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET as string,
     }),
 
     // ---- Azure provider sends the user to a standard login page, not a microsoft login page, even though I have it set up with only the Microsoft provider in the Azure AD B2C tenant.
@@ -56,15 +56,15 @@ const options: AuthOptions = {
     // ---- LinkedIn keeps giving me an error when I try to generate a token in the dev portal. This problem: https://stackoverflow.com/questions/75606683/generating-your-oauth-linkedin-token-oops-we-can-t-verify-the-authenticity-of
 
     // LinkedInProvider({
-    //   clientId: process.env.NEXT_PRIVATE_LINKEDIN_CLIENT_ID,
+    //   clientId: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID,
     //   clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
     //   token: {
     //     url: 'https://www.linkedin.com/oauth/v2/accessToken',
     //     async request({ client, params, checks, provider }) {
     //       const response = await client.oauthCallback(provider.callbackUrl, params, checks, {
     //         exchangeBody: {
-    //           client_id: process.env.NEXT_PRIVATE_LINKEDIN_CLIENT_ID,
-    //           client_secret: process.env.NEXT_PRIVATE_LINKEDIN_CLIENT_SECRET,
+    //           client_id: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID,
+    //           client_secret: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_SECRET,
     //         },
     //       });
     //       return {
@@ -74,8 +74,8 @@ const options: AuthOptions = {
     //   },
     // }),
     EmailProvider({
-      server: process.env.NEXT_PRIVATE_EMAIL_SERVER,
-      from: process.env.NEXT_PRIVATE_SMTP_FROM,
+      server: process.env.NEXT_PUBLIC_EMAIL_SERVER,
+      from: process.env.NEXT_PUBLIC_SMTP_FROM,
       // sendVerificationRequest: ({ identifier: email, url, token, baseUrl, provider }) => {
       //   return new Promise((resolve, reject) => {
       //     console.log('Follow this link to sign in:', url);
@@ -133,8 +133,8 @@ const options: AuthOptions = {
   adapter: DgraphAdapter({
     endpoint: getEndpoint() as string,
     authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY as string,
-    authHeader: process.env.NEXT_PRIVATE_AUTH_HEADER,
-    jwtSecret: process.env.NEXT_PRIVATE_SECRET,
+    authHeader: process.env.NEXT_PUBLIC_AUTH_HEADER,
+    jwtSecret: process.env.NEXT_PUBLIC_SECRET,
   }),
   pages: {
     //   signIn: '/auth/signin',
@@ -168,7 +168,7 @@ const options: AuthOptions = {
     },
     async session({ session, user, token }: { session: any; user: User; token: JWT }): Promise<Session> {
       session.user.id = token.id;
-      session.encodedJwt = jwt.sign(token, process.env.NEXT_PRIVATE_SECRET as string, {
+      session.encodedJwt = jwt.sign(token, process.env.NEXT_PUBLIC_SECRET as string, {
         algorithm: 'HS256',
       });
       return session;
