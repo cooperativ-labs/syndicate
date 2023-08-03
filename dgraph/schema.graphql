@@ -1455,4 +1455,4 @@ enum CurrencyCode {
 }
 
 
-# Dgraph.Authorization {"VerificationKey":"b916c164e025f6901a3be022d8de4276aca4c0613290a1befc5109a98231748a","Header":"X-Auth-Token","Namespace":"https://cooperativ.io/jwt/claims","Algo":"HS256"}
+# Dgraph.Authorization {"VerificationKey":"b916c164e025f6901a3be022d8de4276aca4c0613290a1befc5109a98231748a","Header":"Db-Auth-Token","Namespace":"https://cooperativ.io/jwt/claims","Algo":"HS256"}
