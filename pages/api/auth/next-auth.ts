@@ -23,7 +23,7 @@ const options: AuthOptions = {
     strategy: 'jwt',
   },
   jwt: {
-    secret: process.env.NEXT_PUBLIC_SECRET,
+    secret: process.env.NEXT_PRIVATE_SECRET,
     encode: async ({ secret, token }) => {
       const jwtPayload = {
         ...token,
@@ -134,7 +134,7 @@ const options: AuthOptions = {
     endpoint: getEndpoint() as string,
     authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY as string,
     authHeader: process.env.NEXT_PUBLIC_AUTH_HEADER,
-    jwtSecret: process.env.NEXT_PUBLIC_SECRET,
+    jwtSecret: process.env.NEXT_PRIVATE_SECRET,
   }),
   pages: {
     //   signIn: '/auth/signin',
@@ -168,7 +168,7 @@ const options: AuthOptions = {
     },
     async session({ session, user, token }: { session: any; user: User; token: JWT }): Promise<Session> {
       session.user.id = token.id;
-      session.encodedJwt = jwt.sign(token, process.env.NEXT_PUBLIC_SECRET as string, {
+      session.encodedJwt = jwt.sign(token, process.env.NEXT_PRIVATE_SECRET as string, {
         algorithm: 'HS256',
       });
       return session;
