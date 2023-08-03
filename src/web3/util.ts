@@ -3,7 +3,7 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { Currency } from 'types';
 import { parseUnits } from 'viem';
 
-export const shareContractDecimals = 2;
+export const shareContractDecimals = 10;
 
 export type Decimals = number;
 
