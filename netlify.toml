@@ -6,8 +6,8 @@
     NEXT_PUBLIC_DEPLOY_STAGE='production'
     NEXT_PRIVATE_GOOGLE_CLOUD_PROJECT_ID = 'syndicate-382709'
     NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'syndicate_filestore_production'
-    NEXT_PRIVATE_AUTH_HEADER = Db-Auth-Token
-       NEXT_PUBLIC_DGRAPH_ENDPOINT = 'https://blue-surf-1120002.us-east-1.aws.cloud.dgraph.io/graphql'
+    NEXT_PRIVATE_AUTH_HEADER = 'Db-Auth-Token'
+    NEXT_PUBLIC_DGRAPH_ENDPOINT = 'https://blue-surf-1120002.us-east-1.aws.cloud.dgraph.io/graphql'
     NEXT_PRIVATE_EMAIL_SERVER= 'smtp://fb06b404-d3d7-494d-8a01-6fc6bfad2921:fb06b404-d3d7-494d-8a01-6fc6bfad2921@smtp.postmarkapp.com:587'
     NEXT_PUBLIC_SMTP_HOST= 'smtp.postmarkapp.com'
     NEXT_PUBLIC_SMTP_PORT= '25'
@@ -22,7 +22,7 @@
     NEXT_PUBLIC_DEPLOY_STAGE='staging'
     NEXT_PRIVATE_GOOGLE_CLOUD_PROJECT_ID = 'syndicate-382709'
     NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'cooperativ-filestore'
-    NEXT_PRIVATE_AUTH_HEADER = Db-Auth-Token
+    NEXT_PRIVATE_AUTH_HEADER = 'Db-Auth-Token'
     NEXT_PUBLIC_DGRAPH_ENDPOINT = 'https://blue-surf-960058.us-east-1.aws.cloud.dgraph.io/graphql'
     NEXT_PRIVATE_EMAIL_SERVER= 'smtp://fb06b404-d3d7-494d-8a01-6fc6bfad2921:fb06b404-d3d7-494d-8a01-6fc6bfad2921@smtp.postmarkapp.com:587'
     NEXT_PUBLIC_SMTP_HOST= 'smtp.postmarkapp.com'

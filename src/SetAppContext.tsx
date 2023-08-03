@@ -18,13 +18,15 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
   const token = session?.encodedJwt;
   const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
 
+  console.log(key);
+
   useEffect(() => {
     const setHeaders = (headers: string[], token: string | undefined) => {
       if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
         return {
           headers: {
             ...headers,
-            'Db-Auth-Token': token ? `bearer ${token}` : '',
+            'X-Auth-Token': token ? `bearer ${token}` : '',
             'DG-Auth': key,
           },
         };
@@ -32,7 +34,7 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
         return {
           headers: {
             ...headers,
-            'Db-Auth-Token': token ? `bearer ${token}` : '',
+            'X-Auth-Token': token ? `bearer ${token}` : '',
           },
         };
       }

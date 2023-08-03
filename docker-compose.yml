@@ -33,7 +33,7 @@ services:
       - 8080:8080
       - 9080:9080
     restart: on-failure
-    command: dgraph alpha --security whitelist=0.0.0.0/0 --my=alpha:8080 --zero=zero:5080
+    command: dgraph alpha --security whitelist=0.0.0.0/0 --my=alpha:7080 --zero=zero:5080
     # environment: 
     #   DGRAPH_ALPHA_GRAPHQL: "lambda-url=http://dgraph_lambda:8686/graphql-worker"
   ratel:
