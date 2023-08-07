@@ -23,7 +23,7 @@ const options: AuthOptions = {
     strategy: 'jwt',
   },
   jwt: {
-    secret: process.env.NEXT_PRIVATE_SECRET,
+    secret: process.env.NEXT_PUBLIC_SECRET,
     encode: async ({ secret, token }) => {
       const jwtPayload = {
         ...token,
@@ -168,7 +168,7 @@ const options: AuthOptions = {
     },
     async session({ session, user, token }: { session: any; user: User; token: JWT }): Promise<Session> {
       session.user.id = token.id;
-      session.encodedJwt = jwt.sign(token, process.env.NEXT_PRIVATE_SECRET as string, {
+      session.encodedJwt = jwt.sign(token, process.env.NEXT_PUBLIC_SECRET as string, {
         algorithm: 'HS256',
       });
       return session;
