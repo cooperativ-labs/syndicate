@@ -41,7 +41,7 @@ const options: AuthOptions = {
   providers: [
     GoogleProvider({
       clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_PRIVATE_GOOGLE_SECRET as string,
+      clientSecret: process.env.NEXT_PUBLIC_GOOGLE_SECRET as string,
     }),
 
     // ---- Azure provider sends the user to a standard login page, not a microsoft login page, even though I have it set up with only the Microsoft provider in the Azure AD B2C tenant.
@@ -134,7 +134,7 @@ const options: AuthOptions = {
     endpoint: getEndpoint() as string,
     authToken: process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY as string,
     authHeader: process.env.NEXT_PUBLIC_AUTH_HEADER,
-    jwtSecret: process.env.NEXT_PRIVATE_SECRET,
+    jwtSecret: process.env.NEXT_PUBLIC_SECRET,
   }),
   pages: {
     //   signIn: '/auth/signin',
