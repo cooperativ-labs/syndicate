@@ -17,14 +17,15 @@ import { Maybe, OfferingParticipant, OfferingSmartContractSet, WhitelistTransact
 import TransferEventList from '../sales/TransferEventList';
 import WhitelistTransactionItem from './WhitelistTransactionItem';
 import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
+import { State } from 'country-state-city';
 import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/dGraphQueries/offering';
 import { useContractReads } from 'wagmi';
 import { useMutation } from '@apollo/client';
 import { useSession } from 'next-auth/react';
-import { numberWithCommas } from '@src/utils/helpersMoney';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
@@ -164,7 +165,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
               id: id,
               name: values.name,
               jurCountry: values.jurCountry,
-              jurProvince: values.jurProvince,
+              jurProvince: State.getStatesOfCountry(values.jurCountry).length > 0 ? values.jurProvince : '',
               externalId: values.externalId,
             },
           });

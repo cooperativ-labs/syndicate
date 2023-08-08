@@ -122,7 +122,6 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
           if (!isContractOwner && toc === false) {
             errors.toc = "You must accept this offering's Terms & Conditions";
           }
-          console.log(errors);
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {

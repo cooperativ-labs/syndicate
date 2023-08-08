@@ -7,6 +7,7 @@ import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
+import Select from '../form-components/Select';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { ADD_DISTRIBUTION } from '@src/utils/dGraphQueries/orders';
@@ -16,7 +17,6 @@ import { setAllowance } from '@src/web3/contractSwapCalls';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { toNormalNumber } from '@src/web3/util';
 import { useMutation } from '@apollo/client';
-import Select from '../form-components/Select';
 
 type SubmitDistributionProps = {
   distributionContractAddress: String0x | undefined;

@@ -3,11 +3,11 @@ import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import React, { FC, useEffect } from 'react';
 
 import { Maybe, OfferingParticipant } from 'types';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useContractReads } from 'wagmi';
-import { numberWithCommas } from '@src/utils/helpersMoney';
 
 type WhitelistAddressListItemProps = {
   participant: Maybe<OfferingParticipant>;

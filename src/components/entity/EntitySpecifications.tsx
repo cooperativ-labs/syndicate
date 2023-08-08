@@ -12,6 +12,7 @@ import { CurrencyCode, LegalEntity, Maybe } from 'types';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { State } from 'country-state-city';
 
 export type EditEntitySelectionType =
   | 'displayName'
@@ -151,7 +152,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
           displayName: displayName,
           legalName: legalName,
           jurCountry: values.jurCountry,
-          jurProvince: values.jurProvince,
+          jurProvince: State.getStatesOfCountry(values.jurCountry).length > 0 ? values.jurProvince : '',
           operatingCurrencyCode: operatingCurrencyCode,
           taxId: taxId,
           purpose: purpose,

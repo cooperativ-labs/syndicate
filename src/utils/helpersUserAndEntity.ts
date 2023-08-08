@@ -51,11 +51,12 @@ export const getIsEditorOrAdmin = (userId: string | undefined, organization: Org
 };
 
 export const renderJurisdiction = (jurisdiction: Maybe<Jurisdiction> | undefined): Maybe<string> | undefined => {
-  const jurCountry = jurisdiction?.country;
-  const jurProvince = jurisdiction?.province;
+  const jurCountry = jurisdiction?.country as string;
+  const jurProvince = jurisdiction?.province as string;
   const country = jurCountry && Country.getCountryByCode(jurCountry)?.name;
-  const states = jurProvince && State.getStatesOfCountry(jurProvince);
-  const province = states && states.find((state) => state.isoCode === jurProvince)?.name;
+  const province = jurProvince && State.getStateByCodeAndCountry(jurProvince, jurCountry)?.name;
+
+  // console.log(province, country);
   if (province) {
     return `${province}, ${country}`;
   }

@@ -34,7 +34,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
   values,
 }) => {
   const countries = Country.getAllCountries();
-  const [states, setStates] = useState<IState[]>([]);
+  const [states, setStates] = useState<IState[]>(State.getStatesOfCountry(values.jurCountry));
   const hasStates = states && states.length > 0;
 
   return (

@@ -3,8 +3,8 @@ import LinkLegal from '@src/components/legal/LinkLegal';
 import NewClassForm from './NewClassForm';
 import React, { FC } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
+import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { Maybe, Offering, SmartContract, User } from 'types';
-import { String0x, addressWithoutEns, stringFromBytes32 } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 export type ShareContractSettingsProps = {
