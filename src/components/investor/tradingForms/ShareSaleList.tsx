@@ -97,7 +97,11 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   );
 
   if (orders && orders.length < 1) {
-    return <div className="w-full">{saleButton}</div>;
+    return (
+      <div className="w-full gap-3 flex">
+        {saleButton} {refreshButton}
+      </div>
+    );
   }
 
   const currentOrders = orders?.filter((order) => !order?.archived);
