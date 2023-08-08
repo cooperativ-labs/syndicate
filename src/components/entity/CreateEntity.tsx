@@ -164,7 +164,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               );
             })}
           </Select>
-          <JurisdictionSelect className={defaultFieldDiv} labelText={'Jurisdiction'} values={values} />
+          <JurisdictionSelect className={defaultFieldDiv} labelText={'Registration'} values={values} />
 
           <Input
             className={defaultFieldDiv}

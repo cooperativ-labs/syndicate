@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
-import { User } from 'types';
 import DistributionContractSettings from './DistributionContractSettings';
+import React, { FC } from 'react';
 import ShareContractSettings, { ShareContractSettingsProps } from './ShareContractSettings';
 import SwapContractSettings, {
   SwapContractSettingsProps,
   SwapContractsSettingsAdditional,
 } from './SwapContractSettings';
+import { User } from 'types';
 
 export type SmartContractsSettingsProps = SwapContractSettingsProps & ShareContractSettingsProps;
 

@@ -1,8 +1,8 @@
 import React, { FC } from 'react';
 
+import { CurrencyCode } from 'types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { CurrencyCode } from 'types';
 
 type FinancialFactItemProps = {
   label: string;
