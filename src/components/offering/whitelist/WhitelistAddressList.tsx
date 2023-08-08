@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
-import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from 'types';
+import { CurrencyCode, Maybe } from 'types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 
@@ -14,7 +14,7 @@ export type WhitelistAddressListProps = {
 type WhitelistAddressListPropsLocal = SelectedParticipantProps &
   WhitelistAddressListProps & {
     offeringId: string;
-    investmentCurrency: Maybe<Currency> | undefined;
+    investmentCurrency: Maybe<CurrencyCode> | undefined;
   };
 
 const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({

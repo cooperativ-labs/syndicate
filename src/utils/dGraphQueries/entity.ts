@@ -40,7 +40,7 @@ export const ADD_ENTITY = gql`
           legalName: $legalName
           displayName: $legalName
           jurisdiction: { country: $jurCountry, province: $jurProvince }
-          operatingCurrency: { code: $operatingCurrency }
+          operatingCurrency: $operatingCurrency
           purpose: $entityPurpose
           addresses: {
             label: $addressLabel
@@ -130,7 +130,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
           displayName: $displayName
           legalName: $legalName
           jurisdiction: { country: $jurCountry, province: $jurProvince }
-          operatingCurrency: { code: $operatingCurrencyCode }
+          operatingCurrency: $operatingCurrencyCode
           taxId: $taxId
         }
       }
@@ -144,9 +144,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
           country
           province
         }
-        operatingCurrency {
-          code
-        }
+        operatingCurrency
       }
     }
   }

@@ -1,11 +1,12 @@
 import React, { FC } from 'react';
-import { Currency } from 'types';
+
+import { CurrencyCode } from 'types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 type FinancialFactItemProps = {
   label: string;
-  currency?: Currency;
+  currency?: CurrencyCode;
   amount?: number;
   percent?: number;
   secondPercent?: number;

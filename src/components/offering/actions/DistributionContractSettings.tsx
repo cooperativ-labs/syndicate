@@ -1,13 +1,13 @@
 import CreateDistributionContract from '../CreateDistributionContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
-import { Currency, Maybe, Offering, OfferingSmartContractSet } from 'types';
+import { CurrencyCode, Maybe, Offering, OfferingSmartContractSet } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
 export type DistributionContractSettingsProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  investmentCurrency: Currency | null | undefined;
+  investmentCurrency: CurrencyCode | null | undefined;
   offering: Offering;
 };
 

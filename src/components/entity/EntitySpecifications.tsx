@@ -28,7 +28,7 @@ export type ChangeFormProps = {
   legalName: Maybe<string> | undefined;
   jurCountry?: string | undefined;
   jurProvince?: Maybe<string> | undefined;
-  operatingCurrencyCode: CurrencyCode | undefined;
+  operatingCurrencyCode: Maybe<CurrencyCode> | undefined;
   taxId?: Maybe<string> | undefined;
   purpose?: Maybe<string> | undefined;
 };
@@ -47,7 +47,7 @@ export const changeForm = (
         legalName: legalName,
         jurCountry: jurisdiction?.country,
         jurProvince: jurisdiction?.province,
-        operatingCurrencyCode: operatingCurrency?.code,
+        operatingCurrencyCode: operatingCurrency,
         taxId: taxId,
         purpose: purpose,
       }}
@@ -130,7 +130,7 @@ type EntitySpecificationsProps = {
       legalName: Maybe<string> | undefined;
       jurCountry: Maybe<string> | undefined;
       jurProvince?: Maybe<string> | undefined;
-      operatingCurrencyCode: CurrencyCode | undefined;
+      operatingCurrencyCode: Maybe<CurrencyCode> | undefined;
       taxId: Maybe<string> | undefined;
 
       purpose: Maybe<string> | undefined;

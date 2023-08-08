@@ -17,7 +17,7 @@ import { TransactionReceipt, parseUnits } from 'viem';
 import { shareContractABI } from './generated';
 import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
-import { Currency, CurrencyCode, Organization, ShareTransferEventType, WhitelistTransactionType } from 'types';
+import { CurrencyCode, Organization, ShareTransferEventType, WhitelistTransactionType } from 'types';
 import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 

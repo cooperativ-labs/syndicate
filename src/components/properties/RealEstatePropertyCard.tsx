@@ -3,11 +3,11 @@ import cn from 'classnames';
 import MapPanel from '../MapPanel';
 import React, { FC } from 'react';
 import router from 'next/router';
-import { Address, Currency, CurrencyCode, Maybe, RealEstateProperty } from 'types';
+import { Address, CurrencyCode, Maybe, RealEstateProperty } from 'types';
 
 type RealEstatePropertyCardProps = {
   property: RealEstateProperty;
-  currency: Maybe<Currency> | undefined;
+  currency: Maybe<CurrencyCode> | undefined;
   offeringEntityId: string;
   fullWidth?: boolean;
 };
