@@ -9,7 +9,7 @@ import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
 import { erc20ABI } from 'wagmi';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Currency, CurrencyCode, Organization, ShareTransferEventType } from 'types';
+import { CurrencyCode, Organization, ShareTransferEventType } from 'types';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import {
   handleOfferingRequestNotification,

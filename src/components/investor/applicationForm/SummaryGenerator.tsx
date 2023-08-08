@@ -113,7 +113,7 @@ export const GeneratedApplicationText = (
 
   const offeringEntity = offering.offeringEntity;
   const offeringPrice = offering.details?.priceStart;
-  const offeringCurrency = offering.details?.investmentCurrency.code;
+  const offeringCurrency = offering.details?.investmentCurrency;
   // const contractAddress = cryptoAddress.address;
 
   const {

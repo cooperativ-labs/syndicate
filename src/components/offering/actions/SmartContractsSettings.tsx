@@ -1,9 +1,5 @@
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC } from 'react';
-import { Currency, User } from 'types';
-import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-
+import { User } from 'types';
 import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings, { ShareContractSettingsProps } from './ShareContractSettings';
 import SwapContractSettings, {

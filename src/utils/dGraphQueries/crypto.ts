@@ -124,7 +124,7 @@ export const CREATE_SWAP_CONTRACT = gql`
               owner: { id: $ownerId }
             }
             owner: { id: $ownerId }
-            backingToken: { code: $backingToken }
+            backingToken: $backingToken
             type: $type
             established: false
           }

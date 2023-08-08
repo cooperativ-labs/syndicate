@@ -72,7 +72,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         displayName: values.displayName,
         legalName: legalName,
         jurCountry: jurisdiction?.country,
-        operatingCurrencyCode: operatingCurrency?.code,
+        operatingCurrencyCode: operatingCurrency,
       },
     }).then((res) => {
       setNameEditOn('none');

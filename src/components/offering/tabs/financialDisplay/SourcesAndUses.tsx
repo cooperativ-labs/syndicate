@@ -1,11 +1,11 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
 
-import { Currency, OfferingDetails } from 'types';
+import { CurrencyCode, OfferingDetails } from 'types';
 
 type SourcesAndUsesDisplayProps = {
   offeringDetails: OfferingDetails;
-  operatingCurrency: Currency;
+  operatingCurrency: CurrencyCode;
 };
 
 const SourcesAndUsesDisplay: FC<SourcesAndUsesDisplayProps> = ({ offeringDetails, operatingCurrency }) => {

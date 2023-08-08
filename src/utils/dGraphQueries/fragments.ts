@@ -98,9 +98,7 @@ export const SMART_CONTRACT_FIELDS = gql`
     }
     type
     numTokensAuthorized
-    backingToken {
-      code
-    }
+    backingToken
     owner {
       id
     }
@@ -136,9 +134,7 @@ export const CORE_INVESTMENT_OFFERING_FIELDS = gql`
     type
     customOnboardingLink
     stage
-    investmentCurrency {
-      code
-    }
+    investmentCurrency
     numUnits
     minUnitsPerInvestor
     maxUnitsPerInvestor
@@ -152,9 +148,7 @@ export const CORE_INVESTMENT_OFFERING_FIELDS = gql`
     additionalInfo
     distributionPeriod
     distributionFrequency
-    distributionCurrency {
-      code
-    }
+    distributionCurrency
     distributionDescription
     adminExpense
     projectedIrr
@@ -193,9 +187,7 @@ export const CORE_RE_PROPERTY_FIELDS = gql`
     closingCosts
     owner {
       id
-      operatingCurrency {
-        code
-      }
+      operatingCurrency
       offerings {
         id
       }
@@ -289,9 +281,7 @@ export const CORE_ENTITY_FIELDS = gql`
       country
       province
     }
-    operatingCurrency {
-      code
-    }
+    operatingCurrency
     purpose
     organization {
       id

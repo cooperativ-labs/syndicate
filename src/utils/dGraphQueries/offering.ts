@@ -195,8 +195,8 @@ export const ADD_OFFERING_DETAILS = gql`
           lastUpdate: $currentDate
           details: {
             type: $offeringDetailsType
-            investmentCurrency: { code: $investmentCurrencyCode }
-            distributionCurrency: { code: $distributionCurrencyCode }
+            investmentCurrency: $investmentCurrencyCode
+            distributionCurrency: $distributionCurrencyCode
             numUnits: $numUnits
             minUnitsPerInvestor: $minUnitsPerInvestor
             maxUnitsPerInvestor: $maxUnitsPerInvestor
@@ -223,7 +223,7 @@ export const ADD_OFFERING_DETAILS = gql`
 export const UPDATE_INVESTMENT_CURRENCY = gql`
   mutation UpdateInvestmentCurrency($offeringDetailsId: [ID!], $investmentCurrencyCode: CurrencyCode!) {
     updateOfferingDetails(
-      input: { filter: { id: $offeringDetailsId }, set: { investmentCurrency: { code: $investmentCurrencyCode } } }
+      input: { filter: { id: $offeringDetailsId }, set: { investmentCurrency: $investmentCurrencyCode } }
     ) {
       offeringDetails {
         id

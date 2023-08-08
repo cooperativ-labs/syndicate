@@ -12,7 +12,6 @@ import {
   DocumentFormat,
   OfferingTabSection,
   OrganizationPermissionType,
-  Currency,
   ShareTransferEventType,
   Maybe,
   NotificationSubject,
@@ -427,8 +426,8 @@ export const currencyOptionsExcludeCredits = currencyOptions.filter(
   (option) => option.type !== currencyType.COOP && option.chainId !== 3
 );
 
-export const getCurrencyOption = (currency: Maybe<Currency> | undefined) => {
-  return currencyOptions.find((cur) => (cur.value === currency?.code ? cur : null));
+export const getCurrencyOption = (currency: Maybe<CurrencyCode> | undefined) => {
+  return currencyOptions.find((cur) => (cur.value === currency ? cur : null));
 };
 export const getCurrencyByCode = (currencyCode: Maybe<CurrencyCode> | undefined) => {
   return currencyOptions.find((cur) => (cur.value === currencyCode ? cur : null));

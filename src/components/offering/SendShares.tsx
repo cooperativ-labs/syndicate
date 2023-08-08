@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
 
-import { Currency, CurrencyCode, Maybe, OfferingParticipant } from 'types';
+import { CurrencyCode, Maybe, OfferingParticipant } from 'types';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
@@ -31,7 +31,7 @@ export type SendSharesProps = {
   offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
   partitions: String0x[];
   myShareQty: number | undefined;
-  investmentCurrency: Currency | undefined;
+  investmentCurrency: CurrencyCode | undefined;
   currentSalePrice: Maybe<number> | undefined;
   refetchMainContracts: () => void;
 };
@@ -83,7 +83,7 @@ const SendShares: FC<SendSharesProps> = ({
         isIssuance: 'yes',
         numShares: '',
         price: currentSalePrice,
-        currencyCode: investmentCurrency?.code as CurrencyCode,
+        currencyCode: investmentCurrency as CurrencyCode,
         recipient: '' as String0x,
         partition: partitions[0],
         newPartition: '',

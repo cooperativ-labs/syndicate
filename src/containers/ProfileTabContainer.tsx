@@ -6,7 +6,7 @@ import TextSection, { contentSectionHeader } from '@src/components/offering/tabs
 import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
 import TotalReturns from '@src/components/offering/tabs/financialDisplay/TotalReturns';
 import {
-  Currency,
+  CurrencyCode,
   Maybe,
   Offering,
   OfferingDescriptionText,
@@ -90,12 +90,12 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
           <div>
             <TotalReturns offeringDetails={offering.details as OfferingDetails} />
             <SourcesAndUsesDisplay
-              operatingCurrency={operatingCurrency as Currency}
+              operatingCurrency={operatingCurrency as CurrencyCode}
               offeringDetails={offering.details as OfferingDetails}
             />
             <TotalInvestmentValue
               OfferingReProperties={OfferingReProperties as RealEstateProperty[]}
-              operatingCurrency={operatingCurrency as Currency}
+              operatingCurrency={operatingCurrency as CurrencyCode}
             />
           </div>
         )}

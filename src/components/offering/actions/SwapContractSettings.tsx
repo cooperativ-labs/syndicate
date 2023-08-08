@@ -1,7 +1,7 @@
 import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from 'types';
+import { CurrencyCode, Maybe, Offering, OfferingSmartContractSet, User } from 'types';
 import { String0x } from '@src/web3/helpersChain';
 
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
@@ -19,7 +19,7 @@ export type SwapContractSettingsProps = {
 };
 
 export type SwapContractsSettingsAdditional = SwapContractSettingsProps & {
-  investmentCurrency: Currency | undefined | null;
+  investmentCurrency: CurrencyCode | undefined | null;
 };
 
 const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({

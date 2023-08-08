@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import React, { FC } from 'react';
-import { Currency, CurrencyCode } from 'types';
+import { CurrencyCode } from 'types';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
@@ -8,7 +8,7 @@ import { String0x } from '@src/web3/helpersChain';
 type MoneyDisplayProps = {
   amount: number | undefined | null;
   paymentToken?: String0x;
-  currency?: Currency;
+  currency?: CurrencyCode;
   className?: string;
 };
 

@@ -5,7 +5,7 @@ import router from 'next/router';
 import Select from '../form-components/Select';
 import { ADD_RE_PROPERTY_INFO } from '@src/utils/dGraphQueries/reProperty';
 import { assetStatusOptions, getCurrencyOption, propertyTypeOptions } from '@src/utils/enumConverters';
-import { Currency, CurrencyCode } from 'types';
+import { CurrencyCode } from 'types';
 import { currentDate } from '@utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
@@ -14,7 +14,7 @@ import { useMutation } from '@apollo/client';
 
 type AddPropertyInfoProps = {
   entityId: string;
-  entityOperatingCurrency: Currency;
+  entityOperatingCurrency: CurrencyCode;
 };
 const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCurrency }) => {
   const [AddRePropertyInfo, { data, error }] = useMutation(ADD_RE_PROPERTY_INFO);

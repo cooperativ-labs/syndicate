@@ -1,10 +1,10 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
-import { Currency, RealEstateProperty } from 'types';
+import { CurrencyCode, RealEstateProperty } from 'types';
 
 type TotalInvestmentValueDataProps = {
   propertyDetails: RealEstateProperty;
-  operatingCurrency: Currency;
+  operatingCurrency: CurrencyCode;
   name?: string | null;
 };
 
@@ -44,7 +44,7 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({ propertyD
   );
 };
 
-type TotalInvestmentValueProps = { OfferingReProperties: RealEstateProperty[]; operatingCurrency: Currency };
+type TotalInvestmentValueProps = { OfferingReProperties: RealEstateProperty[]; operatingCurrency: CurrencyCode };
 
 const TotalInvestmentValue: FC<TotalInvestmentValueProps> = ({ OfferingReProperties, operatingCurrency }) => {
   return (

@@ -330,7 +330,7 @@ add: {rule: """
 	type: SmartContractType!
 	subType: String
 	numTokensAuthorized: Int64
-	backingToken: Currency
+	backingToken: CurrencyCode
 	owner: LegalEntity @hasInverse(field:smartContracts)
 	name: String
 	document: Document
@@ -606,7 +606,7 @@ add:{rule: """
 	customOnboardingLink: String
 	type: OfferingDetailsType
 	stage: OfferingStage
-	investmentCurrency: Currency!
+	investmentCurrency: CurrencyCode!
 	unitName: UnitName
 	maxRaise: Int64
 	minRaise: Int64
@@ -621,7 +621,7 @@ add:{rule: """
 	additionalInfo: String
 	distributionPeriod: DistributionPeriodType
 	distributionFrequency: Int
-	distributionCurrency: Currency
+	distributionCurrency: CurrencyCode
 	distributionDescription: String
 	adminExpense: Int
  projectedIrr: Int
@@ -1198,7 +1198,7 @@ update:{rule: """
 	documentsOwned: [Document] @hasInverse(field:owner) 
 	documentsSigned: [DocumentSignatory] @hasInverse(field:legalEntity) 
 	smartContracts: [SmartContract] @hasInverse(field:owner)
-	operatingCurrency: Currency
+	operatingCurrency: CurrencyCode
 	offerings: [Offering] @hasInverse(field:offeringEntity) 
  realEstateProperties: [RealEstateProperty] @hasInverse(field:owner)
 	creationDate: DateTime!
@@ -1422,12 +1422,6 @@ type VerificationToken
 """
 CURRENCY
 """
-
-
-type Currency  {
-	code: CurrencyCode! 
-}
-
 
 enum CurrencyCode {
 	CC

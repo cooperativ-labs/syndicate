@@ -1,13 +1,11 @@
 import { getCurrencyOption } from '@src/utils/enumConverters';
-
-import { Currency } from 'types';
-import { parseUnits } from 'viem';
+import { CurrencyCode } from 'types';
 
 export const shareContractDecimals = 2;
 
 export type Decimals = number;
 
-export const toDecimalByToken = (amt: number, currency?: Currency): number => {
+export const toDecimalByToken = (amt: number, currency?: CurrencyCode): number => {
   const decimal = getCurrencyOption(currency)?.decimals;
   const multiplier = Math.pow(10, decimal as number);
   return amt * multiplier;

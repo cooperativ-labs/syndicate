@@ -4,7 +4,7 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import cn from 'classnames';
 import React, { FC, useEffect } from 'react';
 import { claimDistribution } from '@src/web3/contractDistributionCall';
-import { Currency, CurrencyCode, Maybe, OfferingDistribution } from 'types';
+import { CurrencyCode, Maybe, OfferingDistribution } from 'types';
 import { dividendContractABI } from '@src/web3/generated';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { getHumanDate, getHumanDateTime } from '@src/utils/helpersGeneral';

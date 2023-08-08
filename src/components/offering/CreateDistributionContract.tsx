@@ -4,7 +4,7 @@ import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_DISTRIBUTION_CONTRACT, CREATE_SWAP_CONTRACT } from '@src/utils/dGraphQueries/crypto';
-import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from 'types';
+import { CurrencyCode, Maybe, OfferingSmartContractSet, SmartContractType } from 'types';
 import { MatchSupportedChains } from '@src/web3/connectors';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
@@ -17,7 +17,7 @@ import { useMutation } from '@apollo/client';
 
 type CreateDistributionContractProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  investmentCurrency: Currency | null | undefined;
+  investmentCurrency: CurrencyCode | null | undefined;
   contractOwnerEntityId: string | undefined;
 };
 
