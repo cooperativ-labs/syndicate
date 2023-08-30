@@ -286,8 +286,7 @@ export const ADD_ORGANIZATION_SOCIAL_ACCOUNTS = gql`
     ) {
       organization {
         id
-        displayName
-        fullName
+        name
         linkedAccounts {
           id
           url

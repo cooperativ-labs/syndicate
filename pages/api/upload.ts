@@ -5,9 +5,6 @@ import { NextApiRequest, NextApiResponse } from 'next';
 import { Multer } from 'multer';
 import { upload } from './file/upload';
 import { getServerSession } from 'next-auth/next';
-
-import { initializeApollo } from '@src/utils/apolloClient';
-import { GET_USER_PERMISSIONS } from '@src/utils/dGraphQueries/user';
 import options from './auth/next-auth';
 
 type NextApiRequestWithFile = NextApiRequest & {
