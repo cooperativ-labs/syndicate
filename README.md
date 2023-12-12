@@ -2,7 +2,7 @@
 
 ## Overview
 
-Syndicate, developed by Cooperativ Labs Inc., is a solution for launching and managing private security offerings on Ethereum and Polygon. It streamlines the investment process, enabling efficient management of syndication deals. learn more at [Cooperativ.io](https://cooperativ.io/syndicate)
+Syndicate, developed by Cooperativ Labs Inc., is a solution for launching and managing private security offerings on Ethereum and Polygon. It streamlines the investment process, enabling efficient management of syndication deals. Learn more at [Cooperativ.io](https://cooperativ.io/syndicate).
 
 Live at: [https://staging.syndicate.cooperativ.io/](https://staging.syndicate.cooperativ.io/)
 
