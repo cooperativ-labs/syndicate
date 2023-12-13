@@ -41,18 +41,19 @@ const EntityDashboard: FC = () => {
             )}
           </>
         ) : (
-          <LimitedWidthSection center>
-            {/* <EnsureProfileCompletion
-              user={user}
-              explainerText="In order to create a business, we first need some personal information"
-            >
-              <>
-                <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
-                <hr className="my-6" />
-                <CreateEntity organization={organization} actionOnCompletion={() => router.back()} />
-              </>
-            </EnsureProfileCompletion> */}
-          </LimitedWidthSection>
+          <></>
+          // <LimitedWidthSection center>
+          //   <EnsureProfileCompletion
+          //     user={user}
+          //     explainerText="In order to create a business, we first need some personal information"
+          //   >
+          //     <>
+          //       <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
+          //       <hr className="my-6" />
+          //       <CreateEntity organization={organization} actionOnCompletion={() => router.back()} />
+          //     </>
+          //   </EnsureProfileCompletion>
+          // </LimitedWidthSection>
         )}
       </div>
     </div>

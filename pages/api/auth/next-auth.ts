@@ -99,7 +99,7 @@ const options: AuthOptions = {
           TextBody: `Sign in to your account: ${url}`,
           HtmlBody: `<html><body><p>Sign in to your account:</p><p><a href="${url}">${url}</a></p></body></html>`,
         });
-        console.log('result', result);
+        // console.log('result', result);
         if (result.ErrorCode) {
           throw new Error('here', result.Message);
         }
@@ -144,6 +144,12 @@ const options: AuthOptions = {
     // newUser: '/welcome',
   },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      if (account?.provider === 'email' && !user.name) {
+        user.name = '  '; // Set default name as empty string
+      }
+      return true;
+    },
     //@ts-ignore
     async jwt({
       token,

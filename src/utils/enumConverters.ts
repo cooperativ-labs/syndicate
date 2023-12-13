@@ -135,7 +135,6 @@ export const docFormatOptions = [
 ];
 
 export const getDocFormatOption = (type: Maybe<DocumentFormat> | undefined) => {
-  console.log('type', type);
   return docFormatOptions.find((option) => option.value === type);
 };
 

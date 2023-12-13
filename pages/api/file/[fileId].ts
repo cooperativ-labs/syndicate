@@ -7,12 +7,12 @@ import { initializeApollo } from '@src/utils/apolloClient';
 import { GET_USER_PERMISSIONS } from '@src/utils/dGraphQueries/user';
 import { GET_DOCUMENT_EDITORS } from '@src/utils/dGraphQueries/document';
 import { OrganizationUser } from 'types';
+import { gcpCredentials } from '../upload';
 
-const keyFilePath = path.join(process.cwd(), '/syndicate-cloud-key-staging.json');
-
+// Initialize Google Cloud Storage with direct credentials
 const storage = new Storage({
   projectId: process.env.NEXT_PRIVATE_GOOGLE_CLOUD_PROJECT_ID,
-  keyFilename: keyFilePath,
+  credentials: gcpCredentials,
 });
 
 const bucket = storage.bucket(process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET as string);
