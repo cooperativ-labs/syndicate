@@ -166,6 +166,7 @@ const options: AuthOptions = {
     }) {
       if (user) {
         token.id = user.id;
+        token.name = user.name || '';
         const now = Math.floor(Date.now() / 1000);
         const expiresIn = 60 * 60 * 160; // 1 hour
         token.exp = now + expiresIn;
