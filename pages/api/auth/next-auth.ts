@@ -165,6 +165,7 @@ const options: AuthOptions = {
             return '/register';
           }
         } catch (error) {
+          //@ts-ignore
           throw new Error('Error checking user existence: ' + error?.message);
         }
       }
