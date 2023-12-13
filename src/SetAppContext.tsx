@@ -18,8 +18,6 @@ const SetAppContext: React.FC<SetAppContextProps> = ({ children }) => {
   const token = session?.encodedJwt;
   const key = process.env.NEXT_PUBLIC_DGRAPH_HEADER_KEY;
 
-  console.log(key);
-
   useEffect(() => {
     const setHeaders = (headers: string[], token: string | undefined) => {
       if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {

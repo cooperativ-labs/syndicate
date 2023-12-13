@@ -94,24 +94,23 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
           onChange: setValue,
           placeholder: '123 Easy st...',
           styles: {
-            input: (provided) => ({
-              ...provided,
-              // color: 'blue',
-              // paddingLeft: 80,
-              // fontSize: 16,
-              // border: '0px',
-              borderRadius: 5,
-              backgroundColor: '#ff',
-              boxShadow: 'none',
-            }),
-
-            control: (baseStyles, state) => ({
-              ...baseStyles,
-              height: 50,
-              // borderRadius: 10,
-              // boxShadow: '12px 12px 24px #d9d9d9, -12px -12px 24px #ffffff',
-              // borderColor: state.isFocused ? 'grey' : 'red',
-            }),
+            // textInput: (provided, state) => ({
+            //   ...provided,
+            //   // color: 'blue',
+            //   // paddingLeft: 80,
+            //   // fontSize: 16,
+            //   // border: '0px',
+            //   borderRadius: 5,
+            //   backgroundColor: '#ffffff',
+            //   boxShadow: 'none',
+            // }),
+            // control: (baseStyles, state) => ({
+            //   ...baseStyles,
+            //   height: 50,
+            //   // borderRadius: 10,
+            //   // boxShadow: '12px 12px 24px #d9d9d9, -12px -12px 24px #ffffff',
+            //   // borderColor: state.isFocused ? 'grey' : 'red',
+            // }),
           },
         }}
         autocompletionRequest={{
