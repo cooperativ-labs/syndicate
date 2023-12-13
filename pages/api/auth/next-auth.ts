@@ -165,8 +165,8 @@ const options: AuthOptions = {
       profile: any;
       isNewUser: boolean;
     }) {
+      console.log('In jwt callback:', { token, user, account, profile, isNewUser });
       if (user) {
-        console.log('injwt', user, token);
         token.id = user.id;
         token.name = user.name || '';
         const now = Math.floor(Date.now() / 1000);
@@ -176,6 +176,8 @@ const options: AuthOptions = {
       return token;
     },
     async session({ session, user, token }: { session: any; user: User; token: JWT }): Promise<Session> {
+      console.log('In session callback:', { session, user, token });
+
       session.user.id = token.id;
       session.encodedJwt = jwt.sign(token, process.env.NEXT_SECRET as string, {
         algorithm: 'HS256',
