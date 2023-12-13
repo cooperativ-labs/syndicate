@@ -9,6 +9,8 @@ import { AuthOptions, Session, User } from 'next-auth';
 import * as jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
 import { postmarkClient } from '@src/services/postmark';
+import { GET_USER_FROM_EMAIL } from '@src/utils/dGraphQueries/user';
+import initializeApollo from '@src/utils/apolloClient';
 
 const getEndpoint = () => {
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
@@ -144,13 +146,32 @@ const options: AuthOptions = {
     // newUser: '/welcome',
   },
   callbacks: {
-    // async signIn({ user, account, profile, email, credentials }) {
-    //   console.log('insignin', user, email);
-    //   if (account?.provider === 'email' && !user.name) {
-    //     user.name = '  '; // Set default name as empty string
-    //   }
-    //   return true;
-    // },
+    async signIn({ user, account, email }) {
+      // Ensure this runs only for the Email provider
+      if (account?.provider === 'email') {
+        const apolloClient = initializeApollo();
+
+        try {
+          const { data } = await apolloClient.query({
+            query: GET_USER_FROM_EMAIL,
+            variables: { emailAddress: email },
+          });
+
+          if (data && data.queryUser && data.queryUser.length > 0) {
+            // User exists, continue with sign in
+            return true;
+          } else {
+            // User does not exist, redirect to register page
+            return '/register';
+          }
+        } catch (error) {
+          throw new Error('Error checking user existence: ' + error?.message);
+        }
+      }
+
+      // For other providers, allow sign in
+      return true;
+    },
     //@ts-ignore
     async jwt({
       token,
@@ -165,7 +186,6 @@ const options: AuthOptions = {
       profile: any;
       isNewUser: boolean;
     }) {
-      console.log('In jwt callback:', { token, user, account, profile, isNewUser });
       if (user) {
         token.id = user.id;
         token.name = user.name || '';
@@ -176,8 +196,6 @@ const options: AuthOptions = {
       return token;
     },
     async session({ session, user, token }: { session: any; user: User; token: JWT }): Promise<Session> {
-      console.log('In session callback:', { session, user, token });
-
       session.user.id = token.id;
       session.encodedJwt = jwt.sign(token, process.env.NEXT_SECRET as string, {
         algorithm: 'HS256',
