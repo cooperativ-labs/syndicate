@@ -10,7 +10,7 @@ import { initializeApollo } from '@src/utils/apolloClient';
 import { GET_USER_PERMISSIONS } from '@src/utils/dGraphQueries/user';
 import options from './auth/next-auth';
 
-const gcpCredentials = {
+export const gcpCredentials = {
   type: 'service_account',
   project_id: process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID,
   private_key_id: process.env.NEXT_PUBLIC_GCP_KEY_ID,

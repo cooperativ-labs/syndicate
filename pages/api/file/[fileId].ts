@@ -7,20 +7,8 @@ import { initializeApollo } from '@src/utils/apolloClient';
 import { GET_USER_PERMISSIONS } from '@src/utils/dGraphQueries/user';
 import { GET_DOCUMENT_EDITORS } from '@src/utils/dGraphQueries/document';
 import { OrganizationUser } from 'types';
+import { gcpCredentials } from '../upload';
 
-const gcpCredentials = {
-  type: 'service_account',
-  project_id: process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID,
-  private_key_id: process.env.GCP_KEY_ID,
-  private_key: process.env.GCP_PRIVATE_KEY,
-  client_email: 'syndicate@syndicate-382709.iam.gserviceaccount.com',
-  client_id: '108640420626649045093',
-  auth_uri: 'https://accounts.google.com/o/oauth2/auth',
-  token_uri: 'https://oauth2.googleapis.com/token',
-  auth_provider_x509_cert_url: 'https://www.googleapis.com/oauth2/v1/certs',
-  client_x509_cert_url:
-    'https://www.googleapis.com/robot/v1/metadata/x509/syndicate%40syndicate-382709.iam.gserviceaccount.com',
-};
 // Initialize Google Cloud Storage with direct credentials
 const storage = new Storage({
   projectId: process.env.NEXT_PRIVATE_GOOGLE_CLOUD_PROJECT_ID,
