@@ -144,6 +144,12 @@ const options: AuthOptions = {
     // newUser: '/welcome',
   },
   callbacks: {
+    async signIn({ user, account, profile, email, credentials }) {
+      if (account?.provider === 'email' && !user.name) {
+        user.name = ''; // Set default name as empty string
+      }
+      return true;
+    },
     //@ts-ignore
     async jwt({
       token,
