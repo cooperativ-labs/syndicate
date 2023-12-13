@@ -99,7 +99,7 @@ const options: AuthOptions = {
           TextBody: `Sign in to your account: ${url}`,
           HtmlBody: `<html><body><p>Sign in to your account:</p><p><a href="${url}">${url}</a></p></body></html>`,
         });
-        console.log('result', result);
+        // console.log('result', result);
         if (result.ErrorCode) {
           throw new Error('here', result.Message);
         }

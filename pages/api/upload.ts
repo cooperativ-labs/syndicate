@@ -14,7 +14,7 @@ const gcpCredentials = {
   type: 'service_account',
   project_id: process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID,
   private_key_id: process.env.NEXT_PUBLIC_GCP_KEY_ID,
-  private_key: process.env.NEXT_PUBLIC_GCP_PRIVATE_KEY,
+  private_key: process.env.NEXT_PUBLIC_GCP_PRIVATE_KEY?.replace(/\\n/g, '\n'),
   client_email: 'syndicate@syndicate-382709.iam.gserviceaccount.com',
   client_id: '108640420626649045093',
   auth_uri: 'https://accounts.google.com/o/oauth2/auth',
@@ -72,8 +72,7 @@ const handler = nextConnect<NextApiRequestWithFile, NextApiResponse>()
 
     try {
       blobStream.on('error', (err) => {
-        console.error(err);
-        return res.status(500).json({ error: 'Error uploading to Google Cloud Storage' });
+        return res.status(500).json({ error: 'Error uploading to Google Cloud Storage', err });
       });
 
       blobStream.on('finish', () => {
