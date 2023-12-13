@@ -13,8 +13,8 @@ import options from './auth/next-auth';
 const gcpCredentials = {
   type: 'service_account',
   project_id: process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID,
-  private_key_id: process.env.GCP_KEY_ID,
-  private_key: process.env.GCP_PRIVATE_KEY,
+  private_key_id: process.env.NEXT_PUBLIC_GCP_KEY_ID,
+  private_key: process.env.NEXT_PUBLIC_GCP_PRIVATE_KEY,
   client_email: 'syndicate@syndicate-382709.iam.gserviceaccount.com',
   client_id: '108640420626649045093',
   auth_uri: 'https://accounts.google.com/o/oauth2/auth',
