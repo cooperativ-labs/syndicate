@@ -145,6 +145,7 @@ const options: AuthOptions = {
   },
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
+      console.log('insignin', user, email);
       if (account?.provider === 'email' && !user.name) {
         user.name = '  '; // Set default name as empty string
       }
@@ -165,6 +166,7 @@ const options: AuthOptions = {
       isNewUser: boolean;
     }) {
       if (user) {
+        console.log('injwt', user, token);
         token.id = user.id;
         token.name = user.name || '';
         const now = Math.floor(Date.now() / 1000);
