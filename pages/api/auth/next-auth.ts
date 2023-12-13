@@ -146,7 +146,7 @@ const options: AuthOptions = {
   callbacks: {
     async signIn({ user, account, profile, email, credentials }) {
       if (account?.provider === 'email' && !user.name) {
-        user.name = ''; // Set default name as empty string
+        user.name = '  '; // Set default name as empty string
       }
       return true;
     },
