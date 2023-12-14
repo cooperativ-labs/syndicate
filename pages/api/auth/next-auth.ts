@@ -46,35 +46,6 @@ const options: AuthOptions = {
       clientSecret: process.env.NEXT_GOOGLE_SECRET as string,
     }),
 
-    // ---- Azure provider sends the user to a standard login page, not a microsoft login page, even though I have it set up with only the Microsoft provider in the Azure AD B2C tenant.
-    // AzureADB2CProvider({
-    //   tenantId: process.env.NEXT_PUBLIC_AZURE_AD_B2C_TENANT_NAME,
-    //   clientId: process.env.NEXT_PUBLIC_AZURE_AD_B2C_CLIENT_ID,
-    //   clientSecret: process.env.NEXT_PUBLIC_AZURE_AD_B2C_CLIENT_SECRET,
-    //   primaryUserFlow: process.env.NEXT_PUBLIC_AZURE_AD_B2C_PRIMARY_USER_FLOW,
-    //   authorization: { params: { scope: 'offline_access openid' } },
-    // }),
-
-    // ---- LinkedIn keeps giving me an error when I try to generate a token in the dev portal. This problem: https://stackoverflow.com/questions/75606683/generating-your-oauth-linkedin-token-oops-we-can-t-verify-the-authenticity-of
-
-    // LinkedInProvider({
-    //   clientId: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID,
-    //   clientSecret: process.env.LINKEDIN_CLIENT_SECRET,
-    //   token: {
-    //     url: 'https://www.linkedin.com/oauth/v2/accessToken',
-    //     async request({ client, params, checks, provider }) {
-    //       const response = await client.oauthCallback(provider.callbackUrl, params, checks, {
-    //         exchangeBody: {
-    //           client_id: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_ID,
-    //           client_secret: process.env.NEXT_PUBLIC_LINKEDIN_CLIENT_SECRET,
-    //         },
-    //       });
-    //       return {
-    //         tokens: response,
-    //       };
-    //     },
-    //   },
-    // }),
     EmailProvider({
       server: process.env.NEXT_PUBLIC_EMAIL_SERVER,
       from: process.env.NEXT_PUBLIC_SMTP_FROM,
@@ -101,7 +72,6 @@ const options: AuthOptions = {
           TextBody: `Sign in to your account: ${url}`,
           HtmlBody: `<html><body><p>Sign in to your account:</p><p><a href="${url}">${url}</a></p></body></html>`,
         });
-        // console.log('result', result);
         if (result.ErrorCode) {
           throw new Error('here', result.Message);
         }
@@ -146,33 +116,6 @@ const options: AuthOptions = {
     // newUser: '/welcome',
   },
   callbacks: {
-    async signIn({ user, account, email }) {
-      // Ensure this runs only for the Email provider
-      if (account?.provider === 'email') {
-        const apolloClient = initializeApollo();
-
-        try {
-          const { data } = await apolloClient.query({
-            query: GET_USER_FROM_EMAIL,
-            variables: { emailAddress: email },
-          });
-
-          if (data && data.queryUser && data.queryUser.length > 0) {
-            // User exists, continue with sign in
-            return true;
-          } else {
-            // User does not exist, redirect to register page
-            return '/register';
-          }
-        } catch (error) {
-          //@ts-ignore
-          throw new Error('Error checking user existence: ' + error?.message);
-        }
-      }
-
-      // For other providers, allow sign in
-      return true;
-    },
     //@ts-ignore
     async jwt({
       token,

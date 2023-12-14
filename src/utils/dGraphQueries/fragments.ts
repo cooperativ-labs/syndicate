@@ -592,7 +592,6 @@ export const CORE_USER_FIELDS = gql`
   ${CORE_ENTITY_FIELDS}
   fragment userData on User {
     id
-    id
     organizations {
       organization {
         ...entityData
