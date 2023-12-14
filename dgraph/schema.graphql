@@ -1341,16 +1341,11 @@ type User
     # }
     delete: { rule: "{$nextAuth: { eq: true } }" }
     add: { rule: "{$nextAuth: { eq: true } }" }
-    update: {
-      or: [
-        {
-          rule: """
-          query ($userId: [ID!]) {queryUser(filter: { id:  $userId } ) {id}}
-          """
-        }
-   			 { rule: "{$admin: { eq: true } }" }
-      ]
-    }
+				update: { or: [
+						{rule: "query ($userId: [ID!]) {queryUser(filter: { id:  $userId } ) {id}}"}, 
+					{	rule: "{$nextAuth: { eq: true } }"}
+						] 
+					}
   ) 
   {
   id: ID
