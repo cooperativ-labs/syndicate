@@ -3,7 +3,6 @@ import { configureChains, createConfig, sepolia, mainnet, Connector } from 'wagm
 import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
-import { LedgerConnector } from 'wagmi/connectors/ledger';
 import { publicProvider } from 'wagmi/providers/public';
 import { infuraProvider } from 'wagmi/providers/infura';
 import { InjectedConnector } from 'wagmi/connectors/injected';
@@ -109,19 +108,19 @@ export const SupportedEthConnectors = [
       },
     }),
   },
-  {
-    id: 'ledger',
-    name: 'Ledger Connect',
-    logo: '/assets/images/wallet-logos/ledgerconnect-alternative.webp',
-    experimental: false,
-    description: 'Connect to Ledger',
-    connector: new LedgerConnector({
-      chains: SupportedChains,
-      options: {
-        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-      },
-    }),
-  },
+  // {
+  //   id: 'ledger',
+  //   name: 'Ledger Connect',
+  //   logo: '/assets/images/wallet-logos/ledgerconnect-alternative.webp',
+  //   experimental: false,
+  //   description: 'Connect to Ledger',
+  //   connector: new LedgerConnector({
+  //     chains: SupportedChains,
+  //     options: {
+  //       projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+  //     },
+  //   }),
+  // },
 ];
 
 const setConfigConnectors = (connectors: SupportedEthConnectorType[]) => {
