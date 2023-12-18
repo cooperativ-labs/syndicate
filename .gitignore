@@ -4,7 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
-# /yarn.lock
+.yarn.lock
 
 # testing
 /coverage
@@ -41,3 +41,5 @@ types/
 pages/api/file/syndicate-cloud-key-staging.json
 
 /ui-debug.log
+yarn.lock
+yarn.lock

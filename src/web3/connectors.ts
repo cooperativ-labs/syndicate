@@ -1,6 +1,6 @@
 import { CryptoAddressProtocol, Maybe } from 'types';
-import { configureChains, createConfig, sepolia, mainnet, Connector } from 'wagmi';
-import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
+import { configureChains, createConfig, sepolia, mainnet, Connector, Chain } from 'wagmi';
+import { goerli, polygon, polygonMumbai, localhost } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { publicProvider } from 'wagmi/providers/public';
@@ -11,28 +11,18 @@ declare let window: any;
 
 //OLD ------------------
 
-// export const jupiterBlockChain = {
-//   id: 10001,
-//   name: 'Jupiter',
-//   network: 'jupiter',
+// export const cooperativLocalhost = {
+//   id: 5777,
+//   name: 'Cooperativ',
+//   network: 'cooperativ',
 //   nativeCurrency: {
 //     decimals: 18,
-//     name: 'JupiterEth',
+//     name: 'CoopEth',
 //     symbol: 'ETH',
 //   },
 //   rpcUrls: {
-//     public: { http: ['https://api.avax.network/ext/bc/C/rpc'] },
-//     default: { http: ['https://api.avax.network/ext/bc/C/rpc'] },
-//   },
-//   blockExplorers: {
-//     etherscan: { name: 'SnowTrace', url: 'https://snowtrace.io' },
-//     default: { name: 'SnowTrace', url: 'https://snowtrace.io' },
-//   },
-//   contracts: {
-//     multicall3: {
-//       address: '0xca11bde05977b3631167028862be2a173976ca11',
-//       blockCreated: 11_907_934,
-//     },
+//     public: { http: ['https://127.0.0.1:8545'] },
+//     default: { http: ['https://127.0.0.1:8545'] },
 //   },
 // } as const satisfies Chain;
 
@@ -46,18 +36,20 @@ declare let window: any;
 export const isMetaMask = (connector: any) => connector?.name === 'MetaMask'; // for some reason connector comes out of useAccount as any
 
 export const getSupportedChains = (): any => {
-  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
-    return [sepolia, polygonMumbai];
-  } else {
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production') {
     return [mainnet, sepolia, goerli, polygon, polygonMumbai];
   }
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+    return [sepolia, polygonMumbai];
+  }
+  return [mainnet, sepolia, goerli, polygon, polygonMumbai, localhost];
 };
 
 export const SupportedChains = getSupportedChains();
 
 const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
   infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
-  // publicProvider(),
+  publicProvider(),
 ]);
 
 export type SupportedEthConnectorType = {
@@ -164,15 +156,15 @@ export const SupportedChainsAddendum = [
     contractsSupported: true,
     color: 'blue-300',
   },
-  // {
-  //   id: 100001,
-  //   name: 'Jupiter',
-  //   blockExplorer: 'https://polygonscan.com',
-  //   protocol: CryptoAddressProtocol.Eth,
-  //   icon: 'assets/images/chain-icons/jupiter-logo.svg',
-  //   contractsSupported: true,
-  //   color: 'black',
-  // },
+  {
+    id: localhost.id,
+    name: localhost.name,
+    blockExplorer: 'https://polygonscan.com',
+    protocol: CryptoAddressProtocol.Eth,
+    icon: 'assets/images/chain-icons/jupiter-logo.svg',
+    contractsSupported: true,
+    color: 'black',
+  },
   {
     id: polygon.id,
     name: polygon.name,
@@ -181,6 +173,15 @@ export const SupportedChainsAddendum = [
     icon: '/assets/images/chain-icons/polygon-matic-logo.svg',
     contractsSupported: true,
     color: 'purple-600',
+  },
+  {
+    id: polygonMumbai.id,
+    name: polygonMumbai.name,
+    blockExplorer: polygonMumbai.blockExplorers.default.url,
+    faucet: 'https://faucet.matic.network/',
+    protocol: CryptoAddressProtocol.Eth,
+    contractsSupported: true,
+    color: 'purple-300',
   },
   {
     id: polygonMumbai.id,

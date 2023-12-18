@@ -1,0 +1,27 @@
+{
+  "name": "test_stablecoins",
+  "version": "0.5.0",
+  "private": false,
+  "author": "Cooperativ Labs. Inc",
+  "license": "ISC",
+  "scripts": {
+    "test": "truffle test",
+    "init": "truffle init",
+    "compile": "truffle compile",
+    "migrate": "truffle migrate --network development",
+    "console": "truffle console --network development"
+  },
+  "devDependencies": {
+    "truffle": "^5.11.5"
+  },
+  "prettier": {
+    "singleQuote": true,
+    "trailingComma": "es5",
+    "printWidth": 120
+  },
+  "description": "Stablecoins to be used for testing on local blockchain",
+  "main": "index.js",
+  "dependencies": {
+    "@openzeppelin/contracts": "^5.0.1"
+  }
+}

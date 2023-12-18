@@ -34,9 +34,20 @@ services:
       - 9080:9080
     restart: on-failure
     command: dgraph alpha --security whitelist=0.0.0.0/0 --my=alpha:7080 --zero=zero:5080
-    # environment: 
-    #   DGRAPH_ALPHA_GRAPHQL: "lambda-url=http://dgraph_lambda:8686/graphql-worker"
+
   ratel:
     image: fenos/ratel-ui:latest
     ports:
       - 8000:8000
+
+  ganache:
+    image: trufflesuite/ganache-cli:latest
+    platform: linux/amd64
+    ports:
+      - "8545:8545"
+    command:
+      - "-d"
+      - "-m"
+      - "parrot penalty midnight pond little reward crouch book bronze hip just spread"
+      - "-i"
+      - "1337"
