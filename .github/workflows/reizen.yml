@@ -1,0 +1,21 @@
+# .github/workflows/main.yml
+name: CI - Reizen
+on:
+  push:
+    branches: [reizen]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '18.x'
+      - name: Install NPM dependencies
+        run: yarn
+      # - name: Unit Testing
+        # run: yarn test:unit
+      - name: Send dgraph schema
+        run: |
+          npm install -g slash-graphql 
+          slash-graphql update-schema ./dgraph/schema.graphql -e https://blue-surf-1310073.us-east-1.aws.cloud.dgraph.io/graphql -t ${{ secrets.DGRAPH_SYNDICATE_REIZEN_GITHUB_DEPLOY }}

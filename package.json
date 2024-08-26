@@ -18,6 +18,8 @@
     "build-staging": ". ./staging.env && graphql-codegen && next build",
     "generate-production": ". ./prod.env && graphql-codegen",
     "build-production": ". ./prod.env && graphql-codegen && next build",
+    "generate-reizen": ". ./reizen.env && graphql-codegen",
+    "build-reizen": ". ./reizen.env && graphql-codegen && next build",
     "start": "next start",
     "lint": "yarn run js-lint && yarn run style-lint && yarn run type-check",
     "fix": "yarn run fix-js-lint && yarn run fix-style-lint",
