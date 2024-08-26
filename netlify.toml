@@ -1,24 +1,24 @@
 
-[context.production]
-  command = "yarn build-production"
-  publish = ".next"
-  [context.production.environment]
-    NEXT_PUBLIC_DEPLOY_STAGE='production'
-    NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID = 'syndicate-382709'
-    NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'syndicate_filestore_production'
-    NEXT_PUBLIC_GOOGLE_CLIENT_ID = '691225200393-4m2a66oge9n5fp5hd43at845f1o9fn67.apps.googleusercontent.com'
-    NEXT_PUBLIC_AUTH_HEADER = 'Db-Auth-Token'
-    NEXT_PUBLIC_DGRAPH_ENDPOINT = 'https://blue-surf-1120002.us-east-1.aws.cloud.dgraph.io/graphql'
-    NEXT_PUBLIC_SMTP_HOST= 'smtp.postmarkapp.com'
-    NEXT_PUBLIC_SMTP_PORT= '25'
-    NEXT_PUBLIC_SMTP_FROM= 'no-reply@cooperativ.io'
-    NEXT_PUBLIC_POSTMARK_HEADER= 'X-PM-Message-Stream: magic-link-stream'
-    NEXTAUTH_URL = "https://syndicate.cooperativ.io"
+# [context.production]
+#   command = "yarn build-production"
+#   publish = ".next"
+#   [context.production.environment]
+#     NEXT_PUBLIC_DEPLOY_STAGE='production'
+#     NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID = 'syndicate-382709'
+#     NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'syndicate_filestore_production'
+#     NEXT_PUBLIC_GOOGLE_CLIENT_ID = '691225200393-4m2a66oge9n5fp5hd43at845f1o9fn67.apps.googleusercontent.com'
+#     NEXT_PUBLIC_AUTH_HEADER = 'Db-Auth-Token'
+#     NEXT_PUBLIC_DGRAPH_ENDPOINT = 'https://blue-surf-1120002.us-east-1.aws.cloud.dgraph.io/graphql'
+#     NEXT_PUBLIC_SMTP_HOST= 'smtp.postmarkapp.com'
+#     NEXT_PUBLIC_SMTP_PORT= '25'
+#     NEXT_PUBLIC_SMTP_FROM= 'no-reply@cooperativ.io'
+#     NEXT_PUBLIC_POSTMARK_HEADER= 'X-PM-Message-Stream: magic-link-stream'
+#     NEXTAUTH_URL = "https://syndicate.cooperativ.io"
     
-[context.reizen]
+[context.production]
   command = "yarn build-reizen"
   publish = ".next"
-  [context.reizen.environment]
+  [context.production.environment]
     NEXT_PUBLIC_DEPLOY_STAGE='production'
     NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID = 'syndicate-382709'
     NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET = 'syndicate_filestore_production'
