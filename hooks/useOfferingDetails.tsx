@@ -5,7 +5,7 @@ import {
   getOrderArrayFromContract,
 } from '@src/utils/helpersOrder';
 import { dividendContractABI } from '@src/web3/generated';
-import { DocumentType, Offering, ShareOrder } from 'types';
+import { CurrencyCode, DocumentType, Maybe, Offering, ShareOrder } from 'types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
@@ -31,7 +31,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
-  const distributionPaymentToken = getCurrencyOption(details?.investmentCurrency);
+  const distributionPaymentToken = getCurrencyOption(details?.investmentCurrency as Maybe<CurrencyCode> | undefined);
   const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
   const distributionPaymentTokenDecimals = distributionPaymentToken ? distributionPaymentToken?.decimals : 18;
 
