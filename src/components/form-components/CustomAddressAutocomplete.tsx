@@ -91,6 +91,7 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
         apiKey={process.env.NEXT_PUBLIC_MAPS_API_KEY}
         selectProps={{
           value,
+          //@ts-ignore
           onChange: setValue,
           placeholder: '123 Easy st...',
           styles: {

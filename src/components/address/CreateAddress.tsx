@@ -9,18 +9,22 @@ import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LegalEntity } from 'types';
 import { useMutation } from '@apollo/client';
+import { SingleValue } from 'react-select';
 
 export type CreateAddressType = {
   entity: LegalEntity;
   actionOnCompletion: () => void;
 };
 
+type Option = any;
 const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) => {
   const [addAddress, { data, error }] = useMutation(ADD_ENTITY_ADDRESS);
   // const [map, setMap] = useState(null);
   const [latLang, setLatLang] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
   const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
-  const [inputAddress, setInputAddress] = useState<{ value: any }>();
+  const [inputAddress, setInputAddress] = useState<{ value: SingleValue<Option> }>();
+
+  // (newValue: SingleValue<Option>, actionMeta: ActionMeta<Option>) => void
 
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
