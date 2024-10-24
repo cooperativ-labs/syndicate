@@ -21,7 +21,7 @@ const CooperativLogo: FC<CooperativLogoProps> = ({ onlySymbol }) => {
   const isSmall = windowSize.width < 768 || onlySymbol;
   return (
     <Link href="/">
-      <img src={isSmall ? symbolLogo : fullLogo} alt="logo" width={isSmall ? '50' : '170'} className="mr-4" />
+      <img src={isSmall ? symbolLogo : fullLogo} alt="logo" width={isSmall ? '50' : '200'} className="mr-4" />
     </Link>
   );
 };
