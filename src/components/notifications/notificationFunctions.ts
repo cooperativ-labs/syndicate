@@ -19,7 +19,7 @@ export const handleAddEmailAddress = async (address: string, completionUrl: stri
   const secret = sha256(address);
   const confirmationLink = `${completionUrl}?token=${encodeURIComponent(secret)}`;
   const to = address;
-  const subject = 'Welcome to Cooperativ.io';
+  const subject = `Welcome to ${process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen' : 'Cooperativ'}.io`;
   const { html, text } = emailConfirmationContent(confirmationLink);
   const htmlBody = html;
   const textBody = text;

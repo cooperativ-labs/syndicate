@@ -70,14 +70,16 @@ export const emailConfirmationContent = (confirmationLink: string) => {
       <p>Please confirm your email address by clicking the link below:</p>
       <p><a href="${confirmationLink}">${confirmationLink}</a></p>
       <p>Thanks!</p>
-      <p>The Cooperativ Team</p>
+      <p>The ${process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen' : 'Cooperativ'} Team</p>
     </div>
-    <p class="footer">© Cooperativ.io, All Rights Reserved.</p>
+    <p class="footer">© ${
+      process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen.xyz' : 'Cooperativ.io'
+    }, All Rights Reserved.</p>
   </body>
   </html>
   `;
 
-  const text = `Welcome to Cooperativ.io!
+  const text = `Welcome to ${process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen' : 'Cooperativ'}!
   Please confirm your email address by clicking the link below:
   ${confirmationLink}`;
 
@@ -91,7 +93,7 @@ export const emailNotificationContent = (notificationText: string, actionLink: s
         <p>${notificationText}</p>
         <p><a href="${actionLink}">${actionLink}</a></p>
       
-        <p>The Cooperativ Team</p>
+        <p>The ${process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen' : 'Cooperativ'} Team</p>
       </body>
     </html>
   `;

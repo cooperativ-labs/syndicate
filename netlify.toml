@@ -32,7 +32,7 @@
     NEXT_PUBLIC_SMTP_FROM= 'no-reply@reizen.xyz'
     NEXT_PUBLIC_NOTIFICATIONS_FROM = 'notifications@reizen.xyz'
     NEXT_PUBLIC_POSTMARK_HEADER= 'X-PM-Message-Stream: magic-link-stream'
-    NEXTAUTH_URL = "https://syndicate.reizen.io"
+    NEXTAUTH_URL = "https://syndicate.reizen.xyz"
 
 [context.staging]
   command = "yarn build-staging"
