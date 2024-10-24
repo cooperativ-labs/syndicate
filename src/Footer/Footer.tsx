@@ -13,8 +13,8 @@ const Footer: React.FunctionComponent<FooterProps> = ({ color, lightText }) => {
   const currentYear = new Date().getFullYear();
   const textColor = lightText ? 'text-gray-300' : 'text-gray-600';
   const stamp = lightText
-    ? 'https://cooperativ.io/assets/images/branding/stamp_white.svg'
-    : 'https://cooperativ.io/assets/images/branding/stamp_dark_blue.svg';
+    ? 'https://cooperativ.io/assets/images/branding/cooperativ/stamp_white.svg'
+    : 'https://cooperativ.io/assets/images/branding/cooperativ/stamp_dark_blue.svg';
   return (
     <div
       className={cn(

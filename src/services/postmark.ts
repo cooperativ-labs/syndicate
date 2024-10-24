@@ -14,7 +14,7 @@ export async function sendEmail(
 ) {
   try {
     await postmarkClient.sendEmail({
-      From: 'notifications@cooperativ.io',
+      From: process.env.NEXT_PUBLIC_NOTIFICATIONS_FROM,
       To: to,
       Subject: subject,
       HtmlBody: htmlBody,

@@ -16,7 +16,7 @@ const MarketingNav: FC = () => {
     >
       <div className="ml-1 justify-start flex items-center">
         <img
-          src="/assets/images/branding/symbol_dark_blue.svg"
+          src="/assets/images/branding/cooperativ/symbol_dark_blue.svg"
           alt="logo"
           width={windowSize.width < 768 ? '50' : '70'}
         />

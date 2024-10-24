@@ -9,16 +9,19 @@ type CooperativLogoProps = {
 
 const CooperativLogo: FC<CooperativLogoProps> = ({ onlySymbol }) => {
   const windowSize = useWindowSize();
+  const fullLogo =
+    process.env.NEXT_PUBLIC_CLIENT === 'reizen'
+      ? '/assets/images/branding/reizen/reizen_logo.png'
+      : '/assets/images/branding/cooperativ/full_dark_blue.svg';
+  const symbolLogo =
+    process.env.NEXT_PUBLIC_CLIENT === 'reizen'
+      ? '/assets/images/branding/reizen/reizen_logo_small.png'
+      : '/assets/images/branding/cooperativ/symbol_dark_blue.svg';
 
   const isSmall = windowSize.width < 768 || onlySymbol;
   return (
     <Link href="/">
-      <img
-        src={isSmall ? '/assets/images/branding/symbol_dark_blue.svg' : '/assets/images/branding/full_dark_blue.svg'}
-        alt="logo"
-        width={isSmall ? '40' : '140'}
-        className="mr-4"
-      />
+      <img src={isSmall ? symbolLogo : fullLogo} alt="logo" width={isSmall ? '40' : '140'} className="mr-4" />
     </Link>
   );
 };

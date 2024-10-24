@@ -9,8 +9,6 @@ import { AuthOptions, Session, User } from 'next-auth';
 import * as jwt from 'jsonwebtoken';
 import { JWT } from 'next-auth/jwt';
 import { postmarkClient } from '@src/services/postmark';
-import { GET_USER_FROM_EMAIL } from '@src/utils/dGraphQueries/user';
-import initializeApollo from '@src/utils/apolloClient';
 
 const getEndpoint = () => {
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production' || process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
