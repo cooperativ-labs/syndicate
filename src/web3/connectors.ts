@@ -87,19 +87,19 @@ export const SupportedEthConnectors = [
       },
     }),
   },
-  {
-    id: 'walletconnect',
-    name: 'WalletConnect',
-    logo: '/assets/images/wallet-logos/walletconnect-logo.svg',
-    experimental: false,
-    description: 'Link wallet with a QR code',
-    connector: new WalletConnectConnector({
-      options: {
-        projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
-        isNewChainsStale: false,
-      },
-    }),
-  },
+  // {
+  //   id: 'walletconnect',
+  //   name: 'WalletConnect',
+  //   logo: '/assets/images/wallet-logos/walletconnect-logo.svg',
+  //   experimental: false,
+  //   description: 'Link wallet with a QR code',
+  //   connector: new WalletConnectConnector({
+  //     options: {
+  //       projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
+  //       isNewChainsStale: false,
+  //     },
+  //   }),
+  // },
   // {
   //   id: 'ledger',
   //   name: 'Ledger Connect',
