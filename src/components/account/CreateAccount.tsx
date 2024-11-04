@@ -158,20 +158,20 @@ const CreateAccount: FC = () => {
           {magicLinkForm}
           <div className="flex items-center">
             <hr className="my-4 w-full border-gray-500" />
-            <div className="m-4">or</div> <hr className="my-4 w-full border-gray-500" />
+            {/* <div className="m-4">or</div> <hr className="my-4 w-full border-gray-500" /> */}
           </div>
-          <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Continue with Google" />
+          {/* <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Continue with Google" /> */}
           {/* <SSOButton onClick={handleMicrosoftLogin} iconPrefix="fab" icon="microsoft" text="Continue with Microsoft" /> */}
           {/* <SSOButton onClick={handleLinkedInLogin} iconPrefix="fab" icon="linkedin" text="Continue with LinkedIn" /> */}
         </div>
       )}
       {/* <div>{testCredentials}</div> */}
       <div className="flex text-sm text-cGold text-center mt-10 justify-center">
-        <Link href="https://cooperativ.io/terms">
+        <Link href={`${process.env.NEXT_PUBLIC_TERMS_URL}`}>
           <div className="w-max">Terms of Service</div>
         </Link>
         <div className="mx-4">|</div>
-        <Link href="https://cooperativ.io/privacy">
+        <Link href={`${process.env.NEXT_PUBLIC_PRIVACY_URL}`}>
           <div className="w-max">Privacy Policy</div>
         </Link>
       </div>

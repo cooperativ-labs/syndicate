@@ -39,10 +39,10 @@ const options: AuthOptions = {
     },
   },
   providers: [
-    GoogleProvider({
-      clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
-      clientSecret: process.env.NEXT_GOOGLE_SECRET as string,
-    }),
+    // GoogleProvider({
+    //   clientId: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID as string,
+    //   clientSecret: process.env.NEXT_GOOGLE_SECRET as string,
+    // }),
 
     EmailProvider({
       server: process.env.NEXT_PUBLIC_EMAIL_SERVER,
