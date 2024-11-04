@@ -8,8 +8,8 @@ import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LegalEntity } from 'types';
-import { useMutation } from '@apollo/client';
 import { SingleValue } from 'react-select';
+import { useMutation } from '@apollo/client';
 
 export type CreateAddressType = {
   entity: LegalEntity;

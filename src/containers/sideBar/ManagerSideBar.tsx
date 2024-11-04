@@ -42,12 +42,14 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
         </div>
       )}
 
-      <div className="hidden md:flex col-span-5  bg-gray-100 w-48 z-10 min-h-full">
-        <div className="h-full bg-opacity-0 p-1 pr-2">
-          <div className="mb-5 text-lg font-bold px-2 pr-4 md:mt-4 ">{currentOrganizationName}</div>
-          <ManagerSideBarContents organizationId={setOrgId} />
+      {orgId && (
+        <div className="hidden md:flex col-span-5  bg-gray-100 w-48 z-10 min-h-full">
+          <div className="h-full bg-opacity-0 p-1 pr-2">
+            <div className="mb-5 text-lg font-bold px-2 pr-4 md:mt-4 ">{currentOrganizationName}</div>
+            <ManagerSideBarContents organizationId={setOrgId} />
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 

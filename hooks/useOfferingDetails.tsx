@@ -4,8 +4,8 @@ import {
   getCurrentOrderPrice,
   getOrderArrayFromContract,
 } from '@src/utils/helpersOrder';
-import { dividendContractABI } from '@src/web3/generated';
 import { CurrencyCode, DocumentType, Maybe, Offering, ShareOrder } from 'types';
+import { dividendContractABI } from '@src/web3/generated';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';

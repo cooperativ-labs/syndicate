@@ -139,9 +139,7 @@ export const CREATE_SWAP_CONTRACT = gql`
         offering {
           id
           details {
-            investmentCurrency {
-              code
-            }
+            investmentCurrency
           }
         }
       }

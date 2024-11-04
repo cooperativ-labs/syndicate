@@ -1,5 +1,6 @@
 import cn from 'classnames';
-import CooperativLogo from '@src/components/CooperativLogo';
+
+import PlatformLogo from '@src/components/PlatformLogo';
 import React, { FC, useContext } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -50,7 +51,7 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
           </div>
         </button>
         <div className="absolute bottom-3 left-3 justify-center">
-          <CooperativLogo onlySymbol />
+          <PlatformLogo onlySymbol />
         </div>
       </div>
     </div>

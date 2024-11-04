@@ -23,7 +23,9 @@ const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children })
     return (
       <div className="flex flex-col h-full w-screen items-center justify-center">
         <Card className="md:w-96 rounded-lg mx-4 md:mx-auto mt-4  p-4 ">
-          The blockchain you are using is not compatible with Cooperativ. Please use{' '}
+          {`The blockchain you are using is not compatible with ${
+            process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen' : 'Cooperativ'
+          }. Please use `}
           <a className="underline font-bold" href="https://sepolia.dev/" target="_blank" rel="noreferrer">
             Sepolia
           </a>{' '}

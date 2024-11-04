@@ -84,7 +84,9 @@ export const handleOfferingRequestNotification = async ({
   completionUrl,
   notificationText,
 }: EmailNotificationBaseProps) => {
-  const emailSubject = 'Notification: Cooperativ.io trade approval requested';
+  const emailSubject = `Notification: ${
+    process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen' : 'Cooperativ'
+  } trade approval requested`;
   const notificationSubject = NotificationSubject.TransactionRequest;
   handleContractNotification({
     organization,
@@ -100,7 +102,9 @@ export const handleTradeExecutionNotification = async ({
   completionUrl,
   notificationText,
 }: EmailNotificationBaseProps) => {
-  const emailSubject = 'Notification: Cooperativ.io trade executed';
+  const emailSubject = `Notification: ${
+    process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'ReiZen' : 'Cooperativ'
+  } trade executed`;
   const notificationSubject = NotificationSubject.TradeExecution;
   handleContractNotification({
     organization,

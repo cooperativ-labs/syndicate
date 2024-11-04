@@ -30,15 +30,15 @@ const Footer: React.FunctionComponent<FooterProps> = ({ color, lightText }) => {
         <div className="flex px-4 py-1 md:p-0">
           <a href="https://cooperativ.io" rel="noreferrer" target="_blank">
             <span className="flex md:mr-8 w-max">
-              <img src={stamp} alt="logo" width="15" /> {`Cooperativ Labs ${currentYear}`}{' '}
+              <img src={stamp} alt="logo" width="15" /> {`Powered by Cooperativ Labs ${currentYear}`}{' '}
             </span>
           </a>
         </div>
         <div className="flex">
-          <Link href="https://cooperativ.io/terms">
+          <Link href={`${process.env.NEXT_PUBLIC_TERMS_URL}`}>
             <div className="px-4 py-1 md:p-0 md:mr-8 w-max">Terms of Service</div>
           </Link>
-          <Link href="https://cooperativ.io/privacy">
+          <Link href={`${process.env.NEXT_PUBLIC_PRIVACY_URL}`}>
             <div className="px-4 py-1 md:p-0 w-max">Privacy Policy</div>
           </Link>
         </div>

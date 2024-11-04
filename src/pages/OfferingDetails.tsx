@@ -119,7 +119,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
         <AlertBanner
           show={!swapContractMatches && contractMatchesCurrentChain}
           color="orange-600"
-          text={`The swap contract for this offering does not match the share contract. Please contact Cooperativ Support.`}
+          text={`The swap contract for this offering does not match the share contract. Please contact ${
+            process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'Reizen' : 'Cooperativ'
+          } Support.`}
         />
         <AlertBanner
           show={!contractMatchesCurrentChain}

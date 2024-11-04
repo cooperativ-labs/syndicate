@@ -1,6 +1,6 @@
 import { CryptoAddressProtocol, Maybe } from 'types';
 import { configureChains, createConfig, sepolia, mainnet, Connector, Chain } from 'wagmi';
-import { goerli, polygon, polygonMumbai, localhost } from 'wagmi/chains';
+import { goerli, polygon, polygonMumbai, localhost, base } from 'wagmi/chains';
 import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
 import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
 import { publicProvider } from 'wagmi/providers/public';
@@ -33,16 +33,49 @@ declare let window: any;
 //   80001: 'https://polygon-mumbai.infura.io/v3/',
 // };
 
+export const polygonAmoy = {
+  id: 80002,
+  name: 'Polygon Amoy',
+  network: 'polygon-amoy',
+  nativeCurrency: {
+    decimals: 18,
+    name: 'Polygon',
+    symbol: 'POL',
+  },
+  rpcUrls: {
+    public: { http: ['https://rpc-amoy.polygon.technology/'] },
+    default: { http: ['https://rpc-amoy.polygon.technology/'] },
+  },
+} as const satisfies Chain;
+
+export const baseSepolia = {
+  id: 84532,
+  name: 'Base Sepolia',
+  network: 'base-sepolia',
+  blockExplorers: {
+    default: { name: 'BaseScan', url: 'https://basescan.org/' },
+  },
+  nativeCurrency: {
+    decimals: 18,
+    name: 'BaseSepolia',
+    symbol: 'ETH',
+  },
+  rpcUrls: {
+    public: { http: ['https://84532.rpc.thirdweb.com/'] },
+    default: { http: ['https://84532.rpc.thirdweb.com/'] },
+  },
+} as const satisfies Chain;
+
 export const isMetaMask = (connector: any) => connector?.name === 'MetaMask'; // for some reason connector comes out of useAccount as any
 
 export const getSupportedChains = (): any => {
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'production') {
-    return [mainnet, sepolia, goerli, polygon, polygonMumbai];
+    return [mainnet, sepolia, polygon, polygonAmoy, base, baseSepolia];
   }
   if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
-    return [sepolia, polygonMumbai];
+    return [sepolia, polygonAmoy, baseSepolia];
   }
-  return [mainnet, sepolia, goerli, polygon, polygonMumbai, localhost];
+  return [mainnet, sepolia, polygon, base, baseSepolia, localhost, polygonAmoy];
 };
 
 export const SupportedChains = getSupportedChains();
@@ -82,7 +115,7 @@ export const SupportedEthConnectors = [
     connector: new CoinbaseWalletConnector({
       chains: SupportedChains,
       options: {
-        appName: 'Syndicate by Cooperativ Labs',
+        appName: `${process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'Reizen' : 'Syndicate'} - powered by Cooperativ Labs`,
         jsonRpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
       },
     }),
@@ -147,19 +180,19 @@ export const SupportedChainsAddendum = [
     contractsSupported: true,
     color: 'blue-300',
   },
-  {
-    id: goerli.id,
-    name: goerli.name,
-    blockExplorer: goerli.blockExplorers.default.url,
-    protocol: CryptoAddressProtocol.Eth,
-    icon: '/assets/images/chain-logos/sepolia-logo.png',
-    contractsSupported: true,
-    color: 'blue-300',
-  },
+  // {
+  //   id: goerli.id,
+  //   name: goerli.name,
+  //   blockExplorer: goerli.blockExplorers.default.url,
+  //   protocol: CryptoAddressProtocol.Eth,
+  //   icon: '/assets/images/chain-logos/sepolia-logo.png',
+  //   contractsSupported: true,
+  //   color: 'blue-300',
+  // },
   {
     id: localhost.id,
     name: localhost.name,
-    blockExplorer: 'https://polygonscan.com',
+    blockExplorer: '-',
     protocol: CryptoAddressProtocol.Eth,
     icon: 'assets/images/chain-icons/jupiter-logo.svg',
     contractsSupported: true,
@@ -175,23 +208,42 @@ export const SupportedChainsAddendum = [
     color: 'purple-600',
   },
   {
-    id: polygonMumbai.id,
-    name: polygonMumbai.name,
-    blockExplorer: polygonMumbai.blockExplorers.default.url,
-    faucet: 'https://faucet.matic.network/',
+    id: polygonAmoy.id,
+    name: 'Polygon Amoy',
+    blockExplorer: 'https://amoy.polygonscan.com',
+    faucet: 'https://faucet.polygon.technology',
     protocol: CryptoAddressProtocol.Eth,
     contractsSupported: true,
     color: 'purple-300',
   },
   {
-    id: polygonMumbai.id,
-    name: polygonMumbai.name,
-    blockExplorer: polygonMumbai.blockExplorers.default.url,
-    faucet: 'https://faucet.matic.network/',
+    id: base.id,
+    name: base.name,
+    blockExplorer: base.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
-    contractsSupported: true,
-    color: 'purple-300',
+    icon: 'https://github.com/base-org/brand-kit/blob/main/logo/in-product/Base_Network_Logo.svg',
+    contractsSupported: false,
+    color: 'blue-700',
   },
+  {
+    id: baseSepolia.id,
+    name: baseSepolia.name,
+    blockExplorer: baseSepolia.blockExplorers.default.url,
+    protocol: CryptoAddressProtocol.Eth,
+    icon: 'https://github.com/base-org/brand-kit/blob/main/logo/in-product/Base_Network_Logo.svg',
+    contractsSupported: true,
+    color: 'blue-300',
+  },
+
+  // {
+  //   id: polygonMumbai.id,
+  //   name: polygonMumbai.name,
+  //   blockExplorer: polygonMumbai.blockExplorers.default.url,
+  //   faucet: 'https://faucet.matic.network/',
+  //   protocol: CryptoAddressProtocol.Eth,
+  //   contractsSupported: true,
+  //   color: 'purple-300',
+  // },
   // {
   //   id: 43114,
   //   name: 'Avalanche Mainnet',

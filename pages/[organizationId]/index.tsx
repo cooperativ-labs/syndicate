@@ -44,7 +44,12 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
           property="og:image"
           content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
         />
-        <meta property="og:url" content={`https://cooperativ.io/${id}/portal/`}></meta>
+        <meta
+          property="og:url"
+          content={`https://${
+            process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? 'reizen.xyz' : 'cooperativ.io'
+          }/${id}/portal/`}
+        ></meta>
         Twitter
         <meta name="twitter:title" content={name ?? ''} />
         <meta name="twitter:description" content={shortDescription ?? ''} />

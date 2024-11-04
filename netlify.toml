@@ -15,6 +15,8 @@
     NEXT_PUBLIC_NOTIFICATIONS_FROM = 'notifications@cooperativ.io'
     NEXT_PUBLIC_POSTMARK_HEADER= 'X-PM-Message-Stream: magic-link-stream'
     NEXTAUTH_URL = "https://syndicate.cooperativ.io"
+    NEXT_PUBLIC_PRIVACY_URL = "https://cooperativ.io/privacy"
+    NEXT_PUBLIC_TERMS_URL = "https://cooperativ.io/terms"
     
 [context.reizen]
   command = "yarn build-reizen"
@@ -33,6 +35,8 @@
     NEXT_PUBLIC_NOTIFICATIONS_FROM = 'notifications@reizen.xyz'
     NEXT_PUBLIC_POSTMARK_HEADER= 'X-PM-Message-Stream: magic-link-stream'
     NEXTAUTH_URL = "https://syndicate.reizen.xyz"
+    NEXT_PUBLIC_PRIVACY_URL = "https://reizen.xyz/privacy"
+    NEXT_PUBLIC_TERMS_URL = "https://reizen.xyz/terms"
 
 [context.staging]
   command = "yarn build-staging"
@@ -50,4 +54,6 @@
     NEXT_PUBLIC_NOTIFICATIONS_FROM = 'notifications@cooperativ.io'
     NEXT_PUBLIC_POSTMARK_HEADER= 'X-PM-Message-Stream: magic-link-stream'
     NEXTAUTH_URL = "https://staging.syndicate.cooperativ.io"
+       NEXT_PUBLIC_PRIVACY_URL = "https://cooperativ.io/privacy"
+    NEXT_PUBLIC_TERMS_URL = "https://cooperativ.io/terms"
 

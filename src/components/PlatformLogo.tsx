@@ -3,11 +3,11 @@ import React from 'react';
 import { FC } from 'react';
 import { useWindowSize } from 'react-use';
 
-type CooperativLogoProps = {
+type PlatformLogoProps = {
   onlySymbol?: boolean;
 };
 
-const CooperativLogo: FC<CooperativLogoProps> = ({ onlySymbol }) => {
+const PlatformLogo: FC<PlatformLogoProps> = ({ onlySymbol }) => {
   const windowSize = useWindowSize();
   const fullLogo =
     process.env.NEXT_PUBLIC_CLIENT === 'reizen'
@@ -26,4 +26,4 @@ const CooperativLogo: FC<CooperativLogoProps> = ({ onlySymbol }) => {
   );
 };
 
-export default CooperativLogo;
+export default PlatformLogo;

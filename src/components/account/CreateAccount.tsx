@@ -1,6 +1,7 @@
 import * as Yup from 'yup';
-import CooperativLogo from '../CooperativLogo';
+
 import Link from 'next/link';
+import PlatformLogo from '../PlatformLogo';
 import React, { FC, ReactNode, useState } from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -141,7 +142,7 @@ const CreateAccount: FC = () => {
   return (
     <div className="mt-5 md:p-10 md:rounded-lg md:bg-white md:shadow-xl">
       <div className="flex justify-center mb-10">
-        <CooperativLogo />
+        <PlatformLogo />
       </div>
       {loading ? (
         <div className="flex justify-center items-center ">
