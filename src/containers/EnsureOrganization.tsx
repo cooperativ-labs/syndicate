@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { User } from 'types';
+import { User } from 'oldTypes';
 
 type EnsureProfileCompletionProps = {
   children: React.ReactNode;

@@ -21,7 +21,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getPropertyTypeOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { RealEstateProperty } from 'types';
+import { RealEstateProperty } from 'oldTypes';
 import { UPDATE_ADDRESS } from '@src/utils/dGraphQueries/entity';
 import { useSession } from 'next-auth/react';
 

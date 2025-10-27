@@ -2,7 +2,7 @@ import React, { FC } from 'react';
 
 import { useMutation } from '@apollo/client';
 
-import { Maybe, NotificationConfiguration, OrganizationUser } from 'types';
+import { Maybe, NotificationConfiguration, OrganizationUser } from 'oldTypes';
 
 import NotificationConfigItem, { NotificationConfigItemBaseProps } from './NotificationConfigItem';
 import { REMOVE_NOTIFICATION_RULE } from '@src/utils/dGraphQueries/organization';

@@ -11,7 +11,7 @@ import WithAuthentication from './WithAuthentication';
 import { ApplicationStoreProps, store } from '@context/store';
 import { disconnectWallet } from '@src/web3/connectors';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { OrganizationUser, User } from 'types';
+import { OrganizationUser, User } from 'oldTypes';
 import { signOut, useSession } from 'next-auth/react';
 import { useApolloClient } from '@apollo/client';
 

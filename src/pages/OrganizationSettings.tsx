@@ -26,7 +26,7 @@ import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dG
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getOrganizationUser } from '@src/utils/helpersOrganization';
-import { Maybe, Organization } from 'types';
+import { Maybe, Organization } from 'oldTypes';
 import { useMutation, useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';

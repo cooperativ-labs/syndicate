@@ -1,19 +1,8 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
 import React from 'react';
 // import tailwind from 'tailwind';
-export default class MyDocument extends Document {
-  // getConfig = () => {
-  //   switch (process.env.NEXT_PUBLIC_DEPLOY_STAGE) {
-  //     case 'production':
-  //       return process.env.NEXT_PUBLIC_MAPS_API_KEY;
-  //     case 'staging':
-  //       return process.env.NEXT_PUBLIC_MAPS_API_KEY;
-  //     default:
-  //       return process.env.NEXT_PUBLIC_MAPS_API_KEY;
-  //   }
-  // };
+export default function Document() {
 
-  render() {
     return (
       <Html>
         <Head>
@@ -53,4 +42,4 @@ export default class MyDocument extends Document {
       </Html>
     );
   }
-}
+

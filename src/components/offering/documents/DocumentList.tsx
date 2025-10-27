@@ -1,7 +1,7 @@
 import DocumentAdder from './DocumentAdder';
 import DocumentListItem from './DocumentListItem';
 import React, { FC } from 'react';
-import { Document, Maybe } from 'types';
+import { Document, Maybe } from 'oldTypes';
 
 type DocumentListProps = {
   documents: Maybe<Document>[] | null | undefined;

@@ -1,25 +1,40 @@
-import { Dispatch, SetStateAction } from 'react';
+import { Dispatch, SetStateAction } from "react";
 import {
-  String0x,
-  StandardChainErrorHandling,
-  bytes32FromString,
-  hashBytes32FromString,
-  ChainErrorResponses,
   addressWithoutEns,
+  bytes32FromString,
+  ChainErrorResponses,
+  hashBytes32FromString,
   splitAddress,
-} from './helpersChain';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
+  StandardChainErrorHandling,
+  String0x,
+} from "./helpersChain";
+import { LoadingButtonStateType } from "@src/components/buttons/Button";
+import { currentDate } from "@src/utils/dGraphQueries/gqlUtils";
+import {
+  ApolloCache,
+  DefaultContext,
+  MutationFunctionOptions,
+  OperationVariables,
+} from "@apollo/client";
 
-import { waitForTransaction, writeContract, prepareWriteContract } from 'wagmi/actions';
-import { TransactionReceipt, parseUnits } from 'viem';
-import { shareContractABI } from './generated';
-import toast from 'react-hot-toast';
-import { shareContractDecimals, toContractNumber } from './util';
-import { Currency, CurrencyCode, Organization, ShareTransferEventType, WhitelistTransactionType } from 'types';
-import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
-import { getBaseUrl } from '@src/utils/helpersURL';
+import {
+  prepareWriteContract,
+  waitForTransaction,
+  writeContract,
+} from "wagmi/actions";
+import { parseUnits, TransactionReceipt } from "viem";
+import { shareContractABI } from "./generated";
+import toast from "react-hot-toast";
+import { shareContractDecimals, toContractNumber } from "./util";
+import {
+  Currency,
+  CurrencyCode,
+  Organization,
+  ShareTransferEventType,
+  WhitelistTransactionType,
+} from "oldTypes";
+import { handleWhitelistUpdateNotification } from "@src/components/notifications/notificationFunctions";
+import { getBaseUrl } from "@src/utils/helpersURL";
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
@@ -31,7 +46,12 @@ type AddWhitelistMemberProps = {
   organization: Organization;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   updateWhitelist: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchMainContracts?: () => void;
   triggerInvestorListRefresh?: () => void;
@@ -70,12 +90,12 @@ export const addWhitelistMember = async ({
     }
   };
   const call = async () => {
-    setButtonStep('step1');
+    setButtonStep("step1");
     try {
       const { request, result } = await prepareWriteContract({
         address: shareContractAddress,
         abi: shareContractABI,
-        functionName: 'addToWhitelist',
+        functionName: "addToWhitelist",
         args: [walletAddress],
       });
       const { hash } = await writeContract(request);
@@ -86,18 +106,19 @@ export const addWhitelistMember = async ({
       await handleWhitelistUpdateNotification({
         organization,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText: `${walletAddress} was added to your offering's whitelist.`,
+        notificationText:
+          `${walletAddress} was added to your offering's whitelist.`,
       });
       triggerInvestorListRefresh && triggerInvestorListRefresh();
       refetchMainContracts && refetchMainContracts();
       toast.success(`${walletAddress} was added to your offering's whitelist.`);
-      setButtonStep('confirmed');
+      setButtonStep("confirmed");
     } catch (e) {
       const parsedError = ChainErrorResponses(e, walletAddress);
       if (parsedError.code === 1001) {
-        await addToDb('unknown');
+        await addToDb("unknown");
 
-        setButtonStep('confirmed');
+        setButtonStep("confirmed");
       } else {
         StandardChainErrorHandling(e, setButtonStep, walletAddress);
       }
@@ -113,7 +134,12 @@ type RemoveWhitelistMemberProps = {
   organization: Organization;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   updateWhitelist: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchMainContracts?: () => void;
   triggerInvestorListRefresh?: () => void;
@@ -130,12 +156,12 @@ export const removeWhitelistMember = async ({
   triggerInvestorListRefresh,
 }: RemoveWhitelistMemberProps) => {
   const call = async () => {
-    setButtonStep('step1');
+    setButtonStep("step1");
     try {
       const { request } = await prepareWriteContract({
         address: shareContractAddress,
         abi: shareContractABI,
-        functionName: 'removeFromWhitelist',
+        functionName: "removeFromWhitelist",
         args: [walletAddress],
       });
       const { hash } = await writeContract(request);
@@ -153,12 +179,15 @@ export const removeWhitelistMember = async ({
       await handleWhitelistUpdateNotification({
         organization,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText: `${walletAddress} was removed from your offering's whitelist.`,
+        notificationText:
+          `${walletAddress} was removed from your offering's whitelist.`,
       });
       refetchMainContracts && refetchMainContracts();
       triggerInvestorListRefresh && triggerInvestorListRefresh();
-      toast.success(`${walletAddress} was removed from your offering's whitelist.`);
-      setButtonStep('confirmed');
+      toast.success(
+        `${walletAddress} was removed from your offering's whitelist.`,
+      );
+      setButtonStep("confirmed");
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep, walletAddress);
     }
@@ -190,7 +219,7 @@ export const setDocument = async ({
     const { request } = await prepareWriteContract({
       address: shareContractAddress,
       abi: shareContractABI,
-      functionName: 'setDocument',
+      functionName: "setDocument",
       args: [name, uri, docHash],
     });
     const { hash } = await writeContract(request);
@@ -219,10 +248,20 @@ type SendSharesProps = {
   isIssuance: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addPartition: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   addIssuance: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchMainContracts: () => void;
 };
@@ -248,18 +287,35 @@ export const sendShares = async ({
 
   let transactionDetails = {} as TransactionReceipt;
   const call = async () => {
-    setButtonStep('step1');
-    const setPartition = partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
-    const setFunctionName = isIssuance ? 'issueByPartition' : 'operatorTransferByPartition';
-    const issueByPartitionArgs = [setPartition, recipient, amt] as readonly [String0x, String0x, bigint];
-    const operatorTransferByPartitionArgs = [setPartition, sender, recipient, amt] as readonly [
+    setButtonStep("step1");
+    const setPartition = partition === "0xNew"
+      ? bytes32FromString(newPartition)
+      : (partition as String0x);
+    const setFunctionName = isIssuance
+      ? "issueByPartition"
+      : "operatorTransferByPartition";
+    const issueByPartitionArgs = [setPartition, recipient, amt] as readonly [
       String0x,
       String0x,
-      String0x,
-      bigint
+      bigint,
     ];
-    const setArgs = isIssuance ? issueByPartitionArgs : operatorTransferByPartitionArgs;
-    const setType = isIssuance ? ShareTransferEventType.Issuance : ShareTransferEventType.Transfer;
+    const operatorTransferByPartitionArgs = [
+      setPartition,
+      sender,
+      recipient,
+      amt,
+    ] as readonly [
+      String0x,
+      String0x,
+      String0x,
+      bigint,
+    ];
+    const setArgs = isIssuance
+      ? issueByPartitionArgs
+      : operatorTransferByPartitionArgs;
+    const setType = isIssuance
+      ? ShareTransferEventType.Issuance
+      : ShareTransferEventType.Transfer;
     try {
       const { request } = await prepareWriteContract({
         address: shareContractAddress,
@@ -280,26 +336,34 @@ export const sendShares = async ({
           senderAddress: sender,
           amount: numShares,
           currencyCode,
-          price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
+          price: toContractNumber(
+            price as number,
+            paymentTokenDecimals as number,
+          ).toString(),
           transactionHash: transactionDetails.transactionHash,
           partition: setPartition,
           type: setType,
         },
       });
-      if (partition === '0xNew')
+      if (partition === "0xNew") {
         await addPartition({
           variables: {
             smartContractId: shareContractId,
             partition: setPartition,
           },
         });
+      }
       refetchMainContracts();
       toast.success(
-        `${numShares} shares sent to ${addressWithoutEns({
-          address: recipient,
-        })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
+        `${numShares} shares sent to ${
+          addressWithoutEns({
+            address: recipient,
+          })
+        }. Transaction hash: ${
+          splitAddress(transactionDetails.transactionHash)
+        }`,
       );
-      setButtonStep('confirmed');
+      setButtonStep("confirmed");
     } catch (e: any) {
       toast.error(`Error sending shares: ${e.message}`);
       StandardChainErrorHandling(e, setButtonStep, recipient);
@@ -326,7 +390,7 @@ export const setContractOperator = async ({
     const { request } = await prepareWriteContract({
       address: shareContractAddress,
       abi: shareContractABI,
-      functionName: 'authorizeOperator',
+      functionName: "authorizeOperator",
       args: [operator],
     });
     const { hash } = await writeContract(request);
@@ -347,7 +411,12 @@ type ForceTransferProps = {
   recipient: String0x;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addIssuance: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchContracts: () => void;
 };
@@ -362,13 +431,13 @@ export const forceTransfer = async ({
   addIssuance,
   refetchContracts,
 }: ForceTransferProps) => {
-  setButtonStep('step1');
+  setButtonStep("step1");
   const amt = toContractNumber(amount, shareContractDecimals);
   try {
     const { request } = await prepareWriteContract({
       address: shareContractAddress,
       abi: shareContractABI,
-      functionName: 'operatorTransferByPartition',
+      functionName: "operatorTransferByPartition",
       args: [partition, target, recipient, amt],
     });
     const { hash } = await writeContract(request);
@@ -387,7 +456,7 @@ export const forceTransfer = async ({
       },
     });
     refetchContracts();
-    setButtonStep('confirmed');
+    setButtonStep("confirmed");
   } catch (e) {
     StandardChainErrorHandling(e, setButtonStep);
   }

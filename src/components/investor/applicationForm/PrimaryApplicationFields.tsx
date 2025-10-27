@@ -5,7 +5,7 @@ import Input, { defaultFieldDiv } from '../../form-components/Inputs';
 import React, { FC } from 'react';
 import Select from '../../form-components/Select';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
-import { LegalEntity } from 'types';
+import { LegalEntity } from 'oldTypes';
 
 type PrimaryApplicationFieldsProps = {
   isNonHuman: boolean;

@@ -7,7 +7,7 @@ import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
 import { useQuery } from '@apollo/client';
 
 import React, { FC } from 'react';
-import { Offering } from 'types';
+import { Offering } from 'oldTypes';
 
 const PortalOfferingPage: FC = () => {
   const offeringId = router.query.offeringId;

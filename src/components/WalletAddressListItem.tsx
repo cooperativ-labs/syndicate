@@ -3,7 +3,7 @@ import cn from 'classnames';
 import FormattedCryptoAddress from './FormattedCryptoAddress';
 import Input from './form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { CryptoAddress, CryptoAddressType, Maybe } from 'types';
+import { CryptoAddress, CryptoAddressType, Maybe } from 'oldTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { MarkPublic } from './form-components/ListItemButtons';

@@ -1,7 +1,7 @@
 import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC, useEffect, useState } from 'react';
-import { Address, Maybe } from 'types';
+import { Address, Maybe } from 'oldTypes';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';

@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import React from 'react';
 import useBrandColor from 'hooks/useBrandColor';
-import { AssetStatus, Maybe, OfferingStage } from 'types';
+import { AssetStatus, Maybe, OfferingStage } from 'oldTypes';
 import { getAssetStatusOption } from '@src/utils/enumConverters';
 
 type ProgressProps = {

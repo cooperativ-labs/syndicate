@@ -8,7 +8,7 @@ import OfferingProfile from '@src/pages/OfferingProfile';
 import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
 import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
 import { initializeApollo } from '@src/utils/apolloClient';
-import { Offering } from 'types';
+import { Offering } from 'oldTypes';
 
 type ResultProps = {
   result: Offering;

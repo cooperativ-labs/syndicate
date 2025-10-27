@@ -9,7 +9,7 @@ import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
-import { CurrencyCode, LegalEntity, Organization } from 'types';
+import { CurrencyCode, LegalEntity, Organization } from 'oldTypes';
 import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';

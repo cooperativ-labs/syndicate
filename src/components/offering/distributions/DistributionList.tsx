@@ -1,6 +1,6 @@
 import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 import React, { FC } from 'react';
-import { Maybe, OfferingDistribution } from 'types';
+import { Maybe, OfferingDistribution } from 'oldTypes';
 
 type DistributionListProps = DistributionListItemProps & {
   distributions: Maybe<Maybe<OfferingDistribution>[]> | undefined;

@@ -1,12 +1,18 @@
-import { CryptoAddressProtocol, Maybe } from 'types';
-import { configureChains, createConfig, sepolia, mainnet, Connector } from 'wagmi';
-import { goerli, polygon, polygonMumbai } from 'wagmi/chains';
-import { WalletConnectConnector } from 'wagmi/connectors/walletConnect';
-import { CoinbaseWalletConnector } from 'wagmi/connectors/coinbaseWallet';
-import { LedgerConnector } from 'wagmi/connectors/ledger';
-import { publicProvider } from 'wagmi/providers/public';
-import { infuraProvider } from 'wagmi/providers/infura';
-import { InjectedConnector } from 'wagmi/connectors/injected';
+import { CryptoAddressProtocol, Maybe } from "oldTypes";
+import {
+  configureChains,
+  Connector,
+  createConfig,
+  mainnet,
+  sepolia,
+} from "wagmi";
+import { goerli, polygon, polygonMumbai } from "wagmi/chains";
+import { WalletConnectConnector } from "wagmi/connectors/walletConnect";
+import { CoinbaseWalletConnector } from "wagmi/connectors/coinbaseWallet";
+import { LedgerConnector } from "wagmi/connectors/ledger";
+import { publicProvider } from "wagmi/providers/public";
+import { infuraProvider } from "wagmi/providers/infura";
+import { InjectedConnector } from "wagmi/connectors/injected";
 
 declare let window: any;
 
@@ -44,10 +50,10 @@ declare let window: any;
 //   80001: 'https://polygon-mumbai.infura.io/v3/',
 // };
 
-export const isMetaMask = (connector: any) => connector?.name === 'MetaMask'; // for some reason connector comes out of useAccount as any
+export const isMetaMask = (connector: any) => connector?.name === "MetaMask"; // for some reason connector comes out of useAccount as any
 
 export const getSupportedChains = (): any => {
-  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === 'staging') {
+  if (process.env.NEXT_PUBLIC_DEPLOY_STAGE === "staging") {
     return [sepolia, polygonMumbai];
   } else {
     return [mainnet, sepolia, goerli, polygon, polygonMumbai];
@@ -56,10 +62,15 @@ export const getSupportedChains = (): any => {
 
 export const SupportedChains = getSupportedChains();
 
-const { chains, publicClient, webSocketPublicClient } = configureChains(SupportedChains, [
-  infuraProvider({ apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string }),
-  // publicProvider(),
-]);
+const { chains, publicClient, webSocketPublicClient } = configureChains(
+  SupportedChains,
+  [
+    infuraProvider({
+      apiKey: process.env.NEXT_PUBLIC_INFURA_API_KEY as string,
+    }),
+    // publicProvider(),
+  ],
+);
 
 export type SupportedEthConnectorType = {
   id: string;
@@ -72,36 +83,37 @@ export type SupportedEthConnectorType = {
 
 export const SupportedEthConnectors = [
   {
-    id: 'injected',
-    name: 'MetaMask',
-    logo: '/assets/images/wallet-logos/metamask-fox.svg',
+    id: "injected",
+    name: "MetaMask",
+    logo: "/assets/images/wallet-logos/metamask-fox.svg",
     experimental: false,
-    description: 'Mobile app and extension',
+    description: "Mobile app and extension",
     connector: new InjectedConnector({
       chains: SupportedChains,
     }),
   },
   {
-    id: 'coinbasewallet',
-    name: 'Coinbase Wallet',
-    logo: '/assets/images/wallet-logos/coinbasewallet-logo.png',
+    id: "coinbasewallet",
+    name: "Coinbase Wallet",
+    logo: "/assets/images/wallet-logos/coinbasewallet-logo.png",
     isSquare: true,
     experimental: false,
-    description: 'Link to Coinbase Wallet',
+    description: "Link to Coinbase Wallet",
     connector: new CoinbaseWalletConnector({
       chains: SupportedChains,
       options: {
-        appName: 'Syndicate by Cooperativ Labs',
-        jsonRpcUrl: `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
+        appName: "Syndicate by Cooperativ Labs",
+        jsonRpcUrl:
+          `https://mainnet.infura.io/v3/${process.env.NEXT_PUBLIC_INFURA_API_KEY}`,
       },
     }),
   },
   {
-    id: 'walletconnect',
-    name: 'WalletConnect',
-    logo: '/assets/images/wallet-logos/walletconnect-logo.svg',
+    id: "walletconnect",
+    name: "WalletConnect",
+    logo: "/assets/images/wallet-logos/walletconnect-logo.svg",
     experimental: false,
-    description: 'Link wallet with a QR code',
+    description: "Link wallet with a QR code",
     connector: new WalletConnectConnector({
       options: {
         projectId: process.env.NEXT_PUBLIC_WALLETCONNECT_PROJECT_ID as string,
@@ -110,11 +122,11 @@ export const SupportedEthConnectors = [
     }),
   },
   {
-    id: 'ledger',
-    name: 'Ledger Connect',
-    logo: '/assets/images/wallet-logos/ledgerconnect-alternative.webp',
+    id: "ledger",
+    name: "Ledger Connect",
+    logo: "/assets/images/wallet-logos/ledgerconnect-alternative.webp",
     experimental: false,
-    description: 'Connect to Ledger',
+    description: "Connect to Ledger",
     connector: new LedgerConnector({
       chains: SupportedChains,
       options: {
@@ -143,27 +155,27 @@ export const SupportedChainsAddendum = [
     name: mainnet.name,
     blockExplorer: mainnet.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
-    icon: '/assets/images/chain-icons/ethereum-eth-logo.svg',
+    icon: "/assets/images/chain-icons/ethereum-eth-logo.svg",
     contractsSupported: true,
-    color: 'emerald-600',
+    color: "emerald-600",
   },
   {
     id: sepolia.id,
     name: sepolia.name,
     blockExplorer: sepolia.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
-    icon: '/assets/images/chain-logos/sepolia-logo.png',
+    icon: "/assets/images/chain-logos/sepolia-logo.png",
     contractsSupported: true,
-    color: 'blue-300',
+    color: "blue-300",
   },
   {
     id: goerli.id,
     name: goerli.name,
     blockExplorer: goerli.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
-    icon: '/assets/images/chain-logos/sepolia-logo.png',
+    icon: "/assets/images/chain-logos/sepolia-logo.png",
     contractsSupported: true,
-    color: 'blue-300',
+    color: "blue-300",
   },
   // {
   //   id: 100001,
@@ -179,18 +191,18 @@ export const SupportedChainsAddendum = [
     name: polygon.name,
     blockExplorer: polygon.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.Eth,
-    icon: '/assets/images/chain-icons/polygon-matic-logo.svg',
+    icon: "/assets/images/chain-icons/polygon-matic-logo.svg",
     contractsSupported: true,
-    color: 'purple-600',
+    color: "purple-600",
   },
   {
     id: polygonMumbai.id,
     name: polygonMumbai.name,
     blockExplorer: polygonMumbai.blockExplorers.default.url,
-    faucet: 'https://faucet.matic.network/',
+    faucet: "https://faucet.matic.network/",
     protocol: CryptoAddressProtocol.Eth,
     contractsSupported: true,
-    color: 'purple-300',
+    color: "purple-300",
   },
   // {
   //   id: 43114,
@@ -267,15 +279,17 @@ export const isAlgorand = (chainId: Maybe<number> | undefined) =>
 //   });
 // };
 
-export const GetEthConnector = (id: 'injected' | 'walletconnect' | 'coinbase' | 'ledger') => {
+export const GetEthConnector = (
+  id: "injected" | "walletconnect" | "coinbase" | "ledger",
+) => {
   switch (id) {
-    case 'injected':
+    case "injected":
       return SupportedEthConnectors[0].connector;
-    case 'walletconnect':
+    case "walletconnect":
       return SupportedEthConnectors[2].connector;
-    case 'coinbase':
+    case "coinbase":
       return SupportedEthConnectors[1].connector;
-    case 'ledger':
+    case "ledger":
       return SupportedEthConnectors[3].connector;
     default:
       return undefined;
@@ -284,9 +298,9 @@ export const GetEthConnector = (id: 'injected' | 'walletconnect' | 'coinbase' | 
 
 export const disconnectWallet = async (callback?: () => void) => {
   await window.algorand?.disconnect();
-  window.sessionStorage.removeItem('CHOSEN_CONNECTOR');
-  window.localStorage.removeItem('wc:session:');
-  window.localStorage.removeItem('wagmi.connected');
+  window.sessionStorage.removeItem("CHOSEN_CONNECTOR");
+  window.localStorage.removeItem("wc:session:");
+  window.localStorage.removeItem("wagmi.connected");
   if (callback) {
     callback();
   }

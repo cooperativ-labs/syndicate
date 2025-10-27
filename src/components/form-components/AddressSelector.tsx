@@ -1,7 +1,7 @@
 import Button from '../buttons/Button';
 import React, { FC } from 'react';
 import Select from './Select';
-import { Address, LegalEntity } from 'types';
+import { Address, LegalEntity } from 'oldTypes';
 import { defaultFieldDiv } from './Inputs';
 
 type AddressSelectorProps = {

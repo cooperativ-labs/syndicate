@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Address, Maybe } from 'types';
+import { Address, Maybe } from 'oldTypes';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 
 type MapPanelProps = {

@@ -5,7 +5,7 @@ import React, { FC, use, useState } from 'react';
 import Select from '@src/components/form-components/Select';
 import { ADD_OFFERING_DETAILS } from '@src/utils/dGraphQueries/offering';
 import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
-import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from 'types';
+import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from 'oldTypes';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { numberWithCommas } from '@src/utils/helpersMoney';

@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
 import DocumentHashItem from './DocumentHashItem';
-import { Document, Maybe } from 'types';
+import { Document, Maybe } from 'oldTypes';
 import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
 import { shareContractABI } from '@src/web3/generated';
 import { useContractReads } from 'wagmi';

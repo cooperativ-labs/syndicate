@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { getCurrencyOption, getDistributionPeriod } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { OfferingDetails } from 'types';
+import { OfferingDetails } from 'oldTypes';
 
 type OfferingDetailsPublicProps = {
   offeringDetails: OfferingDetails;

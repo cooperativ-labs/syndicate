@@ -11,7 +11,7 @@ import router from 'next/router';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
-import { DocumentType, Maybe, Offering } from 'types';
+import { DocumentType, Maybe, Offering } from 'oldTypes';
 import { getBaseUrl } from '@src/utils/helpersURL';
 
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';

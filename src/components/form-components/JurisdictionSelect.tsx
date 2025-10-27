@@ -2,7 +2,7 @@ import cn from 'classnames';
 import React, { ChangeEvent, FC, use, useState } from 'react';
 import { Country, IState, State } from 'country-state-city';
 import { ErrorMessage, Field } from 'formik';
-import { Maybe } from 'types';
+import { Maybe } from 'oldTypes';
 
 type JurisdictionSelectProps = {
   id?: any;

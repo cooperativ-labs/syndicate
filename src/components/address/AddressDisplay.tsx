@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Address, Maybe } from 'types';
+import { Address, Maybe } from 'oldTypes';
 
 type AddressProps = {
   address: Maybe<Address> | undefined;

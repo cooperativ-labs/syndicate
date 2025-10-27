@@ -4,7 +4,7 @@ import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React, { useState } from 'react';
 import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
-import { Maybe, Offering } from 'types';
+import { Maybe, Offering } from 'oldTypes';
 import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
@@ -19,7 +19,7 @@ export type OfferingCardProps = {
 };
 
 const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
-  const { data: session, status } = useSession();
+
   const { address: userWalletAddress } = useAccount();
   const router = useRouter();
   const { name, shortDescription, id, details, image, offeringEntity, smartContractSets } = offering as Offering;

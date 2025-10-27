@@ -9,7 +9,7 @@ import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering
 import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from 'types';
+import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from 'oldTypes';
 import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 

@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Maybe } from 'types';
+import { Maybe } from 'oldTypes';
 
 type PercentageDisplayProps = {
   percent?: number;

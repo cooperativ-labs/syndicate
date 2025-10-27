@@ -3,7 +3,7 @@ import DeleteButton from '../buttons/DeleteButton';
 import React, { FC } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 
-import { Image, Maybe } from 'types';
+import { Image, Maybe } from 'oldTypes';
 import { REMOVE_PROPERTY_IMAGE } from '@src/utils/dGraphQueries/reProperty';
 import { useMutation } from '@apollo/client';
 

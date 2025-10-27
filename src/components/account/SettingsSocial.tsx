@@ -4,7 +4,7 @@ import Select from '../form-components/Select';
 import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/dGraphQueries/organization';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { LegalEntity, Organization } from 'types';
+import { LegalEntity, Organization } from 'oldTypes';
 import { socialAccountOptions } from '@src/utils/enumConverters';
 import { useMutation } from '@apollo/client';
 

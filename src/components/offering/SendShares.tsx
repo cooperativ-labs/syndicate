@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
 
-import { Currency, CurrencyCode, Maybe, OfferingParticipant } from 'types';
+import { Currency, CurrencyCode, Maybe, OfferingParticipant } from 'oldTypes';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 

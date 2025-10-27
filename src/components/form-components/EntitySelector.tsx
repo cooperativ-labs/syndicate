@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import Select from './Select';
 import { defaultFieldDiv } from './Inputs';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
-import { LegalEntity } from 'types';
+import { LegalEntity } from 'oldTypes';
 
 type EntitySelectorProps = {
   entities: LegalEntity[];

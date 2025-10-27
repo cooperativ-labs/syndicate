@@ -5,7 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { Maybe } from 'yup';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, Organization } from 'types';
+import { Offering, Organization } from 'oldTypes';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 

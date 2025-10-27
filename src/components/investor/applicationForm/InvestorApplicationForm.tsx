@@ -22,7 +22,7 @@ import { GeneratedApplicationText } from './SummaryGenerator';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe, Offering } from 'types';
+import { Maybe, Offering } from 'oldTypes';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';

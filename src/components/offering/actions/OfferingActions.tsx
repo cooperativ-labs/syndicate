@@ -11,7 +11,7 @@ import ShareSaleList, { ShareSaleListProps } from '@src/components/investor/trad
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { Maybe, ShareOrder, ShareTransferEvent } from 'types';
+import { Maybe, ShareOrder, ShareTransferEvent } from 'oldTypes';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 

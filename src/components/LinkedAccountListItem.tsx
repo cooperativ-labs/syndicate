@@ -2,7 +2,7 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
-import { LinkedAccount, Maybe } from 'types';
+import { LinkedAccount, Maybe } from 'oldTypes';
 
 import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/dGraphQueries/organization';
 import { useMutation } from '@apollo/client';

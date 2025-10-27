@@ -5,7 +5,7 @@ import {
   getOrderArrayFromContract,
 } from '@src/utils/helpersOrder';
 import { dividendContractABI } from '@src/web3/generated';
-import { DocumentType, Offering, ShareOrder } from 'types';
+import { DocumentType, Offering, ShareOrder } from 'oldTypes';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';

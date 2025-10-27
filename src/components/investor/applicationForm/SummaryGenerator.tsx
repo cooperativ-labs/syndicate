@@ -1,5 +1,5 @@
 import axios from 'axios';
-import { Address, CurrencyCode, LegalEntity, Offering } from 'types';
+import { Address, CurrencyCode, LegalEntity, Offering } from 'oldTypes';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import {
   GenerateInvestorApplicationSummary,

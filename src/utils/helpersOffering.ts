@@ -1,6 +1,15 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
+import {
+  Maybe,
+  Offering,
+  OfferingDescriptionText,
+  OfferingTabSection,
+} from "oldTypes";
 
-export type ManagerModalType = 'saleForm' | 'shareSaleList' | 'smartContractsSettings' | 'none';
+export type ManagerModalType =
+  | "saleForm"
+  | "shareSaleList"
+  | "smartContractsSettings"
+  | "none";
 
 export const getLatestDistribution = (offering: Offering | undefined) => {
   const distributions = offering?.distributions;
@@ -10,7 +19,7 @@ export const getLatestDistribution = (offering: Offering | undefined) => {
 
 export const getDescriptionsByTab = (
   offering: Offering,
-  tab: OfferingTabSection | undefined
+  tab: OfferingTabSection | undefined,
 ): ArrayLike<Maybe<OfferingDescriptionText>> => {
   if (!offering.profileDescriptions) return [];
   return offering.profileDescriptions.filter((description, i) => {

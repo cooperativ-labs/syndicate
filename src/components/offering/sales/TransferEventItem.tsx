@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { getCurrencyByCode, getTransferEventOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ShareTransferEvent } from 'types';
+import { ShareTransferEvent } from 'oldTypes';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';

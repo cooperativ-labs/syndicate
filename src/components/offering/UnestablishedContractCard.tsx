@@ -6,7 +6,7 @@ import router from 'next/router';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { SmartContract } from 'types';
+import { SmartContract } from 'oldTypes';
 import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/dGraphQueries/crypto';
 import { useMutation } from '@apollo/client';
 

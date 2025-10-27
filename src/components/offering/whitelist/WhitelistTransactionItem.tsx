@@ -4,7 +4,7 @@ import { get } from 'http';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { String0x } from '@src/web3/helpersChain';
 import { usePublicClient, useTransaction } from 'wagmi';
-import { WhitelistTransaction, WhitelistTransactionType } from 'types';
+import { WhitelistTransaction, WhitelistTransactionType } from 'oldTypes';
 
 type WhitelistTransactionItemProps = {
   transaction: WhitelistTransaction | null;

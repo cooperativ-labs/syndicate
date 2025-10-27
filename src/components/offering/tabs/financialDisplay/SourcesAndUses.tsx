@@ -1,7 +1,7 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
 
-import { Currency, OfferingDetails } from 'types';
+import { Currency, OfferingDetails } from 'oldTypes';
 
 type SourcesAndUsesDisplayProps = {
   offeringDetails: OfferingDetails;

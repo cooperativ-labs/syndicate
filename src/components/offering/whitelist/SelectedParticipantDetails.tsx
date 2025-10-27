@@ -12,7 +12,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import { Maybe, OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from 'types';
+import { Maybe, OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from 'oldTypes';
 
 import TransferEventList from '../sales/TransferEventList';
 import WhitelistTransactionItem from './WhitelistTransactionItem';

@@ -2,8 +2,8 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { EditButton } from '../form-components/ListItemButtons';
 import { getNotificationSubjectOption } from '@src/utils/enumConverters';
-import { Maybe, NotificationConfiguration } from 'types';
-import { useSession } from 'next-auth/react';
+import { Maybe, NotificationConfiguration } from 'oldTypes';
+
 
 export type NotificationConfigItemBaseProps = {
   organizationUserId: Maybe<string> | undefined;
@@ -20,7 +20,7 @@ const NotificationConfigItem: FC<NotificationConfigItemProps> = ({
 
   removeNotification,
 }) => {
-  const { data: session } = useSession();
+
 
   const [editOn, setEditOn] = useState<boolean>(false);
   const { id, notificationRecipientType, notificationMethod, notificationSubject } =

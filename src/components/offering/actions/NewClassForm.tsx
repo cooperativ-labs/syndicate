@@ -6,7 +6,7 @@ import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
 import { bytes32FromString, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-import { Currency, Offering, User } from 'types';
+import { Currency, Offering, User } from 'oldTypes';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { useMutation } from '@apollo/client';

@@ -1,7 +1,7 @@
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { CurrencyCode, LegalEntity, Maybe, Offering } from 'types';
+import { CurrencyCode, LegalEntity, Maybe, Offering } from 'oldTypes';
 import { useMutation, useQuery } from '@apollo/client';
 
 import { REMOVE_ENTITY_ADDRESS, REMOVE_ENTITY_OWNER, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';

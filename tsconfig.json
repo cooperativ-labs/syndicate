@@ -1,42 +1,6 @@
 {
   "compilerOptions": {
-    "baseUrl": "./",
-    "paths": {
-      "@interfaces/*": [
-        "./interfaces/*"
-      ],
-      "@pages/*": [
-        "./pages/*"
-      ],
-      "@src/*": [
-        "src/*"
-      ],
-      "@context/*": [
-        "./context/*"
-      ],
-      "@hooks/*": [
-        "./hooks/*"
-      ],
-      "@styles/*": [
-        "./styles/*"
-      ],
-      "@utils/*": [
-        "src/utils/*"
-      ],
-      "@web3/*": [
-        "src/web3/*"
-      ],
-      "types/*": [
-        "/types/*"
-      ],
-     
-    },
-    "target": "es6",
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "target": "es2022",
     "allowJs": true,
     "skipLibCheck": true,
     "strict": true,
@@ -47,11 +11,39 @@
     "moduleResolution": "node",
     "resolveJsonModule": true,
     "isolatedModules": true,
-    "jsx": "preserve",
+    "jsx": "react-jsx",
     "plugins": [
       {
-        "name": "typescript-tslint-plugin"
+        "name": "next"
       }
+    ],
+    "paths": {
+      "@interfaces/*": [
+        "./interfaces/*"
+      ],
+      "@pages/*": [
+        "./pages/*"
+      ],
+      "@src/*": [
+        "./src/*"
+      ],
+      "@utils/*": [
+        "./src/utils/*"
+      ],
+      "@web3/*": [
+        "./src/web3/*"
+      ],
+      "types/*": [
+        "./types/*"
+      ],
+      "@/*": [
+        "./*"
+      ]
+    },
+    "lib": [
+      "dom",
+      "dom.iterable",
+      "esnext"
     ],
     "incremental": true
   },
@@ -60,8 +52,11 @@
     "**/*.ts",
     "**/*.tsx",
     "context/store.tsx",
-    "types"
-, "functions/src/index.js", "src/web3/ABI.ts", "src/utils/analytics.js",   ],
+    "types",
+    "functions/src/index.js",
+    "src/web3/ABI.ts",
+    "src/utils/analytics.js"
+  ],
   "exclude": [
     "node_modules"
   ]

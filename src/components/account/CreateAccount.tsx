@@ -5,7 +5,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
-import { signIn } from 'next-auth/react';
+import { signIn } from '@src/utils/actions/userActions';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
@@ -29,39 +29,44 @@ const CreateAccount: FC = () => {
 
   //===========================================================================
 
-  const handleGoogleLogin = async () => {
-    setLoading(true);
-    signIn('google');
-  };
+  // const handleGoogleLogin = async () => {
+  //   setLoading(true);
+  //   signIn('google');
+  // };
 
-  const handleMicrosoftLogin = async () => {
-    setLoading(true);
-    signIn('azure-ad-b2c');
-  };
+  // const handleMicrosoftLogin = async () => {
+  //   setLoading(true);
+  //   signIn('azure-ad-b2c');
+  // };
 
-  const handleLinkedInLogin = async () => {
-    setLoading(true);
-    signIn('linkedin');
-  };
+  // const handleLinkedInLogin = async () => {
+  //   setLoading(true);
+  //   signIn('linkedin');
+  // };
 
-  const handleMagicLink = (email: string) => {
+  // const handleMagicLink = (email: string) => {
+  //   setLoading(true);
+  //   signIn('email', { email });
+  // };
+
+  const handlePasswordLogin = (email: string, password: string) => {
     setLoading(true);
-    signIn('email', { email });
+    signIn({ email, password });
   };
 
   const handleTestLogin = (email: string, password: string) => {
     setLoading(true);
-    signIn('test-credentials', { email, password });
+    signIn({ email, password });
   };
 
   const MagicLinkLoginSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email address').required('Email is required'),
+    email: Yup.string().email('Invalid email address').required('Email is required')
   });
   const magicLinkForm = (
     <Formik
-      initialValues={{ email: '' }}
+      initialValues={{ email: '', password: '' }}
       validationSchema={MagicLinkLoginSchema}
-      onSubmit={(values) => handleMagicLink(values.email)}
+      onSubmit={values => handlePasswordLogin(values.email, values.password)}
     >
       {({ errors, touched, isSubmitting }) => (
         <Form>
@@ -75,7 +80,20 @@ const CreateAccount: FC = () => {
                 touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
               } focus:no-outline focus:ring-2 focus:ring-blue-400`}
             />
-            <ErrorMessage name="email" component="div" className="mt-1 text-sm font-semibold text-red-700" />
+            <Field
+              type="password"
+              name="password"
+              aria-label="password"
+              placeholder="123456"
+              className={`w-full rounded-sm h-14 border-2 ${
+                touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
+              } focus:no-outline focus:ring-2 focus:ring-blue-400`}
+            />
+            <ErrorMessage
+              name="email"
+              component="div"
+              className="mt-1 text-sm font-semibold text-red-700"
+            />
           </div>
           <button
             type="submit"
@@ -159,7 +177,12 @@ const CreateAccount: FC = () => {
             <hr className="my-4 w-full border-gray-500" />
             <div className="m-4">or</div> <hr className="my-4 w-full border-gray-500" />
           </div>
-          <SSOButton onClick={handleGoogleLogin} iconPrefix="fab" icon="google" text="Continue with Google" />
+          {/* <SSOButton
+            onClick={handleGoogleLogin}
+            iconPrefix="fab"
+            icon="google"
+            text="Continue with Google"
+          /> */}
           {/* <SSOButton onClick={handleMicrosoftLogin} iconPrefix="fab" icon="microsoft" text="Continue with Microsoft" /> */}
           {/* <SSOButton onClick={handleLinkedInLogin} iconPrefix="fab" icon="linkedin" text="Continue with LinkedIn" /> */}
         </div>

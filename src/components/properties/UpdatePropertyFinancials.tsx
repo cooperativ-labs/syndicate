@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { RealEstateProperty } from 'types';
+import { RealEstateProperty } from 'oldTypes';
 
 export type UpdatePropertyFinancialsType = {
   property: RealEstateProperty;

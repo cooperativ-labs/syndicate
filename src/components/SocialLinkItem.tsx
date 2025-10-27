@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { LinkedAccountType } from 'types';
+import { LinkedAccountType } from 'oldTypes';
 
 type SocialLinkItemProps = {
   type: LinkedAccountType | null | undefined;

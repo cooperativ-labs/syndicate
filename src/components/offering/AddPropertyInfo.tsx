@@ -5,7 +5,7 @@ import router from 'next/router';
 import Select from '../form-components/Select';
 import { ADD_RE_PROPERTY_INFO } from '@src/utils/dGraphQueries/reProperty';
 import { assetStatusOptions, getCurrencyOption, propertyTypeOptions } from '@src/utils/enumConverters';
-import { Currency, CurrencyCode } from 'types';
+import { Currency, CurrencyCode } from 'oldTypes';
 import { currentDate } from '@utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';

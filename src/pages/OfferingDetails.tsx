@@ -14,7 +14,7 @@ import OfferingTabContainer from '@src/containers/OfferingTabContainer';
 import React, { FC, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { DocumentType, Offering } from 'types';
+import { DocumentType, Offering } from 'oldTypes';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { readContracts, useAccount } from 'wagmi';
 import { useSession } from 'next-auth/react';

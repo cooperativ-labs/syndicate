@@ -13,7 +13,7 @@ import {
   OfferingDetails,
   OfferingTabSection,
   RealEstateProperty,
-} from 'types';
+} from 'oldTypes';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 import { useWindowSize } from 'react-use';
 

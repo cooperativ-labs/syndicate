@@ -9,7 +9,7 @@ import Checkbox from './form-components/Checkbox';
 import Input from './form-components/Inputs';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { EditButton, MarkPublic } from './form-components/ListItemButtons';
-import { EmailAddress, Maybe } from 'types';
+import { EmailAddress, Maybe } from 'oldTypes';
 import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/dGraphQueries/organization';
 
 type EmailAddressListItemProps = {

@@ -8,9 +8,9 @@ import { ADD_ENTITY_OWNER } from '@src/utils/dGraphQueries/entity';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { LegalEntity, Organization } from 'types';
+import { LegalEntity, Organization } from 'oldTypes';
 import { useMutation, useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
+
 
 type AddOwningEntityProps = {
   ownedEntityId: string;
@@ -19,7 +19,6 @@ type AddOwningEntityProps = {
 };
 
 const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, organization, refetchOuter }) => {
-  const { data: session, status } = useSession();
 
   const [addOwner, { data, error }] = useMutation(ADD_ENTITY_OWNER);
   const [entityModal, setEntityModal] = useState<boolean>(false);

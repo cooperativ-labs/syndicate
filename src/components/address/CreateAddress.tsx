@@ -7,7 +7,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { LegalEntity } from 'types';
+import { LegalEntity } from 'oldTypes';
 import { useMutation } from '@apollo/client';
 
 export type CreateAddressType = {

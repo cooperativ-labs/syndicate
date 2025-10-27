@@ -8,7 +8,7 @@ import UnestablishedContractCard from '../offering/UnestablishedContractCard';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { Offering, User } from 'types';
+import { Offering, User } from 'oldTypes';
 import { useAsync } from 'react-use';
 import { useChainId, useNetwork } from 'wagmi';
 

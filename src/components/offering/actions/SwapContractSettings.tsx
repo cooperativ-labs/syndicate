@@ -1,7 +1,7 @@
 import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from 'types';
+import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from 'oldTypes';
 import { String0x } from '@src/web3/helpersChain';
 
 import LoadingToggle from '@src/components/buttons/LoadingToggle';

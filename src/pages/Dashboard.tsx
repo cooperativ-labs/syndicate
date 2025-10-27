@@ -6,7 +6,7 @@ import React, { FC, useState } from 'react';
 import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { OfferingParticipant } from 'types';
+import { OfferingParticipant } from 'oldTypes';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useSession } from 'next-auth/react';

@@ -2,7 +2,7 @@ import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC } from 'react';
 import Select from '../form-components/Select';
-import { Address, RealEstateProperty } from 'types';
+import { Address, RealEstateProperty } from 'oldTypes';
 import { assetStatusOptions, getCurrencyOption, propertyTypeOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';

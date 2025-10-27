@@ -8,7 +8,7 @@ import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
-import { Maybe, OfferingParticipant } from 'types';
+import { Maybe, OfferingParticipant } from 'oldTypes';
 import { readContract } from 'wagmi/actions';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';

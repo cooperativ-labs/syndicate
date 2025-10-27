@@ -5,7 +5,7 @@ import { ApplicationStoreProps, store } from '@context/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { Organization } from 'types';
+import { Organization } from 'oldTypes';
 
 type OrganizationSwitcherProps = {
   organizations: Organization[];

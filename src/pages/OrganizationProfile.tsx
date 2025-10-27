@@ -3,7 +3,7 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 import OfferingCard from '@src/components/offering/OfferingCard';
 import React, { FC } from 'react';
 import SocialLinkItem from '@src/components/SocialLinkItem';
-import { LinkedAccountType, Organization } from 'types';
+import { LinkedAccountType, Organization } from 'oldTypes';
 
 type OrganizationProfileProps = {
   organization: Organization;

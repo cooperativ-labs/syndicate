@@ -10,7 +10,7 @@ import { distributionPeriodOptions, getCurrencyOption, StageOptions } from '@src
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingDetails } from 'types';
+import { Offering, OfferingDetails } from 'oldTypes';
 import { UPDATE_OFFERING_FINANCIAL } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 

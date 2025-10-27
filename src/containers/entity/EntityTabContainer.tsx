@@ -5,7 +5,7 @@ import EntitiesList from '@src/components/entity/EntitiesList';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC, useState } from 'react';
 import Tab from '@src/components/offering/tabs/Tab';
-import { LegalEntity, Maybe, Offering, RealEstateProperty } from 'types';
+import { LegalEntity, Maybe, Offering, RealEstateProperty } from 'oldTypes';
 
 type EntityTabContainerProps = {
   properties?: RealEstateProperty[];

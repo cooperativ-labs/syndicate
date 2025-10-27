@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Currency } from 'types';
+import { Currency } from 'oldTypes';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 

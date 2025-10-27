@@ -1,7 +1,7 @@
 import Card from '../cards/Card';
 import React from 'react';
 import router from 'next/router';
-import { LegalEntity, Maybe } from 'types';
+import { LegalEntity, Maybe } from 'oldTypes';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 
 export type EntityCardProps = {

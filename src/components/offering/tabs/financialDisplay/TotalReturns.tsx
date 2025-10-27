@@ -1,6 +1,6 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
-import { OfferingDetails } from 'types';
+import { OfferingDetails } from 'oldTypes';
 
 type TotalReturnsProps = {
   offeringDetails: OfferingDetails;

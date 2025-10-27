@@ -25,6 +25,7 @@ rules:
     - error
   react/jsx-uses-react: error
   react/jsx-uses-vars: error
+  react/react-in-jsx-scope: "off"
   react/prop-types: off
   react/display-name: off
   react/no-deprecated: warn
@@ -37,6 +38,6 @@ rules:
   sort-imports-es6-autofix/sort-imports-es6: [error, { "ignoreCase": true, "memberSyntaxSortOrder": ["none", "all", "single", "multiple"] }]
   react-hooks/rules-of-hooks: "error"
   react-hooks/exhaustive-deps: "error"
-  no-console: "error"
+  no-console: "warn"
 globals:
   process: readonly

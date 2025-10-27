@@ -4,7 +4,7 @@ import PresentLegalText from './PresentLegalText';
 import React, { FC, useState } from 'react';
 import router from 'next/router';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { CurrencyCode, Maybe, SmartContract } from 'types';
+import { CurrencyCode, Maybe, SmartContract } from 'oldTypes';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';

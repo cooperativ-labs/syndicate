@@ -13,7 +13,7 @@ import { getCurrencyById } from '@src/utils/enumConverters';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
-import { ShareOrder } from 'types';
+import { ShareOrder } from 'oldTypes';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useAccount, useChainId, useContractRead } from 'wagmi';

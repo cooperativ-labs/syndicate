@@ -8,7 +8,7 @@ import { Form, Formik } from 'formik';
 import ClickToEditItem from '../form-components/ClickToEditItem';
 import cn from 'classnames';
 
-import { CurrencyCode, Maybe, Organization } from 'types';
+import { CurrencyCode, Maybe, Organization } from 'oldTypes';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 
 export type EditOrganizationSelectionType =

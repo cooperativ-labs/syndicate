@@ -13,7 +13,7 @@ import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getIsAdmin, getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { OfferingParticipant } from 'types';
+import { OfferingParticipant } from 'oldTypes';
 import { toastExperiment } from '@src/components/indicators/Notifications';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';

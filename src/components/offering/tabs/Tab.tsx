@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { OfferingTabSection } from 'types';
+import { OfferingTabSection } from 'oldTypes';
 
 type TabProps = {
   label: string;

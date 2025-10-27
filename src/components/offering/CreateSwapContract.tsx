@@ -4,7 +4,7 @@ import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_SWAP_CONTRACT } from '@src/utils/dGraphQueries/crypto';
-import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from 'types';
+import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from 'oldTypes';
 import { MatchSupportedChains } from '@src/web3/connectors';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';

@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/dGraphQueries/offering';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'oldTypes';
 import { useMutation } from '@apollo/client';
 
 type OfferingDescriptionItemProps = {

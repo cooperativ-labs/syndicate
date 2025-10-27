@@ -6,7 +6,7 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { OfferingParticipant } from 'types';
+import { OfferingParticipant } from 'oldTypes';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
 import { useRouter } from 'next/router';

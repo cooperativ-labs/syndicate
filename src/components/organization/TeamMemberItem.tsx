@@ -3,7 +3,7 @@ import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { EditButton } from '../form-components/ListItemButtons';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
-import { Maybe, OrganizationPermissionType, OrganizationUser } from 'types';
+import { Maybe, OrganizationPermissionType, OrganizationUser } from 'oldTypes';
 
 export type TeamMemberBaseProps = {
   organizationId: Maybe<string>;

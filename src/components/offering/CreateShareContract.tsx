@@ -4,7 +4,7 @@ import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
 import { CREATE_SHARE_CONTRACT } from '@src/utils/dGraphQueries/crypto';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { SmartContractType } from 'types';
+import { SmartContractType } from 'oldTypes';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 

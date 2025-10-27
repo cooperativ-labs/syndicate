@@ -4,7 +4,7 @@ import useWindowSize from '@hooks/useWindowSize';
 
 import Container from './Layouts/Container';
 import { getBaseUrl } from '../utils/helpersURL';
-import { Offering } from 'types';
+import { Offering } from 'oldTypes';
 import { useRouter } from 'next/router';
 
 type HeaderProps = {

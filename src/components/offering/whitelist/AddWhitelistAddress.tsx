@@ -7,7 +7,7 @@ import { Form, Formik } from 'formik';
 import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
 import { isAddress } from 'viem';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Organization } from 'types';
+import { Organization } from 'oldTypes';
 import { useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
 

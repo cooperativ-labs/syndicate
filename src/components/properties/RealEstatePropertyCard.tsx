@@ -3,7 +3,7 @@ import cn from 'classnames';
 import MapPanel from '../MapPanel';
 import React, { FC } from 'react';
 import router from 'next/router';
-import { Address, Currency, CurrencyCode, Maybe, RealEstateProperty } from 'types';
+import { Address, Currency, CurrencyCode, Maybe, RealEstateProperty } from 'oldTypes';
 
 type RealEstatePropertyCardProps = {
   property: RealEstateProperty;

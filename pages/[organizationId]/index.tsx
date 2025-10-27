@@ -9,7 +9,7 @@ import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GetServerSideProps, NextPage } from 'next';
 import { initializeApollo } from '@src/utils/apolloClient';
-import { Organization } from 'types';
+import { Organization } from 'oldTypes';
 import { useAccount } from 'wagmi';
 
 type ResultProps = {

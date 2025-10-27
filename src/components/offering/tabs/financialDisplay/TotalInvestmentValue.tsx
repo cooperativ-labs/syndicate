@@ -1,6 +1,6 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
-import { Currency, RealEstateProperty } from 'types';
+import { Currency, RealEstateProperty } from 'oldTypes';
 
 type TotalInvestmentValueDataProps = {
   propertyDetails: RealEstateProperty;

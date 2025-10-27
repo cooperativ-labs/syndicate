@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import RealEstatePropertyCard from './RealEstatePropertyCard';
 import router from 'next/router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { LegalEntity, Maybe } from 'types';
+import { LegalEntity, Maybe } from 'oldTypes';
 
 type OfferingPropertiesProps = {
   offeringEntity: Maybe<LegalEntity> | undefined;

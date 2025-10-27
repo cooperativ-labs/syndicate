@@ -1,6 +1,6 @@
 import LinkedAccountListItem from './LinkedAccountListItem';
 import React, { FC } from 'react';
-import { LinkedAccount, Maybe } from 'types';
+import { LinkedAccount, Maybe } from 'oldTypes';
 
 type LinkedAccountsListProps = {
   linkedAccounts: Maybe<Maybe<LinkedAccount>[]> | undefined;

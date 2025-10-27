@@ -14,7 +14,7 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { Maybe, Offering, OfferingParticipant } from 'types';
+import { Maybe, Offering, OfferingParticipant } from 'oldTypes';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 import { CREATE_ORDER } from '@src/utils/dGraphQueries/orders';

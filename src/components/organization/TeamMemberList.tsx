@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { useMutation } from '@apollo/client';
 
 import TeamMemberItem, { TeamMemberBaseProps } from './TeamMemberItem';
-import { Maybe, OrganizationUser } from 'types';
+import { Maybe, OrganizationUser } from 'oldTypes';
 
 import { REMOVE_ORGANIZATION_USER } from '@src/utils/dGraphQueries/organization';
 

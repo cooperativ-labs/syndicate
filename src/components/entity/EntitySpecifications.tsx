@@ -8,7 +8,7 @@ import ClickToEditItem from '../form-components/ClickToEditItem';
 import cn from 'classnames';
 import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import Select from '../form-components/Select';
-import { CurrencyCode, LegalEntity, Maybe } from 'types';
+import { CurrencyCode, LegalEntity, Maybe } from 'oldTypes';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';

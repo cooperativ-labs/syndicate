@@ -6,7 +6,7 @@ import React, { FC, useContext, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
 import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { DocumentFormat, DocumentType } from 'types';
+import { DocumentFormat, DocumentType } from 'oldTypes';
 import { Form, Formik } from 'formik';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import { useMutation } from '@apollo/client';

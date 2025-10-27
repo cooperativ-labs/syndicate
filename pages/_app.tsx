@@ -3,7 +3,8 @@ import '@styles/main.css';
 import 'tailwindcss/tailwind.css';
 import CookieBanner from '@src/CookieBanner';
 import React, { ReactElement, useEffect, useState } from 'react';
-import SetAppContext from '@src/SetAppContext';
+import { ApolloProvider } from '@apollo/react-ssr';
+import supabaseApolloClient from '@src/utils/supabaseApolloClient';
 import SetCookieContext from '@src/SetCookieContext';
 
 import {
@@ -38,7 +39,7 @@ import {
   faSquareArrowUpRight,
   faStar,
   faTimes,
-  faUser,
+  faUser
 } from '@fortawesome/free-solid-svg-icons';
 import {
   fab,
@@ -48,10 +49,10 @@ import {
   faPython,
   faReact,
   faSlackHash,
-  faTwitter,
+  faTwitter
 } from '@fortawesome/free-brands-svg-icons';
 import { library } from '@fortawesome/fontawesome-svg-core';
-import { SessionProvider } from 'next-auth/react';
+
 import { StateProvider } from '@context/store';
 import { Toaster } from 'react-hot-toast';
 import { wagmiConfig } from '@src/web3/connectors';
@@ -95,7 +96,10 @@ library.add(fas, faEnvelope);
 library.add(fas, faPhone);
 library.add(fas, faLink);
 
-export default function MyApp({ Component, pageProps: { session, ...pageProps } }: any): ReactElement {
+export default function MyApp({
+  Component,
+  pageProps: { session, ...pageProps }
+}: any): ReactElement {
   const [cookiesApproved, setCookiesApproved] = useState<null | string>(null);
 
   useEffect(() => {
@@ -118,18 +122,18 @@ export default function MyApp({ Component, pageProps: { session, ...pageProps } 
       <main id="page-wrap flex-grow h-full">
         <Component {...pageProps} />
         <CookieBanner />
-      </main>{' '}
+      </main>
     </div>
   );
 
   return (
-    <WagmiConfig config={wagmiConfig}>
-      <SessionProvider session={session}>
+    <ApolloProvider client={supabaseApolloClient}>
+      <WagmiConfig config={wagmiConfig}>
         <Toaster />
-        <SetAppContext>
-          <StateProvider>{cookiesApproved === 'approved' ? withCookies : withoutCookies}</StateProvider>
-        </SetAppContext>
-      </SessionProvider>
-    </WagmiConfig>
+        <StateProvider>
+          {cookiesApproved === 'approved' ? withCookies : withoutCookies}
+        </StateProvider>
+      </WagmiConfig>
+    </ApolloProvider>
   );
 }

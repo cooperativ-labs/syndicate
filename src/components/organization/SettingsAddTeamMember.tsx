@@ -7,7 +7,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GET_USER_FROM_EMAIL } from '@src/utils/dGraphQueries/user';
 import { getOrganizationPermissionOption, organizationPermissionOptions } from '@src/utils/enumConverters';
-import { OrganizationPermissionType } from 'types';
+import { OrganizationPermissionType } from 'oldTypes';
 import { useApolloClient } from '@apollo/client';
 import { useMutation } from '@apollo/client';
 

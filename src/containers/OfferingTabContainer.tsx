@@ -12,7 +12,7 @@ import WhitelistAddressList, {
   WhitelistAddressListProps,
 } from '@src/components/offering/whitelist/WhitelistAddressList';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from 'types';
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from 'oldTypes';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
 

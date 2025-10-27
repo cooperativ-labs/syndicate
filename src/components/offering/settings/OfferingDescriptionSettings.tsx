@@ -2,7 +2,7 @@ import OfferingDescriptionItem from './OfferingDescriptionItem';
 import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
 import React, { FC, useState } from 'react';
 import { CREATE_DESCRIPTION_TEXT } from '@src/utils/dGraphQueries/offering';
-import { Offering, OfferingTabSection } from 'types';
+import { Offering, OfferingTabSection } from 'oldTypes';
 import { useMutation } from '@apollo/client';
 
 import AddItemButton from '@src/components/buttons/AddItemButton';

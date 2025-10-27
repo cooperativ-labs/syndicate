@@ -2,7 +2,7 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React from 'react';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { Maybe, Offering } from 'types';
+import { Maybe, Offering } from 'oldTypes';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 type InvestorApplicationPledgeFieldsProps = {

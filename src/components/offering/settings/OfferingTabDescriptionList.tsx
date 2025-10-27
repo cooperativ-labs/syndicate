@@ -5,7 +5,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 //@ts-ignore
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'oldTypes';
 import { UPDATE_DESCRIPTION_TEXT } from '@src/utils/dGraphQueries/offering';
 import { useMutation } from '@apollo/client';
 

@@ -1,9 +1,15 @@
-import { Maybe, SmartContract, SmartContractType } from 'types';
+import { Maybe, SmartContract, SmartContractType } from "oldTypes";
 
-const contractIsSameChain = (contract: Maybe<SmartContract>, chainId: number): boolean => {
+const contractIsSameChain = (
+  contract: Maybe<SmartContract>,
+  chainId: number,
+): boolean => {
   return contract?.cryptoAddress.chainId === chainId;
 };
-export const getAvailableContracts = (unestablishedSmartContracts: Maybe<SmartContract>[], chainId: number) => {
+export const getAvailableContracts = (
+  unestablishedSmartContracts: Maybe<SmartContract>[],
+  chainId: number,
+) => {
   return unestablishedSmartContracts.find((contract) => {
     if (
       contractIsSameChain(contract, chainId) &&

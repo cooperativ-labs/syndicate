@@ -12,7 +12,7 @@ import React, { FC, useState } from 'react';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import useOfferingDetails from '@hooks/useOfferingDetails';
-import { DocumentType, Offering } from 'types';
+import { DocumentType, Offering } from 'oldTypes';
 import { floatWithCommas } from '@src/utils/helpersMoney';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';

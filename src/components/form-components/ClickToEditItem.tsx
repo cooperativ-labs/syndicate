@@ -2,7 +2,7 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
-import { Maybe } from 'types';
+import { Maybe } from 'oldTypes';
 import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
 
 type ClickToEditItemProps = {

@@ -14,7 +14,7 @@ import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { useMutation } from '@apollo/client';
 
 import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { LegalEntity, Organization } from 'types';
+import { LegalEntity, Organization } from 'oldTypes';
 import { useRouter } from 'next/router';
 
 type CreateOfferingType = {

@@ -7,7 +7,7 @@ import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe } from 'types';
+import { Maybe } from 'oldTypes';
 import { String0x } from '@src/web3/helpersChain';
 
 import NewClassInputs from '@src/components/form-components/NewClassInputs';

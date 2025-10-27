@@ -7,7 +7,7 @@ import { claimProceeds } from '@src/web3/contractSwapCalls';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { ManagerModalType } from '@src/utils/helpersOffering';
-import { Maybe, ShareOrder } from 'types';
+import { Maybe, ShareOrder } from 'oldTypes';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { Document, Maybe } from 'types';
+import { Document, Maybe } from 'oldTypes';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import { IconName } from '@fortawesome/free-solid-svg-icons';

@@ -1,6 +1,6 @@
 import OfferingCard from './OfferingCard';
 import React, { FC } from 'react';
-import { Offering } from 'types';
+import { Offering } from 'oldTypes';
 
 type OfferingsListProps = {
   offerings: any;

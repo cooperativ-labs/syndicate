@@ -3,7 +3,7 @@ import Input from '../form-components/Inputs';
 import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { LegalEntity, User } from 'types';
+import { LegalEntity, User } from 'oldTypes';
 import { UPDATE_USER } from '@src/utils/dGraphQueries/user';
 import { useMutation } from '@apollo/client';
 

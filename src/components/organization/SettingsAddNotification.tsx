@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import Select from '../form-components/Select';
 import { ADD_NOTIFICATION_RULE } from '@src/utils/dGraphQueries/organization';
 import { Form, Formik } from 'formik';
-import { NotificationMethod, NotificationRecipientType, NotificationSubject } from 'types';
+import { NotificationMethod, NotificationRecipientType, NotificationSubject } from 'oldTypes';
 import { notificationSubjectOptions } from '@src/utils/enumConverters';
 
 import { useMutation } from '@apollo/client';

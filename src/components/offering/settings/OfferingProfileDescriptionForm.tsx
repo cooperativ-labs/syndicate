@@ -6,7 +6,7 @@ import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'types';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'oldTypes';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';

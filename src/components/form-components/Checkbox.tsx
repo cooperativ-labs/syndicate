@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import React from 'react';
 import { ErrorMessage, Field } from 'formik';
-import { Maybe } from 'types';
+import { Maybe } from 'oldTypes';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
 export interface CheckboxProps {

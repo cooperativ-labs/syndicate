@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
-import { Maybe, ShareOrder } from 'types';
+import { Maybe, ShareOrder } from 'oldTypes';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';

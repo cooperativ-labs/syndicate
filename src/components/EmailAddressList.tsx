@@ -1,6 +1,6 @@
 import EmailAddressListItem from './EmailAddressListItem';
 import React, { FC } from 'react';
-import { EmailAddress, Maybe } from 'types';
+import { EmailAddress, Maybe } from 'oldTypes';
 
 type EmailAddressListProps = {
   emailAddresses: Maybe<Maybe<EmailAddress>[]> | undefined;

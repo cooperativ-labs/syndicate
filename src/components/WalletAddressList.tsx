@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import WalletAddressListItem from './WalletAddressListItem';
-import { CryptoAddress } from 'types';
+import { CryptoAddress } from 'oldTypes';
 
 type WalletAddressListProps = {
   walletAddresses: CryptoAddress[];
