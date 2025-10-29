@@ -1,22 +1,26 @@
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { ADD_WHITELIST_MEMBER } from '@src/utils/dGraphQueries/offering';
+import { ADD_WHITELIST_MEMBER } from '@src/utils/graphQueries/offering';
 import { addWhitelistMember } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
 import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
 import { isAddress } from 'viem';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Organization } from 'oldTypes';
+import { Organization } from '@gql/graphql';
 import { useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 export type AddWhitelistAddressProps = {
   organization: Organization;
   shareContractAddress: String0x;
   offeringId: string;
 };
-const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddress, offeringId, organization }) => {
+const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
+  shareContractAddress,
+  offeringId,
+  organization
+}) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
@@ -26,9 +30,9 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
       initialValues={{
         address: '',
         name: '',
-        externalId: '',
+        externalId: ''
       }}
-      validate={async (values) => {
+      validate={async values => {
         const errors: any = {}; /** @TODO : Shape */
         const address = await getAddressFromEns(values.address);
         if (!address) {
@@ -51,7 +55,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({ shareContractAddres
           externalId: values.externalId,
           organization,
           setButtonStep,
-          updateWhitelist: addWhitelistObject,
+          updateWhitelist: addWhitelistObject
         });
 
         setSubmitting(false);

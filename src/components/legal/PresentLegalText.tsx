@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
-import { Maybe } from 'oldTypes';
+import { Maybe } from '@gql/graphql';
 interface PresentLegalTextProps {
   text: Maybe<string> | undefined;
 }
@@ -8,7 +8,7 @@ interface PresentLegalTextProps {
 const PresentLegalText: FC<PresentLegalTextProps> = ({ text }) => {
   return (
     <div className="w-full">
-      <hr className="md:hidden border-1 border-gray-400 my-8" />
+      <hr className="md:hidden border border-gray-400 my-8" />
       <div className="prose text-sm md:text-base break-all md:break-normal">
         <ReactMarkdown>{text as string}</ReactMarkdown>
       </div>

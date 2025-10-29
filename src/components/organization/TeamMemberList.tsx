@@ -1,18 +1,24 @@
 import React, { FC } from 'react';
 
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import TeamMemberItem, { TeamMemberBaseProps } from './TeamMemberItem';
-import { Maybe, OrganizationUser } from 'oldTypes';
+import { Maybe, OrganizationUser } from '@gql/graphql';
 
-import { REMOVE_ORGANIZATION_USER } from '@src/utils/dGraphQueries/organization';
+import { REMOVE_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 
 type TeamMemberListProps = TeamMemberBaseProps & {
   teamMembers: Maybe<Maybe<OrganizationUser>[]> | undefined;
 };
 
-const TeamMemberList: FC<TeamMemberListProps> = ({ teamMembers, organizationId, currentUserId, isAdmin }) => {
-  const [removeMember, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_ORGANIZATION_USER);
+const TeamMemberList: FC<TeamMemberListProps> = ({
+  teamMembers,
+  organizationId,
+  currentUserId,
+  isAdmin
+}) => {
+  const [removeMember, { data: dataRemove, error: deleteError }] =
+    useMutation(REMOVE_ORGANIZATION_USER);
 
   if (deleteError) {
     throw new Error(deleteError.message);

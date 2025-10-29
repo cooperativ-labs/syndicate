@@ -5,7 +5,10 @@ export interface OneColumnLayoutProps {
   children: ReactNode | ReactNode[];
 }
 
-const OneColumnLayout: React.FunctionComponent<OneColumnLayoutProps> = ({ className, children }) => {
+const OneColumnLayout: React.FunctionComponent<OneColumnLayoutProps> = ({
+  className,
+  children
+}) => {
   return (
     <div data-test="layout-one-column" className="w-full">
       {children}

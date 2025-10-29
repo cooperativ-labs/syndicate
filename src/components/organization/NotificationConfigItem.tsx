@@ -1,9 +1,8 @@
 import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { EditButton } from '../form-components/ListItemButtons';
 import { getNotificationSubjectOption } from '@src/utils/enumConverters';
-import { Maybe, NotificationConfiguration } from 'oldTypes';
-
+import { Maybe, NotificationConfiguration } from '@gql/graphql';
 
 export type NotificationConfigItemBaseProps = {
   organizationUserId: Maybe<string> | undefined;
@@ -18,10 +17,8 @@ const NotificationConfigItem: FC<NotificationConfigItemProps> = ({
   notificationConfig,
   organizationUserId,
 
-  removeNotification,
+  removeNotification
 }) => {
-
-
   const [editOn, setEditOn] = useState<boolean>(false);
   const { id, notificationRecipientType, notificationMethod, notificationSubject } =
     notificationConfig as NotificationConfiguration;
@@ -50,8 +47,8 @@ const NotificationConfigItem: FC<NotificationConfigItemProps> = ({
                   variables: {
                     organizationUserId: organizationUserId,
                     notificationConfigurationId: id,
-                    currentDate: currentDate,
-                  },
+                    currentDate: currentDate
+                  }
                 })
               }
             >

@@ -1,20 +1,22 @@
 import React, { FC, useEffect, useState } from 'react';
 
-import { ADD_ENTITY } from '@src/utils/dGraphQueries/entity';
+import { ADD_ENTITY } from '@src/utils/graphQueries/entity';
 import { Form, Formik, useFormikContext } from 'formik';
 
-import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, {
+  normalizeGeoAddress
+} from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
-import { CurrencyCode, LegalEntity, Organization } from 'oldTypes';
+import { CurrencyCode, LegalEntity, Organization } from '@gql/graphql';
 import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 export type CreateEntityType = {
   organization: Organization;
@@ -28,7 +30,9 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
   const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
 
-  const setDefaultLogo = defaultLogo ? defaultLogo : '/assets/images/logos/company-placeholder.jpeg';
+  const setDefaultLogo = defaultLogo
+    ? defaultLogo
+    : '/assets/images/logos/company-placeholder.jpeg';
 
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -41,13 +45,13 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
 
   useEffect(() => {
     geocodeByPlaceId(placeId)
-      .then((results) => {
+      .then(results => {
         setAutocompleteResults(results);
         const lat = results[0]?.geometry.location.lat();
         const lng = results[0]?.geometry.location.lng();
         setLatLang({ lat: lat, lng: lng });
       })
-      .catch((error) => {
+      .catch(error => {
         return error;
       });
   }, [placeId, setAutocompleteResults, setLatLang]);
@@ -76,9 +80,9 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         jurCountry: '',
         jurProvince: '',
         type: undefined,
-        addressAutocomplete: '',
+        addressAutocomplete: ''
       }}
-      validate={(values) => {
+      validate={values => {
         // if (values.nonHuman === 'false') {
         //   values.type = LegalEntityType.Individual;
         // }
@@ -122,8 +126,8 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               jurCountry: values.jurCountry,
               jurProvince: values.jurProvince,
               type: values.type,
-              currentDate: currentDate,
-            },
+              currentDate: currentDate
+            }
           });
           actionOnCompletion();
         } catch (error: any) {
@@ -154,7 +158,12 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
           />
 
           {/* <Input className={defaultFieldDiv} labelText="Logo" name="logo" type="text" /> */}
-          <Select className={defaultFieldDiv} required name="operatingCurrency" labelText="Operating currency">
+          <Select
+            className={defaultFieldDiv}
+            required
+            name="operatingCurrency"
+            labelText="Operating currency"
+          >
             <option value="">Select currency</option>;
             {currencyOptionsExcludeCredits.map((option, i) => {
               return (
@@ -164,7 +173,11 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               );
             })}
           </Select>
-          <JurisdictionSelect className={defaultFieldDiv} labelText={'Jurisdiction'} values={values} />
+          <JurisdictionSelect
+            className={defaultFieldDiv}
+            labelText={'Jurisdiction'}
+            values={values}
+          />
 
           <Input
             className={defaultFieldDiv}

@@ -2,7 +2,7 @@ import cn from 'classnames';
 import React, { ChangeEvent, FC, use, useState } from 'react';
 import { Country, IState, State } from 'country-state-city';
 import { ErrorMessage, Field } from 'formik';
-import { Maybe } from 'oldTypes';
+import { Maybe } from '@gql/graphql';
 
 type JurisdictionSelectProps = {
   id?: any;
@@ -31,7 +31,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
   fieldClass,
   disabled,
   fieldLabelClass,
-  values,
+  values
 }) => {
   const countries = Country.getAllCountries();
   const [states, setStates] = useState<IState[]>([]);
@@ -42,7 +42,11 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
       {labelText && (
         <label
           htmlFor="jurCountry"
-          className={cn(fieldLabelClass ? fieldLabelClass : 'text-sm text-blue-900 font-semibold text-opacity-80 ')}
+          className={cn(
+            fieldLabelClass
+              ? fieldLabelClass
+              : 'text-sm text-blue-900 font-semibold text-opacity-80 '
+          )}
         >
           {labelText}
           {required ? ' *' : ''}

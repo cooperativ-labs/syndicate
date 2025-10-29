@@ -4,17 +4,24 @@ import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import PresentLegalText from './PresentLegalText';
 import React, { FC, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { CurrencyCode, Maybe, SmartContract } from 'oldTypes';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import router from 'next/router';
+import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
+import { CurrencyCode, Maybe, SmartContract } from '@gql/graphql';
+
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
-import { hashBytes32FromString, StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
+import {
+  hashBytes32FromString,
+  StandardChainErrorHandling,
+  String0x
+} from '@src/web3/helpersChain';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { setDocument } from '@src/web3/contractShareCalls';
 import { useAccount, useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
+
+import { useRouter } from 'next/navigation';
+
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
@@ -36,14 +43,15 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   spvEntityName,
   offeringId,
   entityId,
-  organizationId,
+  organizationId
 }) => {
-  const router = useRouter();
+  const router = useRouter(); from 'next/navigation';
   const [alerted, setAlerted] = useState<boolean>(false);
   const [loadingModal, setLoadingModal] = useState<boolean>(false);
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const [addLegalLink, { data: agreementData, error: agreementError }] = useMutation(ADD_LEGAL_SHARE_LINK);
+  const [addLegalLink, { data: agreementData, error: agreementError }] =
+    useMutation(ADD_LEGAL_SHARE_LINK);
   const [addOfferingParticipant, { data: participantData, error: participantError }] =
     useMutation(ADD_OFFERING_PARTICIPANT);
 
@@ -62,7 +70,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
       try {
         await addLegalLink({
           variables: {
-            currentDate: currentDate,
+     
             documentOfferingUniqueId: offeringId + docTitle,
             offeringId: offeringId,
             entityId: entityId,
@@ -72,18 +80,18 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
             // priceStart: parseInt(values.initialPrice, 10),
             // maxRaise: values.numUnits * parseInt(values.initialPrice, 10),
             agreementTitle: docTitle,
-            signature: signature,
-          },
+            signature: signature
+          }
         });
         await addOfferingParticipant({
           variables: {
-            currentDate: currentDate,
+       
             addressOfferingId: userWalletAddress + offeringId,
             offeringId: offeringId,
             name: spvEntityName,
             walletAddress: userWalletAddress,
-            chainId: chainId,
-          },
+            chainId: chainId
+          }
         });
 
         setButtonStep('confirmed');
@@ -101,7 +109,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
       shareContractAddress: availableContract.cryptoAddress.address as String0x,
       setButtonStep,
       callback: handleEstablish,
-      uri,
+      uri
     });
   };
 
@@ -109,9 +117,9 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
     <div className="bg-gray-100 pt-8 p-4 md:p-8 min-h-max mb-6 md:mb-10 md:rounded-lg bg-opacity-100 ">
       <Formik
         initialValues={{
-          signature: '',
+          signature: ''
         }}
-        validate={(values) => {
+        validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           // setAgreementContent(spvEntityName, gpEntityName, bacName, bacId, chainName, values.signature);
           setAgreementContent({ signature: values.signature });
@@ -138,7 +146,9 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
               labelText="Signature"
               required
             />
-            <div className="text-sm text-blue-900 font-semibold text-opacity-80 mt-4">Agreement Hash (Keccak-256)</div>
+            <div className="text-sm text-blue-900 font-semibold text-opacity-80 mt-4">
+              Agreement Hash (Keccak-256)
+            </div>
             <div className="text-sm break-all">{agreementHash}</div>
             <FormButton
               type="submit"

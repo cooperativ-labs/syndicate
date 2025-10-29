@@ -1,7 +1,7 @@
 import Button from '../buttons/Button';
 import React, { FC } from 'react';
 import Select from './Select';
-import { Address, LegalEntity } from 'oldTypes';
+import { Address, LegalEntity } from '@gql/graphql';
 import { Country } from 'country-state-city';
 import { defaultFieldDiv } from './Inputs';
 

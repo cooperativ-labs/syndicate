@@ -1,6 +1,6 @@
 import EmailAddressListItem from './EmailAddressListItem';
 import React, { FC } from 'react';
-import { EmailAddress, Maybe } from 'oldTypes';
+import { EmailAddress, Maybe } from '@gql/graphql';
 
 type EmailAddressListProps = {
   emailAddresses: Maybe<Maybe<EmailAddress>[]> | undefined;
@@ -8,7 +8,11 @@ type EmailAddressListProps = {
   isOrganizationManager?: boolean;
 };
 
-const EmailAddressList: FC<EmailAddressListProps> = ({ emailAddresses, withEdit, isOrganizationManager }) => {
+const EmailAddressList: FC<EmailAddressListProps> = ({
+  emailAddresses,
+  withEdit,
+  isOrganizationManager
+}) => {
   return (
     <div className="w-full">
       {emailAddresses?.map((email, i) => {

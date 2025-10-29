@@ -1,10 +1,10 @@
 import Button from '../buttons/Button';
 import cn from 'classnames';
 import React, { FC, useContext } from 'react';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { MatchSupportedChains } from '@src/web3/connectors';
+import { GET_USER } from '@src/utils/graphQueries/user';
+import { MatchSupportedChains } from '@src/web3/wagmi';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useChainId, useNetwork } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 
 export const networkIcon = (chainId: number, walletAddress: string) => {
   if (!walletAddress) {
@@ -42,7 +42,9 @@ type NetworkIndicatorDotProps = {
 };
 
 export const NetworkIndicatorDot: FC<NetworkIndicatorDotProps> = ({ chainId, walletAddress }) => {
-  return <div className={cn(networkColor(chainId, walletAddress), 'flex rounded-full h-3 w-3 mr-1')} />;
+  return (
+    <div className={cn(networkColor(chainId, walletAddress), 'flex rounded-full h-3 w-3 mr-1')} />
+  );
 };
 
 const NetworkIndicator: FC = () => {

@@ -10,7 +10,7 @@ type PurchaserSummaryDisplayProps = {
 const PurchaserSummaryDisplay: FC<PurchaserSummaryDisplayProps> = ({
   summary,
   suitabilityAttestation,
-  qualificationsPresent,
+  qualificationsPresent
 }) => {
   return (
     <div className="flex flex-col">

@@ -5,7 +5,7 @@ import Input, { defaultFieldDiv } from '../../form-components/Inputs';
 import React, { FC } from 'react';
 import Select from '../../form-components/Select';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
-import { LegalEntity } from 'oldTypes';
+import { LegalEntity } from '@gql/graphql';
 
 type PrimaryApplicationFieldsProps = {
   isNonHuman: boolean;
@@ -25,9 +25,13 @@ const PrimaryApplicationFields: FC<PrimaryApplicationFieldsProps> = ({ isNonHuma
             <option value="">Select</option>
             <option value="Company">Company</option>
             <option value="Trust">Trust</option>
-            <option value="Traditional individual retirement account">Traditional individual retirement account</option>
+            <option value="Traditional individual retirement account">
+              Traditional individual retirement account
+            </option>
             <option value="Roth IRA">Roth IRA</option>
-            <option value="Pensions or profit-sharing trust">Pensions or profit-sharing trust</option>
+            <option value="Pensions or profit-sharing trust">
+              Pensions or profit-sharing trust
+            </option>
             <option value="Custodian for Minor">Custodian for Minor</option>
             <option value="Employee Benefit Plan">Employee Benefit Plan</option>
             <option value="Kheogh Plan">Kheogh Plan</option>

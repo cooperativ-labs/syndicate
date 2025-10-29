@@ -1,22 +1,28 @@
-"use client";
+'use client';
 
-import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, {
+  normalizeGeoAddress
+} from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import React, { FC, useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import Select from '../form-components/Select';
-import { ADD_RE_PROPERTY_INFO } from '@src/utils/dGraphQueries/reProperty';
-import { assetStatusOptions, getCurrencyOption, propertyTypeOptions } from '@src/utils/enumConverters';
-import { Currency, CurrencyCode } from 'oldTypes';
-import { currentDate } from '@utils/dGraphQueries/gqlUtils';
+import { ADD_RE_PROPERTY_INFO } from '@src/utils/graphQueries/reProperty';
+import {
+  assetStatusOptions,
+  getCurrencyOption,
+  propertyTypeOptions
+} from '@src/utils/enumConverters';
+import { CurrencyCode } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 type AddPropertyInfoProps = {
   entityId: string;
-  entityOperatingCurrency: Currency;
+  entityOperatingCurrency: CurrencyCode;
 };
 const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCurrency }) => {
   const router = useRouter();
@@ -38,13 +44,13 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
   const placeId = inputAddress && inputAddress.value.place_id;
   useEffect(() => {
     geocodeByPlaceId(placeId)
-      .then((results) => {
+      .then(results => {
         setAutocompleteResults(results);
         const lat = results[0]?.geometry.location.lat();
         const lng = results[0]?.geometry.location.lng();
         setLatLang({ lat: lat, lng: lng });
       })
-      .catch((error) => {
+      .catch(error => {
         return error;
       });
   }, [placeId]);
@@ -63,9 +69,9 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
         lenderFees: null,
         closingCosts: null,
         jurisdiction: '',
-        addressAutocomplete: '',
+        addressAutocomplete: ''
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (values.downPayment && parseInt(values.downPayment, 10) < 0) {
           errors.downPayment = 'Please set a positive amount';
@@ -103,17 +109,24 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
             postalCode: postalCode,
             country: country,
             lat: latLang.lat,
-            lng: latLang.lng,
-          },
+            lng: latLang.lng
+          }
         });
         setSubmitting(false);
       }}
     >
       {({ isSubmitting, values }) => (
         <Form className="">
-          <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">Add a real estate property</h2>
+          <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">
+            Add a real estate property
+          </h2>
           <hr className="my-6" />
-          <Select required className={defaultFieldDiv} labelText="Status of property" name="investmentStatus">
+          <Select
+            required
+            className={defaultFieldDiv}
+            labelText="Status of property"
+            name="investmentStatus"
+          >
             <option value="">Select a status</option>
             {assetStatusOptions.map((type, i) => {
               return (
@@ -124,7 +137,12 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
             })}
           </Select>
 
-          <Select required className={defaultFieldDiv} labelText="Type of property" name="propertyType">
+          <Select
+            required
+            className={defaultFieldDiv}
+            labelText="Type of property"
+            name="propertyType"
+          >
             <option value="">Select an property type</option>
             {propertyTypeOptions.map((type, i) => {
               return (
@@ -171,10 +189,18 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
           <div>
             <hr className="my-6" />
             <h3 className="text-md md:mt-8 text-blue-900 font-semibold mb-4">{`This property's address`}</h3>
-            <CustomAddressAutocomplete name="addressAutocomplete" value={inputAddress} setValue={setInputAddress} />
+            <CustomAddressAutocomplete
+              name="addressAutocomplete"
+              value={inputAddress}
+              setValue={setInputAddress}
+            />
             {latLang.lat && (
               <div className="mt-4">
-                <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>
+                <GoogleMap
+                  mapContainerStyle={{ height: '300px', width: '100%' }}
+                  center={latLang}
+                  zoom={14}
+                >
                   <Marker position={latLang} />
                 </GoogleMap>
               </div>

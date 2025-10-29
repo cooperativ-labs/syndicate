@@ -1,5 +1,5 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import EntityDashboard from '@src/pages/EntityDashboard';
+import EntityDashboard from '@src/screens/EntityDashboard';
 import React from 'react';
 
 const EntitiesPage = () => {
@@ -13,4 +13,3 @@ const EntitiesPage = () => {
 };
 
 export default EntitiesPage;
-

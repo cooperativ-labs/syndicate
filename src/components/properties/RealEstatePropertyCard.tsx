@@ -5,11 +5,11 @@ import cn from 'classnames';
 import MapPanel from '../MapPanel';
 import React, { FC } from 'react';
 import { useRouter } from 'next/navigation';
-import { Address, Currency, CurrencyCode, Maybe, RealEstateProperty } from 'oldTypes';
+import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@gql/graphql';
 
 type RealEstatePropertyCardProps = {
   property: RealEstateProperty;
-  currency: Maybe<Currency> | undefined;
+  currency: Maybe<CurrencyCode> | undefined;
   offeringEntityId: string;
   fullWidth?: boolean;
 };
@@ -17,10 +17,10 @@ export const RealEstatePropertyCard: FC<RealEstatePropertyCardProps> = ({
   property,
   currency,
   offeringEntityId,
-  fullWidth,
+  fullWidth
 }) => {
   const router = useRouter();
-  const { id, downPayment, lenderFees, closingCosts, address, description, images } = property;
+  const { id, downPayment, lenderFees, closingCosts, address, description, images } = property ?? {};
 
   return (
     <div
@@ -30,7 +30,10 @@ export const RealEstatePropertyCard: FC<RealEstatePropertyCardProps> = ({
       )}
       onClick={() => router.push(`/entities/${offeringEntityId}/properties/${id}`)}
     >
-      <img src={images ? images[0]?.url : undefined} className="object-cover w-full h-24 absolute" />
+      <img
+        src={images ? images[0]?.url : undefined}
+        className="object-cover w-full h-24 absolute"
+      />
       <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />
       <h2 className="text-xl font-bold text-white absolute left-4 top-10">
         {address?.line1 ? `${address.line1}` : `${address?.city}, ${address?.stateProvince}`}

@@ -12,14 +12,14 @@ const TwoColumnLayout: React.FunctionComponent<TwoColumnLayoutProps> = ({
   className,
   children,
   twoThirdsLayout,
-  gap,
+  gap
 }) => {
   const leftChildren = children.filter((child, index) => index % 2 === 0);
   const rightChildren = children.filter((child, index) => index % 2 !== 0);
 
   const mobileLayout = (
     <div className="flex md:hidden ">
-      <div data-test="mobile-center-column" className="flex-grow">
+      <div data-test="mobile-center-column" className="grow">
         {children.map((child, index) => {
           if (child) {
             return (
@@ -34,7 +34,13 @@ const TwoColumnLayout: React.FunctionComponent<TwoColumnLayoutProps> = ({
   );
 
   const desktopLayout = (
-    <div className={cn(`gap-${gap}`, twoThirdsLayout ? 'lg:grid-cols-3' : 'lg:grid-cols-2', 'hidden md:grid ')}>
+    <div
+      className={cn(
+        `gap-${gap}`,
+        twoThirdsLayout ? 'lg:grid-cols-3' : 'lg:grid-cols-2',
+        'hidden md:grid '
+      )}
+    >
       <div className={cn(twoThirdsLayout ? 'lg:col-span-2' : 'lg:col-span-1', 'my-5')}>
         {leftChildren.map((child, index) => {
           if (child) {

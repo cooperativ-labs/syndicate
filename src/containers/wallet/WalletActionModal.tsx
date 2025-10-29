@@ -9,7 +9,12 @@ type WalletActionModalProps = {
   metaMaskWarning?: boolean;
 };
 
-const WalletActionModal: FC<WalletActionModalProps> = ({ noModal, children, open, metaMaskWarning }) => {
+const WalletActionModal: FC<WalletActionModalProps> = ({
+  noModal,
+  children,
+  open,
+  metaMaskWarning
+}) => {
   if (open) {
     return (
       <div data-test="component-create-entity-modal">

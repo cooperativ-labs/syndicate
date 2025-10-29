@@ -7,7 +7,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { Maybe } from 'yup';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, Organization } from 'oldTypes';
+import { Offering, Organization } from '@gql/graphql';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 
@@ -49,7 +49,7 @@ type ShareOfferPanelProps = {
 const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice, organization, currentUser }) => {
   const router = useRouter();
   const participants = offering.participants;
-  const permittedEntity = participants?.find((participant) => {
+  const permittedEntity = participants?.find(participant => {
     return participant?.addressOfferingId === currentUser + offering.id;
   });
 
@@ -60,7 +60,9 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
       }, 0)
     : 0;
 
-  const percentPledged = offering.details?.numUnits ? (sharesPledged / offering.details.numUnits) * 100 : 0;
+  const percentPledged = offering.details?.numUnits
+    ? (sharesPledged / offering.details.numUnits) * 100
+    : 0;
 
   const { details } = offering;
 
@@ -71,28 +73,28 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
     preferredReturn,
     cocReturn,
     minUnitsPerInvestor,
-    customOnboardingLink,
+    customOnboardingLink
   } = details || {
     investmentCurrency: undefined,
     projectedIrr: undefined,
     projectedIrrMax: undefined,
     preferredReturn: undefined,
     cocReturn: undefined,
-    minUnitsPerInvestor: undefined,
+    minUnitsPerInvestor: undefined
   };
 
   const buttonText = !permittedEntity ? 'Manage Investment' : 'Apply to Invest';
   const buttonLink =
     !permittedEntity && organization
       ? `/${organization.id}/portal/${offering.id}`
-      : customOnboardingLink ?? `/${organization?.id}/portal/${offering.id}/investor-application`;
+      : (customOnboardingLink ?? `/${organization?.id}/portal/${offering.id}/investor-application`);
 
   const ApplyManageButton = (
     <button
       data-test="share-offer-panel"
       onClick={() => router.push(buttonLink)}
       className={cn([
-        'ubuntu rounded-md font-bold bg-green-700 text-slate-100 px-4 py-2 items-center justify-center shadow-lg mt-4 flex w-full ',
+        'ubuntu rounded-md font-bold bg-green-700 text-slate-100 px-4 py-2 items-center justify-center shadow-lg mt-4 flex w-full '
       ])}
     >
       {buttonText}
@@ -112,7 +114,10 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
       </div>
       <div className="mt-5 flex items-center gap-2">
         <div className="w-full h-2 bg-gray-200 rounded">
-          <div style={{ background: '#275A8F', width: `${percentPledged}%` }} className={'h-2 rounded'} />
+          <div
+            style={{ background: '#275A8F', width: `${percentPledged}%` }}
+            className={'h-2 rounded'}
+          />
         </div>
         <div className="text-xs text-gray-500 whitespace-nowrap">{`${percentPledged}% funded`}</div>
       </div>
@@ -120,7 +125,10 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
       <div className="my-2 flex flex-col gap-4">
         {projectedIrr ? (
           <div className="my-6">
-            <ShareOfferPanelItem title="Projected IRR" note="This is an estimate. Returns are not guaranteed.">
+            <ShareOfferPanelItem
+              title="Projected IRR"
+              note="This is an estimate. Returns are not guaranteed."
+            >
               {`${projectedIrr / 100}`}
               {projectedIrrMax ? ` - ${projectedIrrMax / 100}` : ''}%
             </ShareOfferPanelItem>
@@ -136,7 +144,10 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice,
           <></>
         )}
         {cocReturn ? (
-          <ShareOfferPanelItem title="CoC Return" note="This is an estimate. Returns are not guaranteed.">
+          <ShareOfferPanelItem
+            title="CoC Return"
+            note="This is an estimate. Returns are not guaranteed."
+          >
             <div className="col-span-1">{cocReturn ? `${cocReturn / 100}` : ''}% </div>
           </ShareOfferPanelItem>
         ) : (

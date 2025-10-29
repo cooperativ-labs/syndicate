@@ -3,7 +3,7 @@ import LinkLegal from '@src/components/legal/LinkLegal';
 import NewClassForm from './NewClassForm';
 import React, { FC } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
-import { Maybe, Offering, SmartContract, User } from 'oldTypes';
+import { Maybe, Offering, SmartContract, User } from '@gql/graphql';
 import { String0x, addressWithoutEns, stringFromBytes32 } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
@@ -17,7 +17,12 @@ type ShareContractSettingsLocal = ShareContractSettingsProps & {
   user: User;
 };
 
-const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ user, offering, shareContract, partitions }) => {
+const ShareContractSettings: FC<ShareContractSettingsLocal> = ({
+  user,
+  offering,
+  shareContract,
+  partitions
+}) => {
   const chainId = useChainId();
 
   if (!shareContract) {
@@ -40,10 +45,11 @@ const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ user, offering,
 
       <div className="mt-4 border-2 rounded-md px-2">
         <SectionBlock className="" sectionTitle={'Share classes'} mini asAccordion>
-          {partitions?.map((partition) => (
+          {partitions?.map(partition => (
             <div key={partition} className="flex items-center">
               - {stringFromBytes32(partition)} (
-              <FormattedCryptoAddress address={partition} chainId={chainId} label="id: " withCopy />)
+              <FormattedCryptoAddress address={partition} chainId={chainId} label="id: " withCopy />
+              )
             </div>
           ))}
           <NewClassForm shareContractId={shareContract.id} />

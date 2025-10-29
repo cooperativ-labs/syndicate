@@ -1,4 +1,5 @@
-import { getWalletClient, waitForTransaction } from '@wagmi/core';
+import { getWalletClient, waitForTransactionReceipt } from 'wagmi/actions';
+import { config } from '@src/web3/wagmi';
 import { dividendBytecode, shareBytecode, swapBytecode } from './bytecode';
 import { dividendContractABI, shareContractABI, swapContractABI } from './generated';
 import { String0x } from './helpersChain';
@@ -18,9 +19,9 @@ const deployContract = async ({
   abi,
   bytecode,
   chain,
-  args,
+  args
 }: DeployContractBaseProps & { abi: any; bytecode: any; args: any[] }) => {
-  const walletClient = getWalletClient();
+  const walletClient = getWalletClient(config);
 
   const hash = await (
     await walletClient
@@ -29,12 +30,12 @@ const deployContract = async ({
     abi,
     bytecode,
     chain,
-    args,
+    args
   });
 
   if (!hash) throw new Error('No hash returned from deploy contract');
-  const data = await waitForTransaction({
-    hash: hash,
+  const data = await waitForTransactionReceipt(config, {
+    hash: hash
   });
 
   return data;
@@ -55,7 +56,7 @@ export const deployShareContract = async (
     abi: shareContractABI,
     bytecode: shareBytecode,
     chain,
-    args,
+    args
   });
   return data;
 };
@@ -77,7 +78,7 @@ export const deploySwapContract = async (
     abi: swapContractABI,
     bytecode: swapBytecode,
     chain,
-    args,
+    args
   });
   return data;
 };
@@ -99,7 +100,7 @@ export const deployDividendContract = async (
     abi: dividendContractABI,
     bytecode: dividendBytecode,
     chain,
-    args,
+    args
   });
   return data;
 };

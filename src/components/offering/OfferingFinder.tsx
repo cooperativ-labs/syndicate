@@ -11,9 +11,9 @@ const OfferingFinder: FC = () => {
   return (
     <Formik
       initialValues={{
-        offeringId: '',
+        offeringId: ''
       }}
-      validate={(values) => {}}
+      validate={values => {}}
       onSubmit={(values, { setSubmitting }) => {
         setSubmitting(true);
         router.push(`/offerings/${values.offeringId}`);

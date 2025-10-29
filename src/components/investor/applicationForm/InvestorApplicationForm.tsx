@@ -1,33 +1,36 @@
-"use client";
+'use client';
 
 import AdditionalApplicationFields from './AdditionalApplicationFields';
 import AdvisorFields from './AdvisorFields';
 import Checkbox from '@src/components/form-components/Checkbox';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import CustomAddressAutocomplete, {
-  normalizeGeoAddress,
+  normalizeGeoAddress
 } from '@src/components/form-components/CustomAddressAutocomplete';
 import Datepicker from '@src/components/form-components/Datepicker';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
 import FormCard from '../../cards/FormCard';
-import Input, { defaultFieldDiv, defaultFieldLabelClass } from '@src/components/form-components/Inputs';
+import Input, {
+  defaultFieldDiv,
+  defaultFieldLabelClass
+} from '@src/components/form-components/Inputs';
 import InvestorApplicationPledgeFields from './InvestorApplicationPledgeFields';
 import PrimaryApplicationFields from './PrimaryApplicationFields';
 import PurchaserSummaryDisplay from './PurchaserSummaryDisplay';
 import React, { FC, useEffect, useState } from 'react';
-import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/dGraphQueries/offering';
+import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/graphQueries/offering';
 import { checkDateInPast } from '@src/utils/helpersGeneral';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { GeneratedApplicationText } from './SummaryGenerator';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe, Offering } from 'oldTypes';
+import { Maybe, Offering } from '@gql/graphql';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { useAccount, useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useRouter } from 'next/navigation';
 
 type InvestorApplicationFormProps = {
@@ -95,7 +98,9 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
-  const [addOfferingParticipant, { data, error }] = useMutation(ADD_OFFERING_PARTICIPANT_WITH_APPLICATION);
+  const [addOfferingParticipant, { data, error }] = useMutation(
+    ADD_OFFERING_PARTICIPANT_WITH_APPLICATION
+  );
   const [alerted, setAlerted] = useState<boolean>(false);
 
   const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
@@ -106,13 +111,13 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
   useEffect(() => {
     if (placeId) {
       geocodeByPlaceId(placeId)
-        .then((results) => {
+        .then(results => {
           setAutocompleteResults(results);
           const lat = results[0]?.geometry.location.lat();
           const lng = results[0]?.geometry.location.lng();
           setLatLang({ lat: lat, lng: lng });
         })
-        .catch((error) => {
+        .catch(error => {
           return error;
         });
     }
@@ -180,7 +185,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     advisor_city: '',
     advisor_stateProvince: '',
     advisor_postalCode: '',
-    advisor_country: '',
+    advisor_country: ''
   });
 
   // if (!user) {
@@ -226,8 +231,8 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
           walletAddress: userWalletAddress,
           applicationText: ApplicationText.all,
           applicationTitle: appTitle,
-          signature: values.signature,
-        },
+          signature: values.signature
+        }
       });
       setButtonStep('confirmed');
     } catch (e) {
@@ -302,9 +307,9 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
           advisor_city: '',
           advisor_stateProvince: '',
           advisor_postalCode: '',
-          advisor_country: '',
+          advisor_country: ''
         }}
-        validate={(values) => {
+        validate={values => {
           setAgreementContent(values);
           const errors: any = {}; /** @TODO : Shape */
           if (checkDateInPast(values.dateSigned)) {
@@ -322,7 +327,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
             // maxPledge: values.maxPledge,
             // jurCountry: values.jurCountry,
             // jurState: values.jurState,
-            signature: values.signature,
+            signature: values.signature
           });
 
           setSubmitting(false);
@@ -339,7 +344,11 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                   <div className={defaultFieldLabelClass}> Your wallet:</div>
                   <div className="ml-2">
                     {userWalletAddress ? (
-                      <FormattedCryptoAddress chainId={chainId} address={userWalletAddress} className="font-semibold" />
+                      <FormattedCryptoAddress
+                        chainId={chainId}
+                        address={userWalletAddress}
+                        className="font-semibold"
+                      />
                     ) : (
                       <ChooseConnectorButton buttonText={'Connect Wallet to Apply'} />
                     )}
@@ -374,7 +383,11 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                     />
                     {latLang.lat && (
                       <div className="mt-4">
-                        <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>
+                        <GoogleMap
+                          mapContainerStyle={{ height: '300px', width: '100%' }}
+                          center={latLang}
+                          zoom={14}
+                        >
                           <Marker position={latLang} />
                         </GoogleMap>
                       </div>
@@ -395,7 +408,10 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                       required
                     />
                     <hr className="mb-6 mt-10" />
-                    <AdditionalApplicationFields values={values} offeringEntityName={offering.name} />
+                    <AdditionalApplicationFields
+                      values={values}
+                      offeringEntityName={offering.name}
+                    />
                     <Checkbox
                       labelText="The purchaser is working with a professional advisor."
                       className=""
@@ -469,7 +485,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                   <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`Summary`}</h2>
                   {values.purchaserEntityName && (
                     <div className="bg-gray-100 rounded-lg p-3 mt-6">
-                      <div className="mx-auto border-t-1 lg:border-0 col-span-3">
+                      <div className="mx-auto border-t lg:border-0 col-span-3">
                         <PurchaserSummaryDisplay
                           summary={ApplicationText.ApplicationSummary}
                           suitabilityAttestation={ApplicationText.ApplicationSuitability}
@@ -495,7 +511,11 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                     placeholder="e.g. Type your full legal name to sign"
                     required
                   />
-                  <Datepicker name="dateSigned" labelText="Signing Date" className={`${defaultFieldDiv} col-span-1`} />
+                  <Datepicker
+                    name="dateSigned"
+                    labelText="Signing Date"
+                    className={`${defaultFieldDiv} col-span-1`}
+                  />
                   {/* <NonInput className={`pt-3 col-span-1 pl-1`} labelText={'Date'}>
                     {getHumanDate(currentDate)}
                   </NonInput> */}

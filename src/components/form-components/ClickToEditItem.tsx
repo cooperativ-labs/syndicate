@@ -2,14 +2,19 @@ import cn from 'classnames';
 import React, { FC } from 'react';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
-import { Maybe } from 'oldTypes';
+import { Maybe } from '@gql/graphql';
 import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
 
 type ClickToEditItemProps = {
   label: string;
   currentValue: Maybe<string> | undefined;
   form: any;
-  editOn: EditEntitySelectionType | EditOrganizationSelectionType | ParticipantSpecItemType | string | undefined;
+  editOn:
+    | EditEntitySelectionType
+    | EditOrganizationSelectionType
+    | ParticipantSpecItemType
+    | string
+    | undefined;
   itemType: EditEntitySelectionType | EditOrganizationSelectionType | string;
   isManager: boolean | undefined;
   setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType | string) => void;
@@ -21,7 +26,7 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
   editOn,
   itemType,
   isManager,
-  setEditOn,
+  setEditOn
 }) => {
   return (
     <div className={'flex justify-between gap-4 z-10'}>
@@ -29,7 +34,10 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
         form
       ) : (
         <div
-          className={cn(`font-bold text-gray-700`, isManager && 'hover:cursor-pointer hover:underline')}
+          className={cn(
+            `font-bold text-gray-700`,
+            isManager && 'hover:cursor-pointer hover:underline'
+          )}
           onClick={() => {
             isManager ? setEditOn(itemType) : {};
           }}

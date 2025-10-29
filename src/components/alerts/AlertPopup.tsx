@@ -1,5 +1,6 @@
 import React, { FC, useEffect, useState } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+
+import { XIcon } from 'lucide-react';
 
 type AlertPopupProps = {
   text: string;
@@ -26,7 +27,7 @@ const AlertPopup: FC<AlertPopupProps> = ({ text }) => {
         >
           <div className="flex font-medium text-white text-xs md:text-sm mx-auto px-2 ">
             <div className="mr-3"> ⚠️ {text} </div>
-            <FontAwesomeIcon icon="times" />
+            <XIcon className="w-4 h-4" />
           </div>
         </div>
       )}

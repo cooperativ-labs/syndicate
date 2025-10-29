@@ -31,12 +31,12 @@ export const useOrderDetails = (
     isLoading,
     isError,
     error,
-    refetch: refetchOrderDetails,
+    refetch: refetchOrderDetails
   } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'orders',
-    args: [BigInt(contractIndex)],
+    args: [BigInt(contractIndex)]
   });
 
   const adjustTokenDecimalsForShareContract = paymentTokenDecimals
@@ -47,7 +47,8 @@ export const useOrderDetails = (
   const partition = data && data[1];
   const amount = data && toNormalNumber(data[2], shareContractDecimals);
   const price = data
-    ? adjustTokenDecimalsForShareContract && toNormalNumber(data[3], adjustTokenDecimalsForShareContract)
+    ? adjustTokenDecimalsForShareContract &&
+      toNormalNumber(data[3], adjustTokenDecimalsForShareContract)
     : undefined;
   const filledAmount = data && toNormalNumber(data[4], shareContractDecimals);
   const filler = data && (data[5] as String0x);
@@ -74,6 +75,6 @@ export const useOrderDetails = (
     isAskOrder,
     isErc20Payment,
     isLoading,
-    refetchOrderDetails,
+    refetchOrderDetails
   };
 };

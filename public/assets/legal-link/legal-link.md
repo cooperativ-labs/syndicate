@@ -23,14 +23,15 @@ All share transfers, sales, dividends and subsequent transactions are governed b
 - A transfer of Shares by use of this Share Token Contract shall constitute the valid transfer of the associated rights, responsibilities, warranties and obligations as contained within the **“Subscription Agreement”, “Private Placement Memorandum”, and “Operating Agreement”** to the recipient, in equal proportion to those Shares so transferred.
 
 **Share Distributions**
+
 - Distributions of {{ spvEntityName }} proceeds conducted via the Share Token Contract will be distributed in the form of **{{ bacName }}** tokens in accordance with the terms set forth in the “**Private Placement Memorandum**”.
 - Shareholders or Transferees of Shares distributed or transferred via the Share Token Contract are deemed to acknowledge and understand that in order to receive dividend distributions of {{ spvEntityName }}, they must accept the distribution requests sent to them by {{ gpEntityName }} at [INVESTOR PAGE LINK].
 
 **Deemed Acceptance by Reference**
+
 - Receipt by any legal person(s) of Shares distributed through the Share Token Contract will be deemed to constitute acceptance of those agreements and the terms, rights, warranties and/or obligations contained therein in their entirety.
 - Where the Shares are transferred in conflict or violation of the terms, rights, warranties and/or obligations contained within the above-mentioned and defined agreements, whether that be the “Subscription Agreement”, “Private Placement Memorandum”, or “Operating Agreement” such a transfer shall be deemed void.
 - Receipt of the Shares through the Share Token Contract shall also constitute acknowledgement and acceptance of the [Cooperativ.io Terms of Service](https://cooperativ.io/terms) and moreover shall constitute acceptance of the Disclaimers of Liability prominently displayed at the Cooperativ website, and within the Terms of Service thereof.
 - This agreement exists to bind parties in receipt of these Shares to the above-mentioned and defined contracts and agreements by reference through transfers on the {{ chainName }} Blockchain, who is deemed to be a signing counterparty to the counterparty whose signature is affixed below hereto.
-
 
 I, {{ signature }}, certify that I have authority to sign on behalf of and legally bind {{ spvEntityName }}.

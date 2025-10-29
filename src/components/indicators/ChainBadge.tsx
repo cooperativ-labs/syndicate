@@ -23,7 +23,12 @@ const ChainBadge: FC<ChainBadgeProps> = ({ chainId }) => {
     }
   };
   return (
-    <div className={cn('text-xs  rounded-md max-w-min px-1 h-5 border-2 -mt-4 -mr-2', setBadge().color)}>
+    <div
+      className={cn(
+        'text-xs  rounded-md max-w-min px-1 h-5 border-2 -mt-4 -mr-2',
+        setBadge().color
+      )}
+    >
       {setBadge().chain}
     </div>
   );

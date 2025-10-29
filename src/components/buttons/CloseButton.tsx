@@ -11,7 +11,7 @@ const CloseButton: FC<CloseButtonProps> = ({ className, onClick }) => {
   return (
     <button
       id="close-button"
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         onClick();
       }}

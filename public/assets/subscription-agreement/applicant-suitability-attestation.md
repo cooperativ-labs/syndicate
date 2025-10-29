@@ -1,17 +1,15 @@
-
-
 ### Your qualifications as an investor:
 
 {% purchaserAge:
-**Age:** {{ purchaserAge }} 
+**Age:** {{ purchaserAge }}
 %}
 
 {% purchaserPrincipleResidence:
-**Principle residences:** {{ purchaserPrincipleResidence }} 
+**Principle residences:** {{ purchaserPrincipleResidence }}
 %}
 
 {% purchaserResidenceHistory:
-**Additional residences:** {{ purchaserResidenceHistory }} 
+**Additional residences:** {{ purchaserResidenceHistory }}
 %}
 
 {% purchaserAccredited:
@@ -27,7 +25,7 @@
 %}
 
 {% purchaserAccreditedType:
-   {{ purchaserEntityName }} is {{ purchaserAccreditedType }} 
+   {{ purchaserEntityName }} is {{ purchaserAccreditedType }}
 %}{% purchaserAccreditedTypeOther:
   {{ purchaserAccreditedTypeOther }}
 %}
@@ -36,26 +34,27 @@
    **{{ purchaserEntityName }} meets the definition of a "Sophisticated Investor"** as defined by the SEC because:
 %}
 {% purchaserSophisticatedSelf:
-  - they have such knowledge and experience in financial matters that I am capable of evaluating the merits and risks of an investment in the {{ offeringEntityName }}:
 
-  {{ purchaserExperienceFinancial }}
+- they have such knowledge and experience in financial matters that I am capable of evaluating the merits and risks of an investment in the {{ offeringEntityName }}:
+
+{{ purchaserExperienceFinancial }}
 %}
 {% workingWithAdvisor:
-  - their Professional Advisor has such knowledge and experience and has completed the Professional Advisor portion of the attached Offeree Questionnaire.
-%}
+
+- their Professional Advisor has such knowledge and experience and has completed the Professional Advisor portion of the attached Offeree Questionnaire.
+  %}
 
 {% purchaserPriorRelationship:
-**{{ purchaserEntityName }} has a prior or existing relationship with {{ offeringEntityName }}**:  
+**{{ purchaserEntityName }} has a prior or existing relationship with {{ offeringEntityName }}**:
 
 "{{ purchaserPriorRelationship }}"
 %}
 
 {% purchaserExperienceOther:
-**{{ purchaserEntityName }} offers the following additional statement about whether they are able to evaluate the risks and merits of this investment:** 
+**{{ purchaserEntityName }} offers the following additional statement about whether they are able to evaluate the risks and merits of this investment:**
 
 "{{ purchaserExperienceOther }}"
 %}
-
 
 {% purchaserExperienceSecurities:
 **Other Relevant Experience**
@@ -73,7 +72,7 @@
 **Other Representations**
 
 {% isNonHuman:
-{{ purchaserEntityManager }}, {{ purchaserEntityManagerTitle }} of 
+{{ purchaserEntityManager }}, {{ purchaserEntityManagerTitle }} of
 %} {{ purchaserEntityName }} further attests to their suitability for this investment as follows:
 
 1. {{ purchaserEntityName }}'s overall commitment to investments that are not readily marketable is not disproportionate to {{ purchaserEntityName }}'s worth and the investment in the {{ offeringEntityName }} will not cause such overall commitment to be excessive; and
@@ -95,16 +94,18 @@
 {{ advisor_addressLine2 }}  
 {{ advisor_addressLine3 }}  
 {{ advisor_city }}, {{ advisor_stateProvince }} {{ advisor_postalCode }}  
-{{ advisor_country }} 
+{{ advisor_country }}
 
- 
- %}
+%}
+
 ### Share purchase
-The undersigned wishes to purchase a minimum of {{ minPledge }} and a maximum of {{ maxPledge }} Units of the {{ offeringEntityName }} at a per-unit price of {{ pricePerUnit }} {{ investmentCurrency }}, pending final agreement between the undersigned and {{ offeringEntityName }}. 
+
+The undersigned wishes to purchase a minimum of {{ minPledge }} and a maximum of {{ maxPledge }} Units of the {{ offeringEntityName }} at a per-unit price of {{ pricePerUnit }} {{ investmentCurrency }}, pending final agreement between the undersigned and {{ offeringEntityName }}.
+
 ### Adoption of Limited Partnership Agreement
 
 The undersigned hereby specifically accepts and adopts each and every provision of the Limited Partnership Agreement, and executes this Subscription Agreement as a counterpart signature page to that Limited Partnership Agreement.
 
-Date: {{ dateSigned }} 
+Date: {{ dateSigned }}
 
-Signature: {{ signature }} 
+Signature: {{ signature }}

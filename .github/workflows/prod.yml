@@ -17,5 +17,5 @@ jobs:
       #   # run: yarn test:unit
       # - name: Send dgraph schema
       #   run: |
-      #     npm install -g slash-graphql 
+      #     npm install -g slash-graphql
       #     slash-graphql update-schema ./dgraph/schema.graphql -e https://blue-surf-1120002.us-east-1.aws.cloud.dgraph.io/graphql -t ${{ secrets.DGRAPH_SYNDICATE_PRODUCTION_GITHUB_DEPLOY }}

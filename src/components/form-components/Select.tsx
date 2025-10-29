@@ -27,14 +27,18 @@ const Select: React.FC<CustomSelectProps> = ({
   fieldClass,
   disabled,
   fieldLabelClass,
-  children,
+  children
 }) => {
   return (
     <div className={cn(className, 'flex flex-col')}>
       {labelText && (
         <label
           htmlFor={name}
-          className={cn(fieldLabelClass ? fieldLabelClass : 'text-sm text-blue-900 font-semibold text-opacity-80 ')}
+          className={cn(
+            fieldLabelClass
+              ? fieldLabelClass
+              : 'text-sm text-blue-900 font-semibold text-opacity-80 '
+          )}
         >
           {labelText}
           {required ? ' *' : ''}

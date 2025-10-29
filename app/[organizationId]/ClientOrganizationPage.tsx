@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
 import Footer from '@src/Footer/Footer';
-import OrganizationProfile from '@src/pages/OrganizationProfile';
-import PortalOrganization from '@src/pages/PortalOrganization';
+import OrganizationProfile from '@src/screens/OrganizationProfile';
+import PortalOrganization from '@src/screens/PortalOrganization';
 import PortalWrapper from '@src/containers/PortalWrapper';
 import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
 import React from 'react';
@@ -25,9 +25,9 @@ const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organiz
   }
 
   const orgParticipants = organization.legalEntities
-    ?.map((entity) =>
-      entity?.offerings?.map((offering) =>
-        offering?.participants?.map((participant) => participant?.walletAddress === userWalletAddress)
+    ?.map(entity =>
+      entity?.offerings?.map(offering =>
+        offering?.participants?.map(participant => participant?.walletAddress === userWalletAddress)
       )
     )
     .flat(2);
@@ -50,4 +50,3 @@ const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organiz
 };
 
 export default ClientOrganizationPage;
-

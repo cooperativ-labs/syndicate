@@ -9,13 +9,13 @@ import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { ADD_DISTRIBUTION } from '@src/utils/dGraphQueries/orders';
+import { ADD_DISTRIBUTION } from '@src/utils/graphQueries/orders';
 import { erc20ABI, useAccount, useContractRead } from 'wagmi';
 import { isMetaMask } from '@src/web3/connectors';
 import { setAllowance } from '@src/web3/contractSwapCalls';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { toNormalNumber } from '@src/web3/util';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import Select from '../form-components/Select';
 
 type SubmitDistributionProps = {
@@ -32,7 +32,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
   distributionTokenAddress,
   partitions,
   offeringId,
-  refetchContracts,
+  refetchContracts
 }) => {
   const { address: userWalletAddress, connector } = useAccount();
 
@@ -43,11 +43,12 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     address: distributionTokenAddress,
     abi: erc20ABI,
     functionName: 'allowance',
-    args: [userWalletAddress as String0x, distributionContractAddress as String0x],
+    args: [userWalletAddress as String0x, distributionContractAddress as String0x]
   });
 
   const handleSubmitDistribution = async ({ amount, partition }: any) => {
-    const allowance = rawAllowance && toNormalNumber(rawAllowance as bigint, distributionTokenDecimals);
+    const allowance =
+      rawAllowance && toNormalNumber(rawAllowance as bigint, distributionTokenDecimals);
     const allowanceRequiredForPurchase = amount;
     const isAllowanceSufficient = allowance ? allowance >= allowanceRequiredForPurchase : false;
 
@@ -60,7 +61,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         partition: partition,
         offeringId: offeringId,
         setButtonStep,
-        addDistribution,
+        addDistribution
       });
     };
 
@@ -71,7 +72,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         paymentTokenDecimals: distributionTokenDecimals,
         spenderAddress: distributionContractAddress,
         amount: allowanceRequiredForPurchase,
-        setButtonStep,
+        setButtonStep
       });
       setButtonStep('step2');
       await callSubmitDistribution();
@@ -99,9 +100,9 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
       <Formik
         initialValues={{
           amount: '',
-          partition: partitions[0],
+          partition: partitions[0]
         }}
-        validate={(values) => {
+        validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           if (!values.amount) {
             errors.type = 'Please indicate how many shares you want to send';

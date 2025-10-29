@@ -1,6 +1,5 @@
 import '../styles/tailwind.css';
 import '../styles/main.css';
-import 'tailwindcss/tailwind.css';
 
 import type { Metadata } from 'next';
 import Script from 'next/script';
@@ -9,7 +8,7 @@ import React from 'react';
 import Providers from './providers';
 
 export const metadata: Metadata = {
-  title: 'Cooperativ',
+  title: 'Cooperativ'
 };
 
 const RootLayout = ({ children }: { children: React.ReactNode }) => {
@@ -41,4 +40,3 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
 };
 
 export default RootLayout;
-

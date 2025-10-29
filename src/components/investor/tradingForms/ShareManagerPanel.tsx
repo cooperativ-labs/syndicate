@@ -3,21 +3,26 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC, useState } from 'react';
 
-import { approveRejectSwap, cancelAcceptance, cancelSwap, claimProceeds } from '@src/web3/contractSwapCalls';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import {
+  approveRejectSwap,
+  cancelAcceptance,
+  cancelSwap,
+  claimProceeds
+} from '@src/web3/contractSwapCalls';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/dGraphQueries/orders';
+import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/graphQueries/orders';
 
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
-import { ShareOrder } from 'oldTypes';
+import { ShareOrder } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 export type SaleMangerPanelProps = {
   swapContractAddress: String0x | undefined;
@@ -72,7 +77,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   isContractOwner,
   small,
   refetchAllContracts,
-  refetchOfferingInfo,
+  refetchOfferingInfo
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
@@ -87,19 +92,20 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'unclaimedProceeds',
-    args: [userWalletAddress as String0x],
+    args: [userWalletAddress as String0x]
   });
 
   const { data: acceptedQty } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'acceptedOrderQty',
-    args: [filler as String0x, BigInt(order.contractIndex)],
+    args: [filler as String0x, BigInt(order.contractIndex)]
   });
 
   const acceptedOrderQty = acceptedQty && toNormalNumber(acceptedQty, shareContractDecimals);
   const rawProceeds = contractData && contractData[1]; // Note: contractData[0] is eth, contractData[1] is erc20
-  const proceeds = paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
+  const proceeds =
+    paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
   const minPurchase = order.minUnits;
   const maxPurchase = order.maxUnits;
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
@@ -114,7 +120,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     price,
     currencyCode: getCurrencyById(paymentTokenAddress)?.value,
     partition,
-    addApprovalRecord,
+    addApprovalRecord
   };
 
   const listingIsApproved = isApproved || (txnApprovalsEnabled && order.visible);
@@ -129,8 +135,8 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         currentDate: currentDate,
         orderId: order.id,
         visible: !isDisapprove,
-        archived: order.archived,
-      },
+        archived: order.archived
+      }
     });
   };
 
@@ -143,7 +149,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         contractIndex: order.contractIndex,
         isDisapprove: isDisapprove,
         setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
-        refetchAllContracts,
+        refetchAllContracts
       });
     }
     if (allowVisibilityApproveDisapprove) {
@@ -153,7 +159,12 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 
   const handleArchive = async (archive: boolean) => {
     updateOrderObject({
-      variables: { currentDate: currentDate, orderId: order.id, visible: order.visible, archived: archive },
+      variables: {
+        currentDate: currentDate,
+        orderId: order.id,
+        visible: order.visible,
+        archived: archive
+      }
     });
     refetchOfferingInfo();
   };
@@ -164,7 +175,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       contractIndex: order.contractIndex,
       setButtonStep: setCancelButtonStep,
       handleArchive,
-      refetchAllContracts,
+      refetchAllContracts
     });
     refetchOfferingInfo();
   };
@@ -183,7 +194,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
 
   const cancelButton = (
-    <Button className={buttonClass} onClick={() => handleCancel()} disabled={cancelButtonStep === 'step1'}>
+    <Button
+      className={buttonClass}
+      onClick={() => handleCancel()}
+      disabled={cancelButtonStep === 'step1'}
+    >
       <LoadingButtonText
         state={cancelButtonStep}
         idleText="Cancel Remaining Offer"
@@ -212,8 +227,8 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         transactionIsAccepted || !txnApprovalsEnabled
           ? handleApprove({ isDisapprove: false })
           : listingIsApproved
-          ? updateListingVisibility(true)
-          : updateListingVisibility(false)
+            ? updateListingVisibility(true)
+            : updateListingVisibility(false)
       }
       disabled={approveButtonStep === 'step1'}
     >
@@ -261,7 +276,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       />
       &nbsp;
       {`${
-        txnApprovalsEnabled ? (isAskOrder ? 'is requesting to purchase' : 'is offering to sell') : 'is offering to sell'
+        txnApprovalsEnabled
+          ? isAskOrder
+            ? 'is requesting to purchase'
+            : 'is offering to sell'
+          : 'is offering to sell'
       } `}
       {numShares} shares to &nbsp;
       <FormattedCryptoAddress
@@ -278,7 +297,9 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       {minMaxSection}
       {isContractOwner && !isCancelled && !isFilled ? (
         <>
-          {isAccepted && <div className="pl-1 mb-2 font-semibold text-cDarkBlue">{requestStatementText} </div>}
+          {isAccepted && (
+            <div className="pl-1 mb-2 font-semibold text-cDarkBlue">{requestStatementText} </div>
+          )}
           <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
             {(swapApprovalsEnabled || txnApprovalsEnabled) && (
               <>
@@ -311,7 +332,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       {(isCancelled || isFilled) && proceeds !== 0 && (
         <div className="flex">
           {isContractOwner && (isFilled || isCancelled) && (
-            <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} />
+            <OrderVisibilityToggle
+              orderVisibility={order.visible}
+              orderId={order.id}
+              orderArchived={order.archived}
+            />
           )}
           Completed swap. Please claim proceeds.
         </div>

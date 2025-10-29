@@ -1,14 +1,14 @@
 import Button from '../buttons/Button';
 import Input from '../form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 
 import ClickToEditItem from '../form-components/ClickToEditItem';
 import cn from 'classnames';
 import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import Select from '../form-components/Select';
-import { CurrencyCode, LegalEntity, Maybe } from 'oldTypes';
+import { CurrencyCode, LegalEntity, Maybe } from '@gql/graphql';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
@@ -48,9 +48,9 @@ export const changeForm = (
         jurProvince: jurisdiction?.province,
         operatingCurrencyCode: operatingCurrency?.code,
         taxId: taxId,
-        purpose: purpose,
+        purpose: purpose
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.legalName) {
           errors.legalName = 'Please include the legal name of this syndication.';
@@ -78,8 +78,12 @@ export const changeForm = (
           )}
         >
           <div className="w-full md:col-span-3">
-            {itemType === 'displayName' && <Input className={' bg-opacity-0'} required name="displayName" />}
-            {itemType === 'legalName' && <Input className={' bg-opacity-0'} required name="legalName" />}
+            {itemType === 'displayName' && (
+              <Input className={' bg-opacity-0'} required name="displayName" />
+            )}
+            {itemType === 'legalName' && (
+              <Input className={' bg-opacity-0'} required name="legalName" />
+            )}
 
             {itemType === 'jurisdiction' && <JurisdictionSelect values={values} />}
             {itemType === 'currency' && (
@@ -93,8 +97,12 @@ export const changeForm = (
                 })}
               </Select>
             )}
-            {itemType === 'taxId' && <Input className={' bg-opacity-0'} required name="taxId" placeholder="Tax ID" />}
-            {itemType === 'purpose' && <Input className={' bg-opacity-0 w-full'} required name="purpose" textArea />}
+            {itemType === 'taxId' && (
+              <Input className={' bg-opacity-0'} required name="taxId" placeholder="Tax ID" />
+            )}
+            {itemType === 'purpose' && (
+              <Input className={' bg-opacity-0 w-full'} required name="purpose" textArea />
+            )}
           </div>
           <Button
             type="submit"
@@ -105,7 +113,7 @@ export const changeForm = (
           </Button>
           <Button
             className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               setEditOn('none');
             }}
@@ -137,8 +145,14 @@ type EntitySpecificationsProps = {
   }) => void;
 };
 
-const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager, updateLegalEntity }) => {
-  const [editOn, setEditOn] = useState<EditEntitySelectionType | EditOrganizationSelectionType | string>('none');
+const EntitySpecifications: FC<EntitySpecificationsProps> = ({
+  entity,
+  isManager,
+  updateLegalEntity
+}) => {
+  const [editOn, setEditOn] = useState<
+    EditEntitySelectionType | EditOrganizationSelectionType | string
+  >('none');
   const { id, legalName, displayName, operatingCurrency, taxId, purpose } = entity;
 
   const handleChange = async (values: ChangeFormProps) => {
@@ -154,8 +168,8 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
           jurProvince: values.jurProvince,
           operatingCurrencyCode: operatingCurrencyCode,
           taxId: taxId,
-          purpose: purpose,
-        },
+          purpose: purpose
+        }
       });
       setEditOn('none');
     } catch (e: any) {

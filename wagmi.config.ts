@@ -6,13 +6,13 @@ export default defineConfig({
   contracts: [
     {
       name: 'ShareContract',
-      abi: shareABI,
+      abi: shareABI
     },
     {
       name: 'SwapContract',
-      abi: swapABI,
+      abi: swapABI
     },
-    { name: 'DividendContract', abi: distributionABI },
+    { name: 'DividendContract', abi: distributionABI }
   ],
   plugins: [
     // sourcify({
@@ -26,5 +26,5 @@ export default defineConfig({
     //     { name: 'DividendContract', address: '0xDd78Ef60DffEba48142139e9a6b6Ce2B023416d3' },
     //   ],
     // }),
-  ],
+  ]
 });

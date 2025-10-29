@@ -1,23 +1,23 @@
-"use client";
+'use client';
 
 import React, { FC, useState } from 'react';
 
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 
-import { currentDate } from '@utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 
 import CreateEntity from '../entity/CreateEntity';
 import EntitySelector from '../form-components/EntitySelector';
 import FormButton from '../buttons/FormButton';
 import FormModal from '@src/containers/FormModal';
-import { ADD_OFFERING } from '@src/utils/dGraphQueries/offering';
+import { ADD_OFFERING } from '@src/utils/graphQueries/offering';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { LegalEntity, Organization } from 'oldTypes';
 import { useRouter } from 'next/navigation';
+import { LegalEntity, Organization } from '@gql/graphql';
 
 type CreateOfferingType = {
   organization: Organization;
@@ -30,8 +30,9 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
-  const entityOptions = organization && getEntityOptionsList(organization.legalEntities as LegalEntity[]);
-  const entitiesWithoutOfferings = entityOptions.filter((entity) => entity.offerings?.length === 0);
+  const entityOptions =
+    organization && getEntityOptionsList(organization.legalEntities as LegalEntity[]);
+  const entitiesWithoutOfferings = entityOptions.filter(entity => entity.offerings?.length === 0);
 
   const entitySubmissionCompletion = () => {
     refetch();
@@ -51,8 +52,8 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
           offeringEntityId: values.offeringEntityId,
           name: values.name,
           image: '/assets/images/logos/company-placeholder.jpeg',
-          brandColor: '#275A8F',
-        },
+          brandColor: '#275A8F'
+        }
       });
       const offeringId = result.data?.addOffering.offering[0].id;
       router.push(`/${organization.id}/offerings/${offeringId}`);
@@ -73,9 +74,9 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
       <Formik
         initialValues={{
           offeringEntityId: '',
-          name: '',
+          name: ''
         }}
-        validate={(values) => {
+        validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           if (!values.name) {
             errors.name = 'Please set an name';

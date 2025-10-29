@@ -1,8 +1,10 @@
-import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, {
+  normalizeGeoAddress
+} from '../form-components/CustomAddressAutocomplete';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC, useEffect, useState } from 'react';
-import { Address, Maybe } from 'oldTypes';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { Address, Maybe } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
@@ -15,20 +17,26 @@ export type UpdateAddressType = {
   setModal: (addressModel: boolean) => void;
 };
 
-const UpdateAddress: FC<UpdateAddressType> = ({ address, addressId, addressLine1, updateAddress, setModal }) => {
+const UpdateAddress: FC<UpdateAddressType> = ({
+  address,
+  addressId,
+  addressLine1,
+  updateAddress,
+  setModal
+}) => {
   const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
   const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
   const placeId = inputAddress && inputAddress.value.place_id;
   useEffect(() => {
     geocodeByPlaceId(placeId)
-      .then((results) => {
+      .then(results => {
         setAutocompleteResults(results);
         const lat = results[0]?.geometry.location.lat();
         const lng = results[0]?.geometry.location.lng();
         setLatLang({ lat: lat, lng: lng });
       })
-      .catch((error) => {
+      .catch(error => {
         return error;
       });
   }, [placeId]);
@@ -46,9 +54,9 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, addressId, addressLine1
         city: address?.city,
         stateProvince: address?.stateProvince,
         postalCode: address?.postalCode,
-        country: address?.country,
+        country: address?.country
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.addressLine1) {
           errors.addressLine1 = 'Please include a street address.';
@@ -77,8 +85,8 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, addressId, addressLine1
             country: country,
             lat: latLang.lat,
             lng: latLang.lng,
-            currentDate: currentDate,
-          },
+            currentDate: currentDate
+          }
         });
         setModal(false);
         setSubmitting(false);
@@ -86,10 +94,18 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, addressId, addressLine1
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
-          <CustomAddressAutocomplete name="addressAutocomplete" value={inputAddress} setValue={setInputAddress} />
+          <CustomAddressAutocomplete
+            name="addressAutocomplete"
+            value={inputAddress}
+            setValue={setInputAddress}
+          />
           {latLang.lat && (
             <div className="mt-4">
-              <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>
+              <GoogleMap
+                mapContainerStyle={{ height: '300px', width: '100%' }}
+                center={latLang}
+                zoom={14}
+              >
                 <Marker position={latLang} />
               </GoogleMap>
             </div>

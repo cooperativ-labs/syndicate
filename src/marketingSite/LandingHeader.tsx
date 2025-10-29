@@ -9,15 +9,18 @@ const LandingHeader: FC = () => {
     <div className="z-30 shadow-md ">
       {/* <HighlightBanner /> */}
       <MarketingNav />
-      <div className="flex min-h-full mx-auto justify-center px-4 md:px-8 md:mt-8" style={{ maxWidth: '1280px' }}>
+      <div
+        className="flex min-h-full mx-auto justify-center px-4 md:px-8 md:mt-8"
+        style={{ maxWidth: '1280px' }}
+      >
         <div className="my-10 flex flex-col">
           <div className=" max-w-4xl justify-center" style={{ textShadow: '3px 3px 5px #e2e2e2' }}>
             <h1 className="ubuntu text-4xl md:text-6xl mb-4 text-center font-semibold text-cLightBlue ">
               Real Asset Tokenizer
             </h1>
             <div className="text-xl font-medium text-center text-cDarkBlue">
-              Let your investors apply to your offering, purchase shares, and trade with your other limited partners
-              right from their phone. Built for Reg-D offerings.
+              Let your investors apply to your offering, purchase shares, and trade with your other
+              limited partners right from their phone. Built for Reg-D offerings.
             </div>
             <div className="flex flex-col md:flex-row mt-10 mb-8 justify-center items-center">
               {/* <MarketingButton
@@ -74,7 +77,10 @@ const LandingHeader: FC = () => {
 
           <div className="hidden md:flex" style={{ maxWidth: '1280px' }}>
             <a href="https://twitter.com/RealDAO1" target="_blank" rel="noreferrer">
-              <div className="flex mt-3 md:mt-0 items-center mx-8 text-sm font-medium" style={{ maxWidth: '1280px' }}>
+              <div
+                className="flex mt-3 md:mt-0 items-center mx-8 text-sm font-medium"
+                style={{ maxWidth: '1280px' }}
+              >
                 Member of Real World Asset Consortium{' '}
                 <img src="/assets/images/logos/rwac-logo.jpg" className="h-5 ml-2 mx-1" />{' '}
               </div>

@@ -2,7 +2,7 @@ import cn from 'classnames';
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 import React, { FC, useEffect } from 'react';
 
-import { Maybe, OfferingParticipant } from 'oldTypes';
+import { Maybe, OfferingParticipant } from '@gql/graphql';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
@@ -20,13 +20,13 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   participant,
   shareContractAddress,
   investorListRefreshTrigger,
-  setSelectedParticipant,
+  setSelectedParticipant
 }) => {
   const { address: userWalletAddress } = useAccount();
 
   const sharedContractBits = {
     address: shareContractAddress,
-    abi: shareContractABI,
+    abi: shareContractABI
   };
 
   const { data, isLoading, refetch } = useContractReads({
@@ -34,14 +34,14 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
       {
         ...sharedContractBits,
         functionName: 'balanceOf',
-        args: [participant?.walletAddress as String0x],
+        args: [participant?.walletAddress as String0x]
       },
       {
         ...sharedContractBits,
         functionName: 'isWhitelisted',
-        args: [participant?.walletAddress as String0x],
-      },
-    ],
+        args: [participant?.walletAddress as String0x]
+      }
+    ]
   });
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
         isYou && 'bg-gray-100',
         'relative md:grid grid-cols-11 gap-3 items-center  p-3  border-2 rounded-lg hover:shadow-md cursor-pointer z-0'
       )}
-      onClick={(e) => {
+      onClick={e => {
         setSelectedParticipant(participant.id);
       }}
     >
@@ -89,7 +89,9 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
       </div>
       <div className="col-span-3 mt-3 md:mt-0 flex justify-end">
         {isWhitelisted ? (
-          <div className="font-bold text-emerald-700 uppercase center self-center mr-4">approved</div>
+          <div className="font-bold text-emerald-700 uppercase center self-center mr-4">
+            approved
+          </div>
         ) : (
           <div className="font-bold text-red-700 uppercase center self-center mr-4">unapproved</div>
         )}

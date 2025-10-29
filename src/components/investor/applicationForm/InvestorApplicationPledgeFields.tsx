@@ -2,7 +2,7 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React from 'react';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { Maybe, Offering } from 'oldTypes';
+import { Maybe, Offering } from '@gql/graphql';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
 type InvestorApplicationPledgeFieldsProps = {
@@ -14,7 +14,7 @@ type InvestorApplicationPledgeFieldsProps = {
 const InvestorApplicationPledgeFields: React.FC<InvestorApplicationPledgeFieldsProps> = ({
   offering,
   values,
-  saleAmountString,
+  saleAmountString
 }) => {
   return (
     <div>
@@ -23,12 +23,15 @@ const InvestorApplicationPledgeFields: React.FC<InvestorApplicationPledgeFieldsP
           Price per share:{' '}
           <span className="font-normal ">
             {numberWithCommas(offering.details?.minUnitsPerInvestor)}{' '}
-            {offering.details?.investmentCurrency && getCurrencyOption(offering.details.investmentCurrency)?.symbol}
+            {offering.details?.investmentCurrency &&
+              getCurrencyOption(offering.details.investmentCurrency)?.symbol}
           </span>
         </div>
         <div>
           Minimum purchase:{' '}
-          <span className="font-normal ">{numberWithCommas(offering.details?.priceStart)} shares </span>
+          <span className="font-normal ">
+            {numberWithCommas(offering.details?.priceStart)} shares{' '}
+          </span>
         </div>
       </div>
       <div className="md:grid grid-cols-2 gap-3">
@@ -45,7 +48,8 @@ const InvestorApplicationPledgeFields: React.FC<InvestorApplicationPledgeFieldsP
             <>
               {values.minPledge &&
                 `${saleAmountString(values.minPledge, offering.details?.priceStart)} ${
-                  offering.details?.investmentCurrency && getCurrencyOption(offering.details.investmentCurrency)?.symbol
+                  offering.details?.investmentCurrency &&
+                  getCurrencyOption(offering.details.investmentCurrency)?.symbol
                 }`}
             </>
           </NonInput>
@@ -63,7 +67,8 @@ const InvestorApplicationPledgeFields: React.FC<InvestorApplicationPledgeFieldsP
             <>
               {values.maxPledge &&
                 `${saleAmountString(values.maxPledge, offering.details?.priceStart)} ${
-                  offering.details?.investmentCurrency && getCurrencyOption(offering.details.investmentCurrency)?.symbol
+                  offering.details?.investmentCurrency &&
+                  getCurrencyOption(offering.details.investmentCurrency)?.symbol
                 }`}
             </>
           </NonInput>

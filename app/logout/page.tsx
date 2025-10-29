@@ -1,7 +1,7 @@
-"use client";
+'use client';
 
 import React, { useEffect } from 'react';
-import { signOut } from 'next-auth/react';
+import { signOut } from '@src/utils/actions/userActions';
 import { useRouter } from 'next/navigation';
 import { useDisconnect } from 'wagmi';
 
@@ -11,13 +11,8 @@ const SignOut = () => {
 
   useEffect(() => {
     disconnect();
-    signOut({ callbackUrl: '/' })
-      .then(() => {
-        router.replace('/');
-      })
-      .catch((error) => {
-        throw new Error(`Error signing out: ${error}`);
-      });
+    signOut();
+    router.replace('/');
   }, [router, disconnect]);
 
   return (
@@ -28,4 +23,3 @@ const SignOut = () => {
 };
 
 export default SignOut;
-

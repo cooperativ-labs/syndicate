@@ -1,12 +1,18 @@
 import { Dispatch, SetStateAction } from 'react';
-import { String0x, StandardChainErrorHandling } from './helpersChain';
+import { StandardChainErrorHandling, String0x } from './helpersChain';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 
-import { MutationFunctionOptions, OperationVariables, DefaultContext, ApolloCache } from '@apollo/client';
+// Apollo types are intentionally not imported to avoid version-specific generics
 
-import { waitForTransaction, writeContract, prepareWriteContract, getPublicClient } from 'wagmi/actions';
+import {
+  getPublicClient,
+  simulateContract,
+  waitForTransactionReceipt,
+  writeContract
+} from 'wagmi/actions';
 
 import { dividendContractABI } from './generated';
+import { config } from '@src/web3/wagmi';
 import toast from 'react-hot-toast';
 import { toContractNumber } from './util';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -20,9 +26,7 @@ type SubmitDistributionProps = {
   partition: String0x;
   offeringId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  addDistribution: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
-  ) => Promise<any>;
+  addDistribution: (options?: any) => Promise<any>;
 };
 
 export const submitDistribution = async ({
@@ -33,11 +37,11 @@ export const submitDistribution = async ({
   partition,
   offeringId,
   setButtonStep,
-  addDistribution,
+  addDistribution
 }: SubmitDistributionProps) => {
   const call = async () => {
-    const publicClient = getPublicClient();
-    const block = await publicClient.getBlock();
+    const publicClient = getPublicClient(config);
+    const block = await publicClient!.getBlock();
     if (!block) {
       toast.error('Unable to get block number');
       return;
@@ -48,27 +52,37 @@ export const submitDistribution = async ({
     const recordDate = TimestampWithBuffer;
     const payoutDate = TimestampWithBuffer;
     const amountInDecimal =
-      amount && distributionTokenDecimals ? toContractNumber(amount, distributionTokenDecimals) : BigInt(0);
+      amount && distributionTokenDecimals
+        ? toContractNumber(amount, distributionTokenDecimals)
+        : BigInt(0);
     const payoutToken = distributionTokenAddress ? distributionTokenAddress : '0x0000000';
     const payoutTokenSymbol = getCurrencyById(distributionTokenAddress)?.symbol;
     try {
-      const { request, result } = await prepareWriteContract({
+      const { request, result } = await simulateContract(config, {
         address: distributionContractAddress as String0x,
         abi: dividendContractABI,
         functionName: 'depositDividend',
-        args: [blockNumber, exDividendDate, recordDate, payoutDate, amountInDecimal, payoutToken, partition],
+        args: [
+          blockNumber,
+          exDividendDate,
+          recordDate,
+          payoutDate,
+          amountInDecimal,
+          payoutToken,
+          partition
+        ]
       });
-      const { hash } = await writeContract(request);
-      const transaction = await waitForTransaction({
-        hash: hash,
+      const hash = await writeContract(config, request);
+      const transaction = await waitForTransactionReceipt(config, {
+        hash
       });
       const contractIndex = Number(result);
       await addDistribution({
         variables: {
           offeringId: offeringId,
           transactionHash: transaction.transactionHash,
-          contractIndex: contractIndex,
-        },
+          contractIndex: contractIndex
+        }
       });
       setButtonStep('confirmed');
       toast.success(`${numberWithCommas(amount)} ${payoutTokenSymbol} has been distributed`);
@@ -88,20 +102,20 @@ type ClaimDividendProps = {
 export const claimDistribution = async ({
   distributionContractAddress,
   distributionContractIndex,
-  setButtonStep,
+  setButtonStep
 }: ClaimDividendProps) => {
   setButtonStep('step1');
   const call = async () => {
     try {
-      const { request } = await prepareWriteContract({
+      const { request } = await simulateContract(config, {
         address: distributionContractAddress,
         abi: dividendContractABI,
         functionName: 'claimDividend',
-        args: [BigInt(distributionContractIndex)],
+        args: [BigInt(distributionContractIndex)]
       });
-      const { hash } = await writeContract(request);
-      await waitForTransaction({
-        hash: hash,
+      const hash = await writeContract(config, request);
+      await waitForTransactionReceipt(config, {
+        hash
       });
       setButtonStep('confirmed');
     } catch (e) {

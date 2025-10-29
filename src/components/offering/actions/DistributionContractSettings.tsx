@@ -1,7 +1,7 @@
 import CreateDistributionContract from '../CreateDistributionContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { FC } from 'react';
-import { Currency, Maybe, Offering, OfferingSmartContractSet } from 'oldTypes';
+import { Currency, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
 import { useChainId } from 'wagmi';
 
@@ -14,11 +14,12 @@ export type DistributionContractSettingsProps = {
 const DistributionContractSettings: FC<DistributionContractSettingsProps> = ({
   contractSet,
   investmentCurrency,
-  offering,
+  offering
 }) => {
   const chainId = useChainId();
   const shareContract = contractSet?.shareContract;
-  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
+    ?.address as String0x;
 
   return (
     <>

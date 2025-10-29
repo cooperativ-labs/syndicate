@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
@@ -20,10 +20,16 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
   const windowSize = useWindowSize();
   const params = useParams<{ organizationId: string }>();
   const orgId = params?.organizationId as string | undefined;
-  const OrganizationIdFromSessionStorage = sessionStorage.getItem('CHOSEN_ORGANIZATION');
+  const [OrganizationIdFromSessionStorage, setOrganizationIdFromSessionStorage] = useState<
+    string | null
+  >(null);
+  useEffect(() => {
+    const organizationId = window?.sessionStorage?.getItem('CHOSEN_ORGANIZATION');
+    setOrganizationIdFromSessionStorage(organizationId);
+  }, []);
   const setOrgId = OrganizationIdFromSessionStorage ?? orgId;
 
-  const currentOrganizationName = orgId && organizations?.find((org) => org.id === orgId)?.name;
+  const currentOrganizationName = orgId && organizations?.find(org => org.id === orgId)?.name;
 
   useEffect(() => {
     if (ManagerSidebarOpen && windowSize.width < 768) {
@@ -84,7 +90,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
               </Button>
             </div>
           </div>
-          <ManagerSideBarContents organizationId={OrganizationIdFromSessionStorage} />
+          <ManagerSideBarContents organizationId={setOrgId} />
         </div>
       </div>
     </div>

@@ -1,5 +1,5 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import Offerings from '@src/pages/Offerings';
+import Offerings from '@src/screens/Offerings';
 import React from 'react';
 
 const OfferingsPage = () => {
@@ -13,4 +13,3 @@ const OfferingsPage = () => {
 };
 
 export default OfferingsPage;
-

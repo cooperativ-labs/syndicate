@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import Button from '@src/components/buttons/Button';
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
@@ -7,9 +7,9 @@ import React, { FC, useContext } from 'react';
 import { useRouter } from 'next/navigation';
 import UserMenu from './UserMenu';
 import { ApplicationStoreProps, store } from '@context/store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useAccount } from 'wagmi';
-import { useSession } from 'next-auth/react';
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import { ChevronLeftIcon } from 'lucide-react';
 
 type NavBarProps = {
   transparent?: boolean;
@@ -18,9 +18,9 @@ type NavBarProps = {
 };
 
 export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
+  const { user } = useSupabaseAuth();
   const router = useRouter();
-  const { status } = useSession();
-  const isAuthenticated = status === 'authenticated';
+  const isAuthenticated = !!user;
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch } = applicationStore;
   const { address: userWalletAddress } = useAccount();
@@ -30,12 +30,12 @@ export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
         {isAuthenticated && (
           <div className="flex md:hidden">
             <Button
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 dispatch({ type: 'TOGGLE_MANAGER_SIDEBAR' });
               }}
             >
-              <FontAwesomeIcon icon={['fas', 'bars']} size="lg" />
+              <ChevronLeftIcon className="w-4 h-4" size={24} />
             </Button>
             <div className="m-2" />
           </div>
@@ -44,12 +44,25 @@ export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
           <div
             className={`flex border-gray-300 border-2  items-center rounded-full font-semibold text-xs text-gray-700`}
           >
-            <img src={orgLogo} referrerPolicy="no-referrer" className="w-8 h-8 border-2 border-white rounded-full" />
+            <img
+              src={orgLogo}
+              referrerPolicy="no-referrer"
+              className="w-8 h-8 border-2 border-white rounded-full"
+            />
           </div>
         )}
-        {orgName && <div className=" hidden md:flex text-sm uppercase font-semibold text-gray-700 ml-2">{orgName}</div>}
-        <button className="ml-2 border-2 rounded-full  px-4 max-w-max lg:hidden" onClick={() => router.back()}>
-          <FontAwesomeIcon icon="chevron-left" /> back
+        {orgName && (
+          <div className=" hidden md:flex text-sm uppercase font-semibold text-gray-700 ml-2">
+            {orgName}
+          </div>
+        )}
+        <button
+          className="ml-2 border-2 rounded-full  px-4 max-w-max lg:hidden"
+          onClick={() => router.back()}
+        >
+          <ChevronLeftIcon className="w-4 h-4" size={24} />
+
+          <span>back</span>
         </button>
         {/* <div className="flex">{!userWalletAddress && <ChooseConnectorButton buttonText={'Connect Wallet'} />}</div> */}
       </div>
@@ -58,7 +71,11 @@ export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
         <UserMenu />
       ) : (
         <div className="flex">
-          {!userWalletAddress ? <ChooseConnectorButton buttonText={'Connect Wallet'} /> : <DisconnectButton />}
+          {!userWalletAddress ? (
+            <ChooseConnectorButton buttonText={'Connect Wallet'} />
+          ) : (
+            <DisconnectButton />
+          )}
         </div>
       )}
     </div>

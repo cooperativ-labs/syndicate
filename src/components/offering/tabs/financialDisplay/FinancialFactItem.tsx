@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Currency } from 'oldTypes';
+import { Currency } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
@@ -20,16 +20,18 @@ const FinancialFactItem: FC<FinancialFactItemProps> = ({
   secondPercent,
   multiple,
   secondMultiple,
-  currency,
+  currency
 }) => {
   return (
     <>
       <div className="flex justify-between px-4 lg:px-8">
         <div className="font-bold">{label} </div>
         <div>
-          {amount && numberWithCommas(amount)} {amount && currency && `(${getCurrencyOption(currency)?.symbol})`}
+          {amount && numberWithCommas(amount)}{' '}
+          {amount && currency && `(${getCurrencyOption(currency)?.symbol})`}
           {amount && percent && ` (`}
-          {percent && `${percent}${secondPercent ? ` - ${secondPercent}` : ''}%`} {amount && percent && `)`}
+          {percent && `${percent}${secondPercent ? ` - ${secondPercent}` : ''}%`}{' '}
+          {amount && percent && `)`}
           {multiple && (
             <>
               {multiple}

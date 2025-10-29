@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import Select from './Select';
 import { defaultFieldDiv } from './Inputs';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
-import { LegalEntity } from 'oldTypes';
+import { LegalEntity } from '@gql/graphql';
 
 type EntitySelectorProps = {
   entities: LegalEntity[];
@@ -23,7 +23,7 @@ const EntitySelector: FC<EntitySelectorProps> = ({
   fieldName,
   excludeIndividuals,
   withAdd,
-  className,
+  className
 }) => {
   const createEntityList = (entities: LegalEntity[]) => {
     return entities.map((entity, i) => {
@@ -58,7 +58,7 @@ const EntitySelector: FC<EntitySelectorProps> = ({
             {!setModal && alert('a modal must be set for this button to work')}
             <Button
               className="p-1 px-3 border-2 border-gray-400 rounded-lg mb-3"
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 setModal(true);
               }}

@@ -2,19 +2,19 @@ import {
   confirmNoLiveOrders,
   ContractOrder,
   getCurrentOrderPrice,
-  getOrderArrayFromContract,
+  getOrderArrayFromContract
 } from '@src/utils/helpersOrder';
 import { dividendContractABI } from '@src/web3/generated';
-import { DocumentType, Offering, ShareOrder } from 'oldTypes';
+import { DocumentType, Offering, ShareOrder } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
+import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { toNormalNumber } from '@src/web3/util';
-import { useAccount, useChainId, useContractRead } from 'wagmi';
+import { useAccount, useChainId, useReadContract } from 'wagmi';
 import { useAsync } from 'react-use';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useState } from 'react';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
@@ -30,24 +30,30 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
-  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
+    .address as String0x;
   const distributionPaymentToken = getCurrencyOption(details?.investmentCurrency);
   const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
-  const distributionPaymentTokenDecimals = distributionPaymentToken ? distributionPaymentToken?.decimals : 18;
+  const distributionPaymentTokenDecimals = distributionPaymentToken
+    ? distributionPaymentToken?.decimals
+    : 18;
 
   const {
     data: ordersData,
     error,
-    refetch: refetchOrders,
+    refetch: refetchOrders
   } = useQuery(RETRIEVE_ORDERS, {
-    variables: { swapContractAddress: swapContractAddress },
+    variables: { swapContractAddress: swapContractAddress }
   });
 
   const orders = ordersData?.queryShareOrder;
 
-  const { data: transferEventData, refetch: refetchTransactionHistory } = useQuery(RETRIEVE_TRANSFER_EVENT, {
-    variables: { shareContractAddress: shareContractAddress },
-  });
+  const { data: transferEventData, refetch: refetchTransactionHistory } = useQuery(
+    RETRIEVE_TRANSFER_EVENT,
+    {
+      variables: { shareContractAddress: shareContractAddress }
+    }
+  );
 
   const transferEvents = transferEventData?.queryShareTransferEvent;
 
@@ -64,7 +70,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     shareContractVersion,
     issueReaching1410,
     isLoading: shareIsLoading,
-    refetchShareContract,
+    refetchShareContract
   } = useShareContractInfo(shareContractAddress, userWalletAddress);
 
   const {
@@ -76,14 +82,14 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     nextOrderId,
     issueReachingSwapContract,
     isLoading: swapIsLoading,
-    refetchSwapContract,
+    refetchSwapContract
   } = useSwapContractInfo(swapContractAddress);
 
-  const { data: distributionData } = useContractRead({
+  const { data: distributionData } = useReadContract({
     address: distributionContractAddress,
     abi: dividendContractABI,
     functionName: 'balances',
-    args: [distributionPaymentTokenAddress as String0x],
+    args: [distributionPaymentTokenAddress as String0x]
   });
   const totalDistributed = toNormalNumber(distributionData, distributionPaymentTokenDecimals);
 
@@ -104,14 +110,18 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
 
   const hasContract = !!contractOwner;
   const isContractOwner = contractOwner === userWalletAddress;
-  const isOfferingManager = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
-  const contractManagerMatches = isContractOwner === !!isOfferingManager || isManager === !!isOfferingManager;
+  const isOfferingManager =
+    getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
+  const contractManagerMatches =
+    isContractOwner === !!isOfferingManager || isManager === !!isOfferingManager;
 
   const swapContractMatches = !swapContract
     ? true
     : normalizeEthAddress(shareTokenAddress) === normalizeEthAddress(shareContractAddress);
 
-  const contractMatchesCurrentChain = !shareContract ? true : shareContract.cryptoAddress.chainId === chainId;
+  const contractMatchesCurrentChain = !shareContract
+    ? true
+    : shareContract.cryptoAddress.chainId === chainId;
 
   const isLoading = shareIsLoading || swapIsLoading;
 
@@ -158,7 +168,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
     refetchShareContract,
     refetchSwapContract,
     refetchOrders,
-    refetchTransactionHistory,
+    refetchTransactionHistory
   };
 };
 

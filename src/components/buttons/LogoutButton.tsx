@@ -1,11 +1,10 @@
-"use client";
+'use client';
 
 import Button from './Button';
 import cn from 'classnames';
 import React, { FC, useContext } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
-import { disconnectWallet } from '@src/web3/connectors';
-import { signOut } from 'next-auth/react';
+import { signOut } from '@src/utils/actions/userActions';
 
 const LogoutButton: FC = () => {
   const applicationStore: ApplicationStoreProps = useContext(store);
@@ -13,16 +12,10 @@ const LogoutButton: FC = () => {
 
   const outlinedClass = `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white`;
 
-  function handleDisconnect() {
+  async function handleDisconnect() {
     dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
-    disconnectWallet();
-    signOut({ callbackUrl: '/' })
-      .then(() => {
-        window.location.reload();
-      })
-      .catch((error) => {
-        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
-      });
+    await signOut();
+    dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
   }
   return (
     <Button

@@ -1,10 +1,11 @@
-"use client";
+'use client';
 
 import cn from 'classnames';
 import Compressor from 'compressorjs';
 import DeleteButton from '../buttons/DeleteButton';
 import React, { FC, useState } from 'react';
-import { DocumentType } from 'oldTypes';
+import router from 'next/router';
+import { DocumentType } from '@gql/graphql';
 import { FileUploader } from 'react-drag-drop-files';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
@@ -31,7 +32,7 @@ const FileUpload: FC<FileUploadProps> = ({
   imagePreview,
   className,
   setImagePreview,
-  urlToDatabase,
+  urlToDatabase
 }) => {
   const [progressAmt, setProgressAmt] = useState<number>(0);
   const [uploading, setUploading] = useState<boolean>(false);
@@ -54,11 +55,13 @@ const FileUpload: FC<FileUploadProps> = ({
       try {
         const response = await fetch('/api/upload', {
           method: 'POST',
-          body: formData,
+          body: formData
         });
 
         if (!response.ok) {
-          throw new Error(`Failed to upload file. Status: ${response.status}, Status Text: ${response.statusText}`);
+          throw new Error(
+            `Failed to upload file. Status: ${response.status}, Status Text: ${response.statusText}`
+          );
         }
 
         const data = await response.json();
@@ -79,7 +82,7 @@ const FileUpload: FC<FileUploadProps> = ({
         },
         error(err) {
           alert(err.message);
-        },
+        }
       });
     } else {
       uploadFile(file);
@@ -96,7 +99,12 @@ const FileUpload: FC<FileUploadProps> = ({
           <img className="h-40 object-scale-down" src={imagePreview} />
         </div>
       ) : (
-        <FileUploader multiple={allowMultiple} handleChange={handleUploadFile} name="file" types={accept}>
+        <FileUploader
+          multiple={allowMultiple}
+          handleChange={handleUploadFile}
+          name="file"
+          types={accept}
+        >
           <div
             className={cn(
               className
@@ -104,7 +112,10 @@ const FileUpload: FC<FileUploadProps> = ({
                 : 'flex p-3 mt-1 bg-gray-100  h-24 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40'
             )}
           >
-            <FontAwesomeIcon icon={'arrow-up-from-bracket' as IconName} className="text-3xl text-gray-600 mr-4" />
+            <FontAwesomeIcon
+              icon={'arrow-up-from-bracket' as IconName}
+              className="text-3xl text-gray-600 mr-4"
+            />
             <div>
               <div className="text-gray-700 text-bold text-lg uppercase">{uploaderText}</div>
               <div className="text-sm mt-1 "> Drag and drop or click to upload</div>

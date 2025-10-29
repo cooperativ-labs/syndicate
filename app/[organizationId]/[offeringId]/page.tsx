@@ -1,9 +1,9 @@
-import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
-import { initializeApollo } from '@src/utils/apolloClient';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+import { initializeApollo } from '@src/utils/supabaseApolloClient';
 import type { Metadata } from 'next';
 import { cache } from 'react';
 import React from 'react';
-import { Offering } from 'oldTypes';
+import { Offering } from '@gql/graphql';
 
 import ClientOfferingPage from './ClientOfferingPage';
 
@@ -16,7 +16,7 @@ const fetchOffering = cache(async (offeringId: string | undefined) => {
     const apolloClient = initializeApollo();
     const { data } = await apolloClient.query({
       query: GET_OFFERING,
-      variables: { id: offeringId },
+      variables: { id: offeringId }
     });
 
     return (data?.getOffering ?? null) as Offering | null;
@@ -50,14 +50,14 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
       type: 'website',
       description: shortDescription ?? undefined,
       url: `https://cooperativ.io/${orgId}/offerings/${id}`,
-      images: [imageUrl],
+      images: [imageUrl]
     },
     twitter: {
       title: name,
       description: shortDescription ?? undefined,
       card: 'summary_large_image',
-      images: [imageUrl],
-    },
+      images: [imageUrl]
+    }
   };
 };
 
@@ -67,4 +67,3 @@ const OfferingPage = async ({ params }: Params) => {
 };
 
 export default OfferingPage;
-

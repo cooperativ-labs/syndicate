@@ -3,7 +3,12 @@ import LogoutButton from '@src/components/buttons/LogoutButton';
 import ManagerSidebarItem from '@src/components/buttons/ManagerSidebarItem';
 import React, { FC } from 'react';
 
-export type ManagerSideBarItemSelectionType = 'Overview' | 'Offerings' | 'Entities' | 'Settings' | 'None';
+export type ManagerSideBarItemSelectionType =
+  | 'Overview'
+  | 'Offerings'
+  | 'Entities'
+  | 'Settings'
+  | 'None';
 
 type ManagerSideBarContentsProps = {
   organizationId: string | null;

@@ -1,8 +1,8 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import Dashboard from '@src/pages/Dashboard';
-import React from 'react';
+import { NextPage } from 'next';
+import Dashboard from '@src/screens/Dashboard';
 
-const DashboardPage = () => {
+const DashboardPage: NextPage = () => {
   return (
     <div data-test="component-landing" className="h-full flex">
       <ManagerWrapper>
@@ -13,4 +13,3 @@ const DashboardPage = () => {
 };
 
 export default DashboardPage;
-

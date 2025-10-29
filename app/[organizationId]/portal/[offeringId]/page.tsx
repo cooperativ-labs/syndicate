@@ -1,5 +1,5 @@
 import PortalWrapper from '@src/containers/PortalWrapper';
-import PortalOfferingPage from '@src/pages/PortalOffering';
+import PortalOfferingPage from '@src/screens/PortalOffering';
 import React from 'react';
 
 const PortalOfferingRoute = () => {
@@ -11,4 +11,3 @@ const PortalOfferingRoute = () => {
 };
 
 export default PortalOfferingRoute;
-

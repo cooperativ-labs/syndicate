@@ -1,18 +1,19 @@
 import React, { FC } from 'react';
 
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
-import { Maybe, NotificationConfiguration, OrganizationUser } from 'oldTypes';
+import { Maybe, NotificationConfiguration, OrganizationUser } from '@gql/graphql';
 
 import NotificationConfigItem, { NotificationConfigItemBaseProps } from './NotificationConfigItem';
-import { REMOVE_NOTIFICATION_RULE } from '@src/utils/dGraphQueries/organization';
+import { REMOVE_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
 
 type NotificationConfigListProps = {
   organizationUser: Maybe<OrganizationUser> | undefined;
 };
 
 const NotificationConfigList: FC<NotificationConfigListProps> = ({ organizationUser }) => {
-  const [removeNotification, { data: dataRemove, error: deleteError }] = useMutation(REMOVE_NOTIFICATION_RULE);
+  const [removeNotification, { data: dataRemove, error: deleteError }] =
+    useMutation(REMOVE_NOTIFICATION_RULE);
 
   if (deleteError) {
     throw new Error(deleteError.message);

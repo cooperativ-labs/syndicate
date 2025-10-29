@@ -13,9 +13,7 @@ const DisconnectButton: FC<DisconnectButtonProps> = ({ refetchWallet }) => {
   return (
     <button
       className={cn(outlinedClass, 'text-xs p-1 px-3 font-semibold rounded-full relative mr-2')}
-      onClick={() => {
-        disconnectWallet(() => disconnect());
-      }}
+      onClick={() => disconnect()}
     >
       Disconnect
     </button>

@@ -1,5 +1,5 @@
-import fileDownload from "js-file-download";
-import { Maybe } from "oldTypes";
+import fileDownload from 'js-file-download';
+import { Maybe } from '@gql/graphql';
 
 export function DownloadFile(content: string, fileName: string) {
   fileDownload(content, fileName);
@@ -20,18 +20,14 @@ type LegalLinkAgreementBaseType = AgreementBase & {
   signature: Maybe<string> | undefined;
 };
 
-export const GenerateLegalLink = (
-  props: LegalLinkAgreementBaseType,
-  legalText: string,
-): string =>
+export const GenerateLegalLink = (props: LegalLinkAgreementBaseType, legalText: string): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => acc.split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText,
+      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ''
     )
-    .replace(
-      /{% (.+):\n([^%]+)%}/gm,
-      (match, cond: string, value: string) => (props[cond] ? value : ""),
+    .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) =>
+      props[cond] ? value : ''
     );
 
 type PpmAgreementBaseType = LegalLinkAgreementBaseType & {
@@ -57,18 +53,14 @@ export type GeneratePpmAgreementType = PpmAgreementBaseType & {
   agreementCurrency: string;
 };
 
-export const GeneratePPM = (
-  props: GeneratePpmAgreementType,
-  legalText: string,
-): string =>
+export const GeneratePPM = (props: GeneratePpmAgreementType, legalText: string): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => acc.split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText,
+      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ''
     )
-    .replace(
-      /{% (.+):\n([^%]+)%}/gm,
-      (match, cond: string, value: string) => (props[cond] ? value : ""),
+    .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) =>
+      props[cond] ? value : ''
     );
 
 // ### INVESTOR APPLICATION
@@ -97,140 +89,128 @@ export type InvestorApplicationSummaryType = InvestorApplicationBaseType & {
 };
 export const GenerateInvestorApplicationSummary = (
   props: InvestorApplicationSummaryType,
-  legalText: string,
+  legalText: string
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => acc.split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText,
+      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ''
     )
-    //@ts-ignore
-    .replace(
-      /{% (.+):\n([^%]+)%}/gm,
-      (
-        match,
-        cond: string | boolean,
-        value: string,
-      ) => (props[cond] ? value : ""),
-    );
+    .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string | boolean, value: string) => {
+      const key = String(cond);
+      const propsRecord = props as unknown as Record<string, unknown>;
+      return propsRecord[key] ? value : '';
+    });
 
-export type SubscriptionAgreementSuitabilityAttestationType =
-  & InvestorApplicationBaseType
-  & {
-    purchaserEntityName: string;
-    purchaserAge: string;
-    purchaserPrincipleResidence: string;
-    purchaserResidenceHistory: string;
-    purchaserTaxState: string;
-    purchaserAccredited: boolean;
-    purchaserAccreditedType: string;
-    purchaserAccreditedTypeOther: string;
-    purchaserNetWorth: boolean;
-    purchaserIncome: boolean;
-    purchaserIsWithOfferingCompany: string;
-    purchaserSophisticated: boolean;
-    purchaserSophisticatedSelf: boolean;
-    purchaserNonUs: boolean;
-    purchaserExperienceFinancial: string;
-    purchaserExperienceSecurities: string;
-    purchaserExperienceLLCs: string;
-    purchaserExperienceOther: string;
-    purchaserPriorRelationship: string;
-    workingWithAdvisor: boolean;
-    advisorRelationship: string;
-    advisorFullName: string;
-    advisorEmail: string;
-    advisorPhone: string;
-    advisor_addressLine1: string;
-    advisor_addressLine2: string;
-    advisor_addressLine3: string;
-    advisor_city: string;
-    advisor_stateProvince: string;
-    advisor_postalCode: string;
-    advisor_country: string;
-    walletAddress: string;
-    minPledge: number | undefined;
-    maxPledge: number | undefined;
-    pricePerUnit: Maybe<number> | undefined;
-    investmentCurrency: string | undefined;
-    dateSigned: string;
-    signature: string;
-  };
+export type SubscriptionAgreementSuitabilityAttestationType = InvestorApplicationBaseType & {
+  purchaserEntityName: string;
+  purchaserAge: string;
+  purchaserPrincipleResidence: string;
+  purchaserResidenceHistory: string;
+  purchaserTaxState: string;
+  purchaserAccredited: boolean;
+  purchaserAccreditedType: string;
+  purchaserAccreditedTypeOther: string;
+  purchaserNetWorth: boolean;
+  purchaserIncome: boolean;
+  purchaserIsWithOfferingCompany: string;
+  purchaserSophisticated: boolean;
+  purchaserSophisticatedSelf: boolean;
+  purchaserNonUs: boolean;
+  purchaserExperienceFinancial: string;
+  purchaserExperienceSecurities: string;
+  purchaserExperienceLLCs: string;
+  purchaserExperienceOther: string;
+  purchaserPriorRelationship: string;
+  workingWithAdvisor: boolean;
+  advisorRelationship: string;
+  advisorFullName: string;
+  advisorEmail: string;
+  advisorPhone: string;
+  advisor_addressLine1: string;
+  advisor_addressLine2: string;
+  advisor_addressLine3: string;
+  advisor_city: string;
+  advisor_stateProvince: string;
+  advisor_postalCode: string;
+  advisor_country: string;
+  walletAddress: string;
+  minPledge: number | undefined;
+  maxPledge: number | undefined;
+  pricePerUnit: Maybe<number> | undefined;
+  investmentCurrency: string | undefined;
+  dateSigned: string;
+  signature: string;
+};
 export const GenerateSubscriptionAgreementSuitabilityAttestation = (
   props: SubscriptionAgreementSuitabilityAttestationType,
-  legalText: string,
+  legalText: string
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => acc.split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText,
+      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ''
     )
-    //@ts-ignore
-    .replace(
-      /{% (.+):\n([^%]+)%}/gm,
-      (match, cond: string, value: string) => (props[cond] ? value : ""),
-    );
+    .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) => {
+      const propsRecord = props as unknown as Record<string, unknown>;
+      return propsRecord[cond] ? value : '';
+    });
 
-export type SubscriptionPurchaseAttestationType =
-  & InvestorApplicationBaseType
-  & {
-    isNonHuman: boolean;
-    walletAddress: string;
-    offeringEntityName: Maybe<string> | undefined;
-    purchaserEntityName: string;
-    purchaserEntityManager: string;
-    purchaserEntityManagerTitle: string;
-    purchaserPhone: string;
-    purchaserEmail: string;
-    purchaserEntityAddressLine1: string | undefined;
-    purchaserEntityAddressLine2: string;
-    purchaserEntityAddressCity: string;
-    purchaserEntityAddressStateProvince: string;
-    purchaserEntityAddressPostalCode: string;
-    purchaserEntityAddressCountry: string;
-    purchaserEntityJurisdiction: string;
-    taxId: string;
-    numUnitsPurchase: string;
-    offeringPrice: string;
-    purchasePrice: string;
-    purchaseCurrency: string;
-    purchaseMethod: string;
-    enteringAgent: string;
-    dateSigned: string;
-    signature: string;
-  };
+export type SubscriptionPurchaseAttestationType = InvestorApplicationBaseType & {
+  isNonHuman: boolean;
+  walletAddress: string;
+  offeringEntityName: Maybe<string> | undefined;
+  purchaserEntityName: string;
+  purchaserEntityManager: string;
+  purchaserEntityManagerTitle: string;
+  purchaserPhone: string;
+  purchaserEmail: string;
+  purchaserEntityAddressLine1: string | undefined;
+  purchaserEntityAddressLine2: string;
+  purchaserEntityAddressCity: string;
+  purchaserEntityAddressStateProvince: string;
+  purchaserEntityAddressPostalCode: string;
+  purchaserEntityAddressCountry: string;
+  purchaserEntityJurisdiction: string;
+  taxId: string;
+  numUnitsPurchase: string;
+  offeringPrice: string;
+  purchasePrice: string;
+  purchaseCurrency: string;
+  purchaseMethod: string;
+  enteringAgent: string;
+  dateSigned: string;
+  signature: string;
+};
 
 export const GenerateSubscriptionPurchaseAttestation = (
   props: SubscriptionPurchaseAttestationType,
-  legalText: string,
+  legalText: string
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => acc.split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText,
+      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ''
     )
-    //@ts-ignore
-    .replace(
-      /{% (.+):\n([^%]+)%}/gm,
-      (match, cond: string, value: string) => (props[cond] ? value : ""),
-    );
+    .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) => {
+      const propsRecord = props as unknown as Record<string, unknown>;
+      return propsRecord[cond] ? value : '';
+    });
 
-export type SubscriptionAgreementType =
-  & SubscriptionAgreementSuitabilityAttestationType
-  & SubscriptionPurchaseAttestationType
-  & InvestorApplicationSummaryType;
+export type SubscriptionAgreementType = SubscriptionAgreementSuitabilityAttestationType &
+  SubscriptionPurchaseAttestationType &
+  InvestorApplicationSummaryType;
 
 export const GenerateSubscriptionAgreement = (
   props: SubscriptionAgreementType,
-  legalText: string,
+  legalText: string
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => acc.split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText,
+      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ''
     )
-    //@ts-ignore
-    .replace(
-      /{% (.+):\n([^%]+)%}/gm,
-      (match, cond: string, value: string) => (props[cond] ? value : ""),
-    );
+    .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) => {
+      const propsRecord = props as unknown as Record<string, unknown>;
+      return propsRecord[cond] ? value : '';
+    });

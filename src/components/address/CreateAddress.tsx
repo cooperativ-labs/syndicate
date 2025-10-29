@@ -1,14 +1,16 @@
-import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
+import CustomAddressAutocomplete, {
+  normalizeGeoAddress
+} from '../form-components/CustomAddressAutocomplete';
 import Input, { addressFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC, useEffect, useState } from 'react';
-import { ADD_ENTITY_ADDRESS } from '@src/utils/dGraphQueries/entity';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { ADD_ENTITY_ADDRESS } from '@src/utils/graphQueries/entity';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { LegalEntity } from 'oldTypes';
-import { useMutation } from '@apollo/client';
+import { LegalEntity } from '@gql/graphql';
+import { useMutation } from '@apollo/client/react';
 
 export type CreateAddressType = {
   entity: LegalEntity;
@@ -33,13 +35,13 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
   const placeId = inputAddress && inputAddress.value.place_id;
   useEffect(() => {
     geocodeByPlaceId(placeId)
-      .then((results) => {
+      .then(results => {
         setAutocompleteResults(results);
         const lat = results[0]?.geometry.location.lat();
         const lng = results[0]?.geometry.location.lng();
         setLatLang({ lat: lat, lng: lng });
       })
-      .catch((error) => {
+      .catch(error => {
         return error;
       });
   }, [placeId]);
@@ -60,8 +62,8 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
         country: country,
         lat: latLang.lat,
         lng: latLang.lng,
-        currentDate: currentDate,
-      },
+        currentDate: currentDate
+      }
     });
   };
 
@@ -69,9 +71,9 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
     <Formik
       initialValues={{
         addressLabel: '',
-        addressAutocomplete: '',
+        addressAutocomplete: ''
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!firstAddressLine || !city || !state || !postalCode || !country) {
           errors.addressAutocomplete = 'Please include an address.';
@@ -107,7 +109,11 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
             />
             {latLang.lat && (
               <div className="mt-4">
-                <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>
+                <GoogleMap
+                  mapContainerStyle={{ height: '300px', width: '100%' }}
+                  center={latLang}
+                  zoom={14}
+                >
                   <Marker position={latLang} />
                 </GoogleMap>
               </div>

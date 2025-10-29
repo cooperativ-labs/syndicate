@@ -6,7 +6,7 @@ const _defaults = {
   rootMargin: '0%',
   threshold: 0.5,
   once: false,
-  callback: () => {},
+  callback: () => {}
 };
 export class ViewportObserver {
   options;
@@ -30,7 +30,7 @@ export class ViewportObserver {
       }
     }
 
-    const els = visibleEntries.map((entry) => {
+    const els = visibleEntries.map(entry => {
       return entry.target;
     });
     //@ts-ignore

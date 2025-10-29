@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { getCurrencyOption, getDistributionPeriod } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { OfferingDetails } from 'oldTypes';
+import { OfferingDetails } from '@gql/graphql';
 
 type OfferingDetailsPublicProps = {
   offeringDetails: OfferingDetails;
@@ -11,7 +11,11 @@ type OfferingDetailsPublicProps = {
   brandColor: string;
 };
 
-const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({ offeringDetails, brandColor, currentSharePrice }) => {
+const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({
+  offeringDetails,
+  brandColor,
+  currentSharePrice
+}) => {
   const {
     type,
     investmentCurrency,
@@ -27,7 +31,7 @@ const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({ offeringDetails
     distributionFrequency,
     distributionCurrency,
     distributionDescription,
-    adminExpense,
+    adminExpense
   } = offeringDetails;
 
   return (
@@ -36,7 +40,10 @@ const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({ offeringDetails
         numUnits && numberWithCommas(currentSharePrice * numUnits)
       } ${getCurrencyOption(investmentCurrency)?.symbol}`}</OfferingDetailItem>
 
-      <OfferingDetailItem brandColor={brandColor} title="Share price">{` ${numberWithCommas(currentSharePrice)} ${
+      <OfferingDetailItem
+        brandColor={brandColor}
+        title="Share price"
+      >{` ${numberWithCommas(currentSharePrice)} ${
         getCurrencyOption(investmentCurrency)?.symbol
       }`}</OfferingDetailItem>
 

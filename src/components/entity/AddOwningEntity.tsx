@@ -4,13 +4,12 @@ import EntitySelector from '../form-components/EntitySelector';
 import FormButton from '../buttons/FormButton';
 import FormModal from '@src/containers/FormModal';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
-import { ADD_ENTITY_OWNER } from '@src/utils/dGraphQueries/entity';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { ADD_ENTITY_OWNER } from '@src/utils/graphQueries/entity';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { LegalEntity, Organization } from 'oldTypes';
-import { useMutation, useQuery } from '@apollo/client';
-
+import { GET_USER } from '@src/utils/graphQueries/user';
+import { LegalEntity, Organization } from '@gql/graphql';
+import { useMutation, useQuery } from '@apollo/client/react';
 
 type AddOwningEntityProps = {
   ownedEntityId: string;
@@ -18,8 +17,11 @@ type AddOwningEntityProps = {
   refetchOuter?: () => void;
 };
 
-const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, organization, refetchOuter }) => {
-
+const AddOwningEntity: FC<AddOwningEntityProps> = ({
+  ownedEntityId,
+  organization,
+  refetchOuter
+}) => {
   const [addOwner, { data, error }] = useMutation(ADD_ENTITY_OWNER);
   const [entityModal, setEntityModal] = useState<boolean>(false);
 
@@ -35,15 +37,22 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, organization
 
   return (
     <>
-      <FormModal formOpen={entityModal} onClose={() => setEntityModal(false)} title={`Add an entity to your account`}>
-        <CreateEntity actionOnCompletion={() => submissionCompletion(setEntityModal)} organization={organization} />
+      <FormModal
+        formOpen={entityModal}
+        onClose={() => setEntityModal(false)}
+        title={`Add an entity to your account`}
+      >
+        <CreateEntity
+          actionOnCompletion={() => submissionCompletion(setEntityModal)}
+          organization={organization}
+        />
       </FormModal>
 
       <Formik
         initialValues={{
-          addEntityOwner: '',
+          addEntityOwner: ''
         }}
-        validate={(values) => {}}
+        validate={values => {}}
         onSubmit={(values, { setSubmitting }) => {
           setSubmitting(true);
 
@@ -51,8 +60,8 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, organization
             variables: {
               currentDate: currentDate,
               addEntityOwner: values.addEntityOwner,
-              ownedEntityId: ownedEntityId,
-            },
+              ownedEntityId: ownedEntityId
+            }
           });
           setSubmitting(false);
         }}

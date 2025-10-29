@@ -38,7 +38,11 @@ const RightSidebar: FC<RightSidebarProps> = ({ children, formOpen, onClose }) =>
             'w-screen md:h-screen fixed top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80 '
           }
         >
-          <div className={'z-50 absolute right-0 left-1/3 top-0 bottom-0 p-3 bg-white shadow-xl overflow-y-scroll'}>
+          <div
+            className={
+              'z-50 absolute right-0 left-1/3 top-0 bottom-0 p-3 bg-white shadow-xl overflow-y-scroll'
+            }
+          >
             <CloseButton
               onClick={() => {
                 onClose();

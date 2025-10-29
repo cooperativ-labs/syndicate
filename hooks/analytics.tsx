@@ -1,11 +1,19 @@
 import AnalyticsContext from '@context/analytics';
 //@ts-ignore
 import TagManager from 'react-gtm-module';
-import { DEFAULT_BLUR_ACTION, DEFAULT_CLICK_ACTION, DEFAULT_FOCUS_ACTION } from '@src/utils/analytics/config';
-import { parseCustomDimensions, parseDataAttributes, parseOverwriteObject } from '@src/utils/analytics/helpers';
+import {
+  DEFAULT_BLUR_ACTION,
+  DEFAULT_CLICK_ACTION,
+  DEFAULT_FOCUS_ACTION
+} from '@src/utils/analytics/config';
+import {
+  parseCustomDimensions,
+  parseDataAttributes,
+  parseOverwriteObject
+} from '@src/utils/analytics/helpers';
 import { trackImpression, trackPageView } from '@src/utils/analytics';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { useRouter } from 'next/router';
+import { usePathname, useSearchParams } from 'next/navigation';
 // @ts-ignore
 import { trackInteraction } from '@src/utils/analytics/index.ts';
 
@@ -21,7 +29,7 @@ function generateAnalyticsPayload(element: any, overwriteProps: any, dynamicDime
   const parsedRest = parseCustomDimensions(rest);
   return {
     core: { ...core, ...overwrite.core },
-    rest: { ...dynamicDimensions, ...parsedRest, ...overwrite.rest },
+    rest: { ...dynamicDimensions, ...parsedRest, ...overwrite.rest }
   };
 }
 
@@ -37,7 +45,8 @@ function interactionHandler(type: any, element: any, overwriteProps: any, dynami
 }
 
 export function useAnalytics() {
-  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
   const [dynamicDimensions, setDynamicDimensions] = useState<any>(null);
   const [pageTracked, setPageTracked] = useState(false);
   const setCurrentDynamicDimensions = useCallback((currentDimensions: any) => {
@@ -47,8 +56,8 @@ export function useAnalytics() {
   const gtmProperties = {
     gtmId: 'GTM-P798NLF',
     dataLayer: {
-      projectTitle: 'Syndicate',
-    },
+      projectTitle: 'Syndicate'
+    }
   };
   useEffect(() => {
     TagManager.initialize(gtmProperties);
@@ -70,21 +79,19 @@ export function useAnalytics() {
   }, []);
 
   useEffect(() => {
-    if (!pageTracked && dynamicDimensions) {
+    if (!dynamicDimensions) return;
+
+    // Initial page view after dimensions ready
+    if (!pageTracked) {
       trackPageView(document.title, window.location.pathname, dynamicDimensions);
       setPageTracked(true);
+      return;
     }
-    const handleRouteChange = (url: string) => {
-      if (dynamicDimensions) {
-        trackPageView(document.title, url, dynamicDimensions);
-        setPageTracked(true);
-      }
-    };
-    router.events.on('routeChangeComplete', handleRouteChange);
-    return () => {
-      router.events.off('routeChangeComplete', handleRouteChange);
-    };
-  }, [dynamicDimensions, router.events]);
+
+    // Track on pathname or search param changes (App Router has no router.events)
+    const url = `${pathname || ''}${searchParams?.toString() ? `?${searchParams.toString()}` : ''}`;
+    trackPageView(document.title, url, dynamicDimensions);
+  }, [dynamicDimensions, pageTracked, pathname, searchParams]);
 
   return [dynamicDimensions, setCurrentDynamicDimensions];
 }
@@ -121,7 +128,11 @@ export function useAnalyticsImpression(
             if (once && impressionFired) {
               return;
             }
-            const { core, rest } = generateAnalyticsPayload(entry, overwriteProps, dynamicDimensions);
+            const { core, rest } = generateAnalyticsPayload(
+              entry,
+              overwriteProps,
+              dynamicDimensions
+            );
             trackImpression(core, rest);
             setImpressionFired(true);
           }

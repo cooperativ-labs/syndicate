@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Address, Maybe } from 'oldTypes';
+import { Address, Maybe } from '@gql/graphql';
 
 type AddressProps = {
   address: Maybe<Address> | undefined;
@@ -7,7 +7,12 @@ type AddressProps = {
   withLabel?: boolean;
   withCountry?: boolean;
 };
-export const AddressDisplay: FC<AddressProps> = ({ address, withLabel, withCountry, className }) => {
+export const AddressDisplay: FC<AddressProps> = ({
+  address,
+  withLabel,
+  withCountry,
+  className
+}) => {
   const { label, line1, line2, city, postalCode, stateProvince, country } = address as Address;
   if (address) {
     return (

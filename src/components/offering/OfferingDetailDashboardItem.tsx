@@ -14,7 +14,7 @@ const OfferingDetailDashboardItem: FC<OfferingDetailDashboardItemProps> = ({
   title,
   children,
   color,
-  note,
+  note
 }) => {
   return (
     <div className={cn(className ? className : 'flex flex-col justify-center')}>

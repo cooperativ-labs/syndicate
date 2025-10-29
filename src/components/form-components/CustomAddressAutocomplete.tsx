@@ -14,7 +14,10 @@ type CustomAddressAutocompleteProps = {
   setValue: Dispatch<SetStateAction<{ value: any } | undefined>>;
 };
 
-export const createFirstAddressLine = (streetNumber: string | undefined, streetName: string | undefined) => {
+export const createFirstAddressLine = (
+  streetNumber: string | undefined,
+  streetName: string | undefined
+) => {
   if (!!streetNumber && !!streetName) {
     return `${streetNumber} ${streetName}`;
   } else if (streetName) {
@@ -40,8 +43,12 @@ export const normalizeGeoAddress = (
   const street_number = autocompleteResults[0]?.address_components.find((x: any) =>
     x.types.includes('street_number')
   )?.long_name;
-  const street_name = autocompleteResults[0]?.address_components.find((x: any) => x.types.includes('route'))?.long_name;
-  const baseCity = autocompleteResults[0]?.address_components.find((x: any) => x.types.includes('locality'))?.long_name;
+  const street_name = autocompleteResults[0]?.address_components.find((x: any) =>
+    x.types.includes('route')
+  )?.long_name;
+  const baseCity = autocompleteResults[0]?.address_components.find((x: any) =>
+    x.types.includes('locality')
+  )?.long_name;
   const postalTown = autocompleteResults[0]?.address_components.find((x: any) =>
     x.types.includes('postal_town')
   )?.long_name;
@@ -54,7 +61,9 @@ export const normalizeGeoAddress = (
   const postalCode = autocompleteResults[0]?.address_components.find((x: any) =>
     x.types.includes('postal_code')
   )?.long_name;
-  const country = autocompleteResults[0]?.address_components.find((x: any) => x.types.includes('country'))?.long_name;
+  const country = autocompleteResults[0]?.address_components.find((x: any) =>
+    x.types.includes('country')
+  )?.long_name;
 
   const firstAddressLine = createFirstAddressLine(street_number, street_name);
   const secondAddressLine = subpremise;
@@ -66,7 +75,7 @@ export const normalizeGeoAddress = (
     city,
     state,
     postalCode,
-    country,
+    country
   };
 };
 
@@ -77,12 +86,15 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
   value,
   required,
   fieldLabelClass,
-  setValue,
+  setValue
 }) => {
   return (
     <div className={cn(className, 'flex flex-col w-full')}>
       {labelText && (
-        <label htmlFor={name} className={cn(fieldLabelClass ? fieldLabelClass : [defaultFieldLabelClass, 'mt-2 mb-1'])}>
+        <label
+          htmlFor={name}
+          className={cn(fieldLabelClass ? fieldLabelClass : [defaultFieldLabelClass, 'mt-2 mb-1'])}
+        >
           {labelText}
           {required ? ' *' : ''}
         </label>
@@ -94,7 +106,7 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
           onChange: setValue,
           placeholder: '123 Easy st...',
           styles: {
-            input: (provided) => ({
+            input: provided => ({
               ...provided,
               // color: 'blue',
               // paddingLeft: 80,
@@ -102,27 +114,27 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
               // border: '0px',
               borderRadius: 5,
               backgroundColor: '#ff',
-              boxShadow: 'none',
+              boxShadow: 'none'
             }),
 
             control: (baseStyles, state) => ({
               ...baseStyles,
-              height: 50,
+              height: 50
               // borderRadius: 10,
               // boxShadow: '12px 12px 24px #d9d9d9, -12px -12px 24px #ffffff',
               // borderColor: state.isFocused ? 'grey' : 'red',
-            }),
-          },
+            })
+          }
         }}
         autocompletionRequest={{
           bounds: [
             { lat: 50, lng: 50 },
-            { lat: 100, lng: 100 },
+            { lat: 100, lng: 100 }
           ],
           componentRestrictions: {
-            country: ['us', 'ca', 'uk', 'de', 'ky', 'vg'],
+            country: ['us', 'ca', 'uk', 'de', 'ky', 'vg']
           },
-          types: ['address'],
+          types: ['address']
         }}
       />
       <ErrorMessage name={name} component="div" className="text-sm text-red-500" />

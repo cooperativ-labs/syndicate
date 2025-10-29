@@ -12,8 +12,8 @@ import {
   OfferingDescriptionText,
   OfferingDetails,
   OfferingTabSection,
-  RealEstateProperty,
-} from 'oldTypes';
+  RealEstateProperty
+} from '@gql/graphql';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 import { useWindowSize } from 'react-use';
 
@@ -22,7 +22,9 @@ type ProfileTabContainerProps = {
 };
 
 const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
-  const [activeTab, setActiveTab] = useState<OfferingTabSection | string>(OfferingTabSection.Details);
+  const [activeTab, setActiveTab] = useState<OfferingTabSection | string>(
+    OfferingTabSection.Details
+  );
   const isMobile = useWindowSize().width < 768;
   function sortByOrder(descriptions: OfferingDescriptionText[]) {
     return descriptions.sort((a, b) => (a.order < b.order ? -1 : a.order > b.order ? 1 : 0));
@@ -30,22 +32,22 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
 
   const detailsDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      (description) => description?.section === OfferingTabSection.Details
+      description => description?.section === OfferingTabSection.Details
     ) as OfferingDescriptionText[]
   );
   const termsDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      (description) => description?.section === OfferingTabSection.Terms
+      description => description?.section === OfferingTabSection.Terms
     ) as OfferingDescriptionText[]
   );
   const offerorInfoDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      (description) => description?.section === OfferingTabSection.OfferorInfo
+      description => description?.section === OfferingTabSection.OfferorInfo
     ) as OfferingDescriptionText[]
   );
   const disclosuresDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      (description) => description?.section === OfferingTabSection.Disclosures
+      description => description?.section === OfferingTabSection.Disclosures
     ) as OfferingDescriptionText[]
   );
 
@@ -59,7 +61,13 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
           <nav className="overflow-x-scroll whitespace-nowrap">
             {tabSectionOptions.map((tab, i) => {
               return (
-                <Tab key={i} tabId={tab.value} label={tab.name} setActiveTab={setActiveTab} activeTab={activeTab} />
+                <Tab
+                  key={i}
+                  tabId={tab.value}
+                  label={tab.name}
+                  setActiveTab={setActiveTab}
+                  activeTab={activeTab}
+                />
               );
             })}
           </nav>

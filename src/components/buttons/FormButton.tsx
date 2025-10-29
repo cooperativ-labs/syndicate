@@ -23,7 +23,10 @@ const FormButton: FC<FormButtonProps> = ({
 
   return (
     <Button
-      className={cn([outlined ? outlinedClass : standardClass], 'text-sm p-3 px-6 font-semibold rounded-md relative')}
+      className={cn(
+        [outlined ? outlinedClass : standardClass],
+        'text-sm p-3 px-6 font-semibold rounded-md relative'
+      )}
       {...rest}
     >
       {children}

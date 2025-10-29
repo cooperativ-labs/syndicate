@@ -1,33 +1,39 @@
-import type { CodegenConfig } from "@graphql-codegen/cli";
-import { addTypenameSelectionDocumentTransform } from "@graphql-codegen/client-preset";
+import type { CodegenConfig } from '@graphql-codegen/cli';
+import { addTypenameSelectionDocumentTransform } from '@graphql-codegen/client-preset';
 
 const config: CodegenConfig = {
-  schema: "http://localhost:54321/graphql/v1", // Using the local endpoint, update if needed
-  documents: "src/**/*.tsx",
+  schema: 'http://localhost:54321/graphql/v1', // Using the local endpoint, update if needed
+  documents: '**/*.tsx',
   overwrite: true,
   ignoreNoDocuments: true,
+  config: {
+    namingConvention: {
+      enumValues: 'change-case#camelCase',
+      transformUnderscore: true
+    }
+  },
   generates: {
-    "src/gql/": {
-      preset: "client",
+    'gql/': {
+      preset: 'client',
       documentTransforms: [addTypenameSelectionDocumentTransform],
       plugins: [],
       config: {
         scalars: {
-          UUID: "string",
-          Date: "string",
-          Time: "string",
-          Datetime: "string",
-          JSON: "string",
-          BigInt: "string",
-          BigFloat: "string",
-          Opaque: "any",
-        },
-      },
-    },
+          UUID: 'string',
+          Date: 'string',
+          Time: 'string',
+          Datetime: 'string',
+          JSON: 'string',
+          BigInt: 'string',
+          BigFloat: 'string',
+          Opaque: 'any'
+        }
+      }
+    }
   },
   hooks: {
-    afterAllFileWrite: ["yarn prettier"], // optional
-  },
+    afterAllFileWrite: ['yarn prettier'] // optional
+  }
 };
 
 export default config;

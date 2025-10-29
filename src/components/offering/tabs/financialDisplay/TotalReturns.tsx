@@ -1,6 +1,6 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
-import { OfferingDetails } from 'oldTypes';
+import { OfferingDetails } from '@gql/graphql';
 
 type TotalReturnsProps = {
   offeringDetails: OfferingDetails;
@@ -15,7 +15,7 @@ const TotalReturns: FC<TotalReturnsProps> = ({ offeringDetails }) => {
     targetEquityMultipleMax,
     cocReturn,
     projectedAppreciation,
-    capRate,
+    capRate
   } = offeringDetails;
 
   return (
@@ -31,7 +31,11 @@ const TotalReturns: FC<TotalReturnsProps> = ({ offeringDetails }) => {
         ) : (
           <></>
         )}
-        {preferredReturn ? <FinancialFactItem label="Preferred Return" percent={preferredReturn / 100} /> : <></>}
+        {preferredReturn ? (
+          <FinancialFactItem label="Preferred Return" percent={preferredReturn / 100} />
+        ) : (
+          <></>
+        )}
         {targetEquityMultiple ? (
           <FinancialFactItem
             label="Target Equity Multiple"

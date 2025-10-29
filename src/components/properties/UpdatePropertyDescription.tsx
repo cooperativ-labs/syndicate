@@ -2,9 +2,13 @@ import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC } from 'react';
 import Select from '../form-components/Select';
-import { Address, RealEstateProperty } from 'oldTypes';
-import { assetStatusOptions, getCurrencyOption, propertyTypeOptions } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { Address, RealEstateProperty } from '@gql/graphql';
+import {
+  assetStatusOptions,
+  getCurrencyOption,
+  propertyTypeOptions
+} from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 
 export type UpdatePropertyDescriptionType = {
@@ -13,7 +17,11 @@ export type UpdatePropertyDescriptionType = {
   setModal: (addressModel: boolean) => void;
 };
 
-const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property, updateProperty, setModal }) => {
+const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({
+  property,
+  updateProperty,
+  setModal
+}) => {
   const entityOperatingCurrency = property.owner?.operatingCurrency;
   return (
     <Formik
@@ -24,9 +32,9 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
         description: property.description,
         downPayment: property.downPayment,
         lenderFees: property.lenderFees,
-        closingCosts: property.closingCosts,
+        closingCosts: property.closingCosts
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
       }}
       onSubmit={async (values, { setSubmitting }) => {
@@ -41,8 +49,8 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
             description: values.description,
             downPayment: values.downPayment,
             lenderFees: values.lenderFees,
-            closingCosts: values.closingCosts,
-          },
+            closingCosts: values.closingCosts
+          }
         });
         setModal(false);
         setSubmitting(false);
@@ -51,7 +59,12 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
           <hr className="my-6" />
-          <Select required className={defaultFieldDiv} labelText="Status of property" name="investmentStatus">
+          <Select
+            required
+            className={defaultFieldDiv}
+            labelText="Status of property"
+            name="investmentStatus"
+          >
             <option value="">Select a status</option>
             {assetStatusOptions.map((type, i) => {
               return (
@@ -62,7 +75,12 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
             })}
           </Select>
 
-          <Select required className={defaultFieldDiv} labelText="Type of property" name="propertyType">
+          <Select
+            required
+            className={defaultFieldDiv}
+            labelText="Type of property"
+            name="propertyType"
+          >
             <option value="">Select an entity</option>
             {propertyTypeOptions.map((type, i) => {
               return (

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import cn from 'classnames';
@@ -7,21 +7,19 @@ import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
 import NewOrganizationModal from './NewOrganizationModal';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import WalletChooserModal from './wallet/WalletChooserModal';
-import WithAuthentication from './WithAuthentication';
+// End of Selection
+
 import { ApplicationStoreProps, store } from '@context/store';
-import { disconnectWallet } from '@src/web3/connectors';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { OrganizationUser, User } from 'oldTypes';
-import { signOut, useSession } from 'next-auth/react';
-import { useApolloClient } from '@apollo/client';
 
 import AlertBanner from '@src/components/alerts/AlertBanner';
-import WalletActionLockModel from './wallet/WalletActionLockModel';
-import { useAccount, useNetwork } from 'wagmi';
+import { useAccount, useDisconnect } from 'wagmi';
+import { signOut } from '@src/utils/actions/userActions';
+import { Organization } from '@gql/graphql';
+import { getOrgsFromUser } from '@src/utils/helpersOrganization';
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import WithAuthentication from './WithAuthentication';
 
-// const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
+// const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
 
 type ManagerProps = {
@@ -29,50 +27,49 @@ type ManagerProps = {
 };
 
 const Manager: FC<ManagerProps> = ({ children }) => {
-  const router = useRouter();
-  const { data: session, status } = useSession();
-  const userId = session?.user.id;
-  const apolloClient = useApolloClient();
-  const [organizations, setOrganizations] = useState<OrganizationUser[]>([]);
-
-  const toLoginIfNoUser = (user: User) => {
-    if (!user) {
-      disconnectWallet();
-      signOut({ callbackUrl: '/' })
-        .then(() => {
-          router.replace('/');
-        })
-        .catch((error) => {
-          throw new Error(error);
-        });
-    }
-  };
+  const { user, loading, supabase } = useSupabaseAuth();
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
+  const { disconnect } = useDisconnect();
 
   useEffect(() => {
-    apolloClient
-      .query({
-        query: GET_USER,
-        variables: { id: userId },
-      })
-      .then((response) => {
-        const user = response.data.queryUser[0];
-        toLoginIfNoUser(user);
-        setOrganizations(user?.organizations);
-      });
-  }, [userId, setOrganizations, apolloClient]);
+    if (!loading && !user) {
+      disconnect();
+      signOut();
+    }
+  }, [disconnect, loading, user]);
 
-  const _organizations = organizations?.map((org) => {
-    return org.organization;
-  });
+  useEffect(() => {
+    let isMounted = true;
+
+    const loadOrganizations = async () => {
+      if (!user) {
+        if (isMounted) {
+          setOrganizations([]);
+        }
+        return;
+      }
+
+      const orgs = await getOrgsFromUser(user);
+      if (isMounted) {
+        setOrganizations(orgs as Organization[]);
+      }
+    };
+
+    loadOrganizations();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase, user]);
 
   return (
     <div className="flex">
       <div className="flex z-30 md:z-10 min-h-screen">
-        <ManagerSideBar organizations={_organizations} />{' '}
+        <ManagerSideBar organizations={organizations} />{' '}
       </div>
       <div className="md:mx-6 w-full">
         <NavBar />
-        <div className="flex-grow z-10">
+        <div className="grow z-10">
           <div className=" px-2 py-2 md:mt-4">
             <div className="mx-auto ">{children}</div>
             {/* <div className={'mx-auto min-h-full p-10'} style={{ maxWidth: '1580px' }}>
@@ -93,19 +90,17 @@ type ManagerWrapperProps = {
 const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { PageIsLoading } = applicationStore;
-  const { isConnected } = useAccount();
-  const { chain } = useNetwork();
+  const { isConnected, chain } = useAccount();
 
   return (
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
-        <WalletChooserModal />
         <WithAuthentication>
           <NewOrganizationModal />
           {/* <WalletActionLockModel /> */}
           {PageIsLoading && <LoadingModal />}
           <AlertBanner
-            show={!!isConnected && !!chain?.unsupported}
+            show={!!isConnected && !chain}
             color="red-600"
             text={
               ' The blockchain you are using is not compatible with Cooperativ. Please switch to Sepolia for testing or Mainnet or Polygon for real transactions'

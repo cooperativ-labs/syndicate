@@ -4,7 +4,7 @@ import React, { FC, useState } from 'react';
 import Select from '../form-components/Select';
 import toast from 'react-hot-toast';
 
-import { Currency, CurrencyCode, Maybe, OfferingParticipant } from 'oldTypes';
+import { Currency, CurrencyCode, Maybe, OfferingParticipant } from '@gql/graphql';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
@@ -13,15 +13,15 @@ import { sendShares } from '@src/web3/contractShareCalls';
 
 import NewClassInputs from '../form-components/NewClassInputs';
 import SetOperatorButton from './actions/SetOperatorButton';
-import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
-import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
+import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { adjustUserEnteredDecimalsToMatchCurrency } from '@src/web3/util';
 import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractABI } from '@src/web3/generated';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 export type SendSharesProps = {
   sharesIssued: Maybe<number> | undefined;
@@ -46,7 +46,7 @@ const SendShares: FC<SendSharesProps> = ({
   myShareQty,
   investmentCurrency,
   currentSalePrice,
-  refetchMainContracts,
+  refetchMainContracts
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
@@ -58,11 +58,14 @@ const SendShares: FC<SendSharesProps> = ({
     address: shareContractAddress,
     abi: shareContractABI,
     functionName: 'isOperator',
-    args: [userWalletAddress as String0x],
+    args: [userWalletAddress as String0x]
   });
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
-  const purchaseCurrencyOptions = [bacOptions.filter((bac) => bac.chainId === chainId), fiatOptions].flat();
+  const purchaseCurrencyOptions = [
+    bacOptions.filter(bac => bac.chainId === chainId),
+    fiatOptions
+  ].flat();
 
   const formButtonText = (values: { numShares: number; recipient: string | String0x }) => {
     const recipient = addressWithoutEns({ address: values.recipient });
@@ -86,9 +89,9 @@ const SendShares: FC<SendSharesProps> = ({
         currencyCode: investmentCurrency?.code as CurrencyCode,
         recipient: '' as String0x,
         partition: partitions[0],
-        newPartition: '',
+        newPartition: ''
       }}
-      validate={(values) => {
+      validate={values => {
         const paymentTokenDecimals = getCurrencyByCode(values.currencyCode)?.decimals;
 
         const errors: any = {}; /** @TODO : Shape */
@@ -135,7 +138,7 @@ const SendShares: FC<SendSharesProps> = ({
             addIssuance,
             setButtonStep,
             addPartition,
-            refetchMainContracts,
+            refetchMainContracts
           });
         } catch (e: any) {
           toast.error(`Error sending shares: ${e.message}`);
@@ -161,7 +164,7 @@ const SendShares: FC<SendSharesProps> = ({
                 participant &&
                 addressWithoutEns({
                   address: participant.walletAddress,
-                  userName: participant.name,
+                  userName: participant.name
                 });
               return (
                 <option key={i} value={participant?.walletAddress}>
@@ -198,7 +201,9 @@ const SendShares: FC<SendSharesProps> = ({
           <Input
             className={defaultFieldDiv}
             labelText={`Number of shares to send (${
-              values.isIssuance === 'yes' ? numberWithCommas(sharesRemaining) : numberWithCommas(myShareQty)
+              values.isIssuance === 'yes'
+                ? numberWithCommas(sharesRemaining)
+                : numberWithCommas(myShareQty)
             } available )`}
             name="numShares"
             type="number"
@@ -212,7 +217,10 @@ const SendShares: FC<SendSharesProps> = ({
             <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
               <LoadingButtonText
                 state={buttonStep}
-                idleText={formButtonText({ numShares: parseInt(values.numShares, 10), recipient: values.recipient })}
+                idleText={formButtonText({
+                  numShares: parseInt(values.numShares, 10),
+                  recipient: values.recipient
+                })}
                 step1Text="Sending shares..."
                 confirmedText="Sent!"
                 failedText="Transaction failed"

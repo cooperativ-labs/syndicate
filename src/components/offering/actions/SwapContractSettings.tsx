@@ -1,13 +1,18 @@
 import CreateSwapContract from '../CreateSwapContract';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from 'oldTypes';
+import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
 
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
 import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
-import { useChainId, useContractWrite, usePrepareContractWrite, useWaitForTransaction } from 'wagmi';
+import {
+  useChainId,
+  useContractWrite,
+  usePrepareContractWrite,
+  useWaitForTransaction
+} from 'wagmi';
 
 export type SwapContractSettingsProps = {
   swapApprovalsEnabled: boolean | undefined;
@@ -29,7 +34,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
   investmentCurrency,
   offering,
   noLiveOrders,
-  refetchMainContracts,
+  refetchMainContracts
 }) => {
   const chainId = useChainId();
   const [isLoading, setIsLoading] = useState<'txn' | 'listing' | ''>('');
@@ -43,11 +48,11 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
 
   const { config: configSwapApproval } = usePrepareContractWrite({
     ...sharedContractInfo,
-    functionName: 'toggleSwapApprovals',
+    functionName: 'toggleSwapApprovals'
   });
   const { config: configTxnApproval } = usePrepareContractWrite({
     ...sharedContractInfo,
-    functionName: 'toggleTxnApprovals',
+    functionName: 'toggleTxnApprovals'
   });
 
   const { data: swapApprovalData, write: writeSwapApproval } = useContractWrite(configSwapApproval);
@@ -59,7 +64,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
     onSuccess: () => {
       refetchMainContracts();
       setIsLoading('');
-    },
+    }
   });
 
   const { data: txnTransactionData } = useWaitForTransaction({
@@ -67,7 +72,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
     onSuccess: () => {
       refetchMainContracts();
       setIsLoading('');
-    },
+    }
   });
 
   const handleSwapToggle = async () => {
@@ -93,7 +98,9 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
 
   const txnApproval = (
     <div className={toggleClass}>
-      <div className="text-sm font-medium text-gray-700 mr-2">Each transaction requires approval</div>
+      <div className="text-sm font-medium text-gray-700 mr-2">
+        Each transaction requires approval
+      </div>
       <LoadingToggle
         isLoading={isLoading === 'txn'}
         toggleSubject={txnApprovalsEnabled}
@@ -125,7 +132,13 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
             />
           </div>
           <div className="mt-4 border-2 rounded-md px-2">
-            <SectionBlock className="" sectionTitle={'Trade approval settings'} mini startOpen asAccordion>
+            <SectionBlock
+              className=""
+              sectionTitle={'Trade approval settings'}
+              mini
+              startOpen
+              asAccordion
+            >
               {noLiveOrders ? (
                 <div className="flex flex-col my-4 ml-10">
                   {swapApproval}

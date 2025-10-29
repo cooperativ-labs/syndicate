@@ -15,7 +15,7 @@ export function parseOverwriteObject(obj: any) {
     core[dimension] = obj[dimension];
   }
   const rest = {
-    ...obj.customDimensions,
+    ...obj.customDimensions
   };
   return { core, rest };
 }

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import CreateEntity from '@src/components/entity/CreateEntity';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
@@ -13,7 +13,10 @@ const CreateEntityPage = () => {
   const params = useParams<{ organizationId: string }>();
   const router = useRouter();
   const orgId = params?.organizationId;
-  const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId }, skip: !orgId });
+  const { data: organizationData } = useQuery(GET_ORGANIZATION, {
+    variables: { id: orgId },
+    skip: !orgId
+  });
   const organization = organizationData?.getOrganization;
 
   if (!organization) {
@@ -34,4 +37,3 @@ const CreateEntityPage = () => {
 };
 
 export default CreateEntityPage;
-

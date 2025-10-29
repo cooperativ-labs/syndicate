@@ -11,7 +11,14 @@ export type ButtonProps = {
   onClick?: React.MouseEventHandler<HTMLButtonElement>;
 };
 
-export type LoadingButtonStateType = 'idle' | 'step1' | 'step2' | 'step3' | 'confirmed' | 'failed' | 'rejected';
+export type LoadingButtonStateType =
+  | 'idle'
+  | 'step1'
+  | 'step2'
+  | 'step3'
+  | 'confirmed'
+  | 'failed'
+  | 'rejected';
 export type LoadingButtonTextType = {
   state: LoadingButtonStateType;
   idleText: string;
@@ -31,7 +38,7 @@ export const LoadingButtonText = ({
   step3Text,
   confirmedText,
   failedText,
-  rejectedText,
+  rejectedText
 }: LoadingButtonTextType) => {
   switch (state) {
     case 'idle':
@@ -80,7 +87,15 @@ export const LoadingButtonText = ({
   }
 };
 
-const Button: FC<ButtonProps> = ({ children, textColor, backgroundColor, borderColor, disabled, onClick, ...rest }) => {
+const Button: FC<ButtonProps> = ({
+  children,
+  textColor,
+  backgroundColor,
+  borderColor,
+  disabled,
+  onClick,
+  ...rest
+}) => {
   return (
     <button
       onClick={onClick}

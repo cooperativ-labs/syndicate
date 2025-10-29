@@ -6,7 +6,7 @@ AND VOID**
 ### Your Information
 
 I am {% isNonHuman:
-{{ purchaserEntityManager }}, {{ purchaserEntityManagerTitle }} of 
+{{ purchaserEntityManager }}, {{ purchaserEntityManagerTitle }} of
 %} {{ purchaserEntityName }}, and I wish to be permitted to purchase Limited Partnership Interests (Units) of {{ offeringEntityName }}.
 
 {{ purchaserEntityName }}'s contact information:  
@@ -15,16 +15,14 @@ I am {% isNonHuman:
 **Mailing address:**  
 {{ purchaserEntityAddressLine1 }}  
 {% purchaserEntityAddressLine2:
-{{ purchaserEntityAddressLine2 }}  
+{{ purchaserEntityAddressLine2 }}
 %}{{ purchaserEntityAddressCity }}, {% purchaserEntityAddressStateProvince:
 {{ purchaserEntityAddressStateProvince }}
  %}{{ purchaserEntityAddressPostalCode }}  
-{{ purchaserEntityAddressCountry }}  
+{{ purchaserEntityAddressCountry }}
 
-
-**Tax Jurisdiction:** {{ purchaserTaxState }}  
+**Tax Jurisdiction:** {{ purchaserTaxState }}
 
 {% purchaseMethod:
 {{ purchaserEntityName }} is a {{ purchaseMethod }}.
 %}
-

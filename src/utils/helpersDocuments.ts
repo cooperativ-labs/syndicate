@@ -1,24 +1,24 @@
-import { Document, DocumentFormat, DocumentType, Maybe } from "oldTypes";
+import { Document, DocumentFormat, DocumentType, Maybe } from '@gql/graphql';
 
 export type urlToDatabaseProps = (
   url: string,
   fileId: string,
   title: string,
   docType: DocumentType | undefined,
-  format: DocumentFormat,
+  format: DocumentFormat
 ) => void;
 
 export const getFileFormat = (file: File) => {
   const fileType = file.type;
   switch (fileType) {
-    case "application/pdf":
+    case 'application/pdf':
       return DocumentFormat.Pdf;
-    case "application/msword" ||
-      "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    case 'application/msword' ||
+      'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       return DocumentFormat.WordDoc;
-    case "text/markdown":
+    case 'text/markdown':
       return DocumentFormat.Markdown;
-    case "xls" || "xlsx":
+    case 'xls' || 'xlsx':
       return DocumentFormat.Excel;
     default:
       return DocumentFormat.Other;
@@ -27,7 +27,7 @@ export const getFileFormat = (file: File) => {
 
 export const getDocumentsOfType = (
   documents: Maybe<Maybe<Document>[]> | undefined,
-  type: DocumentType,
+  type: DocumentType
 ) => {
-  return documents?.filter((document) => document?.type?.includes(type));
+  return documents?.filter(document => document?.type?.includes(type));
 };

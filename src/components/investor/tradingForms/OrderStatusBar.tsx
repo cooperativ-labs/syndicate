@@ -33,11 +33,12 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   isFilled,
   swapContractAddress,
   contractIndex,
-  refetchAllContracts,
+  refetchAllContracts
 }) => {
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
   const manOfAction = isAskOrder ? currentUserFiller : currentUserInitiator;
-  const currentUserPending = isAccepted && (currentUserFiller || currentUserInitiator) && !isApproved && !isFilled;
+  const currentUserPending =
+    isAccepted && (currentUserFiller || currentUserInitiator) && !isApproved && !isFilled;
   const currentUserApproved = txnApprovalsEnabled && isAccepted && isApproved && manOfAction;
   const currentUserDisapproved = txnApprovalsEnabled && manOfAction && false;
   const otherOrderPending = txnApprovalsEnabled && isAccepted && !manOfAction;
@@ -49,12 +50,16 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
       swapContractAddress,
       contractIndex,
       setButtonStep: setCancelButtonStep,
-      refetchAllContracts,
+      refetchAllContracts
     });
   };
 
   const cancelAcceptanceButton = (
-    <Button className={buttonClass} onClick={() => handleCancelAcceptance()} disabled={cancelButtonStep === 'step1'}>
+    <Button
+      className={buttonClass}
+      onClick={() => handleCancelAcceptance()}
+      disabled={cancelButtonStep === 'step1'}
+    >
       <LoadingButtonText
         state={cancelButtonStep}
         idleText="Cancel Request"
@@ -70,27 +75,33 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
     if (currentUserPending) {
       return {
         color: 'border-orange-600 text-orange-600',
-        text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares is pending`,
+        text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares is pending`
       };
     } else if (currentUserApproved) {
       return {
         color: 'border-green-600 text-green-600',
-        text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares has been approved`,
+        text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares has been approved`
       };
     } else if (currentUserDisapproved) {
       return {
         color: 'border-orange-600 text-orange-600',
-        text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares has been disapproved`,
+        text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares has been disapproved`
       };
     } else if (otherOrderPending) {
-      return { color: 'border-yellow-600 text-yellow-600', text: `Another investor's request is pending` };
+      return {
+        color: 'border-yellow-600 text-yellow-600',
+        text: `Another investor's request is pending`
+      };
     } else {
       return undefined;
     }
   };
 
   const { color, text } = cases() || { color: undefined, text: undefined };
-  const className = cn(color, 'border-2 font-semibold p-3 rounded-lg flex items-center justify-between ');
+  const className = cn(
+    color,
+    'border-2 font-semibold p-3 rounded-lg flex items-center justify-between '
+  );
 
   return cases() ? (
     <div className={className}>

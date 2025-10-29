@@ -1,20 +1,18 @@
-"use client";
+'use client';
 
 import React, { FC, useContext, useState } from 'react';
 
 import { Form, Formik } from 'formik';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
 
 import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import { useRouter } from 'next/navigation';
-import { ADD_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { ApplicationStoreProps, store } from '@context/store';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { useMutation } from '@apollo/client';
-import { useSession } from 'next-auth/react';
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import { useMutation } from '@apollo/client/react';
+import { ADD_ORGANIZATION, ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
@@ -22,13 +20,29 @@ export type CreateOrganizationType = {
 };
 
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
-  const { data: session, status } = useSession();
-  const userId = session?.user.id;
-  const [addOrganization] = useMutation(ADD_ORGANIZATION);
-  const [logoUrl, setLogoUrl] = useState<string>('');
+  const { user, supabase } = useSupabaseAuth();
+  console.log('user - CreateOrganization', user);
+  const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? '');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
   const router = useRouter();
+
+  const [addOrganization, { data: organization, error: orgError }] = useMutation(ADD_ORGANIZATION);
+  const [addOrganizationUser, { data: organizationUser, error: orgUserError }] =
+    useMutation(ADD_ORGANIZATION_USER);
+
+  console.log('organization', organization?.data?.addOrganization.records, orgError);
+  console.log(
+    'organizationUser',
+    organizationUser?.data?.addOrganizationUser.records,
+    orgUserError
+  );
+
+  if (!user) {
+    return null;
+  }
+
+  const userId = user.id;
 
   return (
     <Formik
@@ -36,9 +50,9 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
         name: '',
         website: '',
         shortDescription: '',
-        country: '',
+        country: ''
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.name) {
           errors.name = 'Please include a name';
@@ -49,18 +63,33 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
         setSubmitting(true);
         dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
         try {
-          const result = await addOrganization({
+          await addOrganization({
             variables: {
-              userId: userId,
+              name: values.name,
               logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
               website: values.website,
-              name: values.name,
               shortDescription: values.shortDescription,
-              country: values.country,
-              currentDate: currentDate,
-            },
+              country: values.country
+            }
           });
-          const orgId = result.data.addOrganization.organization[0].id;
+
+          console.log('organization', organization?.data?.addOrganization.records);
+
+          if (orgError) {
+            throw new Error(orgError.message);
+          }
+
+          const orgId = organization?.data?.addOrganization.records[0].id;
+
+          // Add organization_user relationship with the new organization ID
+          await addOrganizationUser({
+            variables: {
+              userId: userId,
+              organizationId: orgId,
+              permission: ['ADMIN']
+            }
+          });
+
           window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
           router.push(`/${orgId}/overview`);
           dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
@@ -84,7 +113,11 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
                 type="text"
                 placeholder="Alphabet Inc."
               />{' '}
-              <CountrySelect className={defaultFieldDiv} labelText="Country of operation" name="country" />
+              <CountrySelect
+                className={defaultFieldDiv}
+                labelText="Country of operation"
+                name="country"
+              />
             </div>
             <div className="flex col-span-1 pt-5 justify-center">
               <FileUpload

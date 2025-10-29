@@ -26,7 +26,7 @@ const initialState: ApplicationStoreProps = {
   NoticesOpen: true,
   SearchText: undefined,
   ActiveOrg: undefined,
-  dispatch: () => null,
+  dispatch: () => null
 };
 const store = createContext(initialState);
 const { Provider } = store;

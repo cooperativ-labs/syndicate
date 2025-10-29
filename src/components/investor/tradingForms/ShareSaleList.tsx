@@ -7,7 +7,7 @@ import { claimProceeds } from '@src/web3/contractSwapCalls';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { ManagerModalType } from '@src/utils/helpersOffering';
-import { Maybe, ShareOrder } from 'oldTypes';
+import { Maybe, ShareOrder } from '@gql/graphql';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
@@ -33,7 +33,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   transferEvents,
   setModal,
   refetchMainContracts,
-  refetchOfferingInfo,
+  refetchOfferingInfo
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
@@ -41,17 +41,18 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'unclaimedProceeds',
-    args: [userWalletAddress as String0x],
+    args: [userWalletAddress as String0x]
   });
 
   const rawProceeds = contractData && contractData[1];
-  const proceeds = paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
+  const proceeds =
+    paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
 
   const handleClaimProceeds = async () => {
     await claimProceeds({
       swapContractAddress,
       setButtonStep: setClaimProceedsButton,
-      refetchAllContracts: refetchMainContracts,
+      refetchAllContracts: refetchMainContracts
     });
   };
 
@@ -100,8 +101,8 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     return <div className="w-full">{saleButton}</div>;
   }
 
-  const currentOrders = orders?.filter((order) => !order?.archived);
-  const archivedOrders = orders?.filter((order) => order?.archived);
+  const currentOrders = orders?.filter(order => !order?.archived);
+  const archivedOrders = orders?.filter(order => order?.archived);
 
   return (
     <>

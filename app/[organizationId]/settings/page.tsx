@@ -1,12 +1,12 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import OrganizationSettings from '@src/pages/OrganizationSettings';
+import OrganizationSettings from '@src/screens/OrganizationSettings';
 import React from 'react';
 
 const OrganizationSettingsPage = () => {
   return (
     <div
       data-test="component-landing"
-      className="bg-gradient-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
+      className="bg-linear-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
     >
       <ManagerWrapper>
         <OrganizationSettings />
@@ -16,4 +16,3 @@ const OrganizationSettingsPage = () => {
 };
 
 export default OrganizationSettingsPage;
-

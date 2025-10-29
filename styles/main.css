@@ -12,11 +12,13 @@ body {
   font-family: 'Inter', sans-serif;
 }
 .popup-content {
-  width:auto;
-  max-width:800px;
+  width: auto;
+  max-width: 800px;
 }
 
-input[type='text']:focus { box-shadow: none; }
+input[type='text']:focus {
+  box-shadow: none;
+}
 
 progress {
   -webkit-appearance: none;

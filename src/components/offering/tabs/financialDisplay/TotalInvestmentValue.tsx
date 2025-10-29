@@ -1,6 +1,6 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
-import { Currency, RealEstateProperty } from 'oldTypes';
+import { Currency, RealEstateProperty } from '@gql/graphql';
 
 type TotalInvestmentValueDataProps = {
   propertyDetails: RealEstateProperty;
@@ -8,7 +8,11 @@ type TotalInvestmentValueDataProps = {
   name?: string | null;
 };
 
-const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({ propertyDetails, operatingCurrency, name }) => {
+const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({
+  propertyDetails,
+  operatingCurrency,
+  name
+}) => {
   const { assetValue, closingCosts, downPayment, lenderFees, loan } = propertyDetails;
 
   if (!assetValue && !closingCosts && !downPayment && !lenderFees && !loan) {
@@ -26,11 +30,29 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({ propertyD
       </div>
       <div>
         {assetValue && (
-          <FinancialFactItem label="Underlying asset price" amount={assetValue} currency={operatingCurrency} />
+          <FinancialFactItem
+            label="Underlying asset price"
+            amount={assetValue}
+            currency={operatingCurrency}
+          />
         )}
-        {closingCosts && <FinancialFactItem label="Closing costs" amount={closingCosts} currency={operatingCurrency} />}
-        {lenderFees && <FinancialFactItem label="Lender fees" amount={lenderFees} currency={operatingCurrency} />}
-        {downPayment && <FinancialFactItem label="Down payment" amount={downPayment} currency={operatingCurrency} />}
+        {closingCosts && (
+          <FinancialFactItem
+            label="Closing costs"
+            amount={closingCosts}
+            currency={operatingCurrency}
+          />
+        )}
+        {lenderFees && (
+          <FinancialFactItem label="Lender fees" amount={lenderFees} currency={operatingCurrency} />
+        )}
+        {downPayment && (
+          <FinancialFactItem
+            label="Down payment"
+            amount={downPayment}
+            currency={operatingCurrency}
+          />
+        )}
         {loan && (
           <FinancialFactItem
             label="Amount borrowed"
@@ -44,16 +66,25 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({ propertyD
   );
 };
 
-type TotalInvestmentValueProps = { OfferingReProperties: RealEstateProperty[]; operatingCurrency: Currency };
+type TotalInvestmentValueProps = {
+  OfferingReProperties: RealEstateProperty[];
+  operatingCurrency: Currency;
+};
 
-const TotalInvestmentValue: FC<TotalInvestmentValueProps> = ({ OfferingReProperties, operatingCurrency }) => {
+const TotalInvestmentValue: FC<TotalInvestmentValueProps> = ({
+  OfferingReProperties,
+  operatingCurrency
+}) => {
   return (
     <div className="bg-white rounded-xl shadow-xl py-6 mb-8">
       <h1 className="font-bold text-xl pl-4 lg:pl-8 mb-8">Total Asset Value</h1>
       {OfferingReProperties.length > 0 && (
         <>
           {OfferingReProperties.length < 2 ? (
-            <TotalInvestmentValueData operatingCurrency={operatingCurrency} propertyDetails={OfferingReProperties[0]} />
+            <TotalInvestmentValueData
+              operatingCurrency={operatingCurrency}
+              propertyDetails={OfferingReProperties[0]}
+            />
           ) : (
             <div>
               {OfferingReProperties.map((property, i) => {

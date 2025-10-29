@@ -1,7 +1,9 @@
 export const getBaseUrl = () => {
-  const l = window.location;
-  const base_url = l.protocol + '//' + l.host + '/' + l.pathname.split('/')[1];
-  return base_url;
+  if (typeof window === 'undefined' || !window.location) return '';
+  const { protocol, host, pathname } = window.location;
+  const firstPathSegment = (pathname || '/').split('/')[1] || '';
+  const baseUrl = `${protocol}//${host}/${firstPathSegment}`;
+  return baseUrl;
 };
 
 export const copyTextToClipboard = async (text: string) => {

@@ -5,7 +5,7 @@ import { ApplicationStoreProps, store } from '@context/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { Organization } from 'oldTypes';
+import { Organization } from '@gql/graphql';
 
 type OrganizationSwitcherProps = {
   organizations: Organization[];
@@ -23,7 +23,7 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
   return (
     <div className={cn('relative min-h-full', backgroundColor)}>
       <div className="z-10 flex flex-col min-w-max pt-2 rounded-md focus:outline-none">
-        {organizations.map((org) => (
+        {organizations.map(org => (
           <button
             key={org.id}
             type="button"
@@ -33,10 +33,16 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
               OrganizationIdFromSessionStorage === org.id ? 'border-4 border-slate-600' : ''
             )}
             onClick={() =>
-              handleOrganizationChange(org.id, () => dispatch({ type: 'SET_ACTIVE_ORG', payload: org.id }))
+              handleOrganizationChange(org.id, () =>
+                dispatch({ type: 'SET_ACTIVE_ORG', payload: org.id })
+              )
             }
           >
-            <img className="w-14 h-14" src={org.logo ?? '/assets/images/logos/company-placeholder.jpeg'} alt="" />
+            <img
+              className="w-14 h-14"
+              src={org.logo ?? '/assets/images/logos/company-placeholder.jpeg'}
+              alt=""
+            />
 
             {/* {org.name} */}
           </button>

@@ -1,10 +1,14 @@
 //@ts-ignore
 import TagManager from 'react-gtm-module';
-import { DEFAULT_CUSTOM_DIMENSIONS, EVENT_DEFAULTS, DEFAULT_IMPRESSION_ACTION } from '@src/utils/analytics/config';
+import {
+  DEFAULT_CUSTOM_DIMENSIONS,
+  EVENT_DEFAULTS,
+  DEFAULT_IMPRESSION_ACTION
+} from '@src/utils/analytics/config';
 //@ts-ignore
 function track(payload) {
   TagManager.dataLayer({
-    dataLayer: { ...payload },
+    dataLayer: { ...payload }
   });
 }
 //@ts-ignore
@@ -16,7 +20,7 @@ function trackEvent(payload, customDimensions) {
     eventLabel: payload.label,
     eventValue: payload.value,
     ...DEFAULT_CUSTOM_DIMENSIONS,
-    ...customDimensions,
+    ...customDimensions
   };
   track(analyticsEvent);
 }
@@ -27,7 +31,7 @@ export function trackPageView(title, page, rest = {}) {
 //@ts-ignore
 export function trackInteraction(type, payload, rest) {
   const _defaultRest = {
-    eventNonInt: false,
+    eventNonInt: false
   };
   payload.action = payload.action == null ? type : payload.action;
   const customDimensions = { ..._defaultRest, ...rest };
@@ -36,7 +40,7 @@ export function trackInteraction(type, payload, rest) {
 //@ts-ignore
 export function trackImpression(payload, rest) {
   const _defaultRest = {
-    eventNonInt: true,
+    eventNonInt: true
   };
   payload.action = payload.action == null ? DEFAULT_IMPRESSION_ACTION : payload.action;
   const customDimensions = { ...rest, ..._defaultRest };

@@ -1,4 +1,4 @@
-"use client";
+'use client';
 
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import cn from 'classnames';
@@ -8,12 +8,13 @@ import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 import NavBar from './NavigationBar';
 import React, { FC, useContext } from 'react';
 import { useParams } from 'next/navigation';
-import WalletChooserModal from './wallet/WalletChooserModal';
-import { ApplicationStoreProps, store } from '@context/store';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
-import { useQuery } from '@apollo/client';
 
-const BackgroundGradient = 'bg-gradient-to-b from-gray-100 to-blue-50';
+import { ApplicationStoreProps, store } from '@context/store';
+
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import { useQuery } from '@apollo/client/react';
+
+const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 // const BackgroundGradient = 'bg-white';
 
 type PortalWrapperProps = {
@@ -24,8 +25,7 @@ const Portal: FC<PortalWrapperProps> = ({ children }) => {
   const params = useParams<{ organizationId: string }>();
   const orgId = params?.organizationId;
   const { data, loading, error } = useQuery(GET_ORGANIZATION, {
-    variables: { id: orgId },
-    skip: !orgId,
+    variables: { id: orgId }
   });
   const organization = data?.getOrganization;
 
@@ -37,7 +37,7 @@ const Portal: FC<PortalWrapperProps> = ({ children }) => {
       <div className="w-full">
         <NavBar orgLogo={organization?.logo} orgName={organization?.name} />
 
-        <div className="flex-grow z-10">
+        <div className="grow z-10">
           <div className="mx-auto ">{children}</div>
         </div>
       </div>
@@ -52,7 +52,7 @@ const PortalWrapper: FC<PortalWrapperProps> = ({ children }) => {
   return (
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
-        <WalletChooserModal />
+        {/* <WalletChooserModal /> */}
         {PageIsLoading && <LoadingModal />}
         <AlertPopup text="This is an alpha version. Please use with caution." />
         <EnsureCompatibleNetwork>

@@ -1,11 +1,11 @@
-"use client";
+'use client';
 
 import Header from '@src/containers/Header';
 import InvestorApplicationForm from '@src/components/investor/applicationForm/InvestorApplicationForm';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import PortalWrapper from '@src/containers/PortalWrapper';
-import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
-import { useQuery } from '@apollo/client';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+import { useQuery } from '@apollo/client/react';
 import React from 'react';
 import { useParams } from 'next/navigation';
 
@@ -26,7 +26,7 @@ const InvestorApplicationPage = () => {
         <Header offering={offering} small />
         <div className="flex z-30 md:z-10 min-h-full min-h-screen">
           <div className="md:mx-6 w-full">
-            <div className="flex-grow h-full z-10">
+            <div className="grow h-full z-10">
               <div className="h-full px-2 py-2 md:mt-4">
                 <div className="mx-auto min-h-full">
                   <InvestorApplicationForm offering={offering} />
@@ -41,4 +41,3 @@ const InvestorApplicationPage = () => {
 };
 
 export default InvestorApplicationPage;
-

@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import PropertyDetails from '@src/pages/PropertyDetails';
-import { GET_RE_PROPERTY } from '@src/utils/dGraphQueries/reProperty';
-import { useQuery } from '@apollo/client';
+import PropertyDetails from '@src/screens/PropertyDetails';
+import { GET_RE_PROPERTY } from '@src/utils/graphQueries/reProperty';
+import { useQuery } from '@apollo/client/react';
 import React from 'react';
 import { useParams } from 'next/navigation';
 
@@ -13,7 +13,7 @@ const PropertyPage = () => {
   const propertyId = params?.propertyId;
   const { data: propertyData } = useQuery(GET_RE_PROPERTY, {
     variables: { id: propertyId },
-    skip: !propertyId,
+    skip: !propertyId
   });
 
   if (!propertyData) {
@@ -32,4 +32,3 @@ const PropertyPage = () => {
 };
 
 export default PropertyPage;
-

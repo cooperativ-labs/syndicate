@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
 import Footer from '@src/Footer/Footer';
-import OfferingProfile from '@src/pages/OfferingProfile';
+import OfferingProfile from '@src/screens/OfferingProfile';
 import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
 import React from 'react';
-import { Offering } from 'oldTypes';
+import { Offering } from '@gql/graphql';
 
 type ClientOfferingPageProps = {
   offering: Offering | null;
@@ -31,4 +31,3 @@ const ClientOfferingPage: React.FC<ClientOfferingPageProps> = ({ offering }) => 
 };
 
 export default ClientOfferingPage;
-

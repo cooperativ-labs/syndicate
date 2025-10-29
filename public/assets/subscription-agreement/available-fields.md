@@ -10,7 +10,7 @@
 {{ purchaserEntityAddressLine2 }}
  %}
 
- {% purchaserEntityAddressLine3:
+{% purchaserEntityAddressLine3:
 {{ purchaserEntityAddressLine3 }}
  %}
 
@@ -24,40 +24,33 @@
 
 {{ purchaserEntityAddressCountry }}
 
-
 Offering entity Phone {{ offeringEntityPhone }}
 Offering entity StartPrice {{ priceStart }}
-Offering Entity min Units {{ minUnits }} 
+Offering Entity min Units {{ minUnits }}
 Offering Entity {{ minInvestment }}
 
-{{ purchaserAddress }} 
+{{ purchaserAddress }}
 
-{{ purchaserEmail }} 
+{{ purchaserEmail }}
 
-{{ purchaserPhone }} 
+{{ purchaserPhone }}
 
-{{ taxId }} 
+{{ taxId }}
 
 {% purchaserAccredited:
- User Is accredited 
+User Is accredited
 
-{{ purchaserAccreditedType }} 
+{{ purchaserAccreditedType }}
 
-{{ purchaserAccreditedTypeOther }} 
+{{ purchaserAccreditedTypeOther }}
 
-{{ purchaserNetWorth }} 
+{{ purchaserNetWorth }}
 
-{{ purchaserIncome }} 
+{{ purchaserIncome }}
 
- %}
+%}
 
-
-
-
-{{ purchaserTaxState }} 
-
-
-
+{{ purchaserTaxState }}
 
 **{{ purchaserEntityName }}'s contact information:**  
 **Phone number:** {{ purchaserPhone }}  
@@ -65,17 +58,13 @@ Offering Entity {{ minInvestment }}
 **Mailing address:**  
 {{ purchaserEntityAddressLine1 }}  
 {% purchaserEntityAddressLine2:
-{{ purchaserEntityAddressLine2 }}  
+{{ purchaserEntityAddressLine2 }}
  %}{% purchaserEntityAddressLine3:
-{{ purchaserEntityAddressLine3 }}  
+{{ purchaserEntityAddressLine3 }}
  %}{{ purchaserEntityAddressCity }}, {% purchaserEntityAddressStateProvince:
 {{ purchaserEntityAddressStateProvince }}
  %}{{ purchaserEntityAddressPostalCode }}  
 {{ purchaserEntityAddressCountry }}
-
-
-
-
 
 The completed application will be sent to {{ GPEntityName }}, the General Partner managing this offering:
 
@@ -90,10 +79,9 @@ c/o {{ offeringEntityManager }} {{ offeringEntityManagerTitle }}
 {{ offeringEntityEmail }}  
 {{ offeringEntityPhone }}
 
-
- GPEntityName: 'NEED GP NAME',
- offeringEntityManager: 'NEED GP ENTITY MANAGER',
-  offeringEntityManagerTitle: 'NEED GP MANAGER TITLE',
+GPEntityName: 'NEED GP NAME',
+offeringEntityManager: 'NEED GP ENTITY MANAGER',
+offeringEntityManagerTitle: 'NEED GP MANAGER TITLE',
 
      offeringEntityAddressLine1: offeringEntity.addresses[0].line1,
       offeringEntityAddressLine2: offeringEntity.addresses[0].line2,

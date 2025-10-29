@@ -8,7 +8,10 @@ type AdditionalApplicationFieldsProps = {
   offeringEntityName: string;
 };
 
-const AdditionalApplicationFields: FC<AdditionalApplicationFieldsProps> = ({ values, offeringEntityName }) => {
+const AdditionalApplicationFields: FC<AdditionalApplicationFieldsProps> = ({
+  values,
+  offeringEntityName
+}) => {
   return (
     <>
       <h2 className="text-2xl md:mt-8 text-blue-900 font-semibold">{`Information for investor approval`}</h2>
@@ -58,7 +61,9 @@ const AdditionalApplicationFields: FC<AdditionalApplicationFieldsProps> = ({ val
             name="purchaserAccreditedType"
           >
             <option value="">Please select</option>
-            <option value="a bank, insurance, or investment company.">Bank, insurance, or investment company.</option>
+            <option value="a bank, insurance, or investment company.">
+              Bank, insurance, or investment company.
+            </option>
             <option value="an Employee benefit plan.">Employee benefit plan.</option>
             <option value="a charitable organization with excess of $5,000,000 in funds.">
               Charitable organization with excess of $5,000,000 in funds.

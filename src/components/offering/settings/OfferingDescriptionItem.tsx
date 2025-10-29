@@ -1,11 +1,11 @@
 import Button from '@src/components/buttons/Button';
 import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
 import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/dGraphQueries/offering';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'oldTypes';
-import { useMutation } from '@apollo/client';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
+import { useMutation } from '@apollo/client/react';
 
 type OfferingDescriptionItemProps = {
   offering: Offering;
@@ -13,15 +13,24 @@ type OfferingDescriptionItemProps = {
   order: number | undefined;
   tab: OfferingTabSection | undefined;
 };
-const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, description, order, tab }) => {
+const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({
+  offering,
+  description,
+  order,
+  tab
+}) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [updateDescription, { data: dataUpdate, error: errorUpdate }] = useMutation(UPDATE_DESCRIPTION_TEXT);
-  const [deleteDescription, { data: dataDelete, error: errorDelete }] = useMutation(DELETE_DESCRIPTION_TEXT);
+  const [updateDescription, { data: dataUpdate, error: errorUpdate }] =
+    useMutation(UPDATE_DESCRIPTION_TEXT);
+  const [deleteDescription, { data: dataDelete, error: errorDelete }] =
+    useMutation(DELETE_DESCRIPTION_TEXT);
 
   const [alerted, setAlerted] = useState<boolean>(false);
 
   if (errorUpdate || errorDelete) {
-    alert(`Oops. Looks like something went wrong: ${errorUpdate ? errorUpdate.message : errorDelete?.message}`);
+    alert(
+      `Oops. Looks like something went wrong: ${errorUpdate ? errorUpdate.message : errorDelete?.message}`
+    );
   }
   if ((dataUpdate && !alerted) || (dataDelete && !alerted)) {
     setAlerted(true);
@@ -41,7 +50,9 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, d
             aria-label={open ? 'expand section' : 'collapse section'}
             onClick={() => setOpen(!open)}
           >
-            <div className="p-1">{open ? <FontAwesomeIcon icon="close" /> : <FontAwesomeIcon icon="pen" />}</div>
+            <div className="p-1">
+              {open ? <FontAwesomeIcon icon="close" /> : <FontAwesomeIcon icon="pen" />}
+            </div>
           </Button>
           <div
             className={`focus:outline-none pr-2 rounded-full font-semibold text-lg text-gray-700`}
@@ -69,7 +80,11 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({ offering, d
           <button
             onClick={() =>
               deleteDescription({
-                variables: { offeringId: offering.id, descriptionId: description?.id, currentDate: currentDate },
+                variables: {
+                  offeringId: offering.id,
+                  descriptionId: description?.id,
+                  currentDate: currentDate
+                }
               })
             }
             className="p-3 border-2 border-red-800 rounded-md w-full text-red-800 font-bold uppercase -mt-10"

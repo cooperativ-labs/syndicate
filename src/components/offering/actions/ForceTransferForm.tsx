@@ -4,17 +4,17 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import React from 'react';
 import Select from '@src/components/form-components/Select';
 import SetOperatorButton from './SetOperatorButton';
-import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
+import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { Form, Formik } from 'formik';
-import { Maybe, OfferingParticipant } from 'oldTypes';
+import { Maybe, OfferingParticipant } from '@gql/graphql';
 import { readContract } from 'wagmi/actions';
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { useAccount, useContractRead } from 'wagmi';
 import { useAsync } from 'react-use';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 type ForceTransferFormProps = {
   shareContractAddress: String0x;
@@ -29,7 +29,7 @@ const ForceTransferForm = ({
   partitions,
   offeringParticipants,
   target,
-  refetchContracts,
+  refetchContracts
 }: ForceTransferFormProps) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
@@ -37,7 +37,7 @@ const ForceTransferForm = ({
   const [targetBalance, setTargetBalance] = React.useState<number>(0);
   const [addIssuance] = useMutation(ADD_TRANSFER_EVENT);
 
-  const recipientOptions = offeringParticipants?.filter((participant) => {
+  const recipientOptions = offeringParticipants?.filter(participant => {
     return participant?.walletAddress !== target;
   });
 
@@ -45,7 +45,7 @@ const ForceTransferForm = ({
     address: shareContractAddress,
     abi: shareContractABI,
     functionName: 'isOperator',
-    args: [userWalletAddress as String0x],
+    args: [userWalletAddress as String0x]
   });
 
   useAsync(async () => {
@@ -53,7 +53,7 @@ const ForceTransferForm = ({
       address: shareContractAddress,
       abi: shareContractABI,
       functionName: 'balanceOfByPartition',
-      args: [partition, target],
+      args: [partition, target]
     });
     const targetBalance = data ? toNormalNumber(data, shareContractDecimals) : 0;
     setTargetBalance(targetBalance);
@@ -62,7 +62,7 @@ const ForceTransferForm = ({
   return (
     <Formik
       initialValues={{ partition: partitions[0], amount: '', recipient: '' }}
-      validate={(values) => {
+      validate={values => {
         setPartition(values.partition as String0x);
       }}
       validationSchema={Yup.object().shape({
@@ -72,7 +72,7 @@ const ForceTransferForm = ({
           .required('Required')
           .positive('Amount must be positive')
           .max(targetBalance, 'Amount cannot exceed target balance'),
-        recipient: Yup.string().required('Required'),
+        recipient: Yup.string().required('Required')
       })}
       onSubmit={async (values, { setSubmitting }) => {
         setButtonStep('step1');
@@ -84,7 +84,7 @@ const ForceTransferForm = ({
           recipient: values.recipient as String0x,
           setButtonStep,
           addIssuance,
-          refetchContracts,
+          refetchContracts
         });
         setSubmitting(false);
       }}
@@ -117,7 +117,7 @@ const ForceTransferForm = ({
             {recipientOptions?.map((participant, i) => {
               const presentableAddress = addressWithoutEns({
                 address: participant?.walletAddress,
-                userName: participant?.name,
+                userName: participant?.name
               });
               return (
                 <option key={i} value={participant?.walletAddress}>

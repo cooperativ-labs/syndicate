@@ -3,25 +3,28 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React, { FC, use, useState } from 'react';
 import Select from '@src/components/form-components/Select';
-import { ADD_OFFERING_DETAILS } from '@src/utils/dGraphQueries/offering';
+import { ADD_OFFERING_DETAILS } from '@src/utils/graphQueries/offering';
 import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
-import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from 'oldTypes';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;
   operatingCurrency: Maybe<Currency> | undefined;
 };
 
-const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringId, operatingCurrency }) => {
+const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
+  offeringId,
+  operatingCurrency
+}) => {
   const [alerted, setAlerted] = useState<boolean>(false);
   const [addOfferingDetails, { data, error }] = useMutation(ADD_OFFERING_DETAILS);
   const chainId = useChainId();
-  const chainBacs = bacOptions.filter((bac) => bac.chainId === chainId);
+  const chainBacs = bacOptions.filter(bac => bac.chainId === chainId);
   if (error && !alerted) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
     setAlerted(true);
@@ -33,11 +36,11 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
         initialValues={{
           initialPrice: '',
           investmentCurrencyCode: '' as CurrencyCode,
-          numUnits: '',
+          numUnits: ''
           // minUnitsPerInvestor: '',
           // maxUnitsPerInvestor: '',
         }}
-        validate={(values) => {
+        validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           if (!values.numUnits || values.numUnits === '') {
             errors.numUnits = 'You must set a number of units';
@@ -63,8 +66,8 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({ offeringI
               investmentCurrencyCode: values.investmentCurrencyCode,
               distributionCurrencyCode: values.investmentCurrencyCode,
               priceStart: parseInt(values.initialPrice, 10),
-              maxRaise: parseInt(values.numUnits, 10) * parseInt(values.initialPrice, 10),
-            },
+              maxRaise: parseInt(values.numUnits, 10) * parseInt(values.initialPrice, 10)
+            }
           });
           setSubmitting(false);
         }}

@@ -9,8 +9,9 @@ Agreement goes into effect and {{ organizationName }} agrees to the following:
 ### Definitions:
 
 {% isNotIndividual:
+
 - **"{{ organizationName }}"** means {{ organizationLegalName }}.
-%}
+  %}
 
 - **"Real Estate Shares Contract"** means the smart contract located at
   `{{ contractAddress }}` on {{ chainName }}.
@@ -64,9 +65,9 @@ Here is a list of all of the other variables we will use in this contract:
 
 {{ distributionCurrency }} - Distribution currency
 
-{{ distributionDescription }} Distribution description 
+{{ distributionDescription }} Distribution description
 
-{{ adminExpense }} - Administrative expenses 
+{{ adminExpense }} - Administrative expenses
 
 {{ operatingCurrency }} - operatingCurrency
 
