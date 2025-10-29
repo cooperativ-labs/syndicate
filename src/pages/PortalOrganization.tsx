@@ -1,3 +1,5 @@
+"use client";
+
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import OfferingsList from '@src/components/offering/OfferingsList';
@@ -9,13 +11,13 @@ import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
 import { OfferingParticipant } from 'oldTypes';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 
 const PortalOrganization: FC = () => {
   const { address: userWalletAddress } = useAccount();
-  const router = useRouter();
-  const orgId = router.query.organizationId;
-  const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId;
+  const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId }, skip: !orgId });
   const organization = organizationData?.getOrganization;
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress },

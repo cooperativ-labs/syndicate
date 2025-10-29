@@ -1,9 +1,11 @@
+"use client";
+
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
 import ManagerSideBarContents from './ManagerSideBarContents';
 import OrganizationSwitcher from './OrganizationSwitcher';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import router from 'next/router';
+import { useParams } from 'next/navigation';
 import { ApplicationStoreProps, store } from '@context/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useWindowSize } from 'react-use';
@@ -16,7 +18,8 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar, ManagerSidebarOpen } = applicationStore;
   const windowSize = useWindowSize();
-  const orgId = router.query.organizationId as string;
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId as string | undefined;
   const OrganizationIdFromSessionStorage = sessionStorage.getItem('CHOSEN_ORGANIZATION');
   const setOrgId = OrganizationIdFromSessionStorage ?? orgId;
 

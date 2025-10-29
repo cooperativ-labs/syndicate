@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useContext, useState } from 'react';
 
 import { Form, Formik } from 'formik';
@@ -7,7 +9,7 @@ import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { ADD_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { ApplicationStoreProps, store } from '@context/store';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
@@ -26,6 +28,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   const [logoUrl, setLogoUrl] = useState<string>('');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
+  const router = useRouter();
 
   return (
     <Formik
@@ -59,11 +62,9 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
           });
           const orgId = result.data.addOrganization.organization[0].id;
           window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
-          router.push(`/${orgId}/overview`).then(() => {
-            router.reload();
-            dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
-            actionOnCompletion && actionOnCompletion();
-          });
+          router.push(`/${orgId}/overview`);
+          dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
+          actionOnCompletion && actionOnCompletion();
         } catch (error: any) {
           alert(`Oops. Looks like something went wrong: ${error.message}`);
           dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });

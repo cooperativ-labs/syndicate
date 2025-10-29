@@ -1,8 +1,9 @@
+"use client";
+
 import Button from './components/buttons/Button';
 import cn from 'classnames';
 import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
-import router from 'next/router';
 
 const buttonGradient =
   'bg-gradient-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
@@ -26,7 +27,7 @@ const CookieBanner: FC = () => {
           className={cn(buttonGradient, 'p-3 px-6 text-sm font-bold rounded-lg')}
           onClick={() => {
             approvalState?.setItem('COOKIE_APPROVED', 'approved');
-            router.reload();
+            window.location.reload();
           }}
         >
           Accept

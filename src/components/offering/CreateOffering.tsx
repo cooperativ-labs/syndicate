@@ -1,3 +1,5 @@
+"use client";
+
 import React, { FC, useState } from 'react';
 
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
@@ -15,7 +17,7 @@ import { useMutation } from '@apollo/client';
 
 import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
 import { LegalEntity, Organization } from 'oldTypes';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 type CreateOfferingType = {
   organization: Organization;

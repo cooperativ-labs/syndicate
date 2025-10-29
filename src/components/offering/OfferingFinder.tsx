@@ -1,10 +1,13 @@
+"use client";
+
 import Button from '../buttons/Button';
 import Input from '../form-components/Inputs';
 import React, { FC } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { Form, Formik } from 'formik';
 
 const OfferingFinder: FC = () => {
+  const router = useRouter();
   return (
     <Formik
       initialValues={{

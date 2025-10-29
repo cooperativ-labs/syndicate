@@ -1,3 +1,5 @@
+"use client";
+
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -5,7 +7,7 @@ import LoadingModal from '@src/components/loading/ModalLoading';
 import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 import NavBar from './NavigationBar';
 import React, { FC, useContext } from 'react';
-import router from 'next/router';
+import { useParams } from 'next/navigation';
 import WalletChooserModal from './wallet/WalletChooserModal';
 import { ApplicationStoreProps, store } from '@context/store';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
@@ -19,9 +21,11 @@ type PortalWrapperProps = {
 };
 
 const Portal: FC<PortalWrapperProps> = ({ children }) => {
-  const orgId = router.query.organizationId;
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId;
   const { data, loading, error } = useQuery(GET_ORGANIZATION, {
     variables: { id: orgId },
+    skip: !orgId,
   });
   const organization = data?.getOrganization;
 

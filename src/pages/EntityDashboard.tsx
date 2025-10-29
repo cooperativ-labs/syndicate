@@ -1,9 +1,11 @@
+"use client";
+
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import React, { FC } from 'react';
-import router from 'next/router';
+import { useParams, useRouter } from 'next/navigation';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { GET_USER } from '@src/utils/dGraphQueries/user';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
@@ -12,8 +14,13 @@ import { useSession } from 'next-auth/react';
 
 const EntityDashboard: FC = () => {
   const { data: session, status } = useSession();
-  const orgId = router.query.organizationId;
-  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const params = useParams<{ organizationId: string }>();
+  const router = useRouter();
+  const orgId = params?.organizationId;
+  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {
+    variables: { id: orgId },
+    skip: !orgId,
+  });
   const organization = organizationData?.getOrganization;
   // const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   // const user = userData?.queryUser[0];

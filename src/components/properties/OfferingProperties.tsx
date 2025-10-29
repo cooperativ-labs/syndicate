@@ -1,7 +1,9 @@
+"use client";
+
 import Button from '@src/components/buttons/Button';
 import React, { FC } from 'react';
 import RealEstatePropertyCard from './RealEstatePropertyCard';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { LegalEntity, Maybe } from 'oldTypes';
 
@@ -12,6 +14,7 @@ type OfferingPropertiesProps = {
 };
 
 const OfferingProperties: FC<OfferingPropertiesProps> = ({ offeringEntity, isOfferingManager, offeringId }) => {
+  const router = useRouter();
   return (
     <div className="flex flex-col md:flex-row md:flex-wrap justify center gap-5">
       {offeringEntity?.realEstateProperties?.map((property: any, i: number) => (

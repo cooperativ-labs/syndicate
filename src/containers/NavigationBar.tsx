@@ -1,8 +1,10 @@
+"use client";
+
 import Button from '@src/components/buttons/Button';
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 import DisconnectButton from '@src/components/buttons/DisconnectButton';
 import React, { FC, useContext } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import UserMenu from './UserMenu';
 import { ApplicationStoreProps, store } from '@context/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
@@ -16,6 +18,7 @@ type NavBarProps = {
 };
 
 export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
+  const router = useRouter();
   const { status } = useSession();
   const isAuthenticated = status === 'authenticated';
   const applicationStore: ApplicationStoreProps = useContext(store);

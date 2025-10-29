@@ -1,3 +1,5 @@
+"use client";
+
 import DashboardCard from '@src/components/cards/DashboardCard';
 import EmailAddressList from '@src/components/EmailAddressList';
 import FileUpload from '@src/components/form-components/FileUpload';
@@ -28,20 +30,20 @@ import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity'
 import { getOrganizationUser } from '@src/utils/helpersOrganization';
 import { Maybe, Organization } from 'oldTypes';
 import { useMutation, useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 const OrganizationSettings: FC = () => {
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
-  const router = useRouter();
-  const { organizationId: orgId } = router.query;
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId;
 
   const {
     data: organizationData,
     error: getOrgError,
     loading,
-  } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  } = useQuery(GET_ORGANIZATION, { variables: { id: orgId }, skip: !orgId });
   const organization: Organization = organizationData?.getOrganization;
 
   const [updateOrganization, { data: updateOrgData, error: updateOrgError }] = useMutation(
@@ -92,7 +94,7 @@ const OrganizationSettings: FC = () => {
       },
     }).then((res) => {
       setNameEditOn('none');
-      router.reload();
+      window.location.reload();
     });
   };
   const handleToggle = (profileVisibility: boolean) => {

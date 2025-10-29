@@ -1,6 +1,8 @@
+"use client";
+
 import Card from '../cards/Card';
 import React from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { LegalEntity, Maybe } from 'oldTypes';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 
@@ -9,6 +11,7 @@ export type EntityCardProps = {
 };
 
 const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
+  const router = useRouter();
   const { displayName, jurisdiction, id, subsidiaries, owners, offerings, organization } = entity as LegalEntity;
 
   const isOfferingEntity = offerings && offerings.length > 0;

@@ -1,4 +1,3 @@
-import router from "next/router";
 import { Organization, OrganizationUser } from "oldTypes";
 
 export const handleOrganizationChange = (
@@ -6,7 +5,7 @@ export const handleOrganizationChange = (
   postSelectionAction?: () => void,
 ) => {
   window.sessionStorage.setItem("CHOSEN_ORGANIZATION", id);
-  router.push(`/${id}/overview`);
+  window.location.assign(`/${id}/overview`);
   postSelectionAction && postSelectionAction();
 };
 

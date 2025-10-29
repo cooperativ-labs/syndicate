@@ -1,3 +1,5 @@
+"use client";
+
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import cn from 'classnames';
 import Container from '@src/containers/Layouts/Container';
@@ -7,7 +9,7 @@ import Header from '@src/containers/Header';
 import OfferingProperties from '@src/components/properties/OfferingProperties';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import React, { FC, useState } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
@@ -31,6 +33,7 @@ type OfferingProfileProps = {
 };
 
 const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
+  const router = useRouter();
   const { address: userWalletAddress } = useAccount();
   const {
     details,

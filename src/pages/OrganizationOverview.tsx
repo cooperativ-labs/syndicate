@@ -1,3 +1,5 @@
+"use client";
+
 import CreateOffering from '@src/components/offering/CreateOffering';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -17,7 +19,7 @@ import { OfferingParticipant } from 'oldTypes';
 import { toastExperiment } from '@src/components/indicators/Notifications';
 import { useAccount } from 'wagmi';
 import { useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 
 // type OrganizationDashboardProps = {
@@ -27,10 +29,13 @@ import { useSession } from 'next-auth/react';
 const OrganizationOverview: FC = () => {
   const { data: session, status } = useSession();
   const { address: userWalletAddress } = useAccount();
-  const router = useRouter();
-  const orgId = router.query.organizationId;
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId;
   const userId = session?.user.id;
-  const { data: organizationData, error, loading, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const { data: organizationData, error, loading, refetch } = useQuery(GET_ORGANIZATION, {
+    variables: { id: orgId },
+    skip: !orgId,
+  });
   const organization = organizationData?.getOrganization;
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress },

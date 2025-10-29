@@ -1,7 +1,8 @@
+"use client";
+
 import Button from './Button';
 import cn from 'classnames';
 import React, { FC, useContext } from 'react';
-import router from 'next/router';
 import { ApplicationStoreProps, store } from '@context/store';
 import { disconnectWallet } from '@src/web3/connectors';
 import { signOut } from 'next-auth/react';
@@ -17,7 +18,7 @@ const LogoutButton: FC = () => {
     disconnectWallet();
     signOut({ callbackUrl: '/' })
       .then(() => {
-        router.reload();
+        window.location.reload();
       })
       .catch((error) => {
         dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });

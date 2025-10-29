@@ -1,8 +1,9 @@
+"use client";
+
 import cn from 'classnames';
 import Compressor from 'compressorjs';
 import DeleteButton from '../buttons/DeleteButton';
 import React, { FC, useState } from 'react';
-import router from 'next/router';
 import { DocumentType } from 'oldTypes';
 import { FileUploader } from 'react-drag-drop-files';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';

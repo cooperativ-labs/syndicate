@@ -1,3 +1,5 @@
+"use client";
+
 import cn from 'classnames';
 import React from 'react';
 import useWindowSize from '@hooks/useWindowSize';
@@ -5,7 +7,6 @@ import useWindowSize from '@hooks/useWindowSize';
 import Container from './Layouts/Container';
 import { getBaseUrl } from '../utils/helpersURL';
 import { Offering } from 'oldTypes';
-import { useRouter } from 'next/router';
 
 type HeaderProps = {
   offering: Offering;
@@ -14,7 +15,6 @@ type HeaderProps = {
 
 const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
   const windowSize = useWindowSize();
-  const router = useRouter();
   const { id, name, bannerImage, brandColor, lightBrand } = offering;
 
   const shareURL = `${getBaseUrl()}/${id}`;

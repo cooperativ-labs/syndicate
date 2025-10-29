@@ -1,6 +1,8 @@
+"use client";
+
 import Card from './cards/Card';
 import React from 'react';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 export type ProjectCardProps = {
   projectName: string;

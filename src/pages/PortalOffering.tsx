@@ -1,3 +1,5 @@
+"use client";
+
 import Container from '@src/containers/Layouts/Container';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
@@ -22,7 +24,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from 'wagmi';
 import { useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
+import { useParams } from 'next/navigation';
 
 type PortalOfferingProps = {
   offering: Offering;
@@ -31,9 +33,9 @@ type PortalOfferingProps = {
 
 const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) => {
   const { address: userWalletAddress } = useAccount();
-  const router = useRouter();
-  const orgId = router.query.organizationId;
-  const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId;
+  const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId }, skip: !orgId });
 
   const {
     details,

@@ -1,3 +1,5 @@
+"use client";
+
 import AdditionalApplicationFields from './AdditionalApplicationFields';
 import AdvisorFields from './AdvisorFields';
 import Checkbox from '@src/components/form-components/Checkbox';
@@ -26,7 +28,7 @@ import { Maybe, Offering } from 'oldTypes';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { useAccount, useChainId } from 'wagmi';
 import { useMutation } from '@apollo/client';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 
 type InvestorApplicationFormProps = {
   offering: Offering;
@@ -193,7 +195,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
 
   const orgId = offering.offeringEntity?.organization.id;
   if (data) {
-    router.push(`${orgId}/offerings/${offering.id}`);
+    router.push(`/${orgId}/offerings/${offering.id}`);
   }
 
   const submitApplication = async (values: {

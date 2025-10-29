@@ -1,7 +1,9 @@
+"use client";
+
 import CustomAddressAutocomplete, { normalizeGeoAddress } from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import React, { FC, useEffect, useState } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import Select from '../form-components/Select';
 import { ADD_RE_PROPERTY_INFO } from '@src/utils/dGraphQueries/reProperty';
 import { assetStatusOptions, getCurrencyOption, propertyTypeOptions } from '@src/utils/enumConverters';
@@ -17,6 +19,7 @@ type AddPropertyInfoProps = {
   entityOperatingCurrency: Currency;
 };
 const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCurrency }) => {
+  const router = useRouter();
   const [AddRePropertyInfo, { data, error }] = useMutation(ADD_RE_PROPERTY_INFO);
   const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
   const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);

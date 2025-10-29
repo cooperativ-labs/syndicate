@@ -1,8 +1,10 @@
+"use client";
+
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import PresentLegalText from './PresentLegalText';
 import React, { FC, useState } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
 import { CurrencyCode, Maybe, SmartContract } from 'oldTypes';
 import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
@@ -36,6 +38,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   entityId,
   organizationId,
 }) => {
+  const router = useRouter();
   const [alerted, setAlerted] = useState<boolean>(false);
   const [loadingModal, setLoadingModal] = useState<boolean>(false);
   const { address: userWalletAddress } = useAccount();

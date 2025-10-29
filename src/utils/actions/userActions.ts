@@ -1,5 +1,4 @@
 import { createClient } from "../../../supabase/utils/client";
-import router, { useRouter } from "next/router";
 
 export const signIn = async (
  { email, password }: { email: string; password: string },
@@ -11,13 +10,14 @@ export const signIn = async (
   password,
  });
 
- if (error) {
-  // Sentry.captureException(error);
-  console.error(error);
-  return router.push(`/login?form=password&message=${error.message}`);
- }
+  if (error) {
+   // Sentry.captureException(error);
+   console.error(error);
+   window.location.assign(`/login?form=password&message=${error.message}`);
+   return;
+  }
 
- return router.push("/");
+  window.location.assign("/");
 };
 
 export const signUp = async ({
@@ -53,10 +53,11 @@ export const signUp = async ({
 
  if (error) {
   // Sentry.captureException(error);
-  return router.push(
+  window.location.assign(
    `/login?message=Could not create user${token ? "&code=" + token : ""}`,
   );
+  return;
  }
 
- return router.push("/confirm-your-email?email=" + email);
+ window.location.assign("/confirm-your-email?email=" + email);
 };

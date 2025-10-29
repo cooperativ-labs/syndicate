@@ -1,6 +1,8 @@
+"use client";
+
 import cn from 'classnames';
 import React, { FC, useState } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { Maybe } from 'yup';
@@ -45,6 +47,7 @@ type ShareOfferPanelProps = {
 };
 
 const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice, organization, currentUser }) => {
+  const router = useRouter();
   const participants = offering.participants;
   const permittedEntity = participants?.find((participant) => {
     return participant?.addressOfferingId === currentUser + offering.id;

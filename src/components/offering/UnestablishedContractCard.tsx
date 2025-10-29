@@ -1,8 +1,9 @@
+"use client";
+
 import cn from 'classnames';
 import FormattedCryptoAddress from '../FormattedCryptoAddress';
 import Link from 'next/link';
 import React from 'react';
-import router from 'next/router';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -23,7 +24,7 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({ u
   const markUsed = async () => {
     if (window.confirm('Are you sure you want to mark this contract as used?')) {
       await updateSmartContract({ variables: { id: id, established: true } });
-      router.reload();
+      window.location.reload();
     }
   };
 

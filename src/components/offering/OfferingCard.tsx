@@ -1,3 +1,5 @@
+"use client";
+
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
@@ -10,7 +12,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
 import { useAsync } from 'react-use';
 import { useQuery } from '@apollo/client';
-import { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 

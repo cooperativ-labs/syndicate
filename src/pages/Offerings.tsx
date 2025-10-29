@@ -1,3 +1,5 @@
+"use client";
+
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import OfferingsList from '@src/components/offering/OfferingsList';
@@ -7,7 +9,7 @@ import AddItemButton from '@src/components/buttons/AddItemButton';
 import CloseButton from '@src/components/buttons/CloseButton';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import DashboardCard from '@src/components/cards/DashboardCard';
-import router from 'next/router';
+import { useParams } from 'next/navigation';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
 import { useQuery } from '@apollo/client';
@@ -16,8 +18,12 @@ import { useSession } from 'next-auth/react';
 const Offerings: FC = () => {
   const { data: session, status } = useSession();
   const [entityFormOpen, setEntityFormOpen] = React.useState(false);
-  const orgId = router.query.organizationId;
-  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId;
+  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {
+    variables: { id: orgId },
+    skip: !orgId,
+  });
   const organization = organizationData?.getOrganization;
 
   if (!organization) {

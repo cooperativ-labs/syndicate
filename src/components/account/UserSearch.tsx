@@ -1,10 +1,12 @@
+"use client";
+
 import React, { FC, useContext } from 'react';
 import { Form, Formik } from 'formik';
 
 import cn from 'classnames';
 import Input from '../form-components/Inputs';
 import { ApplicationStoreProps, store } from '@context/store';
-import { useRouter } from 'next/router';
+import { usePathname, useRouter } from 'next/navigation';
 
 type UserSearchProps = {
   fieldClass?: string;
@@ -16,10 +18,11 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch } = applicationStore;
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleSubmit = (submission: string) => {
     dispatch({ type: 'SET_SEARCHTEXT', payload: submission });
-    if (router.route !== '/') {
+    if (pathname !== '/') {
       router.push('/');
     }
   };

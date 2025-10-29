@@ -1,3 +1,5 @@
+"use client";
+
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import FileUpload from '@src/components/form-components/FileUpload';
 import PropertyImage from '@src/components/properties/PropertyImage';
@@ -13,7 +15,7 @@ import { useMutation } from '@apollo/client';
 import Button from '@src/components/buttons/Button';
 import FormModal from '@src/containers/FormModal';
 import Progress from '@src/components/offering/profile/Progress';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import UpdateAddress from '@src/components/address/UpdateAddress';
 import UpdatePropertyDescription from '@src/components/properties/UpdatePropertyDescription';
 import UpdatePropertyFinancials from '@src/components/properties/UpdatePropertyFinancials';
@@ -30,6 +32,7 @@ type PropertyDetailsProps = {
 };
 
 const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const userId = session?.user?.id;
   const [addImage, { error: imageError }] = useMutation(ADD_PROPERTY_IMAGE);

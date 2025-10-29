@@ -1,7 +1,9 @@
+"use client";
+
 import cn from 'classnames';
 import Link from 'next/link';
 import React, { FC, useContext } from 'react';
-import router from 'next/router';
+import { usePathname } from 'next/navigation';
 import { ApplicationStoreProps, store } from '@context/store';
 import { ManagerSideBarItemSelectionType } from '@src/containers/sideBar/ManagerSideBarContents';
 
@@ -13,7 +15,8 @@ interface ManagerSidebarItemProps {
 const ManagerSidebarItem: FC<ManagerSidebarItemProps> = ({ title, link }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar } = applicationStore;
-  const path = router.pathname.split('/')[2];
+  const pathname = usePathname();
+  const path = pathname?.split('/')[2];
   const isSelected = path === title.toLocaleLowerCase();
 
   const buttonClass = cn(

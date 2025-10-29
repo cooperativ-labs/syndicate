@@ -1,3 +1,5 @@
+"use client";
+
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -5,7 +7,7 @@ import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
 import NewOrganizationModal from './NewOrganizationModal';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/navigation';
 import WalletChooserModal from './wallet/WalletChooserModal';
 import WithAuthentication from './WithAuthentication';
 import { ApplicationStoreProps, store } from '@context/store';
@@ -27,6 +29,7 @@ type ManagerProps = {
 };
 
 const Manager: FC<ManagerProps> = ({ children }) => {
+  const router = useRouter();
   const { data: session, status } = useSession();
   const userId = session?.user.id;
   const apolloClient = useApolloClient();
@@ -37,7 +40,7 @@ const Manager: FC<ManagerProps> = ({ children }) => {
       disconnectWallet();
       signOut({ callbackUrl: '/' })
         .then(() => {
-          router.reload();
+          router.replace('/');
         })
         .catch((error) => {
           throw new Error(error);
