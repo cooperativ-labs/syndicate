@@ -12,7 +12,9 @@ const permissionedExchangeExplainer = (
       requirements, and you set additional conditions, like right of first refusal, for any trade that takes place.`}
     </div>
     <h1 className="text-xl md:text-3xl mb-4 mt-8 font-bold">How do I approve investors?</h1>
-    <h3 className="text-gray-700 mb-4 font-bold">Your investors can use our customizable application form.</h3>
+    <h3 className="text-gray-700 mb-4 font-bold">
+      Your investors can use our customizable application form.
+    </h3>
     <div className=" mb-10">
       {` Most jurisdictions require you to vet potential investors before letting them purchase securities. Our built-in
       forms let you collect the information necessary to confirm that applicants are eligible to invest.`}

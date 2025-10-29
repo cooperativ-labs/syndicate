@@ -4,9 +4,9 @@ import EntityDetails from '@src/pages/EntityDetails';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import router from 'next/router';
-import { GET_ENTITY } from '@src/utils/dGraphQueries/entity';
+import { GET_ENTITY } from '@src/utils/graphQueries/entity';
 import { NextPage } from 'next';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 const EntityPage: NextPage = () => {
   const entityId = router.query.entityId;

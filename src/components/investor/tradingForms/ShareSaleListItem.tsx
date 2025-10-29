@@ -9,7 +9,7 @@ import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering
 import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from 'oldTypes';
+import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
 import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 
@@ -49,7 +49,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   transferEvents,
   setModal,
   refetchMainContracts,
-  refetchOfferingInfo,
+  refetchOfferingInfo
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
@@ -71,7 +71,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     isErc20Payment,
     isLoading,
 
-    refetchOrderDetails,
+    refetchOrderDetails
   } = useOrderDetails(swapContractAddress, order.contractIndex, paymentTokenDecimals);
 
   function refetchAllContracts() {
@@ -80,7 +80,8 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   }
   const isFiller = filler !== '0x0000000000000000000000000000000000000000';
   const currentUserFiller = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(filler);
-  const currentUserInitiator = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
+  const currentUserInitiator =
+    normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
   const shareQtyRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
 
   const status =
@@ -95,15 +96,20 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
       isAccepted,
       txnApprovalsEnabled,
       swapApprovalsEnabled,
-      isVisible: order.visible,
+      isVisible: order.visible
     });
 
-  const disapprovedTransferEvents = getDisapprovedTransferEvents(transferEvents, order, userWalletAddress);
+  const disapprovedTransferEvents = getDisapprovedTransferEvents(
+    transferEvents,
+    order,
+    userWalletAddress
+  );
   const isDisapproved = !isAccepted && disapprovedTransferEvents?.length ? true : false;
   const disapprovedTransferEvent = disapprovedTransferEvents?.slice(-1)[0];
 
   const showOrder = order.visible || currentUserInitiator || isContractOwner;
-  const showPurchaseSteps = !order.archived && !isFilled && (!currentUserInitiator || (!isAskOrder && isFiller));
+  const showPurchaseSteps =
+    !order.archived && !isFilled && (!currentUserInitiator || (!isAskOrder && isFiller));
 
   return (
     <>
@@ -140,11 +146,17 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                   />
                 </div>
                 <div className="flex col-span-3 justify-end items-center">
-                  <div className={`p-2  rounded-md text-${status.color} text-sm uppercase`}>{status.name}</div>
+                  <div className={`p-2  rounded-md text-${status.color} text-sm uppercase`}>
+                    {status.name}
+                  </div>
                 </div>
 
                 <div className="flex items-center p-1 justify-end">
-                  {!open ? <FontAwesomeIcon icon="chevron-down" /> : <FontAwesomeIcon icon="chevron-up" />}
+                  {!open ? (
+                    <FontAwesomeIcon icon="chevron-down" />
+                  ) : (
+                    <FontAwesomeIcon icon="chevron-up" />
+                  )}
                 </div>
               </div>
             </div>
@@ -155,9 +167,16 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                 <div className=" p-1 pl-3 flex justify-between text-sm w-full">
                   <div className="flex items-center">
                     {`${isAskOrder ? 'Seller' : 'Buyer'}`}
-                    <FormattedCryptoAddress className="ml-1" chainId={chainId} address={initiator} withCopy />
+                    <FormattedCryptoAddress
+                      className="ml-1"
+                      chainId={chainId}
+                      address={initiator}
+                      withCopy
+                    />
                   </div>
-                  <div className={` p-1 px-2 items-center text-xs`}>offer Id: {order.contractIndex}</div>
+                  <div className={` p-1 px-2 items-center text-xs`}>
+                    offer Id: {order.contractIndex}
+                  </div>
                 </div>
               </div>
 

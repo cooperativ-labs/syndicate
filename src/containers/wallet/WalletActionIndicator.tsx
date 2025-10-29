@@ -8,11 +8,11 @@ type StepStatusType = 'waiting' | 'pending' | 'success' | 'error';
 
 export type WalletActionStepType = LoadingButtonStateType;
 
-const WalletActionStep: FC<{ stepStatus: StepStatusType; message?: string; subMessage?: string }> = ({
-  stepStatus,
-  message,
-  subMessage,
-}) => {
+const WalletActionStep: FC<{
+  stepStatus: StepStatusType;
+  message?: string;
+  subMessage?: string;
+}> = ({ stepStatus, message, subMessage }) => {
   const icon =
     stepStatus === 'pending' ? (
       <img
@@ -31,7 +31,9 @@ const WalletActionStep: FC<{ stepStatus: StepStatusType; message?: string; subMe
   return (
     <div
       className={cn(
-        stepStatus === 'pending' ? 'border-gray-300 text-cDarkBlue' : 'border-gray-100 text-gray-500',
+        stepStatus === 'pending'
+          ? 'border-gray-300 text-cDarkBlue'
+          : 'border-gray-100 text-gray-500',
         'grid grid-cols-8 p-3 border-2 rounded-lg items-center '
       )}
     >
@@ -58,7 +60,7 @@ const WalletActionIndicator: FC<WalletActionIndicatorProps> = ({
   step1Text,
   step2Text,
   step1SubText,
-  step2SubText,
+  step2SubText
 }) => {
   const step1Status = () => {
     switch (step) {
@@ -93,7 +95,13 @@ const WalletActionIndicator: FC<WalletActionIndicatorProps> = ({
   return (
     <div className="flex flex-col gap-4">
       <WalletActionStep stepStatus={step1Status()} message={step1Text} subMessage={step1SubText} />
-      {!!step2Text && <WalletActionStep stepStatus={step2Status()} message={step2Text} subMessage={step2SubText} />}
+      {!!step2Text && (
+        <WalletActionStep
+          stepStatus={step2Status()}
+          message={step2Text}
+          subMessage={step2SubText}
+        />
+      )}
     </div>
   );
 };

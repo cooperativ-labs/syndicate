@@ -19,7 +19,7 @@ export async function sendEmail(
       Subject: subject,
       HtmlBody: htmlBody,
       TextBody: textBody,
-      MessageStream: messageStream,
+      MessageStream: messageStream
     });
   } catch (error: any) {
     throw new Error('Error sending email:', error);

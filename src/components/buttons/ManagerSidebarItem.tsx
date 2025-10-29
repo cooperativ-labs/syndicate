@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import Link from 'next/link';
 import React, { FC, useContext } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import { ApplicationStoreProps, store } from '@context/store';
 import { ManagerSideBarItemSelectionType } from '@src/containers/sideBar/ManagerSideBarContents';
 
@@ -11,6 +11,7 @@ interface ManagerSidebarItemProps {
 }
 
 const ManagerSidebarItem: FC<ManagerSidebarItemProps> = ({ title, link }) => {
+  const router = useRouter();
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar } = applicationStore;
   const path = router.pathname.split('/')[2];

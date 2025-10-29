@@ -1,9 +1,9 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-@tailwind variants;
+@import 'tailwindcss';
+
 @layer utilities {
- .content-auto {
-   content-visibility: auto;
- }
+}
+@layer utilities {
+  .content-auto {
+    content-visibility: auto;
+  }
 }

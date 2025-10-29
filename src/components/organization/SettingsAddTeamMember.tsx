@@ -2,14 +2,17 @@ import Input from '../form-components/Inputs';
 import React, { FC, useContext } from 'react';
 import Select from '../form-components/Select';
 
-import { ADD_ORGANIZATION_USER } from '@src/utils/dGraphQueries/organization';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { GET_USER_FROM_EMAIL } from '@src/utils/dGraphQueries/user';
-import { getOrganizationPermissionOption, organizationPermissionOptions } from '@src/utils/enumConverters';
-import { OrganizationPermissionType } from 'oldTypes';
-import { useApolloClient } from '@apollo/client';
-import { useMutation } from '@apollo/client';
+import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
+import {
+  getOrganizationPermissionOption,
+  organizationPermissionOptions
+} from '@src/utils/enumConverters';
+import { OrganizationPermissionType } from '@gql/graphql';
+import { useApolloClient } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
 
 const fieldDiv = 'md:my-2 bg-opacity-0';
 
@@ -22,14 +25,17 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
   const [userDoesNotExist, setUserDoesNotExist] = React.useState(false);
   const client = useApolloClient();
 
-  const handleAddTeamMemberAddress = async (emailAddress: string, permission: OrganizationPermissionType) => {
+  const handleAddTeamMemberAddress = async (
+    emailAddress: string,
+    permission: OrganizationPermissionType
+  ) => {
     setUserDoesNotExist(false);
     client
       .query({
         query: GET_USER_FROM_EMAIL,
-        variables: { emailAddress: emailAddress },
+        variables: { emailAddress: emailAddress }
       })
-      .then((result) => {
+      .then(result => {
         if (result.data.queryUser.length === 0) {
           setUserDoesNotExist(true);
           return;
@@ -40,9 +46,9 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
             currentDate: currentDate,
             organizationId: organizationId,
             emailAddress: emailAddress,
-            permission: permission,
-          },
-        }).catch((error) => {
+            permission: permission
+          }
+        }).catch(error => {
           throw new Error(error);
         });
       });
@@ -52,9 +58,9 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
     <Formik
       initialValues={{
         emailAddress: '',
-        permission: OrganizationPermissionType.Editor,
+        permission: OrganizationPermissionType.Editor
       }}
-      validate={async (values) => {
+      validate={async values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.emailAddress) {
           errors.emailAddress = 'Please include an email address.';
@@ -86,7 +92,7 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
             />
             <Select className={`${fieldDiv} col-span-2`} name="permission">
               <option value="">--Role--</option>
-              {organizationPermissionOptions.map((option) => {
+              {organizationPermissionOptions.map(option => {
                 return (
                   <option key={option.value} value={option.value}>
                     {option.name}

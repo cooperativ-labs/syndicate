@@ -4,12 +4,12 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
-import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
 import { bytes32FromString, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-import { Currency, Offering, User } from 'oldTypes';
+import { Currency, Offering, User } from '@gql/graphql';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 type NewClassFormProps = {
   shareContractId: string;
@@ -28,8 +28,8 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
     await addPartition({
       variables: {
         smartContractId: shareContractId,
-        partition: bytes32FromString(partition),
-      },
+        partition: bytes32FromString(partition)
+      }
     });
     setButtonStep('confirmed');
   };
@@ -37,9 +37,9 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
   return (
     <Formik
       initialValues={{
-        partition: '',
+        partition: ''
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.partition) {
           errors.partition = 'Please choose a name for the share class.';

@@ -11,19 +11,23 @@ import router from 'next/router';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
-import { DocumentType, Maybe, Offering } from 'oldTypes';
+import { DocumentType, Offering } from '@gql/graphql';
 import { getBaseUrl } from '@src/utils/helpersURL';
 
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
-import { ContractOrder, getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
-import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
+
+import {
+  ContractOrder,
+  getCurrentOrderPrice,
+  getOrderArrayFromContract
+} from '@src/utils/helpersOrder';
+import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
 import { useAsync } from 'react-use';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 
 type OfferingProfileProps = {
@@ -41,7 +45,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
     name: offeringName,
     distributions,
     smartContractSets,
-    documents,
+    documents
   } = offering;
 
   const contractSet = smartContractSets?.slice(-1)[0];
@@ -62,7 +66,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
 
   const { data: ordersData, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
-    variables: { swapContractAddress: swapContractAddress },
+    variables: { swapContractAddress: swapContractAddress }
   });
 
   const orders = ordersData?.queryShareOrder;
@@ -96,11 +100,11 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
           <ChooseConnectorButton buttonText={'Connect Wallet'} />
         </div>
       </div>
-      <WalletChooserModal />
+      {/* <WalletChooserModal /> */}
       <Container className="flex flex-col px-2 md:px-8 z-40 relative">
         <TwoColumnLayout twoThirdsLayout className="lg:-mt-24">
           {/* Slot 1 */}
-          <div className="flex-grow flex flex-col justify-center z-10">
+          <div className="grow flex flex-col justify-center z-10">
             <h1 className={cn(['mt-24 text-3xl ubuntu font-bold text-gray-800'])}>
               <span className="flex items-center">
                 {offeringName}
@@ -109,7 +113,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
                   data-test="atom-join-project-button"
                   className={cn([
                     'flex ubuntu rounded-full bg-white text-green-500 px-2 py-2 w-10 h-10',
-                    'items-center text-base shadow-lg flex-shrink-0 flex justify-center ml-4',
+                    'items-center text-base shadow-lg shrink-0 flex justify-center ml-4',
                   ])}
                   onClick={() => copyTextToClipboard(shareURL)}
                 >
@@ -121,7 +125,10 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               className="flex text-sm text-gray-800 my-3 bg-white  rounded-full drop-shadow-md hover:drop-shadow-xl hover:cursor-pointer items-center max-w-max "
               onClick={() => router.push(`/${orgId}/portal`)}
             >
-              <img className="h-10 w-10 bg-slate-400 border-1 border-slate-400 rounded-full" src={OrgLogo} />{' '}
+              <img
+                className="h-10 w-10 bg-slate-400 border border-slate-400 rounded-full"
+                src={OrgLogo}
+              />{' '}
               <span className="pl-2 pr-4 font-semibold">{orgName}</span>
             </div>
             {offeringEntity?.addresses?.map((address, i) => (
@@ -182,7 +189,11 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
         </TwoColumnLayout>
         <div className="w-full">
           <h1 className={contentSectionHeader}>Properties</h1>
-          <OfferingProperties offeringEntity={offeringEntity} isOfferingManager={false} offeringId={offering.id} />
+          <OfferingProperties
+            offeringEntity={offeringEntity}
+            isOfferingManager={false}
+            offeringId={offering.id}
+          />
         </div>
       </Container>
     </div>

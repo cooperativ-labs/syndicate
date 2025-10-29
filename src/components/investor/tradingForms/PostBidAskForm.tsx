@@ -2,7 +2,10 @@ import Checkbox from '@src/components/form-components/Checkbox';
 import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormButton from '@src/components/buttons/FormButton';
-import Input, { defaultFieldDiv, defaultFieldLabelClass } from '@src/components/form-components/Inputs';
+import Input, {
+  defaultFieldDiv,
+  defaultFieldLabelClass
+} from '@src/components/form-components/Inputs';
 import NonInput from '../../form-components/NonInput';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
@@ -14,14 +17,14 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { Maybe, Offering, OfferingParticipant } from 'oldTypes';
+import { Maybe, Offering, OfferingParticipant } from '@gql/graphql';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
-import { CREATE_ORDER } from '@src/utils/dGraphQueries/orders';
+import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount, useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 export type PostBidAskFormProps = {
   offering: Offering;
@@ -57,7 +60,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   currentSalePrice,
   setModal,
   refetchAllContracts,
-  refetchOfferingInfo,
+  refetchOfferingInfo
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -89,9 +92,9 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
           minUnits: undefined,
           maxUnits: undefined,
           partition: partitions[0],
-          toc: false,
+          toc: false
         }}
-        validate={(values) => {
+        validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           const { numUnits, price, approvalRequired, minUnits, maxUnits, toc } = values;
           if (!numUnits) {
@@ -102,7 +105,10 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             if (maxUnits && numUnits && maxUnits > numUnits) {
               errors.maxUnits = 'Maximum must be less then the total shares listed for sale';
             }
-            if ((maxUnits && minUnits && maxUnits < 1) || (maxUnits && minUnits && maxUnits < minUnits)) {
+            if (
+              (maxUnits && minUnits && maxUnits < 1) ||
+              (maxUnits && minUnits && maxUnits < minUnits)
+            ) {
               errors.maxUnits = 'Maximum must be greater than minimum';
             }
             if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
@@ -117,7 +123,8 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
           }
 
           if (!isContractOwner && !approvalRequired) {
-            errors.approvalRequired = 'You must confirm that you understand that offerer approval is required.';
+            errors.approvalRequired =
+              'You must confirm that you understand that offerer approval is required.';
           }
           if (!isContractOwner && toc === false) {
             errors.toc = "You must accept this offering's Terms & Conditions";
@@ -151,7 +158,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             setButtonStep: setButtonStep,
             createOrder: createOrder,
             refetchAllContracts,
-            refetchOfferingInfo,
+            refetchOfferingInfo
           });
           setModal('shareSaleList');
 
@@ -166,8 +173,14 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
 
             <Form className="">
               <div className="mt-4 mb-2">
-                <div className={defaultFieldLabelClass}>{`${isAsk ? 'Selling' : 'Buying'} wallet:`}</div>
-                <FormattedCryptoAddress chainId={chainId} address={walletAddress} className="font-semibold" />
+                <div
+                  className={defaultFieldLabelClass}
+                >{`${isAsk ? 'Selling' : 'Buying'} wallet:`}</div>
+                <FormattedCryptoAddress
+                  chainId={chainId}
+                  address={walletAddress}
+                  className="font-semibold"
+                />
               </div>
               <hr className="my-6" />
               {!isContractOwner && myShareQty && myShareQty < 1 && isAsk ? (
@@ -190,7 +203,8 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     <Input
                       className={cn(defaultFieldDiv, 'col-span-2')}
                       labelText={`At what price per share? (${
-                        details?.investmentCurrency && getCurrencyOption(details?.investmentCurrency)?.symbol
+                        details?.investmentCurrency &&
+                        getCurrencyOption(details?.investmentCurrency)?.symbol
                       })`}
                       name="price"
                       type="number"
@@ -204,7 +218,8 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                       <>
                         {values.numUnits &&
                           `${saleAmountString(values.numUnits, values.price)} ${
-                            details?.investmentCurrency && getCurrencyOption(details?.investmentCurrency)?.symbol
+                            details?.investmentCurrency &&
+                            getCurrencyOption(details?.investmentCurrency)?.symbol
                           }`}
                       </>
                     </NonInput>
@@ -245,7 +260,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                             <button
                               className="text-sm  text-gray-700 hover:underline "
                               aria-label="review application"
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 setTocOpen(!tocOpen);
                               }}
@@ -271,16 +286,19 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                             <StandardButton
                               className="mt-5"
                               outlined
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
-                                DownloadFile(documents[0]?.text as string, `${name} - Terms & Conditions.md`);
+                                DownloadFile(
+                                  documents[0]?.text as string,
+                                  `${name} - Terms & Conditions.md`
+                                );
                               }}
                               text="Download Terms & Conditions"
                             />
                             <StandardButton
                               className="md:ml-3 mt-5"
                               outlined
-                              onClick={(e) => {
+                              onClick={e => {
                                 e.preventDefault();
                                 setTocOpen(false);
                               }}

@@ -3,7 +3,7 @@ import React, { FC, use, useState } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
 import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
+import { MatchSupportedChains } from '@src/web3/wagmi';
 import { Maybe } from 'yup';
 import { useAsync } from 'react-use';
 
@@ -28,19 +28,21 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   showFull,
   lookupType,
   userName,
-  isYou,
+  isYou
 }) => {
   const windowSize = useWindowSize();
   const isDesktop = windowSize.width ? windowSize.width > 768 : false;
   const defaultAddress = addressWithoutEns({ address, isYou, isDesktop, userName, showFull });
   const [copied, setCopied] = useState<boolean>(false);
-  const [presentedAddress, setPresentedAddress] = useState<string | undefined>(defaultAddress ?? undefined);
+  const [presentedAddress, setPresentedAddress] = useState<string | undefined>(
+    defaultAddress ?? undefined
+  );
 
   const chain = chainId ? MatchSupportedChains(chainId) : undefined;
   const blockExplorer = chain?.blockExplorer;
 
   const formURL = (chainId: Maybe<number> | undefined, lookupType?: string) => {
-    const type = lookupType === 'tx' ? 'tx' : isAlgorand(chainId) ? 'application' : 'address';
+    const type = lookupType === 'tx' ? 'tx' : 'address';
     const url = `${blockExplorer}/${lookupType ? type : 'address'}/${address}`;
     return url;
   };
@@ -55,12 +57,14 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
     <span className={cn('flex', [className ? className : 'text-sm text-gray-700'])}>
       <a target="_blank" rel="noreferrer" href={formURL(chainId, lookupType)}>
         {label}
-        <span className="hover:underline whitespace-nowrap">{showFull ? defaultAddress : presentedAddress}</span>
+        <span className="hover:underline whitespace-nowrap">
+          {showFull ? defaultAddress : presentedAddress}
+        </span>
       </a>
       {withCopy && address && (
         <button
           className="ml-2"
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             navigator.clipboard.writeText(address);
             setCopied(true);

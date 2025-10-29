@@ -18,7 +18,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
   paymentTokenDecimals,
   spenderAddress,
   amount,
-  refetchAllowance,
+  refetchAllowance
 }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const chainId = useChainId();
@@ -32,7 +32,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
       paymentTokenDecimals,
       spenderAddress,
       amount,
-      setButtonStep,
+      setButtonStep
     });
     setButtonStep('confirmed');
     refetchAllowance();
@@ -42,7 +42,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
   return (
     <Button
       className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
-      onClick={(e) => handleAllowance(e)}
+      onClick={e => handleAllowance(e)}
     >
       <LoadingButtonText
         state={buttonStep}

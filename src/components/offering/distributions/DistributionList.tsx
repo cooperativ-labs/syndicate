@@ -1,6 +1,6 @@
 import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 import React, { FC } from 'react';
-import { Maybe, OfferingDistribution } from 'oldTypes';
+import { Maybe, OfferingDistribution } from '@gql/graphql';
 
 type DistributionListProps = DistributionListItemProps & {
   distributions: Maybe<Maybe<OfferingDistribution>[]> | undefined;
@@ -11,7 +11,7 @@ const DistributionList: FC<DistributionListProps> = ({
   distributions,
   isDistributor,
   hideTransactionId,
-  walletAddress,
+  walletAddress
 }) => {
   const hasDistributions = distributions && distributions.length > 0;
   return (

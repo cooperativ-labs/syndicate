@@ -2,13 +2,13 @@ import Button from '../buttons/Button';
 import Input from '../form-components/Inputs';
 import React, { FC, useState } from 'react';
 import { Country } from 'country-state-city';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 
 import ClickToEditItem from '../form-components/ClickToEditItem';
 import cn from 'classnames';
 
-import { CurrencyCode, Maybe, Organization } from 'oldTypes';
+import { CurrencyCode, Maybe, Organization } from '@gql/graphql';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 
 export type EditOrganizationSelectionType =
@@ -38,9 +38,9 @@ export const changeForm = (
         country: country,
         name: name,
         description: description,
-        shortDescription: shortDescription,
+        shortDescription: shortDescription
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.name) {
           errors.name = 'Please include the name of this organization.';
@@ -62,9 +62,13 @@ export const changeForm = (
           )}
         >
           <div className="w-full md:col-span-3">
-            {itemType === 'country' && <Input className={' bg-opacity-0'} required name="country" />}
+            {itemType === 'country' && (
+              <Input className={' bg-opacity-0'} required name="country" />
+            )}
             {itemType === 'name' && <Input className={' bg-opacity-0'} required name="name" />}
-            {itemType === 'description' && <Input className={' bg-opacity-0'} required textArea name="description" />}
+            {itemType === 'description' && (
+              <Input className={' bg-opacity-0'} required textArea name="description" />
+            )}
             {itemType === 'shortDescription' && (
               <Input className={' bg-opacity-0 w-full'} required name="shortDescription" textArea />
             )}
@@ -78,7 +82,7 @@ export const changeForm = (
           </Button>
           <Button
             className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               setEditOn('none');
             }}
@@ -100,9 +104,11 @@ type OrganizationSpecificationsProps = {
 const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
   organization,
   isOrganizationManager,
-  updateOrganization,
+  updateOrganization
 }) => {
-  const [editOn, setEditOn] = useState<EditOrganizationSelectionType | EditEntitySelectionType | string>('none');
+  const [editOn, setEditOn] = useState<
+    EditOrganizationSelectionType | EditEntitySelectionType | string
+  >('none');
   const { id, name, country, description, shortDescription } = organization;
 
   const handleChange = async (values: {
@@ -120,8 +126,8 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
           country: country,
           name: name,
           description: description,
-          shortDescription: shortDescription,
-        },
+          shortDescription: shortDescription
+        }
       });
       setEditOn('none');
     } catch (e: any) {

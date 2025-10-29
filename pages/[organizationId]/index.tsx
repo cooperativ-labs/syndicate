@@ -4,12 +4,11 @@ import Head from 'next/head';
 import OrganizationProfile from '@src/pages/OrganizationProfile';
 import PortalOrganization from '@src/pages/PortalOrganization';
 import PortalWrapper from '@src/containers/PortalWrapper';
-import React from 'react';
-import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { GetServerSideProps, NextPage } from 'next';
-import { initializeApollo } from '@src/utils/apolloClient';
-import { Organization } from 'oldTypes';
+import { initializeApollo } from '@src/utils/supabaseApolloClient';
+import { Organization } from '@gql/graphql';
 import { useAccount } from 'wagmi';
 
 type ResultProps = {
@@ -19,13 +18,15 @@ type ResultProps = {
 const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
   const { address: userWalletAddress } = useAccount();
   const organization = result;
-
+  if (!organization) {
+    return <div>Loading...</div>;
+  }
   const { name, shortDescription, sharingImage, id } = organization;
 
   const orgParticipants = organization.legalEntities
-    ?.map((entity) =>
-      entity?.offerings?.map((offering) =>
-        offering?.participants?.map((participant) => participant?.walletAddress === userWalletAddress)
+    ?.map(entity =>
+      entity?.offerings?.map(offering =>
+        offering?.participants?.map(participant => participant?.walletAddress === userWalletAddress)
       )
     )
     .flat(2);
@@ -42,7 +43,11 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
         <meta property="og:description" content={shortDescription ?? ''} />
         <meta
           property="og:image"
-          content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
+          content={
+            sharingImage
+              ? `/assets/images/sharing-images/${sharingImage?.url}`
+              : '/assets/images/share.png'
+          }
         />
         <meta property="og:url" content={`https://cooperativ.io/${id}/portal/`}></meta>
         Twitter
@@ -50,11 +55,15 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
         <meta name="twitter:description" content={shortDescription ?? ''} />
         <meta
           name="twitter:image"
-          content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
+          content={
+            sharingImage
+              ? `/assets/images/sharing-images/${sharingImage?.url}`
+              : '/assets/images/share.png'
+          }
         />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
-      <WalletChooserModal />
+      {/* <WalletChooserModal /> */}
       {isParticipant ? (
         <PortalWrapper>
           <PortalOrganization />{' '}
@@ -79,18 +88,18 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   try {
     const { data } = await apolloClient.query({
       query: GET_ORGANIZATION,
-      variables: { id: organizationId },
+      variables: { id: organizationId }
     });
-    const result = data.getOrganization;
+    const result = data?.organizationCollection?.edges[0]?.node;
     return {
-      props: { result },
-    };
+      props: { result }
+    } satisfies GetServerSideProps<{ result: Organization | null }>;
   } catch (error) {
     return {
       props: {
-        result: null,
-      },
-    };
+        result: null
+      }
+    } satisfies GetServerSideProps<{ result: Organization | null }>;
   }
 };
 

@@ -5,9 +5,9 @@ import ManagerWrapper from '@src/containers/ManagerWrapper';
 import React from 'react';
 import router from 'next/router';
 
-import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
 import { NextPage } from 'next';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 const AddProperty: NextPage = () => {
   const offeringId = router.query.offeringId;

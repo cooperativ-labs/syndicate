@@ -2,9 +2,9 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 
 import React, { FC, useContext, useState } from 'react';
 import { ApplicationStoreProps, store } from '@context/store';
-import { CREATE_SHARE_CONTRACT } from '@src/utils/dGraphQueries/crypto';
+import { CREATE_SHARE_CONTRACT } from '@src/utils/graphQueries/crypto';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { SmartContractType } from 'oldTypes';
+import { SmartContractType } from '@gql/graphql';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
@@ -12,7 +12,7 @@ import { deployShareContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { useAccount, useChainId, useNetwork } from 'wagmi';
 import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 type CreateShareContractProps = {
   contractCreatorId: string | undefined;
@@ -42,8 +42,8 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
           chainId: chainId,
           type: SmartContractType.Erc1410,
           protocol: protocol,
-          ownerId: contractCreatorId,
-        },
+          ownerId: contractCreatorId
+        }
       });
       setButtonStep('confirmed');
     } catch (e) {

@@ -9,8 +9,8 @@ export const upload = multer({
     projectId: process.env.NEXT_PUBLIC_GOOGLE_CLOUD_PROJECT_ID,
     bucket: process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET,
     keyFilename: keyFilePath,
-    public: true,
-  }),
+    public: true
+  })
 });
 
 export default upload;

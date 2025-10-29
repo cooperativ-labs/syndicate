@@ -1,7 +1,7 @@
 import React, { FC, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { GET_CRYPTO_ADDRESS } from '@src/utils/dGraphQueries/crypto';
-import { useQuery } from '@apollo/client';
+import { GET_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
+import { useQuery } from '@apollo/client/react';
 
 type PresentWalletUserProps = {
   walletAddress: string;
@@ -11,7 +11,7 @@ type PresentWalletUserProps = {
 const PresentWalletUser: FC<PresentWalletUserProps> = ({ walletAddress, className, withCopy }) => {
   const [copied, setCopied] = useState<boolean>(false);
   const { data } = useQuery(GET_CRYPTO_ADDRESS, {
-    variables: { walletAddress: walletAddress },
+    variables: { walletAddress: walletAddress }
   });
   const userFullName = data?.getCryptoAddress?.owner.fullName;
   return (

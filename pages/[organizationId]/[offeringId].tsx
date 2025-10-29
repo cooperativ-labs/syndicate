@@ -6,9 +6,9 @@ import { GetServerSideProps, NextPage } from 'next';
 
 import OfferingProfile from '@src/pages/OfferingProfile';
 import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
-import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
-import { initializeApollo } from '@src/utils/apolloClient';
-import { Offering } from 'oldTypes';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+import { initializeApollo } from '@src/utils/supabaseApolloClient';
+import { Offering } from '@gql/graphql';
 
 type ResultProps = {
   result: Offering;
@@ -17,7 +17,12 @@ type ResultProps = {
 const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
   const offering = result;
   const orgId = offering?.offeringEntity?.organization.id;
-  const { name, shortDescription, sharingImage, id, isPublic, accessCode } = offering;
+  const isPublic = offering?.is_public ?? false;
+  const name = offering?.name ?? '';
+  const shortDescription = offering?.short_description ?? '';
+  const sharingImage = offering?.sharing_image ?? null;
+  const id = offering?.id ?? '';
+  const accessCode = offering?.access_code ?? '';
 
   return offering && isPublic ? (
     <div data-test="component-project" className="bg-gray-50">
@@ -29,7 +34,11 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
         <meta property="og:description" content={shortDescription as string} />
         <meta
           property="og:image"
-          content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
+          content={
+            sharingImage
+              ? `/assets/images/sharing-images/${sharingImage?.url}`
+              : '/assets/images/share.png'
+          }
         />
         <meta property="og:url" content={`https://cooperativ.io/${orgId}/offerings/${id}`}></meta>
         Twitter
@@ -37,7 +46,11 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
         <meta name="twitter:description" content={shortDescription as string} />
         <meta
           name="twitter:image"
-          content={sharingImage ? `/assets/images/sharing-images/${sharingImage?.url}` : '/assets/images/share.png'}
+          content={
+            sharingImage
+              ? `/assets/images/sharing-images/${sharingImage?.url}`
+              : '/assets/images/share.png'
+          }
         />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>
@@ -58,24 +71,30 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
   const apolloClient = initializeApollo();
 
   const offeringId = params?.offeringId;
+  return {
+    props: {
+      result: null
+    }
+  };
 
   try {
-    const { data } = await apolloClient.query({
+    const { data, error } = await apolloClient.query({
       query: GET_OFFERING,
-      variables: { id: offeringId },
+      variables: { id: offeringId }
     });
-    const result = data.getOffering;
+
+    const result = data?.offeringsCollection?.edges[0]?.node;
 
     return {
-      props: { result },
+      props: { result }
     };
   } catch (error) {
     console.log('error', error);
-    // throw new Error(error);
+
     return {
       props: {
-        result: null,
-      },
+        result: null
+      }
     };
   }
 };

@@ -39,12 +39,15 @@ export const Input: React.FC<CustomInputProps> = ({
   fieldClass,
   fieldHeight,
   fieldLabelClass,
-  onBlur,
+  onBlur
 }) => {
   return (
     <div className={cn(className, 'flex flex-col w-full')}>
       {labelText && (
-        <label htmlFor={name} className={cn(fieldLabelClass ? fieldLabelClass : defaultFieldLabelClass)}>
+        <label
+          htmlFor={name}
+          className={cn(fieldLabelClass ? fieldLabelClass : defaultFieldLabelClass)}
+        >
           {labelText}
           {required ? ' *' : ''}
         </label>

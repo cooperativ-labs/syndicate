@@ -1,7 +1,7 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const CORE_LINKED_ACCOUNT_FIELDS = gql`
-  fragment linkedAccountsData on LinkedAccount {
+  fragment LinkedAccountFields on linked_accounts {
     id
     accountProvidedId
     username
@@ -16,7 +16,7 @@ export const CORE_LINKED_ACCOUNT_FIELDS = gql`
 `;
 
 export const CORE_ADDRESS_FIELDS = gql`
-  fragment addressData on Address {
+  fragment AddressFields on addresses {
     id
     label
     line1
@@ -36,7 +36,7 @@ export const CORE_ADDRESS_FIELDS = gql`
 `;
 
 export const CORE_DOCUMENT_FIELDS = gql`
-  fragment documentData on Document {
+  fragment DocumentFields on documents {
     id
     title
     fileId
@@ -72,20 +72,20 @@ export const CORE_DOCUMENT_FIELDS = gql`
 `;
 
 export const CORE_APPLICATION_FIELDS = gql`
-  fragment applicationData on InvestorApplication {
+  fragment ApplicationFields on investor_applications {
     id
     creationDate
     offeringParticipant {
       id
     }
     applicationDoc {
-      ...documentData
+      ...DocumentFields
     }
   }
 `;
 
 export const SMART_CONTRACT_FIELDS = gql`
-  fragment smartContractData on SmartContract {
+  fragment SmartContractFields on smart_contracts {
     id
     cryptoAddress {
       id
@@ -111,19 +111,19 @@ export const SMART_CONTRACT_FIELDS = gql`
 
 export const SMART_CONTRACT_SET_FIELDS = gql`
   ${SMART_CONTRACT_FIELDS}
-  fragment smartContractSetData on OfferingSmartContractSet {
+  fragment SmartContractSetFields on offering_smart_contract_sets {
     id
     offering {
       id
     }
     shareContract {
-      ...smartContractData
+      ...SmartContractFields
     }
     swapContract {
-      ...smartContractData
+      ...SmartContractFields
     }
     distributionContract {
-      ...smartContractData
+      ...SmartContractFields
     }
   }
 `;
@@ -131,7 +131,7 @@ export const SMART_CONTRACT_SET_FIELDS = gql`
 export const CORE_INVESTMENT_OFFERING_FIELDS = gql`
   ${CORE_DOCUMENT_FIELDS}
 
-  fragment offeringDetailsData on OfferingDetails {
+  fragment OfferingDetailsFields on offering_details {
     id
     type
     customOnboardingLink
@@ -170,12 +170,12 @@ export const CORE_INVESTMENT_OFFERING_FIELDS = gql`
 
 export const CORE_RE_PROPERTY_FIELDS = gql`
   ${CORE_ADDRESS_FIELDS}
-  fragment rePropertyData on RealEstateProperty {
+  fragment RealEstatePropertyFields on real_estate_properties {
     id
     propertyType
     investmentStatus
     address {
-      ...addressData
+      ...AddressFields
     }
     amenitiesDescription
     images {
@@ -213,7 +213,7 @@ export const CORE_RE_PROPERTY_FIELDS = gql`
 export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
   ${CORE_APPLICATION_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
-  fragment participantData on OfferingParticipant {
+  fragment OfferingParticipantFields on offering_participants {
     id
     addressOfferingId
     walletAddress
@@ -233,7 +233,7 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
     minPledge
     maxPledge
     investorApplication {
-      ...applicationData
+      ...ApplicationFields
     }
     offering {
       id
@@ -265,7 +265,7 @@ export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
         contractIndex
       }
       details {
-        ...offeringDetailsData
+        ...OfferingDetailsFields
       }
     }
   }
@@ -278,7 +278,7 @@ export const CORE_ENTITY_FIELDS = gql`
 
   ${SMART_CONTRACT_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
-  fragment entityData on LegalEntity {
+  fragment LegalEntityFields on legal_entities {
     id
     taxId
     displayName
@@ -329,7 +329,7 @@ export const CORE_ENTITY_FIELDS = gql`
       displayName
       purpose
       addresses {
-        ...addressData
+        ...AddressFields
       }
       organization {
         id
@@ -350,7 +350,7 @@ export const CORE_ENTITY_FIELDS = gql`
         brandColor
         image
         details {
-          ...offeringDetailsData
+          ...OfferingDetailsFields
         }
         # orders {
         #   swapContractAddress
@@ -365,7 +365,7 @@ export const CORE_ENTITY_FIELDS = gql`
     }
 
     addresses {
-      ...addressData
+      ...AddressFields
     }
 
     walletAddresses {
@@ -377,13 +377,13 @@ export const CORE_ENTITY_FIELDS = gql`
       isPublic
     }
     documentsOwned {
-      ...documentData
+      ...DocumentFields
     }
     documentsSigned {
       id
       signature
       document {
-        ...documentData
+        ...DocumentFields
       }
     }
     offerings {
@@ -393,7 +393,7 @@ export const CORE_ENTITY_FIELDS = gql`
       brandColor
       website
       details {
-        ...offeringDetailsData
+        ...OfferingDetailsFields
       }
       participants {
         id
@@ -407,10 +407,10 @@ export const CORE_ENTITY_FIELDS = gql`
       }
     }
     smartContracts {
-      ...smartContractData
+      ...SmartContractFields
     }
     realEstateProperties {
-      ...rePropertyData
+      ...RealEstatePropertyFields
     }
     type
   }
@@ -420,38 +420,39 @@ export const CORE_OFFERING_FIELDS = gql`
   ${CORE_INVESTMENT_OFFERING_FIELDS}
   ${CORE_ENTITY_FIELDS}
   ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
-
   ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
-  fragment offeringData on Offering {
+  fragment OfferingFields on offerings {
     id
     name
-    isPublic
-    accessCode
-    waitlistOn
-
+    is_public
+    access_code
+    waitlist_on
     image
-    bannerImage
-    primaryVideo
-    brandColor
-    lightBrand
+    banner_image
+    primary_video
+    brand_color
+    light_brand
     website
-    shortDescription
-    smartContractSets {
-      ...smartContractSetData
+    short_description
+    ... on offering_smart_contract_sets {
+      ...SmartContractSetFields
     }
-    sharingImage {
+    ... on images {
       id
       url
       label
       fileId
     }
-    shortDescription
 
     details {
-      ...offeringDetailsData
+      edges {
+        node {
+          ...OfferingDetailsFields
+        }
+      }
     }
-    profileDescriptions {
+    profile_descriptions {
       id
       section
       title
@@ -461,8 +462,12 @@ export const CORE_OFFERING_FIELDS = gql`
         id
       }
     }
-    offeringEntity {
-      ...entityData
+    offering_entity {
+      edges {
+        node {
+          ...LegalEntityFields
+        }
+      }
     }
     # orders {
     #   id
@@ -478,15 +483,23 @@ export const CORE_OFFERING_FIELDS = gql`
     #   }
     # }
     participants {
-      ...participantData
+      edges {
+        node {
+          ...OfferingParticipantFields
+        }
+      }
     }
     distributions {
       id
       contractIndex
-      transactionHash
+      transaction_hash
     }
     documents {
-      ...documentData
+      edges {
+        node {
+          ...DocumentFields
+        }
+      }
     }
   }
 `;
@@ -494,7 +507,7 @@ export const CORE_OFFERING_FIELDS = gql`
 export const CORE_ORGANIZATION_FIELDS = gql`
   ${CORE_LINKED_ACCOUNT_FIELDS}
   ${CORE_OFFERING_FIELDS}
-  fragment organizationData on Organization {
+  fragment OrganizationFields on organizations {
     id
     name
     description
@@ -512,7 +525,7 @@ export const CORE_ORGANIZATION_FIELDS = gql`
     phone
     country
     linkedAccounts {
-      ...linkedAccountsData
+      ...LinkedAccountFields
     }
     emailAddresses {
       id
@@ -561,7 +574,7 @@ export const CORE_ORGANIZATION_FIELDS = gql`
         slug
       }
       offerings {
-        ...offeringData
+        ...OfferingFields
       }
       subsidiaries {
         id
@@ -590,12 +603,12 @@ export const CORE_ORGANIZATION_FIELDS = gql`
 
 export const CORE_USER_FIELDS = gql`
   ${CORE_ENTITY_FIELDS}
-  fragment userData on User {
+  fragment UserFields on users {
     id
     id
     organizations {
       organization {
-        ...entityData
+        ...LegalEntityFields
       }
     }
   }
@@ -603,10 +616,10 @@ export const CORE_USER_FIELDS = gql`
 
 export const CORE_DOCUMENT_SIGNATORY_FIELDS = gql`
   ${CORE_DOCUMENT_FIELDS}
-  fragment documentSignatoryData on DocumentSignatory {
+  fragment DocumentSignatoryFields on document_signatories {
     id
     document {
-      ...documentData
+      ...DocumentFields
     }
     signerAddress {
       id

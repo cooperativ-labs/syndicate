@@ -25,7 +25,12 @@ const MarketingNav: FC = () => {
         <NavLink link="https://medium.com/cooperativ" external text="Blog" />
         <span className="flex items-center">
           <Link href="/">
-            <div className={cn(standardClass, 'p-1 px-2 md:p-2 md:px-4 font-semibold rounded-full relative md:mr-2')}>
+            <div
+              className={cn(
+                standardClass,
+                'p-1 px-2 md:p-2 md:px-4 font-semibold rounded-full relative md:mr-2'
+              )}
+            >
               Open App
             </div>
           </Link>

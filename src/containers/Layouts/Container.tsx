@@ -12,7 +12,7 @@ const Container: React.FunctionComponent<ContainerProps> = ({
   className,
   children,
   constrain = '1280px',
-  fullWidth,
+  fullWidth
 }) => {
   return (
     <div

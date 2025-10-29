@@ -1,7 +1,7 @@
 import Card from '../cards/Card';
 import React from 'react';
 import router from 'next/router';
-import { LegalEntity, Maybe } from 'oldTypes';
+import { LegalEntity, Maybe } from '@gql/graphql';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 
 export type EntityCardProps = {
@@ -9,7 +9,8 @@ export type EntityCardProps = {
 };
 
 const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
-  const { displayName, jurisdiction, id, subsidiaries, owners, offerings, organization } = entity as LegalEntity;
+  const { displayName, jurisdiction, id, subsidiaries, owners, offerings, organization } =
+    entity as LegalEntity;
 
   const isOfferingEntity = offerings && offerings.length > 0;
 
@@ -34,11 +35,15 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
 
         <div className="flex border-t-2 border-gray-200 rounded-b-lg px-6 py-2 h-10 justify-between">
           <div>
-            {isOfferingEntity && <div className="text-sm font-bold text-gray-700">This is an offering SPV</div>}
+            {isOfferingEntity && (
+              <div className="text-sm font-bold text-gray-700">This is an offering SPV</div>
+            )}
           </div>
           <div>
             {jurisdiction && (
-              <div className="text-sm font-medium text-gray-500">{renderJurisdiction(jurisdiction)}</div>
+              <div className="text-sm font-medium text-gray-500">
+                {renderJurisdiction(jurisdiction)}
+              </div>
             )}
           </div>
         </div>

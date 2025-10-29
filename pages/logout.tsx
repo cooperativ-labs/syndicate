@@ -12,7 +12,7 @@ const SignOut: React.FC = () => {
       .then(() => {
         router.push('/');
       })
-      .catch((error) => {
+      .catch(error => {
         throw new Error('Error signing out:', error);
       });
   }, [router, disconnect]);

@@ -5,10 +5,10 @@ import React, { FC, useContext, useState } from 'react';
 import {
   ADD_PROPERTY_IMAGE,
   REMOVE_ENTITY_PROPERTY,
-  UPDATE_RE_PROPERTY_INFO,
-} from '@src/utils/dGraphQueries/reProperty';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { useMutation } from '@apollo/client';
+  UPDATE_RE_PROPERTY_INFO
+} from '@src/utils/graphQueries/reProperty';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { useMutation } from '@apollo/client/react';
 
 import Button from '@src/components/buttons/Button';
 import FormModal from '@src/containers/FormModal';
@@ -21,8 +21,8 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getPropertyTypeOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { RealEstateProperty } from 'oldTypes';
-import { UPDATE_ADDRESS } from '@src/utils/dGraphQueries/entity';
+import { RealEstateProperty } from '@gql/graphql';
+import { UPDATE_ADDRESS } from '@src/utils/graphQueries/entity';
 import { useSession } from 'next-auth/react';
 
 type PropertyDetailsProps = {
@@ -35,7 +35,8 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
   const [addImage, { error: imageError }] = useMutation(ADD_PROPERTY_IMAGE);
   const [updateAddress, { error: addressError }] = useMutation(UPDATE_ADDRESS);
   const [updateProperty, { error: propertyError }] = useMutation(UPDATE_RE_PROPERTY_INFO);
-  const [deleteProperty, { data: deleteData, error: deleteError }] = useMutation(REMOVE_ENTITY_PROPERTY);
+  const [deleteProperty, { data: deleteData, error: deleteError }] =
+    useMutation(REMOVE_ENTITY_PROPERTY);
   const [alerted, setAlerted] = useState<boolean>(false);
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [detailsModal, setDetailsModal] = useState<boolean>(false);
@@ -55,7 +56,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
     closingCosts,
     downPayment,
     lenderFees,
-    loan,
+    loan
   } = property;
 
   const organization = owner?.organization;
@@ -79,14 +80,18 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
         currentDate: currentDate,
         label: label,
         url: url,
-        fileId: fileId,
-      },
+        fileId: fileId
+      }
     });
   };
 
   return (
     <div className="flex min-h-full mx-auto px-4 md:px-8 md:mt-8" style={{ maxWidth: '1280px' }}>
-      <FormModal formOpen={addressModal} onClose={() => setAddressModal(false)} title={'Edit Address'}>
+      <FormModal
+        formOpen={addressModal}
+        onClose={() => setAddressModal(false)}
+        title={'Edit Address'}
+      >
         <UpdateAddress
           address={address}
           addressId={address?.id}
@@ -95,7 +100,11 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           setModal={() => setAddressModal(false)}
         />
       </FormModal>
-      <FormModal formOpen={detailsModal} onClose={() => setDetailsModal(false)} title={'Edit Property Details'}>
+      <FormModal
+        formOpen={detailsModal}
+        onClose={() => setDetailsModal(false)}
+        title={'Edit Property Details'}
+      >
         <UpdatePropertyDescription
           property={property}
           updateProperty={updateProperty}
@@ -137,7 +146,9 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           <h2 className="font-bold text-gray-700">Images</h2>
           <div className="flex">
             {images?.map((image, i) => {
-              return <PropertyImage key={i} image={image} propertyId={id} isOwner={isEntityManager} />;
+              return (
+                <PropertyImage key={i} image={image} propertyId={id} isOwner={isEntityManager} />
+              );
             })}
           </div>
           {isEntityManager && (
@@ -202,7 +213,11 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
                 aria-label="Delete this property"
                 onClick={() =>
                   deleteProperty({
-                    variables: { currentDate: currentDate, ownerId: property.owner?.id, propertyId: property.id },
+                    variables: {
+                      currentDate: currentDate,
+                      ownerId: property.owner?.id,
+                      propertyId: property.id
+                    }
                   })
                 }
               >

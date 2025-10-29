@@ -11,7 +11,12 @@ type AccessCodeFormProps = {
   isOfferingManager?: boolean;
 };
 
-const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeSubmission, isOfferingManager }) => {
+const AccessCodeForm: FC<AccessCodeFormProps> = ({
+  mini,
+  accessCode,
+  handleCodeSubmission,
+  isOfferingManager
+}) => {
   const fieldClasses = mini
     ? 'h-6 text-xs w-14 bg-opacity-0 px-2 rounded-md focus:border-blue-900 focus:outline-none'
     : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-300 rounded-l-md focus:border-blue-900 focus:outline-none';
@@ -30,9 +35,9 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeS
       ) : (
         <Formik
           initialValues={{
-            code: code ? code : '',
+            code: code ? code : ''
           }}
-          validate={(values) => {
+          validate={values => {
             const errors: any = {}; /** @TODO : Shape */
             if (!values.code) {
               errors.code = 'Please enter your four-digit code.';
@@ -46,7 +51,12 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeS
           }}
         >
           {({ isSubmitting }) => (
-            <Form className={cn('flex items-center', mini ? 'gap-1 border-2  border-gray-400 rounded-lg' : ' gap-0')}>
+            <Form
+              className={cn(
+                'flex items-center',
+                mini ? 'gap-1 border-2  border-gray-400 rounded-lg' : ' gap-0'
+              )}
+            >
               <Input
                 className="bg-opacity-0"
                 fieldClass={fieldClasses}
@@ -55,7 +65,11 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({ mini, accessCode, handleCodeS
                 placeholder={isOfferingManager ? '1234' : 'e.g. 1234'}
               />
               <button type="submit" disabled={isSubmitting} className={buttonClasses}>
-                {mini ? 'Set access code' : <FontAwesomeIcon icon="chevron-right" className="mr-2 text-lg" />}
+                {mini ? (
+                  'Set access code'
+                ) : (
+                  <FontAwesomeIcon icon="chevron-right" className="mr-2 text-lg" />
+                )}
               </button>
             </Form>
           )}

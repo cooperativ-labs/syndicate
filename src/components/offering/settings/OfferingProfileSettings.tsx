@@ -3,12 +3,12 @@ import FileUpload from '@src/components/form-components/FileUpload';
 import FormButton from '@src/components/buttons/FormButton';
 import Input from '@src/components/form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Offering } from 'oldTypes';
-import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
-import { useMutation } from '@apollo/client';
+import { Offering } from '@gql/graphql';
+import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
+import { useMutation } from '@apollo/client/react';
 
 const fieldDiv = 'my-2 bg-opacity-0';
 
@@ -27,8 +27,8 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
         offeringId: offering.id,
         currentDate: currentDate,
         name: offering.name,
-        image: url,
-      },
+        image: url
+      }
     });
   };
 
@@ -38,8 +38,8 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
         offeringId: offering.id,
         currentDate: currentDate,
         name: offering.name,
-        bannerImage: url,
-      },
+        bannerImage: url
+      }
     });
   };
 
@@ -65,9 +65,9 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
               lightBrand: offering.lightBrand,
               isPublic: offering.isPublic,
               primaryVideo: offering.primaryVideo,
-              website: offering.website,
+              website: offering.website
             }}
-            validate={(values) => {
+            validate={values => {
               const errors: any = {}; /** @TODO : Shape */
               if (!values.name) {
                 errors.name = 'Please name this syndication.';
@@ -87,8 +87,8 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
                     lightBrand: values.lightBrand,
                     shortDescription: values.shortDescription,
                     primaryVideo: values.primaryVideo,
-                    website: values.website,
-                  },
+                    website: values.website
+                  }
                 });
                 setButtonStep('confirmed');
               } catch (e) {
@@ -140,8 +140,9 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
                   placeholder="https://www.youtube.com/embed/FbPODl0eyVQ"
                 />
                 <div className="text-sm text-orange-700 font-medium -mt-2">
-                  Note: Be sure to use the embed link, which is sometimes different from the link you see in your
-                  browser, and that you have the correct permissions to embed the video.
+                  Note: Be sure to use the embed link, which is sometimes different from the link
+                  you see in your browser, and that you have the correct permissions to embed the
+                  video.
                 </div>
                 <FormButton
                   type="submit"

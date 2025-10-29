@@ -13,12 +13,18 @@ const Application: NextPage = () => {
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
         <meta property="og:title" content="Permissioned Exchange" />
         <meta property="og:type" content="website" />
-        <meta property="og:description" content="Give investors in your offerings a Robinhood-like experience." />
+        <meta
+          property="og:description"
+          content="Give investors in your offerings a Robinhood-like experience."
+        />
         {/* <meta property="og:image" content="/assets/images/share.png" /> */}
         <meta property="og:url" content="https://syndicate.cooperativ.io/" />
         {/** Twitter */}
         <meta name="twitter:title" content="Permissioned Exchange" />
-        <meta name="twitter:description" content="Give investors in your offerings a Robinhood-like experience." />
+        <meta
+          name="twitter:description"
+          content="Give investors in your offerings a Robinhood-like experience."
+        />
         <meta name="twitter:image" content="/assets/images/share.png" />
         <meta name="twitter:card" content="summary_large_image" />
       </Head>

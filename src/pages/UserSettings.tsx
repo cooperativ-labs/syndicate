@@ -7,11 +7,11 @@ import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import SettingsUserPersonalInfo from '@src/components/account/SettingsUserPersonalInfo';
 import WalletAddressList from '@src/components/WalletAddressList';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { GET_USER } from '@src/utils/graphQueries/user';
 
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useSession } from 'next-auth/react';
 
 const UserSettings: FC = () => {

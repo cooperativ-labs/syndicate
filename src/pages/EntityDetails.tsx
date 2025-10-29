@@ -1,20 +1,27 @@
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { CurrencyCode, LegalEntity, Maybe, Offering } from 'oldTypes';
-import { useMutation, useQuery } from '@apollo/client';
+import { CurrencyCode, LegalEntity, Maybe, Offering } from '@gql/graphql';
+import { useMutation, useQuery } from '@apollo/client/react';
 
-import { REMOVE_ENTITY_ADDRESS, REMOVE_ENTITY_OWNER, UPDATE_ENTITY_INFORMATION } from '@src/utils/dGraphQueries/entity';
+import {
+  REMOVE_ENTITY_ADDRESS,
+  REMOVE_ENTITY_OWNER,
+  UPDATE_ENTITY_INFORMATION
+} from '@src/utils/graphQueries/entity';
 
 import AddOwningEntity from '@src/components/entity/AddOwningEntity';
 import Button from '@src/components/buttons/Button';
 import CreateAddress from '@src/components/address/CreateAddress';
 import DeleteButton from '@src/components/buttons/DeleteButton';
-import EntitySpecifications, { changeForm, EditEntitySelectionType } from '@src/components/entity/EntitySpecifications';
+import EntitySpecifications, {
+  changeForm,
+  EditEntitySelectionType
+} from '@src/components/entity/EntitySpecifications';
 import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import SectionBlock from '@src/containers/SectionBlock';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { useSession } from 'next-auth/react';
 
@@ -54,14 +61,14 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     offerings,
     jurisdiction,
     operatingCurrency,
-    owners,
+    owners
   } = entity;
 
   const offeringsIncludingSubsidiaries = [
-    subsidiaries?.map((entity) => {
+    subsidiaries?.map(entity => {
       if (entity) return entity.offerings;
     }),
-    offerings,
+    offerings
   ].flat();
 
   const handleDisplayNameChange = (values: { displayName: Maybe<string> | undefined }) => {
@@ -72,20 +79,24 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         displayName: values.displayName,
         legalName: legalName,
         jurCountry: jurisdiction?.country,
-        operatingCurrencyCode: operatingCurrency?.code,
-      },
-    }).then((res) => {
+        operatingCurrencyCode: operatingCurrency?.code
+      }
+    }).then(res => {
       setNameEditOn('none');
     });
   };
 
   const handleDeleteAddress = (addressId: string) => {
-    deleteAddress({ variables: { currentDate: currentDate, geoAddressId: addressId, entityId: entity.id } });
+    deleteAddress({
+      variables: { currentDate: currentDate, geoAddressId: addressId, entityId: entity.id }
+    });
   };
 
   // should only be admin
   const handleRemoveOwner = (owner: string) => {
-    removeOwner({ variables: { currentDate: currentDate, removeEntityOwner: owner, ownedEntityId: entity.id } });
+    removeOwner({
+      variables: { currentDate: currentDate, removeEntityOwner: owner, ownedEntityId: entity.id }
+    });
   };
 
   const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {
@@ -99,7 +110,10 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         onClose={() => setAddOwnerModal(false)}
         title={`Add an address to ${entity.displayName}`}
       >
-        <CreateAddress entity={entity} actionOnCompletion={() => submissionCompletion(setAddOwnerModal)} />
+        <CreateAddress
+          entity={entity}
+          actionOnCompletion={() => submissionCompletion(setAddOwnerModal)}
+        />
       </FormModal>
       <div className="flex items-center">
         <div>
@@ -118,7 +132,11 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       <TwoColumnLayout>
         <div>
           {/* <hr className="my-4" /> */}
-          <EntitySpecifications entity={entity} isManager={isAdminOrEditor} updateLegalEntity={updateLegalEntity} />
+          <EntitySpecifications
+            entity={entity}
+            isManager={isAdminOrEditor}
+            updateLegalEntity={updateLegalEntity}
+          />
 
           <div>
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
@@ -174,7 +192,9 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                   })}
                 </div>
                 <hr className="my-4" />
-                {isAdmin && <AddOwningEntity ownedEntityId={entity.id} organization={organization} />}
+                {isAdmin && (
+                  <AddOwningEntity ownedEntityId={entity.id} organization={organization} />
+                )}
               </SectionBlock>
             </div>
           </div>

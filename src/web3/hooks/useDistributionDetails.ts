@@ -41,12 +41,12 @@ export const useDistributionDetails = (
     data,
     error,
     isLoading,
-    refetch: refetchDistributionDetails,
+    refetch: refetchDistributionDetails
   } = useContractRead({
     address: dividendContactAddress,
     abi: dividendContractABI,
     functionName: 'dividends',
-    args: [BigInt(contractIndex)],
+    args: [BigInt(contractIndex)]
   });
 
   const dividendPartition = data ? data[0] : undefined;
@@ -55,10 +55,14 @@ export const useDistributionDetails = (
   const recordDate = data ? new Date(Number(data[3]) * 1000) : undefined;
   const payoutDate = data ? new Date(Number(data[4]) * 1000) : undefined;
   const payoutTokenAddress = data ? data[7] : undefined;
-  const dividendAmount = data ? toNormalNumber(data[5], getCurrencyById(payoutTokenAddress)?.decimals) : undefined;
+  const dividendAmount = data
+    ? toNormalNumber(data[5], getCurrencyById(payoutTokenAddress)?.decimals)
+    : undefined;
   const totalSupplyOfShares = data ? toNormalNumber(data[6], shareContractDecimals) : undefined;
   const isErc20Payout = data ? data[8] : undefined;
-  const amountRemaining = data ? toNormalNumber(data[9], getCurrencyById(payoutTokenAddress)?.decimals) : undefined;
+  const amountRemaining = data
+    ? toNormalNumber(data[9], getCurrencyById(payoutTokenAddress)?.decimals)
+    : undefined;
 
   return {
     // currentBlock,
@@ -74,6 +78,6 @@ export const useDistributionDetails = (
     amountRemaining,
     error,
     isLoading,
-    refetchDistributionDetails,
+    refetchDistributionDetails
   };
 };

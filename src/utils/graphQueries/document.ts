@@ -1,4 +1,4 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { CORE_DOCUMENT_FIELDS } from './fragments';
 
 export const GET_DOCUMENT_EDITORS = gql`
@@ -46,7 +46,7 @@ export const ADD_OFFERING_DOCUMENT = gql`
       upsert: true
     ) {
       document {
-        ...documentData
+        ...DocumentFields
       }
     }
     updateOffering(input: { filter: { id: [$offeringId] }, set: { lastUpdate: $currentDate } }) {

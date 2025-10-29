@@ -9,23 +9,26 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
-import { useAccount, useChainId, useEnsAvatar, useNetwork } from 'wagmi';
-import { useSession } from 'next-auth/react';
+import { useAccount, useChainId } from 'wagmi';
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 
 const UserMenu: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const { data: session, status } = useSession();
-  const isAuthenticated = status === 'authenticated';
-  const chain = useNetwork();
+  const { user } = useSupabaseAuth();
+  const isAuthenticated = !!user;
+  const { address: userWalletAddress, isConnected } = useAccount();
   const chainId = useChainId();
-  const { address: userWalletAddress } = useAccount();
+  const userImageUrl = user?.user_metadata?.avatar_url as string | undefined;
 
-  const networkImage = userWalletAddress && chain && networkIcon(chainId, userWalletAddress);
+  const networkImage =
+    userWalletAddress && isConnected ? networkIcon(chainId, userWalletAddress) : undefined;
 
-  const profileImg = session?.user.image ? session.user.image : '/assets/images/user-images/placeholder.png';
+  const profileImg = userImageUrl ? userImageUrl : '/assets/images/user-images/placeholder.png';
   return (
     <>
-      {open && <div className="absolute top-0 bottom-0 left-0 right-0 " onClick={() => setOpen(!open)} />}
+      {open && (
+        <div className="absolute top-0 bottom-0 left-0 right-0 " onClick={() => setOpen(!open)} />
+      )}
       <div className="relative flex flex-col items-center ">
         <Button
           className={`border-gray-300 hover:border-gray-500
@@ -34,7 +37,11 @@ const UserMenu: FC = () => {
           onClick={() => setOpen(!open)}
         >
           <div className="pr-2">
-            <img src={profileImg} referrerPolicy="no-referrer" className="w-8 h-8 border-2 border-white rounded-full" />
+            <img
+              src={profileImg}
+              referrerPolicy="no-referrer"
+              className="w-8 h-8 border-2 border-white rounded-full"
+            />
           </div>
           {userWalletAddress && `Wallet: ${userWalletAddress.slice(-4)}`}
           <div className="p-1 pl-2">
@@ -57,7 +64,11 @@ const UserMenu: FC = () => {
                     )}
 
                     <div className="mx-1" />
-                    <FormattedCryptoAddress chainId={chainId} address={userWalletAddress} withCopy />
+                    <FormattedCryptoAddress
+                      chainId={chainId}
+                      address={userWalletAddress}
+                      withCopy
+                    />
                   </div>
                   <div className="hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
                     <DisconnectButton />

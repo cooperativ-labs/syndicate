@@ -3,14 +3,14 @@ import React, { FC, useState } from 'react';
 import cn from 'classnames';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 import Checkbox from './form-components/Checkbox';
 import Input from './form-components/Inputs';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { EditButton, MarkPublic } from './form-components/ListItemButtons';
-import { EmailAddress, Maybe } from 'oldTypes';
-import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/dGraphQueries/organization';
+import { EmailAddress, Maybe } from '@gql/graphql';
+import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/graphQueries/organization';
 
 type EmailAddressListItemProps = {
   email: Maybe<Maybe<EmailAddress>> | undefined;
@@ -60,7 +60,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
             <Formik
               initialValues={{
                 isPublic: !!isPublic,
-                name: name,
+                name: name
               }}
               onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(true);
@@ -68,8 +68,8 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
                   variables: {
                     address: address,
                     name: values.name,
-                    isPublic: values.isPublic,
-                  },
+                    isPublic: values.isPublic
+                  }
                 });
                 setSubmitting(false);
               }}
@@ -111,7 +111,11 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
             aria-label="edit address info"
             onClick={() =>
               deleteEmail({
-                variables: { currentDate: currentDate, organizationId: organization?.id, emailAddress: address },
+                variables: {
+                  currentDate: currentDate,
+                  organizationId: organization?.id,
+                  emailAddress: address
+                }
               })
             }
           >

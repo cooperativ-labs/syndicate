@@ -10,10 +10,12 @@ export type DividendContractInfoType = {
   refetchSwapContract: () => void;
 };
 
-export const useDividendContractInfo = (dividendContactAddress: String0x): DividendContractInfoType | undefined => {
+export const useDividendContractInfo = (
+  dividendContactAddress: String0x
+): DividendContractInfoType | undefined => {
   const baseContractInfo = {
     address: dividendContactAddress,
-    abi: dividendContractABI,
+    abi: dividendContractABI
   };
 
   const {
@@ -21,13 +23,13 @@ export const useDividendContractInfo = (dividendContactAddress: String0x): Divid
     isLoading,
     isError,
     error,
-    refetch: refetchSwapContract,
+    refetch: refetchSwapContract
   } = useContractReads({
     contracts: [
       { ...baseContractInfo, functionName: 'sharesToken' },
       { ...baseContractInfo, functionName: 'reclaim_time' },
-      { ...baseContractInfo, functionName: 'contractVersion' },
-    ],
+      { ...baseContractInfo, functionName: 'contractVersion' }
+    ]
   });
 
   const shareTokenAddress = data ? (data[0].result as String0x) : undefined;
@@ -39,6 +41,6 @@ export const useDividendContractInfo = (dividendContactAddress: String0x): Divid
     reclaimTime,
     dividendContractVersion,
     isLoading,
-    refetchSwapContract,
+    refetchSwapContract
   };
 };

@@ -1,11 +1,11 @@
 import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
-import { LinkedAccount, Maybe } from 'oldTypes';
+import { LinkedAccount, Maybe } from '@gql/graphql';
 
-import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/dGraphQueries/organization';
-import { useMutation } from '@apollo/client';
+import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/graphQueries/organization';
+import { useMutation } from '@apollo/client/react';
 
 type LinkedAccountListProps = {
   account: Maybe<LinkedAccount>;
@@ -24,12 +24,18 @@ const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganiza
 
   return (
     <div className="grid grid-cols-3">
-      <div className="col-span-1">{getSocialAccountOption(type)?.name}</div> <div className="col-span-1">{url}</div>
+      <div className="col-span-1">{getSocialAccountOption(type)?.name}</div>{' '}
+      <div className="col-span-1">{url}</div>
       {isOrganizationManager && (
         <button
           onClick={() => {
             deleteSocial({
-              variables: { currentDate: currentDate, organizationId: organization.id, id: id, socialId: id },
+              variables: {
+                currentDate: currentDate,
+                organizationId: organization.id,
+                id: id,
+                socialId: id
+              }
             });
           }}
         >

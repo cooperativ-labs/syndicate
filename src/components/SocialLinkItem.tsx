@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
 import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { LinkedAccountType } from 'oldTypes';
+import { LinkedAccountType } from '@gql/graphql';
 
 type SocialLinkItemProps = {
   type: LinkedAccountType | null | undefined;
@@ -13,7 +13,9 @@ type SocialLinkItemProps = {
 
 const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
   const iconType =
-    type === LinkedAccountType.Phone || type === LinkedAccountType.Email || type === LinkedAccountType.Website
+    type === LinkedAccountType.Phone ||
+    type === LinkedAccountType.Email ||
+    type === LinkedAccountType.Website
       ? 'fas'
       : 'fab';
   if (url) {
@@ -21,7 +23,9 @@ const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
       <a href={url}>
         <div
           className={cn(
-            className ? className : 'flex max-w-min py-1 pl-2 pr-2 m-1s text-xl text-gray-700 items-center rounded-full'
+            className
+              ? className
+              : 'flex max-w-min py-1 pl-2 pr-2 m-1s text-xl text-gray-700 items-center rounded-full'
           )}
         >
           <FontAwesomeIcon

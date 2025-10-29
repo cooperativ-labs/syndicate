@@ -13,7 +13,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Offering, ShareOrder } from 'oldTypes';
+import { Offering, ShareOrder } from '@gql/graphql';
 
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
@@ -49,7 +49,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   txnApprovalsEnabled,
   shareQtyRemaining,
   myShareQty,
-  callFillOrder,
+  callFillOrder
 }) => {
   const { connector } = useAccount();
 
@@ -59,7 +59,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
 
   const standardSaleDisclosures = `/assets/order/disclosures.md`;
   const getStandardSaleDisclosuresText = async (): Promise<string> =>
-    axios.get(standardSaleDisclosures).then((resp) => resp.data);
+    axios.get(standardSaleDisclosures).then(resp => resp.data);
   const { value: standardSaleDisclosuresText } = useAsync(getStandardSaleDisclosuresText, []);
 
   const purchaseCalculator = (numUnits: number) => {
@@ -81,7 +81,9 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
     const action = isAskOrder ? 'purchase' : 'sell';
-    const mainText = txnApprovalsEnabled ? `Request to ${action}` : `${capitalizeFirstLetter(action)}`;
+    const mainText = txnApprovalsEnabled
+      ? `Request to ${action}`
+      : `${capitalizeFirstLetter(action)}`;
 
     return `${mainText} ${numUnitsPurchase ?? ''} shares ${
       numUnitsPurchase
@@ -106,7 +108,9 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                 : 'Please confirm in our wallet'
             }
             step2Text={isAskOrder ? 'Executing purchase' : undefined}
-            step2SubText={isAskOrder ? 'This will execute the trade and purchase the shares' : undefined}
+            step2SubText={
+              isAskOrder ? 'This will execute the trade and purchase the shares' : undefined
+            }
           />
         </WalletActionModal>
       )}
@@ -115,9 +119,9 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
         initialValues={{
           numUnitsPurchase: '',
           disclosures: false,
-          toc: false,
+          toc: false
         }}
-        validate={(values) => {
+        validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           const numUnitsPurchase = parseInt(values.numUnitsPurchase, 10);
           if (!values.numUnitsPurchase) {
@@ -190,7 +194,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                   <button
                     className="text-sm text-gray-700 hover:underline "
                     aria-label="review application"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault();
                       setDisclosuresOpen(!disclosuresOpen);
                       setTocOpen(false);
@@ -217,7 +221,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                   <StandardButton
                     className="mt-5"
                     outlined
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault();
                       DownloadFile(
                         standardSaleDisclosuresText as string,
@@ -229,7 +233,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                   <StandardButton
                     className="md:ml-3 mt-5"
                     outlined
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault();
                       setDisclosuresOpen(false);
                     }}
@@ -249,7 +253,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                   <button
                     className="text-sm text text-gray-700 hover:underline "
                     aria-label="review application"
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault();
                       setTocOpen(!tocOpen);
                       setDisclosuresOpen(false);
@@ -258,7 +262,11 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                     <div className="flex">
                       <div className="">{`I accept this offering's Terms and Conditions`}</div>
                       <div className="ml-2">
-                        {tocOpen ? <FontAwesomeIcon icon="chevron-up" /> : <FontAwesomeIcon icon="chevron-down" />}
+                        {tocOpen ? (
+                          <FontAwesomeIcon icon="chevron-up" />
+                        ) : (
+                          <FontAwesomeIcon icon="chevron-down" />
+                        )}
                       </div>
                     </div>
                   </button>
@@ -272,17 +280,20 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                   <StandardButton
                     className="mt-5"
                     outlined
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault();
                       //@ts-ignore
-                      DownloadFile(offering.documents[0]?.text as string, `${offering.name} - Terms & Conditions.md`);
+                      DownloadFile(
+                        offering.documents[0]?.text as string,
+                        `${offering.name} - Terms & Conditions.md`
+                      );
                     }}
                     text="Download Terms & Conditions"
                   />
                   <StandardButton
                     className="md:ml-3 mt-5"
                     outlined
-                    onClick={(e) => {
+                    onClick={e => {
                       e.preventDefault();
                       setTocOpen(false);
                     }}
@@ -295,7 +306,9 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
               <LoadingButtonText
                 state={buttonStep}
                 idleText={formButtonText(values.numUnitsPurchase)}
-                step1Text={txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'}
+                step1Text={
+                  txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'
+                }
                 step2Text="Executing transaction..."
                 confirmedText="Executed!"
                 failedText="Transaction failed"

@@ -32,7 +32,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
   isTradeExecutionStep,
   price,
   paymentTokenAddress,
-  callFillOrder,
+  callFillOrder
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -41,7 +41,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
   const handleClick = async () => {
     await callFillOrder({
       amount: acceptedOrderQty,
-      setButtonStep,
+      setButtonStep
     });
   };
 
@@ -74,7 +74,10 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
 
         <div className={'flex flex-col'}>
           <div className="flex flex-col">{saleStatementText}</div>
-          <Button className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium" onClick={handleClick}>
+          <Button
+            className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
+            onClick={handleClick}
+          >
             <LoadingButtonText
               state={buttonStep}
               idleText={formButtonText}

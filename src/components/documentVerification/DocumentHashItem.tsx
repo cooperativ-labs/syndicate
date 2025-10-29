@@ -1,6 +1,6 @@
 import React, { FC, useState } from 'react';
 import StandardButton from '../buttons/StandardButton';
-import { Document, Maybe } from 'oldTypes';
+import { Document, Maybe } from '@gql/graphql';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 

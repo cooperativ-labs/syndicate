@@ -1,48 +1,47 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { CORE_ORGANIZATION_FIELDS } from './fragments';
 
 export const GET_ORGANIZATION = gql`
   ${CORE_ORGANIZATION_FIELDS}
   query GetOrganization($id: ID!) {
-    getOrganization(id: $id) {
-      ...organizationData
+    organizationCollection(filter: { id: { eq: $id } }, first: 1) {
+      edges {
+        node {
+          ...OrganizationFields
+        }
+      }
     }
   }
 `;
 
 export const ADD_ORGANIZATION = gql`
-  ${CORE_ORGANIZATION_FIELDS}
-  mutation AddLegalOrganization(
-    $currentDate: DateTime!
-    $userId: ID!
+  mutation AddOrganization(
     $name: String!
     $logo: String
     $shortDescription: String
     $website: String
     $country: String
   ) {
-    addOrganization(
-      input: [
+    insertIntoorganizationCollection(
+      objects: [
         {
-          creationDate: $currentDate
-          lastUpdate: $currentDate
-          users: { permissions: ADMIN, user: { id: $userId } }
           name: $name
-          isPublic: false
+          is_public: false
           logo: $logo
           website: $website
           country: $country
-          shortDescription: $shortDescription
+          short_description: $shortDescription
         }
       ]
     ) {
-      organization {
-        ...organizationData
-        users {
-          user {
-            id
-          }
-        }
+      records {
+        id
+        name
+        is_public
+        logo
+        website
+        country
+        short_description
       }
     }
   }
@@ -50,36 +49,35 @@ export const ADD_ORGANIZATION = gql`
 
 export const ADD_ORGANIZATION_USER = gql`
   mutation AddOrganizationUser(
-    $userId: ID!
-    $currentDate: DateTime!
-    $organizationId: ID!
-    $permission: [OrganizationPermissionType!]
+    $userId: UUID!
+    $organizationId: UUID!
+    $permission: [OrganizationPermissionType]
   ) {
-    updateOrganization(
-      input: {
-        filter: { id: [$organizationId] }
-        set: { lastUpdate: $currentDate, users: { permissions: $permission, user: { id: $userId } } }
-      }
+    insertIntoorganization_userCollection(
+      objects: [{ user_id: $userId, organization_id: $organizationId, permissions: $permission }]
     ) {
-      organization {
+      records {
         id
-        users {
-          permissions
-          user {
-            id
-          }
-        }
+        user_id
+        organization_id
+        permissions
       }
     }
   }
 `;
 
 export const REMOVE_ORGANIZATION_USER = gql`
-  mutation RemoveOrganizationUser($organizationId: [ID!], $organizationUserId: ID!, $currentDate: DateTime) {
+  mutation RemoveOrganizationUser(
+    $organizationId: [ID!]
+    $organizationUserId: ID!
+    $currentDate: DateTime
+  ) {
     deleteOrganizationUser(filter: { id: [$organizationUserId] }) {
       msg
     }
-    updateOrganization(input: { filter: { id: $organizationId }, set: { lastUpdate: $currentDate } }) {
+    updateOrganization(
+      input: { filter: { id: $organizationId }, set: { lastUpdate: $currentDate } }
+    ) {
       numUids
       organization {
         id
@@ -229,7 +227,11 @@ export const ADD_ORGANIZATION_EMAIL = gql`
 `;
 
 export const REMOVE_ORGANIZATION_EMAIL = gql`
-  mutation RemoveOrganizationEmail($organizationId: [ID!], $emailAddress: String!, $currentDate: DateTime) {
+  mutation RemoveOrganizationEmail(
+    $organizationId: [ID!]
+    $emailAddress: String!
+    $currentDate: DateTime
+  ) {
     updateOrganization(
       input: {
         filter: { id: $organizationId }
@@ -252,7 +254,12 @@ export const REMOVE_ORGANIZATION_EMAIL = gql`
 `;
 
 export const UPDATE_EMAIL = gql`
-  mutation UpdateUserEmail($address: String!, $name: String, $description: String, $isPublic: Boolean) {
+  mutation UpdateUserEmail(
+    $address: String!
+    $name: String
+    $description: String
+    $isPublic: Boolean
+  ) {
     updateEmailAddress(
       input: {
         filter: { address: { eq: $address } }
@@ -277,7 +284,12 @@ export const UPDATE_EMAIL = gql`
 //USER SOCIAL
 
 export const ADD_ORGANIZATION_SOCIAL_ACCOUNTS = gql`
-  mutation ($organizationId: [ID!], $url: String!, $type: LinkedAccountType!, $currentDate: DateTime!) {
+  mutation (
+    $organizationId: [ID!]
+    $url: String!
+    $type: LinkedAccountType!
+    $currentDate: DateTime!
+  ) {
     updateOrganization(
       input: {
         filter: { id: $organizationId }
@@ -304,7 +316,11 @@ export const ADD_ORGANIZATION_SOCIAL_ACCOUNTS = gql`
 `;
 
 export const REMOVE_ORGANIZATION_SOCIAL_ACCOUNT = gql`
-  mutation RemoveOrganizationSocialAccount($organizationId: [ID!], $socialId: ID!, $currentDate: DateTime!) {
+  mutation RemoveOrganizationSocialAccount(
+    $organizationId: [ID!]
+    $socialId: ID!
+    $currentDate: DateTime!
+  ) {
     updateOrganization(
       input: {
         filter: { id: $organizationId }

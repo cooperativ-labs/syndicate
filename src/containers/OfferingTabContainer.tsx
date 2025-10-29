@@ -9,10 +9,10 @@ import SubmitDistribution from '@src/components/offering/SubmitDistribution';
 import Tab from '@src/components/offering/tabs/Tab';
 
 import WhitelistAddressList, {
-  WhitelistAddressListProps,
+  WhitelistAddressListProps
 } from '@src/components/offering/whitelist/WhitelistAddressList';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from 'oldTypes';
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
 
@@ -33,7 +33,7 @@ type OfferingTabContainerProps = WhitelistAddressListProps & {
 const TabOptions = [
   { value: 'investors', name: 'Investors', showInvestors: false },
   { value: 'distributions', name: 'Distributions', showInvestors: true },
-  { value: 'properties', name: 'Properties', showInvestors: true },
+  { value: 'properties', name: 'Properties', showInvestors: true }
 ];
 
 const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
@@ -48,23 +48,31 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   transferEvents,
   investorListRefreshTrigger,
   triggerInvestorListRefresh,
-  refetchContracts,
+  refetchContracts
 }) => {
   const { address: userWalletAddress } = useAccount();
   const distributions = offering.distributions;
   const investmentCurrency = offering.details?.investmentCurrency;
   const distArraylength = distributions?.length;
   const hasDistributions = distArraylength && distArraylength > 0;
-  const startingTab = isOfferingManager ? 'investors' : hasDistributions ? 'distributions' : 'properties';
+  const startingTab = isOfferingManager
+    ? 'investors'
+    : hasDistributions
+      ? 'distributions'
+      : 'properties';
   const [activeTab, setActiveTab] = useState<string>(startingTab);
-  const investorTabOptions = TabOptions.filter((tab) => tab.showInvestors);
+  const investorTabOptions = TabOptions.filter(tab => tab.showInvestors);
   const tabList = isOfferingManager ? TabOptions : investorTabOptions;
   const [submitDistributionModal, setSubmitDistributionModal] = useState<boolean>(false);
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
-  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress?.address as String0x;
-  const distributionTokenDecimals = getCurrencyOption(offering.details?.investmentCurrency)?.decimals;
-  const distributionTokenAddress = getCurrencyOption(offering.details?.investmentCurrency)?.address as String0x;
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
+    ?.address as String0x;
+  const distributionTokenDecimals = getCurrencyOption(
+    offering.details?.investmentCurrency
+  )?.decimals;
+  const distributionTokenAddress = getCurrencyOption(offering.details?.investmentCurrency)
+    ?.address as String0x;
 
   return (
     <div>
@@ -86,7 +94,15 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
       )}
       <div className={cn(`grid grid-cols-${tabList.length}`)}>
         {tabList.map((tab, i) => {
-          return <Tab key={i} tabId={tab.value} label={tab.name} setActiveTab={setActiveTab} activeTab={activeTab} />;
+          return (
+            <Tab
+              key={i}
+              tabId={tab.value}
+              label={tab.name}
+              setActiveTab={setActiveTab}
+              activeTab={activeTab}
+            />
+          );
         })}
       </div>
       <div>

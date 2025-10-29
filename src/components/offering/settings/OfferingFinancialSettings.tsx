@@ -5,14 +5,18 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import React, { FC, useState } from 'react';
 import Select from '@src/components/form-components/Select';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { distributionPeriodOptions, getCurrencyOption, StageOptions } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import {
+  distributionPeriodOptions,
+  getCurrencyOption,
+  StageOptions
+} from '@src/utils/enumConverters';
 import { Form, Formik } from 'formik';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingDetails } from 'oldTypes';
-import { UPDATE_OFFERING_FINANCIAL } from '@src/utils/dGraphQueries/offering';
-import { useMutation } from '@apollo/client';
+import { Offering, OfferingDetails } from '@gql/graphql';
+import { UPDATE_OFFERING_FINANCIAL } from '@src/utils/graphQueries/offering';
+import { useMutation } from '@apollo/client/react';
 
 type OfferingFinancialSettingsProps = {
   offering: Offering;
@@ -50,7 +54,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
     projectedAppreciation,
     capRate,
     targetEquityMultiple,
-    targetEquityMultipleMax,
+    targetEquityMultipleMax
   } = details as OfferingDetails;
 
   const operatingCurrency = offering.offeringEntity?.operatingCurrency;
@@ -87,9 +91,9 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
         projectedAppreciation: projectedAppreciation && projectedAppreciation / 100,
         capRate: capRate && capRate / 100,
         targetEquityMultiple: targetEquityMultiple && targetEquityMultiple / 100,
-        targetEquityMultipleMax: targetEquityMultipleMax && targetEquityMultipleMax / 100,
+        targetEquityMultipleMax: targetEquityMultipleMax && targetEquityMultipleMax / 100
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (values.minRaise > maxRaise) {
           errors.minRaise = 'Minimum raise must be less than maximum raise.';
@@ -121,12 +125,15 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               projectedIrr: values.projectedIrr && values.projectedIrr * 100,
               projectedIrrMax: values.projectedIrrMax && values.projectedIrrMax * 100,
               preferredReturn: values.preferredReturn && values.preferredReturn * 100,
-              targetEquityMultiple: values.targetEquityMultiple && values.targetEquityMultiple * 100,
-              targetEquityMultipleMax: values.targetEquityMultipleMax && values.targetEquityMultipleMax * 100,
+              targetEquityMultiple:
+                values.targetEquityMultiple && values.targetEquityMultiple * 100,
+              targetEquityMultipleMax:
+                values.targetEquityMultipleMax && values.targetEquityMultipleMax * 100,
               cocReturn: values.cocReturn && values.cocReturn * 100,
-              projectedAppreciation: values.projectedAppreciation && values.projectedAppreciation * 100,
-              capRate: values.capRate && values.capRate * 100,
-            },
+              projectedAppreciation:
+                values.projectedAppreciation && values.projectedAppreciation * 100,
+              capRate: values.capRate && values.capRate * 100
+            }
           });
           setButtonStep('confirmed');
         } catch (e) {
@@ -228,7 +235,12 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               type="number"
             />
 
-            <Select required className={defaultFieldDiv} labelText="Period" name="distributionPeriod">
+            <Select
+              required
+              className={defaultFieldDiv}
+              labelText="Period"
+              name="distributionPeriod"
+            >
               {distributionPeriodOptions.map((type, i) => {
                 return (
                   <option key={i} value={type.value}>
@@ -239,7 +251,12 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
             </Select>
           </div>
           <div className="grid grid-cols-2 gap-3">
-            <Input className={defaultFieldDiv} labelText={`Projected IRR (%)`} name="projectedIrr" type="number" />
+            <Input
+              className={defaultFieldDiv}
+              labelText={`Projected IRR (%)`}
+              name="projectedIrr"
+              type="number"
+            />
             <Input
               className={defaultFieldDiv}
               labelText={`Max Projected IRR (% - Optional)`}
@@ -264,14 +281,24 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               name="preferredReturn"
               type="number"
             />
-            <Input className={defaultFieldDiv} labelText={`CoC return (%)`} name="cocReturn" type="number" />
+            <Input
+              className={defaultFieldDiv}
+              labelText={`CoC return (%)`}
+              name="cocReturn"
+              type="number"
+            />
             <Input
               className={defaultFieldDiv}
               labelText={`Projected appreciation (%)`}
               name="projectedAppreciation"
               type="number"
             />
-            <Input className={defaultFieldDiv} labelText={`Cap rate (%)`} name="capRate" type="number" />
+            <Input
+              className={defaultFieldDiv}
+              labelText={`Cap rate (%)`}
+              name="capRate"
+              type="number"
+            />
           </div>
           <Input
             className={defaultFieldDiv}

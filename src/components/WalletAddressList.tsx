@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import WalletAddressListItem from './WalletAddressListItem';
-import { CryptoAddress } from 'oldTypes';
+import { CryptoAddress } from '@gql/graphql';
 
 type WalletAddressListProps = {
   walletAddresses: CryptoAddress[];

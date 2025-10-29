@@ -13,9 +13,9 @@ const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
   return (
     <Formik
       initialValues={{
-        address: '',
+        address: ''
       }}
-      validate={async (values) => {
+      validate={async values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.address) {
           errors.address = 'Please include an email address.';

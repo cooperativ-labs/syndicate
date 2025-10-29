@@ -8,11 +8,16 @@ import Input from '@src/components/form-components/Inputs';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import React, { Dispatch, FC, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Form, Formik } from 'formik';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import { Maybe, OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from 'oldTypes';
+import {
+  Maybe,
+  OfferingParticipant,
+  OfferingSmartContractSet,
+  WhitelistTransactionType
+} from '@gql/graphql';
 
 import TransferEventList from '../sales/TransferEventList';
 import WhitelistTransactionItem from './WhitelistTransactionItem';
@@ -20,9 +25,9 @@ import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractSha
 import { shareContractABI } from '@src/web3/generated';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/dGraphQueries/offering';
+import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/graphQueries/offering';
 import { useContractReads } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 import { useSession } from 'next-auth/react';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 
@@ -55,7 +60,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   partitions,
   transferEventList,
   triggerInvestorListRefresh,
-  refetchContracts,
+  refetchContracts
 }) => {
   const { data: session } = useSession();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -64,27 +69,35 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   const [updateWhitelist] = useMutation(UPDATE_WHITELIST);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
-  const participant = offeringParticipants?.find((p) => p?.id === selection);
+  const participant = offeringParticipants?.find(p => p?.id === selection);
   const participantWallet = participant?.walletAddress as String0x;
 
-  const transferEvents = transferEventList.filter((transferEvent) => {
-    return transferEvent.recipientAddress === participantWallet || transferEvent.senderAddress === participantWallet;
+  const transferEvents = transferEventList.filter(transferEvent => {
+    return (
+      transferEvent.recipientAddress === participantWallet ||
+      transferEvent.senderAddress === participantWallet
+    );
   });
 
   //-----------------Contract Interactions---------------------
 
-  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress.address as String0x;
+  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
+    .address as String0x;
 
   const sharedContractSpecs = {
     address: shareContractAddress,
-    abi: shareContractABI,
+    abi: shareContractABI
   };
 
   const { data } = useContractReads({
     contracts: [
       { ...sharedContractSpecs, functionName: 'balanceOf', args: [participantWallet as String0x] },
-      { ...sharedContractSpecs, functionName: 'isWhitelisted', args: [participantWallet as String0x] },
-    ],
+      {
+        ...sharedContractSpecs,
+        functionName: 'isWhitelisted',
+        args: [participantWallet as String0x]
+      }
+    ]
   });
 
   const shareBalanceData = data?.[0].result as bigint;
@@ -101,16 +114,16 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       shareContractAddress: shareContractAddress,
       setButtonStep,
       updateWhitelist,
-      triggerInvestorListRefresh,
+      triggerInvestorListRefresh
     };
     try {
       if (type === WhitelistTransactionType.Add) {
         addWhitelistMember({
-          ...baseVariables,
+          ...baseVariables
         });
       } else {
         removeWhitelistMember({
-          ...baseVariables,
+          ...baseVariables
         });
       }
     } catch (e) {
@@ -133,11 +146,14 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
     investorApplication,
     offering,
     chainId,
-    whitelistTransactions,
+    whitelistTransactions
   } = participant;
 
   const distributions = offering.distributions;
-  const isEditorOrAdmin = getIsEditorOrAdmin(session?.user.id, offering.offeringEntity?.organization);
+  const isEditorOrAdmin = getIsEditorOrAdmin(
+    session?.user.id,
+    offering.offeringEntity?.organization
+  );
   const investorApplicationText = investorApplication?.applicationDoc.text;
 
   const updateInvestorForm = (itemType: ParticipantSpecItemType) => {
@@ -147,9 +163,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
           name: name,
           jurCountry: jurisdiction?.country ?? '',
           jurProvince: jurisdiction?.province ?? '',
-          externalId: externalId,
+          externalId: externalId
         }}
-        validate={(values) => {
+        validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           // if (!values.jurCountry) {
           //   errors.type = 'Please enter a country';
@@ -165,8 +181,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
               name: values.name,
               jurCountry: values.jurCountry,
               jurProvince: values.jurProvince,
-              externalId: values.externalId,
-            },
+              externalId: values.externalId
+            }
           });
           setSpecEditOn('none');
           setSubmitting(false);
@@ -188,7 +204,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
             </Button>
             <Button
               className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
-              onClick={(e) => {
+              onClick={e => {
                 e.preventDefault();
                 setSpecEditOn('none');
               }}
@@ -293,7 +309,12 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       </div>
       {shareBalanceData && shareBalanceData > 0 && (
         <div className="mt-4 border-2 rounded-md px-2">
-          <SectionBlock className="font-bold" sectionTitle={'Force transfer or clawback'} mini asAccordion>
+          <SectionBlock
+            className="font-bold"
+            sectionTitle={'Force transfer or clawback'}
+            mini
+            asAccordion
+          >
             <ForceTransferForm
               shareContractAddress={shareContractAddress}
               partitions={partitions}

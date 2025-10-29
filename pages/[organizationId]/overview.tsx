@@ -6,7 +6,7 @@ const OrganizationPage: FC = () => {
   return (
     <div
       data-test="component-landing"
-      className="bg-gradient-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
+      className="bg-linear-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
     >
       <ManagerWrapper>
         <OrganizationOverview />

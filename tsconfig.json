@@ -18,33 +18,19 @@
       }
     ],
     "paths": {
-      "@interfaces/*": [
-        "./interfaces/*"
-      ],
-      "@pages/*": [
-        "./pages/*"
-      ],
-      "@src/*": [
-        "./src/*"
-      ],
-      "@utils/*": [
-        "./src/utils/*"
-      ],
-      "@web3/*": [
-        "./src/web3/*"
-      ],
-      "types/*": [
-        "./types/*"
-      ],
-      "@/*": [
-        "./*"
-      ]
+      "@interfaces/*": ["./interfaces/*"],
+      "@pages/*": ["./pages/*"],
+      "@supabase/*": ["./supabase/*"],
+      "@context/*": ["./context/*"],
+      "@src/*": ["./src/*"],
+      "@utils/*": ["./src/utils/*"],
+      "@web3/*": ["./src/web3/*"],
+      "@styles/*": ["./styles/*"],
+      "@hooks/*": ["./hooks/*"],
+      "@gql/*": ["./gql/*"],
+      "@/*": ["./*"]
     },
-    "lib": [
-      "dom",
-      "dom.iterable",
-      "esnext"
-    ],
+    "lib": ["dom", "dom.iterable", "esnext"],
     "incremental": true
   },
   "include": [
@@ -57,7 +43,5 @@
     "src/web3/ABI.ts",
     "src/utils/analytics.js"
   ],
-  "exclude": [
-    "node_modules"
-  ]
+  "exclude": ["node_modules"]
 }

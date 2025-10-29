@@ -1,9 +1,9 @@
 import OfferingDescriptionItem from './OfferingDescriptionItem';
 import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
 import React, { FC, useState } from 'react';
-import { CREATE_DESCRIPTION_TEXT } from '@src/utils/dGraphQueries/offering';
-import { Offering, OfferingTabSection } from 'oldTypes';
-import { useMutation } from '@apollo/client';
+import { CREATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
+import { Offering, OfferingTabSection } from '@gql/graphql';
+import { useMutation } from '@apollo/client/react';
 
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import Card from '@src/components/cards/Card';
@@ -30,7 +30,7 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
   }
 
   const tabSectionOptionsOhneFinancials = tabSectionOptions.filter(
-    (option) => option.value !== OfferingTabSection.Financials
+    option => option.value !== OfferingTabSection.Financials
   );
 
   const addNewDescription = (
@@ -77,7 +77,7 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
           aria-label="Which tab"
           required
           name="section"
-          onChange={(e) => {
+          onChange={e => {
             setSelectedTab(e.target.value as OfferingTabSection);
           }}
         >

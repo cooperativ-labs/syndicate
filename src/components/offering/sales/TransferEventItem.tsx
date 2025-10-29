@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { getCurrencyByCode, getTransferEventOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ShareTransferEvent } from 'oldTypes';
+import { ShareTransferEvent } from '@gql/graphql';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useAsync } from 'react-use';
@@ -12,20 +12,29 @@ import { useChainId, usePublicClient, useTransaction } from 'wagmi';
 const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEvent }) => {
   const chainId = useChainId();
   const publicClient = usePublicClient();
-  const { transactionHash, recipientAddress, amount, partition, type, senderAddress, price, currencyCode } =
-    transferEvent;
+  const {
+    transactionHash,
+    recipientAddress,
+    amount,
+    partition,
+    type,
+    senderAddress,
+    price,
+    currencyCode
+  } = transferEvent;
   const [blockTime, setBlockTime] = React.useState<Date | null>(null);
 
   const paymentTokenDecimals = getCurrencyByCode(currencyCode)?.decimals;
-  const humanPrice = price && paymentTokenDecimals ? toNormalNumber(BigInt(price), paymentTokenDecimals) : null;
+  const humanPrice =
+    price && paymentTokenDecimals ? toNormalNumber(BigInt(price), paymentTokenDecimals) : null;
 
   const { data: transactionData } = useTransaction({
-    hash: transactionHash as String0x,
+    hash: transactionHash as String0x
   });
 
   useAsync(async () => {
     const block = await publicClient.getBlock({
-      blockHash: transactionData?.blockHash as String0x,
+      blockHash: transactionData?.blockHash as String0x
     });
     const time = new Date(Number(block?.timestamp) * 1000);
     setBlockTime(time);
@@ -65,7 +74,9 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
         lookupType="tx"
       />
 
-      <div className={`font-medium text-${getTransferEventOption(type)?.color} flex col-span-1 justify-center`}>
+      <div
+        className={`font-medium text-${getTransferEventOption(type)?.color} flex col-span-1 justify-center`}
+      >
         <div className={`font-medium`}>{type}</div>
       </div>
       <div className="flex col-span-1 justify-center">

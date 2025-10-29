@@ -2,16 +2,22 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import CloseButton from '@src/components/buttons/CloseButton';
 import FormModal from '@src/containers/FormModal';
 import Loading from '@src/components/loading/Loading';
-import PostBidAskForm, { PostBidAskFormProps } from '@src/components/investor/tradingForms/PostBidAskForm';
-import PostInitialSale, { PostInitialSaleProps } from '@src/components/investor/tradingForms/PostInitialSale';
+import PostBidAskForm, {
+  PostBidAskFormProps
+} from '@src/components/investor/tradingForms/PostBidAskForm';
+import PostInitialSale, {
+  PostInitialSaleProps
+} from '@src/components/investor/tradingForms/PostInitialSale';
 import React, { FC, useState } from 'react';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import SendShares from '../SendShares';
-import ShareSaleList, { ShareSaleListProps } from '@src/components/investor/tradingForms/ShareSaleList';
+import ShareSaleList, {
+  ShareSaleListProps
+} from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { Maybe, ShareOrder, ShareTransferEvent } from 'oldTypes';
+import { GET_USER } from '@src/utils/graphQueries/user';
+import { Maybe, ShareOrder, ShareTransferEvent } from '@gql/graphql';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 
@@ -21,7 +27,7 @@ import { ManagerModalType } from '@src/utils/helpersOffering';
 import { swapContractABI } from '@src/web3/generated';
 import { toNormalNumber } from '@src/web3/util';
 import { useAccount, useContractRead } from 'wagmi';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
@@ -61,7 +67,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   refetchOfferingInfo,
   currentSalePrice,
   myShareQty,
-  userId,
+  userId
 }) => {
   const { data: userData } = useQuery(GET_USER, { variables: { id: userId } });
   const user = userData?.queryUser[0];
@@ -91,11 +97,12 @@ const OfferingActions: FC<OfferingActionsProps> = ({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'unclaimedProceeds',
-    args: [userWalletAddress as String0x],
+    args: [userWalletAddress as String0x]
   });
 
   const rawProceeds = contractData && contractData[1];
-  const proceeds = paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
+  const proceeds =
+    paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
 
   const handleClaimProceeds = async () => {
     await claimProceeds({ swapContractAddress, setButtonStep: setClaimProceedsButton });
@@ -153,7 +160,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           className="p-2 border-2 border-gray-300 text-sm text-gray-800 rounded-md"
           onClick={() => setIsExistingShares(!isExistingShares)}
         >{`${
-          isExistingShares ? 'Create a fresh offering of orders' : 'Sell existing shares from your wallet instead.'
+          isExistingShares
+            ? 'Create a fresh offering of orders'
+            : 'Sell existing shares from your wallet instead.'
         }`}</button>
         {isExistingShares ? (
           <PostBidAskForm
@@ -268,7 +277,11 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             </Button>
           )}
           {proceeds !== 0 && (
-            <Button className={standardClass} onClick={handleClaimProceeds} disabled={claimProceedsButton === 'step1'}>
+            <Button
+              className={standardClass}
+              onClick={handleClaimProceeds}
+              disabled={claimProceedsButton === 'step1'}
+            >
               <LoadingButtonText
                 state={claimProceedsButton}
                 idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
@@ -304,7 +317,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
     <>The offeror has not yet created shares or your wallet is not connected.</>
   );
 
-  const myOrder = orders && orders?.find((order) => order?.initiator === userWalletAddress);
+  const myOrder = orders && orders?.find(order => order?.initiator === userWalletAddress);
 
   return (
     <>
@@ -317,7 +330,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         </div>
       ) : (
         <>
-          <div className="">{!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}</div>
+          <div className="">
+            {!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}
+          </div>
           {hasOrders && (
             <ShareSaleStatusWidget
               orders={orders}

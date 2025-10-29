@@ -26,14 +26,16 @@ const ModalCreateOrganization: FC = () => {
     return (
       <div
         data-test="component-create-new-org-modal"
-        className="flex-grow z-50 bg-gradient-to-b from-gray-100 to-blue-50  absolute top-0 bottom-0 right-0 left-0 "
+        className="grow z-50 bg-linear-to-b from-gray-100 to-blue-50  absolute top-0 bottom-0 right-0 left-0 "
       >
         <div className="h-full px-4 md:px-8 py-2 md:py-5">
           <div className="mx-auto min-h-full">
             <div className="flex justify-end">
-              <CloseButton onClick={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })} />
+              <CloseButton
+                onClick={() => toggleCreateOrganization({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
+              />
             </div>
-            <div className="flex flex-grow justify-center h-full z-10">
+            <div className="flex grow justify-center h-full z-10">
               <div className="md:flex flex-col h-full w-full items-center pt-20">
                 <div className="flex-col px-4 w-full" style={{ maxWidth: '600px' }}>
                   <h1 className="text-3xl font-bold font-cDarkBlue text-center mb-4">{`Create a new organization.`}</h1>

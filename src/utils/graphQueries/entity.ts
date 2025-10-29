@@ -1,11 +1,11 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { CORE_ENTITY_FIELDS } from './fragments';
 
 export const GET_ENTITY = gql`
   ${CORE_ENTITY_FIELDS}
   query GetEntity($id: ID!) {
     getLegalEntity(id: $id) {
-      ...entityData
+      ...LegalEntityFields
     }
   }
 `;
@@ -76,7 +76,10 @@ export const ADD_ENTITY = gql`
 export const ADD_ENTITY_OWNER = gql`
   mutation AddEntityOwner($currentDate: DateTime!, $addEntityOwner: ID!, $ownedEntityId: [ID!]) {
     updateLegalEntity(
-      input: { filter: { id: $ownedEntityId }, set: { lastUpdate: $currentDate, owners: { id: $addEntityOwner } } }
+      input: {
+        filter: { id: $ownedEntityId }
+        set: { lastUpdate: $currentDate, owners: { id: $addEntityOwner } }
+      }
     ) {
       legalEntity {
         id
@@ -93,7 +96,11 @@ export const ADD_ENTITY_OWNER = gql`
 `;
 
 export const REMOVE_ENTITY_OWNER = gql`
-  mutation RemoveEntityOwner($currentDate: DateTime!, $removeEntityOwner: ID!, $ownedEntityId: ID!) {
+  mutation RemoveEntityOwner(
+    $currentDate: DateTime!
+    $removeEntityOwner: ID!
+    $ownedEntityId: ID!
+  ) {
     updateLegalEntity(
       input: {
         filter: { id: [$ownedEntityId] }

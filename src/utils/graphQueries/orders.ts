@@ -1,8 +1,10 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 
 export const RETRIEVE_TRANSFER_EVENT = gql`
   query RetrieveTransferEvents($shareContractAddress: String!) {
-    queryShareTransferEvent(filter: { shareContractAddress: { anyofterms: $shareContractAddress } }) {
+    queryShareTransferEvent(
+      filter: { shareContractAddress: { anyofterms: $shareContractAddress } }
+    ) {
       id
       shareContractAddress
       orderIndex
@@ -87,7 +89,9 @@ export const ADD_DISTRIBUTION = gql`
 
 export const UPDATE_CONTRACT_INDEX = gql`
   mutation UpdateOfferingDistribution($distributionId: [ID!], $contractIndex: Int!) {
-    updateOfferingDistribution(input: { filter: { id: $distributionId }, set: { contractIndex: $contractIndex } }) {
+    updateOfferingDistribution(
+      input: { filter: { id: $distributionId }, set: { contractIndex: $contractIndex } }
+    ) {
       offeringDistribution {
         id
         transactionHash
@@ -98,7 +102,11 @@ export const UPDATE_CONTRACT_INDEX = gql`
 `;
 
 export const UPDATE_CONTRACT_STATUS = gql`
-  mutation UpdateContractStatus($offeringId: [ID!], $smartshareContractId: ID!, $established: Boolean) {
+  mutation UpdateContractStatus(
+    $offeringId: [ID!]
+    $smartshareContractId: ID!
+    $established: Boolean
+  ) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
@@ -112,7 +120,9 @@ export const UPDATE_CONTRACT_STATUS = gql`
         }
       }
     }
-    updateSmartContract(input: { filter: { id: [$smartshareContractId] }, set: { established: $established } }) {
+    updateSmartContract(
+      input: { filter: { id: [$smartshareContractId] }, set: { established: $established } }
+    ) {
       smartContract {
         id
         established
@@ -179,9 +189,17 @@ export const RETRIEVE_ORDERS = gql`
 `;
 
 export const UPDATE_ORDER = gql`
-  mutation UpdateSale($currentDate: DateTime!, $orderId: ID!, $visible: Boolean!, $archived: Boolean!) {
+  mutation UpdateSale(
+    $currentDate: DateTime!
+    $orderId: ID!
+    $visible: Boolean!
+    $archived: Boolean!
+  ) {
     updateShareOrder(
-      input: { filter: { id: [$orderId] }, set: { lastUpdate: $currentDate, archived: $archived, visible: $visible } }
+      input: {
+        filter: { id: [$orderId] }
+        set: { lastUpdate: $currentDate, archived: $archived, visible: $visible }
+      }
     ) {
       shareOrder {
         id

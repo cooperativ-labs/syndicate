@@ -3,15 +3,20 @@ import LoadingModal from '@src/components/loading/ModalLoading';
 import PortalOffering from '@src/pages/PortalOffering';
 import PortalWrapper from '@src/containers/PortalWrapper';
 import router from 'next/router';
-import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
-import { useQuery } from '@apollo/client';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+import { useQuery } from '@apollo/client/react';
 
 import React, { FC } from 'react';
-import { Offering } from 'oldTypes';
+import { Offering } from '@gql/graphql';
 
 const PortalOfferingPage: FC = () => {
   const offeringId = router.query.offeringId;
-  const { data: offeringData, refetch, error, loading } = useQuery(GET_OFFERING, { variables: { id: offeringId } });
+  const {
+    data: offeringData,
+    refetch,
+    error,
+    loading
+  } = useQuery(GET_OFFERING, { variables: { id: offeringId } });
   const offering: Offering = offeringData?.getOffering;
 
   if (!offering || loading) {
@@ -24,7 +29,7 @@ const PortalOfferingPage: FC = () => {
   return (
     <div
       data-test="component-landing"
-      className="bg-gradient-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
+      className="bg-linear-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
     >
       <PortalWrapper>
         <PortalOffering offering={offering} refetchOffering={refetch} />

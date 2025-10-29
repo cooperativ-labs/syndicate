@@ -68,7 +68,10 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
                     </div>
                   </div>
                 </div>
-                <AccessCodeForm accessCode={accessCode} handleCodeSubmission={handleCodeSubmission} />
+                <AccessCodeForm
+                  accessCode={accessCode}
+                  handleCodeSubmission={handleCodeSubmission}
+                />
               </div>
             </div>
           </Card>

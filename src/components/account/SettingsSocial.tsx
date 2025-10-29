@@ -1,12 +1,12 @@
 import Input from '../form-components/Inputs';
 import React, { FC } from 'react';
 import Select from '../form-components/Select';
-import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/dGraphQueries/organization';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/graphQueries/organization';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import { LegalEntity, Organization } from 'oldTypes';
+import { LegalEntity, Organization } from '@gql/graphql';
 import { socialAccountOptions } from '@src/utils/enumConverters';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
@@ -24,9 +24,9 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
     <Formik
       initialValues={{
         url: '',
-        type: '',
+        type: ''
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.url) {
           errors.url = 'Please include a url';
@@ -43,8 +43,8 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
             currentDate: currentDate,
             organizationId: organization.id,
             url: values.url,
-            type: values.type,
-          },
+            type: values.type
+          }
         });
         setSubmitting(false);
         resetForm();
@@ -54,7 +54,7 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
         <Form className="grid grid-cols-5 gap-3 relative">
           <Select className={`${fieldDiv} col-span-2`} labelText="Platform" name="type">
             <option value="">Select a platform</option>
-            {socialAccountOptions.map((option) => {
+            {socialAccountOptions.map(option => {
               return (
                 <option key={option.value} value={option.value}>
                   {option.name}
@@ -62,7 +62,13 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
               );
             })}
           </Select>
-          <Input className={`${fieldDiv} col-span-2`} type="text" labelText="URL" name="url" placeholder="url" />
+          <Input
+            className={`${fieldDiv} col-span-2`}
+            type="text"
+            labelText="URL"
+            name="url"
+            placeholder="url"
+          />
           <button
             type="submit"
             disabled={isSubmitting}

@@ -1,5 +1,12 @@
-import gql from 'graphql-tag';
-import { CORE_OFFERING_FIELDS } from './fragments';
+import { gql } from '@apollo/client';
+import {
+  CORE_APPLICATION_FIELDS,
+  CORE_ENTITY_FIELDS,
+  CORE_INVESTMENT_OFFERING_FIELDS,
+  CORE_INVESTMENT_PARTICIPANT_FIELDS,
+  CORE_OFFERING_FIELDS,
+  SMART_CONTRACT_SET_FIELDS
+} from './fragments';
 
 export const ADD_OFFERING = gql`
   ${CORE_OFFERING_FIELDS}
@@ -28,17 +35,45 @@ export const ADD_OFFERING = gql`
       ]
     ) {
       offering {
-        ...offeringData
+        ...OfferingFields
       }
     }
   }
 `;
 
 export const GET_OFFERING = gql`
-  ${CORE_OFFERING_FIELDS}
-  query GetOffering($id: ID!) {
-    getOffering(id: $id) {
-      ...offeringData
+  ${CORE_INVESTMENT_OFFERING_FIELDS}
+  ${CORE_ENTITY_FIELDS}
+  ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
+  ${SMART_CONTRACT_SET_FIELDS}
+  ${CORE_APPLICATION_FIELDS}
+  query GetOffering($id: UUID!) {
+    offeringsCollection(filter: { id: { eq: $id } }, first: 1) {
+      edges {
+        node {
+          id
+          name
+          is_public
+          access_code
+          waitlist_on
+          image
+          banner_image
+          primary_video
+          brand_color
+          light_brand
+          website
+          short_description
+          ... on offering_smart_contract_sets {
+            ...SmartContractSetFields
+          }
+          ... on images {
+            id
+            url
+            label
+            fileId
+          }
+        }
+      }
     }
   }
 `;
@@ -221,9 +256,15 @@ export const ADD_OFFERING_DETAILS = gql`
 `;
 
 export const UPDATE_INVESTMENT_CURRENCY = gql`
-  mutation UpdateInvestmentCurrency($offeringDetailsId: [ID!], $investmentCurrencyCode: CurrencyCode!) {
+  mutation UpdateInvestmentCurrency(
+    $offeringDetailsId: [ID!]
+    $investmentCurrencyCode: CurrencyCode!
+  ) {
     updateOfferingDetails(
-      input: { filter: { id: $offeringDetailsId }, set: { investmentCurrency: { code: $investmentCurrencyCode } } }
+      input: {
+        filter: { id: $offeringDetailsId }
+        set: { investmentCurrency: { code: $investmentCurrencyCode } }
+      }
     ) {
       offeringDetails {
         id
@@ -266,7 +307,12 @@ export const ADD_LEGAL_SHARE_LINK = gql`
             offeringUniqueId: $documentOfferingUniqueId
             lastUpdate: $currentDate
             creationDate: $currentDate
-            signatories: { signature: $signature, date: $currentDate, archived: false, legalEntity: { id: $entityId } }
+            signatories: {
+              signature: $signature
+              date: $currentDate
+              archived: false
+              legalEntity: { id: $entityId }
+            }
           }
         }
       }
@@ -299,11 +345,11 @@ export const ADD_LEGAL_SHARE_LINK = gql`
 export const GET_OFFERING_PARTICIPANT = gql`
   ${CORE_OFFERING_FIELDS}
   query GetOfferingParticipant($walletAddress: String!) {
-    queryOfferingParticipant(filter: { walletAddress: { alloftext: $walletAddress } }) {
+    offeringParticipants(filter: { walletAddress: { alloftext: $walletAddress } }) {
       id
       name
       offering {
-        ...offeringData
+        ...OfferingFields
       }
     }
   }
@@ -380,7 +426,12 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
             owner: { id: $offeringEntityId }
             offeringUniqueId: $offeringUniqueId
             lastUpdate: $currentDate
-            signatories: { signature: $signature, date: $dateSigned, archived: false, signerAddress: $walletAddress }
+            signatories: {
+              signature: $signature
+              date: $dateSigned
+              archived: false
+              signerAddress: $walletAddress
+            }
           }
         }
       }
@@ -456,7 +507,10 @@ export const UPDATE_WHITELIST = gql`
     updateOfferingParticipant(
       input: {
         filter: { id: $id }
-        set: { lastUpdate: $currentDate, whitelistTransactions: { transactionHash: $transactionHash, type: $type } }
+        set: {
+          lastUpdate: $currentDate
+          whitelistTransactions: { transactionHash: $transactionHash, type: $type }
+        }
       }
     ) {
       offeringParticipant {
@@ -513,7 +567,11 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
 `;
 
 export const REMOVE_WHITELIST_OBJECT = gql`
-  mutation RemoveOfferingParticipant($offeringId: [ID!], $participantId: ID!, $currentDate: DateTime) {
+  mutation RemoveOfferingParticipant(
+    $offeringId: [ID!]
+    $participantId: ID!
+    $currentDate: DateTime
+  ) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
@@ -594,7 +652,13 @@ export const UPDATE_DESCRIPTION_TEXT = gql`
     updateOfferingDescriptionText(
       input: {
         filter: { id: $descriptionId }
-        set: { lastUpdate: $currentDate, title: $title, text: $text, section: $section, order: $order }
+        set: {
+          lastUpdate: $currentDate
+          title: $title
+          text: $text
+          section: $section
+          order: $order
+        }
       }
     ) {
       offeringDescriptionText {

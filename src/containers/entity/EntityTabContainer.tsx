@@ -5,7 +5,7 @@ import EntitiesList from '@src/components/entity/EntitiesList';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC, useState } from 'react';
 import Tab from '@src/components/offering/tabs/Tab';
-import { LegalEntity, Maybe, Offering, RealEstateProperty } from 'oldTypes';
+import { LegalEntity, Maybe, Offering, RealEstateProperty } from '@gql/graphql';
 
 type EntityTabContainerProps = {
   properties?: RealEstateProperty[];
@@ -18,16 +18,29 @@ const TabOptions = [
   // { value: 'properties', name: 'Properties' },
   { value: 'offerings', name: 'Offerings' },
   { value: 'subsidiaries', name: 'Subsidiaries & SPVs' },
-  { value: 'documents', name: 'Documents' },
+  { value: 'documents', name: 'Documents' }
 ];
-const EntityTabContainer: FC<EntityTabContainerProps> = ({ properties, offerings, subsidiaries, entity }) => {
+const EntityTabContainer: FC<EntityTabContainerProps> = ({
+  properties,
+  offerings,
+  subsidiaries,
+  entity
+}) => {
   const [activeTab, setActiveTab] = useState<string>('offerings');
 
   return (
     <div>
       <div className={cn(`grid grid-cols-${TabOptions.length}`)}>
         {TabOptions.map((tab, i) => {
-          return <Tab key={i} tabId={tab.value} label={tab.name} setActiveTab={setActiveTab} activeTab={activeTab} />;
+          return (
+            <Tab
+              key={i}
+              tabId={tab.value}
+              label={tab.name}
+              setActiveTab={setActiveTab}
+              activeTab={activeTab}
+            />
+          );
         })}
       </div>
       <div>

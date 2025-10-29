@@ -4,7 +4,7 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import cn from 'classnames';
 import React, { FC, useEffect } from 'react';
 import { claimDistribution } from '@src/web3/contractDistributionCall';
-import { Currency, CurrencyCode, Maybe, OfferingDistribution } from 'oldTypes';
+import { Currency, CurrencyCode, Maybe, OfferingDistribution } from '@gql/graphql';
 import { dividendContractABI } from '@src/web3/generated';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { getHumanDate, getHumanDateTime } from '@src/utils/helpersGeneral';
@@ -21,12 +21,14 @@ export type DistributionListItemProps = {
   walletAddress: String0x | undefined;
 };
 
-const DistributionListItem: FC<DistributionListItemProps & { distribution: OfferingDistribution }> = ({
+const DistributionListItem: FC<
+  DistributionListItemProps & { distribution: OfferingDistribution }
+> = ({
   distribution,
   hideTransactionId,
   isDistributor,
   distributionContractAddress,
-  walletAddress,
+  walletAddress
 }) => {
   const chainId = useChainId();
   const { address: userWalletAddress } = useAccount();
@@ -45,7 +47,7 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
     dividendAmount,
     payoutTokenAddress,
     isErc20Payout,
-    amountRemaining,
+    amountRemaining
   } = useDistributionDetails(distributionContractAddress, contractIndex);
 
   const { data, refetch } = useContractReads({
@@ -54,15 +56,15 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
         address: distributionContractAddress,
         abi: dividendContractABI,
         functionName: 'getClaimableAmount',
-        args: [walletAddress as String0x, BigInt(contractIndex)],
+        args: [walletAddress as String0x, BigInt(contractIndex)]
       },
       {
         address: distributionContractAddress,
         abi: dividendContractABI,
         functionName: 'claimedAmount',
-        args: [walletAddress as String0x, BigInt(contractIndex)],
-      },
-    ],
+        args: [walletAddress as String0x, BigInt(contractIndex)]
+      }
+    ]
   });
 
   const now = new Date();
@@ -85,7 +87,11 @@ const DistributionListItem: FC<DistributionListItemProps & { distribution: Offer
     : undefined;
 
   const handleClaim = async () => {
-    claimDistribution({ distributionContractAddress, distributionContractIndex: contractIndex, setButtonStep });
+    claimDistribution({
+      distributionContractAddress,
+      distributionContractIndex: contractIndex,
+      setButtonStep
+    });
   };
 
   const setButtonItem =

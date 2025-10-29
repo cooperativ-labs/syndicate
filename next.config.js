@@ -5,7 +5,14 @@
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  /* config options here */
+  // Transpile packages that use ES modules
+  transpilePackages: [
+    '@reown/appkit',
+    '@reown/appkit-common',
+    '@reown/appkit-universal-connector',
+    '@reown/walletkit',
+    '@walletconnect/ethereum-provider'
+  ]
 };
 
 module.exports = nextConfig;

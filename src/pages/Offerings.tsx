@@ -8,16 +8,18 @@ import CloseButton from '@src/components/buttons/CloseButton';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import router from 'next/router';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useSession } from 'next-auth/react';
 
 const Offerings: FC = () => {
   const { data: session, status } = useSession();
   const [entityFormOpen, setEntityFormOpen] = React.useState(false);
   const orgId = router.query.organizationId;
-  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {
+    variables: { id: orgId }
+  });
   const organization = organizationData?.getOrganization;
 
   if (!organization) {

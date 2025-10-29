@@ -1,8 +1,8 @@
 import React from 'react';
-import { ADD_ORGANIZATION_EMAIL } from '@src/utils/dGraphQueries/organization';
+import { ADD_ORGANIZATION_EMAIL } from '@src/utils/graphQueries/organization';
 import { sha256 } from 'js-sha256';
 import { useEffect } from 'react';
-import { useMutation, useQuery } from '@apollo/client';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
 
 const ConfirmEmail = () => {
@@ -33,8 +33,8 @@ const ConfirmEmail = () => {
         variables: {
           organizationId: orgId,
           address: storedEmail,
-          isPublic: true,
-        },
+          isPublic: true
+        }
       });
       window.localStorage.removeItem('email');
       alert('Email confirmed successfully!');
@@ -46,7 +46,8 @@ const ConfirmEmail = () => {
     <div className="p-4 mx-auto max-w-xl bg-white rounded-xl shadow-lg">
       <h1 className="text-lg font-bold">Email Confirmed</h1>
       <p>
-        Thank you! Your email address <strong>{storedEmail}</strong> has been successfully confirmed.
+        Thank you! Your email address <strong>{storedEmail}</strong> has been successfully
+        confirmed.
       </p>
     </div>
   );

@@ -26,7 +26,7 @@ const StandardButton: FC<StandardButtonProps> = ({
   color = 'cLightBlue',
   hoverColor = 'cDarkBlue',
   className,
-  disabled,
+  disabled
 }) => {
   const standardClass = `text-white shadow-lg hover:shadow-xl bg-${color} hover:bg-${hoverColor}`;
   const outlinedClass = `text-${color} hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-${hoverColor} border-2 border-${color} hover:border-white`;
@@ -41,7 +41,7 @@ const StandardButton: FC<StandardButtonProps> = ({
       )}
       aria-label={`button-${text}`}
       disabled={disabled}
-      onClick={(e) => onClick && onClick(e)}
+      onClick={e => onClick && onClick(e)}
     >
       <span className="uppercase">{text}</span>
     </Button>
@@ -50,7 +50,11 @@ const StandardButton: FC<StandardButtonProps> = ({
   return (
     <div className={className}>
       {link ? (
-        <a href={link} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>
+        <a
+          href={link}
+          target={external ? '_blank' : undefined}
+          rel={external ? 'noreferrer' : undefined}
+        >
           {ButtonWithoutLink}
         </a>
       ) : (

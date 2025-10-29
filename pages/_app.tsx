@@ -1,11 +1,15 @@
 import '../styles/tailwind.css';
-import '@styles/main.css';
-import 'tailwindcss/tailwind.css';
+import '../styles/main.css';
 import CookieBanner from '@src/CookieBanner';
 import React, { ReactElement, useEffect, useState } from 'react';
-import { ApolloProvider } from '@apollo/react-ssr';
+import { ApolloProvider } from '@apollo/client/react';
 import supabaseApolloClient from '@src/utils/supabaseApolloClient';
 import SetCookieContext from '@src/SetCookieContext';
+import { cookieToInitialState, useAccount, WagmiProvider } from 'wagmi';
+import { config as wagmiConfig } from '@src/web3/wagmi';
+import { Account, WalletOptions } from '@src/containers/wallet/ChooseConnector';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { SupabaseAuthProvider } from '@context/SupabaseAuthContext';
 
 import {
   faArrowRight,
@@ -55,8 +59,6 @@ import { library } from '@fortawesome/fontawesome-svg-core';
 
 import { StateProvider } from '@context/store';
 import { Toaster } from 'react-hot-toast';
-import { wagmiConfig } from '@src/web3/connectors';
-import { WagmiConfig } from 'wagmi';
 
 library.add(fas, faCog);
 library.add(fas, faCommentDots);
@@ -102,6 +104,19 @@ export default function MyApp({
 }: any): ReactElement {
   const [cookiesApproved, setCookiesApproved] = useState<null | string>(null);
 
+  // const initialState =
+  //   typeof document !== 'undefined'
+  //     ? cookieToInitialState(wagmiConfig, document.cookie)
+  //     : undefined;
+
+  const [queryClient] = useState(() => new QueryClient());
+
+  function ConnectWallet() {
+    const { isConnected } = useAccount();
+    if (isConnected) return <Account />;
+    return <WalletOptions />;
+  }
+
   useEffect(() => {
     const result = window.localStorage?.getItem('COOKIE_APPROVED');
     setCookiesApproved(result);
@@ -110,7 +125,7 @@ export default function MyApp({
   const withCookies = (
     <SetCookieContext>
       <div id="outer-container" className="bg-gray-100 flex flex-col">
-        <main id="page-wrap flex-grow h-full">
+        <main id="page-wrap grow h-full">
           <Component {...pageProps} />
         </main>
       </div>
@@ -119,7 +134,7 @@ export default function MyApp({
 
   const withoutCookies = (
     <div id="outer-container" className="bg-gray-100 flex flex-col">
-      <main id="page-wrap flex-grow h-full">
+      <main id="page-wrap grow h-full">
         <Component {...pageProps} />
         <CookieBanner />
       </main>
@@ -127,13 +142,18 @@ export default function MyApp({
   );
 
   return (
-    <ApolloProvider client={supabaseApolloClient}>
-      <WagmiConfig config={wagmiConfig}>
-        <Toaster />
-        <StateProvider>
-          {cookiesApproved === 'approved' ? withCookies : withoutCookies}
-        </StateProvider>
-      </WagmiConfig>
-    </ApolloProvider>
+    <SupabaseAuthProvider>
+      <ApolloProvider client={supabaseApolloClient}>
+        <WagmiProvider config={wagmiConfig}>
+          <QueryClientProvider client={queryClient}>
+            <ConnectWallet />
+            <Toaster />
+            <StateProvider>
+              {cookiesApproved === 'approved' ? withCookies : withoutCookies}
+            </StateProvider>
+          </QueryClientProvider>
+        </WagmiProvider>
+      </ApolloProvider>
+    </SupabaseAuthProvider>
   );
 }

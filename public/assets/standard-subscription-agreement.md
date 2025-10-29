@@ -9,8 +9,9 @@ Agreement goes into effect and {{ organizationName }} agrees to the following:
 ### Definitions:
 
 {% isNotIndividual:
+
 - **"{{ organizationName }}"** means {{ organizationLegalName }}.
-%}
+  %}
 
 - **"Real Estate Shares Contract"** means the smart contract located at
   `{{ contractAddress }}` on {{ chainName }}.
@@ -38,23 +39,22 @@ Agreement goes into effect and {{ organizationName }} agrees to the following:
 
 Here is a list of all of the other variables we will use in this contract:
 
-
 {{ GPEntityName }}  
 {{ offeringEntityManager }}
 {{ offeringEntityManagerTitle}}  
 {{ offeringEntityAddressLine1 }}  
 {{ offeringEntityAddressLine2 }}  
 {{ offeringEntityAddressLine3 }}  
-{{ offeringEntityAddressCity }}, 
-{{ offeringEntityAddressStateProvince }} 
+{{ offeringEntityAddressCity }},
+{{ offeringEntityAddressStateProvince }}
 {{ offeringEntityAddressPostalCode}}  
 {{ offeringEntityEmail }}  
 {{ offeringEntityPhone }}
- {{ priceStart }}
- {{ minUnits }} 
- {{ minInvestment }}
+{{ priceStart }}
+{{ minUnits }}
+{{ minInvestment }}
 
------
+---
 
 {{ purchasingEntityName }}
 
@@ -68,7 +68,7 @@ Here is a list of all of the other variables we will use in this contract:
 {{ purchasingEntityAddressLine2 }}
  %}
 
- {% purchasingEntityAddressLine3:
+{% purchasingEntityAddressLine3:
 {{ purchasingEntityAddressLine3 }}
  %}
 
@@ -82,97 +82,94 @@ Here is a list of all of the other variables we will use in this contract:
 
 {{ purchasingEntityAddressCountry }}
 
-{{ numUnitsPurchase }} 
+{{ numUnitsPurchase }}
 
 {{ purchasePrice }} {{ purchaseCurrency }}
 
-{{ purchaseMethod }} 
+{{ purchaseMethod }}
 
-{{ purchaserTitle }} 
+{{ purchaserTitle }}
 
-{{ enteringAgent }} 
+{{ enteringAgent }}
 
-{{ dateSigned }} 
+{{ dateSigned }}
 
-{{ signature }} 
+{{ signature }}
 
-{{ purchaserAddress }} 
+{{ purchaserAddress }}
 
-{{ purchaserEmail }} 
+{{ purchaserEmail }}
 
-{{ purchaserPhone }} 
+{{ purchaserPhone }}
 
-{{ taxId }} 
+{{ taxId }}
 
-{{ purchaserAge }} 
+{{ purchaserAge }}
 
-{{ purchaserPrincipleResidence }} 
+{{ purchaserPrincipleResidence }}
 
-{{ purchaserResidenceHistory }} 
+{{ purchaserResidenceHistory }}
 
-{{ purchaserTaxState }} 
+{{ purchaserTaxState }}
 
 {% purchaserAccredited:
- User Is accredited 
+User Is accredited
 
-{{ purchaserAccreditedType }} 
+{{ purchaserAccreditedType }}
 
-{{ purchaserAccreditedTypeOther }} 
+{{ purchaserAccreditedTypeOther }}
 
-{{ purchaserNetWorth }} 
+{{ purchaserNetWorth }}
 
-{{ purchaserIncome }} 
+{{ purchaserIncome }}
 
- %}
+%}
 
-
-{{ purchaserIsWithOfferingCompany }} 
+{{ purchaserIsWithOfferingCompany }}
 
 {% purchaserSophisticated:
- User Is sophisticated 
+User Is sophisticated
 
- {{ purchaserExperienceFinancial }}
- %}
+{{ purchaserExperienceFinancial }}
+%}
 
 {% nonUSPerson:
   I meet the definition of a "Non-U.S. Person" as defined by Rule 902 of Regulation S. and will will also complete and submit the Supplemental Questionnaire for Foreign Investors, alongside the subscription agreement herein.
 %}
 
-{{ purchaserExperienceSecurities }} 
+{{ purchaserExperienceSecurities }}
 
-{{ purchaserExperienceLLCs }} 
+{{ purchaserExperienceLLCs }}
 
-{{ purchaserExperienceOther }} 
+{{ purchaserExperienceOther }}
 
-{{ purchaserPriorRelationship }} 
+{{ purchaserPriorRelationship }}
 
-{{ workingWithAdvisor }} 
+{{ workingWithAdvisor }}
 
 {% advisorRelationship:
 
 {{ advisorRelationship }}
 
-{{ advisorFullName }} 
+{{ advisorFullName }}
 
-{{ advisorEmail }} 
+{{ advisorEmail }}
 
-{{ advisorPhone }} 
+{{ advisorPhone }}
 
-{{ advisor_addressLine1 }} 
+{{ advisor_addressLine1 }}
 
-{{ advisor_addressLine2 }} 
+{{ advisor_addressLine2 }}
 
-{{ advisor_addressLine3 }} 
+{{ advisor_addressLine3 }}
 
-{{ advisor_city }} 
+{{ advisor_city }}
 
-{{ advisor_stateProvince }} 
+{{ advisor_stateProvince }}
 
-{{ advisor_country }} 
+{{ advisor_country }}
 
- 
- %}
-
+%}
 
 I, {{ signature }}, certify that I have authority to sign on behalf of and
 legally bind {{ organizationName }}.

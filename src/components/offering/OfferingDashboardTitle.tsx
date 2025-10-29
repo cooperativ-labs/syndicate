@@ -6,14 +6,14 @@ import Input from '../form-components/Inputs';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { getBaseUrl } from '@src/utils/helpersURL';
-import { Maybe } from 'oldTypes';
+import { Maybe } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
-import { UPDATE_OFFERING_PROFILE } from '@src/utils/dGraphQueries/offering';
-import { useMutation } from '@apollo/client';
+import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
+import { useMutation } from '@apollo/client/react';
 
 type OfferingDashboardTitleProps = {
   profileVisibility: Maybe<boolean> | undefined;
@@ -34,7 +34,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   accessCode,
   organizationId,
   shareContractAddress,
-  chainId,
+  chainId
 }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
@@ -52,8 +52,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         currentDate: currentDate,
         name: offeringName,
         offeringId: offeringId,
-        isPublic: profileVisibility,
-      },
+        isPublic: profileVisibility
+      }
     });
   };
 
@@ -63,8 +63,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         variables: {
           currentDate: currentDate,
           name: name,
-          offeringId: offeringId,
-        },
+          offeringId: offeringId
+        }
       });
       setNameEditOn(false);
     } catch (error: any) {
@@ -80,8 +80,8 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           currentDate: currentDate,
           name: offeringName,
           accessCode: accessCode,
-          offeringId: offeringId,
-        },
+          offeringId: offeringId
+        }
       });
     } catch (error: any) {
       toast.error(`Oops. Looks like something went wrong: ${error.message}`);
@@ -92,9 +92,9 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   const nameChangeForm = (
     <Formik
       initialValues={{
-        name: offeringName,
+        name: offeringName
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.name) {
           errors.name = 'Please name this syndication.';
@@ -111,7 +111,13 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
     >
       {({ isSubmitting }) => (
         <Form className="flex items-center">
-          <Input className={' bg-opacity-0'} required name="name" type="name" placeholder="Cosy Apartments" />
+          <Input
+            className={' bg-opacity-0'}
+            required
+            name="name"
+            type="name"
+            placeholder="Cosy Apartments"
+          />
           <Button
             type="submit"
             disabled={isSubmitting}
@@ -121,7 +127,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           </Button>
           <Button
             className="ml-2 border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase px-3 h-11 rounded w-full"
-            onClick={(e) => {
+            onClick={e => {
               e.preventDefault();
               setNameEditOn(false);
             }}
@@ -148,7 +154,10 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           )}
           {isOfferingManager && (
             <div className="min-w-max">
-              <ProfileVisibilityToggle profileVisibility={profileVisibility} handleToggle={handleToggle} />
+              <ProfileVisibilityToggle
+                profileVisibility={profileVisibility}
+                handleToggle={handleToggle}
+              />
             </div>
           )}
         </>
@@ -190,7 +199,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
 
         <button
           className="text-sm text-gray-700 "
-          onClick={(e) => {
+          onClick={e => {
             e.stopPropagation();
             navigator.clipboard.writeText(`${getBaseUrl()}/portal/${offeringId}`);
             setCopied(true);
@@ -199,10 +208,13 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             }, 1000);
           }}
         >
-          Copy investor portal link {copied ? <FontAwesomeIcon icon="check" /> : <FontAwesomeIcon icon="copy" />}
+          Copy investor portal link{' '}
+          {copied ? <FontAwesomeIcon icon="check" /> : <FontAwesomeIcon icon="copy" />}
         </button>
       </div>
-      <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">{visibilitySettings}</div>
+      <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">
+        {visibilitySettings}
+      </div>
     </div>
   );
 };

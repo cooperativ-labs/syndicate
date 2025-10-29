@@ -1,5 +1,5 @@
 import React, { FC, useState } from 'react';
-import { Address, Maybe } from 'oldTypes';
+import { Address, Maybe } from '@gql/graphql';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 
 type MapPanelProps = {
@@ -14,12 +14,12 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
 
   const containerStyle = {
     width: width,
-    height: height,
+    height: height
   };
 
   const center = {
     lat: latLang.lat,
-    lng: latLang.lng,
+    lng: latLang.lng
   };
 
   const onLoad = React.useCallback(
@@ -28,7 +28,7 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
         const formatted_address = `${address?.line1}, ${address?.city}, ${address?.stateProvince} ${address?.postalCode}`;
         const request = {
           query: formatted_address,
-          fields: ['name', 'geometry'],
+          fields: ['name', 'geometry']
         };
 
         const service = new window.google.maps.places.PlacesService(map);
@@ -38,7 +38,7 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
             for (var i = 0; i < results.length; i++) {
               setLatLang({
                 lat: results[i].geometry?.location?.lat() as number,
-                lng: results[i].geometry?.location?.lng() as number,
+                lng: results[i].geometry?.location?.lng() as number
               });
             }
             map.setCenter(results[0].geometry?.location);
@@ -51,14 +51,24 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
     [address]
   );
 
-  const onUnmount = React.useCallback(function callback(map: any) {}, [address, setLatLang, latLang]);
+  const onUnmount = React.useCallback(function callback(map: any) {}, [
+    address,
+    setLatLang,
+    latLang
+  ]);
 
   return true ? (
     <div>
       {showTextAddress && address?.line1 && (
         <div className="text-sm font-medium">{`${address?.line1}, ${address?.city}, ${address?.stateProvince} ${address?.postalCode}`}</div>
       )}
-      <GoogleMap mapContainerStyle={containerStyle} center={center} zoom={14} onUnmount={onUnmount} onLoad={onLoad}>
+      <GoogleMap
+        mapContainerStyle={containerStyle}
+        center={center}
+        zoom={14}
+        onUnmount={onUnmount}
+        onLoad={onLoad}
+      >
         <Marker position={center} />
       </GoogleMap>
     </div>

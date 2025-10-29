@@ -4,16 +4,18 @@ import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import React, { FC } from 'react';
 import router from 'next/router';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import { GET_USER } from '@src/utils/graphQueries/user';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useSession } from 'next-auth/react';
 
 const EntityDashboard: FC = () => {
   const { data: session, status } = useSession();
   const orgId = router.query.organizationId;
-  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {
+    variables: { id: orgId }
+  });
   const organization = organizationData?.getOrganization;
   // const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
   // const user = userData?.queryUser[0];

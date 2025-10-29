@@ -2,11 +2,11 @@ import FormButton from '@src/components/buttons/FormButton';
 import Input from '@src/components/form-components/Inputs';
 import React, { FC, useState } from 'react';
 import Select from '@src/components/form-components/Select';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from 'oldTypes';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
@@ -27,21 +27,25 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   updateDescription,
   setAlerted,
   tab,
-  onSubmit,
+  onSubmit
 }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const isUpdate = !!description;
 
   const tabSectionOptionsOhneFinancials = tabSectionOptions.filter(
-    (option) => option.value !== OfferingTabSection.Financials
+    option => option.value !== OfferingTabSection.Financials
   );
 
   const descriptionsByTab = getDescriptionsByTab(offering, tab);
 
   const nextOrder = descriptionsByTab.length ? descriptionsByTab.length + 1 : 0;
 
-  function handleSubmission(values: { title: string; text: string; tab: OfferingTabSection | undefined }) {
+  function handleSubmission(values: {
+    title: string;
+    text: string;
+    tab: OfferingTabSection | undefined;
+  }) {
     description
       ? updateDescription({
           variables: {
@@ -50,8 +54,8 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
             title: values.title,
             text: values.text,
             section: values.tab,
-            order: description.order,
-          },
+            order: description.order
+          }
         })
       : addDescription({
           variables: {
@@ -60,8 +64,8 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
             title: values.title,
             text: values.text,
             section: values.tab,
-            order: nextOrder,
-          },
+            order: nextOrder
+          }
         });
   }
 
@@ -72,9 +76,9 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
       initialValues={{
         title: description?.title ?? '',
         text: description?.text ?? '',
-        tab: description?.section ?? tab,
+        tab: description?.section ?? tab
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.title) {
           errors.title = 'Please give this a title.';

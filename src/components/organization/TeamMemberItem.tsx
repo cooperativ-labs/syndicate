@@ -1,9 +1,9 @@
 import cn from 'classnames';
 import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { EditButton } from '../form-components/ListItemButtons';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
-import { Maybe, OrganizationPermissionType, OrganizationUser } from 'oldTypes';
+import { Maybe, OrganizationPermissionType, OrganizationUser } from '@gql/graphql';
 
 export type TeamMemberBaseProps = {
   organizationId: Maybe<string>;
@@ -21,7 +21,7 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   organizationId,
   currentUserId,
   isAdmin,
-  removeMember,
+  removeMember
 }) => {
   const [editOn, setEditOn] = useState<boolean>(false);
   const { user, permissions, id } = teamMember as OrganizationUser;
@@ -69,7 +69,9 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
       <div className="col-span-5 mt-3 md:mt-0">
         <div className="md:w-auto text-sm font-medium ">{name}</div>
       </div>
-      <div className="flex col-span-1 mt-3 md:mt-0 items-center justify-end">{makePermissionsChips(permissions)}</div>
+      <div className="flex col-span-1 mt-3 md:mt-0 items-center justify-end">
+        {makePermissionsChips(permissions)}
+      </div>
 
       {canModify && (
         <div className=" md:mt-0 flex col-span-1 justify-end min-w-max">
@@ -89,8 +91,8 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
                   variables: {
                     organizationId: organizationId,
                     organizationUserId: id,
-                    currentDate: currentDate,
-                  },
+                    currentDate: currentDate
+                  }
                 })
               }
             >

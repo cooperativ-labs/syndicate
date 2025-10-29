@@ -1,6 +1,6 @@
 import EntityCard from './EntityCard';
 import React, { FC } from 'react';
-import { LegalEntity, Maybe } from 'oldTypes';
+import { LegalEntity, Maybe } from '@gql/graphql';
 
 type EntitiesListProps = {
   entities: Maybe<Maybe<LegalEntity>[]> | undefined;

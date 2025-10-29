@@ -13,7 +13,14 @@ type FormModalProps = {
   children: React.ReactNode;
 };
 
-const FormModal: FC<FormModalProps> = ({ noModal, formOpen, title, subTitle, onClose, children }) => {
+const FormModal: FC<FormModalProps> = ({
+  noModal,
+  formOpen,
+  title,
+  subTitle,
+  onClose,
+  children
+}) => {
   useEffect(() => {
     let targetElement = document.getElementById('dialog-curtain');
     function handleMouseDown(e: MouseEvent) {

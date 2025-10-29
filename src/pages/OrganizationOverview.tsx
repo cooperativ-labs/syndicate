@@ -9,34 +9,42 @@ import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamM
 import TeamMemberList from '@src/components/organization/TeamMemberList';
 import toast, { Toaster } from 'react-hot-toast';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { getIsAdmin, getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { OfferingParticipant } from 'oldTypes';
+import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import { GET_USER } from '@src/utils/graphQueries/user';
+import {
+  getIsAdmin,
+  getIsEditorOrAdmin,
+  getOrgOfferingsFromEntity
+} from '@src/utils/helpersUserAndEntity';
+import { OfferingParticipant } from '@gql/graphql';
 import { toastExperiment } from '@src/components/indicators/Notifications';
 import { useAccount } from 'wagmi';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
-
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 // type OrganizationDashboardProps = {
 //   user: User;
 // };
 
 const OrganizationOverview: FC = () => {
-  const { data: session, status } = useSession();
+  const { user } = useSupabaseAuth();
   const { address: userWalletAddress } = useAccount();
   const router = useRouter();
   const orgId = router.query.organizationId;
-  const userId = session?.user.id;
-  const { data: organizationData, error, loading, refetch } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
-  const organization = organizationData?.getOrganization;
+  const userId = user?.id;
+  const {
+    data: organizationData,
+    error,
+    loading,
+    refetch
+  } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  const organization = organizationData?.organizationCollection?.edges[0]?.node;
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
-    variables: { walletAddress: userWalletAddress },
+    variables: { walletAddress: userWalletAddress }
   });
 
-  if (!organizationData) {
+  if (!organization) {
     return (
       <div>
         <LoadingModal />
@@ -44,7 +52,7 @@ const OrganizationOverview: FC = () => {
     );
   }
 
-  const participantOfferings = participantData?.queryOfferingParticipant.map(
+  const participantOfferings = participantData?.offeringParticipantCollection?.edges.map(
     (offeringParticipant: OfferingParticipant) => {
       return offeringParticipant.offering;
     }
@@ -67,7 +75,9 @@ const OrganizationOverview: FC = () => {
       <TwoColumnLayout twoThirdsLayout>
         {hasOfferings && (
           <div>
-            <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your current offerings: </h2>
+            <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">
+              Your current offerings:{' '}
+            </h2>
             <OfferingsList offerings={offerings} />
           </div>
         )}

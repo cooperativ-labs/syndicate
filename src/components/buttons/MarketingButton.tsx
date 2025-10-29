@@ -19,7 +19,7 @@ const MarketingButton: React.FC<MarketingButtonProps> = ({
   link,
   text,
   symbols,
-  className,
+  className
 }) => {
   const standardClass =
     'text-white shadow-lg hover:shadow-xl bg-cLightBlue hover:bg-cGold border-2 border-cLightBlue hover:border-cGold';
@@ -28,7 +28,11 @@ const MarketingButton: React.FC<MarketingButtonProps> = ({
 
   return (
     <div className={className}>
-      <a href={link} target={external ? '_blank' : undefined} rel={external ? 'noreferrer' : undefined}>
+      <a
+        href={link}
+        target={external ? '_blank' : undefined}
+        rel={external ? 'noreferrer' : undefined}
+      >
         <Button
           className={cn(
             [outlined ? outlinedClass : standardClass],
@@ -39,7 +43,9 @@ const MarketingButton: React.FC<MarketingButtonProps> = ({
         >
           <div className="flex">
             <span className="uppercase nowrap">{text}</span>{' '}
-            {symbols && <span className="ml-4 p-1 px-2 bg-white rounded-full shadow-inner">{symbols}</span>}
+            {symbols && (
+              <span className="ml-4 p-1 px-2 bg-white rounded-full shadow-inner">{symbols}</span>
+            )}
           </div>
         </Button>
       </a>

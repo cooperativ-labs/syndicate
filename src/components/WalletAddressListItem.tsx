@@ -3,15 +3,15 @@ import cn from 'classnames';
 import FormattedCryptoAddress from './FormattedCryptoAddress';
 import Input from './form-components/Inputs';
 import React, { FC, useState } from 'react';
-import { CryptoAddress, CryptoAddressType, Maybe } from 'oldTypes';
+import { CryptoAddress, CryptoAddressType, Maybe } from '@gql/graphql';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Form, Formik } from 'formik';
 import { MarkPublic } from './form-components/ListItemButtons';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { REMOVE_ENTITY_WALLET } from '@src/utils/dGraphQueries/entity';
-import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/dGraphQueries/crypto';
+import { REMOVE_ENTITY_WALLET } from '@src/utils/graphQueries/entity';
+import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
 import { useAccount } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;
@@ -36,7 +36,11 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
         only:{' '}
         {MatchSupportedChains(chainId)?.icon ? (
           <div>
-            <img src={MatchSupportedChains(chainId)?.icon} className="ml-1 h-6" alt={name as string} />{' '}
+            <img
+              src={MatchSupportedChains(chainId)?.icon}
+              className="ml-1 h-6"
+              alt={name as string}
+            />{' '}
           </div>
         ) : (
           MatchSupportedChains(chainId)?.name
@@ -49,7 +53,8 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
     <div className={cn(withEdit && 'grid grid-cols-9 gap-3 items-center')}>
       <div className="p-3 border-2 rounded-lg col-span-8">
         <div className="flex justify-between">
-          {name} {type === CryptoAddressType.Contract ? getChainLogo(chainId) : <div> all EVM chains</div>}{' '}
+          {name}{' '}
+          {type === CryptoAddressType.Contract ? getChainLogo(chainId) : <div> all EVM chains</div>}{' '}
           {withEdit && (
             <div className="items-center">
               <MarkPublic isPublic={isPublic} />
@@ -72,7 +77,7 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
             <Formik
               initialValues={{
                 isPublic: isPublic,
-                name: name,
+                name: name
               }}
               onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(true);
@@ -80,8 +85,8 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                   variables: {
                     id: id,
                     name: values.name,
-                    isPublic: values.isPublic,
-                  },
+                    isPublic: values.isPublic
+                  }
                 });
                 setSubmitting(false);
               }}
@@ -125,7 +130,11 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                 )}
                 disabled={userWalletAddress === wallet.address}
                 aria-label="remove wallet from account"
-                onClick={() => deleteWallet({ variables: { entityId: owner?.id, walletAddress: wallet.address } })}
+                onClick={() =>
+                  deleteWallet({
+                    variables: { entityId: owner?.id, walletAddress: wallet.address }
+                  })
+                }
               >
                 {userWalletAddress === wallet.address
                   ? 'You cannot remove your login wallet'

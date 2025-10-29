@@ -5,7 +5,10 @@ export type ProfileVisibilityToggleProps = {
   profileVisibility: boolean | undefined | null;
   handleToggle: (profileVisibility: boolean) => void;
 };
-const ProfileVisibilityToggle: FC<ProfileVisibilityToggleProps> = ({ profileVisibility, handleToggle }) => {
+const ProfileVisibilityToggle: FC<ProfileVisibilityToggleProps> = ({
+  profileVisibility,
+  handleToggle
+}) => {
   return (
     <div className="flex align-middle justify-between items-center ">
       <div className="text-sm font-medium text-gray-700 mr-2">
@@ -13,12 +16,17 @@ const ProfileVisibilityToggle: FC<ProfileVisibilityToggleProps> = ({ profileVisi
       </div>
       <button
         className=" border-2 border-grey-100 shadow-inner rounded-full w-12 bg-white "
-        onClick={(e) => {
+        onClick={e => {
           e.preventDefault();
           handleToggle(!profileVisibility);
         }}
       >
-        <div className={cn([profileVisibility ? ' ml-5 bg-emerald-600' : 'bg-gray-400'], 'h-6 w-6 rounded-full ')} />
+        <div
+          className={cn(
+            [profileVisibility ? ' ml-5 bg-emerald-600' : 'bg-gray-400'],
+            'h-6 w-6 rounded-full '
+          )}
+        />
       </button>
     </div>
   );

@@ -12,11 +12,15 @@ const DeleteButton: FC<DeleteButtonProps> = ({ iconColor, bgColor, onDelete }) =
   return (
     <button
       id="delete-button"
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         onDelete();
       }}
-      className={cn(`bg-${bgColor}`, `text-${iconColor}`, 'hover:shadow-lg w-10 h-10 m-2 rounded-full')}
+      className={cn(
+        `bg-${bgColor}`,
+        `text-${iconColor}`,
+        'hover:shadow-lg w-10 h-10 m-2 rounded-full'
+      )}
     >
       <FontAwesomeIcon icon="trash" />
     </button>

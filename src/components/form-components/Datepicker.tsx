@@ -25,12 +25,18 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
   className,
   fieldClass,
   fieldHeight,
-  fieldLabelClass,
+  fieldLabelClass
 }) => {
   const { setFieldValue } = useFormikContext();
   const [field] = useField(name);
 
-  const MyContainer = ({ className, children }: { className: string; children: React.ReactNode[] }) => {
+  const MyContainer = ({
+    className,
+    children
+  }: {
+    className: string;
+    children: React.ReactNode[];
+  }) => {
     return (
       <div style={{ color: '#fff' }}>
         <CalendarContainer className={className}>
@@ -45,7 +51,11 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
       {labelText && (
         <label
           htmlFor={name}
-          className={cn(fieldLabelClass ? fieldLabelClass : 'text-sm text-blue-900 font-semibold text-opacity-80 ')}
+          className={cn(
+            fieldLabelClass
+              ? fieldLabelClass
+              : 'text-sm text-blue-900 font-semibold text-opacity-80 '
+          )}
         >
           {labelText}
           {required ? ' *' : ''}
@@ -54,7 +64,7 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
       <DatePicker
         // {...field}
         selected={(field.value && new Date(field.value)) || null}
-        onChange={(val) => {
+        onChange={val => {
           setFieldValue(field.name, val);
         }}
         calendarContainer={MyContainer}

@@ -3,7 +3,7 @@ import cn from 'classnames';
 import ManagerSideBarContents from './ManagerSideBarContents';
 import OrganizationSwitcher from './OrganizationSwitcher';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import router from 'next/router';
+import { useRouter } from 'next/router';
 import { ApplicationStoreProps, store } from '@context/store';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useWindowSize } from 'react-use';
@@ -16,11 +16,13 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar, ManagerSidebarOpen } = applicationStore;
   const windowSize = useWindowSize();
+  const router = useRouter();
   const orgId = router.query.organizationId as string;
-  const OrganizationIdFromSessionStorage = sessionStorage.getItem('CHOSEN_ORGANIZATION');
-  const setOrgId = OrganizationIdFromSessionStorage ?? orgId;
+  // const OrganizationIdFromSessionStorage = window.sessionStorage?.getItem('CHOSEN_ORGANIZATION');
+  // const setOrgId = OrganizationIdFromSessionStorage ?? orgId;
+  const setOrgId = orgId;
 
-  const currentOrganizationName = orgId && organizations?.find((org) => org.id === orgId)?.name;
+  const currentOrganizationName = orgId && organizations?.find(org => org.id === orgId)?.name;
 
   useEffect(() => {
     if (ManagerSidebarOpen && windowSize.width < 768) {
@@ -81,7 +83,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
               </Button>
             </div>
           </div>
-          <ManagerSideBarContents organizationId={OrganizationIdFromSessionStorage} />
+          <ManagerSideBarContents organizationId={setOrgId} />
         </div>
       </div>
     </div>

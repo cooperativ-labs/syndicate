@@ -21,7 +21,7 @@ const ChooseConnectorButton: FC<ChooseConnectorButtonProps> = ({ buttonText, lar
         large ? 'p-2 px-4' : 'text-xs p-1 px-3',
         'font-semibold rounded-full relative  w-full'
       )}
-      onClick={(e) => {
+      onClick={e => {
         e.preventDefault();
         dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
       }}

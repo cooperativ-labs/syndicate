@@ -2,7 +2,7 @@ import React from 'react';
 
 const AnalyticsContext = React.createContext({
   dynamicDimensions: {},
-  setDynamicDimensions: () => {},
+  setDynamicDimensions: () => {}
 });
 
 export default AnalyticsContext;

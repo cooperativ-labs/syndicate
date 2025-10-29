@@ -16,7 +16,7 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
   tokenAddress,
   tokenSymbol,
   tokenDecimals,
-  tokenImage,
+  tokenImage
 }) => {
   const [status, setStatus] = useState<string>('');
 
@@ -32,9 +32,9 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
               address: tokenAddress,
               symbol: tokenSymbol,
               decimals: tokenDecimals,
-              image: tokenImage,
-            },
-          },
+              image: tokenImage
+            }
+          }
         });
       } catch (error: any) {
         throw new Error(error);
@@ -46,11 +46,12 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
     <div>
       <button
         className={
-          'text-xs font-bold text-slate-200 p-1 px-2 my-1 rounded-full bg-gradient-to-r from-cyan-600 to-blue-600 hover:bg-gradient-to-l '
+          'text-xs font-bold text-slate-200 p-1 px-2 my-1 rounded-full bg-linear-to-r from-cyan-600 to-blue-600 hover:bg-linear-to-l '
         }
         onClick={handleClick}
       >
-        <FontAwesomeIcon icon={'fa-plus' as IconProp} /> <FontAwesomeIcon icon={'fa-wallet' as IconProp} />
+        <FontAwesomeIcon icon={'fa-plus' as IconProp} />{' '}
+        <FontAwesomeIcon icon={'fa-wallet' as IconProp} />
       </button>
       {status && <p>{status}</p>}
     </div>

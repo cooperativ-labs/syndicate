@@ -1,10 +1,10 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import {
-  CORE_USER_FIELDS,
   CORE_ENTITY_FIELDS,
-  SMART_CONTRACT_FIELDS,
   CORE_INVESTMENT_OFFERING_FIELDS,
   CORE_ORGANIZATION_FIELDS,
+  CORE_USER_FIELDS,
+  SMART_CONTRACT_FIELDS
 } from './fragments';
 
 export const GET_USERS = gql`
@@ -44,7 +44,7 @@ export const GET_USER = gql`
       name
       organizations {
         organization {
-          ...organizationData
+          ...OrganizationFields
         }
       }
     }
@@ -101,7 +101,7 @@ export const ADD_USER_WITH_TWITTER = gql`
       ]
     ) {
       user {
-        ...userData
+        ...UserFields
       }
     }
   }
@@ -137,7 +137,7 @@ export const ADD_USER_WITH_EMAIL = gql`
       ]
     ) {
       user {
-        ...userData
+        ...UserFields
       }
     }
   }
@@ -182,7 +182,7 @@ export const ADD_USER_WITH_WALLET = gql`
       ]
     ) {
       user {
-        ...userData
+        ...UserFields
       }
     }
   }
@@ -190,12 +190,21 @@ export const ADD_USER_WITH_WALLET = gql`
 
 export const UPDATE_USER = gql`
   ${CORE_USER_FIELDS}
-  mutation UpdateUser($id: ID!, $currentDate: DateTime!, $name: String!, $email: String, $image: String) {
+  mutation UpdateUser(
+    $id: ID!
+    $currentDate: DateTime!
+    $name: String!
+    $email: String
+    $image: String
+  ) {
     updateUser(
-      input: { filter: { id: [$id] }, set: { name: $name, email: $email, image: $image, lastUpdate: $currentDate } }
+      input: {
+        filter: { id: [$id] }
+        set: { name: $name, email: $email, image: $image, lastUpdate: $currentDate }
+      }
     ) {
       user {
-        ...userData
+        ...UserFields
       }
     }
   }

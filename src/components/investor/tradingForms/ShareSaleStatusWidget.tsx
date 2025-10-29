@@ -4,7 +4,7 @@ import React, { FC } from 'react';
 import SaleManagerPanel from './ShareManagerPanel';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
-import { Maybe, ShareOrder } from 'oldTypes';
+import { Maybe, ShareOrder } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
@@ -22,14 +22,11 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   swapContractAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
-  swapApprovalsEnabled,
+  swapApprovalsEnabled
 }) => {
   const contractIndex = order ? order?.contractIndex : 0;
-  const { initiator, amount, filledAmount, isApproved, isCancelled, isAccepted, isFilled, filler } = useOrderDetails(
-    swapContractAddress,
-    contractIndex,
-    paymentTokenDecimals
-  );
+  const { initiator, amount, filledAmount, isApproved, isCancelled, isAccepted, isFilled, filler } =
+    useOrderDetails(swapContractAddress, contractIndex, paymentTokenDecimals);
   const chainId = useChainId();
   const sharesRemaining = getAmountRemaining({ x: amount, minus: filledAmount });
   const status =
@@ -44,7 +41,7 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
       isAccepted,
       txnApprovalsEnabled,
       swapApprovalsEnabled,
-      isVisible: order.visible,
+      isVisible: order.visible
     });
 
   const statusColor = status?.color;
@@ -83,14 +80,15 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
   swapApprovalsEnabled,
   paymentTokenDecimals,
   swapContractAddress,
-  isContractOwner,
+  isContractOwner
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const myOrders = orders && orders?.filter((order) => order?.initiator === userWalletAddress || isContractOwner);
+  const myOrders =
+    orders && orders?.filter(order => order?.initiator === userWalletAddress || isContractOwner);
 
   return (
     <>
-      {myOrders?.map((order) => (
+      {myOrders?.map(order => (
         <ShareOrderStatusItem
           key={order?.contractIndex}
           order={order}

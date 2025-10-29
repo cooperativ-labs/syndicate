@@ -3,12 +3,12 @@ import LoadingModal from '@src/components/loading/ModalLoading';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import React, { FC } from 'react';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { OfferingParticipant } from 'oldTypes';
+import { OfferingParticipant } from '@gql/graphql';
 import { useAccount } from 'wagmi';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
 
 const PortalOrganization: FC = () => {
@@ -18,7 +18,7 @@ const PortalOrganization: FC = () => {
   const { data: organizationData } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization = organizationData?.getOrganization;
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
-    variables: { walletAddress: userWalletAddress },
+    variables: { walletAddress: userWalletAddress }
   });
   if (!organization) {
     return (
@@ -39,7 +39,10 @@ const PortalOrganization: FC = () => {
   const isParticipant = participantOfferings?.length > 0;
 
   return (
-    <div data-test="component-PortalOrganization" className="flex flex-col w-full h-full mx-auto px-4">
+    <div
+      data-test="component-PortalOrganization"
+      className="flex flex-col w-full h-full mx-auto px-4"
+    >
       <TwoColumnLayout twoThirdsLayout>
         {hasOfferings && (
           <div>

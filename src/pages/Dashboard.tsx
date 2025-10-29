@@ -1,35 +1,40 @@
 import Card from '@src/components/cards/Card';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
-import OfferingsList from '@src/components/offering/OfferingsList';
-import React, { FC, useState } from 'react';
-import { cleanOrganizationArray, handleOrganizationChange } from '@src/utils/helpersOrganization';
-import { GET_OFFERING_PARTICIPANT } from '@src/utils/dGraphQueries/offering';
-import { GET_USER } from '@src/utils/dGraphQueries/user';
-import { OfferingParticipant } from 'oldTypes';
-import { useAccount } from 'wagmi';
-import { useQuery } from '@apollo/client';
-import { useSession } from 'next-auth/react';
-
+import React, { FC, useEffect, useState } from 'react';
+import { handleOrganizationChange, getOrgsFromUser } from '@src/utils/helpersOrganization';
+import { Organization } from '@gql/graphql';
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import CreateOffering from '@src/components/offering/CreateOffering';
+import EnsureOrganization from '@src/containers/EnsureOrganization';
 const Dashboard: FC = () => {
-  const { data: session, status } = useSession();
-  const { address: userWalletAddress } = useAccount();
-  const { data: userData, error } = useQuery(GET_USER, { variables: { id: session?.user.id } });
-  const user = userData?.queryUser[0];
+  const { user, supabase } = useSupabaseAuth();
+  const [organizations, setOrganizations] = useState<Organization[]>([]);
 
-  const organizations = cleanOrganizationArray(user?.organizations);
-  const hasOrganizations = organizations?.length > 0;
+  useEffect(() => {
+    let isMounted = true;
 
-  // For Participants
-  const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
-    variables: { walletAddress: userWalletAddress },
-  });
-  const participantOfferings = participantData?.queryOfferingParticipant.map(
-    (offeringParticipant: OfferingParticipant) => {
-      return offeringParticipant.offering;
-    }
-  );
-  const isParticipant = participantOfferings?.length > 0;
+    // const loadOrganizations = async () => {
+    //   if (!user) {
+    //     if (isMounted) {
+    //       setOrganizations([]);
+    //     }
+    //     return;
+    //   }
+
+    //   const orgs = await getOrgsFromUser(user);
+    //   if (isMounted) {
+    //     setOrganizations(orgs as Organization[]);
+    //   }
+    // };
+
+    // loadOrganizations();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [supabase, user]);
+
+  const hasOrganizations = organizations.length > 0;
 
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
@@ -41,30 +46,35 @@ const Dashboard: FC = () => {
           <h1 className="text-2xl mb-4 text-center">
             {`Welcome to Cooperativ's portal for creating and managing investment funds.`}
           </h1>
-          <h2 className="text-2xl font-medium mb-8 text-center">Start by creating an organization.</h2>
+          <h2 className="text-2xl font-medium mb-8 text-center">
+            Start by creating an organization.
+          </h2>
           <Card className="rounded-lg shadow-box p-4 " style={{ width: 700 }}>
             <h2 className="text-xl text-cDarkBlue mb-8 ">
               {`You manage your brand and team members at the organization level. Each organization can manage multiple
         funds.`}
             </h2>
+
             <CreateOrganization />
           </Card>
         </div>
       ) : (
         <div className="grid grid-cols-3 gap-12">
-          {/* <div className="col-span-2 p-6 border-2 rounded-md">
-          <h2 className="text-xl  text-blue-900 font-semibold">Create an offering:</h2>
-          <EnsureProfileCompletion
-            user={user}
-            explainerText="In order to create an offering, we first need some personal information"
-          >
-            <CreateOffering />
-          </EnsureProfileCompletion>
-        </div> */}
+          <div className="col-span-2 p-6 border-2 rounded-md">
+            <h2 className="text-xl  text-blue-900 font-semibold">Create an offering:</h2>
+            <EnsureOrganization
+              user={user}
+              explainerText="In order to create an offering, we first need some personal information"
+            >
+              <CreateOffering organization={organizations[0]} refetch={() => {}} />
+            </EnsureOrganization>
+          </div>
           <div className="col-span-1">
             <div>
-              <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your Organizations </h2>
-              {organizations.map((organization) => {
+              <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">
+                Your Organizations{' '}
+              </h2>
+              {organizations.map(organization => {
                 return (
                   <div
                     key={organization.id}

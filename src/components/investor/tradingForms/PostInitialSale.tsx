@@ -7,17 +7,17 @@ import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { Form, Formik } from 'formik';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe } from 'oldTypes';
+import { Maybe } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
 
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
-import { ADD_CONTRACT_PARTITION } from '@src/utils/dGraphQueries/crypto';
-import { CREATE_ORDER } from '@src/utils/dGraphQueries/orders';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
+import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { useAccount } from 'wagmi';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 export type PostInitialSaleProps = {
   sharesOutstanding: number | undefined;
@@ -49,12 +49,13 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   partitions,
   setModal,
   refetchAllContracts,
-  refetchOfferingInfo,
+  refetchOfferingInfo
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
-  const [addPartition, { data: partitionData, error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
+  const [addPartition, { data: partitionData, error: partitionError }] =
+    useMutation(ADD_CONTRACT_PARTITION);
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
 
@@ -64,7 +65,9 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
       return;
     }
     return `Offer ${
-      numShares ? `${numShares} out of ${sharesIssued} (${(numShares / sharesIssued) * 100}%) for sale` : 'shares'
+      numShares
+        ? `${numShares} out of ${sharesIssued} (${(numShares / sharesIssued) * 100}%) for sale`
+        : 'shares'
     } `;
   };
 
@@ -85,9 +88,9 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         minUnits: '',
         maxUnits: '',
         partition: partitions[0],
-        newPartition: '',
+        newPartition: ''
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
 
         const numShares = parseInt(values.numShares, 10);
@@ -102,7 +105,10 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         if (maxUnits && numShares && maxUnits > numShares) {
           errors.maxUnits = 'Maximum must be less then the total shares listed for sale';
         }
-        if ((maxUnits && minUnits && maxUnits < 1) || (maxUnits && minUnits && maxUnits < minUnits)) {
+        if (
+          (maxUnits && minUnits && maxUnits < 1) ||
+          (maxUnits && minUnits && maxUnits < minUnits)
+        ) {
           errors.maxUnits = 'Maximum must be greater than minimum';
         }
         if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
@@ -147,7 +153,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
             createOrder: createOrder,
             addPartition: addPartition,
             refetchAllContracts,
-            refetchOfferingInfo,
+            refetchOfferingInfo
           });
           setModal('shareSaleList');
         } catch (e: any) {

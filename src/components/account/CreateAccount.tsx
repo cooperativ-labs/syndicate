@@ -5,7 +5,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
-import { signIn } from '@src/utils/actions/userActions';
+import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
@@ -44,10 +44,10 @@ const CreateAccount: FC = () => {
   //   signIn('linkedin');
   // };
 
-  // const handleMagicLink = (email: string) => {
-  //   setLoading(true);
-  //   signIn('email', { email });
-  // };
+  const handleMagicLink = (email: string) => {
+    setLoading(true);
+    signInWithEmail({ email, shouldCreateUser: true });
+  };
 
   const handlePasswordLogin = (email: string, password: string) => {
     setLoading(true);
@@ -66,7 +66,7 @@ const CreateAccount: FC = () => {
     <Formik
       initialValues={{ email: '', password: '' }}
       validationSchema={MagicLinkLoginSchema}
-      onSubmit={values => handlePasswordLogin(values.email, values.password)}
+      onSubmit={values => handleMagicLink(values.email)}
     >
       {({ errors, touched, isSubmitting }) => (
         <Form>
@@ -80,7 +80,7 @@ const CreateAccount: FC = () => {
                 touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
               } focus:no-outline focus:ring-2 focus:ring-blue-400`}
             />
-            <Field
+            {/* <Field
               type="password"
               name="password"
               aria-label="password"
@@ -88,7 +88,7 @@ const CreateAccount: FC = () => {
               className={`w-full rounded-sm h-14 border-2 ${
                 touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
               } focus:no-outline focus:ring-2 focus:ring-blue-400`}
-            />
+            /> */}
             <ErrorMessage
               name="email"
               component="div"
@@ -98,7 +98,7 @@ const CreateAccount: FC = () => {
           <button
             type="submit"
             disabled={isSubmitting}
-            className="flex my-5 items-center rounded-sm bg-cLightBlue  justify-center p-3 text-slate-50 font-medium w-full"
+            className="flex my-5 items-center rounded-sm bg-blue-600 justify-center p-3 text-slate-50 font-medium w-full"
           >
             Continue with email
           </button>

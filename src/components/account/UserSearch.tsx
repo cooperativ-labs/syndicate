@@ -27,7 +27,7 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
   return (
     <Formik
       initialValues={{
-        searchText: '',
+        searchText: ''
       }}
       validate={() => {
         const errors: any = {}; /** @TODO : Shape */

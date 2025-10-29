@@ -8,7 +8,7 @@ import UnestablishedContractCard from '../offering/UnestablishedContractCard';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { Offering, User } from 'oldTypes';
+import { Offering, User } from '@gql/graphql';
 import { useAsync } from 'react-use';
 import { useChainId, useNetwork } from 'wagmi';
 
@@ -31,12 +31,12 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const { chain } = useNetwork();
 
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
-    signature: '',
+    signature: ''
   });
 
   const standardAgreement = `/assets/legal-link/legal-link.md`;
   const getStandardAgreementText = async (): Promise<AgreementText['standard']> =>
-    axios.get(standardAgreement).then((resp) => resp.data);
+    axios.get(standardAgreement).then(resp => resp.data);
   const { value: standardAgreementText } = useAsync(getStandardAgreementText, []);
 
   const { signature } = agreementContent;
@@ -67,7 +67,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
       signature: signature,
       isNotMainnet: isTestNet as boolean,
       agreementCurrency: bacName,
-      baseUrl: window.location.origin,
+      baseUrl: window.location.origin
     },
     standardAgreementText ?? ''
   );

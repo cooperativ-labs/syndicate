@@ -6,7 +6,7 @@ env:
   commonjs: false
 extends:
   - './.eslintrc.yml'
-parser: "@typescript-eslint/parser"
+parser: '@typescript-eslint/parser'
 parserOptions:
   ecmaFeatures:
     experimentalObjectRestSpread: true

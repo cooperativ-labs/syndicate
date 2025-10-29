@@ -4,7 +4,7 @@ import useWindowSize from '@hooks/useWindowSize';
 
 import Container from './Layouts/Container';
 import { getBaseUrl } from '../utils/helpersURL';
-import { Offering } from 'oldTypes';
+import { Offering } from '@gql/graphql';
 import { useRouter } from 'next/router';
 
 type HeaderProps = {
@@ -19,11 +19,14 @@ const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
 
   const shareURL = `${getBaseUrl()}/${id}`;
 
-  const offeringImages = offering.offeringEntity?.realEstateProperties?.map((property) => property?.images).flat();
+  const offeringImages = offering.offeringEntity?.realEstateProperties
+    ?.map(property => property?.images)
+    .flat();
 
   const desktopHeight = small ? 'h-64' : 'h-96';
   const mobileHeight = small ? 'h-24' : 'h-32';
-  const imageBannerHeight = windowSize.width && windowSize.width < 768 ? mobileHeight : desktopHeight;
+  const imageBannerHeight =
+    windowSize.width && windowSize.width < 768 ? mobileHeight : desktopHeight;
 
   return (
     <header data-test="molecule-header" className={cn('w-full relative overflow-hidden')}>
@@ -33,7 +36,13 @@ const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
             <img className={'object-cover object-center w-full'} src={bannerImage} />
           </div>
         ) : offeringImages && offeringImages.length > 0 ? (
-          <div className={cn('grid w-full', `grid-cols-${offeringImages.slice(-4).length}`, imageBannerHeight)}>
+          <div
+            className={cn(
+              'grid w-full',
+              `grid-cols-${offeringImages.slice(-4).length}`,
+              imageBannerHeight
+            )}
+          >
             {offeringImages.slice(-4).map((image, i) => {
               return (
                 <div key={i} className={cn(imageBannerHeight, 'flex overflow-hidden col-span-1')}>
@@ -47,7 +56,10 @@ const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
         )}
       </Container>
       <div
-        className={cn(imageBannerHeight, 'flex backdrop-opacity-10 backdrop-invert w-full bg-gray-800/30 items-center')}
+        className={cn(
+          imageBannerHeight,
+          'flex backdrop-opacity-10 backdrop-invert w-full bg-gray-800/30 items-center'
+        )}
       />
     </header>
   );
@@ -56,7 +68,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
 export default Header;
 
 {
-  /* <div className="absolute top-4 right-2 md:static opacity-20 md:opacity-60  md:flex flex-grow justify-end flex-shrink-0 z-0">
+  /* <div className="absolute top-4 right-2 md:static opacity-20 md:opacity-60  md:flex grow justify-end shrink-0 z-0">
 <RoundedImage
   src={logo ? logo : '/assets/images/logos/company-placeholder.jpeg'}
   className={cn([!primaryHeader && windowSize.width < 768 ? 'hidden' : 'max-w-xxs'])}

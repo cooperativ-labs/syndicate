@@ -6,7 +6,7 @@ import LinkedAccountsList from '@src/components/LinkedAccountsList';
 import ModalLoading from '@src/components/loading/ModalLoading';
 import OrganizationSpecifications, {
   changeForm,
-  EditOrganizationSelectionType,
+  EditOrganizationSelectionType
 } from '@src/components/organization/OrganizationSpecifications';
 import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
 import React, { FC, useState } from 'react';
@@ -20,27 +20,30 @@ import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamM
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import TeamMemberList from '@src/components/organization/TeamMemberList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { GET_ORGANIZATION, UPDATE_ORGANIZATION_INFORMATION } from '@src/utils/dGraphQueries/organization';
+import {
+  GET_ORGANIZATION,
+  UPDATE_ORGANIZATION_INFORMATION
+} from '@src/utils/graphQueries/organization';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { getOrganizationUser } from '@src/utils/helpersOrganization';
-import { Maybe, Organization } from 'oldTypes';
-import { useMutation, useQuery } from '@apollo/client';
+import { Maybe, Organization } from '@gql/graphql';
+import { useMutation, useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
-import { useSession } from 'next-auth/react';
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 
 const OrganizationSettings: FC = () => {
-  const { data: session, status } = useSession();
-  const userId = session?.user?.id;
+  const { user } = useSupabaseAuth();
+  const userId = user?.id;
   const router = useRouter();
   const { organizationId: orgId } = router.query;
 
   const {
     data: organizationData,
     error: getOrgError,
-    loading,
+    loading
   } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
   const organization: Organization = organizationData?.getOrganization;
 
@@ -73,7 +76,7 @@ const OrganizationSettings: FC = () => {
     isPublic,
     description,
     shortDescription,
-    linkedAccounts,
+    linkedAccounts
   } = organization;
 
   const organizationCurrentUser = getOrganizationUser(userId, organization);
@@ -88,9 +91,9 @@ const OrganizationSettings: FC = () => {
         name: values.name,
         logo: logo,
         bannerImage: bannerImage,
-        country: country,
-      },
-    }).then((res) => {
+        country: country
+      }
+    }).then(res => {
       setNameEditOn('none');
       router.reload();
     });
@@ -104,8 +107,8 @@ const OrganizationSettings: FC = () => {
         country: country,
         isPublic: profileVisibility,
         logo: logo,
-        bannerImage: bannerImage,
-      },
+        bannerImage: bannerImage
+      }
     });
   };
 
@@ -118,8 +121,8 @@ const OrganizationSettings: FC = () => {
         country: country,
         bannerImage: bannerImage,
 
-        logo: url,
-      },
+        logo: url
+      }
     });
   };
 
@@ -131,8 +134,8 @@ const OrganizationSettings: FC = () => {
         name: name,
         country: country,
 
-        bannerImage: url,
-      },
+        bannerImage: url
+      }
     });
   };
 
@@ -202,7 +205,10 @@ const OrganizationSettings: FC = () => {
               <div className="font-semibold">Set as public profile:</div>
               <div className="flex items-center">
                 {isEditorOrAdmin && (
-                  <ProfileVisibilityToggle profileVisibility={isPublic} handleToggle={handleToggle} />
+                  <ProfileVisibilityToggle
+                    profileVisibility={isPublic}
+                    handleToggle={handleToggle}
+                  />
                 )}
                 <a href={`/${organization.id}`} target="_blank" rel="noreferrer" className="ml-2">
                   <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
@@ -219,14 +225,23 @@ const OrganizationSettings: FC = () => {
             <div>
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Email addresses'}>
-                  <EmailAddressList emailAddresses={emailAddresses} withEdit isOrganizationManager={isEditorOrAdmin} />
-                  {isEditorOrAdmin && <SettingsAddEmail completionUrl={`${getBaseUrl()}/email-confirmation`} />}
+                  <EmailAddressList
+                    emailAddresses={emailAddresses}
+                    withEdit
+                    isOrganizationManager={isEditorOrAdmin}
+                  />
+                  {isEditorOrAdmin && (
+                    <SettingsAddEmail completionUrl={`${getBaseUrl()}/email-confirmation`} />
+                  )}
                 </SectionBlock>
               </div>
 
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
                 <SectionBlock asAccordion sectionTitle={'Socials'}>
-                  <LinkedAccountsList linkedAccounts={linkedAccounts} isOrganizationManager={isEditorOrAdmin} />
+                  <LinkedAccountsList
+                    linkedAccounts={linkedAccounts}
+                    isOrganizationManager={isEditorOrAdmin}
+                  />
                   {isEditorOrAdmin && <SettingsSocial organization={organization} />}
                 </SectionBlock>
               </div>
@@ -252,7 +267,12 @@ const OrganizationSettings: FC = () => {
           <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Email Notifications</h2>
           <NotificationConfigList organizationUser={organizationCurrentUser} />
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
-            <SectionBlock className="font-bold " sectionTitle={'Add Notification Rule'} mini asAccordion>
+            <SectionBlock
+              className="font-bold "
+              sectionTitle={'Add Notification Rule'}
+              mini
+              asAccordion
+            >
               <SettingsAddNotification organizationUserId={organizationCurrentUser?.id} />
             </SectionBlock>
           </div>

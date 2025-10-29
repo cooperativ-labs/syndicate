@@ -1,12 +1,12 @@
 import Input from '../form-components/Inputs';
 import React, { FC } from 'react';
 import Select from '../form-components/Select';
-import { ADD_NOTIFICATION_RULE } from '@src/utils/dGraphQueries/organization';
+import { ADD_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
 import { Form, Formik } from 'formik';
-import { NotificationMethod, NotificationRecipientType, NotificationSubject } from 'oldTypes';
+import { NotificationMethod, NotificationRecipientType, NotificationSubject } from '@gql/graphql';
 import { notificationSubjectOptions } from '@src/utils/enumConverters';
 
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 const fieldDiv = 'md:my-2 bg-opacity-0';
 
@@ -24,9 +24,9 @@ const SettingsAddNotification: FC<SettingsAddNotificationProps> = ({ organizatio
           organizationUserId: organizationUserId,
           NotificationMethod: NotificationMethod.Email,
           notificationRecipientType: NotificationRecipientType.Manager,
-          notificationSubject: notificationSubject,
-        },
-      }).catch((error) => {
+          notificationSubject: notificationSubject
+        }
+      }).catch(error => {
         throw new Error(error);
       });
     } catch (error: any) {
@@ -37,9 +37,9 @@ const SettingsAddNotification: FC<SettingsAddNotificationProps> = ({ organizatio
   return (
     <Formik
       initialValues={{
-        notificationSubject: '' as NotificationSubject,
+        notificationSubject: '' as NotificationSubject
       }}
-      validate={async (values) => {
+      validate={async values => {
         const errors: any = {}; /** @TODO : Shape */
 
         if (!values.notificationSubject) {
@@ -58,7 +58,7 @@ const SettingsAddNotification: FC<SettingsAddNotificationProps> = ({ organizatio
           <div className="flex">
             <Select className={`${fieldDiv} col-span-2`} name="notificationSubject">
               <option value="">--Subject--</option>
-              {notificationSubjectOptions.map((option) => {
+              {notificationSubjectOptions.map(option => {
                 return (
                   <option key={option.value} value={option.value}>
                     {option.name}

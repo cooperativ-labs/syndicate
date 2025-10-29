@@ -12,16 +12,16 @@ import React, { FC, useState } from 'react';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import useOfferingDetails from '@hooks/useOfferingDetails';
-import { DocumentType, Offering } from 'oldTypes';
+import { DocumentType, Offering } from '@gql/graphql';
 import { floatWithCommas } from '@src/utils/helpersMoney';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from 'wagmi';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
 
 type PortalOfferingProps = {
@@ -45,7 +45,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     distributions,
     participants,
 
-    smartContractSets,
+    smartContractSets
   } = offering;
 
   const minUnitsPerInvestor = details?.minUnitsPerInvestor;
@@ -69,12 +69,12 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     refetchSwapContract,
     refetchOrders,
     refetchTransactionHistory,
-    transferEvents,
+    transferEvents
   } = useOfferingDetails(offering);
 
   const sharedContractSpecs = {
     address: shareContractAddress,
-    abi: shareContractABI,
+    abi: shareContractABI
   };
 
   const { data } = useContractReads({
@@ -82,19 +82,19 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
       {
         ...sharedContractSpecs,
         functionName: 'partitionsOf',
-        args: [userWalletAddress as String0x],
+        args: [userWalletAddress as String0x]
       },
       {
         ...sharedContractSpecs,
         functionName: 'isWhitelisted',
-        args: [userWalletAddress as String0x],
-      },
-    ],
+        args: [userWalletAddress as String0x]
+      }
+    ]
   });
 
   const { data: bacBalanceData, refetch: refetchUserBalance } = useBalance({
     address: userWalletAddress,
-    token: paymentTokenAddress,
+    token: paymentTokenAddress
   });
   const myBacBalance = bacBalanceData?.formatted;
   const bacSymbol = bacBalanceData?.symbol;
@@ -119,7 +119,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
 
   const documents = offering?.documents;
 
-  const offeringParticipant = participants?.find((participant) => {
+  const offeringParticipant = participants?.find(participant => {
     return participant?.addressOfferingId === userWalletAddress + offeringId;
   });
 
@@ -141,7 +141,9 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
       <div className="flex justify-center items-center">
         <div className="text-center">
           <h1 className="text-2xl font-bold">Error retrieving allowlist status.</h1>
-          <p className="text-lg">Please make sure your wallet is set to the same network as this offering.</p>
+          <p className="text-lg">
+            Please make sure your wallet is set to the same network as this offering.
+          </p>
         </div>
       </div>
     </div>
@@ -159,11 +161,18 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
   if (isWhitelistError) {
     return whitelistError;
   } else if (!isWhitelisted) {
-    return <div className="w-screen h-screen flex justify-center items-center pb-32">{removedFromWhitelist}</div>;
+    return (
+      <div className="w-screen h-screen flex justify-center items-center pb-32">
+        {removedFromWhitelist}
+      </div>
+    );
   }
 
   return (
-    <div data-test="component-PortalOffering" className="flex flex-col w-full h-full mx-auto px-4 pt-10">
+    <div
+      data-test="component-PortalOffering"
+      className="flex flex-col w-full h-full mx-auto px-4 pt-10"
+    >
       <FormModal
         formOpen={managerModal === 'saleForm'}
         onClose={() => setManagerModal('none')}
@@ -224,7 +233,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
                 sharesOutstanding: sharesOutstanding,
                 totalDistributed: undefined,
                 myShareQty: myShareQty,
-                paymentToken: paymentTokenAddress,
+                paymentToken: paymentTokenAddress
               }}
             />
             <hr className="mt-6 mb-4" />
@@ -248,7 +257,11 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
           </div>
           <div>
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3  ">Offering documents</h1>
-            <DocumentList documents={offeringDocs} isOfferingManager={false} offeringId={offering.id} />{' '}
+            <DocumentList
+              documents={offeringDocs}
+              isOfferingManager={false}
+              offeringId={offering.id}
+            />{' '}
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
             {legalLinkTexts &&
               smartContractDocuments &&

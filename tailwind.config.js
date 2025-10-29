@@ -11,11 +11,11 @@ module.exports = {
           css: {
             color: '#00000',
             strong: {
-              fontWeight: '800',
-            },
+              fontWeight: '800'
+            }
             // ...
-          },
-        },
+          }
+        }
       },
       colors: {
         cDarkBlue: '#161F48',
@@ -24,16 +24,16 @@ module.exports = {
         cRed: '#E43727',
         cCream: '#EAE5DD',
         cLightCream: '#F4F1EC',
-        cYellow: '#F19938',
+        cYellow: '#F19938'
       },
       maxWidth: {
-        xxs: '15rem',
-      },
+        xxs: '15rem'
+      }
     },
     screens: {
       sm: '460px',
       md: '768px',
-      lg: '1024px',
+      lg: '1024px'
     },
     boxShadow: {
       sm: '0 1px 2px 0 rgba(0, 0, 0, 0.05)',
@@ -49,9 +49,9 @@ module.exports = {
       mdreverse: '0 4px 1px 6px rgba(0, 0, 0, 0.09), 0 2px 1px 4px rgba(0, 0, 0, 0.05)',
       lgreverse: '0 10px 3px 15px rgba(0, 0, 0, 0.07), 0 4px 2px 5px rgba(0, 0, 0, 0.04)',
       modal: '0 35px 60px -10px rgba(0, 0, 0, 0.5)',
-      box: '0 7px 10px 5px rgba(0, 0, 0, 0.1), 0 3px 5px 3px rgba(0, 0, 0, 0.07)',
-    },
+      box: '0 7px 10px 5px rgba(0, 0, 0, 0.1), 0 3px 5px 3px rgba(0, 0, 0, 0.07)'
+    }
   },
 
-  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')],
+  plugins: [require('@tailwindcss/typography'), require('@tailwindcss/forms')]
 };

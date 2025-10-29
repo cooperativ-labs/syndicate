@@ -5,7 +5,7 @@ import React, { FC, useEffect, useState } from 'react';
 import router from 'next/router';
 
 const buttonGradient =
-  'bg-gradient-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
+  'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
 
 const CookieBanner: FC = () => {
   const [approvalState, setApprovalState] = useState<Storage | undefined>(undefined);

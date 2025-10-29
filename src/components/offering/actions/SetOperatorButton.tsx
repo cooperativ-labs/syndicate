@@ -12,7 +12,11 @@ type SetOperatorButtonProps = {
   refetch: () => void;
 };
 
-const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({ shareContractAddress, operatorField, refetch }) => {
+const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
+  shareContractAddress,
+  operatorField,
+  refetch
+}) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [operatorAddress, setOperatorAddress] = useState<String0x | ''>('');
@@ -24,7 +28,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({ shareContractAddr
       shareContractAddress,
       operator: userWalletAddress as String0x,
       setButtonStep,
-      refetch,
+      refetch
     });
     setButtonStep('confirmed');
     return;
@@ -47,7 +51,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({ shareContractAddr
       )}
       <Button
         className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
-        onClick={(e) => handleSetOperator(e)}
+        onClick={e => handleSetOperator(e)}
       >
         <LoadingButtonText
           state={buttonStep}

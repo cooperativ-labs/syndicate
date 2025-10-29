@@ -1,19 +1,20 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC } from 'react';
-import { Currency, User } from 'oldTypes';
+import { Currency, User } from '@gql/graphql';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 
 import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings, { ShareContractSettingsProps } from './ShareContractSettings';
 import SwapContractSettings, {
   SwapContractSettingsProps,
-  SwapContractsSettingsAdditional,
+  SwapContractsSettingsAdditional
 } from './SwapContractSettings';
 
 export type SmartContractsSettingsProps = SwapContractSettingsProps & ShareContractSettingsProps;
 
-type SmartContractsSettingsLocal = SmartContractsSettingsProps & SwapContractsSettingsAdditional & { user: User };
+type SmartContractsSettingsLocal = SmartContractsSettingsProps &
+  SwapContractsSettingsAdditional & { user: User };
 
 const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
   user,
@@ -24,13 +25,18 @@ const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
   partitions,
   investmentCurrency,
   noLiveOrders,
-  refetchMainContracts,
+  refetchMainContracts
 }) => {
   const shareContract = contractSet?.shareContract;
 
   return (
     <>
-      <ShareContractSettings user={user} offering={offering} shareContract={shareContract} partitions={partitions} />
+      <ShareContractSettings
+        user={user}
+        offering={offering}
+        shareContract={shareContract}
+        partitions={partitions}
+      />
       <hr className="my-5" />
       <SwapContractSettings
         refetchMainContracts={refetchMainContracts}

@@ -33,20 +33,16 @@ The Apollo Client (`src/utils/supabaseApolloClient.ts`) is configured with:
 - **Cache**: InMemoryCache with `nodeId` support for Relay-style pagination
 - **Endpoint**: Points to Supabase's GraphQL endpoint (`/graphql/v1`)
 
-### Usage in _app.tsx
+### Usage in \_app.tsx
 
 The `ApolloProvider` wraps your entire app, making the Apollo Client available to all components:
 
 ```tsx
-import { ApolloProvider } from '@apollo/client';
+import { ApolloProvider } from '@apollo/client/react';
 import supabaseApolloClient from '@src/utils/supabaseApolloClient';
 
 function MyApp({ Component, pageProps }) {
-  return (
-    <ApolloProvider client={supabaseApolloClient}>
-      {/* Your app components */}
-    </ApolloProvider>
-  );
+  return <ApolloProvider client={supabaseApolloClient}>{/* Your app components */}</ApolloProvider>;
 }
 ```
 
@@ -59,6 +55,7 @@ yarn generate
 ```
 
 This will:
+
 1. Introspect your Supabase GraphQL schema
 2. Generate TypeScript types for your queries and mutations
 3. Output generated files to `src/gql/`
@@ -68,7 +65,7 @@ This will:
 Here's how to write a GraphQL query with type-safety:
 
 ```tsx
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { graphql } from './gql';
 
 const allItemsQueryDocument = graphql(/* GraphQL */ `
@@ -91,7 +88,7 @@ const allItemsQueryDocument = graphql(/* GraphQL */ `
 
 function ItemList() {
   const { data, fetchMore } = useQuery(allItemsQueryDocument);
-  
+
   return (
     <div>
       {data?.itemsCollection?.edges.map(({ node }) => (
@@ -102,8 +99,8 @@ function ItemList() {
           onClick={() => {
             fetchMore({
               variables: {
-                cursor: data?.itemsCollection?.pageInfo.endCursor,
-              },
+                cursor: data?.itemsCollection?.pageInfo.endCursor
+              }
             });
           }}
         >
@@ -118,11 +115,13 @@ function ItemList() {
 ## Starting Local Development
 
 1. Start Supabase:
+
    ```bash
    yarn start  # or: supabase start
    ```
 
 2. Generate GraphQL types:
+
    ```bash
    yarn generate
    ```
@@ -137,4 +136,3 @@ function ItemList() {
 - [Supabase GraphQL Documentation](https://supabase.com/docs/guides/graphql)
 - [Apollo Client Documentation](https://www.apollographql.com/docs/react/)
 - [GraphQL Code Generator Documentation](https://the-guild.dev/graphql/codegen)
-

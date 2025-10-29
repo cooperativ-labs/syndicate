@@ -1,22 +1,33 @@
 import FinancialFactItem from './FinancialFactItem';
 import React, { FC } from 'react';
 
-import { Currency, OfferingDetails } from 'oldTypes';
+import { Currency, OfferingDetails } from '@gql/graphql';
 
 type SourcesAndUsesDisplayProps = {
   offeringDetails: OfferingDetails;
   operatingCurrency: Currency;
 };
 
-const SourcesAndUsesDisplay: FC<SourcesAndUsesDisplayProps> = ({ offeringDetails, operatingCurrency }) => {
+const SourcesAndUsesDisplay: FC<SourcesAndUsesDisplayProps> = ({
+  offeringDetails,
+  operatingCurrency
+}) => {
   const { maxRaise, minRaise, adminExpense } = offeringDetails;
 
   return (
     <div className="bg-white rounded-xl shadow-xl py-6 mb-8">
       <h1 className="font-bold text-xl px-4 lg:px-8 mb-8">Sources & Uses of Funds</h1>
       <div>
-        <FinancialFactItem label="Gross offering proceeds (max)" amount={maxRaise} currency={operatingCurrency} />
-        <FinancialFactItem label="Gross offering proceeds (min)" amount={minRaise} currency={operatingCurrency} />
+        <FinancialFactItem
+          label="Gross offering proceeds (max)"
+          amount={maxRaise}
+          currency={operatingCurrency}
+        />
+        <FinancialFactItem
+          label="Gross offering proceeds (min)"
+          amount={minRaise}
+          currency={operatingCurrency}
+        />
         {!!adminExpense && (
           <>
             <FinancialFactItem

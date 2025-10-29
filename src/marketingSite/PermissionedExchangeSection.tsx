@@ -1,13 +1,13 @@
 import React, { FC } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
 
-const FeatureItem: FC<{ image: string; title: string; subtitle: string; description: string; reverse?: boolean }> = ({
-  image,
-  title,
-  subtitle,
-  description,
-  reverse,
-}) => {
+const FeatureItem: FC<{
+  image: string;
+  title: string;
+  subtitle: string;
+  description: string;
+  reverse?: boolean;
+}> = ({ image, title, subtitle, description, reverse }) => {
   const windowSize = useWindowSize();
   const isMobile = windowSize.width && windowSize.width < 768;
   const imageItem = (

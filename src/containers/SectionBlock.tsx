@@ -18,7 +18,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
   className,
   startOpen,
   mini,
-  asAccordion,
+  asAccordion
 }) => {
   const [detailsShown, setDetailsShown] = useState(startOpen);
   const handleDetailsReveal = () => {
@@ -35,9 +35,15 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
         )}
         onClick={handleDetailsReveal}
       >
-        <h2 className={cn(mini ? 'text-sm text-grey-600' : 'text-xl font-bold text-gray-800')}>{sectionTitle}</h2>
+        <h2 className={cn(mini ? 'text-sm text-grey-600' : 'text-xl font-bold text-gray-800')}>
+          {sectionTitle}
+        </h2>
         <div className="ml-2">
-          {detailsShown ? <FontAwesomeIcon icon="chevron-up" /> : <FontAwesomeIcon icon="chevron-down" />}
+          {detailsShown ? (
+            <FontAwesomeIcon icon="chevron-up" />
+          ) : (
+            <FontAwesomeIcon icon="chevron-down" />
+          )}
         </div>
       </button>
       {detailsShown && <div>{children}</div>}

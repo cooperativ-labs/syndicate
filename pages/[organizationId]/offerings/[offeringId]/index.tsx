@@ -4,12 +4,17 @@ import React, { FC } from 'react';
 import router from 'next/router';
 
 import OfferingDetails from '@src/pages/OfferingDetails';
-import { GET_OFFERING } from '@src/utils/dGraphQueries/offering';
-import { useQuery } from '@apollo/client';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+import { useQuery } from '@apollo/client/react';
 
 const OfferingPage: FC = () => {
   const offeringId = router.query.offeringId;
-  const { data: offeringData, refetch, error, loading } = useQuery(GET_OFFERING, { variables: { id: offeringId } });
+  const {
+    data: offeringData,
+    refetch,
+    error,
+    loading
+  } = useQuery(GET_OFFERING, { variables: { id: offeringId } });
 
   if (!offeringData) {
     return <LoadingModal />;

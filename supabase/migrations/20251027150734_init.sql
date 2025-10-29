@@ -239,7 +239,7 @@ CREATE TYPE currency_code AS ENUM (
 
 -- Note: Users are managed by Supabase Auth in the auth.users table
 -- We'll create a public profiles table to extend user data
-CREATE TABLE profiles (
+CREATE TABLE profile (
     id UUID PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
     name TEXT,
     image TEXT,
@@ -249,7 +249,7 @@ CREATE TABLE profiles (
 );
 
 -- Organizations table
-CREATE TABLE organizations (
+CREATE TABLE organization (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     name TEXT,
     logo TEXT,
@@ -269,9 +269,9 @@ CREATE TABLE organizations (
 );
 
 -- Organization Users junction table
-CREATE TABLE organization_users (
+CREATE TABLE organization_user (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     permissions organization_permission_type[] DEFAULT '{}',
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -280,7 +280,7 @@ CREATE TABLE organization_users (
 );
 
 -- Jurisdictions table
-CREATE TABLE jurisdictions (
+CREATE TABLE jurisdiction (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     country TEXT NOT NULL,
     province TEXT,
@@ -289,15 +289,15 @@ CREATE TABLE jurisdictions (
 );
 
 -- Legal Entities table
-CREATE TABLE legal_entities (
+CREATE TABLE legal_entity (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     display_name TEXT,
     legal_name TEXT,
     type legal_entity_type NOT NULL,
     tax_id TEXT,
     purpose TEXT,
-    jurisdiction_id UUID REFERENCES jurisdictions(id),
+    jurisdiction_id UUID REFERENCES jurisdiction(id),
     operating_currency currency_code,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
@@ -305,20 +305,20 @@ CREATE TABLE legal_entities (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Legal Entity relationships (self-referencing)
-CREATE TABLE legal_entity_relationships (
+-- Legal Entity relationship (self-referencing)
+CREATE TABLE legal_entity_relationship (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    parent_entity_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
-    child_entity_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
+    parent_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    child_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     relationship_type TEXT NOT NULL CHECK (relationship_type IN ('owner', 'subsidiary')),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(parent_entity_id, child_entity_id, relationship_type)
 );
 
 -- Addresses table
-CREATE TABLE addresses (
+CREATE TABLE address (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    legal_entity_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
+    legal_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     label TEXT,
     line1 TEXT,
     line2 TEXT,
@@ -334,9 +334,9 @@ CREATE TABLE addresses (
 );
 
 -- Email Addresses table
-CREATE TABLE email_addresses (
+CREATE TABLE email_address (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     address TEXT UNIQUE NOT NULL,
     name TEXT,
     description TEXT,
@@ -346,9 +346,9 @@ CREATE TABLE email_addresses (
 );
 
 -- Linked Accounts table
-CREATE TABLE linked_accounts (
+CREATE TABLE linked_account (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organizations(id) ON DELETE CASCADE,
+    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     account_provided_id TEXT,
     username TEXT,
     url TEXT NOT NULL,
@@ -360,7 +360,7 @@ CREATE TABLE linked_accounts (
 );
 
 -- Images table
-CREATE TABLE images (
+CREATE TABLE image (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     label TEXT,
     url TEXT NOT NULL,
@@ -370,7 +370,7 @@ CREATE TABLE images (
 );
 
 -- Documents table
-CREATE TABLE documents (
+CREATE TABLE document (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     title TEXT,
     text TEXT,
@@ -379,8 +379,8 @@ CREATE TABLE documents (
     type document_type,
     url TEXT,
     file_id TEXT,
-    thumbnail_image_id UUID REFERENCES images(id),
-    owner_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
+    thumbnail_image_id UUID REFERENCES image(id),
+    owner_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     smart_contract_id UUID,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
@@ -392,10 +392,10 @@ CREATE TABLE documents (
 );
 
 -- Document Signatories table
-CREATE TABLE document_signatories (
+CREATE TABLE document_signatory (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    document_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
-    legal_entity_id UUID REFERENCES legal_entities(id) ON DELETE SET NULL,
+    document_id UUID NOT NULL REFERENCES document(id) ON DELETE CASCADE,
+    legal_entity_id UUID REFERENCES legal_entity(id) ON DELETE SET NULL,
     signer_address TEXT,
     signature TEXT,
     date TIMESTAMPTZ,
@@ -405,9 +405,9 @@ CREATE TABLE document_signatories (
 );
 
 -- Crypto Addresses table
-CREATE TABLE crypto_addresses (
+CREATE TABLE crypto_address (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    legal_entity_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
+    legal_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     name TEXT,
     address TEXT UNIQUE NOT NULL,
     description TEXT,
@@ -420,16 +420,16 @@ CREATE TABLE crypto_addresses (
 );
 
 -- Smart Contracts table
-CREATE TABLE smart_contracts (
+CREATE TABLE smart_contract (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    crypto_address_id UUID NOT NULL REFERENCES crypto_addresses(id) ON DELETE CASCADE,
+    crypto_address_id UUID NOT NULL REFERENCES crypto_address(id) ON DELETE CASCADE,
     type smart_contract_type NOT NULL,
     sub_type TEXT,
     num_tokens_authorized BIGINT,
     backing_token currency_code,
-    owner_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
+    owner_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     name TEXT,
-    document_id UUID REFERENCES documents(id),
+    document_id UUID REFERENCES document(id),
     established BOOLEAN DEFAULT false,
     partitions TEXT[],
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -437,7 +437,7 @@ CREATE TABLE smart_contracts (
 );
 
 -- Offerings table
-CREATE TABLE offerings (
+CREATE TABLE offering (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
@@ -445,12 +445,12 @@ CREATE TABLE offerings (
     image TEXT,
     banner_image TEXT,
     primary_video TEXT,
-    sharing_image_id UUID REFERENCES images(id),
+    sharing_image_id UUID REFERENCES image(id),
     brand_color TEXT,
     light_brand BOOLEAN DEFAULT false,
     website TEXT,
     short_description TEXT,
-    offering_entity_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
+    offering_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     is_public BOOLEAN DEFAULT false,
     waitlist_on BOOLEAN DEFAULT false,
     access_code TEXT,
@@ -459,9 +459,9 @@ CREATE TABLE offerings (
 );
 
 -- Offering Details table
-CREATE TABLE offering_details (
+CREATE TABLE offering_detail (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    offering_id UUID NOT NULL REFERENCES offerings(id) ON DELETE CASCADE,
+    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
     custom_onboarding_link TEXT,
     type offering_details_type,
     stage offering_stage,
@@ -496,13 +496,13 @@ CREATE TABLE offering_details (
 );
 
 -- Offering Description Text table
-CREATE TABLE offering_description_texts (
+CREATE TABLE offering_description_text (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     section offering_tab_section NOT NULL,
     title TEXT NOT NULL,
     text TEXT NOT NULL,
     "order" INTEGER NOT NULL,
-    offering_id UUID NOT NULL REFERENCES offerings(id) ON DELETE CASCADE,
+    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -510,28 +510,28 @@ CREATE TABLE offering_description_texts (
 );
 
 -- Offering Smart Contract Sets table
-CREATE TABLE offering_smart_contract_sets (
+CREATE TABLE offering_smart_contract_set (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    offering_id UUID NOT NULL REFERENCES offerings(id) ON DELETE CASCADE,
-    share_contract_id UUID REFERENCES smart_contracts(id),
-    swap_contract_id UUID REFERENCES smart_contracts(id),
-    distribution_contract_id UUID REFERENCES smart_contracts(id),
+    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
+    share_contract_id UUID REFERENCES smart_contract(id),
+    swap_contract_id UUID REFERENCES smart_contract(id),
+    distribution_contract_id UUID REFERENCES smart_contract(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Offering Participants table
-CREATE TABLE offering_participants (
+CREATE TABLE offering_participant (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     address_offering_id TEXT UNIQUE NOT NULL,
     wallet_address TEXT NOT NULL,
     email_address TEXT,
     chain_id INTEGER NOT NULL,
     name TEXT,
-    offering_id UUID NOT NULL REFERENCES offerings(id) ON DELETE CASCADE,
+    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
     min_pledge INTEGER,
     max_pledge INTEGER,
-    jurisdiction_id UUID REFERENCES jurisdictions(id),
+    jurisdiction_id UUID REFERENCES jurisdiction(id),
     paid BOOLEAN DEFAULT false,
     external_id TEXT,
     last_update TIMESTAMPTZ DEFAULT NOW(),
@@ -541,19 +541,19 @@ CREATE TABLE offering_participants (
 );
 
 -- Whitelist Transactions table
-CREATE TABLE whitelist_transactions (
+CREATE TABLE whitelist_transaction (
     transaction_hash TEXT PRIMARY KEY,
-    offering_participant_id UUID NOT NULL REFERENCES offering_participants(id) ON DELETE CASCADE,
+    offering_participant_id UUID NOT NULL REFERENCES offering_participant(id) ON DELETE CASCADE,
     type whitelist_transaction_type NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Investor Applications table
-CREATE TABLE investor_applications (
+CREATE TABLE investor_application (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    offering_participant_id UUID NOT NULL REFERENCES offering_participants(id) ON DELETE CASCADE,
-    application_doc_id UUID NOT NULL REFERENCES documents(id) ON DELETE CASCADE,
+    offering_participant_id UUID NOT NULL REFERENCES offering_participant(id) ON DELETE CASCADE,
+    application_doc_id UUID NOT NULL REFERENCES document(id) ON DELETE CASCADE,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -561,11 +561,11 @@ CREATE TABLE investor_applications (
 );
 
 -- Real Estate Properties table
-CREATE TABLE real_estate_properties (
+CREATE TABLE real_estate_property (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     property_type real_estate_property_type NOT NULL,
     investment_status asset_status,
-    address_id UUID REFERENCES addresses(id),
+    address_id UUID REFERENCES address(id),
     amenities_description TEXT,
     description TEXT,
     loan INTEGER,
@@ -574,7 +574,7 @@ CREATE TABLE real_estate_properties (
     asset_value_note TEXT,
     lender_fees INTEGER,
     closing_costs INTEGER,
-    owner_id UUID NOT NULL REFERENCES legal_entities(id) ON DELETE CASCADE,
+    owner_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -582,27 +582,27 @@ CREATE TABLE real_estate_properties (
 );
 
 -- Real Estate Property Images junction table
-CREATE TABLE real_estate_property_images (
+CREATE TABLE real_estate_property_image (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    property_id UUID NOT NULL REFERENCES real_estate_properties(id) ON DELETE CASCADE,
-    image_id UUID NOT NULL REFERENCES images(id) ON DELETE CASCADE,
+    property_id UUID NOT NULL REFERENCES real_estate_property(id) ON DELETE CASCADE,
+    image_id UUID NOT NULL REFERENCES image(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(property_id, image_id)
 );
 
 -- Notification Configurations table
-CREATE TABLE notification_configurations (
+CREATE TABLE notification_configuration (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     notification_recipient_type notification_recipient_type NOT NULL,
     notification_method notification_method NOT NULL,
     notification_subject notification_subject NOT NULL,
-    organization_user_id UUID NOT NULL REFERENCES organization_users(id) ON DELETE CASCADE,
+    organization_user_id UUID NOT NULL REFERENCES organization_user(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
 -- Share Transfer Events table (Independent Chain Data)
-CREATE TABLE share_transfer_events (
+CREATE TABLE share_transfer_event (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     share_contract_address TEXT NOT NULL,
     order_index INTEGER,
@@ -620,7 +620,7 @@ CREATE TABLE share_transfer_events (
 );
 
 -- Share Orders table (Independent Chain Data)
-CREATE TABLE share_orders (
+CREATE TABLE share_order (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     min_units INTEGER,
     max_units INTEGER,
@@ -637,7 +637,7 @@ CREATE TABLE share_orders (
 );
 
 -- Offering Distributions table (Independent Chain Data)
-CREATE TABLE offering_distributions (
+CREATE TABLE offering_distribution (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
     contract_index INTEGER NOT NULL,
     transaction_hash TEXT NOT NULL,
@@ -653,112 +653,112 @@ CREATE TABLE offering_distributions (
 -- ============================================================================
 
 -- Profiles indexes
-CREATE INDEX idx_profiles_creation_date ON profiles(creation_date);
+CREATE INDEX idx_profiles_creation_date ON profile(creation_date);
 
 -- Organizations indexes
-CREATE INDEX idx_organizations_slug ON organizations(slug);
-CREATE INDEX idx_organizations_name_gin ON organizations USING gin(to_tsvector('english', name));
-CREATE INDEX idx_organizations_is_public ON organizations(is_public);
+CREATE INDEX idx_organization_slug ON organization(slug);
+CREATE INDEX idx_organization_name_gin ON organization USING gin(to_tsvector('english', name));
+CREATE INDEX idx_organization_is_public ON organization(is_public);
 
 -- Organization Users indexes
-CREATE INDEX idx_organization_users_org_id ON organization_users(organization_id);
-CREATE INDEX idx_organization_users_user_id ON organization_users(user_id);
-CREATE INDEX idx_organization_users_permissions ON organization_users USING gin(permissions);
+CREATE INDEX idx_organization_user_org_id ON organization_user(organization_id);
+CREATE INDEX idx_organization_user_user_id ON organization_user(user_id);
+CREATE INDEX idx_organization_user_permissions ON organization_user USING gin(permissions);
 
 -- Legal Entities indexes
-CREATE INDEX idx_legal_entities_org_id ON legal_entities(organization_id);
-CREATE INDEX idx_legal_entities_display_name_gin ON legal_entities USING gin(to_tsvector('english', display_name));
-CREATE INDEX idx_legal_entities_legal_name_gin ON legal_entities USING gin(to_tsvector('english', legal_name));
-CREATE INDEX idx_legal_entities_type ON legal_entities(type);
+CREATE INDEX idx_legal_entity_org_id ON legal_entity(organization_id);
+CREATE INDEX idx_legal_entity_display_name_gin ON legal_entity USING gin(to_tsvector('english', display_name));
+CREATE INDEX idx_legal_entity_legal_name_gin ON legal_entity USING gin(to_tsvector('english', legal_name));
+CREATE INDEX idx_legal_entity_type ON legal_entity(type);
 
 -- Addresses indexes
-CREATE INDEX idx_addresses_legal_entity_id ON addresses(legal_entity_id);
-CREATE INDEX idx_addresses_city ON addresses(city);
-CREATE INDEX idx_addresses_country ON addresses(country);
+CREATE INDEX idx_address_legal_entity_id ON address(legal_entity_id);
+CREATE INDEX idx_address_city ON address(city);
+CREATE INDEX idx_address_country ON address(country);
 
 -- Email Addresses indexes
-CREATE INDEX idx_email_addresses_org_id ON email_addresses(organization_id);
-CREATE INDEX idx_email_addresses_address ON email_addresses(address);
-CREATE INDEX idx_email_addresses_is_public ON email_addresses(is_public);
+CREATE INDEX idx_email_address_org_id ON email_address(organization_id);
+CREATE INDEX idx_email_address_address ON email_address(address);
+CREATE INDEX idx_email_address_is_public ON email_address(is_public);
 
 -- Linked Accounts indexes
-CREATE INDEX idx_linked_accounts_org_id ON linked_accounts(organization_id);
-CREATE INDEX idx_linked_accounts_username ON linked_accounts(username);
-CREATE INDEX idx_linked_accounts_type ON linked_accounts(type);
+CREATE INDEX idx_linked_account_org_id ON linked_account(organization_id);
+CREATE INDEX idx_linked_account_username ON linked_account(username);
+CREATE INDEX idx_linked_account_type ON linked_account(type);
 
 -- Documents indexes
-CREATE INDEX idx_documents_owner_id ON documents(owner_id);
-CREATE INDEX idx_documents_offering_id ON documents(offering_id);
-CREATE INDEX idx_documents_offering_unique_id ON documents(offering_unique_id);
-CREATE INDEX idx_documents_file_id ON documents(file_id);
-CREATE INDEX idx_documents_type ON documents(type);
-CREATE INDEX idx_documents_format ON documents(format);
+CREATE INDEX idx_document_owner_id ON document(owner_id);
+CREATE INDEX idx_document_offering_id ON document(offering_id);
+CREATE INDEX idx_document_offering_unique_id ON document(offering_unique_id);
+CREATE INDEX idx_document_file_id ON document(file_id);
+CREATE INDEX idx_document_type ON document(type);
+CREATE INDEX idx_document_format ON document(format);
 
 -- Document Signatories indexes
-CREATE INDEX idx_document_signatories_document_id ON document_signatories(document_id);
-CREATE INDEX idx_document_signatories_legal_entity_id ON document_signatories(legal_entity_id);
+CREATE INDEX idx_document_signatory_document_id ON document_signatory(document_id);
+CREATE INDEX idx_document_signatory_legal_entity_id ON document_signatory(legal_entity_id);
 
 -- Crypto Addresses indexes
-CREATE INDEX idx_crypto_addresses_legal_entity_id ON crypto_addresses(legal_entity_id);
-CREATE INDEX idx_crypto_addresses_address ON crypto_addresses(address);
-CREATE INDEX idx_crypto_addresses_protocol ON crypto_addresses(protocol);
-CREATE INDEX idx_crypto_addresses_type ON crypto_addresses(type);
-CREATE INDEX idx_crypto_addresses_is_public ON crypto_addresses(is_public);
+CREATE INDEX idx_crypto_address_legal_entity_id ON crypto_address(legal_entity_id);
+CREATE INDEX idx_crypto_address_address ON crypto_address(address);
+CREATE INDEX idx_crypto_address_protocol ON crypto_address(protocol);
+CREATE INDEX idx_crypto_address_type ON crypto_address(type);
+CREATE INDEX idx_crypto_address_is_public ON crypto_address(is_public);
 
 -- Smart Contracts indexes
-CREATE INDEX idx_smart_contracts_crypto_address_id ON smart_contracts(crypto_address_id);
-CREATE INDEX idx_smart_contracts_owner_id ON smart_contracts(owner_id);
-CREATE INDEX idx_smart_contracts_type ON smart_contracts(type);
+CREATE INDEX idx_smart_contract_crypto_address_id ON smart_contract(crypto_address_id);
+CREATE INDEX idx_smart_contract_owner_id ON smart_contract(owner_id);
+CREATE INDEX idx_smart_contract_type ON smart_contract(type);
 
 -- Offerings indexes
-CREATE INDEX idx_offerings_offering_entity_id ON offerings(offering_entity_id);
-CREATE INDEX idx_offerings_name_gin ON offerings USING gin(to_tsvector('english', name));
-CREATE INDEX idx_offerings_is_public ON offerings(is_public);
-CREATE INDEX idx_offerings_creation_date ON offerings(creation_date);
+CREATE INDEX idx_offering_offering_entity_id ON offering(offering_entity_id);
+CREATE INDEX idx_offering_name_gin ON offering USING gin(to_tsvector('english', name));
+CREATE INDEX idx_offering_is_public ON offering(is_public);
+CREATE INDEX idx_offering_creation_date ON offering(creation_date);
 
 -- Offering Details indexes
-CREATE INDEX idx_offering_details_offering_id ON offering_details(offering_id);
-CREATE INDEX idx_offering_details_type ON offering_details(type);
-CREATE INDEX idx_offering_details_stage ON offering_details(stage);
+CREATE INDEX idx_offering_detail_offering_id ON offering_detail(offering_id);
+CREATE INDEX idx_offering_detail_type ON offering_detail(type);
+CREATE INDEX idx_offering_detail_stage ON offering_detail(stage);
 
 -- Offering Description Texts indexes
-CREATE INDEX idx_offering_description_texts_offering_id ON offering_description_texts(offering_id);
-CREATE INDEX idx_offering_description_texts_section ON offering_description_texts(section);
-CREATE INDEX idx_offering_description_texts_order ON offering_description_texts("order");
+CREATE INDEX idx_offering_description_text_offering_id ON offering_description_text(offering_id);
+CREATE INDEX idx_offering_description_text_section ON offering_description_text(section);
+CREATE INDEX idx_offering_description_text_order ON offering_description_text("order");
 
 -- Offering Smart Contract Sets indexes
-CREATE INDEX idx_offering_smart_contract_sets_offering_id ON offering_smart_contract_sets(offering_id);
+CREATE INDEX idx_offering_smart_contract_set_offering_id ON offering_smart_contract_set(offering_id);
 
 -- Offering Participants indexes
-CREATE INDEX idx_offering_participants_offering_id ON offering_participants(offering_id);
-CREATE INDEX idx_offering_participants_wallet_address_gin ON offering_participants USING gin(to_tsvector('english', wallet_address));
-CREATE INDEX idx_offering_participants_address_offering_id ON offering_participants(address_offering_id);
-CREATE INDEX idx_offering_participants_email_address ON offering_participants(email_address);
+CREATE INDEX idx_offering_participant_offering_id ON offering_participant(offering_id);
+CREATE INDEX idx_offering_participant_wallet_address_gin ON offering_participant USING gin(to_tsvector('english', wallet_address));
+CREATE INDEX idx_offering_participant_address_offering_id ON offering_participant(address_offering_id);
+CREATE INDEX idx_offering_participant_email_address ON offering_participant(email_address);
 
 -- Whitelist Transactions indexes
-CREATE INDEX idx_whitelist_transactions_offering_participant_id ON whitelist_transactions(offering_participant_id);
-CREATE INDEX idx_whitelist_transactions_type ON whitelist_transactions(type);
+CREATE INDEX idx_whitelist_transaction_offering_participant_id ON whitelist_transaction(offering_participant_id);
+CREATE INDEX idx_whitelist_transaction_type ON whitelist_transaction(type);
 
 -- Investor Applications indexes
-CREATE INDEX idx_investor_applications_offering_participant_id ON investor_applications(offering_participant_id);
-CREATE INDEX idx_investor_applications_application_doc_id ON investor_applications(application_doc_id);
+CREATE INDEX idx_investor_application_offering_participant_id ON investor_application(offering_participant_id);
+CREATE INDEX idx_investor_application_application_doc_id ON investor_application(application_doc_id);
 
 -- Real Estate Properties indexes
-CREATE INDEX idx_real_estate_properties_owner_id ON real_estate_properties(owner_id);
-CREATE INDEX idx_real_estate_properties_property_type ON real_estate_properties(property_type);
-CREATE INDEX idx_real_estate_properties_investment_status ON real_estate_properties(investment_status);
+CREATE INDEX idx_real_estate_property_owner_id ON real_estate_property(owner_id);
+CREATE INDEX idx_real_estate_property_property_type ON real_estate_property(property_type);
+CREATE INDEX idx_real_estate_property_investment_status ON real_estate_property(investment_status);
 
 -- Share Transfer Events indexes
-CREATE INDEX idx_share_transfer_events_share_contract_address ON share_transfer_events(share_contract_address);
-CREATE INDEX idx_share_transfer_events_recipient_address ON share_transfer_events(recipient_address);
-CREATE INDEX idx_share_transfer_events_sender_address ON share_transfer_events(sender_address);
-CREATE INDEX idx_share_transfer_events_partition ON share_transfer_events(partition);
-CREATE INDEX idx_share_transfer_events_type ON share_transfer_events(type);
+CREATE INDEX idx_share_transfer_event_share_contract_address ON share_transfer_event(share_contract_address);
+CREATE INDEX idx_share_transfer_event_recipient_address ON share_transfer_event(recipient_address);
+CREATE INDEX idx_share_transfer_event_sender_address ON share_transfer_event(sender_address);
+CREATE INDEX idx_share_transfer_event_partition ON share_transfer_event(partition);
+CREATE INDEX idx_share_transfer_event_type ON share_transfer_event(type);
 
 -- Share Orders indexes
-CREATE INDEX idx_share_orders_swap_contract_address ON share_orders(swap_contract_address);
-CREATE INDEX idx_share_orders_initiator ON share_orders(initiator);
-CREATE INDEX idx_share_orders_visible ON share_orders(visible);
+CREATE INDEX idx_share_order_swap_contract_address ON share_order(swap_contract_address);
+CREATE INDEX idx_share_order_initiator ON share_order(initiator);
+CREATE INDEX idx_share_order_visible ON share_order(visible);
 
 -- Note: Supabase Auth manages its own indexes for auth.users, auth.sessions, etc.
 
@@ -767,32 +767,32 @@ CREATE INDEX idx_share_orders_visible ON share_orders(visible);
 -- ============================================================================
 
 -- Enable RLS on all tables
-ALTER TABLE profiles ENABLE ROW LEVEL SECURITY;
-ALTER TABLE organizations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE organization_users ENABLE ROW LEVEL SECURITY;
-ALTER TABLE legal_entities ENABLE ROW LEVEL SECURITY;
-ALTER TABLE legal_entity_relationships ENABLE ROW LEVEL SECURITY;
-ALTER TABLE addresses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE email_addresses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE linked_accounts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE images ENABLE ROW LEVEL SECURITY;
-ALTER TABLE documents ENABLE ROW LEVEL SECURITY;
-ALTER TABLE document_signatories ENABLE ROW LEVEL SECURITY;
-ALTER TABLE crypto_addresses ENABLE ROW LEVEL SECURITY;
-ALTER TABLE smart_contracts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offerings ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offering_details ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offering_description_texts ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offering_smart_contract_sets ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offering_participants ENABLE ROW LEVEL SECURITY;
-ALTER TABLE whitelist_transactions ENABLE ROW LEVEL SECURITY;
-ALTER TABLE investor_applications ENABLE ROW LEVEL SECURITY;
-ALTER TABLE real_estate_properties ENABLE ROW LEVEL SECURITY;
-ALTER TABLE real_estate_property_images ENABLE ROW LEVEL SECURITY;
-ALTER TABLE notification_configurations ENABLE ROW LEVEL SECURITY;
-ALTER TABLE share_transfer_events ENABLE ROW LEVEL SECURITY;
-ALTER TABLE share_orders ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offering_distributions ENABLE ROW LEVEL SECURITY;
+ALTER TABLE profile ENABLE ROW LEVEL SECURITY;
+ALTER TABLE organization ENABLE ROW LEVEL SECURITY;
+ALTER TABLE organization_user ENABLE ROW LEVEL SECURITY;
+ALTER TABLE legal_entity ENABLE ROW LEVEL SECURITY;
+ALTER TABLE legal_entity_relationship ENABLE ROW LEVEL SECURITY;
+ALTER TABLE address ENABLE ROW LEVEL SECURITY;
+ALTER TABLE email_address ENABLE ROW LEVEL SECURITY;
+ALTER TABLE linked_account ENABLE ROW LEVEL SECURITY;
+ALTER TABLE image ENABLE ROW LEVEL SECURITY;
+ALTER TABLE document ENABLE ROW LEVEL SECURITY;
+ALTER TABLE document_signatory ENABLE ROW LEVEL SECURITY;
+ALTER TABLE crypto_address ENABLE ROW LEVEL SECURITY;
+ALTER TABLE smart_contract ENABLE ROW LEVEL SECURITY;
+ALTER TABLE offering ENABLE ROW LEVEL SECURITY;
+ALTER TABLE offering_detail ENABLE ROW LEVEL SECURITY;
+ALTER TABLE offering_description_text ENABLE ROW LEVEL SECURITY;
+ALTER TABLE offering_smart_contract_set ENABLE ROW LEVEL SECURITY;
+ALTER TABLE offering_participant ENABLE ROW LEVEL SECURITY;
+ALTER TABLE whitelist_transaction ENABLE ROW LEVEL SECURITY;
+ALTER TABLE investor_application ENABLE ROW LEVEL SECURITY;
+ALTER TABLE real_estate_property ENABLE ROW LEVEL SECURITY;
+ALTER TABLE real_estate_property_image ENABLE ROW LEVEL SECURITY;
+ALTER TABLE notification_configuration ENABLE ROW LEVEL SECURITY;
+ALTER TABLE share_transfer_event ENABLE ROW LEVEL SECURITY;
+ALTER TABLE share_order ENABLE ROW LEVEL SECURITY;
+ALTER TABLE offering_distribution ENABLE ROW LEVEL SECURITY;
 -- Note: Supabase Auth tables (auth.users, auth.sessions, etc.) have their own RLS policies
 
 -- Basic RLS policies (users can access their own data and organization data they belong to)
@@ -800,58 +800,60 @@ ALTER TABLE offering_distributions ENABLE ROW LEVEL SECURITY;
 -- based on your specific business logic and the complex auth rules from the Dgraph schema.
 
 -- Users can view and update their own profile
-CREATE POLICY "Users can view own profile" ON profiles
+CREATE POLICY "Users can view own profile" ON profile
     FOR SELECT USING (auth.uid() = id);
 
-CREATE POLICY "Users can update own profile" ON profiles
+CREATE POLICY "Users can update own profile" ON profile
     FOR UPDATE USING (auth.uid() = id);
 
 -- Users can insert their own profile
-CREATE POLICY "Users can insert own profile" ON profiles
+CREATE POLICY "Users can insert own profile" ON profile
     FOR INSERT WITH CHECK (auth.uid() = id);
 
 -- Organization members can view organization data
-CREATE POLICY "Organization members can view organization" ON organizations
+CREATE POLICY "Organization members can view organization" ON organization
     FOR SELECT USING (
         id IN (
             SELECT organization_id 
-            FROM organization_users 
+            FROM organization_user 
             WHERE user_id = auth.uid()
         )
     );
 
 -- Organization admins can update organization
-CREATE POLICY "Organization admins can update organization" ON organizations
+CREATE POLICY "Organization admins can update organization" ON organization
     FOR UPDATE USING (
         id IN (
             SELECT organization_id 
-            FROM organization_users 
+            FROM organization_user 
             WHERE user_id = auth.uid() 
             AND 'ADMIN' = ANY(permissions)
         )
     );
 
 -- Organization members can view organization users
-CREATE POLICY "Organization members can view organization users" ON organization_users
+CREATE POLICY "Organization members can view organization users" ON organization_user
     FOR SELECT USING (
         organization_id IN (
             SELECT organization_id 
-            FROM organization_users 
+            FROM organization_user 
             WHERE user_id = auth.uid()
         )
     );
 
 -- Organization admins can manage organization users
-CREATE POLICY "Organization admins can manage organization users" ON organization_users
+CREATE POLICY "Organization admins can manage organization users" ON organization_user
     FOR ALL USING (
         organization_id IN (
             SELECT organization_id 
-            FROM organization_users 
+            FROM organization_user 
             WHERE user_id = auth.uid() 
             AND 'ADMIN' = ANY(permissions)
         )
     );
 
+CREATE POLICY "Authenticated users can create organizations" ON organization
+  FOR INSERT WITH CHECK (auth.uid() IS NOT NULL);
 -- Similar patterns for other tables...
 -- (Additional RLS policies would be implemented based on specific business requirements)
 
@@ -872,7 +874,7 @@ $$ language 'plpgsql';
 CREATE OR REPLACE FUNCTION public.handle_new_user()
 RETURNS TRIGGER AS $$
 BEGIN
-    INSERT INTO public.profiles (id, name, image)
+    INSERT INTO public.profile (id, name, image)
     VALUES (
         NEW.id,
         COALESCE(NEW.raw_user_meta_data->>'name', NEW.raw_user_meta_data->>'full_name'),
@@ -888,30 +890,30 @@ CREATE TRIGGER on_auth_user_created
     FOR EACH ROW EXECUTE FUNCTION public.handle_new_user();
 
 -- Add updated_at triggers to all tables with updated_at columns
-CREATE TRIGGER update_profiles_updated_at BEFORE UPDATE ON profiles FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_organizations_updated_at BEFORE UPDATE ON organizations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_organization_users_updated_at BEFORE UPDATE ON organization_users FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_legal_entities_updated_at BEFORE UPDATE ON legal_entities FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_addresses_updated_at BEFORE UPDATE ON addresses FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_email_addresses_updated_at BEFORE UPDATE ON email_addresses FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_linked_accounts_updated_at BEFORE UPDATE ON linked_accounts FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_images_updated_at BEFORE UPDATE ON images FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON documents FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_document_signatories_updated_at BEFORE UPDATE ON document_signatories FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_crypto_addresses_updated_at BEFORE UPDATE ON crypto_addresses FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_smart_contracts_updated_at BEFORE UPDATE ON smart_contracts FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_offerings_updated_at BEFORE UPDATE ON offerings FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_offering_details_updated_at BEFORE UPDATE ON offering_details FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_offering_description_texts_updated_at BEFORE UPDATE ON offering_description_texts FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_offering_smart_contract_sets_updated_at BEFORE UPDATE ON offering_smart_contract_sets FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_offering_participants_updated_at BEFORE UPDATE ON offering_participants FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_whitelist_transactions_updated_at BEFORE UPDATE ON whitelist_transactions FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_investor_applications_updated_at BEFORE UPDATE ON investor_applications FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_real_estate_properties_updated_at BEFORE UPDATE ON real_estate_properties FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_notification_configurations_updated_at BEFORE UPDATE ON notification_configurations FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_share_transfer_events_updated_at BEFORE UPDATE ON share_transfer_events FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_share_orders_updated_at BEFORE UPDATE ON share_orders FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_offering_distributions_updated_at BEFORE UPDATE ON offering_distributions FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_profile_updated_at BEFORE UPDATE ON profile FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_organization_updated_at BEFORE UPDATE ON organization FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_organization_users_updated_at BEFORE UPDATE ON organization_user FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_legal_entity_updated_at BEFORE UPDATE ON legal_entity FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_address_updated_at BEFORE UPDATE ON address FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_email_address_updated_at BEFORE UPDATE ON email_address FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_linked_account_updated_at BEFORE UPDATE ON linked_account FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_image_updated_at BEFORE UPDATE ON image FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();    
+CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON document FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_document_signatory_updated_at BEFORE UPDATE ON document_signatory FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_crypto_address_updated_at BEFORE UPDATE ON crypto_address FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_smart_contract_updated_at BEFORE UPDATE ON smart_contract FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_offering_updated_at BEFORE UPDATE ON offering FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_offering_details_updated_at BEFORE UPDATE ON offering_detail FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_offering_description_text_updated_at BEFORE UPDATE ON offering_description_text FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_offering_smart_contract_set_updated_at BEFORE UPDATE ON offering_smart_contract_set FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_offering_participant_updated_at BEFORE UPDATE ON offering_participant FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_whitelist_transaction_updated_at BEFORE UPDATE ON whitelist_transaction FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_investor_application_updated_at BEFORE UPDATE ON investor_application FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_real_estate_property_updated_at BEFORE UPDATE ON real_estate_property FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_notification_configuration_updated_at BEFORE UPDATE ON notification_configuration FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_share_transfer_event_updated_at BEFORE UPDATE ON share_transfer_event FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_share_order_updated_at BEFORE UPDATE ON share_order FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
+CREATE TRIGGER update_offering_distribution_updated_at BEFORE UPDATE ON offering_distribution FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 -- Note: Supabase Auth tables don't need updated_at triggers as they're managed by Supabase
 
 -- ============================================================================
@@ -919,15 +921,22 @@ CREATE TRIGGER update_offering_distributions_updated_at BEFORE UPDATE ON offerin
 -- ============================================================================
 
 -- Add comments to tables for documentation
-COMMENT ON TABLE profiles IS 'User profiles extending Supabase Auth users with additional data';
-COMMENT ON TABLE organizations IS 'Organizations that manage offerings and legal entities';
-COMMENT ON TABLE legal_entities IS 'Legal entities (individuals, corporations, LLCs) that can own offerings';
-COMMENT ON TABLE offerings IS 'Investment offerings managed by legal entities';
-COMMENT ON TABLE offering_participants IS 'Investors participating in offerings';
-COMMENT ON TABLE documents IS 'Documents associated with offerings and legal entities';
-COMMENT ON TABLE smart_contracts IS 'Blockchain smart contracts for offerings';
-COMMENT ON TABLE share_transfer_events IS 'Blockchain events for share transfers (independent chain data)';
-COMMENT ON TABLE share_orders IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE profile IS 'User profiles extending Supabase Auth users with additional data';
+COMMENT ON TABLE organization IS 'Organizations that manage offerings and legal entities';
+COMMENT ON TABLE legal_entity IS 'Legal entities (individuals, corporations, LLCs) that can own offerings';
+COMMENT ON TABLE offering IS 'Investment offerings managed by legal entities';
+COMMENT ON TABLE offering_detail IS 'Investors participating in offerings';
+COMMENT ON TABLE offering_description_text IS 'Documents associated with offerings and legal entities';
+COMMENT ON TABLE offering_smart_contract_set IS 'Blockchain smart contracts for offerings';
+COMMENT ON TABLE offering_participant IS 'Blockchain events for share transfers (independent chain data)';
+COMMENT ON TABLE whitelist_transaction IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE investor_application IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE real_estate_property IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE real_estate_property_image IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE notification_configuration IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE share_transfer_event IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE share_order IS 'Share trading orders (independent chain data)';
+COMMENT ON TABLE offering_distribution IS 'Share trading orders (independent chain data)';
 
 -- Migration completed successfully
 -- This migration creates a complete PostgreSQL schema equivalent to the Dgraph schema

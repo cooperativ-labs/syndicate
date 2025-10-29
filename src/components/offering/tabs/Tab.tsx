@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { OfferingTabSection } from 'oldTypes';
+import { OfferingTabSection } from '@gql/graphql';
 
 type TabProps = {
   label: string;

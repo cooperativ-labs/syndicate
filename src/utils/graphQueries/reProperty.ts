@@ -1,11 +1,11 @@
-import gql from 'graphql-tag';
+import { gql } from '@apollo/client';
 import { CORE_RE_PROPERTY_FIELDS } from './fragments';
 
 export const GET_RE_PROPERTY = gql`
   ${CORE_RE_PROPERTY_FIELDS}
   query GetRealEstateProperty($id: ID!) {
     getRealEstateProperty(id: $id) {
-      ...rePropertyData
+      ...RealEstatePropertyFields
     }
   }
 `;
@@ -248,7 +248,11 @@ export const ADD_PROPERTY_IMAGE = gql`
 export const REMOVE_PROPERTY_IMAGE = gql`
   mutation RemoveAddress($currentDate: DateTime!, $propertyId: [ID!], $imageId: ID!) {
     updateRealEstateProperty(
-      input: { filter: { id: $propertyId }, remove: { images: { id: $imageId } }, set: { lastUpdate: $currentDate } }
+      input: {
+        filter: { id: $propertyId }
+        remove: { images: { id: $imageId } }
+        set: { lastUpdate: $currentDate }
+      }
     ) {
       numUids
       realEstateProperty {

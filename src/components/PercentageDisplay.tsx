@@ -1,5 +1,5 @@
 import React, { FC } from 'react';
-import { Maybe } from 'oldTypes';
+import { Maybe } from '@gql/graphql';
 
 type PercentageDisplayProps = {
   percent?: number;
@@ -14,7 +14,7 @@ const PercentageDisplay: FC<PercentageDisplayProps> = ({
   percent,
   secondPercent,
   multiple,
-  secondMultiple,
+  secondMultiple
 }) => {
   return (
     <div className={className}>

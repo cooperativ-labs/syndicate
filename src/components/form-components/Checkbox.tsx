@@ -1,7 +1,7 @@
 import cn from 'classnames';
 import React from 'react';
 import { ErrorMessage, Field } from 'formik';
-import { Maybe } from 'oldTypes';
+import { Maybe } from '@gql/graphql';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
 
 export interface CheckboxProps {
@@ -27,16 +27,22 @@ const Checkbox: React.FC<CustomCheckboxProps> = ({
   className,
   fieldClass,
   fieldLabelClass,
-  sideLabel,
+  sideLabel
 }) => {
   return (
     <div>
-      <div className={cn(className, [sideLabel ? 'flex flex-row-reverse justify-end items-center' : 'flex flex-col'])}>
+      <div
+        className={cn(className, [
+          sideLabel ? 'flex flex-row-reverse justify-end items-center' : 'flex flex-col'
+        ])}
+      >
         {labelText && (
           <label
             htmlFor={name}
             className={cn(
-              fieldLabelClass ? fieldLabelClass : 'text-sm text-blue-900 font-semibold text-opacity-80',
+              fieldLabelClass
+                ? fieldLabelClass
+                : 'text-sm text-blue-900 font-semibold text-opacity-80',
               sideLabel && 'ml-2 mt-1'
             )}
           >

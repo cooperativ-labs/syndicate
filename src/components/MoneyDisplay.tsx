@@ -1,6 +1,6 @@
 import cn from 'classnames';
 import React, { FC } from 'react';
-import { Currency, CurrencyCode } from 'oldTypes';
+import { Currency, CurrencyCode } from '@gql/graphql';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
@@ -16,7 +16,9 @@ const MoneyDisplay: FC<MoneyDisplayProps> = ({ amount, paymentToken, currency, c
   const isUsd =
     getCurrencyById(paymentToken)?.value === CurrencyCode.Usd ||
     getCurrencyOption(currency)?.value === CurrencyCode.Usd;
-  const normalizedCurrency = paymentToken ? getCurrencyById(paymentToken) : currency && getCurrencyOption(currency);
+  const normalizedCurrency = paymentToken
+    ? getCurrencyById(paymentToken)
+    : currency && getCurrencyOption(currency);
 
   const currencyLogo = normalizedCurrency?.logo;
   const currencySymbol = normalizedCurrency?.symbol;

@@ -1,7 +1,7 @@
 import Button from '../buttons/Button';
 import React, { FC } from 'react';
 import Select from './Select';
-import { Address, LegalEntity } from 'oldTypes';
+import { Address, LegalEntity } from '@gql/graphql';
 import { defaultFieldDiv } from './Inputs';
 
 type AddressSelectorProps = {
@@ -30,7 +30,7 @@ const AddressSelector: FC<AddressSelectorProps> = ({ addresses, fieldName, setMo
       <div className="flex flex-col col-span-2 justify-end">
         <Button
           className="p-1 px-3 border-2 border-gray-400 rounded-lg my-5"
-          onClick={(e) => {
+          onClick={e => {
             e.preventDefault();
             setModal(true);
           }}

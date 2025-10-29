@@ -3,16 +3,18 @@ import ShareCompleteSwap from './ShareCompleteSwap';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 
 import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
-import { ADD_TRANSFER_EVENT } from '@src/utils/dGraphQueries/orders';
+import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { erc20ABI, useAccount, useBalance, useContractRead } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
-import SharePurchaseSaleRequest, { SharePurchaseSaleRequestProps } from './SharePurchaseSaleRequest';
+import SharePurchaseSaleRequest, {
+  SharePurchaseSaleRequestProps
+} from './SharePurchaseSaleRequest';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
-import { useMutation } from '@apollo/client';
+import { useMutation } from '@apollo/client/react';
 
 type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   isApproved: boolean;
@@ -51,7 +53,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   filler,
   initiator,
   myShareQty,
-  refetchAllContracts,
+  refetchAllContracts
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [addTrade] = useMutation(ADD_TRANSFER_EVENT);
@@ -61,12 +63,12 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'acceptedOrderQty',
-    args: [filler as String0x, BigInt(order.contractIndex)],
+    args: [filler as String0x, BigInt(order.contractIndex)]
   });
 
   const { data: bacBalanceData } = useBalance({
     address: userWalletAddress,
-    token: paymentTokenAddress,
+    token: paymentTokenAddress
   });
 
   const refetchAllPlusAccepted = () => {
@@ -89,15 +91,19 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     (!currentUserInitiator && !isAccepted && txnApprovalsEnabled) ||
     (!currentUserInitiator && !txnApprovalsEnabled && shareQtyRemaining > 0);
   // const showCancelForm = txnApprovalsEnabled && !isFilled && !showRequestForm && isAccepted && currentUserFiller;
-  const showTradeExecutionForm = (!isEnded && txnApprovalsEnabled) || (isFiller && !txnApprovalsEnabled);
+  const showTradeExecutionForm =
+    (!isEnded && txnApprovalsEnabled) || (isFiller && !txnApprovalsEnabled);
   const isTradeExecutionStep =
-    !isCancelled && !isFilled && isApproved && (isAskOrder ? currentUserFiller : currentUserInitiator && isFiller);
+    !isCancelled &&
+    !isFilled &&
+    isApproved &&
+    (isAskOrder ? currentUserFiller : currentUserInitiator && isFiller);
 
   const { data: allowanceData } = useContractRead({
     address: paymentTokenAddress,
     abi: erc20ABI,
     functionName: 'allowance',
-    args: [userWalletAddress as String0x, swapContractAddress],
+    args: [userWalletAddress as String0x, swapContractAddress]
   });
 
   type CallFillOrderType = {
@@ -116,12 +122,15 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         organization: offering.offeringEntity?.organization,
         isAskOrder,
         refetchAllContracts: refetchAllPlusAccepted,
-        setButtonStep: setButtonStep,
+        setButtonStep: setButtonStep
       });
     } else {
       const allowance = toNormalNumber(allowanceData, paymentTokenDecimals);
       const allowanceRequiredForPurchase = amount * price;
-      const isAllowanceSufficient = getIsAllowanceSufficient(allowance, allowanceRequiredForPurchase);
+      const isAllowanceSufficient = getIsAllowanceSufficient(
+        allowance,
+        allowanceRequiredForPurchase
+      );
       if (isAllowanceSufficient) {
         setButtonStep('step2');
         await fillOrder({
@@ -139,7 +148,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           organization,
           addTrade: addTrade,
           setButtonStep: setButtonStep,
-          refetchAllContracts: refetchAllPlusAccepted,
+          refetchAllContracts: refetchAllPlusAccepted
         });
       } else {
         setButtonStep('step1');
@@ -148,7 +157,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           paymentTokenDecimals,
           spenderAddress: swapContractAddress,
           amount: allowanceRequiredForPurchase,
-          setButtonStep,
+          setButtonStep
         });
         setButtonStep('step2');
         await fillOrder({
@@ -166,7 +175,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           organization,
           addTrade: addTrade,
           setButtonStep: setButtonStep,
-          refetchAllContracts: refetchAllPlusAccepted,
+          refetchAllContracts: refetchAllPlusAccepted
         });
       }
     }
@@ -177,7 +186,9 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
     const action = isAskOrder ? 'purchase' : 'sell';
-    const mainText = txnApprovalsEnabled ? `1. Request to ${action}` : `1. ${capitalizeFirstLetter(action)}`;
+    const mainText = txnApprovalsEnabled
+      ? `1. Request to ${action}`
+      : `1. ${capitalizeFirstLetter(action)}`;
     return `${mainText} shares`;
   };
 

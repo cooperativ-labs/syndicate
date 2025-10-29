@@ -1,6 +1,6 @@
 import OfferingCard from './OfferingCard';
 import React, { FC } from 'react';
-import { Offering } from 'oldTypes';
+import { Offering } from '@gql/graphql';
 
 type OfferingsListProps = {
   offerings: any;
@@ -10,7 +10,7 @@ const OfferingsList: FC<OfferingsListProps> = ({ offerings }) => {
     <div className="flex flex-col md:flex-row md:flex-wrap justify-start gap-4">
       {offerings.map((o: Offering, i: number) => {
         return (
-          <div className="flex-grow mb-4" key={i}>
+          <div className="grow mb-4" key={i}>
             <OfferingCard offering={o} />
           </div>
         );

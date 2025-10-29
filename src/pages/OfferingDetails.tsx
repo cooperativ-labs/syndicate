@@ -14,7 +14,7 @@ import OfferingTabContainer from '@src/containers/OfferingTabContainer';
 import React, { FC, useState } from 'react';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { DocumentType, Offering } from 'oldTypes';
+import { DocumentType, Offering } from '@gql/graphql';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { readContracts, useAccount } from 'wagmi';
 import { useSession } from 'next-auth/react';
@@ -71,7 +71,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
     refetchShareContract,
     refetchSwapContract,
     refetchOrders,
-    refetchTransactionHistory,
+    refetchTransactionHistory
   } = useOfferingDetails(offering, userId);
 
   const triggerInvestorListRefresh = () => {
@@ -93,13 +93,22 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
 
   return (
     <>
-      <RightSideBar formOpen={transactionHistoryPanel} onClose={() => setTransactionHistoryPanel(false)}>
+      <RightSideBar
+        formOpen={transactionHistoryPanel}
+        onClose={() => setTransactionHistoryPanel(false)}
+      >
         <FullTransactionHistory transferEvents={transferEvents} />
       </RightSideBar>
-      <RightSideBar formOpen={financialSettingsPanel} onClose={() => setFinancialSettingsPanel(false)}>
+      <RightSideBar
+        formOpen={financialSettingsPanel}
+        onClose={() => setFinancialSettingsPanel(false)}
+      >
         <OfferingFinancialSettings offering={offering} />
       </RightSideBar>
-      <RightSideBar formOpen={descriptionSettingsPanel} onClose={() => setDescriptionSettingsPanel(false)}>
+      <RightSideBar
+        formOpen={descriptionSettingsPanel}
+        onClose={() => setDescriptionSettingsPanel(false)}
+      >
         <>
           {userId && <OfferingProfileSettings offering={offering} userId={userId} />}
           <hr className="my-4" />
@@ -156,7 +165,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                   sharesOutstanding: sharesOutstanding,
                   myShareQty: myShareQty,
                   paymentToken: paymentTokenAddress,
-                  totalDistributed: totalDistributed,
+                  totalDistributed: totalDistributed
                 }}
               />
             ) : isOfferingManager ? (
@@ -165,7 +174,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                   <ChooseConnectorButton buttonText={'Connect wallet to continue'} large />
                 </div>
               ) : (
-                <BasicOfferingDetailsForm offeringId={id} operatingCurrency={offeringEntity?.operatingCurrency} />
+                <BasicOfferingDetailsForm
+                  offeringId={id}
+                  operatingCurrency={offeringEntity?.operatingCurrency}
+                />
               )
             ) : (
               'This offering has no details yet.'

@@ -3,20 +3,29 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 import OfferingCard from '@src/components/offering/OfferingCard';
 import React, { FC } from 'react';
 import SocialLinkItem from '@src/components/SocialLinkItem';
-import { LinkedAccountType, Organization } from 'oldTypes';
+import { LinkedAccountType, Organization } from '@gql/graphql';
 
 type OrganizationProfileProps = {
   organization: Organization;
 };
 
 const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => {
-  const { name, emailAddresses, phone, logo, bannerImage, linkedAccounts, website, description, legalEntities } =
-    organization;
+  const {
+    name,
+    emailAddresses,
+    phone,
+    logo,
+    bannerImage,
+    linkedAccounts,
+    website,
+    description,
+    legalEntities
+  } = organization;
 
   const offerings =
     legalEntities &&
     legalEntities
-      .map((entity) => {
+      .map(entity => {
         return entity?.offerings;
       })
       .flat();
@@ -55,7 +64,10 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
                         );
                       })}
                       {emailAddresses && emailAddresses.length > 0 && (
-                        <SocialLinkItem type={LinkedAccountType.Email} url={`mailto:${emailAddresses[0]?.address}`} />
+                        <SocialLinkItem
+                          type={LinkedAccountType.Email}
+                          url={`mailto:${emailAddresses[0]?.address}`}
+                        />
                       )}
                       <SocialLinkItem type={LinkedAccountType.Phone} url={phone} />
                       <SocialLinkItem type={LinkedAccountType.Website} url={website} />

@@ -4,7 +4,7 @@ import React, { FC, ReactNode } from 'react';
 import { Url } from 'next/dist/shared/lib/router/router';
 
 const buttonGradient =
-  'bg-gradient-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
+  'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
 
 interface ActionButtonProps {
   className?: string;
@@ -15,7 +15,15 @@ interface ActionButtonProps {
   type?: 'button' | 'submit' | 'reset';
 }
 
-const ActionButton: FC<ActionButtonProps> = ({ link, onClick, className, type, disabled, children, ...rest }) => {
+const ActionButton: FC<ActionButtonProps> = ({
+  link,
+  onClick,
+  className,
+  type,
+  disabled,
+  children,
+  ...rest
+}) => {
   return (
     <Link href={link ? link : ''}>
       <button

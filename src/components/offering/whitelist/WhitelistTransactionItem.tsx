@@ -4,7 +4,7 @@ import { get } from 'http';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { String0x } from '@src/web3/helpersChain';
 import { usePublicClient, useTransaction } from 'wagmi';
-import { WhitelistTransaction, WhitelistTransactionType } from 'oldTypes';
+import { WhitelistTransaction, WhitelistTransactionType } from '@gql/graphql';
 
 type WhitelistTransactionItemProps = {
   transaction: WhitelistTransaction | null;
@@ -17,7 +17,7 @@ const WhitelistTransactionItem: FC<WhitelistTransactionItemProps> = ({ chainId, 
   const transactionHash = transaction?.transactionHash;
 
   const { data } = useTransaction({
-    hash: transactionHash as String0x,
+    hash: transactionHash as String0x
   });
 
   const from = data?.from;
@@ -26,7 +26,7 @@ const WhitelistTransactionItem: FC<WhitelistTransactionItemProps> = ({ chainId, 
     async function getBlockTime() {
       try {
         const block = await publicClient.getBlock({
-          blockHash: data?.hash as String0x,
+          blockHash: data?.hash as String0x
         });
         const time = new Date(Number(block?.timestamp) * 1000);
 
@@ -40,14 +40,18 @@ const WhitelistTransactionItem: FC<WhitelistTransactionItemProps> = ({ chainId, 
 
   const types = [
     { type: WhitelistTransactionType.Add, name: 'Approved' },
-    { type: WhitelistTransactionType.Remove, name: 'Revoked' },
+    { type: WhitelistTransactionType.Remove, name: 'Revoked' }
   ];
-  const type = types.find((t) => t.type === transaction?.type)?.name + ' ';
+  const type = types.find(t => t.type === transaction?.type)?.name + ' ';
 
   return (
     <div className="flex gap-2 p-2 border-2 rounded-md my-2 text-sm ">
       {type} on {blockTime ? getHumanDate(blockTime) : ''} by
-      <FormattedCryptoAddress className={'text-sm font-medium flex col-span-1 '} chainId={chainId} address={from} />
+      <FormattedCryptoAddress
+        className={'text-sm font-medium flex col-span-1 '}
+        chainId={chainId}
+        address={from}
+      />
       (
       <FormattedCryptoAddress
         className={'text-sm font-medium flex col-span-1 '}

@@ -4,13 +4,13 @@ import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
 import React, { FC, useContext, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
-import { ADD_OFFERING_DOCUMENT } from '@src/utils/dGraphQueries/document';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
-import { DocumentFormat, DocumentType } from 'oldTypes';
+import { ADD_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { DocumentFormat, DocumentType } from '@gql/graphql';
 import { Form, Formik } from 'formik';
 import { getDocFormatOption } from '@src/utils/enumConverters';
-import { useMutation } from '@apollo/client';
-import { useSession } from 'next-auth/react';
+import { useMutation } from '@apollo/client/react';
+import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 
 type DocumentAdderProps = {
   offeringId?: string;
@@ -18,14 +18,20 @@ type DocumentAdderProps = {
 };
 
 const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
-  const { data: session, status } = useSession();
-  const userId = session?.user?.id;
-  const [addFile, { data, error, loading }] = useMutation(ADD_OFFERING_DOCUMENT);
+  const { user } = useSupabaseAuth();
+  const userId = user?.id;
+  const [addFile, { error: addFileError }] = useMutation(ADD_OFFERING_DOCUMENT, {
+    variables: {
+      offeringId: offeringId,
+      entityId: entityId,
+      currentDate: currentDate
+    }
+  });
   const [alerted, setAlerted] = useState<boolean>(false);
   const [fileFormat, setFileFormat] = useState<DocumentFormat | undefined>();
 
-  if (error && !alerted) {
-    alert(error.message);
+  if (addFileError && !alerted) {
+    alert(addFileError.message);
     setAlerted(true);
   }
 
@@ -46,20 +52,25 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
         fileId: fileId,
         docType: docType,
         format: format,
-        offeringUniqueId: offeringId + title,
-      },
+        offeringUniqueId: offeringId + title
+      }
     });
   };
 
   return (
     <div className="col-span-2">
       <div className="mt-4 border-2 rounded-md px-2">
-        <SectionBlock className="font-bold" sectionTitle={'Attach links and documents'} mini asAccordion>
+        <SectionBlock
+          className="font-bold"
+          sectionTitle={'Attach links and documents'}
+          mini
+          asAccordion
+        >
           <hr className="mt-1 mb-2" />
           <FileUpload
             uploaderText="Add Offering Document"
             baseUploadUrl={`/offerings/${offeringId}/docs/${userId}/`}
-            urlToDatabase={addFileToDB}
+            urlToDatabase={() => {}}
             docType={DocumentType.OfferingDocument}
             accept={[
               'pdf',
@@ -68,7 +79,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
               'xml',
               'application/msword',
               'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-              'md',
+              'md'
             ]}
           />
           <div className="grid grid-cols-3 gap-3 mb-2">
@@ -105,9 +116,9 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
               initialValues={{
                 title: '',
                 docUrl: '',
-                format: fileFormat,
+                format: fileFormat
               }}
-              validate={(values) => {
+              validate={values => {
                 const errors: any = {}; /** @TODO : Shape */
                 if (!values.title) {
                   errors.title = 'Please title this document.';
@@ -120,7 +131,13 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
               onSubmit={(values, { setSubmitting }) => {
                 setAlerted(false);
                 setSubmitting(true);
-                addFileToDB(values.docUrl, 'external', values.title, DocumentType.OfferingDocument, fileFormat);
+                addFileToDB(
+                  values.docUrl,
+                  'external',
+                  values.title,
+                  DocumentType.OfferingDocument,
+                  fileFormat
+                );
                 setSubmitting(false);
               }}
             >

@@ -1,6 +1,6 @@
 import React, { FC } from 'react';
 import TransferEventItem from './TransferEventItem';
-import { ShareTransferEvent } from 'oldTypes';
+import { ShareTransferEvent } from '@gql/graphql';
 
 export type TransferEventListProps = { transferEvents: ShareTransferEvent[] };
 

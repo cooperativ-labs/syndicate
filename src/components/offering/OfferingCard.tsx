@@ -3,13 +3,17 @@ import MoneyDisplay from '../MoneyDisplay';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import PercentageDisplay from '../PercentageDisplay';
 import React, { useState } from 'react';
-import { ContractOrder, getLowestOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
-import { Maybe, Offering } from 'oldTypes';
-import { RETRIEVE_ORDERS } from '@src/utils/dGraphQueries/orders';
+import {
+  ContractOrder,
+  getLowestOrderPrice,
+  getOrderArrayFromContract
+} from '@src/utils/helpersOrder';
+import { Maybe, Offering } from '@gql/graphql';
+import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
 import { useAccount } from 'wagmi';
 import { useAsync } from 'react-use';
-import { useQuery } from '@apollo/client';
+import { useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
 import { useSession } from 'next-auth/react';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
@@ -19,10 +23,10 @@ export type OfferingCardProps = {
 };
 
 const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
-
   const { address: userWalletAddress } = useAccount();
   const router = useRouter();
-  const { name, shortDescription, id, details, image, offeringEntity, smartContractSets } = offering as Offering;
+  const { name, shortDescription, id, details, image, offeringEntity, smartContractSets } =
+    offering as Offering;
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
 
   const contractSet = smartContractSets?.slice(-1)[0];
@@ -32,7 +36,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
 
   const { data: ordersData, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
-    variables: { swapContractAddress: swapContractAddress },
+    variables: { swapContractAddress: swapContractAddress }
   });
 
   const orders = ordersData?.queryShareOrder;
@@ -45,7 +49,8 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
     contractSaleList && setContractSaleList(contractSaleList);
   }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
-  const currentPrice = details && getLowestOrderPrice(contractSaleList, offering?.details?.priceStart);
+  const currentPrice =
+    details && getLowestOrderPrice(contractSaleList, offering?.details?.priceStart);
   const organizationId = offeringEntity?.organization.id;
   const organizationImg = offeringEntity?.organization.logo;
 
@@ -54,8 +59,8 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const pushLink = loggedIn
     ? `/${organizationId}/offerings/${id}`
     : toProfile
-    ? `/${organizationId}/${id}`
-    : `/${organizationId}/portal/${id}`;
+      ? `/${organizationId}/${id}`
+      : `/${organizationId}/portal/${id}`;
   return (
     <div
       onClick={() => {
@@ -85,7 +90,11 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
           <div className="grid grid-cols-3">
             {currentPrice ? (
               <OfferingDetailDashboardItem title="Price">
-                <MoneyDisplay className="text-center" amount={currentPrice} currency={details?.investmentCurrency} />
+                <MoneyDisplay
+                  className="text-center"
+                  amount={currentPrice}
+                  currency={details?.investmentCurrency}
+                />
               </OfferingDetailDashboardItem>
             ) : (
               <></>
@@ -99,7 +108,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
             )}
             {details?.projectedIrr ? (
               <OfferingDetailDashboardItem title="Projected IRR">
-                <PercentageDisplay percent={details?.projectedIrr} secondPercent={details?.projectedIrrMax} />
+                <PercentageDisplay
+                  percent={details?.projectedIrr}
+                  secondPercent={details?.projectedIrrMax}
+                />
               </OfferingDetailDashboardItem>
             ) : (
               <></>

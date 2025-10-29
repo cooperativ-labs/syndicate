@@ -1,10 +1,10 @@
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import MajorActionButton from '../buttons/MajorActionButton';
 import React, { FC } from 'react';
-import { currentDate } from '@src/utils/dGraphQueries/gqlUtils';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { RealEstateProperty } from 'oldTypes';
+import { RealEstateProperty } from '@gql/graphql';
 
 export type UpdatePropertyFinancialsType = {
   property: RealEstateProperty;
@@ -12,7 +12,11 @@ export type UpdatePropertyFinancialsType = {
   setModal: (addressModel: boolean) => void;
 };
 
-const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({ property, updateProperty, setModal }) => {
+const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({
+  property,
+  updateProperty,
+  setModal
+}) => {
   const entityOperatingCurrency = property.owner?.operatingCurrency;
   return (
     <Formik
@@ -22,9 +26,9 @@ const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({ property, 
         downPayment: property.downPayment,
         lenderFees: property.lenderFees,
         closingCosts: property.closingCosts,
-        loanAmount: property.loan,
+        loanAmount: property.loan
       }}
-      validate={(values) => {
+      validate={values => {
         const errors: any = {}; /** @TODO : Shape */
       }}
       onSubmit={async (values, { setSubmitting }) => {
@@ -40,8 +44,8 @@ const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({ property, 
             downPayment: values.downPayment,
             lenderFees: values.lenderFees,
             closingCosts: values.closingCosts,
-            loanAmount: values.loanAmount,
-          },
+            loanAmount: values.loanAmount
+          }
         });
         setModal(false);
         setSubmitting(false);

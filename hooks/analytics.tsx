@@ -1,8 +1,16 @@
 import AnalyticsContext from '@context/analytics';
 //@ts-ignore
 import TagManager from 'react-gtm-module';
-import { DEFAULT_BLUR_ACTION, DEFAULT_CLICK_ACTION, DEFAULT_FOCUS_ACTION } from '@src/utils/analytics/config';
-import { parseCustomDimensions, parseDataAttributes, parseOverwriteObject } from '@src/utils/analytics/helpers';
+import {
+  DEFAULT_BLUR_ACTION,
+  DEFAULT_CLICK_ACTION,
+  DEFAULT_FOCUS_ACTION
+} from '@src/utils/analytics/config';
+import {
+  parseCustomDimensions,
+  parseDataAttributes,
+  parseOverwriteObject
+} from '@src/utils/analytics/helpers';
 import { trackImpression, trackPageView } from '@src/utils/analytics';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
@@ -21,7 +29,7 @@ function generateAnalyticsPayload(element: any, overwriteProps: any, dynamicDime
   const parsedRest = parseCustomDimensions(rest);
   return {
     core: { ...core, ...overwrite.core },
-    rest: { ...dynamicDimensions, ...parsedRest, ...overwrite.rest },
+    rest: { ...dynamicDimensions, ...parsedRest, ...overwrite.rest }
   };
 }
 
@@ -47,8 +55,8 @@ export function useAnalytics() {
   const gtmProperties = {
     gtmId: 'GTM-P798NLF',
     dataLayer: {
-      projectTitle: 'Syndicate',
-    },
+      projectTitle: 'Syndicate'
+    }
   };
   useEffect(() => {
     TagManager.initialize(gtmProperties);
@@ -121,7 +129,11 @@ export function useAnalyticsImpression(
             if (once && impressionFired) {
               return;
             }
-            const { core, rest } = generateAnalyticsPayload(entry, overwriteProps, dynamicDimensions);
+            const { core, rest } = generateAnalyticsPayload(
+              entry,
+              overwriteProps,
+              dynamicDimensions
+            );
             trackImpression(core, rest);
             setImpressionFired(true);
           }
