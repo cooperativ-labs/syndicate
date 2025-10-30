@@ -1,27 +1,26 @@
-import FormButton from '../buttons/FormButton';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { FC, useState } from 'react';
-import Select from '../form-components/Select';
-import toast from 'react-hot-toast';
-
+import { useMutation } from '@apollo/client/react';
 import { Currency, CurrencyCode, Maybe, OfferingParticipant } from '@gql/graphql';
-import { Form, Formik } from 'formik';
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-
-import { addressWithoutEns, String0x } from '@src/web3/helpersChain';
-import { sendShares } from '@src/web3/contractShareCalls';
-
-import NewClassInputs from '../form-components/NewClassInputs';
-import SetOperatorButton from './actions/SetOperatorButton';
+import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
 import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
-import { adjustUserEnteredDecimalsToMatchCurrency } from '@src/web3/util';
-import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
-import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
+import { sendShares } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
+import { addressWithoutEns, String0x } from '@src/web3/helpersChain';
+import { adjustUserEnteredDecimalsToMatchCurrency } from '@src/web3/util';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+import toast from 'react-hot-toast';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
+
+import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import FormButton from '../buttons/FormButton';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import NewClassInputs from '../form-components/NewClassInputs';
+import Select from '../form-components/Select';
+
+import SetOperatorButton from './actions/SetOperatorButton';
 
 export type SendSharesProps = {
   sharesIssued: Maybe<number> | undefined;

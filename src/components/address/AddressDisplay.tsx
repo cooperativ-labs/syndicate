@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
 import { Address, Maybe } from '@gql/graphql';
+import React, { FC } from 'react';
 
 type AddressProps = {
   address: Maybe<Address> | undefined;

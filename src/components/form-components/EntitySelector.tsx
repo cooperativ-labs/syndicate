@@ -1,10 +1,12 @@
-import Button from '../buttons/Button';
+import { LegalEntity } from '@gql/graphql';
+import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import cn from 'classnames';
 import React, { FC } from 'react';
-import Select from './Select';
+
+import Button from '../buttons/Button';
+
 import { defaultFieldDiv } from './Inputs';
-import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
-import { LegalEntity } from '@gql/graphql';
+import Select from './Select';
 
 type EntitySelectorProps = {
   entities: LegalEntity[];

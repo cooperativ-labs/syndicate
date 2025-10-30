@@ -1,11 +1,10 @@
-import DeleteButton from '../buttons/DeleteButton';
-
-import React, { FC } from 'react';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-
-import { Image, Maybe } from '@gql/graphql';
-import { REMOVE_PROPERTY_IMAGE } from '@src/utils/graphQueries/reProperty';
 import { useMutation } from '@apollo/client/react';
+import { Image, Maybe } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { REMOVE_PROPERTY_IMAGE } from '@src/utils/graphQueries/reProperty';
+import React, { FC } from 'react';
+
+import DeleteButton from '../buttons/DeleteButton';
 
 type PropertyImageProps = {
   image: Maybe<Image>;

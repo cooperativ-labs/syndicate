@@ -1,6 +1,7 @@
-import LinkedAccountListItem from './LinkedAccountListItem';
-import React, { FC } from 'react';
 import { LinkedAccount, Maybe } from '@gql/graphql';
+import React, { FC } from 'react';
+
+import LinkedAccountListItem from './LinkedAccountListItem';
 
 type LinkedAccountsListProps = {
   linkedAccounts: Maybe<Maybe<LinkedAccount>[]> | undefined;

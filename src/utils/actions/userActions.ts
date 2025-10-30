@@ -1,15 +1,14 @@
-import { redirect } from "next/navigation";
-import { createClient } from "../../../supabase/utils/client";
-import router, { useRouter } from "next/router";
+import { redirect } from 'next/navigation';
+import router, { useRouter } from 'next/router';
 
-export const signIn = async (
-  { email, password }: { email: string; password: string },
-) => {
+import { createClient } from '../../../supabase/utils/client';
+
+export const signIn = async ({ email, password }: { email: string; password: string }) => {
   const supabase = createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
-    password,
+    password
   });
 
   if (error) {
@@ -18,7 +17,7 @@ export const signIn = async (
     return router.push(`/login?form=password&message=${error.message}`);
   }
 
-  return router.push("/");
+  return router.push('/');
 };
 
 export const signUp = async ({
@@ -26,7 +25,7 @@ export const signUp = async ({
   password,
   name,
   token,
-  inviteEmail,
+  inviteEmail
 }: {
   email: string;
   password: string;
@@ -37,22 +36,20 @@ export const signUp = async ({
   const supabase = createClient();
 
   if (!inviteEmail && !email) {
-    return router.push("/login?message=Missing required fields");
+    return router.push('/login?message=Missing required fields');
   }
 
   const { error, data } = await supabase.auth.signUp({
     email: inviteEmail ?? (email as string),
-    password,
+    password
   });
 
   if (error) {
     // Sentry.captureException(error);
-    return router.push(
-      `/login?message=Could not create user${token ? "&code=" + token : ""}`,
-    );
+    return router.push(`/login?message=Could not create user${token ? '&code=' + token : ''}`);
   }
 
-  return router.push("/confirm-your-email?email=" + email);
+  return router.push('/confirm-your-email?email=' + email);
 };
 
 export const signOut = async () => {
@@ -60,17 +57,17 @@ export const signOut = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) {
     return router.push(
-      `/login?message=There may have been an error logging out. Please confirm. ${error}`,
+      `/login?message=There may have been an error logging out. Please confirm. ${error}`
     );
   }
-  return router.push("/");
+  return router.push('/');
 };
 
 export async function signInWithEmail({
   email,
   shouldCreateUser,
   token,
-  noRedirect = false,
+  noRedirect = false
 }: {
   email: string;
 
@@ -95,7 +92,7 @@ export async function signInWithEmail({
       email,
       options: {
         emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}`,
-        shouldCreateUser,
+        shouldCreateUser
         // data: {
         //  // name,
         //  // orgRoles: invitation && [
@@ -105,7 +102,7 @@ export async function signInWithEmail({
         //  //  },
         //  // ],
         // },
-      },
+      }
     });
 
     if (error) {
@@ -115,7 +112,7 @@ export async function signInWithEmail({
     if (noRedirect) {
       return;
     } else {
-      return router.push("/check-your-email?email=" + email);
+      return router.push('/check-your-email?email=' + email);
     }
     //https://supabase.com/docs/guides/auth/auth-email-templates#editing-email-templates (issue with some clients burning the confirmation link)
   } else {
@@ -124,9 +121,9 @@ export async function signInWithEmail({
       options: {
         shouldCreateUser: false,
         data: {
-          email,
-        },
-      },
+          email
+        }
+      }
     });
     if (error) {
       // Sentry.captureException(error);
@@ -135,7 +132,7 @@ export async function signInWithEmail({
     if (noRedirect) {
       return;
     } else {
-      return redirect("/check-your-email?email=" + email);
+      return redirect('/check-your-email?email=' + email);
     }
   }
 }

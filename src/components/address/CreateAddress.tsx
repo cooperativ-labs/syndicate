@@ -1,16 +1,17 @@
+import { useMutation } from '@apollo/client/react';
+import { LegalEntity } from '@gql/graphql';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { ADD_ENTITY_ADDRESS } from '@src/utils/graphQueries/entity';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { Form, Formik } from 'formik';
+import React, { FC, useEffect, useState } from 'react';
+import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+
+import MajorActionButton from '../buttons/MajorActionButton';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
 } from '../form-components/CustomAddressAutocomplete';
 import Input, { addressFieldDiv } from '../form-components/Inputs';
-import MajorActionButton from '../buttons/MajorActionButton';
-import React, { FC, useEffect, useState } from 'react';
-import { ADD_ENTITY_ADDRESS } from '@src/utils/graphQueries/entity';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
-import { GoogleMap, Marker } from '@react-google-maps/api';
-import { LegalEntity } from '@gql/graphql';
-import { useMutation } from '@apollo/client/react';
 
 export type CreateAddressType = {
   entity: LegalEntity;

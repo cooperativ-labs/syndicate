@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
 import { Maybe } from '@gql/graphql';
+import React, { FC } from 'react';
 
 type PercentageDisplayProps = {
   percent?: number;

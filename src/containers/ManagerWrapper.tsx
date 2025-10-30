@@ -1,22 +1,22 @@
 'use client';
 
+import { Organization } from '@gql/graphql';
+import AlertBanner from '@src/components/alerts/AlertBanner';
 import AlertPopup from '@src/components/alerts/AlertPopup';
-import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
+import { signOut } from '@src/utils/actions/userActions';
+import { getOrgsFromUser } from '@src/utils/helpersOrganization';
+import cn from 'classnames';
+import React, { FC, useContext, useEffect, useState } from 'react';
+import { useAccount, useDisconnect } from 'wagmi';
+
+// End of Selection
+import { ApplicationStoreProps, store } from '@/contexts/store';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+
 import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
 import NewOrganizationModal from './NewOrganizationModal';
-import React, { FC, useContext, useEffect, useState } from 'react';
-// End of Selection
-
-import { ApplicationStoreProps, store } from '@context/store';
-
-import AlertBanner from '@src/components/alerts/AlertBanner';
-import { useAccount, useDisconnect } from 'wagmi';
-import { signOut } from '@src/utils/actions/userActions';
-import { Organization } from '@gql/graphql';
-import { getOrgsFromUser } from '@src/utils/helpersOrganization';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 import WithAuthentication from './WithAuthentication';
 
 // const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';

@@ -1,12 +1,13 @@
-"use client";
-
-import React, { FC, useContext } from 'react';
-import { Form, Formik } from 'formik';
+'use client';
 
 import cn from 'classnames';
-import Input from '../form-components/Inputs';
-import { ApplicationStoreProps, store } from '@context/store';
+import { Form, Formik } from 'formik';
 import { usePathname, useRouter } from 'next/navigation';
+import React, { FC, useContext } from 'react';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
+
+import Input from '../form-components/Inputs';
 
 type UserSearchProps = {
   fieldClass?: string;

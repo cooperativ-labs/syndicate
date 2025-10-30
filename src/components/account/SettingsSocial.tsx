@@ -1,12 +1,13 @@
-import Input from '../form-components/Inputs';
-import React, { FC } from 'react';
-import Select from '../form-components/Select';
-import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/graphQueries/organization';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
+import { useMutation } from '@apollo/client/react';
 import { LegalEntity, Organization } from '@gql/graphql';
 import { socialAccountOptions } from '@src/utils/enumConverters';
-import { useMutation } from '@apollo/client/react';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/graphQueries/organization';
+import { Form, Formik } from 'formik';
+import React, { FC } from 'react';
+
+import Input from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 

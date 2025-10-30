@@ -1,31 +1,30 @@
-"use client";
+'use client';
 
+import { useMutation } from '@apollo/client/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { RealEstateProperty } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
+import UpdateAddress from '@src/components/address/UpdateAddress';
+import Button from '@src/components/buttons/Button';
 import FileUpload from '@src/components/form-components/FileUpload';
+import Progress from '@src/components/offering/profile/Progress';
 import PropertyImage from '@src/components/properties/PropertyImage';
-import React, { FC, useContext, useState } from 'react';
+import UpdatePropertyDescription from '@src/components/properties/UpdatePropertyDescription';
+import UpdatePropertyFinancials from '@src/components/properties/UpdatePropertyFinancials';
+import FormModal from '@src/containers/FormModal';
+import { getPropertyTypeOption } from '@src/utils/enumConverters';
+import { UPDATE_ADDRESS } from '@src/utils/graphQueries/entity';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import {
   ADD_PROPERTY_IMAGE,
   REMOVE_ENTITY_PROPERTY,
   UPDATE_RE_PROPERTY_INFO
 } from '@src/utils/graphQueries/reProperty';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { useMutation } from '@apollo/client/react';
-
-import Button from '@src/components/buttons/Button';
-import FormModal from '@src/containers/FormModal';
-import Progress from '@src/components/offering/profile/Progress';
-import { useRouter } from 'next/navigation';
-import UpdateAddress from '@src/components/address/UpdateAddress';
-import UpdatePropertyDescription from '@src/components/properties/UpdatePropertyDescription';
-import UpdatePropertyFinancials from '@src/components/properties/UpdatePropertyFinancials';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { getPropertyTypeOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { RealEstateProperty } from '@gql/graphql';
-import { UPDATE_ADDRESS } from '@src/utils/graphQueries/entity';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { useRouter } from 'next/navigation';
 import { useSession } from 'next-auth/react';
+import React, { FC, useContext, useState } from 'react';
 
 type PropertyDetailsProps = {
   property: RealEstateProperty;

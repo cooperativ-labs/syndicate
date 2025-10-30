@@ -12,14 +12,14 @@ export const metadata: Metadata = {
     type: 'website',
     description: 'Give investors in your offerings a Robinhood-like experience.',
     url: 'https://syndicate.cooperativ.io/',
-    images: ['/assets/images/share.png'],
+    images: ['/assets/images/share.png']
   },
   twitter: {
     title: 'Permissioned Exchange',
     description: 'Give investors in your offerings a Robinhood-like experience.',
     card: 'summary_large_image',
-    images: ['/assets/images/share.png'],
-  },
+    images: ['/assets/images/share.png']
+  }
 };
 
 const Application = () => {
@@ -33,4 +33,3 @@ const Application = () => {
 };
 
 export default Application;
-

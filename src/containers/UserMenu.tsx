@@ -1,16 +1,17 @@
-import Button from '@src/components/buttons/Button';
-import Card from '@src/components/cards/Card';
-import DisconnectButton from '@src/components/buttons/DisconnectButton';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import Link from 'next/link';
-import LogoutButton from '@src/components/buttons/LogoutButton';
-import React, { FC, useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Button from '@src/components/buttons/Button';
+import DisconnectButton from '@src/components/buttons/DisconnectButton';
+import LogoutButton from '@src/components/buttons/LogoutButton';
+import Card from '@src/components/cards/Card';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
+import Link from 'next/link';
+import React, { FC, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
+
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
-import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
-import { useAccount, useChainId } from 'wagmi';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 
 const UserMenu: FC = () => {
   const [open, setOpen] = useState<boolean>(false);

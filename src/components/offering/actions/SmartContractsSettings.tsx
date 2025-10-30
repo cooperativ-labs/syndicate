@@ -1,8 +1,8 @@
+import { Currency, User } from '@gql/graphql';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
-import React, { FC } from 'react';
-import { Currency, User } from '@gql/graphql';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
 
 import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings, { ShareContractSettingsProps } from './ShareContractSettings';

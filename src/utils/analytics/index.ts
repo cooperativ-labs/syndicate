@@ -1,10 +1,10 @@
 //@ts-ignore
-import TagManager from 'react-gtm-module';
 import {
   DEFAULT_CUSTOM_DIMENSIONS,
-  EVENT_DEFAULTS,
-  DEFAULT_IMPRESSION_ACTION
+  DEFAULT_IMPRESSION_ACTION,
+  EVENT_DEFAULTS
 } from '@src/utils/analytics/config';
+import TagManager from 'react-gtm-module';
 //@ts-ignore
 function track(payload) {
   TagManager.dataLayer({

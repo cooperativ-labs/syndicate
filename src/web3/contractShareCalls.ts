@@ -1,4 +1,27 @@
+import {
+  ApolloCache,
+  DefaultContext,
+  MutationFunctionOptions,
+  OperationVariables
+} from '@apollo/client';
+import {
+  Currency,
+  CurrencyCode,
+  Organization,
+  ShareTransferEventType,
+  WhitelistTransactionType
+} from '@gql/graphql';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { config } from '@src/web3/wagmi';
 import { Dispatch, SetStateAction } from 'react';
+import toast from 'react-hot-toast';
+import { parseUnits, TransactionReceipt } from 'viem';
+import { simulateContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
+
+import { shareContractABI } from './generated';
 import {
   addressWithoutEns,
   bytes32FromString,
@@ -8,30 +31,7 @@ import {
   StandardChainErrorHandling,
   String0x
 } from './helpersChain';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import {
-  ApolloCache,
-  DefaultContext,
-  MutationFunctionOptions,
-  OperationVariables
-} from '@apollo/client';
-
-import { simulateContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
-import { config } from '@src/web3/wagmi';
-import { parseUnits, TransactionReceipt } from 'viem';
-import { shareContractABI } from './generated';
-import toast from 'react-hot-toast';
 import { shareContractDecimals, toContractNumber } from './util';
-import {
-  Currency,
-  CurrencyCode,
-  Organization,
-  ShareTransferEventType,
-  WhitelistTransactionType
-} from '@gql/graphql';
-import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
-import { getBaseUrl } from '@src/utils/helpersURL';
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;

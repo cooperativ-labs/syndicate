@@ -1,10 +1,10 @@
-"use client";
+'use client';
 
-import React, { useEffect } from 'react';
+import { useMutation } from '@apollo/client';
 import { ADD_ORGANIZATION_EMAIL } from '@src/utils/dGraphQueries/organization';
 import { sha256 } from 'js-sha256';
-import { useMutation } from '@apollo/client';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 const ConfirmEmail = () => {
   const params = useParams<{ organizationId: string }>();
@@ -33,8 +33,8 @@ const ConfirmEmail = () => {
       variables: {
         organizationId: orgId,
         address: storedEmail,
-        isPublic: true,
-      },
+        isPublic: true
+      }
     })
       .then(() => {
         window.localStorage.removeItem('email');
@@ -58,11 +58,11 @@ const ConfirmEmail = () => {
     <div className="p-4 mx-auto max-w-xl bg-white rounded-xl shadow-lg">
       <h1 className="text-lg font-bold">Email Confirmed</h1>
       <p>
-        Thank you! Your email address <strong>{storedEmail}</strong> has been successfully confirmed.
+        Thank you! Your email address <strong>{storedEmail}</strong> has been successfully
+        confirmed.
       </p>
     </div>
   );
 };
 
 export default ConfirmEmail;
-

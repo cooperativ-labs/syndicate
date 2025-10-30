@@ -1,26 +1,25 @@
-import axios from 'axios';
-import Checkbox from '@src/components/form-components/Checkbox';
-import cn from 'classnames';
-import FormButton from '@src/components/buttons/FormButton';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import NonInput from '../../form-components/NonInput';
-import PresentLegalText from '@src/components/legal/PresentLegalText';
-import React, { FC, useState } from 'react';
-import StandardButton from '@src/components/buttons/StandardButton';
-import { DownloadFile } from '@src/utils/helpersAgreement';
-import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Formik } from 'formik';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import { Offering, ShareOrder } from '@gql/graphql';
-
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
+import StandardButton from '@src/components/buttons/StandardButton';
+import Checkbox from '@src/components/form-components/Checkbox';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import PresentLegalText from '@src/components/legal/PresentLegalText';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { DownloadFile } from '@src/utils/helpersAgreement';
+import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 import { isMetaMask } from '@src/web3/connectors';
+import axios from 'axios';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { useAsync } from 'react-use';
+import NonInput from '../../form-components/NonInput';
 
 export type SharePurchaseSaleRequestProps = {
   offering: Offering;

@@ -1,11 +1,12 @@
-import Button from '@src/components/buttons/Button';
-import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
-import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
+import { useMutation } from '@apollo/client/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
-import { useMutation } from '@apollo/client/react';
+import Button from '@src/components/buttons/Button';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
+import React, { FC, useState } from 'react';
+
+import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
 
 type OfferingDescriptionItemProps = {
   offering: Offering;

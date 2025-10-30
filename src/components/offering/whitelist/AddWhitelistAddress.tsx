@@ -1,15 +1,15 @@
+import { useMutation } from '@apollo/client/react';
+import { Organization } from '@gql/graphql';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import React, { FC, useState } from 'react';
 import { ADD_WHITELIST_MEMBER } from '@src/utils/graphQueries/offering';
 import { addWhitelistMember } from '@src/web3/contractShareCalls';
-import { Form, Formik } from 'formik';
 import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
 import { isAddress } from 'viem';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Organization } from '@gql/graphql';
 import { useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
 
 export type AddWhitelistAddressProps = {
   organization: Organization;

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+
 import {
   CORE_ENTITY_FIELDS,
   CORE_INVESTMENT_OFFERING_FIELDS,
@@ -66,7 +67,7 @@ export const GET_USER_PERMISSIONS = gql`
 
 export const ADD_USER_WITH_TWITTER = gql`
   ${CORE_USER_FIELDS}
-  mutation AddUser(
+  mutation AddUserWithTwitter(
     $currentDate: DateTime!
     $displayName: String!
     $fullName: String!
@@ -109,7 +110,7 @@ export const ADD_USER_WITH_TWITTER = gql`
 
 export const ADD_USER_WITH_EMAIL = gql`
   ${CORE_USER_FIELDS}
-  mutation AddUser(
+  mutation AddUserWithEmail(
     $currentDate: DateTime!
     $displayName: String!
     $fullName: String!
@@ -145,7 +146,7 @@ export const ADD_USER_WITH_EMAIL = gql`
 
 export const ADD_USER_WITH_WALLET = gql`
   ${CORE_USER_FIELDS}
-  mutation AddUser(
+  mutation AddUserWithWallet(
     $currentDate: DateTime!
     $displayName: String!
     $fullName: String!

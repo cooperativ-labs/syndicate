@@ -1,4 +1,4 @@
-import { InMemoryCache, defaultDataIdFromObject } from '@apollo/client';
+import { defaultDataIdFromObject, InMemoryCache } from '@apollo/client';
 
 export const createApolloCache = () =>
   new InMemoryCache({
@@ -16,16 +16,16 @@ export const createApolloCache = () =>
           node: {
             read(_, { args, toReference }) {
               const ref = toReference({
-                nodeId: args?.nodeId,
+                nodeId: args?.nodeId
               });
               return ref;
-            },
-          },
+            }
+          }
           // Add pagination for your collections here
           // Example: todosCollection: relayStylePagination(),
-        },
-      },
-    },
+        }
+      }
+    }
   });
 
 export const getGraphQLEndpoint = () => {

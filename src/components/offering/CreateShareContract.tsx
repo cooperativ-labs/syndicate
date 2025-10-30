@@ -1,18 +1,17 @@
+import { useMutation } from '@apollo/client/react';
+import { SmartContractType } from '@gql/graphql';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-
-import React, { FC, useContext, useState } from 'react';
-import { ApplicationStoreProps, store } from '@context/store';
 import { CREATE_SHARE_CONTRACT } from '@src/utils/graphQueries/crypto';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { SmartContractType } from '@gql/graphql';
-
-import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-
 import { deployShareContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
-import { useAccount, useChainId, useNetwork } from 'wagmi';
+import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client/react';
+import { useAccount, useChainId, useNetwork } from 'wagmi';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
+
+import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 type CreateShareContractProps = {
   contractCreatorId: string | undefined;

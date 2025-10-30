@@ -1,14 +1,14 @@
 // upload.ts
-import nextConnect from 'next-connect';
-import { NextApiRequest, NextApiResponse } from 'next';
-//@ts-ignore
-import { Multer } from 'multer';
-import { upload } from './file/upload';
-import { getServerSession } from 'next-auth/next';
-
 import { initializeApollo } from '@src/utils/apolloClient';
 import { GET_USER_PERMISSIONS } from '@src/utils/dGraphQueries/user';
+//@ts-ignore
+import { Multer } from 'multer';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getServerSession } from 'next-auth/next';
+import nextConnect from 'next-connect';
+
 import options from './auth/next-auth';
+import { upload } from './file/upload';
 
 type NextApiRequestWithFile = NextApiRequest & {
   file: Multer.GoogleCloudStorage.File;
@@ -39,6 +39,6 @@ export default handler;
 
 export const config = {
   api: {
-    bodyParser: false,
-  },
+    bodyParser: false
+  }
 };

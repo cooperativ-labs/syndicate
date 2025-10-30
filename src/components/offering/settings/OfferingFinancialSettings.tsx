@@ -1,22 +1,22 @@
+import { useMutation } from '@apollo/client/react';
+import { Offering, OfferingDetails } from '@gql/graphql';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
 import Datepicker from '@src/components/form-components/Datepicker';
-import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import React, { FC, useState } from 'react';
 import Select from '@src/components/form-components/Select';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import {
   distributionPeriodOptions,
   getCurrencyOption,
   StageOptions
 } from '@src/utils/enumConverters';
-import { Form, Formik } from 'formik';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Offering, OfferingDetails } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { UPDATE_OFFERING_FINANCIAL } from '@src/utils/graphQueries/offering';
-import { useMutation } from '@apollo/client/react';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
 
 type OfferingFinancialSettingsProps = {
   offering: Offering;

@@ -1,16 +1,17 @@
+import { useMutation } from '@apollo/client/react';
+import { DocumentFormat, DocumentType } from '@gql/graphql';
 import Button from '@src/components/buttons/Button';
-import cn from 'classnames';
 import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
-import React, { FC, useContext, useState } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
+import { getDocFormatOption } from '@src/utils/enumConverters';
 import { ADD_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { DocumentFormat, DocumentType } from '@gql/graphql';
+import cn from 'classnames';
 import { Form, Formik } from 'formik';
-import { getDocFormatOption } from '@src/utils/enumConverters';
-import { useMutation } from '@apollo/client/react';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import React, { FC, useContext, useState } from 'react';
+
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 type DocumentAdderProps = {
   offeringId?: string;

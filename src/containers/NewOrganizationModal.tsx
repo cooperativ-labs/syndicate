@@ -1,8 +1,9 @@
 import CloseButton from '@src/components/buttons/CloseButton';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import React, { FC, useContext, useEffect } from 'react';
-import { ApplicationStoreProps, store } from '@context/store';
 import { useWindowSize } from 'react-use';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 const ModalCreateOrganization: FC = () => {
   const applicationStore: ApplicationStoreProps = useContext(store);

@@ -1,17 +1,18 @@
-import Checkbox from './form-components/Checkbox';
-import cn from 'classnames';
-import FormattedCryptoAddress from './FormattedCryptoAddress';
-import Input from './form-components/Inputs';
-import React, { FC, useState } from 'react';
-import { CryptoAddress, CryptoAddressType, Maybe } from '@gql/graphql';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Formik } from 'formik';
-import { MarkPublic } from './form-components/ListItemButtons';
-import { MatchSupportedChains } from '@src/web3/connectors';
-import { REMOVE_ENTITY_WALLET } from '@src/utils/graphQueries/entity';
-import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
-import { useAccount } from 'wagmi';
 import { useMutation } from '@apollo/client/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CryptoAddress, CryptoAddressType, Maybe } from '@gql/graphql';
+import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
+import { REMOVE_ENTITY_WALLET } from '@src/utils/graphQueries/entity';
+import { MatchSupportedChains } from '@src/web3/connectors';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+import { useAccount } from 'wagmi';
+
+import Checkbox from './form-components/Checkbox';
+import Input from './form-components/Inputs';
+import { MarkPublic } from './form-components/ListItemButtons';
+import FormattedCryptoAddress from './FormattedCryptoAddress';
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;

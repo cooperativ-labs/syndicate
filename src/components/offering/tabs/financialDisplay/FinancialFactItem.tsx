@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
 import { Currency } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import React, { FC } from 'react';
 
 type FinancialFactItemProps = {
   label: string;

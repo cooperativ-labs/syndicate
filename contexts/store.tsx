@@ -65,4 +65,4 @@ const StateProvider = ({ children }: { children: ReactNode }) => {
   return <Provider value={{ ...state, dispatch }}>{children}</Provider>;
 };
 
-export { store, StateProvider };
+export { StateProvider, store };

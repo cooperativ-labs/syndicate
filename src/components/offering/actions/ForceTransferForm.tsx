@@ -1,20 +1,21 @@
-import * as Yup from 'yup';
+import { useMutation } from '@apollo/client/react';
+import { Maybe, OfferingParticipant } from '@gql/graphql';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import React from 'react';
 import Select from '@src/components/form-components/Select';
-import SetOperatorButton from './SetOperatorButton';
 import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
-import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { forceTransfer } from '@src/web3/contractShareCalls';
-import { Form, Formik } from 'formik';
-import { Maybe, OfferingParticipant } from '@gql/graphql';
-import { readContract } from 'wagmi/actions';
 import { shareContractABI } from '@src/web3/generated';
+import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { useAccount, useContractRead } from 'wagmi';
+import { Form, Formik } from 'formik';
+import React from 'react';
 import { useAsync } from 'react-use';
-import { useMutation } from '@apollo/client/react';
+import { useAccount, useContractRead } from 'wagmi';
+import { readContract } from 'wagmi/actions';
+import * as Yup from 'yup';
+
+import SetOperatorButton from './SetOperatorButton';
 
 type ForceTransferFormProps = {
   shareContractAddress: String0x;

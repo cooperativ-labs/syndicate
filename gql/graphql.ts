@@ -917,6 +917,7 @@ export type Query = {
   offering_smart_contract_setCollection?: Maybe<OfferingSmartContractSetConnection>;
   /** A pagable collection of type `organization` */
   organizationCollection?: Maybe<OrganizationConnection>;
+  organization_has_no_members?: Maybe<Scalars['Boolean']['output']>;
   /** A pagable collection of type `organization_user` */
   organization_userCollection?: Maybe<OrganizationUserConnection>;
   /** A pagable collection of type `profile` */
@@ -1160,6 +1161,11 @@ export type QueryOrganizationCollectionArgs = {
   last?: InputMaybe<Scalars['Int']['input']>;
   offset?: InputMaybe<Scalars['Int']['input']>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy>>;
+};
+
+/** The root type for querying data */
+export type QueryOrganizationHasNoMembersArgs = {
+  p_organization_id: Scalars['UUID']['input'];
 };
 
 /** The root type for querying data */

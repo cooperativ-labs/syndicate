@@ -1,32 +1,33 @@
-import { Dispatch, SetStateAction } from 'react';
-import { bytes32FromString, StandardChainErrorHandling, String0x } from './helpersChain';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import {
   ApolloCache,
   DefaultContext,
   MutationFunctionOptions,
   OperationVariables
 } from '@apollo/client';
+import { Currency, CurrencyCode, Organization, ShareTransferEventType } from '@gql/graphql';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import {
+  handleOfferingRequestNotification,
+  handleTradeExecutionNotification
+} from '@src/components/notifications/notificationFunctions';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { config } from '@src/web3/wagmi';
+import { Dispatch, SetStateAction } from 'react';
+import toast from 'react-hot-toast';
+import { erc20Abi } from 'viem';
 import {
   getAccount,
   simulateContract,
   waitForTransactionReceipt,
   writeContract
 } from 'wagmi/actions';
-import { config } from '@src/web3/wagmi';
+
 import { swapContractABI } from './generated';
-import toast from 'react-hot-toast';
+import { bytes32FromString, StandardChainErrorHandling, String0x } from './helpersChain';
 import { shareContractDecimals, toContractNumber } from './util';
-import { erc20Abi } from 'viem';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Currency, CurrencyCode, Organization, ShareTransferEventType } from '@gql/graphql';
-import { getBaseUrl } from '@src/utils/helpersURL';
-import {
-  handleOfferingRequestNotification,
-  handleTradeExecutionNotification
-} from '@src/components/notifications/notificationFunctions';
-import { getCurrencyById } from '@src/utils/enumConverters';
 
 type SubmitSwapProps = {
   numShares: number;

@@ -1,8 +1,8 @@
 import HighlightBanner from '@src/components/alerts/HighlightBanner';
 import MarketingButton from '@src/components/buttons/MarketingButton';
+import React, { FC } from 'react';
 
 import MarketingNav from './MarketingNav';
-import React, { FC } from 'react';
 
 const LandingHeader: FC = () => {
   return (

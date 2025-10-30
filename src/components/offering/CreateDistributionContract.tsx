@@ -1,19 +1,19 @@
+import { useMutation } from '@apollo/client/react';
+import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@gql/graphql';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-
-import React, { FC, useContext, useState } from 'react';
-import { ApplicationStoreProps, store } from '@context/store';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_DISTRIBUTION_CONTRACT, CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';
-import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@gql/graphql';
+import { deployDividendContract } from '@src/web3/contractFactory';
+import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
+import { Form, Formik } from 'formik';
+import React, { FC, useContext, useState } from 'react';
+import { useAsyncFn } from 'react-use';
+import { useAccount, useChainId } from 'wagmi';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { deployDividendContract } from '@src/web3/contractFactory';
-import { Form, Formik } from 'formik';
-import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { useAccount, useChainId } from 'wagmi';
-import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client/react';
 
 type CreateDistributionContractProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;

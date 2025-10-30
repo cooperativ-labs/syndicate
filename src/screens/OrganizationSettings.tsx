@@ -1,40 +1,40 @@
 'use client';
 
+import { useMutation, useQuery } from '@apollo/client/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Maybe, Organization } from '@gql/graphql';
+import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
+import SettingsSocial from '@src/components/account/SettingsSocial';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import EmailAddressList from '@src/components/EmailAddressList';
 import FileUpload from '@src/components/form-components/FileUpload';
-import FormModal from '@src/containers/FormModal';
 import LinkedAccountsList from '@src/components/LinkedAccountsList';
 import ModalLoading from '@src/components/loading/ModalLoading';
+import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
+import NotificationConfigList from '@src/components/organization/NotificationConfigList';
 import OrganizationSpecifications, {
   changeForm,
   EditOrganizationSelectionType
 } from '@src/components/organization/OrganizationSpecifications';
-import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
-import React, { FC, useState } from 'react';
-import RoundedImage from '@src/components/RoundedImage';
-import SectionBlock from '@src/containers/SectionBlock';
-import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
-
-import NotificationConfigList from '@src/components/organization/NotificationConfigList';
 import SettingsAddNotification from '@src/components/organization/SettingsAddNotification';
 import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamMember';
-import SettingsSocial from '@src/components/account/SettingsSocial';
 import TeamMemberList from '@src/components/organization/TeamMemberList';
+import RoundedImage from '@src/components/RoundedImage';
+import FormModal from '@src/containers/FormModal';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
+import SectionBlock from '@src/containers/SectionBlock';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
   GET_ORGANIZATION,
   UPDATE_ORGANIZATION_INFORMATION
 } from '@src/utils/graphQueries/organization';
+import { getOrganizationUser } from '@src/utils/helpersOrganization';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { getOrganizationUser } from '@src/utils/helpersOrganization';
-import { Maybe, Organization } from '@gql/graphql';
-import { useMutation, useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import React, { FC, useState } from 'react';
+
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 const OrganizationSettings: FC = () => {
   const { user } = useSupabaseAuth();

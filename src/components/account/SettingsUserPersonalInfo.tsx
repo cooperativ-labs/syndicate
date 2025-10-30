@@ -1,11 +1,12 @@
+import { useMutation } from '@apollo/client/react';
+import { LegalEntity, User } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_USER } from '@src/utils/graphQueries/user';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+
 import Checkbox from '../form-components/Checkbox';
 import Input from '../form-components/Inputs';
-import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-import { LegalEntity, User } from '@gql/graphql';
-import { UPDATE_USER } from '@src/utils/graphQueries/user';
-import { useMutation } from '@apollo/client/react';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 

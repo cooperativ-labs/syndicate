@@ -1,9 +1,10 @@
-import AccessCodeForm from '@src/components/offering/profile/AccessCodeForm';
+import useWindowSize from '@hooks/useWindowSize';
 import Card from '@src/components/cards/Card';
+import AccessCodeForm from '@src/components/offering/profile/AccessCodeForm';
 import cn from 'classnames';
 import React, { FC, useContext, useEffect, useState } from 'react';
-import useWindowSize from '@hooks/useWindowSize';
-import { ApplicationStoreProps, store } from '@context/store';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 type ProfilePrivateModalProps = {
   offeringId: string;

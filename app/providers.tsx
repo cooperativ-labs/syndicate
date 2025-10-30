@@ -1,14 +1,16 @@
 'use client';
 
+import SetCookieContext from '@contexts/SetCookieContext';
 import CookieBanner from '@src/CookieBanner';
-import SetCookieContext from '@src/SetCookieContext';
 import { config as wagmiConfig } from '@src/web3/wagmi';
-import { StateProvider } from '@context/store';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { WagmiProvider } from 'wagmi';
-import { SupabaseAuthProvider } from '@context/SupabaseAuthContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+
+import { StateProvider } from '@/contexts/store';
+import { SupabaseAuthProvider } from '@/contexts/SupabaseAuthContext';
+
 import { ApolloWrapper } from './ApolloWrapper';
 
 type ProvidersProps = {

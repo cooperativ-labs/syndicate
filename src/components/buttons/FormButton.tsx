@@ -1,6 +1,7 @@
-import Button, { ButtonProps } from './Button';
 import cn from 'classnames';
 import React, { FC, ReactNode } from 'react';
+
+import Button, { ButtonProps } from './Button';
 
 interface FormButtonProps extends ButtonProps {
   outlined?: boolean;

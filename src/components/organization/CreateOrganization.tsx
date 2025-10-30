@@ -1,18 +1,18 @@
 'use client';
 
+import { useMutation } from '@apollo/client/react';
+import { ADD_ORGANIZATION, ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React, { FC, useContext, useState } from 'react';
 
-import { Form, Formik } from 'formik';
+import { ApplicationStoreProps, store } from '@/contexts/store';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
+import MajorActionButton from '../buttons/MajorActionButton';
 import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import MajorActionButton from '../buttons/MajorActionButton';
-import { useRouter } from 'next/navigation';
-import { ApplicationStoreProps, store } from '@context/store';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
-import { useMutation } from '@apollo/client/react';
-import { ADD_ORGANIZATION, ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;

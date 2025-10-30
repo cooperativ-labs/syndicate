@@ -1,16 +1,17 @@
-import axios from 'axios';
-import LinkLegalForm from './LinkLegalForm';
-import React, { useState } from 'react';
+import { Offering, User } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-
-import CreateShareContract from '../offering/CreateShareContract';
-import UnestablishedContractCard from '../offering/UnestablishedContractCard';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';
 import { MatchSupportedChains } from '@src/web3/connectors';
-import { Offering, User } from '@gql/graphql';
+import axios from 'axios';
+import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { useChainId, useNetwork } from 'wagmi';
+
+import CreateShareContract from '../offering/CreateShareContract';
+import UnestablishedContractCard from '../offering/UnestablishedContractCard';
+
+import LinkLegalForm from './LinkLegalForm';
 
 export type AgreementContentType = {
   signature: string;

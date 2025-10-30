@@ -1,36 +1,33 @@
-"use client";
+'use client';
 
+import { useQuery } from '@apollo/client/react';
+import { DocumentType, Offering } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
-import cn from 'classnames';
-import Container from '@src/containers/Layouts/Container';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
-import Header from '@src/containers/Header';
-import OfferingProperties from '@src/components/properties/OfferingProperties';
-import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import React, { FC, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
-import { DocumentType, Offering } from '@gql/graphql';
-import { getBaseUrl } from '@src/utils/helpersURL';
-
-import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-
+import OfferingProperties from '@src/components/properties/OfferingProperties';
+import Header from '@src/containers/Header';
+import Container from '@src/containers/Layouts/Container';
+import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
+import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-
+import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
+import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import {
   ContractOrder,
   getCurrentOrderPrice,
   getOrderArrayFromContract
 } from '@src/utils/helpersOrder';
-import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
+import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount } from 'wagmi';
-import { useAsync } from 'react-use';
-import { useQuery } from '@apollo/client/react';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import cn from 'classnames';
+import { useRouter } from 'next/navigation';
+import React, { FC, useState } from 'react';
+import { useAsync } from 'react-use';
+import { useAccount } from 'wagmi';
 
 type OfferingProfileProps = {
   offering: Offering;

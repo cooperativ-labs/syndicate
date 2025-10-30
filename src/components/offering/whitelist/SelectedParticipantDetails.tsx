@@ -1,35 +1,35 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
-import DistributionList from '../distributions/DistributionList';
-import ForceTransferForm from '../actions/ForceTransferForm';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import Input from '@src/components/form-components/Inputs';
-
-import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
-import React, { Dispatch, FC, useState } from 'react';
-import SectionBlock from '@src/containers/SectionBlock';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { DownloadFile } from '@src/utils/helpersAgreement';
-import { Form, Formik } from 'formik';
-import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { useMutation } from '@apollo/client/react';
 import {
   Maybe,
   OfferingParticipant,
   OfferingSmartContractSet,
   WhitelistTransactionType
 } from '@gql/graphql';
-
-import TransferEventList from '../sales/TransferEventList';
-import WhitelistTransactionItem from './WhitelistTransactionItem';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
+import Input from '@src/components/form-components/Inputs';
+import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import SectionBlock from '@src/containers/SectionBlock';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/graphQueries/offering';
+import { DownloadFile } from '@src/utils/helpersAgreement';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/graphQueries/offering';
-import { useContractReads } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { Form, Formik } from 'formik';
 import { useSession } from 'next-auth/react';
-import { numberWithCommas } from '@src/utils/helpersMoney';
+import React, { Dispatch, FC, useState } from 'react';
+import { useContractReads } from 'wagmi';
+
+import ForceTransferForm from '../actions/ForceTransferForm';
+import DistributionList from '../distributions/DistributionList';
+import TransferEventList from '../sales/TransferEventList';
+
+import WhitelistTransactionItem from './WhitelistTransactionItem';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 

@@ -1,17 +1,18 @@
 'use client';
 
+import { useQuery } from '@apollo/client/react';
 import AddItemButton from '@src/components/buttons/AddItemButton';
+import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import MajorActionButton from '@src/components/buttons/MajorActionButton';
-import React, { FC } from 'react';
-import router, { useRouter } from 'next/router';
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { GET_USER } from '@src/utils/graphQueries/user';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useQuery } from '@apollo/client/react';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 import { useParams } from 'next/navigation';
+import router, { useRouter } from 'next/router';
+import React, { FC } from 'react';
+
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 const EntityDashboard: FC = () => {
   const { user } = useSupabaseAuth();

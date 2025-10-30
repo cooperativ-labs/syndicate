@@ -1,9 +1,9 @@
 import Card from '@src/components/cards/Card';
-import React, { FC } from 'react';
 import { MatchSupportedChains } from '@src/web3/wagmi';
+import React, { FC } from 'react';
+import { useAccount, useChainId } from 'wagmi';
 
 import ChooseConnectorButton from './ChooseConnectorButton';
-import { useAccount, useChainId } from 'wagmi';
 
 type EnsureCompatibleNetworkProps = { children: React.ReactNode };
 

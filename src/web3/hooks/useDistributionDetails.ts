@@ -1,17 +1,18 @@
-import { useContractRead } from 'wagmi';
-import { String0x } from '../helpersChain';
-import { dividendContractABI } from '../generated';
-import { shareContractDecimals, toNormalNumber } from '../util';
 import { getCurrencyById } from '@src/utils/enumConverters';
-import { getPublicClient } from 'wagmi/actions';
 import { useState } from 'react';
 import { useAsync } from 'react-use';
 import { Block } from 'viem';
+import { useContractRead } from 'wagmi';
+import { getPublicClient } from 'wagmi/actions';
+
+import { dividendContractABI } from '../generated';
+import { String0x } from '../helpersChain';
+import { shareContractDecimals, toNormalNumber } from '../util';
 
 export type DistributionDetailsType = {
   // currentBlock: Block | undefined;
   dividendPartition: String0x | undefined;
-  blockTimestamp: BigInt | undefined;
+  blockTimestamp: bigint | undefined;
   exDividendDate: Date | undefined;
   recordDate: Date | undefined;
   payoutDate: Date | undefined;

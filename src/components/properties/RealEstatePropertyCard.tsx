@@ -1,11 +1,12 @@
-"use client";
+'use client';
 
+import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import cn from 'classnames';
-import MapPanel from '../MapPanel';
-import React, { FC } from 'react';
 import { useRouter } from 'next/navigation';
-import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@gql/graphql';
+import React, { FC } from 'react';
+
+import MapPanel from '../MapPanel';
 
 type RealEstatePropertyCardProps = {
   property: RealEstateProperty;
@@ -20,7 +21,8 @@ export const RealEstatePropertyCard: FC<RealEstatePropertyCardProps> = ({
   fullWidth
 }) => {
   const router = useRouter();
-  const { id, downPayment, lenderFees, closingCosts, address, description, images } = property ?? {};
+  const { id, downPayment, lenderFees, closingCosts, address, description, images } =
+    property ?? {};
 
   return (
     <div

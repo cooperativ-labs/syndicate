@@ -1,14 +1,16 @@
 'use client';
 
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
+import { useParams } from 'next/navigation';
+import React, { FC, useContext, useEffect, useState } from 'react';
+import { useWindowSize } from 'react-use';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
+
 import ManagerSideBarContents from './ManagerSideBarContents';
 import OrganizationSwitcher from './OrganizationSwitcher';
-import React, { FC, useContext, useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';
-import { ApplicationStoreProps, store } from '@context/store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { useWindowSize } from 'react-use';
 
 type ManagerSideBarProps = {
   organizations: any[];

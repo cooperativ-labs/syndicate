@@ -1,6 +1,7 @@
-import EmailAddressListItem from './EmailAddressListItem';
-import React, { FC } from 'react';
 import { EmailAddress, Maybe } from '@gql/graphql';
+import React, { FC } from 'react';
+
+import EmailAddressListItem from './EmailAddressListItem';
 
 type EmailAddressListProps = {
   emailAddresses: Maybe<Maybe<EmailAddress>[]> | undefined;

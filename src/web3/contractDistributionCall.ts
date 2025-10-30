@@ -1,9 +1,10 @@
-import { Dispatch, SetStateAction } from 'react';
-import { StandardChainErrorHandling, String0x } from './helpersChain';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
-
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { config } from '@src/web3/wagmi';
+import { Dispatch, SetStateAction } from 'react';
+import toast from 'react-hot-toast';
 // Apollo types are intentionally not imported to avoid version-specific generics
-
 import {
   getPublicClient,
   simulateContract,
@@ -12,11 +13,8 @@ import {
 } from 'wagmi/actions';
 
 import { dividendContractABI } from './generated';
-import { config } from '@src/web3/wagmi';
-import toast from 'react-hot-toast';
+import { StandardChainErrorHandling, String0x } from './helpersChain';
 import { toContractNumber } from './util';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getCurrencyById } from '@src/utils/enumConverters';
 
 type SubmitDistributionProps = {
   distributionContractAddress: String0x | undefined;

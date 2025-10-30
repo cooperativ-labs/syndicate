@@ -1,15 +1,14 @@
-import Button from '../buttons/Button';
-import Input from '../form-components/Inputs';
-import React, { FC, useState } from 'react';
-import { Country } from 'country-state-city';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-
-import ClickToEditItem from '../form-components/ClickToEditItem';
-import cn from 'classnames';
-
 import { CurrencyCode, Maybe, Organization } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import cn from 'classnames';
+import { Country } from 'country-state-city';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+
+import Button from '../buttons/Button';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
+import ClickToEditItem from '../form-components/ClickToEditItem';
+import Input from '../form-components/Inputs';
 
 export type EditOrganizationSelectionType =
   | 'name'

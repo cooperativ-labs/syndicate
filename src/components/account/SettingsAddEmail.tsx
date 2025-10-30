@@ -1,6 +1,7 @@
-import Input from '../form-components/Inputs';
-import React, { FC } from 'react';
 import { Form, Formik } from 'formik';
+import React, { FC } from 'react';
+
+import Input from '../form-components/Inputs';
 import { handleAddEmailAddress } from '../notifications/notificationFunctions';
 
 const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';

@@ -13,12 +13,13 @@ export const getFileFormat = (file: File) => {
   switch (fileType) {
     case 'application/pdf':
       return DocumentFormat.Pdf;
-    case 'application/msword' ||
-      'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+    case 'application/msword':
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       return DocumentFormat.WordDoc;
     case 'text/markdown':
       return DocumentFormat.Markdown;
-    case 'xls' || 'xlsx':
+    case 'xls':
+    case 'xlsx':
       return DocumentFormat.Excel;
     default:
       return DocumentFormat.Other;

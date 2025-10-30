@@ -1,6 +1,7 @@
-import Button from './Button';
 import cn from 'classnames';
 import React from 'react';
+
+import Button from './Button';
 
 interface MarketingButtonProps {
   external?: boolean;

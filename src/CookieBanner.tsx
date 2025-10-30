@@ -1,9 +1,10 @@
-"use client";
+'use client';
 
-import Button from './components/buttons/Button';
 import cn from 'classnames';
 import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
+
+import Button from './components/buttons/Button';
 
 const buttonGradient =
   'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';

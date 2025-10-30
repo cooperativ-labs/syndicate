@@ -1,30 +1,29 @@
 'use client';
 
-import Container from '@src/containers/Layouts/Container';
+import { useQuery } from '@apollo/client/react';
+import { DocumentType, Offering } from '@gql/graphql';
+import useOfferingDetails from '@hooks/useOfferingDetails';
 import DashboardCard from '@src/components/cards/DashboardCard';
+import HashInstructions from '@src/components/documentVerification/HashInstructions';
+import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
+import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
-import FormModal from '@src/containers/FormModal';
-
-import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
-import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
-import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import React, { FC, useState } from 'react';
-import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
+import FormModal from '@src/containers/FormModal';
+import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import useOfferingDetails from '@hooks/useOfferingDetails';
-import { DocumentType, Offering } from '@gql/graphql';
-import { floatWithCommas } from '@src/utils/helpersMoney';
+import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
+import { floatWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
-import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from 'wagmi';
-import { useQuery } from '@apollo/client/react';
 import { useParams } from 'next/navigation';
+import React, { FC, useState } from 'react';
+import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from 'wagmi';
 
 type PortalOfferingProps = {
   offering: Offering;

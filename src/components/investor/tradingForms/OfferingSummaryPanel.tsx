@@ -1,7 +1,7 @@
-import React, { FC } from 'react';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
 
 type OfferingSummaryPanelProps = {
   isAskOrder: boolean | undefined;

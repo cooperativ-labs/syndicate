@@ -1,14 +1,14 @@
-import axios from 'axios';
 import { Address, CurrencyCode, LegalEntity, Offering } from '@gql/graphql';
-import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
+import { getCurrencyOption } from '@src/utils/enumConverters';
 import {
   GenerateInvestorApplicationSummary,
   GenerateSubscriptionAgreementSuitabilityAttestation,
   GenerateSubscriptionPurchaseAttestation
 } from '@src/utils/helpersAgreement';
-import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
+import axios from 'axios';
 import { useAsync } from 'react-use';
 type AgreementText = {
   custom: string;

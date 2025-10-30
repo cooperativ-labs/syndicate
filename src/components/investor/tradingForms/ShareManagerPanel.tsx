@@ -1,28 +1,25 @@
+import { useMutation } from '@apollo/client/react';
+import { ShareOrder } from '@gql/graphql';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import cn from 'classnames';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import React, { FC, useState } from 'react';
-
+import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/graphQueries/orders';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import {
   approveRejectSwap,
   cancelAcceptance,
   cancelSwap,
   claimProceeds
 } from '@src/web3/contractSwapCalls';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-
-import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/graphQueries/orders';
-
-import { getCurrencyById } from '@src/utils/enumConverters';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
-import { ShareOrder } from '@gql/graphql';
-import { String0x } from '@src/web3/helpersChain';
 import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
+import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
+import cn from 'classnames';
+import React, { FC, useState } from 'react';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
 
 export type SaleMangerPanelProps = {
   swapContractAddress: String0x | undefined;

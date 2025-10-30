@@ -1,11 +1,11 @@
-import React, { FC } from 'react';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Document, Maybe } from '@gql/graphql';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getDocFormatOption } from '@src/utils/enumConverters';
-import { IconName } from '@fortawesome/free-solid-svg-icons';
-import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
 import { useMutation } from '@apollo/client/react';
+import { IconName } from '@fortawesome/free-solid-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Document, Maybe } from '@gql/graphql';
+import { getDocFormatOption } from '@src/utils/enumConverters';
+import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import React, { FC } from 'react';
 
 const DocumentListItem: FC<{
   document: Maybe<Document>;

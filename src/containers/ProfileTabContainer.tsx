@@ -1,10 +1,3 @@
-import MapPanel from '@src/components/MapPanel';
-import React, { FC, useState } from 'react';
-import SourcesAndUsesDisplay from '@src/components/offering/tabs/financialDisplay/SourcesAndUses';
-import Tab from '@src/components/offering/tabs/Tab';
-import TextSection, { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
-import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
-import TotalReturns from '@src/components/offering/tabs/financialDisplay/TotalReturns';
 import {
   Currency,
   Maybe,
@@ -14,7 +7,14 @@ import {
   OfferingTabSection,
   RealEstateProperty
 } from '@gql/graphql';
+import MapPanel from '@src/components/MapPanel';
+import SourcesAndUsesDisplay from '@src/components/offering/tabs/financialDisplay/SourcesAndUses';
+import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
+import TotalReturns from '@src/components/offering/tabs/financialDisplay/TotalReturns';
+import Tab from '@src/components/offering/tabs/Tab';
+import TextSection, { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
 import { tabSectionOptions } from '@src/utils/enumConverters';
+import React, { FC, useState } from 'react';
 import { useWindowSize } from 'react-use';
 
 type ProfileTabContainerProps = {

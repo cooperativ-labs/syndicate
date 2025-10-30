@@ -1,11 +1,11 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@src/components/buttons/Button';
+import { WalletErrorCodes } from '@src/web3/helpersChain';
 import cn from 'classnames';
 import React, { FC, useContext } from 'react';
-import { ApplicationStoreProps, store } from '@context/store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-
 import { Connector, useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
-import { WalletErrorCodes } from '@src/web3/helpersChain';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 export function Account() {
   const { address } = useAccount();

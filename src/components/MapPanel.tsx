@@ -1,6 +1,6 @@
-import React, { FC, useState } from 'react';
 import { Address, Maybe } from '@gql/graphql';
 import { GoogleMap, Marker } from '@react-google-maps/api';
+import React, { FC, useState } from 'react';
 
 type MapPanelProps = {
   address?: Maybe<Address> | undefined;

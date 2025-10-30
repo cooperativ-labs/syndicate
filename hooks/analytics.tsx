@@ -1,6 +1,4 @@
-import AnalyticsContext from '@context/analytics';
-//@ts-ignore
-import TagManager from 'react-gtm-module';
+import { trackImpression, trackPageView } from '@src/utils/analytics';
 import {
   DEFAULT_BLUR_ACTION,
   DEFAULT_CLICK_ACTION,
@@ -11,11 +9,14 @@ import {
   parseDataAttributes,
   parseOverwriteObject
 } from '@src/utils/analytics/helpers';
-import { trackImpression, trackPageView } from '@src/utils/analytics';
-import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-import { usePathname, useSearchParams } from 'next/navigation';
 // @ts-ignore
 import { trackInteraction } from '@src/utils/analytics/index.ts';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+//@ts-ignore
+import TagManager from 'react-gtm-module';
+
+import AnalyticsContext from '@/contexts/analytics';
 
 /**
  * Handles Generating Analytics Data from data-attributes and overwrites

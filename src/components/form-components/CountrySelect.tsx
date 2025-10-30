@@ -1,9 +1,11 @@
-import Button from '../buttons/Button';
-import React, { FC } from 'react';
-import Select from './Select';
 import { Address, LegalEntity } from '@gql/graphql';
 import { Country } from 'country-state-city';
+import React, { FC } from 'react';
+
+import Button from '../buttons/Button';
+
 import { defaultFieldDiv } from './Inputs';
+import Select from './Select';
 
 type CountrySelectProps = {
   className: string;

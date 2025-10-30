@@ -1,6 +1,6 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import cn from 'classnames';
 import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 export interface RoundedImageProps {
   src: string;

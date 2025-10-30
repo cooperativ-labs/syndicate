@@ -1,9 +1,10 @@
+import { Maybe } from '@gql/graphql';
 import cn from 'classnames';
 import React, { FC } from 'react';
+
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
-import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
-import { Maybe } from '@gql/graphql';
 import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
+import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 
 type ClickToEditItemProps = {
   label: string;

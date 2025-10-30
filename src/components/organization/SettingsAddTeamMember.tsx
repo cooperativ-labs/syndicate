@@ -1,18 +1,18 @@
-import Input from '../form-components/Inputs';
-import React, { FC, useContext } from 'react';
-import Select from '../form-components/Select';
-
-import { ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
+import { useApolloClient } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
+import { OrganizationPermissionType } from '@gql/graphql';
 import {
   getOrganizationPermissionOption,
   organizationPermissionOptions
 } from '@src/utils/enumConverters';
-import { OrganizationPermissionType } from '@gql/graphql';
-import { useApolloClient } from '@apollo/client/react';
-import { useMutation } from '@apollo/client/react';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
+import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
+import { Form, Formik } from 'formik';
+import React, { FC, useContext } from 'react';
+
+import Input from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
 const fieldDiv = 'md:my-2 bg-opacity-0';
 

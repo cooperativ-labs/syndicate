@@ -1,11 +1,10 @@
-import cn from 'classnames';
-
-import DocumentList from '@src/components/offering/documents/DocumentList';
-import EntitiesList from '@src/components/entity/EntitiesList';
-import OfferingsList from '@src/components/offering/OfferingsList';
-import React, { FC, useState } from 'react';
-import Tab from '@src/components/offering/tabs/Tab';
 import { LegalEntity, Maybe, Offering, RealEstateProperty } from '@gql/graphql';
+import EntitiesList from '@src/components/entity/EntitiesList';
+import DocumentList from '@src/components/offering/documents/DocumentList';
+import OfferingsList from '@src/components/offering/OfferingsList';
+import Tab from '@src/components/offering/tabs/Tab';
+import cn from 'classnames';
+import React, { FC, useState } from 'react';
 
 type EntityTabContainerProps = {
   properties?: RealEstateProperty[];

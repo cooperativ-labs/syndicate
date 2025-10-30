@@ -1,5 +1,6 @@
-import Loading from './Loading';
 import React, { FC } from 'react';
+
+import Loading from './Loading';
 
 interface LoadingModalProps {}
 const LoadingModal: FC<LoadingModalProps> = () => {

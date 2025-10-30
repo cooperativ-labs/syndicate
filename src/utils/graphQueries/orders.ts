@@ -68,7 +68,7 @@ export const ADD_TRANSFER_EVENT = gql`
 `;
 
 export const ADD_DISTRIBUTION = gql`
-  mutation UpdateOffering($offeringId: [ID!], $transactionHash: String!, $contractIndex: Int!) {
+  mutation AddDistribution($offeringId: [ID!], $transactionHash: String!, $contractIndex: Int!) {
     updateOffering(
       input: {
         filter: { id: $offeringId }

@@ -1,8 +1,10 @@
 'use client';
 
-import LoginModal from './LoginModal';
 import React, { useEffect, useMemo, useState } from 'react';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+
+import LoginModal from './LoginModal';
 
 interface WithAuthenticationProps {
   redirectTo?: string;

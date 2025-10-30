@@ -1,28 +1,27 @@
+import { DocumentType, Offering } from '@gql/graphql';
+import useOfferingDetails from '@hooks/useOfferingDetails';
 import AlertBanner from '@src/components/alerts/AlertBanner';
-import BasicOfferingDetailsForm from '@src/components/offering/settings/BasicOfferingDetailsForm';
 import Button from '@src/components/buttons/Button';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import DashboardCard from '@src/components/cards/DashboardCard';
-import DocumentList from '@src/components/offering/documents/DocumentList';
+import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import OfferingActions from '@src/components/offering/actions/OfferingActions';
+import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
-import OfferingDescriptionSettings from '@src/components/offering/settings/OfferingDescriptionSettings';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
+import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
+import BasicOfferingDetailsForm from '@src/components/offering/settings/BasicOfferingDetailsForm';
+import OfferingDescriptionSettings from '@src/components/offering/settings/OfferingDescriptionSettings';
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
-import OfferingTabContainer from '@src/containers/OfferingTabContainer';
-import React, { FC, useState } from 'react';
-import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { DocumentType, Offering } from '@gql/graphql';
+import OfferingTabContainer from '@src/containers/OfferingTabContainer';
+import RightSideBar from '@src/containers/sideBar/RightSidebar';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { readContracts, useAccount } from 'wagmi';
-import { useSession } from 'next-auth/react';
-
-import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
-import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import useOfferingDetails from '@hooks/useOfferingDetails';
 import { MatchSupportedChains } from '@src/web3/connectors';
+import { useSession } from 'next-auth/react';
+import React, { FC, useState } from 'react';
+import { readContracts, useAccount } from 'wagmi';
 
 type OfferingDetailsProps = {
   offering: Offering;

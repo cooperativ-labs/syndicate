@@ -1,25 +1,25 @@
 'use client';
 
-import Card from '../cards/Card';
-import MoneyDisplay from '../MoneyDisplay';
-import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
-import PercentageDisplay from '../PercentageDisplay';
-import React, { useState } from 'react';
+import { useQuery } from '@apollo/client/react';
+import { Maybe, Offering } from '@gql/graphql';
+import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
 import {
   ContractOrder,
   getLowestOrderPrice,
   getOrderArrayFromContract
 } from '@src/utils/helpersOrder';
-import { Maybe, Offering } from '@gql/graphql';
-import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount } from 'wagmi';
-import { useAsync } from 'react-use';
-
-import { useRouter } from 'next/navigation';
-import { useQuery } from '@apollo/client/react';
-
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
+import { useRouter } from 'next/navigation';
+import React, { useState } from 'react';
+import { useAsync } from 'react-use';
+import { useAccount } from 'wagmi';
+
+import Card from '../cards/Card';
+import MoneyDisplay from '../MoneyDisplay';
+import PercentageDisplay from '../PercentageDisplay';
+
+import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 
 export type OfferingCardProps = {
   offering: Maybe<Offering> | undefined;

@@ -1,21 +1,19 @@
-import FormButton from '../buttons/FormButton';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { FC, useState } from 'react';
-
-import { Form, Formik } from 'formik';
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-
-import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-
+import { useMutation } from '@apollo/client/react';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { ADD_DISTRIBUTION } from '@src/utils/graphQueries/orders';
-import { erc20ABI, useAccount, useContractRead } from 'wagmi';
 import { isMetaMask } from '@src/web3/connectors';
-import { setAllowance } from '@src/web3/contractSwapCalls';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
+import { setAllowance } from '@src/web3/contractSwapCalls';
+import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
-import { useMutation } from '@apollo/client/react';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+import { erc20ABI, useAccount, useContractRead } from 'wagmi';
+
+import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import FormButton from '../buttons/FormButton';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
 
 type SubmitDistributionProps = {

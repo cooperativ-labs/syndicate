@@ -1,7 +1,7 @@
-import React, { FC, useState } from 'react';
+import { useQuery } from '@apollo/client/react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { GET_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
-import { useQuery } from '@apollo/client/react';
+import React, { FC, useState } from 'react';
 
 type PresentWalletUserProps = {
   walletAddress: string;

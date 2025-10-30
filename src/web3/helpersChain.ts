@@ -1,10 +1,10 @@
+import { Document, Maybe } from '@gql/graphql';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { Dispatch, SetStateAction } from 'react';
+import toast from 'react-hot-toast';
 import { bytesToString, hexToBytes, stringToHex } from 'viem';
 import { keccak256, toHex } from 'viem';
-import toast from 'react-hot-toast';
-import { Document, Maybe } from '@gql/graphql';
 import { fetchEnsAddress, fetchEnsName } from 'wagmi/actions';
-import { Dispatch, SetStateAction } from 'react';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
 
 export type String0x = `0x${string}`;
 
@@ -25,7 +25,7 @@ export const getHashTextPairs = (data: any, agreementTexts: Maybe<Document>[]) =
   const hashes = data.map((doc: any) => {
     return doc.result[1];
   });
-  const textHashPairs = agreementTexts.map((doc, i) => {
+  const textHashPairs = agreementTexts.map(doc => {
     const docText = doc?.text;
     const hash = hashes.find((hash: string) => hashBytes32FromString(docText) === hash);
     return { hash: hash, text: doc?.text };
@@ -103,7 +103,7 @@ export const WalletErrorMessages = {
 
 export const WalletErrorCodes = (error: any) => {
   switch (error.code) {
-    case parseInt('-32002'):
+    case parseInt('-32002', 10):
       return WalletErrorMessages.NeedToApproveConnection;
     case 4001:
       return WalletErrorMessages.RejectedAttemptToConnect;
@@ -125,7 +125,10 @@ export const ChainErrorResponses = (error: any, recipient: string | String0x | u
       message: 'This user cannot be removed from the whitelist because they still hold shares.'
     };
   }
-  if (error.message.includes('User rejected the request' || 'User cancelled operation')) {
+  if (
+    error.message.includes('User rejected the request') ||
+    error.message.includes('User cancelled operation')
+  ) {
     return { code: 2000, message: 'User cancelled operation' };
   }
   if (error.message.includes('Cannot convert undefined to a BigInt')) {
@@ -168,7 +171,7 @@ export const StandardChainErrorHandling = (
   setButtonStep?: Dispatch<SetStateAction<LoadingButtonStateType>>,
   recipient?: String0x
 ) => {
-  console.log('error', error);
+  console.error('error', error);
   const errorCode = ChainErrorResponses(error, recipient).code;
   const errorMessage = ChainErrorResponses(error, recipient).message;
 

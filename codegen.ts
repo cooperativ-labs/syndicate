@@ -3,7 +3,13 @@ import { addTypenameSelectionDocumentTransform } from '@graphql-codegen/client-p
 
 const config: CodegenConfig = {
   schema: 'http://localhost:54321/graphql/v1', // Using the local endpoint, update if needed
-  documents: '**/*.tsx',
+  documents: [
+    'app/**/*.{ts,tsx}',
+    // "src/**/*.{ts,tsx}",
+
+    '!gql/**',
+    '!node_modules/**'
+  ],
   overwrite: true,
   ignoreNoDocuments: true,
   config: {

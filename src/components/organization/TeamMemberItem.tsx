@@ -1,9 +1,10 @@
+import { Maybe, OrganizationPermissionType, OrganizationUser } from '@gql/graphql';
+import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import cn from 'classnames';
 import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+
 import { EditButton } from '../form-components/ListItemButtons';
-import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
-import { Maybe, OrganizationPermissionType, OrganizationUser } from '@gql/graphql';
 
 export type TeamMemberBaseProps = {
   organizationId: Maybe<string>;

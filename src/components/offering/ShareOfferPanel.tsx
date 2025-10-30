@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import cn from 'classnames';
-import React, { FC, useState } from 'react';
-import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { Maybe } from 'yup';
-import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Offering, Organization } from '@gql/graphql';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import cn from 'classnames';
+import { useRouter } from 'next/navigation';
+import React, { FC, useState } from 'react';
+import { Maybe } from 'yup';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 
@@ -46,7 +46,12 @@ type ShareOfferPanelProps = {
   currentUser?: string;
 };
 
-const ShareOfferPanel: FC<ShareOfferPanelProps> = ({ offering, currentSalePrice, organization, currentUser }) => {
+const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
+  offering,
+  currentSalePrice,
+  organization,
+  currentUser
+}) => {
   const router = useRouter();
   const participants = offering.participants;
   const permittedEntity = participants?.find(participant => {

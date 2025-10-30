@@ -1,16 +1,15 @@
-import React, { FC, useState } from 'react';
-
-import cn from 'classnames';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Formik } from 'formik';
 import { useMutation } from '@apollo/client/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { EmailAddress, Maybe } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/graphQueries/organization';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
 
 import Checkbox from './form-components/Checkbox';
 import Input from './form-components/Inputs';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { EditButton, MarkPublic } from './form-components/ListItemButtons';
-import { EmailAddress, Maybe } from '@gql/graphql';
-import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/graphQueries/organization';
 
 type EmailAddressListItemProps = {
   email: Maybe<Maybe<EmailAddress>> | undefined;

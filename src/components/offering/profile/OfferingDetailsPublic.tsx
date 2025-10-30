@@ -1,9 +1,10 @@
-import OfferingDetailItem from '../OfferingDetailItem';
-import React, { FC } from 'react';
+import { OfferingDetails } from '@gql/graphql';
 import { getCurrencyOption, getDistributionPeriod } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { OfferingDetails } from '@gql/graphql';
+import React, { FC } from 'react';
+
+import OfferingDetailItem from '../OfferingDetailItem';
 
 type OfferingDetailsPublicProps = {
   offeringDetails: OfferingDetails;

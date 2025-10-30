@@ -1,4 +1,3 @@
-import { String0x } from '@src/web3/helpersChain';
 import {
   AssetStatus,
   CryptoAddressProtocol,
@@ -17,6 +16,7 @@ import {
   RealEstatePropertyType,
   ShareTransferEventType
 } from '@gql/graphql';
+import { String0x } from '@src/web3/helpersChain';
 
 // ===== PROFILE ======
 

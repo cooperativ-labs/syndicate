@@ -1,8 +1,8 @@
-import Card from '@src/components/cards/Card';
+import useWindowSize from '@hooks/useWindowSize';
 import CloseButton from '@src/components/buttons/CloseButton';
+import Card from '@src/components/cards/Card';
 import cn from 'classnames';
 import React, { FC, useEffect } from 'react';
-import useWindowSize from '@hooks/useWindowSize';
 
 type FormModalProps = {
   noModal?: boolean;

@@ -1,8 +1,8 @@
-import cn from 'classnames';
-import Input from '@src/components/form-components/Inputs';
-import React, { FC } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import Input from '@src/components/form-components/Inputs';
+import cn from 'classnames';
 import { Form, Formik } from 'formik';
+import React, { FC } from 'react';
 
 type AccessCodeFormProps = {
   accessCode: string | undefined | null;

@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+
 import { CORE_RE_PROPERTY_FIELDS } from './fragments';
 
 export const GET_RE_PROPERTY = gql`
@@ -197,7 +198,7 @@ export const ADD_PROPERTY_ADDRESS = gql`
 `;
 
 export const REMOVE_PROPERTY_ADDRESS = gql`
-  mutation RemoveAddress($propertyId: [ID!], $geoAddressId: ID!) {
+  mutation RemovePropertyAddress($propertyId: [ID!], $geoAddressId: ID!) {
     updateRealEstateProperty(
       input: {
         filter: { id: $propertyId }
@@ -246,7 +247,7 @@ export const ADD_PROPERTY_IMAGE = gql`
 `;
 
 export const REMOVE_PROPERTY_IMAGE = gql`
-  mutation RemoveAddress($currentDate: DateTime!, $propertyId: [ID!], $imageId: ID!) {
+  mutation RemovePropertyImage($currentDate: DateTime!, $propertyId: [ID!], $imageId: ID!) {
     updateRealEstateProperty(
       input: {
         filter: { id: $propertyId }

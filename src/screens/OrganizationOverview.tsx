@@ -1,16 +1,17 @@
-"use client";
+'use client';
 
-import CreateOffering from '@src/components/offering/CreateOffering';
+import { useQuery } from '@apollo/client/react';
+import { OfferingParticipant } from '@gql/graphql';
 import DashboardCard from '@src/components/cards/DashboardCard';
+import { toastExperiment } from '@src/components/indicators/Notifications';
 import LoadingModal from '@src/components/loading/ModalLoading';
+import CreateOffering from '@src/components/offering/CreateOffering';
 import OfferingFinder from '@src/components/offering/OfferingFinder';
 import OfferingsList from '@src/components/offering/OfferingsList';
-import React, { FC, useContext } from 'react';
-import SectionBlock from '@src/containers/SectionBlock';
 import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamMember';
 import TeamMemberList from '@src/components/organization/TeamMemberList';
-import toast, { Toaster } from 'react-hot-toast';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
+import SectionBlock from '@src/containers/SectionBlock';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { GET_USER } from '@src/utils/graphQueries/user';
@@ -19,12 +20,12 @@ import {
   getIsEditorOrAdmin,
   getOrgOfferingsFromEntity
 } from '@src/utils/helpersUserAndEntity';
-import { OfferingParticipant } from '@gql/graphql';
-import { toastExperiment } from '@src/components/indicators/Notifications';
-import { useAccount } from 'wagmi';
-import { useQuery } from '@apollo/client/react';
 import { useRouter } from 'next/router';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import React, { FC, useContext } from 'react';
+import toast, { Toaster } from 'react-hot-toast';
+import { useAccount } from 'wagmi';
+
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 
 const OrganizationOverview: FC = () => {
   const { user } = useSupabaseAuth();

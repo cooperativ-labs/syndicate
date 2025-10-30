@@ -1,11 +1,11 @@
-import cn from 'classnames';
-import React, { FC, use, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import useWindowSize from '@hooks/useWindowSize';
 import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import { Maybe } from 'yup';
+import cn from 'classnames';
+import React, { FC, use, useState } from 'react';
 import { useAsync } from 'react-use';
+import { Maybe } from 'yup';
 
 type FormattedCryptoAddressProps = {
   chainId: Maybe<number> | undefined;

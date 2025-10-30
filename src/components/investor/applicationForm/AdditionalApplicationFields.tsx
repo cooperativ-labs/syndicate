@@ -1,6 +1,7 @@
+import React, { FC } from 'react';
+
 import Checkbox from '../../form-components/Checkbox';
 import Input, { defaultFieldDiv } from '../../form-components/Inputs';
-import React, { FC } from 'react';
 import Select from '../../form-components/Select';
 
 type AdditionalApplicationFieldsProps = {

@@ -1,7 +1,8 @@
-import Button, { ButtonProps } from './Button';
 import cn from 'classnames';
 import Link from 'next/link';
 import React, { FC } from 'react';
+
+import Button, { ButtonProps } from './Button';
 
 const buttonGradient =
   'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';

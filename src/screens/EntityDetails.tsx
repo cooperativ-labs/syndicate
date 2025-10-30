@@ -1,29 +1,27 @@
-import AddressDisplay from '@src/components/address/AddressDisplay';
-import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { CurrencyCode, LegalEntity, Maybe, Offering } from '@gql/graphql';
 import { useMutation, useQuery } from '@apollo/client/react';
-
-import {
-  REMOVE_ENTITY_ADDRESS,
-  REMOVE_ENTITY_OWNER,
-  UPDATE_ENTITY_INFORMATION
-} from '@src/utils/graphQueries/entity';
-
-import AddOwningEntity from '@src/components/entity/AddOwningEntity';
-import Button from '@src/components/buttons/Button';
+import { CurrencyCode, LegalEntity, Maybe, Offering } from '@gql/graphql';
+import AddressDisplay from '@src/components/address/AddressDisplay';
 import CreateAddress from '@src/components/address/CreateAddress';
+import Button from '@src/components/buttons/Button';
 import DeleteButton from '@src/components/buttons/DeleteButton';
+import AddOwningEntity from '@src/components/entity/AddOwningEntity';
 import EntitySpecifications, {
   changeForm,
   EditEntitySelectionType
 } from '@src/components/entity/EntitySpecifications';
 import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
+import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
+import {
+  REMOVE_ENTITY_ADDRESS,
+  REMOVE_ENTITY_OWNER,
+  UPDATE_ENTITY_INFORMATION
+} from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { useSession } from 'next-auth/react';
+import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
 
 type EntityDetailsProps = {
   entity: LegalEntity;

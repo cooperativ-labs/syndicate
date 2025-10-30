@@ -1,20 +1,19 @@
-import React, { Dispatch, FC, SetStateAction } from 'react';
-import ShareCompleteSwap from './ShareCompleteSwap';
+import { useMutation } from '@apollo/client/react';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
-
-import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
 import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
+import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
+import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
+import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import React, { Dispatch, FC, SetStateAction } from 'react';
 import { erc20ABI, useAccount, useBalance, useContractRead } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
+import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseSaleRequest, {
   SharePurchaseSaleRequestProps
 } from './SharePurchaseSaleRequest';
-import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { String0x } from '@src/web3/helpersChain';
-import { swapContractABI } from '@src/web3/generated';
-import { useMutation } from '@apollo/client/react';
 
 type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   isApproved: boolean;

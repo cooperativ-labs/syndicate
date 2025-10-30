@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
 import useWindowSize from '@hooks/useWindowSize';
+import React, { FC } from 'react';
 
 const FeatureItem: FC<{
   image: string;

@@ -1,8 +1,9 @@
-import React, { FC, useState } from 'react';
-import StandardButton from '../buttons/StandardButton';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Document, Maybe } from '@gql/graphql';
 import { DownloadFile } from '@src/utils/helpersAgreement';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import React, { FC, useState } from 'react';
+
+import StandardButton from '../buttons/StandardButton';
 
 type HashInstructionsProps = {
   agreementTexts: Document[];

@@ -1,7 +1,7 @@
+import { NotificationSubject, Organization } from '@gql/graphql';
 import { emailConfirmationContent, emailNotificationContent } from '@src/services/postmark';
 import axios from 'axios';
 import { sha256 } from 'js-sha256';
-import { NotificationSubject, Organization } from '@gql/graphql';
 
 const getRecipientEmails = (
   organization: Organization,

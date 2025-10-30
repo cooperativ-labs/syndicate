@@ -1,9 +1,9 @@
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import { initializeApollo } from '@src/utils/apolloClient';
+import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
 import type { Metadata } from 'next';
+import { Organization } from 'oldTypes';
 import { cache } from 'react';
 import React from 'react';
-import { Organization } from 'oldTypes';
 
 import ClientOrganizationPage from './ClientOrganizationPage';
 
@@ -16,7 +16,7 @@ const fetchOrganization = cache(async (organizationId: string | undefined) => {
     const apolloClient = initializeApollo();
     const { data } = await apolloClient.query({
       query: GET_ORGANIZATION,
-      variables: { id: organizationId },
+      variables: { id: organizationId }
     });
 
     return (data?.getOrganization ?? null) as Organization | null;
@@ -49,14 +49,14 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
       type: 'website',
       description: shortDescription ?? undefined,
       url: `https://cooperativ.io/${id}/portal/`,
-      images: [imageUrl],
+      images: [imageUrl]
     },
     twitter: {
       title: name ?? '',
       description: shortDescription ?? undefined,
       card: 'summary_large_image',
-      images: [imageUrl],
-    },
+      images: [imageUrl]
+    }
   };
 };
 
@@ -66,4 +66,3 @@ const OrganizationRoute = async ({ params }: Params) => {
 };
 
 export default OrganizationRoute;
-

@@ -1,13 +1,14 @@
 'use client';
 
-import cn from 'classnames';
-import React from 'react';
+import { Offering } from '@gql/graphql';
 import useWindowSize from '@hooks/useWindowSize';
+import cn from 'classnames';
+import { useRouter } from 'next/router';
+import React from 'react';
+
+import { getBaseUrl } from '../utils/helpersURL';
 
 import Container from './Layouts/Container';
-import { getBaseUrl } from '../utils/helpersURL';
-import { Offering } from '@gql/graphql';
-import { useRouter } from 'next/router';
 
 type HeaderProps = {
   offering: Offering;

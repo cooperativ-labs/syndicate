@@ -1,12 +1,13 @@
 'use client';
-import Card from '@src/components/cards/Card';
-import CreateOrganization from '@src/components/organization/CreateOrganization';
-import React, { FC, useEffect, useState } from 'react';
-import { handleOrganizationChange, getOrgsFromUser } from '@src/utils/helpersOrganization';
 import { Organization } from '@gql/graphql';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
+import Card from '@src/components/cards/Card';
 import CreateOffering from '@src/components/offering/CreateOffering';
+import CreateOrganization from '@src/components/organization/CreateOrganization';
 import EnsureOrganization from '@src/containers/EnsureOrganization';
+import { getOrgsFromUser, handleOrganizationChange } from '@src/utils/helpersOrganization';
+import React, { FC, useEffect, useState } from 'react';
+
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
 const Dashboard: FC = () => {
   const { user, supabase } = useSupabaseAuth();
   const [organizations, setOrganizations] = useState<Organization[]>([]);

@@ -1,7 +1,7 @@
-import FinancialFactItem from './FinancialFactItem';
+import { Currency, OfferingDetails } from '@gql/graphql';
 import React, { FC } from 'react';
 
-import { Currency, OfferingDetails } from '@gql/graphql';
+import FinancialFactItem from './FinancialFactItem';
 
 type SourcesAndUsesDisplayProps = {
   offeringDetails: OfferingDetails;

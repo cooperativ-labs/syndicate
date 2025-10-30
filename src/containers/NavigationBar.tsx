@@ -1,15 +1,17 @@
 'use client';
 
 import Button from '@src/components/buttons/Button';
-import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 import DisconnectButton from '@src/components/buttons/DisconnectButton';
-import React, { FC, useContext } from 'react';
-import { useRouter } from 'next/navigation';
-import UserMenu from './UserMenu';
-import { ApplicationStoreProps, store } from '@context/store';
-import { useAccount } from 'wagmi';
-import { useSupabaseAuth } from '@context/SupabaseAuthContext';
 import { ChevronLeftIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { FC, useContext } from 'react';
+import { useAccount } from 'wagmi';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
+import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+
+import ChooseConnectorButton from './wallet/ChooseConnectorButton';
+import UserMenu from './UserMenu';
 
 type NavBarProps = {
   transparent?: boolean;

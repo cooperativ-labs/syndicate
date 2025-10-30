@@ -1,9 +1,9 @@
 import cn from 'classnames';
 import Link from 'next/link';
-
-import NavLink from './NavLink';
 import React, { FC } from 'react';
 import { useWindowSize } from 'react-use';
+
+import NavLink from './NavLink';
 
 const standardClass = `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white`;
 

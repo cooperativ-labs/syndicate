@@ -1,9 +1,9 @@
+import { IconName } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { LinkedAccountType } from '@gql/graphql';
+import { getSocialAccountOption } from '@src/utils/enumConverters';
 import cn from 'classnames';
 import React, { FC } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getSocialAccountOption } from '@src/utils/enumConverters';
-import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { LinkedAccountType } from '@gql/graphql';
 
 type SocialLinkItemProps = {
   type: LinkedAccountType | null | undefined;

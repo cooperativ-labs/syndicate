@@ -1,16 +1,16 @@
+import { useMutation } from '@apollo/client/react';
+import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from '@gql/graphql';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import React, { FC, use, useState } from 'react';
 import Select from '@src/components/form-components/Select';
-import { ADD_OFFERING_DETAILS } from '@src/utils/graphQueries/offering';
 import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
-import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from '@gql/graphql';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
+import { ADD_OFFERING_DETAILS } from '@src/utils/graphQueries/offering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { Form, Formik } from 'formik';
+import React, { FC, use, useState } from 'react';
 import { useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;

@@ -1,10 +1,11 @@
-import React, { FC } from 'react';
-import RightSideBar from '@src/containers/sideBar/RightSidebar';
-import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
-import WhitelistAddressListItem from './WhitelistAddressListItem';
 import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from '@gql/graphql';
+import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
+
+import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
+import WhitelistAddressListItem from './WhitelistAddressListItem';
 
 export type WhitelistAddressListProps = {
   investorListRefreshTrigger: number;

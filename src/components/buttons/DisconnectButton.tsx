@@ -1,6 +1,6 @@
+import { disconnectWallet } from '@src/web3/connectors';
 import cn from 'classnames';
 import React, { FC } from 'react';
-import { disconnectWallet } from '@src/web3/connectors';
 import { useDisconnect } from 'wagmi';
 
 type DisconnectButtonProps = {

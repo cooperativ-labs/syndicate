@@ -1,22 +1,21 @@
-import React, { FC, useEffect, useState } from 'react';
-
+import { useMutation } from '@apollo/client/react';
+import { CurrencyCode, LegalEntity, Organization } from '@gql/graphql';
+import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
 import { ADD_ENTITY } from '@src/utils/graphQueries/entity';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
 import { Form, Formik, useFormikContext } from 'formik';
+import React, { FC, useEffect, useState } from 'react';
+import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import toast from 'react-hot-toast';
 
+import MajorActionButton from '../buttons/MajorActionButton';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
 } from '../form-components/CustomAddressAutocomplete';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import JurisdictionSelect from '../form-components/JurisdictionSelect';
-import MajorActionButton from '../buttons/MajorActionButton';
 import Select from '../form-components/Select';
-import toast from 'react-hot-toast';
-import { CurrencyCode, LegalEntity, Organization } from '@gql/graphql';
-import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
-import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { useMutation } from '@apollo/client/react';
 
 export type CreateEntityType = {
   organization: Organization;

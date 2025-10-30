@@ -1,28 +1,27 @@
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-
-import React, { FC, useContext, useState } from 'react';
-import { ApplicationStoreProps, store } from '@context/store';
-import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';
+import { useMutation } from '@apollo/client/react';
 import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@gql/graphql';
-import { MatchSupportedChains } from '@src/web3/connectors';
-
-import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-
-import Select from '../form-components/Select';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import WalletActionIndicator, {
   WalletActionStepType
 } from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { defaultFieldDiv } from '../form-components/Inputs';
+import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
+import { CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';
+import { UPDATE_INVESTMENT_CURRENCY } from '@src/utils/graphQueries/offering';
+import { MatchSupportedChains } from '@src/web3/connectors';
 import { deploySwapContract } from '@src/web3/contractFactory';
-import { Form, Formik } from 'formik';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
-import { UPDATE_INVESTMENT_CURRENCY } from '@src/utils/graphQueries/offering';
-import { useAccount, useChainId, useNetwork } from 'wagmi';
+import { Form, Formik } from 'formik';
+import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
-import { useMutation } from '@apollo/client/react';
+import { useAccount, useChainId, useNetwork } from 'wagmi';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
+
+import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import { defaultFieldDiv } from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
 type CreateSwapContractProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;

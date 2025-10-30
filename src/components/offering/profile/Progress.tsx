@@ -1,8 +1,8 @@
-import cn from 'classnames';
-import React from 'react';
-import useBrandColor from 'hooks/useBrandColor';
 import { AssetStatus, Maybe, OfferingStage } from '@gql/graphql';
 import { getAssetStatusOption } from '@src/utils/enumConverters';
+import cn from 'classnames';
+import useBrandColor from 'hooks/useBrandColor';
+import React from 'react';
 
 type ProgressProps = {
   offeringStage?: OfferingStage;

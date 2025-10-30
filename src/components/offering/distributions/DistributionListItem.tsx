@@ -1,18 +1,17 @@
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import cn from 'classnames';
-import React, { FC, useEffect } from 'react';
-import { claimDistribution } from '@src/web3/contractDistributionCall';
 import { Currency, CurrencyCode, Maybe, OfferingDistribution } from '@gql/graphql';
-import { dividendContractABI } from '@src/web3/generated';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { getHumanDate, getHumanDateTime } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { claimDistribution } from '@src/web3/contractDistributionCall';
+import { dividendContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
-import { useAccount, useChainId, useContractReads } from 'wagmi';
 import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
+import { toNormalNumber } from '@src/web3/util';
+import cn from 'classnames';
+import React, { FC, useEffect } from 'react';
+import { useAccount, useChainId, useContractReads } from 'wagmi';
 
 export type DistributionListItemProps = {
   distributionContractAddress: String0x;

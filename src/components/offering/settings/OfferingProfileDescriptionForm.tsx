@@ -1,13 +1,13 @@
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Input from '@src/components/form-components/Inputs';
-import React, { FC, useState } from 'react';
 import Select from '@src/components/form-components/Select';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-import { getDescriptionsByTab } from '@src/utils/helpersOffering';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
 import { tabSectionOptions } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { getDescriptionsByTab } from '@src/utils/helpersOffering';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 

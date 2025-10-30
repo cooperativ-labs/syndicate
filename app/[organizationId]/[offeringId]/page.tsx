@@ -1,9 +1,9 @@
-import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+import { Offering } from '@gql/graphql';
 import { initializeApollo } from '@src/utils/apolloClient';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
 import type { Metadata } from 'next';
 import { cache } from 'react';
 import React from 'react';
-import { Offering } from '@gql/graphql';
 
 import ClientOfferingPage from './ClientOfferingPage';
 

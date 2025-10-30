@@ -1,8 +1,8 @@
+import { Maybe } from '@gql/graphql';
 import cn from 'classnames';
-import React, { ChangeEvent, FC, use, useState } from 'react';
 import { Country, IState, State } from 'country-state-city';
 import { ErrorMessage, Field } from 'formik';
-import { Maybe } from '@gql/graphql';
+import React, { ChangeEvent, FC, use, useState } from 'react';
 
 type JurisdictionSelectProps = {
   id?: any;

@@ -1,6 +1,5 @@
-import { getCurrencyOption } from '@src/utils/enumConverters';
-
 import { Currency } from '@gql/graphql';
+import { getCurrencyOption } from '@src/utils/enumConverters';
 import { parseUnits } from 'viem';
 
 export const shareContractDecimals = 10;

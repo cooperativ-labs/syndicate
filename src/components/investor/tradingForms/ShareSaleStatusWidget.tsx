@@ -1,13 +1,14 @@
-import cn from 'classnames';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import React, { FC } from 'react';
-import SaleManagerPanel from './ShareManagerPanel';
-import { getAmountRemaining } from '@src/utils/helpersOffering';
-import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { Maybe, ShareOrder } from '@gql/graphql';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { getSwapStatusOption } from '@src/utils/enumConverters';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { String0x } from '@src/web3/helpersChain';
-import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
+import cn from 'classnames';
+import React, { FC } from 'react';
+import { useAccount, useChainId } from 'wagmi';
+
+import SaleManagerPanel from './ShareManagerPanel';
 
 type ShareOrderStatusItemProps = {
   order: Maybe<ShareOrder>;

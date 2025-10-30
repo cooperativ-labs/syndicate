@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+
 import { CORE_ENTITY_FIELDS } from './fragments';
 
 export const GET_ENTITY = gql`
@@ -119,7 +120,7 @@ export const REMOVE_ENTITY_OWNER = gql`
 `;
 
 export const UPDATE_ENTITY_INFORMATION = gql`
-  mutation UpdateEntity(
+  mutation UpdateEntityInformation(
     $currentDate: DateTime!
     $entityId: [ID!]
     $legalName: String!
@@ -160,7 +161,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
 `;
 
 export const UPDATE_ENTITY_WITH_ADDRESS = gql`
-  mutation UpdateEntity(
+  mutation UpdateEntityWithAddress(
     $currentDate: DateTime!
     $entityId: [ID!]
     $legalName: String!
@@ -298,7 +299,7 @@ export const UPDATE_ADDRESS = gql`
 `;
 
 export const REMOVE_ENTITY_ADDRESS = gql`
-  mutation RemoveAddress($currentDate: DateTime!, $entityId: [ID!], $geoAddressId: ID!) {
+  mutation RemoveEntityAddress($currentDate: DateTime!, $entityId: [ID!], $geoAddressId: ID!) {
     updateLegalEntity(
       input: {
         filter: { id: $entityId }

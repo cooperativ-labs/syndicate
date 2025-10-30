@@ -1,33 +1,33 @@
-import { createServerClient } from "@supabase/ssr";
-import { type NextRequest, NextResponse } from "next/server";
+import { createServerClient } from '@supabase/ssr';
+import { type NextRequest, NextResponse } from 'next/server';
 
 const PUBLIC_ROUTES = [
-  "/confirm-your-email",
-  "/check-your-email",
-  "/create-organization",
-  "/login/confirm", // Add your new confirmation page
+  '/confirm-your-email',
+  '/check-your-email',
+  '/create-organization',
+  '/login/confirm' // Add your new confirmation page
 ] as const as string[];
 
 const STATIC_ASSETS = [
-  "/robots.txt",
-  "/manifest.json",
-  "/sitemap.xml",
-  "/favicon.ico",
+  '/robots.txt',
+  '/manifest.json',
+  '/sitemap.xml',
+  '/favicon.ico'
 ] as const as string[];
 
-const PUBLIC_PREFIXES = ["/auth", "/_next", "/api"] as const as string[];
+const PUBLIC_PREFIXES = ['/auth', '/_next', '/api'] as const as string[];
 
 export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith("/api")) {
+  if (pathname.startsWith('/api')) {
     return NextResponse.next({
-      headers: { "x-middleware": "api-skip" }, // debug header
+      headers: { 'x-middleware': 'api-skip' } // debug header
     });
   }
 
   let supabaseResponse = NextResponse.next({
-    request,
+    request
   });
 
   const supabase = createServerClient(
@@ -39,18 +39,16 @@ export async function updateSession(request: NextRequest) {
           return request.cookies.getAll();
         },
         setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            request.cookies.set(name, value)
-          );
+          cookiesToSet.forEach(({ name, value, options }) => request.cookies.set(name, value));
           supabaseResponse = NextResponse.next({
-            request,
+            request
           });
           cookiesToSet.forEach(({ name, value, options }) =>
             supabaseResponse.cookies.set(name, value, options)
           );
-        },
-      },
-    },
+        }
+      }
+    }
   );
 
   // IMPORTANT: Avoid writing any logic between createServerClient and
@@ -58,11 +56,11 @@ export async function updateSession(request: NextRequest) {
   // issues with users being randomly logged out.
 
   const {
-    data: { user },
+    data: { user }
   } = await supabase.auth.getUser();
 
   if (
-    PUBLIC_PREFIXES.some((prefix) => pathname.startsWith(prefix)) ||
+    PUBLIC_PREFIXES.some(prefix => pathname.startsWith(prefix)) ||
     STATIC_ASSETS.includes(pathname) ||
     /\.[a-zA-Z0-9]+$/.test(pathname)
   ) {

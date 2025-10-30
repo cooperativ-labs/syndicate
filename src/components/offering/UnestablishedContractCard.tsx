@@ -1,15 +1,16 @@
-"use client";
+'use client';
 
+import { useMutation } from '@apollo/client/react';
+import { SmartContract } from '@gql/graphql';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/graphQueries/crypto';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
 import cn from 'classnames';
-import FormattedCryptoAddress from '../FormattedCryptoAddress';
 import Link from 'next/link';
 import React from 'react';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { SmartContract } from '@gql/graphql';
-import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/graphQueries/crypto';
-import { useMutation } from '@apollo/client/react';
+
+import FormattedCryptoAddress from '../FormattedCryptoAddress';
 
 interface UnestablishedContractCardProps {
   unestablishedContract: SmartContract;

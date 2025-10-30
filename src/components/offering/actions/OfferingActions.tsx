@@ -1,33 +1,34 @@
+import { useQuery } from '@apollo/client/react';
+import { Maybe, ShareOrder, ShareTransferEvent } from '@gql/graphql';
+import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import CloseButton from '@src/components/buttons/CloseButton';
-import FormModal from '@src/containers/FormModal';
-import Loading from '@src/components/loading/Loading';
 import PostBidAskForm, {
   PostBidAskFormProps
 } from '@src/components/investor/tradingForms/PostBidAskForm';
 import PostInitialSale, {
   PostInitialSaleProps
 } from '@src/components/investor/tradingForms/PostInitialSale';
-import React, { FC, useState } from 'react';
-import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
-import SendShares from '../SendShares';
 import ShareSaleList, {
   ShareSaleListProps
 } from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
-import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
-import { GET_USER } from '@src/utils/graphQueries/user';
-import { Maybe, ShareOrder, ShareTransferEvent } from '@gql/graphql';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { String0x } from '@src/web3/helpersChain';
-
-import { claimProceeds } from '@src/web3/contractSwapCalls';
+import Loading from '@src/components/loading/Loading';
+import FormModal from '@src/containers/FormModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
+import { GET_USER } from '@src/utils/graphQueries/user';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
+import { claimProceeds } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
+import React, { FC, useState } from 'react';
 import { useAccount, useContractRead } from 'wagmi';
-import { useQuery } from '@apollo/client/react';
+
+import SendShares from '../SendShares';
+
+import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';

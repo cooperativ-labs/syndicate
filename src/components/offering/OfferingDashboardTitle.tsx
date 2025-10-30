@@ -1,19 +1,21 @@
-import AccessCodeForm from './profile/AccessCodeForm';
-import Button from '../buttons/Button';
+import { useMutation } from '@apollo/client/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Maybe } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { String0x } from '@src/web3/helpersChain';
 import cn from 'classnames';
-import FormattedCryptoAddress from '../FormattedCryptoAddress';
-import Input from '../form-components/Inputs';
-import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
+import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Formik } from 'formik';
-import { getBaseUrl } from '@src/utils/helpersURL';
-import { Maybe } from '@gql/graphql';
-import { String0x } from '@src/web3/helpersChain';
-import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
-import { useMutation } from '@apollo/client/react';
+
+import Button from '../buttons/Button';
+import Input from '../form-components/Inputs';
+import FormattedCryptoAddress from '../FormattedCryptoAddress';
+
+import AccessCodeForm from './profile/AccessCodeForm';
+import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
 
 type OfferingDashboardTitleProps = {
   profileVisibility: Maybe<boolean> | undefined;

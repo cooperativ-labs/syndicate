@@ -1,18 +1,18 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import SectionBlock from '@src/containers/SectionBlock';
-import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
-import { claimProceeds } from '@src/web3/contractSwapCalls';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getCurrencyById } from '@src/utils/enumConverters';
-import { ManagerModalType } from '@src/utils/helpersOffering';
 import { Maybe, ShareOrder } from '@gql/graphql';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import SectionBlock from '@src/containers/SectionBlock';
+import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { String0x } from '@src/web3/helpersChain';
+import { ManagerModalType } from '@src/utils/helpersOffering';
+import { claimProceeds } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useAccount, useContractRead } from 'wagmi';
+
+import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
 
 export type ShareSaleListProps = ShareSaleListItemProps & {
   orders: Maybe<ShareOrder>[] | undefined;

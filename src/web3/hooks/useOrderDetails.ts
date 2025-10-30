@@ -1,7 +1,8 @@
 import { useContractRead } from 'wagmi';
-import { shareContractDecimals, toNormalNumber } from '../util';
-import { String0x } from '../helpersChain';
+
 import { swapContractABI } from '../generated';
+import { String0x } from '../helpersChain';
+import { shareContractDecimals, toNormalNumber } from '../util';
 
 export type OrderDetailsType = {
   initiator: String0x | '' | undefined;

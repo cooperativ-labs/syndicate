@@ -1,18 +1,18 @@
 'use client';
 
+import { useQuery } from '@apollo/client/react';
 import AlertPopup from '@src/components/alerts/AlertPopup';
-import cn from 'classnames';
 import LoadingModal from '@src/components/loading/ModalLoading';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import cn from 'classnames';
+import { useParams } from 'next/navigation';
+import React, { FC, useContext } from 'react';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
+
 // import PortalSideBar from './sideBar/PortalSideBar';
 import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 import NavBar from './NavigationBar';
-import React, { FC, useContext } from 'react';
-import { useParams } from 'next/navigation';
-
-import { ApplicationStoreProps, store } from '@context/store';
-
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { useQuery } from '@apollo/client/react';
 
 const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 // const BackgroundGradient = 'bg-white';

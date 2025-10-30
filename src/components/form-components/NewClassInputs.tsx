@@ -1,7 +1,8 @@
-import Input, { defaultFieldDiv } from './Inputs';
-import React, { FC } from 'react';
-import Select from './Select';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
+
+import Input, { defaultFieldDiv } from './Inputs';
+import Select from './Select';
 
 type NewClassInputsProps = {
   partitions: String0x[];

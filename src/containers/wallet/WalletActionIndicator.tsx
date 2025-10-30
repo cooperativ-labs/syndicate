@@ -1,8 +1,8 @@
-import cn from 'classnames';
-import React, { FC } from 'react';
 import { faCheck, faClockFour, faWaveSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import cn from 'classnames';
+import React, { FC } from 'react';
 
 type StepStatusType = 'waiting' | 'pending' | 'success' | 'error';
 

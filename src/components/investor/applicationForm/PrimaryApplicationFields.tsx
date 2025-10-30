@@ -1,11 +1,12 @@
-import AddressSelector from '../../form-components/AddressSelector';
-import Checkbox from '@src/components/form-components/Checkbox';
-import CreateAddress from '@src/components/address/CreateAddress';
-import Input, { defaultFieldDiv } from '../../form-components/Inputs';
-import React, { FC } from 'react';
-import Select from '../../form-components/Select';
-import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import { LegalEntity } from '@gql/graphql';
+import CreateAddress from '@src/components/address/CreateAddress';
+import Checkbox from '@src/components/form-components/Checkbox';
+import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
+import React, { FC } from 'react';
+
+import AddressSelector from '../../form-components/AddressSelector';
+import Input, { defaultFieldDiv } from '../../form-components/Inputs';
+import Select from '../../form-components/Select';
 
 type PrimaryApplicationFieldsProps = {
   isNonHuman: boolean;

@@ -1,11 +1,10 @@
-import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getSocialAccountOption } from '@src/utils/enumConverters';
-import { LinkedAccount, Maybe } from '@gql/graphql';
-
-import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/graphQueries/organization';
 import { useMutation } from '@apollo/client/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { LinkedAccount, Maybe } from '@gql/graphql';
+import { getSocialAccountOption } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/graphQueries/organization';
+import React, { FC, useState } from 'react';
 
 type LinkedAccountListProps = {
   account: Maybe<LinkedAccount>;
@@ -14,7 +13,7 @@ type LinkedAccountListProps = {
 
 const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganizationManager }) => {
   const { organization, id, url, type, hidden, verified } = account as LinkedAccount;
-  const [alerted, setAlerted] = useState<Boolean>(false);
+  const [alerted, setAlerted] = useState<boolean>(false);
   const [deleteSocial, { error }] = useMutation(REMOVE_ORGANIZATION_SOCIAL_ACCOUNT);
 
   if (error && !alerted) {

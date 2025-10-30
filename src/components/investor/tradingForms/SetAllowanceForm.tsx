@@ -1,8 +1,8 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import React, { useState } from 'react';
 import { MatchSupportedChains } from '@src/web3/connectors';
 import { setAllowance } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
+import React, { useState } from 'react';
 import { useChainId } from 'wagmi';
 
 type SetAllowanceFormProps = {

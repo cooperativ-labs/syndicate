@@ -1,11 +1,12 @@
+import { Maybe, Offering, SmartContract, User } from '@gql/graphql';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
-import NewClassForm from './NewClassForm';
-import React, { FC } from 'react';
 import SectionBlock from '@src/containers/SectionBlock';
-import { Maybe, Offering, SmartContract, User } from '@gql/graphql';
-import { String0x, addressWithoutEns, stringFromBytes32 } from '@src/web3/helpersChain';
+import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
 import { useChainId } from 'wagmi';
+
+import NewClassForm from './NewClassForm';
 
 export type ShareContractSettingsProps = {
   partitions: String0x[];

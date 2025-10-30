@@ -1,7 +1,7 @@
 import cn from 'classnames';
+import { Url } from 'next/dist/shared/lib/router/router';
 import Link from 'next/link';
 import React, { FC, ReactNode } from 'react';
-import { Url } from 'next/dist/shared/lib/router/router';
 
 const buttonGradient =
   'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';

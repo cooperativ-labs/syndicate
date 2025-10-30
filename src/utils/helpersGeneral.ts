@@ -11,7 +11,7 @@ export function mapZip<T, R>(keys: T[], values: R[]): Map<T, R> {
 }
 
 export function setHttp(link: string) {
-  if (link.search(/^http[s]?\:\/\//) == -1) {
+  if (link.search(/^https?:\/\//) === -1) {
     link = 'http://' + link;
   }
   return link;

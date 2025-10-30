@@ -1,8 +1,8 @@
 'use client';
 
-import React, { useEffect } from 'react';
 import { signOut } from '@src/utils/actions/userActions';
 import { useRouter } from 'next/navigation';
+import React, { useEffect } from 'react';
 import { useDisconnect } from 'wagmi';
 
 const SignOut = () => {

@@ -1,5 +1,6 @@
-import Input, { addressFieldDiv } from '../form-components/Inputs';
 import React, { FC } from 'react';
+
+import Input, { addressFieldDiv } from '../form-components/Inputs';
 
 type AddressFieldsProps = {
   excludeAddressLabel?: boolean;

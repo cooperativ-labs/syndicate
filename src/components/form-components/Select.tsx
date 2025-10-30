@@ -1,6 +1,6 @@
 import cn from 'classnames';
-import React, { ReactNode } from 'react';
 import { ErrorMessage, Field } from 'formik';
+import React, { ReactNode } from 'react';
 
 export interface SelectProps {
   id?: any;

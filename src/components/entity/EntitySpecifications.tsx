@@ -1,17 +1,17 @@
-import Button from '../buttons/Button';
-import Input from '../form-components/Inputs';
-import React, { FC, useState } from 'react';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-
-import ClickToEditItem from '../form-components/ClickToEditItem';
-import cn from 'classnames';
-import JurisdictionSelect from '../form-components/JurisdictionSelect';
-import Select from '../form-components/Select';
 import { CurrencyCode, LegalEntity, Maybe } from '@gql/graphql';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
-import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+
+import Button from '../buttons/Button';
+import ClickToEditItem from '../form-components/ClickToEditItem';
+import Input from '../form-components/Inputs';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
+import Select from '../form-components/Select';
+import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 
 export type EditEntitySelectionType =
   | 'displayName'

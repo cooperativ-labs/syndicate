@@ -1,6 +1,7 @@
-import Button, { ButtonProps } from './Button';
 import cn from 'classnames';
 import React, { FC } from 'react';
+
+import Button, { ButtonProps } from './Button';
 
 interface StandardButtonProps extends ButtonProps {
   external?: boolean;

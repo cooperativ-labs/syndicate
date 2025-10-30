@@ -1,6 +1,7 @@
-import Card, { CardProps } from './Card';
 import cn from 'classnames';
 import React from 'react';
+
+import Card, { CardProps } from './Card';
 
 type FormCardProps = CardProps & { small?: boolean; maxWidth?: boolean };
 

@@ -1,7 +1,8 @@
+import { Document, Maybe } from '@gql/graphql';
+import React, { FC } from 'react';
+
 import DocumentAdder from './DocumentAdder';
 import DocumentListItem from './DocumentListItem';
-import React, { FC } from 'react';
-import { Document, Maybe } from '@gql/graphql';
 
 type DocumentListProps = {
   documents: Maybe<Document>[] | null | undefined;

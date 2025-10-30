@@ -1,8 +1,8 @@
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@src/components/buttons/Button';
 import CloseButton from '@src/components/buttons/CloseButton';
 import cn from 'classnames';
 import React, { FC, ReactNode, useEffect } from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 
 type RightSidebarProps = {
   children: ReactNode;

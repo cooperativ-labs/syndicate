@@ -1,27 +1,26 @@
-"use client";
+'use client';
 
-import FormButton from '../buttons/FormButton';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import PresentLegalText from './PresentLegalText';
-import React, { FC, useState } from 'react';
-import router from 'next/router';
-import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
+import { useMutation } from '@apollo/client/react';
 import { CurrencyCode, Maybe, SmartContract } from '@gql/graphql';
-
-import { Form, Formik } from 'formik';
+import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
 import { getBaseUrl } from '@src/utils/helpersURL';
+import { setDocument } from '@src/web3/contractShareCalls';
 import {
   hashBytes32FromString,
   StandardChainErrorHandling,
   String0x
 } from '@src/web3/helpersChain';
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { setDocument } from '@src/web3/contractShareCalls';
-import { useAccount, useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
-
+import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
+import router from 'next/router';
+import React, { FC, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
 
+import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import FormButton from '../buttons/FormButton';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
+
+import PresentLegalText from './PresentLegalText';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
@@ -45,7 +44,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   entityId,
   organizationId
 }) => {
-  const router = useRouter(); from 'next/navigation';
+  const router = useRouter();
   const [alerted, setAlerted] = useState<boolean>(false);
   const [loadingModal, setLoadingModal] = useState<boolean>(false);
   const { address: userWalletAddress } = useAccount();
@@ -70,7 +69,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
       try {
         await addLegalLink({
           variables: {
-     
             documentOfferingUniqueId: offeringId + docTitle,
             offeringId: offeringId,
             entityId: entityId,
@@ -85,7 +83,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
         });
         await addOfferingParticipant({
           variables: {
-       
             addressOfferingId: userWalletAddress + offeringId,
             offeringId: offeringId,
             name: spvEntityName,

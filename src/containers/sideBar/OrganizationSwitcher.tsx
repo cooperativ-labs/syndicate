@@ -1,11 +1,12 @@
-import cn from 'classnames';
-import CooperativLogo from '@src/components/CooperativLogo';
-import React, { FC, useContext } from 'react';
-import { ApplicationStoreProps, store } from '@context/store';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { IconProp } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { Organization } from '@gql/graphql';
+import CooperativLogo from '@src/components/CooperativLogo';
+import { handleOrganizationChange } from '@src/utils/helpersOrganization';
+import cn from 'classnames';
+import React, { FC, useContext } from 'react';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 type OrganizationSwitcherProps = {
   organizations: Organization[];

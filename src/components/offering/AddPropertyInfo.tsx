@@ -1,24 +1,25 @@
 'use client';
 
-import CustomAddressAutocomplete, {
-  normalizeGeoAddress
-} from '../form-components/CustomAddressAutocomplete';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import React, { FC, useEffect, useState } from 'react';
-import { useRouter } from 'next/navigation';
-import Select from '../form-components/Select';
-import { ADD_RE_PROPERTY_INFO } from '@src/utils/graphQueries/reProperty';
+import { useMutation } from '@apollo/client/react';
+import { CurrencyCode } from '@gql/graphql';
+import { GoogleMap, Marker } from '@react-google-maps/api';
 import {
   assetStatusOptions,
   getCurrencyOption,
   propertyTypeOptions
 } from '@src/utils/enumConverters';
-import { CurrencyCode } from '@gql/graphql';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_RE_PROPERTY_INFO } from '@src/utils/graphQueries/reProperty';
 import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
+import React, { FC, useEffect, useState } from 'react';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
-import { GoogleMap, Marker } from '@react-google-maps/api';
-import { useMutation } from '@apollo/client/react';
+
+import CustomAddressAutocomplete, {
+  normalizeGeoAddress
+} from '../form-components/CustomAddressAutocomplete';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
 type AddPropertyInfoProps = {
   entityId: string;

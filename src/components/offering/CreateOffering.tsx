@@ -1,23 +1,20 @@
 'use client';
 
+import { useMutation } from '@apollo/client/react';
+import { LegalEntity, Organization } from '@gql/graphql';
+import FormModal from '@src/containers/FormModal';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_OFFERING } from '@src/utils/graphQueries/offering';
+import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-
+import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import FormButton from '../buttons/FormButton';
 import CreateEntity from '../entity/CreateEntity';
 import EntitySelector from '../form-components/EntitySelector';
-import FormButton from '../buttons/FormButton';
-import FormModal from '@src/containers/FormModal';
-import { ADD_OFFERING } from '@src/utils/graphQueries/offering';
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { useMutation } from '@apollo/client/react';
-
-import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { useRouter } from 'next/navigation';
-import { LegalEntity, Organization } from '@gql/graphql';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
 
 type CreateOfferingType = {
   organization: Organization;

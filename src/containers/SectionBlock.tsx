@@ -1,7 +1,7 @@
-import cn from 'classnames';
-import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import cn from 'classnames';
 import { Maybe } from 'graphql/jsutils/Maybe';
+import React, { useState } from 'react';
 
 interface SectionBlockProps {
   sectionTitle: string | Maybe<string> | undefined;

@@ -1,7 +1,3 @@
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import MajorActionButton from '../buttons/MajorActionButton';
-import React, { FC } from 'react';
-import Select from '../form-components/Select';
 import { Address, RealEstateProperty } from '@gql/graphql';
 import {
   assetStatusOptions,
@@ -10,6 +6,11 @@ import {
 } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
+import React, { FC } from 'react';
+
+import MajorActionButton from '../buttons/MajorActionButton';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
 export type UpdatePropertyDescriptionType = {
   property: RealEstateProperty;

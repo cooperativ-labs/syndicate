@@ -1,14 +1,14 @@
+import { useMutation } from '@apollo/client/react';
+import { Offering } from '@gql/graphql';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
 import FileUpload from '@src/components/form-components/FileUpload';
-import FormButton from '@src/components/buttons/FormButton';
 import Input from '@src/components/form-components/Inputs';
-import React, { FC, useState } from 'react';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Offering } from '@gql/graphql';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
-import { useMutation } from '@apollo/client/react';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
 
 const fieldDiv = 'my-2 bg-opacity-0';
 

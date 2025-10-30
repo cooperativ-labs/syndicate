@@ -1,6 +1,7 @@
 import { useContractReads } from 'wagmi';
-import { String0x } from '../helpersChain';
+
 import { dividendContractABI } from '../generated';
+import { String0x } from '../helpersChain';
 
 export type DividendContractInfoType = {
   shareTokenAddress: String0x | undefined;

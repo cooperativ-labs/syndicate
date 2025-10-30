@@ -1,11 +1,12 @@
 'use client';
 
-import Button from '@src/components/buttons/Button';
-import React, { FC } from 'react';
-import RealEstatePropertyCard from './RealEstatePropertyCard';
-import { useRouter } from 'next/navigation';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { LegalEntity, Maybe } from '@gql/graphql';
+import Button from '@src/components/buttons/Button';
+import { useRouter } from 'next/navigation';
+import React, { FC } from 'react';
+
+import RealEstatePropertyCard from './RealEstatePropertyCard';
 
 type OfferingPropertiesProps = {
   offeringEntity: Maybe<LegalEntity> | undefined;

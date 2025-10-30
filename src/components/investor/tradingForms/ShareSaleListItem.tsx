@@ -1,17 +1,18 @@
-import cn from 'classnames';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import OfferingSummaryPanel from './OfferingSummaryPanel';
-import React, { FC, useState } from 'react';
-import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
-import SharePurchaseSteps from './SharePurchaseSteps';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
-import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
-import { useAccount, useChainId } from 'wagmi';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
+import cn from 'classnames';
+import React, { FC, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
+
+import OfferingSummaryPanel from './OfferingSummaryPanel';
+import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
+import SharePurchaseSteps from './SharePurchaseSteps';
 
 export type OrderStatusType = {
   isApproved: boolean;
@@ -273,7 +274,6 @@ screens I need
  - Initiate sale
  - Initiate bid
  - 
-
 
 Is an ask order
   - txn approvals enabled

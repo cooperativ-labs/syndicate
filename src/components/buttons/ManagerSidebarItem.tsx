@@ -1,11 +1,12 @@
 'use client';
 
+import { ManagerSideBarItemSelectionType } from '@src/containers/sideBar/ManagerSideBarContents';
 import cn from 'classnames';
 import Link from 'next/link';
-import React, { FC, useContext } from 'react';
 import { usePathname } from 'next/navigation';
-import { ApplicationStoreProps, store } from '@context/store';
-import { ManagerSideBarItemSelectionType } from '@src/containers/sideBar/ManagerSideBarContents';
+import React, { FC, useContext } from 'react';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 interface ManagerSidebarItemProps {
   title: ManagerSideBarItemSelectionType;

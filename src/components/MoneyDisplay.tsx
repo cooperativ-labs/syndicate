@@ -1,9 +1,9 @@
-import cn from 'classnames';
-import React, { FC } from 'react';
 import { Currency, CurrencyCode } from '@gql/graphql';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
+import cn from 'classnames';
+import React, { FC } from 'react';
 
 type MoneyDisplayProps = {
   amount: number | undefined | null;

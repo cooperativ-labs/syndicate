@@ -1,10 +1,10 @@
+import { WhitelistTransaction, WhitelistTransactionType } from '@gql/graphql';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import React, { FC, useEffect } from 'react';
-import { get } from 'http';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { String0x } from '@src/web3/helpersChain';
+import { get } from 'http';
+import React, { FC, useEffect } from 'react';
 import { usePublicClient, useTransaction } from 'wagmi';
-import { WhitelistTransaction, WhitelistTransactionType } from '@gql/graphql';
 
 type WhitelistTransactionItemProps = {
   transaction: WhitelistTransaction | null;

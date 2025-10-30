@@ -1,7 +1,9 @@
-import { ApolloClient } from "@apollo/client";
-import { HttpLink } from "@apollo/client/link/http";
-import { createClient } from "../../supabase/utils/client";
-import { createApolloCache, getGraphQLEndpoint } from "./apolloConfig";
+import { ApolloClient } from '@apollo/client';
+import { HttpLink } from '@apollo/client/link/http';
+
+import { createClient } from '../../supabase/utils/client';
+
+import { createApolloCache, getGraphQLEndpoint } from './apolloConfig';
 
 const cache = createApolloCache();
 
@@ -11,7 +13,7 @@ const httpLink = new HttpLink({
   uri: getGraphQLEndpoint(),
   fetch: async (uri, options) => {
     const {
-      data: { session },
+      data: { session }
     } = await supabase.auth.getSession();
     const token = session?.access_token;
     return fetch(uri, {
@@ -19,16 +21,16 @@ const httpLink = new HttpLink({
       headers: {
         ...options?.headers,
         ...(token ? { Authorization: `Bearer ${token}` } : {}),
-        apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "",
-      },
+        apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || ''
+      }
     });
-  },
+  }
 });
 
 const supabaseApolloClient = new ApolloClient({
   link: httpLink,
   cache,
-  ssrMode: typeof window === "undefined",
+  ssrMode: typeof window === 'undefined'
 });
 
 export function initializeApollo(initialState = null) {
@@ -44,12 +46,12 @@ export function initializeApollo(initialState = null) {
 
     // Restore the cache using the data passed from
     // getStaticProps/getServerSideProps combined with the existing cached data
-    //@ts-ignore
+    //@ts-expect-error
     _apolloClient.cache.restore({ ...existingCache, ...initialState });
   }
 
   // For SSG and SSR always create a new Apollo Client
-  if (typeof window === "undefined") return _apolloClient;
+  if (typeof window === 'undefined') return _apolloClient;
 
   // Create the Apollo Client once in the client
   if (!apolloClient) apolloClient = _apolloClient;

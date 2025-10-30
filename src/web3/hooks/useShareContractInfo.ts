@@ -1,7 +1,8 @@
 import { useContractReads } from 'wagmi';
-import { shareContractDecimals, toNormalNumber } from '../util';
-import { String0x } from '../helpersChain';
+
 import { shareContractABI } from '../generated';
+import { String0x } from '../helpersChain';
+import { shareContractDecimals, toNormalNumber } from '../util';
 
 export type ShareContractInfoType = {
   contractOwner: string | undefined;

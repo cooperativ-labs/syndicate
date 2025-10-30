@@ -1,9 +1,9 @@
-import BannerImage from '@src/components/organization/BannerImage';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import OfferingCard from '@src/components/offering/OfferingCard';
-import React, { FC } from 'react';
-import SocialLinkItem from '@src/components/SocialLinkItem';
 import { LinkedAccountType, Organization } from '@gql/graphql';
+import OfferingCard from '@src/components/offering/OfferingCard';
+import BannerImage from '@src/components/organization/BannerImage';
+import SocialLinkItem from '@src/components/SocialLinkItem';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import React, { FC } from 'react';
 
 type OrganizationProfileProps = {
   organization: Organization;

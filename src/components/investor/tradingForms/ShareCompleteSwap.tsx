@@ -1,14 +1,13 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import React, { FC, useState } from 'react';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { useAccount, useChainId } from 'wagmi';
-
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getCurrencyById } from '@src/utils/enumConverters';
-import { isMetaMask } from '@src/web3/connectors';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { isMetaMask } from '@src/web3/connectors';
 import { String0x } from '@src/web3/helpersChain';
+import React, { FC, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
 
 type ShareCompleteSwapProps = {
   acceptedOrderQty: number;

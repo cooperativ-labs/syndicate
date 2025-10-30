@@ -1,15 +1,16 @@
 'use client';
 
+import { IconName } from '@fortawesome/fontawesome-svg-core';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { DocumentType } from '@gql/graphql';
+import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
 import cn from 'classnames';
 import Compressor from 'compressorjs';
-import DeleteButton from '../buttons/DeleteButton';
-import React, { FC, useState } from 'react';
 import router from 'next/router';
-import { DocumentType } from '@gql/graphql';
+import React, { FC, useState } from 'react';
 import { FileUploader } from 'react-drag-drop-files';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
-import { IconName } from '@fortawesome/fontawesome-svg-core';
+
+import DeleteButton from '../buttons/DeleteButton';
 
 type FileUploadProps = {
   uploaderText: string;

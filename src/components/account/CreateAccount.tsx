@@ -1,11 +1,12 @@
-import * as Yup from 'yup';
-import CooperativLogo from '../CooperativLogo';
+import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
+import { ErrorMessage, Field, Form, Formik } from 'formik';
 import Link from 'next/link';
 import React, { FC, ReactNode, useState } from 'react';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
-import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
+import * as Yup from 'yup';
+
+import CooperativLogo from '../CooperativLogo';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';

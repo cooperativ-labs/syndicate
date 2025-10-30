@@ -1,5 +1,5 @@
-import fileDownload from 'js-file-download';
 import { Maybe } from '@gql/graphql';
+import fileDownload from 'js-file-download';
 
 export function DownloadFile(content: string, fileName: string) {
   fileDownload(content, fileName);

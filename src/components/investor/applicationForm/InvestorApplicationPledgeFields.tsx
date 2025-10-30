@@ -1,9 +1,9 @@
+import { Maybe, Offering } from '@gql/graphql';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
-import React from 'react';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { Maybe, Offering } from '@gql/graphql';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import React from 'react';
 
 type InvestorApplicationPledgeFieldsProps = {
   offering: Offering;

@@ -1,10 +1,10 @@
+import { Document, Maybe } from '@gql/graphql';
+import { shareContractABI } from '@src/web3/generated';
+import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
+import { useContractReads } from 'wagmi';
 
 import DocumentHashItem from './DocumentHashItem';
-import { Document, Maybe } from '@gql/graphql';
-import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
-import { shareContractABI } from '@src/web3/generated';
-import { useContractReads } from 'wagmi';
 
 type HashInstructionsProps = {
   agreementTexts: Maybe<Document>[] | undefined;

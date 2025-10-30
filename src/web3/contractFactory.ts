@@ -1,9 +1,10 @@
-import { getWalletClient, waitForTransactionReceipt } from 'wagmi/actions';
 import { config } from '@src/web3/wagmi';
+import { Chain } from 'wagmi';
+import { getWalletClient, waitForTransactionReceipt } from 'wagmi/actions';
+
 import { dividendBytecode, shareBytecode, swapBytecode } from './bytecode';
 import { dividendContractABI, shareContractABI, swapContractABI } from './generated';
 import { String0x } from './helpersChain';
-import { Chain } from 'wagmi';
 
 type DeployContractBaseProps = {
   account: String0x;

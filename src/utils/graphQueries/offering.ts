@@ -1,4 +1,5 @@
 import { gql } from '@apollo/client';
+
 import {
   CORE_APPLICATION_FIELDS,
   CORE_ENTITY_FIELDS,
@@ -79,7 +80,7 @@ export const GET_OFFERING = gql`
 `;
 
 export const UPDATE_OFFERING_PROFILE = gql`
-  mutation UpdateOffering(
+  mutation UpdateOfferingProfile(
     $offeringId: [ID!]
     $currentDate: DateTime!
     $name: String!
@@ -127,7 +128,7 @@ export const UPDATE_OFFERING_PROFILE = gql`
 `;
 
 export const UPDATE_OFFERING_FINANCIAL = gql`
-  mutation UpdateOffering(
+  mutation UpdateOfferingFinancial(
     $offeringDetailsId: [ID!]
     $stage: OfferingStage
     $maxRaise: Int64

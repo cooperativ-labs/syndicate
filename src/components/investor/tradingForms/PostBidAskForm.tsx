@@ -1,30 +1,29 @@
-import Checkbox from '@src/components/form-components/Checkbox';
-import cn from 'classnames';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { useMutation } from '@apollo/client/react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Maybe, Offering, OfferingParticipant } from '@gql/graphql';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
+import StandardButton from '@src/components/buttons/StandardButton';
+import Checkbox from '@src/components/form-components/Checkbox';
 import Input, {
   defaultFieldDiv,
   defaultFieldLabelClass
 } from '@src/components/form-components/Inputs';
-import NonInput from '../../form-components/NonInput';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
-import StandardButton from '@src/components/buttons/StandardButton';
-import { bytes32FromString, String0x } from '@src/web3/helpersChain';
-
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { DownloadFile } from '@src/utils/helpersAgreement';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { Form, Formik } from 'formik';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { Maybe, Offering, OfferingParticipant } from '@gql/graphql';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-
 import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
+import { DownloadFile } from '@src/utils/helpersAgreement';
+import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
+import { bytes32FromString, String0x } from '@src/web3/helpersChain';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
+
+import NonInput from '../../form-components/NonInput';
 
 export type PostBidAskFormProps = {
   offering: Offering;

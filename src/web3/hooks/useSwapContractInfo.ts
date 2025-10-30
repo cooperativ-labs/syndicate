@@ -1,7 +1,8 @@
-import { useReadContract, useReadContracts } from 'wagmi';
 import { erc20Abi } from 'viem';
-import { String0x } from '../helpersChain';
+import { useReadContract, useReadContracts } from 'wagmi';
+
 import { swapContractABI } from '../generated';
+import { String0x } from '../helpersChain';
 
 export type SwapContractInfoType = {
   shareTokenAddress: String0x | undefined;

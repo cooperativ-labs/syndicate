@@ -2,10 +2,9 @@
 
 import { HttpLink } from '@apollo/client';
 import { ApolloClient, ApolloNextAppProvider } from '@apollo/client-integration-nextjs';
-import type { ReactNode } from 'react';
-
 import { createApolloCache, getGraphQLEndpoint } from '@src/utils/apolloConfig';
 import { createClient } from '@supabase/utils/client';
+import type { ReactNode } from 'react';
 
 function makeClient() {
   const supabase = createClient();
@@ -14,7 +13,7 @@ function makeClient() {
     uri: getGraphQLEndpoint(),
     fetch: async (uri, options) => {
       const {
-        data: { session },
+        data: { session }
       } = await supabase.auth.getSession();
       const token = session?.access_token;
 
@@ -23,15 +22,15 @@ function makeClient() {
         headers: {
           ...options?.headers,
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? '',
-        },
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ''
+        }
       });
-    },
+    }
   });
 
   return new ApolloClient({
     cache: createApolloCache(),
-    link: httpLink,
+    link: httpLink
   });
 }
 

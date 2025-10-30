@@ -1,13 +1,13 @@
 'use client';
 
-import Header from '@src/containers/Header';
+import { useQuery } from '@apollo/client/react';
 import InvestorApplicationForm from '@src/components/investor/applicationForm/InvestorApplicationForm';
 import LoadingModal from '@src/components/loading/ModalLoading';
+import Header from '@src/containers/Header';
 import PortalWrapper from '@src/containers/PortalWrapper';
 import { GET_OFFERING } from '@src/utils/graphQueries/offering';
-import { useQuery } from '@apollo/client/react';
-import React from 'react';
 import { useParams } from 'next/navigation';
+import React from 'react';
 
 const InvestorApplicationPage = () => {
   const params = useParams<{ offeringId: string }>();

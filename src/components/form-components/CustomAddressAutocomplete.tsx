@@ -1,8 +1,9 @@
 import cn from 'classnames';
-import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
-import React, { Dispatch, FC, SetStateAction } from 'react';
-import { defaultFieldLabelClass } from './Inputs';
 import { ErrorMessage } from 'formik';
+import React, { Dispatch, FC, SetStateAction } from 'react';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
+
+import { defaultFieldLabelClass } from './Inputs';
 
 type CustomAddressAutocompleteProps = {
   name: string;

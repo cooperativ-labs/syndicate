@@ -1,18 +1,18 @@
-import CreateSwapContract from '../CreateSwapContract';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from '@gql/graphql';
-import { String0x } from '@src/web3/helpersChain';
-
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import {
   useChainId,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction
 } from 'wagmi';
+
+import CreateSwapContract from '../CreateSwapContract';
 
 export type SwapContractSettingsProps = {
   swapApprovalsEnabled: boolean | undefined;

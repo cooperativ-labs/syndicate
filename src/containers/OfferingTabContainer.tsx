@@ -1,20 +1,20 @@
-import AddWhitelistAddress from '@src/components/offering/whitelist/AddWhitelistAddress';
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
 import Button from '@src/components/buttons/Button';
-import cn from 'classnames';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
-import FormModal from './FormModal';
-import OfferingProperties from '@src/components/properties/OfferingProperties';
-import React, { FC, useState } from 'react';
 import SubmitDistribution from '@src/components/offering/SubmitDistribution';
 import Tab from '@src/components/offering/tabs/Tab';
-
+import AddWhitelistAddress from '@src/components/offering/whitelist/AddWhitelistAddress';
 import WhitelistAddressList, {
   WhitelistAddressListProps
 } from '@src/components/offering/whitelist/WhitelistAddressList';
+import OfferingProperties from '@src/components/properties/OfferingProperties';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
 import { String0x } from '@src/web3/helpersChain';
+import cn from 'classnames';
+import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
+
+import FormModal from './FormModal';
 
 type OfferingTabContainerProps = WhitelistAddressListProps & {
   offering: Offering;

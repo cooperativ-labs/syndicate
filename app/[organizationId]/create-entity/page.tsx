@@ -1,13 +1,13 @@
 'use client';
 
+import { useQuery } from '@apollo/client';
 import CreateEntity from '@src/components/entity/CreateEntity';
-import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import LoadingModal from '@src/components/loading/ModalLoading';
+import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
-import { useQuery } from '@apollo/client';
-import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
+import React from 'react';
 
 const CreateEntityPage = () => {
   const params = useParams<{ organizationId: string }>();

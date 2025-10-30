@@ -1,37 +1,39 @@
 'use client';
 
-import AdditionalApplicationFields from './AdditionalApplicationFields';
-import AdvisorFields from './AdvisorFields';
+import { useMutation } from '@apollo/client/react';
+import { Maybe, Offering } from '@gql/graphql';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
 } from '@src/components/form-components/CustomAddressAutocomplete';
 import Datepicker from '@src/components/form-components/Datepicker';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import FormButton from '@src/components/buttons/FormButton';
-import FormCard from '../../cards/FormCard';
 import Input, {
   defaultFieldDiv,
   defaultFieldLabelClass
 } from '@src/components/form-components/Inputs';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/graphQueries/offering';
+import { checkDateInPast } from '@src/utils/helpersGeneral';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
+import React, { FC, useEffect, useState } from 'react';
+import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import { useAccount, useChainId } from 'wagmi';
+
+import FormCard from '../../cards/FormCard';
+
+import AdditionalApplicationFields from './AdditionalApplicationFields';
+import AdvisorFields from './AdvisorFields';
 import InvestorApplicationPledgeFields from './InvestorApplicationPledgeFields';
 import PrimaryApplicationFields from './PrimaryApplicationFields';
 import PurchaserSummaryDisplay from './PurchaserSummaryDisplay';
-import React, { FC, useEffect, useState } from 'react';
-import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/graphQueries/offering';
-import { checkDateInPast } from '@src/utils/helpersGeneral';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
 import { GeneratedApplicationText } from './SummaryGenerator';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
-import { GoogleMap, Marker } from '@react-google-maps/api';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { Maybe, Offering } from '@gql/graphql';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { useAccount, useChainId } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
-import { useRouter } from 'next/navigation';
 
 type InvestorApplicationFormProps = {
   offering: Offering;

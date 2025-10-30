@@ -1,6 +1,6 @@
 import cn from 'classnames';
-import React, { WheelEvent } from 'react';
 import { ErrorMessage, Field } from 'formik';
+import React, { WheelEvent } from 'react';
 
 export const defaultFieldLabelClass = 'text-sm text-blue-900 font-semibold text-opacity-80';
 export const defaultFieldClass =

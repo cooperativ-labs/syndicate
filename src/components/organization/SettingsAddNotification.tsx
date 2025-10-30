@@ -1,12 +1,12 @@
-import Input from '../form-components/Inputs';
-import React, { FC } from 'react';
-import Select from '../form-components/Select';
-import { ADD_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
-import { Form, Formik } from 'formik';
+import { useMutation } from '@apollo/client/react';
 import { NotificationMethod, NotificationRecipientType, NotificationSubject } from '@gql/graphql';
 import { notificationSubjectOptions } from '@src/utils/enumConverters';
+import { ADD_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
+import { Form, Formik } from 'formik';
+import React, { FC } from 'react';
 
-import { useMutation } from '@apollo/client/react';
+import Input from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
 const fieldDiv = 'md:my-2 bg-opacity-0';
 

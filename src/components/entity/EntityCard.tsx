@@ -1,10 +1,11 @@
 'use client';
 
-import Card from '../cards/Card';
-import React from 'react';
-import router, { useRouter } from 'next/router';
 import { LegalEntity, Maybe } from '@gql/graphql';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import router, { useRouter } from 'next/router';
+import React from 'react';
+
+import Card from '../cards/Card';
 
 export type EntityCardProps = {
   entity: Maybe<Maybe<LegalEntity>>;

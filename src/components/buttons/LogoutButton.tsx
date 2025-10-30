@@ -1,10 +1,12 @@
 'use client';
 
-import Button from './Button';
+import { signOut } from '@src/utils/actions/userActions';
 import cn from 'classnames';
 import React, { FC, useContext } from 'react';
-import { ApplicationStoreProps, store } from '@context/store';
-import { signOut } from '@src/utils/actions/userActions';
+
+import { ApplicationStoreProps, store } from '@/contexts/store';
+
+import Button from './Button';
 
 const LogoutButton: FC = () => {
   const applicationStore: ApplicationStoreProps = useContext(store);

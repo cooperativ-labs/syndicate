@@ -1,23 +1,22 @@
-import Checkbox from '@src/components/form-components/Checkbox';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import FormButton from '@src/components/buttons/FormButton';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import NonInput from '@src/components/form-components/NonInput';
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { Form, Formik } from 'formik';
-import { getCurrencyById } from '@src/utils/enumConverters';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { useMutation } from '@apollo/client/react';
 import { Maybe } from '@gql/graphql';
-import { String0x } from '@src/web3/helpersChain';
-
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
+import Checkbox from '@src/components/form-components/Checkbox';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
+import NonInput from '@src/components/form-components/NonInput';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { getCurrencyById } from '@src/utils/enumConverters';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
 import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
-import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
+import { String0x } from '@src/web3/helpersChain';
+import { Form, Formik } from 'formik';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useAccount } from 'wagmi';
-import { useMutation } from '@apollo/client/react';
 
 export type PostInitialSaleProps = {
   sharesOutstanding: number | undefined;

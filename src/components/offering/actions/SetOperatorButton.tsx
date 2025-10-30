@@ -1,9 +1,8 @@
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import React, { useState } from 'react';
-
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { String0x } from '@src/web3/helpersChain';
+import React, { useState } from 'react';
 import { useAccount } from 'wagmi';
 
 type SetOperatorButtonProps = {

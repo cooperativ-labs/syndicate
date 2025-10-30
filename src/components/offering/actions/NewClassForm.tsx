@@ -1,15 +1,15 @@
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { useMutation } from '@apollo/client/react';
+import { Currency, Offering, User } from '@gql/graphql';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
-import React, { FC, useState } from 'react';
-import toast from 'react-hot-toast';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
 import { bytes32FromString, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-import { Currency, Offering, User } from '@gql/graphql';
 import { Form, Formik } from 'formik';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import { useMutation } from '@apollo/client/react';
+import React, { FC, useState } from 'react';
+import toast from 'react-hot-toast';
 
 type NewClassFormProps = {
   shareContractId: string;
