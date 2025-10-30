@@ -9,11 +9,9 @@ import {
   parseDataAttributes,
   parseOverwriteObject
 } from '@src/utils/analytics/helpers';
-// @ts-ignore
-import { trackInteraction } from '@src/utils/analytics/index.ts';
+import { trackInteraction } from '@src/utils/analytics/index';
 import { usePathname, useSearchParams } from 'next/navigation';
 import { useCallback, useContext, useEffect, useRef, useState } from 'react';
-//@ts-ignore
 import TagManager from 'react-gtm-module';
 
 import AnalyticsContext from '@/contexts/analytics';
@@ -163,7 +161,7 @@ export function useAnalyticsImpression(
 export function useAnalyticsClick() {
   const { dynamicDimensions } = useContext(AnalyticsContext);
   const handler = useCallback(
-    //@ts-ignore
+    // @ts-expect-error - event handler
     (e, overwrite) => {
       if (dynamicDimensions) {
         interactionHandler(DEFAULT_CLICK_ACTION, e, overwrite, dynamicDimensions);
@@ -185,7 +183,7 @@ export function useAnalyticsClick() {
 export function useAnalyticsFocus() {
   const { dynamicDimensions } = useContext(AnalyticsContext);
   const handler = useCallback(
-    //@ts-ignore
+    // @ts-expect-error - event handler
     (e, overwrite) => {
       if (dynamicDimensions) {
         interactionHandler(DEFAULT_FOCUS_ACTION, e, overwrite, dynamicDimensions);
@@ -207,7 +205,7 @@ export function useAnalyticsFocus() {
 export function useAnalyticsBlur() {
   const { dynamicDimensions } = useContext(AnalyticsContext);
   const handler = useCallback(
-    //@ts-ignore
+    // @ts-expect-error - event handler
     (e, overwrite) => {
       if (dynamicDimensions) {
         interactionHandler(DEFAULT_BLUR_ACTION, e, overwrite, dynamicDimensions);

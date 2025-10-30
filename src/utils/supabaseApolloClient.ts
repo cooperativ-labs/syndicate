@@ -46,7 +46,7 @@ export function initializeApollo(initialState = null) {
 
     // Restore the cache using the data passed from
     // getStaticProps/getServerSideProps combined with the existing cached data
-    //@ts-expect-error
+    // @ts-expect-error - Apollo cache typings don't accept merged arbitrary initialState
     _apolloClient.cache.restore({ ...existingCache, ...initialState });
   }
 

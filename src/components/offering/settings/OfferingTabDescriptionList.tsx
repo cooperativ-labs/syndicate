@@ -4,7 +4,7 @@ import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import React, { FC, useEffect, useState } from 'react';
-//@ts-ignore
+// @ts-expect-error - react-beautiful-dnd types can mismatch our generics here
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import toast from 'react-hot-toast';
 
@@ -17,8 +17,7 @@ type TabDescriptionListProps = {
 
 const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
   const [list, setList] = useState<ArrayLike<Maybe<OfferingDescriptionText>>>([]);
-  const [updateDescription, { data: dataUpdate, error: errorUpdate, loading }] =
-    useMutation(UPDATE_DESCRIPTION_TEXT);
+  const [updateDescription] = useMutation(UPDATE_DESCRIPTION_TEXT);
 
   useEffect(() => {
     const descriptions = getDescriptionsByTab(offering, tab);
@@ -64,7 +63,7 @@ const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
     );
   };
 
-  //@ts-ignore
+  // @ts-expect-error - list is ArrayLike<Maybe<OfferingDescriptionText>>; sort uses any
   const orderedList = list?.sort((a: any, b: any) => a.order - b.order);
   return (
     <DragDropContext onDragEnd={handleDragEnd}>

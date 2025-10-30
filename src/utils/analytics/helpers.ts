@@ -11,16 +11,15 @@ export function parseDataAttributes(element: any) {
 export function parseOverwriteObject(obj: any) {
   const core = {};
   for (const dimension in obj) {
-    //@ts-ignore
-    core[dimension] = obj[dimension];
+    core[dimension as keyof typeof core] = obj[dimension] as never;
   }
   const rest = {
     ...obj.customDimensions
   };
   return { core, rest };
 }
-//@ts-ignore
-export function parseCustomDimensions(dimensions) {
+
+export function parseCustomDimensions(dimensions: string) {
   let data;
   if (dimensions) {
     try {
