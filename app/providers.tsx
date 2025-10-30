@@ -2,15 +2,14 @@
 
 import CookieBanner from '@src/CookieBanner';
 import SetCookieContext from '@src/SetCookieContext';
-import supabaseApolloClient from '@src/utils/supabaseApolloClient';
 import { config as wagmiConfig } from '@src/web3/wagmi';
-import { ApolloProvider } from '@apollo/client/react';
 import { StateProvider } from '@context/store';
 import React, { useEffect, useState } from 'react';
 import { Toaster } from 'react-hot-toast';
 import { WagmiProvider } from 'wagmi';
 import { SupabaseAuthProvider } from '@context/SupabaseAuthContext';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { ApolloWrapper } from './ApolloWrapper';
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -41,11 +40,11 @@ const Providers: React.FC<ProvidersProps> = ({ children }) => {
     </div>
   );
 
-  const queryClient = new QueryClient(); // This is required for Wagmi
+  const [queryClient] = useState(() => new QueryClient()); // This is required for Wagmi
 
   return (
     <SupabaseAuthProvider>
-      <ApolloProvider client={supabaseApolloClient}>
+      <ApolloWrapper>
         <WagmiProvider config={wagmiConfig}>
           <QueryClientProvider client={queryClient}>
             <Toaster />
@@ -54,7 +53,7 @@ const Providers: React.FC<ProvidersProps> = ({ children }) => {
             </StateProvider>
           </QueryClientProvider>
         </WagmiProvider>
-      </ApolloProvider>
+      </ApolloWrapper>
     </SupabaseAuthProvider>
   );
 };

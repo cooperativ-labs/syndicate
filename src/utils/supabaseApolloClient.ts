@@ -1,44 +1,9 @@
-import {
-  ApolloClient,
-  defaultDataIdFromObject,
-  InMemoryCache,
-} from "@apollo/client";
+import { ApolloClient } from "@apollo/client";
 import { HttpLink } from "@apollo/client/link/http";
-import { relayStylePagination } from "@apollo/client/utilities";
 import { createClient } from "../../supabase/utils/client";
+import { createApolloCache, getGraphQLEndpoint } from "./apolloConfig";
 
-const cache = new InMemoryCache({
-  dataIdFromObject(responseObject) {
-    if ("nodeId" in responseObject) {
-      return `${responseObject.nodeId}`;
-    }
-    return defaultDataIdFromObject(responseObject);
-  },
-  possibleTypes: { Node: [] }, // Add your types here as you define them
-  typePolicies: {
-    Query: {
-      fields: {
-        // Add pagination for your collections here
-        // Example: todosCollection: relayStylePagination(),
-        node: {
-          read(_, { args, toReference }) {
-            const ref = toReference({
-              nodeId: args?.nodeId,
-            });
-            return ref;
-          },
-        },
-      },
-    },
-  },
-});
-
-const getGraphQLEndpoint = () => {
-  if (process.env.NEXT_PUBLIC_SUPABASE_URL) {
-    return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/graphql/v1`;
-  }
-  return "http://localhost:54321/graphql/v1";
-};
+const cache = createApolloCache();
 
 const supabase = createClient();
 
@@ -53,7 +18,7 @@ const httpLink = new HttpLink({
       ...options,
       headers: {
         ...options?.headers,
-        Authorization: token ? `Bearer ${token}` : "",
+        ...(token ? { Authorization: `Bearer ${token}` } : {}),
         apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY || "",
       },
     });

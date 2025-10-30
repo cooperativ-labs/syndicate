@@ -1,5 +1,5 @@
 import { GET_OFFERING } from '@src/utils/graphQueries/offering';
-import { initializeApollo } from '@src/utils/supabaseApolloClient';
+import { initializeApollo } from '@src/utils/apolloClient';
 import type { Metadata } from 'next';
 import { cache } from 'react';
 import React from 'react';

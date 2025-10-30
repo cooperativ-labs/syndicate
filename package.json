@@ -40,6 +40,7 @@
   },
   "dependencies": {
     "@apollo/client": "^4.0.7",
+    "@apollo/client-integration-nextjs": "^0.14.1",
     "@apollo/react-ssr": "^4.0.0",
     "@babel/core": "^7.16.7",
     "@babel/plugin-syntax-flow": "^7.16.7",
