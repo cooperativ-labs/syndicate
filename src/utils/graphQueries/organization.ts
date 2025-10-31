@@ -1,6 +1,6 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
-import { CORE_ORGANIZATION_FIELDS } from './fragments';
+import { CORE_ORGANIZATION_FIELDS } from "./fragments";
 
 export const GET_ORGANIZATION = gql`
   ${CORE_ORGANIZATION_FIELDS}
@@ -10,40 +10,6 @@ export const GET_ORGANIZATION = gql`
         node {
           ...OrganizationFields
         }
-      }
-    }
-  }
-`;
-
-export const ADD_ORGANIZATION = gql`
-  mutation AddOrganization(
-    $name: String!
-    $logo: String
-    $shortDescription: String
-    $website: String
-    $country: String
-  ) {
-    insertIntoorganizationCollection(
-      objects: [
-        {
-          name: $name
-          is_public: false
-          logo: $logo
-          website: $website
-          country: $country
-          short_description: $shortDescription
-        }
-      ]
-    ) {
-      affectedCount
-      records {
-        id
-        name
-        is_public
-        logo
-        website
-        country
-        short_description
       }
     }
   }

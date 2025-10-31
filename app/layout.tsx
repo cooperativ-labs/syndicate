@@ -10,6 +10,7 @@ import { headers } from 'next/headers';
 import Script from 'next/script';
 import React from 'react';
 import { cookieToInitialState } from 'wagmi';
+import { Toaster } from '@src/components/ui/sonner';
 
 import { UserProvider } from '@/contexts/UserContext';
 
@@ -34,6 +35,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   } = await supabase.auth.getUser();
 
   const config = getWagmiConfig();
+
   const initialState = cookieToInitialState(config, (await headers()).get('cookie'));
 
   const { data: sessionData } = await supabase.auth.getSession();
@@ -61,7 +63,9 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <UserProvider userProfile={userProfile} user={user}>
-          <Providers initialState={initialState}>{children}</Providers>
+          <Providers initialState={initialState}>
+            {children} <Toaster />
+          </Providers>
         </UserProvider>
         <Script
           async

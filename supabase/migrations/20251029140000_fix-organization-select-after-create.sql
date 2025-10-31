@@ -4,7 +4,7 @@
 
 -- Create a security definer function to check if an organization has no members
 -- This allows the creator to view the organization before adding themselves as a member
-CREATE OR REPLACE FUNCTION public.organization_has_no_members(p_organization_id UUID)
+CREATE OR REPLACE FUNCTION public.organization_has_no_members(p_organization_id BIGINT)
 RETURNS BOOLEAN
 LANGUAGE sql
 SECURITY DEFINER

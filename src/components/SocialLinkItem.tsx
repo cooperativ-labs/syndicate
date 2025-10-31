@@ -2,7 +2,6 @@ import { LinkedAccountType } from '@gql/graphql';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
 import cn from 'classnames';
 import {
-  Discord,
   Dribbble,
   Facebook,
   Github,
@@ -34,8 +33,7 @@ const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
         return Github;
       case 'dribbble':
         return Dribbble;
-      case 'discord':
-        return Discord;
+
       case 'youtube':
         return Youtube;
       case 'soundcloud':

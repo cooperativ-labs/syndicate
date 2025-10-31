@@ -250,7 +250,7 @@ CREATE TABLE profile (
 
 -- Organizations table
 CREATE TABLE organization (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     name TEXT,
     logo TEXT,
     slug TEXT UNIQUE,
@@ -271,7 +271,7 @@ CREATE TABLE organization (
 -- Organization Users junction table
 CREATE TABLE organization_user (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
+    organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     permissions organization_permission_type[] DEFAULT '{}',
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -291,7 +291,7 @@ CREATE TABLE jurisdiction (
 -- Legal Entities table
 CREATE TABLE legal_entity (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
+    organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     display_name TEXT,
     legal_name TEXT,
     type legal_entity_type NOT NULL,
@@ -336,7 +336,7 @@ CREATE TABLE address (
 -- Email Addresses table
 CREATE TABLE email_address (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
+    organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     address TEXT UNIQUE NOT NULL,
     name TEXT,
     description TEXT,
@@ -348,7 +348,7 @@ CREATE TABLE email_address (
 -- Linked Accounts table
 CREATE TABLE linked_account (
     id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    organization_id UUID NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
+    organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     account_provided_id TEXT,
     username TEXT,
     url TEXT NOT NULL,

@@ -5,7 +5,7 @@ import CreateEntity from '@src/components/entity/CreateEntity';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { useParams, useRouter } from 'next/navigation';
 import React from 'react';
 

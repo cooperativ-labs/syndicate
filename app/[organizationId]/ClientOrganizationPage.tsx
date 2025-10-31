@@ -1,11 +1,10 @@
 'use client';
 
 import PortalWrapper from '@src/containers/PortalWrapper';
-import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
 import Footer from '@src/Footer/Footer';
 import OrganizationProfile from '@src/screens/OrganizationProfile';
 import PortalOrganization from '@src/screens/PortalOrganization';
-import { Organization } from 'oldTypes';
+import { Organization } from '@gql/graphql';
 import React from 'react';
 import { useAccount } from 'wagmi';
 
@@ -36,7 +35,6 @@ const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organiz
 
   return (
     <div data-test="component-project" className="bg-gray-50">
-      <WalletChooserModal />
       {isParticipant ? (
         <PortalWrapper>
           <PortalOrganization />

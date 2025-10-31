@@ -6,6 +6,8 @@ import * as Yup from 'yup';
 
 import CooperativLogo from '../CooperativLogo';
 
+import { useRouter } from 'next/navigation';
+
 export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
 
@@ -23,7 +25,7 @@ const SSOButton: FC<SSOButtonProps> = ({ onClick, text }) => {
 
 const CreateAccount: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
-
+  const router = useRouter();
   //===========================================================================
 
   // const handleGoogleLogin = async () => {
@@ -41,9 +43,11 @@ const CreateAccount: FC = () => {
   //   signIn('linkedin');
   // };
 
-  const handleMagicLink = (email: string) => {
+  const handleMagicLink = async (email: string) => {
     setLoading(true);
-    signInWithEmail({ email, shouldCreateUser: true });
+    await signInWithEmail({ email, shouldCreateUser: true });
+    setLoading(false);
+    router.push('/confirm-your-email?email=' + email);
   };
 
   const handlePasswordLogin = (email: string, password: string) => {

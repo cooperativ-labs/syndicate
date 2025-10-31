@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 import {
   CORE_APPLICATION_FIELDS,
@@ -6,8 +6,8 @@ import {
   CORE_INVESTMENT_OFFERING_FIELDS,
   CORE_INVESTMENT_PARTICIPANT_FIELDS,
   CORE_OFFERING_FIELDS,
-  SMART_CONTRACT_SET_FIELDS
-} from './fragments';
+  SMART_CONTRACT_SET_FIELDS,
+} from "./fragments";
 
 export const ADD_OFFERING = gql`
   ${CORE_OFFERING_FIELDS}
@@ -103,8 +103,7 @@ export const UPDATE_OFFERING_PROFILE = gql`
         website: $website,
         short_description: $shortDescription,
         is_public: $isPublic,
-        access_code: $accessCode,
-        updated_at: now()
+        access_code: $accessCode
       }
     ) {
       affectedCount
@@ -125,7 +124,7 @@ export const UPDATE_OFFERING_PROFILE = gql`
 
 export const UPDATE_OFFERING_FINANCIAL = gql`
   mutation UpdateOfferingFinancial(
-    $offeringDetailsId: [ID!]
+    $offeringId: [ID!]
     $stage: OfferingStage
     $maxRaise: Int64
     $minRaise: Int64
@@ -149,9 +148,9 @@ export const UPDATE_OFFERING_FINANCIAL = gql`
     $projectedAppreciation: Int
     $capRate: Int
   ) {
-    updateOfferingDetails(
+    updateofferingCollection(
       input: {
-        filter: { id: $offeringDetailsId }
+        filter: { id: $offeringId }
         set: {
           stage: $stage
           maxRaise: $maxRaise
@@ -209,7 +208,6 @@ export const UPDATE_OFFERING_FINANCIAL = gql`
 
 export const ADD_OFFERING_DETAILS = gql`
   mutation AddOfferingDetails(
-    $currentDate: DateTime
     $offeringId: [ID!]
     $offeringDetailsType: OfferingDetailsType!
     $investmentCurrencyCode: CurrencyCode!
@@ -224,7 +222,6 @@ export const ADD_OFFERING_DETAILS = gql`
       input: {
         filter: { id: $offeringId }
         set: {
-          lastUpdate: $currentDate
           details: {
             type: $offeringDetailsType
             investmentCurrency: { code: $investmentCurrencyCode }
@@ -278,56 +275,40 @@ export const UPDATE_INVESTMENT_CURRENCY = gql`
 
 export const ADD_LEGAL_SHARE_LINK = gql`
   mutation AddLegalLink(
-    $currentDate: DateTime
+    $currentDate: Datetime!
     $documentOfferingUniqueId: String!
-    $offeringId: [ID!]
-    $entityId: ID!
+    $offeringId: UUID!
+    $entityId: UUID!
     $agreementText: String!
-    $smartContractId: ID!
+    $smartContractId: UUID!
     $agreementTitle: String!
     $signature: String!
   ) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        set: {
-          lastUpdate: $currentDate
-          smartContractSets: { shareContract: { id: $smartContractId } }
-          waitlistOn: false
-          documents: {
-            title: $agreementTitle
-            text: $agreementText
+    updateofferingCollection(
+      filter: { id: { eq: $offeringId } }
+      set: {
+        offering_smart_contract_sets: { share_contract_id: $smartContractId }
+        waitlist_on: false
+        documents: {
+          title: $agreementTitle
+          text: $agreementText
+          date: $currentDate
+          type: SHARE_LINK
+          format: MARKDOWN
+          owner_id: $entityId
+          offering_unique_id: $documentOfferingUniqueId
+          document_signatories: {
+            signature: $signature
             date: $currentDate
-            type: SHARE_LINK
-            format: MARKDOWN
-            owner: { id: $entityId }
-            offeringUniqueId: $documentOfferingUniqueId
-            lastUpdate: $currentDate
-            creationDate: $currentDate
-            signatories: {
-              signature: $signature
-              date: $currentDate
-              archived: false
-              legalEntity: { id: $entityId }
-            }
+            archived: false
+            legal_entity_id: $entityId
           }
         }
       }
     ) {
-      offering {
+      affectedCount
+      records {
         id
-        smartContractSets {
-          id
-          shareContract {
-            id
-          }
-        }
-        documents {
-          text
-        }
-        details {
-          id
-        }
       }
     }
     updateSmartContract(input: { filter: { id: [$smartContractId] }, set: { established: true } }) {
@@ -354,7 +335,6 @@ export const GET_OFFERING_PARTICIPANT = gql`
 
 export const ADD_OFFERING_PARTICIPANT = gql`
   mutation AddOfferingParticipant(
-    $currentDate: DateTime!
     $addressOfferingId: String!
     $name: String
     $offeringId: ID!
@@ -363,8 +343,6 @@ export const ADD_OFFERING_PARTICIPANT = gql`
   ) {
     addOfferingParticipant(
       input: {
-        lastUpdate: $currentDate
-        creationDate: $currentDate
         addressOfferingId: $addressOfferingId
         name: $name
         offering: { id: $offeringId }
@@ -385,7 +363,6 @@ export const ADD_OFFERING_PARTICIPANT = gql`
 
 export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
   mutation AddOfferingParticipantWithApplication(
-    $currentDate: DateTime!
     $dateSigned: DateTime!
     $addressOfferingId: String!
     $name: String
@@ -401,36 +378,15 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
     $applicationTitle: String!
     $signature: String!
   ) {
-    addOfferingParticipant(
-      input: {
-        lastUpdate: $currentDate
-        addressOfferingId: $addressOfferingId
+    insertIntooffering_participantCollection(
+      objects: {
+        address_offering_id: $addressOfferingId
         name: $name
-        offering: { id: $offeringId }
-        walletAddress: $walletAddress
-        minPledge: $minPledge
-        maxPledge: $maxPledge
+        offering_id: $offeringId
+        wallet_address: $walletAddress 
+        min_pledge: $minPledge
+        max_pledge: $maxPledge
         # jurisdiction: { country: $jurCountry, state: $jurState }
-        investorApplication: {
-          creationDate: $currentDate
-          lastUpdate: $currentDate
-          applicationDoc: {
-            creationDate: $currentDate
-            title: $applicationTitle
-            text: $applicationText
-            date: $currentDate
-            type: AGREEMENT
-            owner: { id: $offeringEntityId }
-            offeringUniqueId: $offeringUniqueId
-            lastUpdate: $currentDate
-            signatories: {
-              signature: $signature
-              date: $dateSigned
-              archived: false
-              signerAddress: $walletAddress
-            }
-          }
-        }
       }
       upsert: true
     ) {
@@ -447,12 +403,40 @@ export const ADD_OFFERING_PARTICIPANT_WITH_APPLICATION = gql`
         }
       }
     }
+    insertIntoinvestor_applicationCollection(
+      objects: {
+        offering_participant_id: $offeringParticipantId 
+        text: $applicationText
+        date: $dateSigned
+        type: AGREEMENT
+        owner_id: $offeringEntityId
+        offering_unique_id: $offeringUniqueId 
+      }
+    ) {
+      investorApplication {
+        id
+      }
+    }
+    insertIntodocument_signatoryCollection(
+      objects: {
+        offering_participant_id: $offeringParticipantId
+        signature: $signature
+        date: $dateSigned
+        archived: false
+        signer_address: $walletAddress
+      }
+    ) {
+      affectedCount
+      records {
+        id
+      }
+    }
   }
 `;
 
 export const ADD_WHITELIST_MEMBER = gql`
   mutation AddWhitelistObject(
-    $currentDate: DateTime!
+
     $addressOfferingId: String!
     $walletAddress: String!
     $chainId: Int!
@@ -464,31 +448,19 @@ export const ADD_WHITELIST_MEMBER = gql`
   ) {
     addOfferingParticipant(
       input: {
-        lastUpdate: $currentDate
-        creationDate: $currentDate
-        addressOfferingId: $addressOfferingId
-        walletAddress: $walletAddress
-        chainId: $chainId
+   
+        address_offering_id: $addressOfferingId
+        wallet_address: $walletAddress
+        chain_id: $chainId
         name: $name
-        offering: { id: $offering }
-        externalId: $externalId
-        whitelistTransactions: { transactionHash: $transactionHash, type: $type }
+        offering_id: $offering
+        external_id: $externalId
+        whitelist_transactions: { transaction_hash: $transactionHash, type: $type }
       }
-      upsert: true
     ) {
-      offeringParticipant {
+      affectedCount
+      records {
         id
-        walletAddress
-        name
-        externalId
-        offering {
-          id
-          participants {
-            id
-            walletAddress
-            name
-          }
-        }
       }
     }
   }
@@ -496,30 +468,20 @@ export const ADD_WHITELIST_MEMBER = gql`
 
 export const UPDATE_WHITELIST = gql`
   mutation UpdateWhitelist(
-    $currentDate: DateTime!
+
     $id: [ID!]
     $transactionHash: String!
     $type: WhitelistTransactionType!
   ) {
-    updateOfferingParticipant(
+    updateoffering_participantCollection(
       input: {
         filter: { id: $id }
-        set: {
-          lastUpdate: $currentDate
-          whitelistTransactions: { transactionHash: $transactionHash, type: $type }
-        }
+        set: { whitelist_transactions: { transaction_hash: $transactionHash, type: $type } }
       }
     ) {
-      offeringParticipant {
+      affectedCount
+      records {
         id
-        whitelistTransactions {
-          transactionHash
-          type
-        }
-        name
-        offering {
-          id
-        }
       }
     }
   }
@@ -527,21 +489,20 @@ export const UPDATE_WHITELIST = gql`
 
 export const UPDATE_OFFERING_PARTICIPANT = gql`
   mutation UpdateOfferingParticipant(
-    $currentDate: DateTime!
     $id: [ID!]
     $name: String
     $externalId: String
     $jurCountry: String!
     $jurProvince: String
   ) {
-    updateOfferingParticipant(
+    updateoffering_participantCollection(
       input: {
         filter: { id: $id }
         set: {
-          lastUpdate: $currentDate
+       
           name: $name
           jurisdiction: { country: $jurCountry, province: $jurProvince }
-          externalId: $externalId
+          external_id: $externalId
         }
       }
     ) {
@@ -567,13 +528,13 @@ export const REMOVE_WHITELIST_OBJECT = gql`
   mutation RemoveOfferingParticipant(
     $offeringId: [ID!]
     $participantId: ID!
-    $currentDate: DateTime
+
   ) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
         remove: { participants: { id: $participantId } }
-        set: { lastUpdate: $currentDate }
+
       }
     ) {
       numUids
@@ -591,9 +552,9 @@ export const REMOVE_WHITELIST_OBJECT = gql`
 `;
 
 export const ARCHIVE_OFFERING_PARTICIPANT = gql`
-  mutation ArchiveOfferingParticipant($currentDate: DateTime!, $participantId: [ID!]) {
+  mutation ArchiveOfferingParticipant($participantId: [ID!]) {
     updateOfferingParticipant(
-      input: { filter: { id: $participantId }, set: { lastUpdate: $currentDate, archived: true } }
+      input: { filter: { id: $participantId }, set: { archived: true } }
     ) {
       offeringParticipant {
         id
@@ -605,7 +566,7 @@ export const ARCHIVE_OFFERING_PARTICIPANT = gql`
 
 export const CREATE_DESCRIPTION_TEXT = gql`
   mutation AddDescriptionText(
-    $currentDate: DateTime!
+
     $offeringId: [ID!]
     $title: String!
     $text: String!
@@ -617,8 +578,7 @@ export const CREATE_DESCRIPTION_TEXT = gql`
         filter: { id: $offeringId }
         set: {
           profileDescriptions: {
-            creationDate: $currentDate
-            lastUpdate: $currentDate
+
             title: $title
             text: $text
             section: $section
@@ -639,7 +599,6 @@ export const CREATE_DESCRIPTION_TEXT = gql`
 
 export const UPDATE_DESCRIPTION_TEXT = gql`
   mutation UpdateDescriptionText(
-    $currentDate: DateTime!
     $descriptionId: [ID!]
     $title: String!
     $text: String!
@@ -650,7 +609,6 @@ export const UPDATE_DESCRIPTION_TEXT = gql`
       input: {
         filter: { id: $descriptionId }
         set: {
-          lastUpdate: $currentDate
           title: $title
           text: $text
           section: $section
@@ -673,12 +631,11 @@ export const UPDATE_DESCRIPTION_TEXT = gql`
 `;
 
 export const DELETE_DESCRIPTION_TEXT = gql`
-  mutation DeleteDescriptionText($offeringId: [ID!], $descriptionId: ID!, $currentDate: DateTime) {
+  mutation DeleteDescriptionText($offeringId: [ID!], $descriptionId: ID!) {
     updateOffering(
       input: {
         filter: { id: $offeringId }
         remove: { profileDescriptions: { id: $descriptionId } }
-        set: { lastUpdate: $currentDate }
       }
     ) {
       numUids

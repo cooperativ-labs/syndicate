@@ -1,7 +1,7 @@
 import { initializeApollo } from '@src/utils/apolloClient';
-import { GET_ORGANIZATION } from '@src/utils/dGraphQueries/organization';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import type { Metadata } from 'next';
-import { Organization } from 'oldTypes';
+import { Organization } from '@gql/graphql';
 import { cache } from 'react';
 import React from 'react';
 

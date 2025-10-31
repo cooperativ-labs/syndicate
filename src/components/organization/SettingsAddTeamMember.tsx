@@ -7,7 +7,7 @@ import {
 } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
-import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
+// import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
 import { Form, Formik } from 'formik';
 import React, { FC, useContext } from 'react';
 
@@ -30,28 +30,28 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
     permission: OrganizationPermissionType
   ) => {
     setUserDoesNotExist(false);
-    client
-      .query({
-        query: GET_USER_FROM_EMAIL,
-        variables: { emailAddress: emailAddress }
-      })
-      .then(result => {
-        if (result.data.queryUser.length === 0) {
-          setUserDoesNotExist(true);
-          return;
-        }
-        addTeamMember({
-          variables: {
-            userId: result.data.queryUser[0].id,
-            currentDate: currentDate,
-            organizationId: organizationId,
-            emailAddress: emailAddress,
-            permission: permission
-          }
-        }).catch(error => {
-          throw new Error(error);
-        });
-      });
+    // client
+    //   .query({
+    //     query: GET_USER_FROM_EMAIL,
+    //     variables: { emailAddress: emailAddress }
+    //   })
+    //   .then(result => {
+    //     if (result.data.queryUser.length === 0) {
+    //       setUserDoesNotExist(true);
+    //       return;
+    //     }
+    //     addTeamMember({
+    //       variables: {
+    //         userId: result.data.queryUser[0].id,
+    //         currentDate: currentDate,
+    //         organizationId: organizationId,
+    //         emailAddress: emailAddress,
+    //         permission: permission
+    //       }
+    //     }).catch(error => {
+    //       throw new Error(error);
+    //     });
+    //   });
   };
 
   return (

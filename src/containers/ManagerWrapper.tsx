@@ -27,16 +27,16 @@ type ManagerProps = {
 };
 
 const Manager: FC<ManagerProps> = ({ children }) => {
-  const { user, loading, supabase } = useUserContext();
+  const { user } = useUserContext();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const { disconnect } = useDisconnect();
 
   useEffect(() => {
-    if (!loading && !user) {
+    if (!user) {
       disconnect();
       signOut();
     }
-  }, [disconnect, loading, user]);
+  }, [disconnect, user]);
 
   useEffect(() => {
     let isMounted = true;
@@ -60,7 +60,7 @@ const Manager: FC<ManagerProps> = ({ children }) => {
     return () => {
       isMounted = false;
     };
-  }, [supabase, user]);
+  }, [user]);
 
   return (
     <div className="flex">

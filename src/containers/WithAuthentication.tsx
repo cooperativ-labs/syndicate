@@ -11,22 +11,22 @@ interface WithAuthenticationProps {
 }
 
 const WithAuthentication: React.FC<WithAuthenticationProps> = ({ children }) => {
-  const { userId } = useUserContext();
+  const { user } = useUserContext();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    if (!userId) {
+    if (!user) {
       setShowLoginModal(true);
     } else {
       setShowLoginModal(false);
     }
-  }, [userId]);
+  }, [user]);
 
   return (
     <>
       {showLoginModal && <LoginModal />}
-      {userId && children}
+      {user && children}
     </>
   );
 };

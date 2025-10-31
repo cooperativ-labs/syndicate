@@ -7,7 +7,7 @@ DROP POLICY IF EXISTS "Organization admins can manage organization users" ON org
 
 -- Create a security definer function to check organization membership
 -- This function bypasses RLS to avoid recursion
-CREATE OR REPLACE FUNCTION public.is_organization_member(p_organization_id UUID, p_user_id UUID)
+CREATE OR REPLACE FUNCTION public.is_organization_member(p_organization_id BIGINT, p_user_id UUID)
 RETURNS BOOLEAN
 LANGUAGE sql
 SECURITY DEFINER
@@ -23,7 +23,7 @@ AS $$
 $$;
 
 -- Create a security definer function to check if user is admin of organization
-CREATE OR REPLACE FUNCTION public.is_organization_admin(p_organization_id UUID, p_user_id UUID)
+CREATE OR REPLACE FUNCTION public.is_organization_admin(p_organization_id BIGINT, p_user_id UUID)
 RETURNS BOOLEAN
 LANGUAGE sql
 SECURITY DEFINER

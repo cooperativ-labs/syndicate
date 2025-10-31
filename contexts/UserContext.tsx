@@ -10,6 +10,7 @@ interface UserContextType {
   name: string | undefined;
   email: string | undefined;
   user: User | null;
+  loading: boolean;
 }
 
 // Create the context with default values
@@ -32,7 +33,8 @@ export function UserProvider({
     imageUrl: userProfile?.image || undefined,
     name: userProfile?.name || undefined,
     email: userEmail || undefined,
-    user: user || null
+    user: user || null,
+    loading: false
   };
 
   return <UserContext.Provider value={{ ...value }}>{children}</UserContext.Provider>;
