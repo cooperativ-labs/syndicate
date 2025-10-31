@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { LegalEntity, Maybe } from "@gql/graphql";
-import Button from "@src/components/buttons/Button";
-import { Plus } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { FC } from "react";
+import { LegalEntity, Maybe } from '@gql/graphql';
+import Button from '@src/components/buttons/Button';
+import { Plus } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { FC } from 'react';
 
-import RealEstatePropertyCard from "./RealEstatePropertyCard";
+import RealEstatePropertyCard from './RealEstatePropertyCard';
 
 type OfferingPropertiesProps = {
   offeringEntity: Maybe<LegalEntity> | undefined;

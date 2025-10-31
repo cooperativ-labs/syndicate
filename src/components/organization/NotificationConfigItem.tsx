@@ -1,9 +1,9 @@
-import { Maybe, NotificationConfiguration } from "@gql/graphql";
-import { getNotificationSubjectOption } from "@src/utils/enumConverters";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import React, { FC, useState } from "react";
+import { Maybe, NotificationConfiguration } from '@gql/graphql';
+import { getNotificationSubjectOption } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import React, { FC, useState } from 'react';
 
-import { EditButton } from "../form-components/ListItemButtons";
+import { EditButton } from '../form-components/ListItemButtons';
 
 export type NotificationConfigItemBaseProps = {
   organizationUserId: Maybe<string> | undefined;

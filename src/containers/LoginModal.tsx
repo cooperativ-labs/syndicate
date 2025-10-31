@@ -1,5 +1,5 @@
-import CreateAccount from "@src/components/account/CreateAccount";
-import React, { FC } from "react";
+import CreateAccount from '@src/components/account/CreateAccount';
+import React, { FC } from 'react';
 
 interface LoginModalProps {}
 const LoginModal: FC<LoginModalProps> = () => {
@@ -9,7 +9,7 @@ const LoginModal: FC<LoginModalProps> = () => {
         <div className="mx-auto min-h-full">
           <div className="flex grow justify-center h-full z-10">
             <div className="md:flex flex-col h-full w-full items-center pt-20">
-              <div className="flex-col px-4 w-full" style={{ maxWidth: "600px" }}>
+              <div className="flex-col px-4 w-full" style={{ maxWidth: '600px' }}>
                 <div className="px-3  md:mx-2">
                   <CreateAccount />
                 </div>

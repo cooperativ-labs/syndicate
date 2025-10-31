@@ -1,15 +1,14 @@
-import { useQuery } from "@apollo/client/react";
-import SettingsAddEmail from "@src/components/account/SettingsAddEmail";
-import SettingsSocial from "@src/components/account/SettingsSocial";
-import SettingsUserPersonalInfo from "@src/components/account/SettingsUserPersonalInfo";
-import EmailAddressList from "@src/components/EmailAddressList";
-import LinkedAccountsList from "@src/components/LinkedAccountsList";
-import Loading from "@src/components/loading/Loading";
-import WalletAddressList from "@src/components/WalletAddressList";
-import LimitedWidthSection from "@src/containers/LimitedWidthSection";
-import { GET_USER } from "@src/utils/graphQueries/user";
-
-import React, { FC, useContext, useEffect, useState } from "react";
+import { useQuery } from '@apollo/client/react';
+import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
+import SettingsSocial from '@src/components/account/SettingsSocial';
+import SettingsUserPersonalInfo from '@src/components/account/SettingsUserPersonalInfo';
+import EmailAddressList from '@src/components/EmailAddressList';
+import LinkedAccountsList from '@src/components/LinkedAccountsList';
+import Loading from '@src/components/loading/Loading';
+import WalletAddressList from '@src/components/WalletAddressList';
+import LimitedWidthSection from '@src/containers/LimitedWidthSection';
+import { GET_USER } from '@src/utils/graphQueries/user';
+import React, { FC, useContext, useEffect, useState } from 'react';
 
 const UserSettings: FC = () => {
   const { data: session, status } = useSession();

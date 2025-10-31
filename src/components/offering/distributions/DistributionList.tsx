@@ -1,7 +1,7 @@
-import { Maybe, OfferingDistribution } from "@gql/graphql";
-import React, { FC } from "react";
+import { Maybe, OfferingDistribution } from '@gql/graphql';
+import React, { FC } from 'react';
 
-import DistributionListItem, { DistributionListItemProps } from "./DistributionListItem";
+import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 
 type DistributionListProps = DistributionListItemProps & {
   distributions: Maybe<Maybe<OfferingDistribution>[]> | undefined;

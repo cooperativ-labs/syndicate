@@ -1,8 +1,8 @@
-"use client";
+'use client';
 
-import { Profile } from "@gql/graphql";
-import { User } from "@supabase/supabase-js";
-import { createContext, ReactNode, useContext, useState } from "react";
+import { Profile } from '@gql/graphql';
+import { User } from '@supabase/supabase-js';
+import { createContext, ReactNode, useContext, useState } from 'react';
 // Define the context type
 interface UserContextType {
   userId: string | undefined;
@@ -42,7 +42,7 @@ export function UserProvider({
 export function useUserContext() {
   const context = useContext(UserContext);
   if (context === undefined) {
-    throw new Error("useUserContext must be used within a UserProvider");
+    throw new Error('useUserContext must be used within a UserProvider');
   }
   return context;
 }

@@ -1,12 +1,12 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { cancelAcceptance } from "@src/web3/contractSwapCalls";
-import { String0x } from "@src/web3/helpersChain";
-import cn from "classnames";
-import React, { FC, useState } from "react";
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { cancelAcceptance } from '@src/web3/contractSwapCalls';
+import { String0x } from '@src/web3/helpersChain';
+import cn from 'classnames';
+import React, { FC, useState } from 'react';
 
 const buttonClass =
-  "text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative ";
+  'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative ';
 
 type OrderStatusBarProps = {
   isAccepted: boolean | undefined;
@@ -35,7 +35,7 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   contractIndex,
   refetchAllContracts
 }) => {
-  const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
   const manOfAction = isAskOrder ? currentUserFiller : currentUserInitiator;
   const currentUserPending =
     isAccepted && (currentUserFiller || currentUserInitiator) && !isApproved && !isFilled;
@@ -58,7 +58,7 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
     <Button
       className={buttonClass}
       onClick={() => handleCancelAcceptance()}
-      disabled={cancelButtonStep === "step1"}
+      disabled={cancelButtonStep === 'step1'}
     >
       <LoadingButtonText
         state={cancelButtonStep}
@@ -74,22 +74,22 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   const cases = () => {
     if (currentUserPending) {
       return {
-        color: "border-orange-600 text-orange-600",
+        color: 'border-orange-600 text-orange-600',
         text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares is pending`
       };
     } else if (currentUserApproved) {
       return {
-        color: "border-green-600 text-green-600",
+        color: 'border-green-600 text-green-600',
         text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares has been approved`
       };
     } else if (currentUserDisapproved) {
       return {
-        color: "border-orange-600 text-orange-600",
+        color: 'border-orange-600 text-orange-600',
         text: `Your request for ${numberWithCommas(acceptedOrderQty as number)} shares has been disapproved`
       };
     } else if (otherOrderPending) {
       return {
-        color: "border-yellow-600 text-yellow-600",
+        color: 'border-yellow-600 text-yellow-600',
         text: `Another investor's request is pending`
       };
     } else {
@@ -100,7 +100,7 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   const { color, text } = cases() || { color: undefined, text: undefined };
   const className = cn(
     color,
-    "border-2 font-semibold p-3 rounded-lg flex items-center justify-between "
+    'border-2 font-semibold p-3 rounded-lg flex items-center justify-between '
   );
 
   return cases() ? (

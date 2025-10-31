@@ -1,9 +1,9 @@
-import cn from "classnames";
-import { ErrorMessage } from "formik";
-import React, { Dispatch, FC, SetStateAction } from "react";
-import GooglePlacesAutocomplete from "react-google-places-autocomplete";
+import cn from 'classnames';
+import { ErrorMessage } from 'formik';
+import React, { Dispatch, FC, SetStateAction } from 'react';
+import GooglePlacesAutocomplete from 'react-google-places-autocomplete';
 
-import { defaultFieldLabelClass } from "./Inputs";
+import { defaultFieldLabelClass } from './Inputs';
 
 type CustomAddressAutocompleteProps = {
   name: string;
@@ -39,31 +39,31 @@ export const normalizeGeoAddress = (
   country: any;
 } => {
   const subpremise = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("subpremise")
+    x.types.includes('subpremise')
   )?.long_name;
   const street_number = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("street_number")
+    x.types.includes('street_number')
   )?.long_name;
   const street_name = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("route")
+    x.types.includes('route')
   )?.long_name;
   const baseCity = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("locality")
+    x.types.includes('locality')
   )?.long_name;
   const postalTown = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("postal_town")
+    x.types.includes('postal_town')
   )?.long_name;
   const sublocality = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("sublocality")
+    x.types.includes('sublocality')
   )?.long_name;
   const state = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("administrative_area_level_1")
+    x.types.includes('administrative_area_level_1')
   )?.long_name;
   const postalCode = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("postal_code")
+    x.types.includes('postal_code')
   )?.long_name;
   const country = autocompleteResults[0]?.address_components.find((x: any) =>
-    x.types.includes("country")
+    x.types.includes('country')
   )?.long_name;
 
   const firstAddressLine = createFirstAddressLine(street_number, street_name);
@@ -90,14 +90,14 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
   setValue
 }) => {
   return (
-    <div className={cn(className, "flex flex-col w-full")}>
+    <div className={cn(className, 'flex flex-col w-full')}>
       {labelText && (
         <label
           htmlFor={name}
-          className={cn(fieldLabelClass ? fieldLabelClass : [defaultFieldLabelClass, "mt-2 mb-1"])}
+          className={cn(fieldLabelClass ? fieldLabelClass : [defaultFieldLabelClass, 'mt-2 mb-1'])}
         >
           {labelText}
-          {required ? " *" : ""}
+          {required ? ' *' : ''}
         </label>
       )}
       <GooglePlacesAutocomplete
@@ -105,7 +105,7 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
         selectProps={{
           value,
           onChange: setValue,
-          placeholder: "123 Easy st...",
+          placeholder: '123 Easy st...',
           styles: {
             input: provided => ({
               ...provided,
@@ -114,8 +114,8 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
               // fontSize: 16,
               // border: '0px',
               borderRadius: 5,
-              backgroundColor: "#ff",
-              boxShadow: "none"
+              backgroundColor: '#ff',
+              boxShadow: 'none'
             }),
 
             control: (baseStyles, state) => ({
@@ -133,9 +133,9 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
             { lat: 100, lng: 100 }
           ],
           componentRestrictions: {
-            country: ["us", "ca", "uk", "de", "ky", "vg"]
+            country: ['us', 'ca', 'uk', 'de', 'ky', 'vg']
           },
-          types: ["address"]
+          types: ['address']
         }}
       />
       <ErrorMessage name={name} component="div" className="text-sm text-red-500" />

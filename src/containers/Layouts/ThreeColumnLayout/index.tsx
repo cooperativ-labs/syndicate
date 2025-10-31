@@ -1,3 +1,3 @@
-import ThreeColumnLayout from "./ThreeColumnLayout";
+import ThreeColumnLayout from './ThreeColumnLayout';
 
 export default ThreeColumnLayout;

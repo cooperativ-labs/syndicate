@@ -1,20 +1,20 @@
-import { trackImpression, trackPageView } from "@src/utils/analytics";
+import { trackImpression, trackPageView } from '@src/utils/analytics';
 import {
   DEFAULT_BLUR_ACTION,
   DEFAULT_CLICK_ACTION,
   DEFAULT_FOCUS_ACTION
-} from "@src/utils/analytics/config";
+} from '@src/utils/analytics/config';
 import {
   parseCustomDimensions,
   parseDataAttributes,
   parseOverwriteObject
-} from "@src/utils/analytics/helpers";
-import { trackInteraction } from "@src/utils/analytics/index";
-import { usePathname, useSearchParams } from "next/navigation";
-import { useCallback, useContext, useEffect, useRef, useState } from "react";
-import TagManager from "react-gtm-module";
+} from '@src/utils/analytics/helpers';
+import { trackInteraction } from '@src/utils/analytics/index';
+import { usePathname, useSearchParams } from 'next/navigation';
+import { useCallback, useContext, useEffect, useRef, useState } from 'react';
+import TagManager from 'react-gtm-module';
 
-import AnalyticsContext from "@/contexts/analytics";
+import AnalyticsContext from '@/contexts/analytics';
 
 /**
  * Handles Generating Analytics Data from data-attributes and overwrites
@@ -53,9 +53,9 @@ export function useAnalytics() {
   }, []);
 
   const gtmProperties = {
-    gtmId: "GTM-P798NLF",
+    gtmId: 'GTM-P798NLF',
     dataLayer: {
-      projectTitle: "Syndicate"
+      projectTitle: 'Syndicate'
     }
   };
   useEffect(() => {
@@ -88,7 +88,7 @@ export function useAnalytics() {
     }
 
     // Track on pathname or search param changes (App Router has no router.events)
-    const url = `${pathname || ""}${searchParams?.toString() ? `?${searchParams.toString()}` : ""}`;
+    const url = `${pathname || ''}${searchParams?.toString() ? `?${searchParams.toString()}` : ''}`;
     trackPageView(document.title, url, dynamicDimensions);
   }, [dynamicDimensions, pageTracked, pathname, searchParams]);
 
@@ -106,7 +106,7 @@ export function useAnalytics() {
  * properties included in the 'OverwriteProps' will take priority over the data attributes.
  */
 export function useAnalyticsImpression(
-  { root = null, rootMargin = "0px", threshold = 0.5, once = true },
+  { root = null, rootMargin = '0px', threshold = 0.5, once = true },
   overwriteProps = {}
 ) {
   const [entry, setEntry] = useState({});

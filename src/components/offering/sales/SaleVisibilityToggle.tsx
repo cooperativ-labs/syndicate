@@ -1,8 +1,8 @@
-import { useMutation } from "@apollo/client/react";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { UPDATE_ORDER } from "@src/utils/graphQueries/orders";
-import cn from "classnames";
-import React, { FC } from "react";
+import { useMutation } from '@apollo/client/react';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_ORDER } from '@src/utils/graphQueries/orders';
+import cn from 'classnames';
+import React, { FC } from 'react';
 
 type OrderVisibilityToggleProps = {
   orderVisibility: boolean | undefined | null;
@@ -40,8 +40,8 @@ const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({
         >
           <div
             className={cn(
-              [orderVisibility ? " ml-5 bg-emerald-600" : "bg-gray-400"],
-              "h-6 w-6 rounded-full "
+              [orderVisibility ? ' ml-5 bg-emerald-600' : 'bg-gray-400'],
+              'h-6 w-6 rounded-full '
             )}
           />
         </button>

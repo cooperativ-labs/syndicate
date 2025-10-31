@@ -1,12 +1,12 @@
-"use client";
-import { useUserContext } from "@contexts/UserContext";
-import { Organization } from "@gql/graphql";
-import Card from "@src/components/cards/Card";
-import CreateOffering from "@src/components/offering/CreateOffering";
-import CreateOrganization from "@src/components/organization/CreateOrganization";
-import EnsureOrganization from "@src/containers/EnsureOrganization";
-import { getOrgsFromUser, handleOrganizationChange } from "@src/utils/helpersOrganization";
-import React, { FC, useEffect, useState } from "react";
+'use client';
+import { useUserContext } from '@contexts/UserContext';
+import { Organization } from '@gql/graphql';
+import Card from '@src/components/cards/Card';
+import CreateOffering from '@src/components/offering/CreateOffering';
+import CreateOrganization from '@src/components/organization/CreateOrganization';
+import EnsureOrganization from '@src/containers/EnsureOrganization';
+import { getOrgsFromUser, handleOrganizationChange } from '@src/utils/helpersOrganization';
+import React, { FC, useEffect, useState } from 'react';
 const Dashboard: FC = () => {
   const { user } = useUserContext();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
@@ -73,7 +73,7 @@ const Dashboard: FC = () => {
           <div className="col-span-1">
             <div>
               <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">
-                Your Organizations{" "}
+                Your Organizations{' '}
               </h2>
               {organizations.map(organization => {
                 return (

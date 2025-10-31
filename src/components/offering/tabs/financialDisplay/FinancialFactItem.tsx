@@ -1,7 +1,7 @@
-import { Currency } from "@gql/graphql";
-import { getCurrencyOption } from "@src/utils/enumConverters";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import React, { FC } from "react";
+import { Currency } from '@gql/graphql';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import React, { FC } from 'react';
 
 type FinancialFactItemProps = {
   label: string;
@@ -27,15 +27,15 @@ const FinancialFactItem: FC<FinancialFactItemProps> = ({
       <div className="flex justify-between px-4 lg:px-8">
         <div className="font-bold">{label} </div>
         <div>
-          {amount && numberWithCommas(amount)}{" "}
+          {amount && numberWithCommas(amount)}{' '}
           {amount && currency && `(${getCurrencyOption(currency)?.symbol})`}
           {amount && percent && ` (`}
-          {percent && `${percent}${secondPercent ? ` - ${secondPercent}` : ""}%`}{" "}
+          {percent && `${percent}${secondPercent ? ` - ${secondPercent}` : ''}%`}{' '}
           {amount && percent && `)`}
           {multiple && (
             <>
               {multiple}
-              {secondMultiple && <span> - {secondMultiple}</span>}x{" "}
+              {secondMultiple && <span> - {secondMultiple}</span>}x{' '}
             </>
           )}
         </div>

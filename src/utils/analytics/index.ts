@@ -2,8 +2,8 @@ import {
   DEFAULT_CUSTOM_DIMENSIONS,
   DEFAULT_IMPRESSION_ACTION,
   EVENT_DEFAULTS
-} from "@src/utils/analytics/config";
-import TagManager from "react-gtm-module";
+} from '@src/utils/analytics/config';
+import TagManager from 'react-gtm-module';
 // @ts-expect-error - GTM payload accepts arbitrary keys per dataLayer contract
 function track(payload) {
   TagManager.dataLayer({
@@ -25,7 +25,7 @@ function trackEvent(payload, customDimensions) {
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackPageView(title, page, rest = {}) {
-  track({ title, page, ...DEFAULT_CUSTOM_DIMENSIONS, ...rest, event: "view" });
+  track({ title, page, ...DEFAULT_CUSTOM_DIMENSIONS, ...rest, event: 'view' });
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackInteraction(type, payload, rest) {

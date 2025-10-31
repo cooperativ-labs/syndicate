@@ -1,10 +1,10 @@
-import { Address, LegalEntity } from "@gql/graphql";
-import React, { FC } from "react";
+import { Address, LegalEntity } from '@gql/graphql';
+import React, { FC } from 'react';
 
-import Button from "../buttons/Button";
+import Button from '../buttons/Button';
 
-import { defaultFieldDiv } from "./Inputs";
-import Select from "./Select";
+import { defaultFieldDiv } from './Inputs';
+import Select from './Select';
 
 type AddressSelectorProps = {
   addresses: Address[];

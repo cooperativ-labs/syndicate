@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import { DocumentType } from "@gql/graphql";
-import { getFileFormat, urlToDatabaseProps } from "@src/utils/helpersDocuments";
-import cn from "classnames";
-import Compressor from "compressorjs";
-import { UploadCloud } from "lucide-react";
-import router from "next/router";
-import React, { FC, useState } from "react";
-import { FileUploader } from "react-drag-drop-files";
+import { DocumentType } from '@gql/graphql';
+import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
+import cn from 'classnames';
+import Compressor from 'compressorjs';
+import { UploadCloud } from 'lucide-react';
+import router from 'next/router';
+import React, { FC, useState } from 'react';
+import { FileUploader } from 'react-drag-drop-files';
 
-import DeleteButton from "../buttons/DeleteButton";
+import DeleteButton from '../buttons/DeleteButton';
 
 type FileUploadProps = {
   uploaderText: string;
@@ -53,8 +53,8 @@ const FileUpload: FC<FileUploadProps> = ({
       formData.append(`file`, file);
 
       try {
-        const response = await fetch("/api/upload", {
-          method: "POST",
+        const response = await fetch('/api/upload', {
+          method: 'POST',
           body: formData
         });
 
@@ -67,14 +67,14 @@ const FileUpload: FC<FileUploadProps> = ({
         const data = await response.json();
         onUploadSuccess?.(data.url, data.fileId);
       } catch (error: any) {
-        throw new Error("Error details:", error);
+        throw new Error('Error details:', error);
       }
     };
 
-    if (file.type === "image/png" || file.type === "image/jpeg" || file.type === "image/jpg") {
+    if (file.type === 'image/png' || file.type === 'image/jpeg' || file.type === 'image/jpg') {
       new Compressor(file, {
         quality: 0.6,
-        convertTypes: ["image/png"],
+        convertTypes: ['image/png'],
         convertSize: 300000,
         success(result) {
           // console.log('Compressed file size (in bytes): ', result.size);
@@ -94,7 +94,7 @@ const FileUpload: FC<FileUploadProps> = ({
       {imagePreview ? (
         <div className="relative">
           <div className="absolute -right-2 -top-2">
-            {setImagePreview && <DeleteButton onDelete={() => setImagePreview("")} />}
+            {setImagePreview && <DeleteButton onDelete={() => setImagePreview('')} />}
           </div>
           <img className="h-40 object-scale-down" src={imagePreview} />
         </div>
@@ -109,7 +109,7 @@ const FileUpload: FC<FileUploadProps> = ({
             className={cn(
               className
                 ? className
-                : "flex p-3 mt-1 bg-gray-100  h-24 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40"
+                : 'flex p-3 mt-1 bg-gray-100  h-24 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40'
             )}
           >
             <UploadCloud className="text-3xl text-gray-600 mr-4" />

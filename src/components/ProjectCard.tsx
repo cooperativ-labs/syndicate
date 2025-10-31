@@ -1,9 +1,9 @@
-"use client";
+'use client';
 
-import { useRouter } from "next/navigation";
-import React from "react";
+import { useRouter } from 'next/navigation';
+import React from 'react';
 
-import Card from "./cards/Card";
+import Card from './cards/Card';
 
 export type ProjectCardProps = {
   projectName: string;
@@ -19,7 +19,7 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ ...props }) => {
   return (
     <div
       onClick={() => {
-        window.sessionStorage.setItem("CHOSEN_PROJECT", id);
+        window.sessionStorage.setItem('CHOSEN_PROJECT', id);
         router.push(`/syndications/${id}`);
       }}
     >
@@ -35,4 +35,4 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ ...props }) => {
 };
 
 export default ProjectCard;
-("0x2779");
+('0x2779');

@@ -1,10 +1,10 @@
-import { OfferingDetails } from "@gql/graphql";
-import { getCurrencyOption, getDistributionPeriod } from "@src/utils/enumConverters";
-import { getHumanDate } from "@src/utils/helpersGeneral";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import React, { FC } from "react";
+import { OfferingDetails } from '@gql/graphql';
+import { getCurrencyOption, getDistributionPeriod } from '@src/utils/enumConverters';
+import { getHumanDate } from '@src/utils/helpersGeneral';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import React, { FC } from 'react';
 
-import OfferingDetailItem from "../OfferingDetailItem";
+import OfferingDetailItem from '../OfferingDetailItem';
 
 type OfferingDetailsPublicProps = {
   offeringDetails: OfferingDetails;
@@ -56,7 +56,7 @@ const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({
       )}
       {maxInvestors && (
         <OfferingDetailItem brandColor={brandColor} title="Maximum investors">
-          {" "}
+          {' '}
           {`${numberWithCommas(maxInvestors)}`}
         </OfferingDetailItem>
       )}

@@ -1,8 +1,8 @@
-import Button from "@src/components/buttons/Button";
-import cn from "classnames";
-import React, { FC, useContext } from "react";
+import Button from '@src/components/buttons/Button';
+import cn from 'classnames';
+import React, { FC, useContext } from 'react';
 
-import { ApplicationStoreProps, store } from "@/contexts/store";
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 const outlinedClass = `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white`;
 
@@ -19,12 +19,12 @@ const ChooseConnectorButton: FC<ChooseConnectorButtonProps> = ({ buttonText, lar
     <Button
       className={cn(
         outlinedClass,
-        large ? "p-2 px-4" : "text-xs p-1 px-3",
-        "font-semibold rounded-full relative  w-full"
+        large ? 'p-2 px-4' : 'text-xs p-1 px-3',
+        'font-semibold rounded-full relative  w-full'
       )}
       onClick={e => {
         e.preventDefault();
-        dispatchWalletModal({ type: "TOGGLE_WALLET_MODAL" });
+        dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
       }}
     >
       {buttonText}

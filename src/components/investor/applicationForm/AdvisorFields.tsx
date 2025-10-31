@@ -1,7 +1,7 @@
-import AddressFields from "@src/components/address/AddressFields";
-import React, { FC } from "react";
+import AddressFields from '@src/components/address/AddressFields';
+import React, { FC } from 'react';
 
-import Input, { defaultFieldDiv } from "../../form-components/Inputs";
+import Input, { defaultFieldDiv } from '../../form-components/Inputs';
 
 const AdvisorFields: FC = () => {
   return (

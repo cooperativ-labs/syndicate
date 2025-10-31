@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useQuery } from "@apollo/client/react";
-import { useUserContext } from "@contexts/UserContext";
-import AddItemButton from "@src/components/buttons/AddItemButton";
-import MajorActionButton from "@src/components/buttons/MajorActionButton";
-import EntitiesList from "@src/components/entity/EntitiesList";
-import LimitedWidthSection from "@src/containers/LimitedWidthSection";
-import { GET_ORGANIZATION } from "@src/utils/graphQueries/organization";
-import { GET_USER } from "@src/utils/graphQueries/user";
-import { getIsEditorOrAdmin } from "@src/utils/helpersUserAndEntity";
-import { useParams } from "next/navigation";
-import router, { useRouter } from "next/router";
-import React, { FC } from "react";
+import { useQuery } from '@apollo/client/react';
+import { useUserContext } from '@contexts/UserContext';
+import AddItemButton from '@src/components/buttons/AddItemButton';
+import MajorActionButton from '@src/components/buttons/MajorActionButton';
+import EntitiesList from '@src/components/entity/EntitiesList';
+import LimitedWidthSection from '@src/containers/LimitedWidthSection';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import { GET_USER } from '@src/utils/graphQueries/user';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { useParams } from 'next/navigation';
+import router, { useRouter } from 'next/router';
+import React, { FC } from 'react';
 
 const EntityDashboard: FC = () => {
   const { user } = useUserContext();

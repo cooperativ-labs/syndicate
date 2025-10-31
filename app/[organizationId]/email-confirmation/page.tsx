@@ -1,18 +1,18 @@
-"use client";
+'use client';
 
-import { useMutation } from "@apollo/client";
-import { ADD_ORGANIZATION_EMAIL } from "@src/utils/dGraphQueries/organization";
-import { sha256 } from "js-sha256";
-import { useParams, useRouter, useSearchParams } from "next/navigation";
-import React, { useEffect } from "react";
+import { useMutation } from '@apollo/client';
+import { ADD_ORGANIZATION_EMAIL } from '@src/utils/dGraphQueries/organization';
+import { sha256 } from 'js-sha256';
+import { useParams, useRouter, useSearchParams } from 'next/navigation';
+import React, { useEffect } from 'react';
 
 const ConfirmEmail = () => {
   const params = useParams<{ organizationId: string }>();
   const searchParams = useSearchParams();
   const router = useRouter();
-  const token = searchParams.get("token");
+  const token = searchParams.get('token');
   const orgId = params?.organizationId;
-  const storedEmail = typeof window !== "undefined" ? window.localStorage.getItem("email") : null;
+  const storedEmail = typeof window !== 'undefined' ? window.localStorage.getItem('email') : null;
   const hashStoredEmail = storedEmail && sha256(storedEmail);
 
   const [addOrganizationEmail, { error: errorEmail }] = useMutation(ADD_ORGANIZATION_EMAIL);
@@ -23,8 +23,8 @@ const ConfirmEmail = () => {
     }
 
     if (hashStoredEmail !== token) {
-      window.localStorage.removeItem("email");
-      alert("Oops. Looks like there was a problem confirming your email address.");
+      window.localStorage.removeItem('email');
+      alert('Oops. Looks like there was a problem confirming your email address.');
       router.push(`/${orgId}/settings`);
       return;
     }
@@ -37,13 +37,13 @@ const ConfirmEmail = () => {
       }
     })
       .then(() => {
-        window.localStorage.removeItem("email");
-        alert("Email confirmed successfully!");
+        window.localStorage.removeItem('email');
+        alert('Email confirmed successfully!');
         router.push(`/${orgId}/settings`);
       })
       .catch(() => {
-        window.localStorage.removeItem("email");
-        alert("Oops. Looks like there was a problem confirming your email address.");
+        window.localStorage.removeItem('email');
+        alert('Oops. Looks like there was a problem confirming your email address.');
         router.push(`/${orgId}/settings`);
       });
   }, [storedEmail, hashStoredEmail, token, orgId, addOrganizationEmail, router]);

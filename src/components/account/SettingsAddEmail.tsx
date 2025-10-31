@@ -1,10 +1,10 @@
-import { Form, Formik } from "formik";
-import React, { FC } from "react";
+import { Form, Formik } from 'formik';
+import React, { FC } from 'react';
 
-import Input from "../form-components/Inputs";
-import { handleAddEmailAddress } from "../notifications/notificationFunctions";
+import Input from '../form-components/Inputs';
+import { handleAddEmailAddress } from '../notifications/notificationFunctions';
 
-const fieldDiv = "md:pt-3 md:my-2 bg-opacity-0";
+const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';
 
 type SettingsAddEmailProps = {
   completionUrl: string;
@@ -14,14 +14,14 @@ const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
   return (
     <Formik
       initialValues={{
-        address: ""
+        address: ''
       }}
       validate={async values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.address) {
-          errors.address = "Please include an email address.";
+          errors.address = 'Please include an email address.';
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.address)) {
-          errors.address = "Invalid email address";
+          errors.address = 'Invalid email address';
         }
         return errors;
       }}

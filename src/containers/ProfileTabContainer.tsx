@@ -6,16 +6,16 @@ import {
   OfferingDetails,
   OfferingTabSection,
   RealEstateProperty
-} from "@gql/graphql";
-import MapPanel from "@src/components/MapPanel";
-import SourcesAndUsesDisplay from "@src/components/offering/tabs/financialDisplay/SourcesAndUses";
-import TotalInvestmentValue from "@src/components/offering/tabs/financialDisplay/TotalInvestmentValue";
-import TotalReturns from "@src/components/offering/tabs/financialDisplay/TotalReturns";
-import Tab from "@src/components/offering/tabs/Tab";
-import TextSection, { contentSectionHeader } from "@src/components/offering/tabs/TextSection";
-import { tabSectionOptions } from "@src/utils/enumConverters";
-import React, { FC, useState } from "react";
-import { useWindowSize } from "react-use";
+} from '@gql/graphql';
+import MapPanel from '@src/components/MapPanel';
+import SourcesAndUsesDisplay from '@src/components/offering/tabs/financialDisplay/SourcesAndUses';
+import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
+import TotalReturns from '@src/components/offering/tabs/financialDisplay/TotalReturns';
+import Tab from '@src/components/offering/tabs/Tab';
+import TextSection, { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
+import { tabSectionOptions } from '@src/utils/enumConverters';
+import React, { FC, useState } from 'react';
+import { useWindowSize } from 'react-use';
 
 type ProfileTabContainerProps = {
   offering: Offering;
@@ -80,8 +80,8 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
               <div className="mb-10">
                 <h1 className={contentSectionHeader}>Featured video</h1>
                 <iframe
-                  width={isMobile ? "350" : "560"}
-                  height={isMobile ? "200" : "315"}
+                  width={isMobile ? '350' : '560'}
+                  height={isMobile ? '200' : '315'}
                   src={offering.primaryVideo}
                   frameBorder="0"
                   allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"

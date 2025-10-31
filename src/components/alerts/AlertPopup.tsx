@@ -1,5 +1,5 @@
-import { XIcon } from "lucide-react";
-import React, { FC, useEffect, useState } from "react";
+import { XIcon } from 'lucide-react';
+import React, { FC, useEffect, useState } from 'react';
 
 type AlertPopupProps = {
   text: string;
@@ -8,8 +8,8 @@ type AlertPopupProps = {
 const AlertPopup: FC<AlertPopupProps> = ({ text }) => {
   const [dismissed, setDismissed] = useState(false);
   useEffect(() => {
-    const dismissalStatus = window.sessionStorage?.getItem("DISMISS_ALERT_POPUP");
-    setDismissed(dismissalStatus === "true");
+    const dismissalStatus = window.sessionStorage?.getItem('DISMISS_ALERT_POPUP');
+    setDismissed(dismissalStatus === 'true');
   }, [setDismissed]);
 
   return (
@@ -20,7 +20,7 @@ const AlertPopup: FC<AlertPopupProps> = ({ text }) => {
         <div
           className="fixed bottom-0 md:bottom-4 md:right-10 z-40 mx-auto w-full md:w-auto bg-red-600 bg-opacity-90 p-2 shadow-xl md:rounded-xl cursor-pointer"
           onClick={() => {
-            window.sessionStorage?.setItem("DISMISS_ALERT_POPUP", "true");
+            window.sessionStorage?.setItem('DISMISS_ALERT_POPUP', 'true');
             setDismissed(true);
           }}
         >

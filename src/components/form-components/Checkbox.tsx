@@ -1,8 +1,8 @@
-import { Maybe } from "@gql/graphql";
-import cn from "classnames";
-import { ErrorMessage, Field } from "formik";
-import React from "react";
-import { ReactElement } from "react-markdown/lib/react-markdown";
+import { Maybe } from '@gql/graphql';
+import cn from 'classnames';
+import { ErrorMessage, Field } from 'formik';
+import React from 'react';
+import { ReactElement } from 'react-markdown/lib/react-markdown';
 
 export interface CheckboxProps {
   id?: any;
@@ -33,7 +33,7 @@ const Checkbox: React.FC<CustomCheckboxProps> = ({
     <div>
       <div
         className={cn(className, [
-          sideLabel ? "flex flex-row-reverse justify-end items-center" : "flex flex-col"
+          sideLabel ? 'flex flex-row-reverse justify-end items-center' : 'flex flex-col'
         ])}
       >
         {labelText && (
@@ -42,12 +42,12 @@ const Checkbox: React.FC<CustomCheckboxProps> = ({
             className={cn(
               fieldLabelClass
                 ? fieldLabelClass
-                : "text-sm text-blue-900 font-semibold text-opacity-80",
-              sideLabel && "ml-2 mt-1"
+                : 'text-sm text-blue-900 font-semibold text-opacity-80',
+              sideLabel && 'ml-2 mt-1'
             )}
           >
             {labelText}
-            {required ? " *" : ""}
+            {required ? ' *' : ''}
           </label>
         )}
         <Field
@@ -58,7 +58,7 @@ const Checkbox: React.FC<CustomCheckboxProps> = ({
           className={cn(
             fieldClass
               ? fieldClass
-              : "text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-none"
+              : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-none'
           )}
           required={required}
         />

@@ -1,7 +1,7 @@
-import { redirect } from "next/navigation";
-import router, { useRouter } from "next/router";
+import { redirect } from 'next/navigation';
+import router, { useRouter } from 'next/router';
 
-import { createClient } from "../../../supabase/utils/client";
+import { createClient } from '../../../supabase/utils/client';
 
 export const signIn = async ({ email, password }: { email: string; password: string }) => {
   const supabase = createClient();
@@ -17,7 +17,7 @@ export const signIn = async ({ email, password }: { email: string; password: str
     return router.push(`/login?form=password&message=${error.message}`);
   }
 
-  return router.push("/");
+  return router.push('/');
 };
 
 export const signUp = async ({
@@ -36,7 +36,7 @@ export const signUp = async ({
   const supabase = createClient();
 
   if (!inviteEmail && !email) {
-    return router.push("/login?message=Missing required fields");
+    return router.push('/login?message=Missing required fields');
   }
 
   const { error, data } = await supabase.auth.signUp({
@@ -46,10 +46,10 @@ export const signUp = async ({
 
   if (error) {
     // Sentry.captureException(error);
-    return router.push(`/login?message=Could not create user${token ? "&code=" + token : ""}`);
+    return router.push(`/login?message=Could not create user${token ? '&code=' + token : ''}`);
   }
 
-  return router.push("/confirm-your-email?email=" + email);
+  return router.push('/confirm-your-email?email=' + email);
 };
 
 export const signOut = async () => {
@@ -60,7 +60,7 @@ export const signOut = async () => {
       `/login?message=There may have been an error logging out. Please confirm. ${error}`
     );
   }
-  return router.push("/");
+  return router.push('/');
 };
 
 export async function signInWithEmail({
@@ -112,7 +112,7 @@ export async function signInWithEmail({
     if (noRedirect) {
       return;
     } else {
-      return router.push("/check-your-email?email=" + email);
+      return router.push('/check-your-email?email=' + email);
     }
     //https://supabase.com/docs/guides/auth/auth-email-templates#editing-email-templates (issue with some clients burning the confirmation link)
   } else {
@@ -132,7 +132,7 @@ export async function signInWithEmail({
     if (noRedirect) {
       return;
     } else {
-      return redirect("/check-your-email?email=" + email);
+      return redirect('/check-your-email?email=' + email);
     }
   }
 }

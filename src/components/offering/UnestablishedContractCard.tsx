@@ -1,16 +1,16 @@
-"use client";
+'use client';
 
-import { useMutation } from "@apollo/client/react";
-import { SmartContract } from "@gql/graphql";
-import { getCurrencyOption } from "@src/utils/enumConverters";
-import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from "@src/utils/graphQueries/crypto";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { isAlgorand, MatchSupportedChains } from "@src/web3/connectors";
-import cn from "classnames";
-import Link from "next/link";
-import React from "react";
+import { useMutation } from '@apollo/client/react';
+import { SmartContract } from '@gql/graphql';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/graphQueries/crypto';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
+import cn from 'classnames';
+import Link from 'next/link';
+import React from 'react';
 
-import FormattedCryptoAddress from "../FormattedCryptoAddress";
+import FormattedCryptoAddress from '../FormattedCryptoAddress';
 
 interface UnestablishedContractCardProps {
   unestablishedContract: SmartContract;
@@ -25,7 +25,7 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
   const chain = MatchSupportedChains(cryptoAddress.chainId);
 
   const markUsed = async () => {
-    if (window.confirm("Are you sure you want to mark this contract as used?")) {
+    if (window.confirm('Are you sure you want to mark this contract as used?')) {
       await updateSmartContract({ variables: { id: id, established: true } });
       window.location.reload();
     }
@@ -37,7 +37,7 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
         <div className="text-gray-600 font-semibold">Available Contract</div>
         <div
           className={cn(
-            "text-xs  rounded-md max-w-min px-1 h-5 border-2",
+            'text-xs  rounded-md max-w-min px-1 h-5 border-2',
             `border-${chain} text-${chain}`
           )}
         >
@@ -52,7 +52,7 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
             chainId={cryptoAddress.chainId}
             withCopy
             showFull
-            label={"Address: "}
+            label={'Address: '}
           />
           <div className="text-sm text-gray-700">
             {/* Shares authorized: {numberWithCommas(numTokensAuthorized)} */}
@@ -66,7 +66,7 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
             e.preventDefault();
             markUsed();
           }}
-          className={cn("text-xs self-center rounded-md px-2 h-6 border-2", `border-2`)}
+          className={cn('text-xs self-center rounded-md px-2 h-6 border-2', `border-2`)}
         >
           Mark as used
         </button>

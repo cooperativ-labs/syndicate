@@ -1,7 +1,7 @@
-import { useAnalytics } from "@hooks/analytics";
-import React from "react";
+import { useAnalytics } from '@hooks/analytics';
+import React from 'react';
 
-import AnalyticsContext from "@/contexts/analytics";
+import AnalyticsContext from '@/contexts/analytics';
 
 type SetCookieContextProps = {
   children: React.ReactNode;

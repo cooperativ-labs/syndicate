@@ -1,6 +1,6 @@
-import { Currency } from "@gql/graphql";
-import { getCurrencyOption } from "@src/utils/enumConverters";
-import { parseUnits } from "viem";
+import { Currency } from '@gql/graphql';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { parseUnits } from 'viem';
 
 export const shareContractDecimals = 10;
 
@@ -22,11 +22,11 @@ export const adjustUserEnteredDecimalsToMatchCurrency = (
 ): bigint => {
   // If the user entered a number with decimals, we need to pad it with 0s to match the currency's decimals
   // rounds to the nearest integer if the user entered more decimals than the currency allows
-  const decimalPlaces = n.toString().split(".")[1]?.length ?? 0;
+  const decimalPlaces = n.toString().split('.')[1]?.length ?? 0;
   const padding = BigInt(Math.pow(10, currencyDecimals - decimalPlaces));
-  if (n.toString().includes(".")) {
+  if (n.toString().includes('.')) {
     const paddedUserEnteredDecimals =
-      BigInt(Math.round(parseInt(n.toString().replace(".", ""), 10))) * padding;
+      BigInt(Math.round(parseInt(n.toString().replace('.', ''), 10))) * padding;
     return paddedUserEnteredDecimals;
   } else {
     const paddedUserEnteredNoDecimals = BigInt(Math.round(n)) * padding;

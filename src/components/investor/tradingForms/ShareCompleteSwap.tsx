@@ -1,13 +1,13 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import WalletActionIndicator from "@src/containers/wallet/WalletActionIndicator";
-import WalletActionModal from "@src/containers/wallet/WalletActionModal";
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { isMetaMask } from "@src/web3/connectors";
-import { String0x } from "@src/web3/helpersChain";
-import React, { FC, useState } from "react";
-import { useAccount, useChainId } from "wagmi";
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
+import WalletActionModal from '@src/containers/wallet/WalletActionModal';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { isMetaMask } from '@src/web3/connectors';
+import { String0x } from '@src/web3/helpersChain';
+import React, { FC, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
 
 type ShareCompleteSwapProps = {
   acceptedOrderQty: number;
@@ -34,7 +34,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
   callFillOrder
 }) => {
   const chainId = useChainId();
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { connector } = useAccount();
 
   const handleClick = async () => {
@@ -59,7 +59,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
     return (
       <>
         <WalletActionModal
-          open={buttonStep === "step1" || buttonStep === "step2"}
+          open={buttonStep === 'step1' || buttonStep === 'step2'}
           metaMaskWarning={isMetaMask(connector)}
         >
           <WalletActionIndicator
@@ -71,7 +71,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
           />
         </WalletActionModal>
 
-        <div className={"flex flex-col"}>
+        <div className={'flex flex-col'}>
           <div className="flex flex-col">{saleStatementText}</div>
           <Button
             className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
@@ -80,8 +80,8 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
             <LoadingButtonText
               state={buttonStep}
               idleText={formButtonText}
-              step1Text={"Executing..."}
-              confirmedText={"Confirmed!"}
+              step1Text={'Executing...'}
+              confirmedText={'Confirmed!'}
               failedText="Transaction failed"
               rejectedText="You rejected the transaction. Click here to try again."
             />

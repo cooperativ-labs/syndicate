@@ -1,5 +1,5 @@
-import cn from "classnames";
-import React, { FC, ReactNode } from "react";
+import cn from 'classnames';
+import React, { FC, ReactNode } from 'react';
 
 type OfferingDetailDashboardItemProps = {
   title: string;
@@ -17,9 +17,9 @@ const OfferingDetailDashboardItem: FC<OfferingDetailDashboardItemProps> = ({
   note
 }) => {
   return (
-    <div className={cn(className ? className : "flex flex-col justify-center")}>
+    <div className={cn(className ? className : 'flex flex-col justify-center')}>
       <div
-        className={cn(color ? "" : "text-green-600", "flex  text-lg justify-center")}
+        className={cn(color ? '' : 'text-green-600', 'flex  text-lg justify-center')}
         style={color ? { color: color } : undefined}
       >
         {children}

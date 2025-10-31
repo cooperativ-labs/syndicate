@@ -1,10 +1,10 @@
-import { Document, Maybe } from "@gql/graphql";
-import { LoadingButtonStateType } from "@src/components/buttons/Button";
-import { Dispatch, SetStateAction } from "react";
-import toast from "react-hot-toast";
-import { bytesToString, hexToBytes, stringToHex } from "viem";
-import { keccak256, toHex } from "viem";
-import { fetchEnsAddress, fetchEnsName } from "wagmi/actions";
+import { Document, Maybe } from '@gql/graphql';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { Dispatch, SetStateAction } from 'react';
+import toast from 'react-hot-toast';
+import { bytesToString, hexToBytes, stringToHex } from 'viem';
+import { keccak256, toHex } from 'viem';
+import { fetchEnsAddress, fetchEnsName } from 'wagmi/actions';
 
 export type String0x = `0x${string}`;
 
@@ -39,7 +39,7 @@ export const normalizeEthAddress = (address: String0x | string | undefined) => {
 
 export const getAddressFromEns = async (input: string | String0x) => {
   let address = input;
-  if (input.includes(".eth")) {
+  if (input.includes('.eth')) {
     const hexAddress = (await fetchEnsAddress({
       name: input,
       chainId: 1
@@ -67,7 +67,7 @@ export const addressWithoutEns = ({
   showFull
 }: AddressWithoutEnsProps) => {
   if (!address) return undefined;
-  const youSplitAddress = `${isYou ? "You" : userName} (${address?.slice(-4)})`;
+  const youSplitAddress = `${isYou ? 'You' : userName} (${address?.slice(-4)})`;
   const withoutENS =
     showFull && isDesktop ? address : userName ? youSplitAddress : splitAddress(address);
   return address ? withoutENS : undefined;
@@ -103,7 +103,7 @@ export const WalletErrorMessages = {
 
 export const WalletErrorCodes = (error: any) => {
   switch (error.code) {
-    case parseInt("-32002", 10):
+    case parseInt('-32002', 10):
       return WalletErrorMessages.NeedToApproveConnection;
     case 4001:
       return WalletErrorMessages.RejectedAttemptToConnect;
@@ -113,28 +113,28 @@ export const WalletErrorCodes = (error: any) => {
 };
 
 export const ChainErrorResponses = (error: any, recipient: string | String0x | undefined) => {
-  if (error.message.includes("address already whitelisted")) {
+  if (error.message.includes('address already whitelisted')) {
     return { code: 1001, message: `${recipient} is already whitelisted).` };
   }
-  if (error.message.includes("address not whitelisted")) {
+  if (error.message.includes('address not whitelisted')) {
     return { code: 1002, message: `${recipient} is not on the whitelist.` };
   }
-  if (error.message.includes("Balance not zero") && error.message.includes("removeFromWhitelist")) {
+  if (error.message.includes('Balance not zero') && error.message.includes('removeFromWhitelist')) {
     return {
       code: 1003,
-      message: "This user cannot be removed from the whitelist because they still hold shares."
+      message: 'This user cannot be removed from the whitelist because they still hold shares.'
     };
   }
   if (
-    error.message.includes("User rejected the request") ||
-    error.message.includes("User cancelled operation")
+    error.message.includes('User rejected the request') ||
+    error.message.includes('User cancelled operation')
   ) {
-    return { code: 2000, message: "User cancelled operation" };
+    return { code: 2000, message: 'User cancelled operation' };
   }
-  if (error.message.includes("Cannot convert undefined to a BigInt")) {
+  if (error.message.includes('Cannot convert undefined to a BigInt')) {
     return {
       code: 2001,
-      message: "Cannot convert undefined to a BigInt. This may result you cancelling the operation"
+      message: 'Cannot convert undefined to a BigInt. This may result you cancelling the operation'
     };
   }
   // if (error.message.includes('underflow on subtracting')) {
@@ -143,24 +143,24 @@ export const ChainErrorResponses = (error: any, recipient: string | String0x | u
   // if (error.message.includes('balance') && error.message.includes('below min')) {
   //   return { code: 4001, message: 'You do not have enough ALGO to complete the transaction.' };
   // }
-  if (error.message.includes("hash is immutable")) {
+  if (error.message.includes('hash is immutable')) {
     return {
       code: 5000,
-      message: "This contract has already been established."
+      message: 'This contract has already been established.'
     };
   }
-  if (error.message.includes("reverted for unknown reason")) {
+  if (error.message.includes('reverted for unknown reason')) {
     return {
       code: 7001,
       message:
-        "This transaction was not able to be completed. It is possible that a competing transaction was submitted just before yours."
+        'This transaction was not able to be completed. It is possible that a competing transaction was submitted just before yours.'
     };
   }
-  if (error.message.includes("Order already accepted")) {
+  if (error.message.includes('Order already accepted')) {
     return {
       code: 7002,
       message:
-        "Another request was submitted before yours. Please wait until the fund manager accepts or rejects that request."
+        'Another request was submitted before yours. Please wait until the fund manager accepts or rejects that request.'
     };
   }
   return { code: 9999, message: error.message };
@@ -171,33 +171,33 @@ export const StandardChainErrorHandling = (
   setButtonStep?: Dispatch<SetStateAction<LoadingButtonStateType>>,
   recipient?: String0x
 ) => {
-  console.error("error", error);
+  console.error('error', error);
   const errorCode = ChainErrorResponses(error, recipient).code;
   const errorMessage = ChainErrorResponses(error, recipient).message;
 
   if (recipient && errorCode === 1001) {
-    setButtonStep && setButtonStep("failed");
+    setButtonStep && setButtonStep('failed');
     toast(errorMessage);
     return;
   }
   if (errorCode === 1002) {
-    setButtonStep && setButtonStep("failed");
+    setButtonStep && setButtonStep('failed');
     toast.error(errorMessage);
     return;
   }
   if (errorCode === 1003) {
-    setButtonStep && setButtonStep("failed");
+    setButtonStep && setButtonStep('failed');
     toast.error(errorMessage);
     return;
   }
   if (errorCode === 2000) {
-    setButtonStep && setButtonStep("rejected");
+    setButtonStep && setButtonStep('rejected');
   }
   if (errorCode === 2001) {
-    setButtonStep && setButtonStep("failed");
+    setButtonStep && setButtonStep('failed');
     toast.error(errorMessage);
   } else {
-    setButtonStep && setButtonStep("failed");
+    setButtonStep && setButtonStep('failed');
     alert(errorMessage);
   }
   return { code: errorCode, message: errorMessage };

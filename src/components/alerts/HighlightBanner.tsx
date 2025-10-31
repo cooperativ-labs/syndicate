@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
 const HighlightBanner: FC = () => {
   return (
@@ -10,7 +10,7 @@ const HighlightBanner: FC = () => {
     >
       <div className="font-medium text-white text-xs md:text-sm mx-auto px-2 ">
         <div>
-          Real Asset Syndicator is a work in progress and should only be used on test networks.{" "}
+          Real Asset Syndicator is a work in progress and should only be used on test networks.{' '}
           {/* <span className="underline mr-1"> Click here to read more about them.</span> 🎉 */}
         </div>
       </div>

@@ -1,10 +1,10 @@
-import { Document, Maybe } from "@gql/graphql";
-import { shareContractABI } from "@src/web3/generated";
-import { getHashTextPairs, String0x } from "@src/web3/helpersChain";
-import React, { FC } from "react";
-import { useContractReads } from "wagmi";
+import { Document, Maybe } from '@gql/graphql';
+import { shareContractABI } from '@src/web3/generated';
+import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
+import { useContractReads } from 'wagmi';
 
-import DocumentHashItem from "./DocumentHashItem";
+import DocumentHashItem from './DocumentHashItem';
 
 type HashInstructionsProps = {
   agreementTexts: Maybe<Document>[] | undefined;
@@ -21,7 +21,7 @@ const HashInstructions: FC<HashInstructionsProps> = ({
     return {
       address: shareContractAddress as String0x,
       abi: shareContractABI,
-      functionName: "getDocument",
+      functionName: 'getDocument',
       args: [doc]
     };
   });
@@ -42,7 +42,7 @@ const HashInstructions: FC<HashInstructionsProps> = ({
         with this class of shares.
       </div>
       <div className="text-sm font-bold">
-        Download the agreement text above,{" "}
+        Download the agreement text above,{' '}
         <a
           href="https://emn178.github.io/online-tools/keccak_256_checksum.html"
           target="_blank"

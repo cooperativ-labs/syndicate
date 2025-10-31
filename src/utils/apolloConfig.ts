@@ -1,10 +1,10 @@
-import { defaultDataIdFromObject } from "@apollo/client";
-import { InMemoryCache } from "@apollo/client-integration-nextjs";
+import { defaultDataIdFromObject } from '@apollo/client';
+import { InMemoryCache } from '@apollo/client-integration-nextjs';
 
 export const createApolloCache = () =>
   new InMemoryCache({
     dataIdFromObject(responseObject) {
-      if ("nodeId" in responseObject && responseObject.nodeId) {
+      if ('nodeId' in responseObject && responseObject.nodeId) {
         return `${responseObject.nodeId}`;
       }
 
@@ -34,5 +34,5 @@ export const getGraphQLEndpoint = () => {
     return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/graphql/v1`;
   }
 
-  return "http://localhost:54321/graphql/v1";
+  return 'http://localhost:54321/graphql/v1';
 };

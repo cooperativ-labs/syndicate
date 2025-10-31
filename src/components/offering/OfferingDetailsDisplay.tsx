@@ -1,11 +1,11 @@
-import { Maybe, OfferingDetails, ShareOrder } from "@gql/graphql";
-import { String0x } from "@src/web3/helpersChain";
-import React, { FC } from "react";
+import { Maybe, OfferingDetails, ShareOrder } from '@gql/graphql';
+import { String0x } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
 
-import PercentageDisplay from "../PercentageDisplay";
+import PercentageDisplay from '../PercentageDisplay';
 
-import MoneyDisplay from "./../MoneyDisplay";
-import OfferingDetailDashboardItem from "./OfferingDetailDashboardItem";
+import MoneyDisplay from './../MoneyDisplay';
+import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 
 export type ContractViewDetails = {
   sharesOutstanding: number | undefined;

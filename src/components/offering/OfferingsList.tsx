@@ -1,7 +1,7 @@
-import { Offering } from "@gql/graphql";
-import React, { FC } from "react";
+import { Offering } from '@gql/graphql';
+import React, { FC } from 'react';
 
-import OfferingCard from "./OfferingCard";
+import OfferingCard from './OfferingCard';
 
 type OfferingsListProps = {
   offerings: any;

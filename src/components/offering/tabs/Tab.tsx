@@ -1,6 +1,6 @@
-import { OfferingTabSection } from "@gql/graphql";
-import cn from "classnames";
-import React, { Dispatch, FC, SetStateAction } from "react";
+import { OfferingTabSection } from '@gql/graphql';
+import cn from 'classnames';
+import React, { Dispatch, FC, SetStateAction } from 'react';
 
 type TabProps = {
   label: string;
@@ -15,9 +15,9 @@ const Tab: FC<TabProps> = ({ label, activeTab, tabId, setActiveTab }) => {
     <button
       className={cn(
         active
-          ? " text-opacity-100 border-opacity-100"
-          : "text-opacity-50 hover:text-opacity-80 hover:border-cLightBlue",
-        "col-span-1 p-2 px-6 text-center text-cLightBlue border-b-2 border-cLightBlue border-opacity-40 whitespace-nowrap"
+          ? ' text-opacity-100 border-opacity-100'
+          : 'text-opacity-50 hover:text-opacity-80 hover:border-cLightBlue',
+        'col-span-1 p-2 px-6 text-center text-cLightBlue border-b-2 border-cLightBlue border-opacity-40 whitespace-nowrap'
       )}
       onClick={() => setActiveTab(tabId)}
     >

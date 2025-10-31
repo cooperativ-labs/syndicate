@@ -1,9 +1,9 @@
-import { Maybe, Offering } from "@gql/graphql";
-import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
-import NonInput from "@src/components/form-components/NonInput";
-import { getCurrencyOption } from "@src/utils/enumConverters";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import React from "react";
+import { Maybe, Offering } from '@gql/graphql';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import NonInput from '@src/components/form-components/NonInput';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import React from 'react';
 
 type InvestorApplicationPledgeFieldsProps = {
   offering: Offering;
@@ -20,17 +20,17 @@ const InvestorApplicationPledgeFields: React.FC<InvestorApplicationPledgeFieldsP
     <div>
       <div className="text-xs font-semibold uppercase">
         <div>
-          Price per share:{" "}
+          Price per share:{' '}
           <span className="font-normal ">
-            {numberWithCommas(offering.details?.minUnitsPerInvestor)}{" "}
+            {numberWithCommas(offering.details?.minUnitsPerInvestor)}{' '}
             {offering.details?.investmentCurrency &&
               getCurrencyOption(offering.details.investmentCurrency)?.symbol}
           </span>
         </div>
         <div>
-          Minimum purchase:{" "}
+          Minimum purchase:{' '}
           <span className="font-normal ">
-            {numberWithCommas(offering.details?.priceStart)} shares{" "}
+            {numberWithCommas(offering.details?.priceStart)} shares{' '}
           </span>
         </div>
       </div>

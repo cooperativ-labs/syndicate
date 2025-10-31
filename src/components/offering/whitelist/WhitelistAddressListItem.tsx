@@ -1,13 +1,13 @@
-import { Maybe, OfferingParticipant } from "@gql/graphql";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { shareContractABI } from "@src/web3/generated";
-import { String0x } from "@src/web3/helpersChain";
-import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
-import cn from "classnames";
-import React, { FC, useEffect } from "react";
-import { useAccount, useContractReads } from "wagmi";
+import { Maybe, OfferingParticipant } from '@gql/graphql';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { shareContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import cn from 'classnames';
+import React, { FC, useEffect } from 'react';
+import { useAccount, useContractReads } from 'wagmi';
 
-import FormattedCryptoAddress from "../../FormattedCryptoAddress";
+import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 
 type WhitelistAddressListItemProps = {
   participant: Maybe<OfferingParticipant>;
@@ -33,12 +33,12 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
     contracts: [
       {
         ...sharedContractBits,
-        functionName: "balanceOf",
+        functionName: 'balanceOf',
         args: [participant?.walletAddress as String0x]
       },
       {
         ...sharedContractBits,
-        functionName: "isWhitelisted",
+        functionName: 'isWhitelisted',
         args: [participant?.walletAddress as String0x]
       }
     ]
@@ -63,8 +63,8 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   return (
     <div
       className={cn(
-        isYou && "bg-gray-100",
-        "relative md:grid grid-cols-11 gap-3 items-center  p-3  border-2 rounded-lg hover:shadow-md cursor-pointer z-0"
+        isYou && 'bg-gray-100',
+        'relative md:grid grid-cols-11 gap-3 items-center  p-3  border-2 rounded-lg hover:shadow-md cursor-pointer z-0'
       )}
       onClick={e => {
         setSelectedParticipant(participant.id);

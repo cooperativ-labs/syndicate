@@ -1,21 +1,21 @@
-import { useMutation } from "@apollo/client/react";
-import { Maybe, OfferingParticipant } from "@gql/graphql";
-import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
-import Select from "@src/components/form-components/Select";
-import { ADD_TRANSFER_EVENT } from "@src/utils/graphQueries/orders";
-import { forceTransfer } from "@src/web3/contractShareCalls";
-import { shareContractABI } from "@src/web3/generated";
-import { addressWithoutEns, String0x, stringFromBytes32 } from "@src/web3/helpersChain";
-import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
-import { Form, Formik } from "formik";
-import React from "react";
-import { useAsync } from "react-use";
-import { useAccount, useContractRead } from "wagmi";
-import { readContract } from "wagmi/actions";
-import * as Yup from "yup";
+import { useMutation } from '@apollo/client/react';
+import { Maybe, OfferingParticipant } from '@gql/graphql';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import Select from '@src/components/form-components/Select';
+import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
+import { forceTransfer } from '@src/web3/contractShareCalls';
+import { shareContractABI } from '@src/web3/generated';
+import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { Form, Formik } from 'formik';
+import React from 'react';
+import { useAsync } from 'react-use';
+import { useAccount, useContractRead } from 'wagmi';
+import { readContract } from 'wagmi/actions';
+import * as Yup from 'yup';
 
-import SetOperatorButton from "./SetOperatorButton";
+import SetOperatorButton from './SetOperatorButton';
 
 type ForceTransferFormProps = {
   shareContractAddress: String0x;
@@ -33,7 +33,7 @@ const ForceTransferForm = ({
   refetchContracts
 }: ForceTransferFormProps) => {
   const { address: userWalletAddress } = useAccount();
-  const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
   const [partition, setPartition] = React.useState<String0x>(partitions[0]);
   const [targetBalance, setTargetBalance] = React.useState<number>(0);
   const [addIssuance] = useMutation(ADD_TRANSFER_EVENT);
@@ -45,7 +45,7 @@ const ForceTransferForm = ({
   const { data: isOperator, refetch } = useContractRead({
     address: shareContractAddress,
     abi: shareContractABI,
-    functionName: "isOperator",
+    functionName: 'isOperator',
     args: [userWalletAddress as String0x]
   });
 
@@ -53,7 +53,7 @@ const ForceTransferForm = ({
     const data = await readContract({
       address: shareContractAddress,
       abi: shareContractABI,
-      functionName: "balanceOfByPartition",
+      functionName: 'balanceOfByPartition',
       args: [partition, target]
     });
     const targetBalance = data ? toNormalNumber(data, shareContractDecimals) : 0;
@@ -62,21 +62,21 @@ const ForceTransferForm = ({
 
   return (
     <Formik
-      initialValues={{ partition: partitions[0], amount: "", recipient: "" }}
+      initialValues={{ partition: partitions[0], amount: '', recipient: '' }}
       validate={values => {
         setPartition(values.partition as String0x);
       }}
       validationSchema={Yup.object().shape({
-        partition: Yup.string().required("Required"),
+        partition: Yup.string().required('Required'),
         amount: Yup.number()
-          .typeError("Invalid amount")
-          .required("Required")
-          .positive("Amount must be positive")
-          .max(targetBalance, "Amount cannot exceed target balance"),
-        recipient: Yup.string().required("Required")
+          .typeError('Invalid amount')
+          .required('Required')
+          .positive('Amount must be positive')
+          .max(targetBalance, 'Amount cannot exceed target balance'),
+        recipient: Yup.string().required('Required')
       })}
       onSubmit={async (values, { setSubmitting }) => {
-        setButtonStep("step1");
+        setButtonStep('step1');
         await forceTransfer({
           shareContractAddress,
           partition: values.partition as String0x,
@@ -92,7 +92,7 @@ const ForceTransferForm = ({
     >
       {({ isSubmitting, values }) => (
         <Form>
-          <Select className={"mt-3"} name="partition" labelText="Share class">
+          <Select className={'mt-3'} name="partition" labelText="Share class">
             <option value="">Select class</option>
 
             {partitions.map((partition, i) => {
@@ -112,7 +112,7 @@ const ForceTransferForm = ({
             required
           />
 
-          <Select className={"mt-3"} name={"recipient"} labelText="Receives Shares">
+          <Select className={'mt-3'} name={'recipient'} labelText="Receives Shares">
             <option value="">Select recipient</option>
 
             {recipientOptions?.map((participant, i) => {
@@ -140,7 +140,7 @@ const ForceTransferForm = ({
                 idleText={
                   values.recipient
                     ? `Force Transfer to ${addressWithoutEns({ address: values.recipient })}`
-                    : "Force Transfer"
+                    : 'Force Transfer'
                 }
                 step1Text="Transferring..."
                 confirmedText="Shares transferred!"

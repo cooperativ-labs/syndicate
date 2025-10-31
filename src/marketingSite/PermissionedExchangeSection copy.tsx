@@ -1,4 +1,4 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
 const permissionedExchangeExplainer = (
   <div className="mt-5">
@@ -32,7 +32,7 @@ const permissionedExchangeExplainer = (
 const PermissionedExchangeSection: FC = () => {
   return (
     <div className="md:py-10 pb-10 md:pb-20 px-4 bg-cLightCream">
-      <div className="flex-col min-h-full mx-auto pt-10" style={{ maxWidth: "1280px" }}>
+      <div className="flex-col min-h-full mx-auto pt-10" style={{ maxWidth: '1280px' }}>
         <div className="hidden md:inline md:mx-4 ">
           <div className="md:mx-4 grid grid-cols-2 gap-20">
             <div className="rounded-lg shadow-lg">

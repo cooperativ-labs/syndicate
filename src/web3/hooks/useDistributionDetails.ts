@@ -1,13 +1,13 @@
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { useState } from "react";
-import { useAsync } from "react-use";
-import { Block } from "viem";
-import { useContractRead } from "wagmi";
-import { getPublicClient } from "wagmi/actions";
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { useState } from 'react';
+import { useAsync } from 'react-use';
+import { Block } from 'viem';
+import { useContractRead } from 'wagmi';
+import { getPublicClient } from 'wagmi/actions';
 
-import { dividendContractABI } from "../generated";
-import { String0x } from "../helpersChain";
-import { shareContractDecimals, toNormalNumber } from "../util";
+import { dividendContractABI } from '../generated';
+import { String0x } from '../helpersChain';
+import { shareContractDecimals, toNormalNumber } from '../util';
 
 export type DistributionDetailsType = {
   // currentBlock: Block | undefined;
@@ -46,7 +46,7 @@ export const useDistributionDetails = (
   } = useContractRead({
     address: dividendContactAddress,
     abi: dividendContractABI,
-    functionName: "dividends",
+    functionName: 'dividends',
     args: [BigInt(contractIndex)]
   });
 

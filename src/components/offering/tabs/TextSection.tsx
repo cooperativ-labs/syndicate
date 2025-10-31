@@ -1,7 +1,7 @@
-import React, { FC, useState } from "react";
-import ReactMarkdown from "react-markdown";
+import React, { FC, useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
-export const contentSectionHeader = "font-medium text-lg mb-4 border-b-2 border-gray-300 w-3/4 ";
+export const contentSectionHeader = 'font-medium text-lg mb-4 border-b-2 border-gray-300 w-3/4 ';
 
 type TextSectionProps = {
   title: string;

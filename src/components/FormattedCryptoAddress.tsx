@@ -1,11 +1,11 @@
-import useWindowSize from "@hooks/useWindowSize";
-import { addressWithENS, addressWithoutEns, String0x } from "@src/web3/helpersChain";
-import { MatchSupportedChains } from "@src/web3/wagmi";
-import cn from "classnames";
-import { CheckIcon, CopyIcon } from "lucide-react";
-import React, { FC, use, useState } from "react";
-import { useAsync } from "react-use";
-import { Maybe } from "yup";
+import useWindowSize from '@hooks/useWindowSize';
+import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
+import { MatchSupportedChains } from '@src/web3/wagmi';
+import cn from 'classnames';
+import { CheckIcon, CopyIcon } from 'lucide-react';
+import React, { FC, use, useState } from 'react';
+import { useAsync } from 'react-use';
+import { Maybe } from 'yup';
 
 type FormattedCryptoAddressProps = {
   chainId: Maybe<number> | undefined;
@@ -14,7 +14,7 @@ type FormattedCryptoAddressProps = {
   withCopy?: boolean;
   className?: string;
   showFull?: boolean;
-  lookupType?: "address" | "tx";
+  lookupType?: 'address' | 'tx';
   userName?: Maybe<string> | undefined;
   isYou?: boolean;
 };
@@ -42,19 +42,19 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   const blockExplorer = chain?.blockExplorer;
 
   const formURL = (chainId: Maybe<number> | undefined, lookupType?: string) => {
-    const type = lookupType === "tx" ? "tx" : "address";
-    const url = `${blockExplorer}/${lookupType ? type : "address"}/${address}`;
+    const type = lookupType === 'tx' ? 'tx' : 'address';
+    const url = `${blockExplorer}/${lookupType ? type : 'address'}/${address}`;
     return url;
   };
 
   useAsync(async () => {
-    if (lookupType === "tx") return;
+    if (lookupType === 'tx') return;
     const addressENS = await addressWithENS({ address, isYou, isDesktop, userName, showFull });
     addressENS && setPresentedAddress(addressENS);
   }, [address, isYou, isDesktop, userName, showFull, lookupType]);
 
   return (
-    <span className={cn("flex", [className ? className : "text-sm text-gray-700"])}>
+    <span className={cn('flex', [className ? className : 'text-sm text-gray-700'])}>
       <a target="_blank" rel="noreferrer" href={formURL(chainId, lookupType)}>
         {label}
         <span className="hover:underline whitespace-nowrap">

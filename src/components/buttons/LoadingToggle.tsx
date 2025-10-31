@@ -1,5 +1,5 @@
-import cn from "classnames";
-import React, { FC } from "react";
+import cn from 'classnames';
+import React, { FC } from 'react';
 
 type LoadingToggleProps = {
   toggleSubject: boolean | undefined;
@@ -25,8 +25,8 @@ const LoadingToggle: FC<LoadingToggleProps> = ({ toggleSubject, isLoading, onCli
       ) : (
         <div
           className={cn(
-            [toggleSubject ? " ml-5 bg-emerald-600" : "bg-gray-400"],
-            "h-6 w-6 rounded-full "
+            [toggleSubject ? ' ml-5 bg-emerald-600' : 'bg-gray-400'],
+            'h-6 w-6 rounded-full '
           )}
         />
       )}

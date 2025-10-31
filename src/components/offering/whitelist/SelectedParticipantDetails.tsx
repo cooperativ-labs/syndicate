@@ -1,37 +1,37 @@
-import { useMutation } from "@apollo/client/react";
+import { useMutation } from '@apollo/client/react';
 import {
   Maybe,
   OfferingParticipant,
   OfferingSmartContractSet,
   WhitelistTransactionType
-} from "@gql/graphql";
-import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import ClickToEditItem from "@src/components/form-components/ClickToEditItem";
-import Input from "@src/components/form-components/Inputs";
-import JurisdictionSelect from "@src/components/form-components/JurisdictionSelect";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import SectionBlock from "@src/containers/SectionBlock";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from "@src/utils/graphQueries/offering";
-import { DownloadFile } from "@src/utils/helpersAgreement";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { getIsEditorOrAdmin, renderJurisdiction } from "@src/utils/helpersUserAndEntity";
-import { addWhitelistMember, removeWhitelistMember } from "@src/web3/contractShareCalls";
-import { shareContractABI } from "@src/web3/generated";
-import { StandardChainErrorHandling, String0x } from "@src/web3/helpersChain";
-import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
-import { Form, Formik } from "formik";
-import { useSession } from "next-auth/react";
-import React, { Dispatch, FC, useState } from "react";
-import { useContractReads } from "wagmi";
+} from '@gql/graphql';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
+import Input from '@src/components/form-components/Inputs';
+import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import SectionBlock from '@src/containers/SectionBlock';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/graphQueries/offering';
+import { DownloadFile } from '@src/utils/helpersAgreement';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
+import { shareContractABI } from '@src/web3/generated';
+import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { Form, Formik } from 'formik';
+import { useSession } from 'next-auth/react';
+import React, { Dispatch, FC, useState } from 'react';
+import { useContractReads } from 'wagmi';
 
-import ForceTransferForm from "../actions/ForceTransferForm";
-import DistributionList from "../distributions/DistributionList";
-import TransferEventList from "../sales/TransferEventList";
+import ForceTransferForm from '../actions/ForceTransferForm';
+import DistributionList from '../distributions/DistributionList';
+import TransferEventList from '../sales/TransferEventList';
 
-import WhitelistTransactionItem from "./WhitelistTransactionItem";
+import WhitelistTransactionItem from './WhitelistTransactionItem';
 
-export type ParticipantSpecItemType = "name" | "jurisdiction" | "externalId";
+export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
 export type SelectedParticipantProps = {
   offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
@@ -63,7 +63,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   refetchContracts
 }) => {
   const { data: session } = useSession();
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
   const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
   const [updateWhitelist] = useMutation(UPDATE_WHITELIST);
@@ -91,10 +91,10 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
 
   const { data } = useContractReads({
     contracts: [
-      { ...sharedContractSpecs, functionName: "balanceOf", args: [participantWallet as String0x] },
+      { ...sharedContractSpecs, functionName: 'balanceOf', args: [participantWallet as String0x] },
       {
         ...sharedContractSpecs,
-        functionName: "isWhitelisted",
+        functionName: 'isWhitelisted',
         args: [participantWallet as String0x]
       }
     ]
@@ -161,8 +161,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       <Formik
         initialValues={{
           name: name,
-          jurCountry: jurisdiction?.country ?? "",
-          jurProvince: jurisdiction?.province ?? "",
+          jurCountry: jurisdiction?.country ?? '',
+          jurProvince: jurisdiction?.province ?? '',
           externalId: externalId
         }}
         validate={values => {
@@ -184,16 +184,16 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
               externalId: values.externalId
             }
           });
-          setSpecEditOn("none");
+          setSpecEditOn('none');
           setSubmitting(false);
         }}
       >
         {({ values, isSubmitting }) => (
           <Form className="flex md:grid grid-cols-5 w-full items-center gap-2 my-4">
             <div className="w-full md:col-span-3">
-              {itemType === "name" && <Input className={" bg-opacity-0"} name="name" />}
-              {itemType === "jurisdiction" && <JurisdictionSelect values={values} />}
-              {itemType === "externalId" && <Input className={" bg-opacity-0"} name="externalId" />}
+              {itemType === 'name' && <Input className={' bg-opacity-0'} name="name" />}
+              {itemType === 'jurisdiction' && <JurisdictionSelect values={values} />}
+              {itemType === 'externalId' && <Input className={' bg-opacity-0'} name="externalId" />}
             </div>
             <Button
               type="submit"
@@ -206,7 +206,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
               className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
               onClick={e => {
                 e.preventDefault();
-                setSpecEditOn("none");
+                setSpecEditOn('none');
               }}
             >
               Cancel
@@ -222,7 +222,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       <ClickToEditItem
         label="Name"
         currentValue={name}
-        form={updateInvestorForm("name")}
+        form={updateInvestorForm('name')}
         editOn={specEditOn}
         itemType="name"
         isManager={isEditorOrAdmin}
@@ -231,7 +231,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       <ClickToEditItem
         label="Jurisdiction"
         currentValue={jurisdiction?.country ? renderJurisdiction(jurisdiction) : null}
-        form={updateInvestorForm("jurisdiction")}
+        form={updateInvestorForm('jurisdiction')}
         editOn={specEditOn}
         itemType="jurisdiction?"
         isManager={isEditorOrAdmin}
@@ -240,7 +240,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       <ClickToEditItem
         label="External ID"
         currentValue={externalId}
-        form={updateInvestorForm("externalId")}
+        form={updateInvestorForm('externalId')}
         editOn={specEditOn}
         itemType="externalId"
         isManager={isEditorOrAdmin}
@@ -311,7 +311,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         <div className="mt-4 border-2 rounded-md px-2">
           <SectionBlock
             className="font-bold"
-            sectionTitle={"Force transfer or clawback"}
+            sectionTitle={'Force transfer or clawback'}
             mini
             asAccordion
           >

@@ -1,10 +1,10 @@
-import { useMutation } from "@apollo/client/react";
-import { Document, Maybe } from "@gql/graphql";
-import { getDocFormatOption } from "@src/utils/enumConverters";
-import { REMOVE_OFFERING_DOCUMENT } from "@src/utils/graphQueries/document";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from "lucide-react";
-import React, { FC } from "react";
+import { useMutation } from '@apollo/client/react';
+import { Document, Maybe } from '@gql/graphql';
+import { getDocFormatOption } from '@src/utils/enumConverters';
+import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from 'lucide-react';
+import React, { FC } from 'react';
 
 const DocumentListItem: FC<{
   document: Maybe<Document>;
@@ -21,15 +21,15 @@ const DocumentListItem: FC<{
     alert(`from Cloud Storage: ${deleteError}`);
   }
   const handleDelete = async () => {
-    if (url?.includes("cooperativ-filestore.storage.googleapis")) {
+    if (url?.includes('cooperativ-filestore.storage.googleapis')) {
       try {
         const response = await fetch(`/api/file/${fileId}`, {
-          method: "DELETE"
+          method: 'DELETE'
         });
 
         if (!response.ok) {
           const error = await response.text();
-          if (error.includes("No such object")) {
+          if (error.includes('No such object')) {
             deleteDocument({
               variables: { currentDate: currentDate, offeringId: offeringId, documentId: id }
             });
@@ -40,7 +40,7 @@ const DocumentListItem: FC<{
           variables: { currentDate: currentDate, offeringId: offeringId, documentId: id }
         });
       } catch (error: any) {
-        throw new Error("Error details:", error);
+        throw new Error('Error details:', error);
       }
     } else {
       deleteDocument({
@@ -64,19 +64,19 @@ const DocumentListItem: FC<{
           {(() => {
             const iconName = getDocFormatOption(format)?.icon;
             switch (iconName) {
-              case "file-pdf":
+              case 'file-pdf':
                 return <FileText />;
-              case "file-excel":
+              case 'file-excel':
                 return <FileSpreadsheet />;
-              case "file-alt":
+              case 'file-alt':
                 return <FileText />;
-              case "file-powerpoint":
+              case 'file-powerpoint':
                 return <FileText />;
-              case "file-word":
+              case 'file-word':
                 return <FileText />;
-              case "play":
+              case 'play':
                 return <Play />;
-              case "github":
+              case 'github':
                 return <Github />;
               default:
                 return <FileIcon />;

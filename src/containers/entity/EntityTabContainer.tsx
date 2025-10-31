@@ -1,10 +1,10 @@
-import { LegalEntity, Maybe, Offering, RealEstateProperty } from "@gql/graphql";
-import EntitiesList from "@src/components/entity/EntitiesList";
-import DocumentList from "@src/components/offering/documents/DocumentList";
-import OfferingsList from "@src/components/offering/OfferingsList";
-import Tab from "@src/components/offering/tabs/Tab";
-import cn from "classnames";
-import React, { FC, useState } from "react";
+import { LegalEntity, Maybe, Offering, RealEstateProperty } from '@gql/graphql';
+import EntitiesList from '@src/components/entity/EntitiesList';
+import DocumentList from '@src/components/offering/documents/DocumentList';
+import OfferingsList from '@src/components/offering/OfferingsList';
+import Tab from '@src/components/offering/tabs/Tab';
+import cn from 'classnames';
+import React, { FC, useState } from 'react';
 
 type EntityTabContainerProps = {
   properties?: RealEstateProperty[];
@@ -15,9 +15,9 @@ type EntityTabContainerProps = {
 
 const TabOptions = [
   // { value: 'properties', name: 'Properties' },
-  { value: "offerings", name: "Offerings" },
-  { value: "subsidiaries", name: "Subsidiaries & SPVs" },
-  { value: "documents", name: "Documents" }
+  { value: 'offerings', name: 'Offerings' },
+  { value: 'subsidiaries', name: 'Subsidiaries & SPVs' },
+  { value: 'documents', name: 'Documents' }
 ];
 const EntityTabContainer: FC<EntityTabContainerProps> = ({
   properties,
@@ -25,7 +25,7 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({
   subsidiaries,
   entity
 }) => {
-  const [activeTab, setActiveTab] = useState<string>("offerings");
+  const [activeTab, setActiveTab] = useState<string>('offerings');
 
   return (
     <div>
@@ -43,23 +43,23 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({
         })}
       </div>
       <div>
-        {activeTab === "offerings" && (
+        {activeTab === 'offerings' && (
           <div className="mt-8">
             <OfferingsList offerings={offerings} />
           </div>
-        )}{" "}
+        )}{' '}
         {/* {activeTab === 'properties' && (
           <div className="mt-8">
             <h1 className="text-cDarkBlue text-2xl font-medium   mb-6 ">Properties</h1>
             <OfferingsList offerings={offerings} />
           </div>
         )} */}
-        {activeTab === "subsidiaries" && (
+        {activeTab === 'subsidiaries' && (
           <div className="mt-8">
             <EntitiesList entities={subsidiaries} />
           </div>
         )}
-        {activeTab === "documents" && (
+        {activeTab === 'documents' && (
           <div className="mt-8">
             <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Documents</h2>
             <DocumentList documents={entity?.documentsOwned} isOfferingManager={false} hideUpload />

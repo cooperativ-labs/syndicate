@@ -1,6 +1,6 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from "@gql/graphql";
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
 
-export type ManagerModalType = "saleForm" | "shareSaleList" | "smartContractsSettings" | "none";
+export type ManagerModalType = 'saleForm' | 'shareSaleList' | 'smartContractsSettings' | 'none';
 
 export const getLatestDistribution = (offering: Offering | undefined) => {
   const distributions = offering?.distributions;

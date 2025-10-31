@@ -1,14 +1,14 @@
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { String0x, stringFromBytes32 } from "@src/web3/helpersChain";
-import React, { FC } from "react";
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
 
 type OfferingSummaryPanelProps = {
   isAskOrder: boolean | undefined;
-  initiator: String0x | undefined | "";
+  initiator: String0x | undefined | '';
   shareQtyRemaining: number | undefined;
   shareQtyOffered: number | undefined;
-  partition: String0x | undefined | "";
+  partition: String0x | undefined | '';
   price: number | undefined;
   paymentTokenAddress: String0x | undefined;
   className?: string;
@@ -29,7 +29,7 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
     <div className={className}>
       <span className="font-semibold text-xl">{` ${numberWithCommas(price, 2)} ${presentCurrency}`}</span>
       <span className="text-sm">
-        {" "}
+        {' '}
         per {partition && stringFromBytes32(partition as String0x)} share
       </span>
 

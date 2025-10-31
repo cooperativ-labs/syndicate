@@ -1,5 +1,5 @@
-import { Pencil, X } from "lucide-react";
-import React, { FC } from "react";
+import { Pencil, X } from 'lucide-react';
+import React, { FC } from 'react';
 
 type MarkPublicProps = {
   isPublic: boolean | null | undefined;

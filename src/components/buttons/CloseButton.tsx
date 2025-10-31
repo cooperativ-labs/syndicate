@@ -1,6 +1,6 @@
-import cn from "classnames";
-import { X } from "lucide-react";
-import React, { FC } from "react";
+import cn from 'classnames';
+import { X } from 'lucide-react';
+import React, { FC } from 'react';
 
 type CloseButtonProps = {
   className?: string;
@@ -15,7 +15,7 @@ const CloseButton: FC<CloseButtonProps> = ({ className, onClick }) => {
         e.preventDefault();
         onClick();
       }}
-      className={cn(className, "hover:shadow-lg text-gray-800 w-10 h-10 rounded-full")}
+      className={cn(className, 'hover:shadow-lg text-gray-800 w-10 h-10 rounded-full')}
     >
       <X size={16} />
     </button>

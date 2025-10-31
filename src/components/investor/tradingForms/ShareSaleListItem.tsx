@@ -1,18 +1,18 @@
-import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from "@gql/graphql";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import { getSwapStatusOption } from "@src/utils/enumConverters";
-import { getAmountRemaining, ManagerModalType } from "@src/utils/helpersOffering";
-import { getDisapprovedTransferEvents } from "@src/utils/helpersOrder";
-import { normalizeEthAddress, String0x } from "@src/web3/helpersChain";
-import { useOrderDetails } from "@src/web3/hooks/useOrderDetails";
-import cn from "classnames";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import React, { FC, useState } from "react";
-import { useAccount, useChainId } from "wagmi";
+import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { getSwapStatusOption } from '@src/utils/enumConverters';
+import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
+import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
+import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
+import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
+import cn from 'classnames';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { FC, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
 
-import OfferingSummaryPanel from "./OfferingSummaryPanel";
-import SaleManagerPanel, { SaleMangerPanelProps } from "./ShareManagerPanel";
-import SharePurchaseSteps from "./SharePurchaseSteps";
+import OfferingSummaryPanel from './OfferingSummaryPanel';
+import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
+import SharePurchaseSteps from './SharePurchaseSteps';
 
 export type OrderStatusType = {
   isApproved: boolean;
@@ -79,7 +79,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     refetchMainContracts();
     refetchOrderDetails();
   }
-  const isFiller = filler !== "0x0000000000000000000000000000000000000000";
+  const isFiller = filler !== '0x0000000000000000000000000000000000000000';
   const currentUserFiller = normalizeEthAddress(userWalletAddress) === normalizeEthAddress(filler);
   const currentUserInitiator =
     normalizeEthAddress(userWalletAddress) === normalizeEthAddress(initiator);
@@ -115,7 +115,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   return (
     <>
       {showOrder && (
-        <div className={"relative items-center shadow-md hover:shadow-lg rounded-md my-5 "}>
+        <div className={'relative items-center shadow-md hover:shadow-lg rounded-md my-5 '}>
           <div
             className="rounded-md bg-slate-100 items-center hover:cursor-pointer"
             onClick={() => {
@@ -126,7 +126,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
             <div className="flex flex-col">
               {currentUserInitiator && (
                 <div className="flex justify-end items-center pr-3 border-b-2 border-green-600 text-green-600 text-xs uppercase font-semibold rounded-t-md ">
-                  <div className="">{`Your ${isAskOrder ? "sell" : "purchase"} offer`}</div>
+                  <div className="">{`Your ${isAskOrder ? 'sell' : 'purchase'} offer`}</div>
                 </div>
               )}
               {isDisapproved && (
@@ -163,7 +163,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
               <div className="flex items-center border-b-2 bg-slate-200">
                 <div className=" p-1 pl-3 flex justify-between text-sm w-full">
                   <div className="flex items-center">
-                    {`${isAskOrder ? "Seller" : "Buyer"}`}
+                    {`${isAskOrder ? 'Seller' : 'Buyer'}`}
                     <FormattedCryptoAddress
                       className="ml-1"
                       chainId={chainId}

@@ -1,20 +1,20 @@
-import { LoadingButtonStateType } from "@src/components/buttons/Button";
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { getWagmiConfig } from "@src/web3/wagmi";
-import { Dispatch, SetStateAction } from "react";
-import toast from "react-hot-toast";
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getWagmiConfig } from '@src/web3/wagmi';
+import { Dispatch, SetStateAction } from 'react';
+import toast from 'react-hot-toast';
 // Apollo types are intentionally not imported to avoid version-specific generics
 import {
   getPublicClient,
   simulateContract,
   waitForTransactionReceipt,
   writeContract
-} from "wagmi/actions";
+} from 'wagmi/actions';
 
-import { dividendContractABI } from "./generated";
-import { StandardChainErrorHandling, String0x } from "./helpersChain";
-import { toContractNumber } from "./util";
+import { dividendContractABI } from './generated';
+import { StandardChainErrorHandling, String0x } from './helpersChain';
+import { toContractNumber } from './util';
 
 type SubmitDistributionProps = {
   distributionContractAddress: String0x | undefined;
@@ -42,7 +42,7 @@ export const submitDistribution = async ({
     const publicClient = getPublicClient(config);
     const block = await publicClient!.getBlock();
     if (!block) {
-      toast.error("Unable to get block number");
+      toast.error('Unable to get block number');
       return;
     }
     const blockNumber = block.number as bigint;
@@ -54,13 +54,13 @@ export const submitDistribution = async ({
       amount && distributionTokenDecimals
         ? toContractNumber(amount, distributionTokenDecimals)
         : BigInt(0);
-    const payoutToken = distributionTokenAddress ? distributionTokenAddress : "0x0000000";
+    const payoutToken = distributionTokenAddress ? distributionTokenAddress : '0x0000000';
     const payoutTokenSymbol = getCurrencyById(distributionTokenAddress)?.symbol;
     try {
       const { request, result } = await simulateContract(config, {
         address: distributionContractAddress as String0x,
         abi: dividendContractABI,
-        functionName: "depositDividend",
+        functionName: 'depositDividend',
         args: [
           blockNumber,
           exDividendDate,
@@ -83,7 +83,7 @@ export const submitDistribution = async ({
           contractIndex: contractIndex
         }
       });
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
       toast.success(`${numberWithCommas(amount)} ${payoutTokenSymbol} has been distributed`);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
@@ -104,20 +104,20 @@ export const claimDistribution = async ({
   setButtonStep
 }: ClaimDividendProps) => {
   const config = getWagmiConfig();
-  setButtonStep("step1");
+  setButtonStep('step1');
   const call = async () => {
     try {
       const { request } = await simulateContract(config, {
         address: distributionContractAddress,
         abi: dividendContractABI,
-        functionName: "claimDividend",
+        functionName: 'claimDividend',
         args: [BigInt(distributionContractIndex)]
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
         hash
       });
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }

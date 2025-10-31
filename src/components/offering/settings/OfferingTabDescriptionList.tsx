@@ -1,14 +1,14 @@
-import { useMutation } from "@apollo/client/react";
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from "@gql/graphql";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { UPDATE_DESCRIPTION_TEXT } from "@src/utils/graphQueries/offering";
-import { getDescriptionsByTab } from "@src/utils/helpersOffering";
-import React, { FC, useEffect, useState } from "react";
+import { useMutation } from '@apollo/client/react';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
+import { getDescriptionsByTab } from '@src/utils/helpersOffering';
+import React, { FC, useEffect, useState } from 'react';
 // @ts-expect-error - react-beautiful-dnd types can mismatch our generics here
-import { DragDropContext, Draggable, Droppable } from "react-beautiful-dnd";
-import toast from "react-hot-toast";
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import toast from 'react-hot-toast';
 
-import OfferingDescriptionItem from "./OfferingDescriptionItem";
+import OfferingDescriptionItem from './OfferingDescriptionItem';
 
 type TabDescriptionListProps = {
   offering: Offering;

@@ -4,11 +4,11 @@ export function priceCalculator(maxRaise: number, units: number, display?: boole
 }
 
 export function numberWithCommas(amount: number | null | undefined, decimals = 0) {
-  return amount ? amount.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ",") : "0";
+  return amount ? amount.toFixed(decimals).replace(/\B(?=(\d{3})+(?!\d))/g, ',') : '0';
 }
 
 export function floatWithCommas(amount: string, decimals = 2) {
-  if (!amount) return "0.00";
+  if (!amount) return '0.00';
   let floatAmount = parseFloat(amount).toFixed(decimals);
-  return floatAmount.replace(/\B(?=(\d{3})+(?!\d)(?=\.\d{0,}$))/g, ",");
+  return floatAmount.replace(/\B(?=(\d{3})+(?!\d)(?=\.\d{0,}$))/g, ',');
 }

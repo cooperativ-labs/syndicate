@@ -1,17 +1,17 @@
-"use client";
+'use client';
 
-import { useUserContext } from "@contexts/UserContext";
-import Button from "@src/components/buttons/Button";
-import DisconnectButton from "@src/components/buttons/DisconnectButton";
-import { ChevronLeftIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
-import React, { FC, useContext } from "react";
-import { useAccount } from "wagmi";
+import { useUserContext } from '@contexts/UserContext';
+import Button from '@src/components/buttons/Button';
+import DisconnectButton from '@src/components/buttons/DisconnectButton';
+import { ChevronLeftIcon } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import React, { FC, useContext } from 'react';
+import { useAccount } from 'wagmi';
 
-import { ApplicationStoreProps, store } from "@/contexts/store";
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
-import ChooseConnectorButton from "./wallet/ChooseConnectorButton";
-import UserMenu from "./UserMenu";
+import ChooseConnectorButton from './wallet/ChooseConnectorButton';
+import UserMenu from './UserMenu';
 
 type NavBarProps = {
   transparent?: boolean;
@@ -34,7 +34,7 @@ export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
             <Button
               onClick={e => {
                 e.preventDefault();
-                dispatch({ type: "TOGGLE_MANAGER_SIDEBAR" });
+                dispatch({ type: 'TOGGLE_MANAGER_SIDEBAR' });
               }}
             >
               <ChevronLeftIcon className="w-4 h-4" size={24} />
@@ -74,7 +74,7 @@ export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
       ) : (
         <div className="flex">
           {!userWalletAddress ? (
-            <ChooseConnectorButton buttonText={"Connect Wallet"} />
+            <ChooseConnectorButton buttonText={'Connect Wallet'} />
           ) : (
             <DisconnectButton />
           )}

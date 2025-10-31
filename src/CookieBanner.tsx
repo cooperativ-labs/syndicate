@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import cn from "classnames";
-import Link from "next/link";
-import React, { FC, useEffect, useState } from "react";
+import cn from 'classnames';
+import Link from 'next/link';
+import React, { FC, useEffect, useState } from 'react';
 
-import Button from "./components/buttons/Button";
+import Button from './components/buttons/Button';
 
 const buttonGradient =
-  "bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm";
+  'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
 
 const CookieBanner: FC = () => {
   const [approvalState, setApprovalState] = useState<Storage | undefined>(undefined);
@@ -19,15 +19,15 @@ const CookieBanner: FC = () => {
     <div className="fixed bottom-0 md:bottom-4 md:right-10 md:left-10 z-40 mx-auto w-full md:w-auto bg-cGold p-3 shadow-xl md:rounded-xl cursor-pointer">
       <div className="flex font-medium text-white text-xs md:text-base mx-auto px-2 justify-between items-center">
         <span className="mr-3">
-          We use cookies to improve our services. Using this website means you agree to this.{" "}
+          We use cookies to improve our services. Using this website means you agree to this.{' '}
           <Link href="https://cooperativ.io/privacy">
             <span className="underline decoration-cLightBlue">Privacy Policy</span>
           </Link>
         </span>
         <Button
-          className={cn(buttonGradient, "p-3 px-6 text-sm font-bold rounded-lg")}
+          className={cn(buttonGradient, 'p-3 px-6 text-sm font-bold rounded-lg')}
           onClick={() => {
-            approvalState?.setItem("COOKIE_APPROVED", "approved");
+            approvalState?.setItem('COOKIE_APPROVED', 'approved');
             window.location.reload();
           }}
         >

@@ -1,12 +1,12 @@
-import cn from "classnames";
-import { ErrorMessage, Field } from "formik";
-import React, { WheelEvent } from "react";
+import cn from 'classnames';
+import { ErrorMessage, Field } from 'formik';
+import React, { WheelEvent } from 'react';
 
-export const defaultFieldLabelClass = "text-sm text-blue-900 font-semibold text-opacity-80";
+export const defaultFieldLabelClass = 'text-sm text-blue-900 font-semibold text-opacity-80';
 export const defaultFieldClass =
-  "text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none";
-export const defaultFieldDiv = "pt-3 bg-opacity-0";
-export const addressFieldDiv = "pt-2 my-2 bg-opacity-0";
+  'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none';
+export const defaultFieldDiv = 'pt-3 bg-opacity-0';
+export const addressFieldDiv = 'pt-2 my-2 bg-opacity-0';
 
 export interface InputProps {
   id?: string;
@@ -42,32 +42,32 @@ export const Input: React.FC<CustomInputProps> = ({
   onBlur
 }) => {
   return (
-    <div className={cn(className, "flex flex-col w-full")}>
+    <div className={cn(className, 'flex flex-col w-full')}>
       {labelText && (
         <label
           htmlFor={name}
           className={cn(fieldLabelClass ? fieldLabelClass : defaultFieldLabelClass)}
         >
           {labelText}
-          {required ? " *" : ""}
+          {required ? ' *' : ''}
         </label>
       )}
       <Field
         id={id}
-        as={textArea && "textarea"}
+        as={textArea && 'textarea'}
         name={name}
         type={type}
         placeholder={placeholder}
         className={cn(
           fieldClass
             ? fieldClass
-            : "text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none",
+            : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none',
           fieldHeight
         )}
         required={required}
         onBlur={onBlur}
         onWheel={(e: WheelEvent<HTMLInputElement>) => {
-          if (type === "number") {
+          if (type === 'number') {
             const inputElement = e.target as HTMLElement;
             inputElement.blur();
           }

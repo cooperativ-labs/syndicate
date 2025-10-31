@@ -1,10 +1,10 @@
-import { WhitelistTransaction, WhitelistTransactionType } from "@gql/graphql";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import { getHumanDate } from "@src/utils/helpersGeneral";
-import { String0x } from "@src/web3/helpersChain";
-import { get } from "http";
-import React, { FC, useEffect } from "react";
-import { usePublicClient, useTransaction } from "wagmi";
+import { WhitelistTransaction, WhitelistTransactionType } from '@gql/graphql';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { getHumanDate } from '@src/utils/helpersGeneral';
+import { String0x } from '@src/web3/helpersChain';
+import { get } from 'http';
+import React, { FC, useEffect } from 'react';
+import { usePublicClient, useTransaction } from 'wagmi';
 
 type WhitelistTransactionItemProps = {
   transaction: WhitelistTransaction | null;
@@ -39,22 +39,22 @@ const WhitelistTransactionItem: FC<WhitelistTransactionItemProps> = ({ chainId, 
   }, [publicClient, setBlockTime, transactionHash, data]);
 
   const types = [
-    { type: WhitelistTransactionType.Add, name: "Approved" },
-    { type: WhitelistTransactionType.Remove, name: "Revoked" }
+    { type: WhitelistTransactionType.Add, name: 'Approved' },
+    { type: WhitelistTransactionType.Remove, name: 'Revoked' }
   ];
-  const type = types.find(t => t.type === transaction?.type)?.name + " ";
+  const type = types.find(t => t.type === transaction?.type)?.name + ' ';
 
   return (
     <div className="flex gap-2 p-2 border-2 rounded-md my-2 text-sm ">
-      {type} on {blockTime ? getHumanDate(blockTime) : ""} by
+      {type} on {blockTime ? getHumanDate(blockTime) : ''} by
       <FormattedCryptoAddress
-        className={"text-sm font-medium flex col-span-1 "}
+        className={'text-sm font-medium flex col-span-1 '}
         chainId={chainId}
         address={from}
       />
       (
       <FormattedCryptoAddress
-        className={"text-sm font-medium flex col-span-1 "}
+        className={'text-sm font-medium flex col-span-1 '}
         chainId={chainId}
         address={transactionHash}
         label="Transaction: "

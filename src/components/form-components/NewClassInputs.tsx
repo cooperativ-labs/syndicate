@@ -1,8 +1,8 @@
-import { String0x, stringFromBytes32 } from "@src/web3/helpersChain";
-import React, { FC } from "react";
+import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
 
-import Input, { defaultFieldDiv } from "./Inputs";
-import Select from "./Select";
+import Input, { defaultFieldDiv } from './Inputs';
+import Select from './Select';
 
 type NewClassInputsProps = {
   partitions: String0x[];
@@ -11,7 +11,7 @@ type NewClassInputsProps = {
 export const NewClassInputs: FC<NewClassInputsProps> = ({ partitions, values }) => {
   return (
     <>
-      <Select className={"mt-3"} name="partition" labelText="Share class">
+      <Select className={'mt-3'} name="partition" labelText="Share class">
         <option value="">Select class</option>
 
         {partitions.map((partition, i) => {
@@ -24,7 +24,7 @@ export const NewClassInputs: FC<NewClassInputsProps> = ({ partitions, values }) 
         <hr className="bg-grey-400" />
         <option value="0xNew">+ Add new class</option>
       </Select>
-      {values.partition === "0xNew" && (
+      {values.partition === '0xNew' && (
         <Input
           className={defaultFieldDiv}
           labelText="New class name"

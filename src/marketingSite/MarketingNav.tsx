@@ -1,9 +1,9 @@
-import cn from "classnames";
-import Link from "next/link";
-import React, { FC } from "react";
-import { useWindowSize } from "react-use";
+import cn from 'classnames';
+import Link from 'next/link';
+import React, { FC } from 'react';
+import { useWindowSize } from 'react-use';
 
-import NavLink from "./NavLink";
+import NavLink from './NavLink';
 
 const standardClass = `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white`;
 
@@ -12,13 +12,13 @@ const MarketingNav: FC = () => {
   return (
     <div
       className="py-2 px-2 pr-4 mt-2 md:mt-4 h-14 z-30 flex mx-auto justify-between self-center items-center "
-      style={{ maxWidth: "1580px" }}
+      style={{ maxWidth: '1580px' }}
     >
       <div className="ml-1 justify-start flex items-center">
         <img
           src="/assets/images/branding/symbol_dark_blue.svg"
           alt="logo"
-          width={windowSize.width < 768 ? "50" : "70"}
+          width={windowSize.width < 768 ? '50' : '70'}
         />
       </div>
       <div className="flex justify-end items-center">
@@ -28,7 +28,7 @@ const MarketingNav: FC = () => {
             <div
               className={cn(
                 standardClass,
-                "p-1 px-2 md:p-2 md:px-4 font-semibold rounded-full relative md:mr-2"
+                'p-1 px-2 md:p-2 md:px-4 font-semibold rounded-full relative md:mr-2'
               )}
             >
               Open App

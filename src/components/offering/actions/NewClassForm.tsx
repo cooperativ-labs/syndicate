@@ -1,15 +1,15 @@
-import { useMutation } from "@apollo/client/react";
-import { Currency, Offering, User } from "@gql/graphql";
-import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import FormButton from "@src/components/buttons/FormButton";
-import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import LinkLegal from "@src/components/legal/LinkLegal";
-import { ADD_CONTRACT_PARTITION } from "@src/utils/graphQueries/crypto";
-import { bytes32FromString, String0x, stringFromBytes32 } from "@src/web3/helpersChain";
-import { Form, Formik } from "formik";
-import React, { FC, useState } from "react";
-import toast from "react-hot-toast";
+import { useMutation } from '@apollo/client/react';
+import { Currency, Offering, User } from '@gql/graphql';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import LinkLegal from '@src/components/legal/LinkLegal';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
+import { bytes32FromString, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
+import toast from 'react-hot-toast';
 
 type NewClassFormProps = {
   shareContractId: string;
@@ -17,32 +17,32 @@ type NewClassFormProps = {
 
 const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
   const [addPartition, { error }] = useMutation(ADD_CONTRACT_PARTITION);
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   if (error) {
     toast.error(error.message);
   }
 
   const handleAddShareClass = async (partition: string) => {
-    setButtonStep("step1");
+    setButtonStep('step1');
     await addPartition({
       variables: {
         smartContractId: shareContractId,
         partition: bytes32FromString(partition)
       }
     });
-    setButtonStep("confirmed");
+    setButtonStep('confirmed');
   };
 
   return (
     <Formik
       initialValues={{
-        partition: ""
+        partition: ''
       }}
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.partition) {
-          errors.partition = "Please choose a name for the share class.";
+          errors.partition = 'Please choose a name for the share class.';
         }
         return errors;
       }}
@@ -62,7 +62,7 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
             placeholder="Class A"
             required
           />
-          <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
+          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
             <LoadingButtonText
               state={buttonStep}
               idleText={`Add new share class`}

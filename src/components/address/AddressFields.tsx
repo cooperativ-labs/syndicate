@@ -1,6 +1,6 @@
-import React, { FC } from "react";
+import React, { FC } from 'react';
 
-import Input, { addressFieldDiv } from "../form-components/Inputs";
+import Input, { addressFieldDiv } from '../form-components/Inputs';
 
 type AddressFieldsProps = {
   excludeAddressLabel?: boolean;
@@ -8,7 +8,7 @@ type AddressFieldsProps = {
 };
 
 const AddressFields: FC<AddressFieldsProps> = ({ excludeAddressLabel, fieldNameModifier }) => {
-  const modifier = fieldNameModifier ? fieldNameModifier : "";
+  const modifier = fieldNameModifier ? fieldNameModifier : '';
   return (
     <>
       {!excludeAddressLabel && (

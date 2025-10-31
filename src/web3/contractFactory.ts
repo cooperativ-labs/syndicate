@@ -1,10 +1,10 @@
-import { config } from "@src/web3/wagmi";
-import { Chain } from "wagmi";
-import { getWalletClient, waitForTransactionReceipt } from "wagmi/actions";
+import { config } from '@src/web3/wagmi';
+import { Chain } from 'wagmi';
+import { getWalletClient, waitForTransactionReceipt } from 'wagmi/actions';
 
-import { dividendBytecode, shareBytecode, swapBytecode } from "./bytecode";
-import { dividendContractABI, shareContractABI, swapContractABI } from "./generated";
-import { String0x } from "./helpersChain";
+import { dividendBytecode, shareBytecode, swapBytecode } from './bytecode';
+import { dividendContractABI, shareContractABI, swapContractABI } from './generated';
+import { String0x } from './helpersChain';
 
 type DeployContractBaseProps = {
   account: String0x;
@@ -34,7 +34,7 @@ const deployContract = async ({
     args
   });
 
-  if (!hash) throw new Error("No hash returned from deploy contract");
+  if (!hash) throw new Error('No hash returned from deploy contract');
   const data = await waitForTransactionReceipt(config, {
     hash: hash
   });
@@ -50,7 +50,7 @@ export const deployShareContract = async (
       })
     | undefined
 ) => {
-  if (!userWalletAddress) throw new Error("No user wallet address provided");
+  if (!userWalletAddress) throw new Error('No user wallet address provided');
   const args = [] as any;
   const data = await deployContract({
     account: userWalletAddress,
@@ -72,7 +72,7 @@ export const deploySwapContract = async (
   shareTokenAddress: String0x,
   paymentTokenAddress: String0x
 ) => {
-  if (!userWalletAddress) throw new Error("No user wallet address provided");
+  if (!userWalletAddress) throw new Error('No user wallet address provided');
   const args = [shareTokenAddress, paymentTokenAddress];
   const data = await deployContract({
     account: userWalletAddress,
@@ -93,7 +93,7 @@ export const deployDividendContract = async (
     | undefined,
   shareTokenAddress: String0x
 ) => {
-  if (!userWalletAddress) throw new Error("No user wallet address provided");
+  if (!userWalletAddress) throw new Error('No user wallet address provided');
   const reclaimTime = 1;
   const args = [shareTokenAddress, reclaimTime];
   const data = await deployContract({

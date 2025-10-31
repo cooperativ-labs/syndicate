@@ -1,7 +1,7 @@
-import { Currency, RealEstateProperty } from "@gql/graphql";
-import React, { FC } from "react";
+import { Currency, RealEstateProperty } from '@gql/graphql';
+import React, { FC } from 'react';
 
-import FinancialFactItem from "./FinancialFactItem";
+import FinancialFactItem from './FinancialFactItem';
 
 type TotalInvestmentValueDataProps = {
   propertyDetails: RealEstateProperty;

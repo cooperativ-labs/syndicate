@@ -1,8 +1,8 @@
-import React, { FC, ReactNode } from "react";
+import React, { FC, ReactNode } from 'react';
 
 export type ButtonProps = {
   className?: string;
-  type?: "button" | "submit" | "reset";
+  type?: 'button' | 'submit' | 'reset';
   backgroundColor?: string;
   textColor?: string;
   borderColor?: string;
@@ -12,13 +12,13 @@ export type ButtonProps = {
 };
 
 export type LoadingButtonStateType =
-  | "idle"
-  | "step1"
-  | "step2"
-  | "step3"
-  | "confirmed"
-  | "failed"
-  | "rejected";
+  | 'idle'
+  | 'step1'
+  | 'step2'
+  | 'step3'
+  | 'confirmed'
+  | 'failed'
+  | 'rejected';
 export type LoadingButtonTextType = {
   state: LoadingButtonStateType;
   idleText: string;
@@ -41,9 +41,9 @@ export const LoadingButtonText = ({
   rejectedText
 }: LoadingButtonTextType) => {
   switch (state) {
-    case "idle":
+    case 'idle':
       return <>{idleText}</>;
-    case "step1":
+    case 'step1':
       return (
         <div className="flex justify-center items-center ">
           <img
@@ -54,7 +54,7 @@ export const LoadingButtonText = ({
           <span>{step1Text}</span>
         </div>
       );
-    case "step2":
+    case 'step2':
       return (
         <div className="flex justify-center items-center ">
           <img
@@ -65,7 +65,7 @@ export const LoadingButtonText = ({
           <span>{step2Text}</span>
         </div>
       );
-    case "step3":
+    case 'step3':
       return (
         <div className="flex justify-center items-center ">
           <img
@@ -76,11 +76,11 @@ export const LoadingButtonText = ({
           <span>{step3Text}</span>
         </div>
       );
-    case "confirmed":
+    case 'confirmed':
       return <>{confirmedText}</>;
-    case "failed":
+    case 'failed':
       return <>{failedText}</>;
-    case "rejected":
+    case 'rejected':
       return <>{rejectedText}</>;
     default:
       return <>{idleText}</>;

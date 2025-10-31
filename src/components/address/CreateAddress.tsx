@@ -1,17 +1,17 @@
-import { useMutation } from "@apollo/client/react";
-import { LegalEntity } from "@gql/graphql";
-import { GoogleMap, Marker } from "@react-google-maps/api";
-import { ADD_ENTITY_ADDRESS } from "@src/utils/graphQueries/entity";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { Form, Formik } from "formik";
-import React, { FC, useEffect, useState } from "react";
-import { geocodeByPlaceId } from "react-google-places-autocomplete";
+import { useMutation } from '@apollo/client/react';
+import { LegalEntity } from '@gql/graphql';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { ADD_ENTITY_ADDRESS } from '@src/utils/graphQueries/entity';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { Form, Formik } from 'formik';
+import React, { FC, useEffect, useState } from 'react';
+import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 
-import MajorActionButton from "../buttons/MajorActionButton";
+import MajorActionButton from '../buttons/MajorActionButton';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
-} from "../form-components/CustomAddressAutocomplete";
-import Input, { addressFieldDiv } from "../form-components/Inputs";
+} from '../form-components/CustomAddressAutocomplete';
+import Input, { addressFieldDiv } from '../form-components/Inputs';
 
 export type CreateAddressType = {
   entity: LegalEntity;
@@ -71,16 +71,16 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
   return (
     <Formik
       initialValues={{
-        addressLabel: "",
-        addressAutocomplete: ""
+        addressLabel: '',
+        addressAutocomplete: ''
       }}
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!firstAddressLine || !city || !state || !postalCode || !country) {
-          errors.addressAutocomplete = "Please include an address.";
+          errors.addressAutocomplete = 'Please include an address.';
         }
         if (!values.addressLabel) {
-          errors.addressLabel = "Please include a label.";
+          errors.addressLabel = 'Please include a label.';
         }
       }}
       onSubmit={async (values, { setSubmitting }) => {
@@ -111,7 +111,7 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
             {latLang.lat && (
               <div className="mt-4">
                 <GoogleMap
-                  mapContainerStyle={{ height: "300px", width: "100%" }}
+                  mapContainerStyle={{ height: '300px', width: '100%' }}
                   center={latLang}
                   zoom={14}
                 >

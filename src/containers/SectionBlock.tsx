@@ -1,7 +1,7 @@
-import cn from "classnames";
-import { Maybe } from "graphql/jsutils/Maybe";
-import { ChevronDown, ChevronUp } from "lucide-react";
-import React, { useState } from "react";
+import cn from 'classnames';
+import { Maybe } from 'graphql/jsutils/Maybe';
+import { ChevronDown, ChevronUp } from 'lucide-react';
+import React, { useState } from 'react';
 
 interface SectionBlockProps {
   sectionTitle: string | Maybe<string> | undefined;
@@ -29,13 +29,13 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
       <button
         className={cn(
           className,
-          mini ? "text-sm text-grey-600" : "text-xl font-bold py-4 mb-2",
-          asAccordion && "w-full flex justify-between items-center",
-          "h-8  min-w-max flex items-center rounded outline-none"
+          mini ? 'text-sm text-grey-600' : 'text-xl font-bold py-4 mb-2',
+          asAccordion && 'w-full flex justify-between items-center',
+          'h-8  min-w-max flex items-center rounded outline-none'
         )}
         onClick={handleDetailsReveal}
       >
-        <h2 className={cn(mini ? "text-sm text-grey-600" : "text-xl font-bold text-gray-800")}>
+        <h2 className={cn(mini ? 'text-sm text-grey-600' : 'text-xl font-bold text-gray-800')}>
           {sectionTitle}
         </h2>
         <div className="ml-2">

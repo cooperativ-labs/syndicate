@@ -1,20 +1,20 @@
-"use client";
+'use client';
 
-import { useQuery } from "@apollo/client/react";
-import AlertPopup from "@src/components/alerts/AlertPopup";
-import LoadingModal from "@src/components/loading/ModalLoading";
-import { GET_ORGANIZATION } from "@src/utils/graphQueries/organization";
-import cn from "classnames";
-import { useParams } from "next/navigation";
-import React, { FC, useContext } from "react";
+import { useQuery } from '@apollo/client/react';
+import AlertPopup from '@src/components/alerts/AlertPopup';
+import LoadingModal from '@src/components/loading/ModalLoading';
+import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import cn from 'classnames';
+import { useParams } from 'next/navigation';
+import React, { FC, useContext } from 'react';
 
-import { ApplicationStoreProps, store } from "@/contexts/store";
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 // import PortalSideBar from './sideBar/PortalSideBar';
-import EnsureCompatibleNetwork from "./wallet/EnsureCompatibleNetwork";
-import NavBar from "./NavigationBar";
+import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
+import NavBar from './NavigationBar';
 
-const BackgroundGradient = "bg-linear-to-b from-gray-100 to-blue-50";
+const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 // const BackgroundGradient = 'bg-white';
 
 type PortalWrapperProps = {
@@ -51,7 +51,7 @@ const PortalWrapper: FC<PortalWrapperProps> = ({ children }) => {
 
   return (
     <div className="h-full">
-      <div className={cn(BackgroundGradient, "w-screen min-h-screen")}>
+      <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
         {/* <WalletChooserModal /> */}
         {PageIsLoading && <LoadingModal />}
         <AlertPopup text="This is an alpha version. Please use with caution." />

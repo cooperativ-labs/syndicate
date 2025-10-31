@@ -1,7 +1,7 @@
-import { useQuery } from "@apollo/client/react";
-import { GET_CRYPTO_ADDRESS } from "@src/utils/graphQueries/crypto";
-import { Check } from "lucide-react";
-import React, { FC, useState } from "react";
+import { useQuery } from '@apollo/client/react';
+import { GET_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
+import { Check } from 'lucide-react';
+import React, { FC, useState } from 'react';
 
 type PresentWalletUserProps = {
   walletAddress: string;
@@ -16,7 +16,7 @@ const PresentWalletUser: FC<PresentWalletUserProps> = ({ walletAddress, classNam
   const userFullName = data?.getCryptoAddress?.owner.fullName;
   return (
     <div className={className}>
-      {userFullName}{" "}
+      {userFullName}{' '}
       {withCopy && (
         <button
           className="ml-1"

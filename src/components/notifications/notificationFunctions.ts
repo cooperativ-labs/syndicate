@@ -1,7 +1,7 @@
-import { NotificationSubject, Organization } from "@gql/graphql";
-import { emailConfirmationContent, emailNotificationContent } from "@src/services/postmark";
-import axios from "axios";
-import { sha256 } from "js-sha256";
+import { NotificationSubject, Organization } from '@gql/graphql';
+import { emailConfirmationContent, emailNotificationContent } from '@src/services/postmark';
+import axios from 'axios';
+import { sha256 } from 'js-sha256';
 
 const getRecipientEmails = (
   organization: Organization,
@@ -20,17 +20,17 @@ const getRecipientEmails = (
 };
 
 export const handleAddEmailAddress = async (address: string, completionUrl: string) => {
-  window.localStorage.setItem("email", address);
+  window.localStorage.setItem('email', address);
   const secret = sha256(address);
   const confirmationLink = `${completionUrl}?token=${encodeURIComponent(secret)}`;
   const to = address;
-  const subject = "Welcome to Cooperativ.io";
+  const subject = 'Welcome to Cooperativ.io';
   const { html, text } = emailConfirmationContent(confirmationLink);
   const htmlBody = html;
   const textBody = text;
-  const messageStream = "outbound";
+  const messageStream = 'outbound';
   try {
-    await axios.post("/api/send-email", {
+    await axios.post('/api/send-email', {
       to,
       subject,
       htmlBody,
@@ -63,9 +63,9 @@ export const handleContractNotification = async ({
     const { html, text } = emailNotificationContent(notificationText, completionUrl);
     const htmlBody = html;
     const textBody = text;
-    const messageStream = "notifications";
+    const messageStream = 'notifications';
     try {
-      await axios.post("/api/send-email", {
+      await axios.post('/api/send-email', {
         to,
         subject,
         htmlBody,
@@ -88,7 +88,7 @@ export const handleWhitelistUpdateNotification = async ({
   completionUrl,
   notificationText
 }: EmailNotificationBaseProps) => {
-  const emailSubject = "Notification: New whitelist member added";
+  const emailSubject = 'Notification: New whitelist member added';
   const notificationSubject = NotificationSubject.WhitelistApproval;
   await handleContractNotification({
     organization,
@@ -104,7 +104,7 @@ export const handleOfferingRequestNotification = async ({
   completionUrl,
   notificationText
 }: EmailNotificationBaseProps) => {
-  const emailSubject = "Notification: Cooperativ.io trade approval requested";
+  const emailSubject = 'Notification: Cooperativ.io trade approval requested';
   const notificationSubject = NotificationSubject.TransactionRequest;
   handleContractNotification({
     organization,
@@ -120,7 +120,7 @@ export const handleTradeExecutionNotification = async ({
   completionUrl,
   notificationText
 }: EmailNotificationBaseProps) => {
-  const emailSubject = "Notification: Cooperativ.io trade executed";
+  const emailSubject = 'Notification: Cooperativ.io trade executed';
   const notificationSubject = NotificationSubject.TradeExecution;
   handleContractNotification({
     organization,

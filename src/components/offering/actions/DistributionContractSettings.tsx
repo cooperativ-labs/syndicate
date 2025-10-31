@@ -1,10 +1,10 @@
-import { Currency, Maybe, Offering, OfferingSmartContractSet } from "@gql/graphql";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import { String0x } from "@src/web3/helpersChain";
-import React, { FC } from "react";
-import { useChainId } from "wagmi";
+import { Currency, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { String0x } from '@src/web3/helpersChain';
+import React, { FC } from 'react';
+import { useChainId } from 'wagmi';
 
-import CreateDistributionContract from "../CreateDistributionContract";
+import CreateDistributionContract from '../CreateDistributionContract';
 
 export type DistributionContractSettingsProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;

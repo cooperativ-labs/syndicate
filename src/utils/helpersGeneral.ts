@@ -12,7 +12,7 @@ export function mapZip<T, R>(keys: T[], values: R[]): Map<T, R> {
 
 export function setHttp(link: string) {
   if (link.search(/^https?:\/\//) === -1) {
-    link = "http://" + link;
+    link = 'http://' + link;
   }
   return link;
 }
@@ -20,19 +20,19 @@ export function setHttp(link: string) {
 export function getHumanDate(date: string | Date) {
   const dateObj = new Date(date);
   return dateObj?.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric"
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric'
   });
 }
 export function getHumanDateTime(date: string | Date) {
   const dateObj = new Date(date);
   return dateObj?.toLocaleDateString(undefined, {
-    year: "numeric",
-    month: "short",
-    day: "numeric",
-    hour: "numeric",
-    minute: "numeric"
+    year: 'numeric',
+    month: 'short',
+    day: 'numeric',
+    hour: 'numeric',
+    minute: 'numeric'
   });
 }
 

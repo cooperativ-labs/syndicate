@@ -1,6 +1,6 @@
-import cn from "classnames";
-import { Pencil } from "lucide-react";
-import React from "react";
+import cn from 'classnames';
+import { Pencil } from 'lucide-react';
+import React from 'react';
 
 export interface RoundedImageProps {
   src: string;
@@ -14,8 +14,8 @@ const RoundedImage: React.FunctionComponent<RoundedImageProps> = ({ src, classNa
       data-test="component-rounded-image"
       className={cn(
         className,
-        !!onClick && "hover:cursor-pointer relative",
-        "flex rounded-full overflow-hidden items-center backdrop-opacity-10"
+        !!onClick && 'hover:cursor-pointer relative',
+        'flex rounded-full overflow-hidden items-center backdrop-opacity-10'
       )}
       onClick={onClick}
     >

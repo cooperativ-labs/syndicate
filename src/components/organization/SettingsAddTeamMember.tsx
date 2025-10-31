@@ -1,20 +1,20 @@
-import { useApolloClient } from "@apollo/client/react";
-import { useMutation } from "@apollo/client/react";
-import { OrganizationPermissionType } from "@gql/graphql";
+import { useApolloClient } from '@apollo/client/react';
+import { useMutation } from '@apollo/client/react';
+import { OrganizationPermissionType } from '@gql/graphql';
 import {
   getOrganizationPermissionOption,
   organizationPermissionOptions
-} from "@src/utils/enumConverters";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { ADD_ORGANIZATION_USER } from "@src/utils/graphQueries/organization";
-import { GET_USER_FROM_EMAIL } from "@src/utils/graphQueries/user";
-import { Form, Formik } from "formik";
-import React, { FC, useContext } from "react";
+} from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
+import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
+import { Form, Formik } from 'formik';
+import React, { FC, useContext } from 'react';
 
-import Input from "../form-components/Inputs";
-import Select from "../form-components/Select";
+import Input from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
-const fieldDiv = "md:my-2 bg-opacity-0";
+const fieldDiv = 'md:my-2 bg-opacity-0';
 
 type SettingsAddTeamMemberProps = {
   organizationId: string;
@@ -57,21 +57,21 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
   return (
     <Formik
       initialValues={{
-        emailAddress: "",
+        emailAddress: '',
         permission: OrganizationPermissionType.Editor
       }}
       validate={async values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.emailAddress) {
-          errors.emailAddress = "Please include an email address.";
+          errors.emailAddress = 'Please include an email address.';
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.emailAddress)) {
-          errors.emailAddress = "Invalid email address";
+          errors.emailAddress = 'Invalid email address';
         }
         if (!values.permission) {
-          errors.permission = "Please choose a role";
+          errors.permission = 'Please choose a role';
         }
         if (userDoesNotExist) {
-          errors.emailAddress = "User does not exist";
+          errors.emailAddress = 'User does not exist';
         }
         return errors;
       }}

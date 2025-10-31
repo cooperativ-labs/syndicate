@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { useQuery } from "@apollo/client/react";
-import LoadingModal from "@src/components/loading/ModalLoading";
-import ManagerWrapper from "@src/containers/ManagerWrapper";
-import PropertyDetails from "@src/screens/PropertyDetails";
-import { GET_RE_PROPERTY } from "@src/utils/graphQueries/reProperty";
-import { useParams } from "next/navigation";
-import React from "react";
+import { useQuery } from '@apollo/client/react';
+import LoadingModal from '@src/components/loading/ModalLoading';
+import ManagerWrapper from '@src/containers/ManagerWrapper';
+import PropertyDetails from '@src/screens/PropertyDetails';
+import { GET_RE_PROPERTY } from '@src/utils/graphQueries/reProperty';
+import { useParams } from 'next/navigation';
+import React from 'react';
 
 const PropertyPage = () => {
   const params = useParams<{ propertyId: string }>();

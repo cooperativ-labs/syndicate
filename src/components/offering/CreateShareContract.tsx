@@ -1,17 +1,17 @@
-import { useMutation } from "@apollo/client/react";
-import { SmartContractType } from "@gql/graphql";
-import ChooseConnectorButton from "@src/containers/wallet/ChooseConnectorButton";
-import { CREATE_SHARE_CONTRACT } from "@src/utils/graphQueries/crypto";
-import { MatchSupportedChains } from "@src/web3/connectors";
-import { deployShareContract } from "@src/web3/contractFactory";
-import { StandardChainErrorHandling } from "@src/web3/helpersChain";
-import React, { FC, useContext, useState } from "react";
-import { useAsyncFn } from "react-use";
-import { useAccount, useChainId, useNetwork } from "wagmi";
+import { useMutation } from '@apollo/client/react';
+import { SmartContractType } from '@gql/graphql';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { CREATE_SHARE_CONTRACT } from '@src/utils/graphQueries/crypto';
+import { MatchSupportedChains } from '@src/web3/connectors';
+import { deployShareContract } from '@src/web3/contractFactory';
+import { StandardChainErrorHandling } from '@src/web3/helpersChain';
+import React, { FC, useContext, useState } from 'react';
+import { useAsyncFn } from 'react-use';
+import { useAccount, useChainId, useNetwork } from 'wagmi';
 
-import { ApplicationStoreProps, store } from "@/contexts/store";
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
-import Button, { LoadingButtonStateType, LoadingButtonText } from "../buttons/Button";
+import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 type CreateShareContractProps = {
   contractCreatorId: string | undefined;
@@ -20,7 +20,7 @@ type CreateShareContractProps = {
 const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
   const chainId = useChainId();
   const { chain } = useNetwork();
@@ -30,9 +30,9 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
   const chainName = MatchSupportedChains(chainId)?.name;
 
   const [, deploy] = useAsyncFn(async () => {
-    setButtonStep("step1");
+    setButtonStep('step1');
     const protocol = MatchSupportedChains(chainId)?.protocol;
-    dispatchWalletActionLockModalOpen({ type: "TOGGLE_WALLET_ACTION_LOCK" });
+    dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
     try {
       const contract = await deployShareContract(userWalletAddress, chain);
       await addUnestablishedSmartContract({
@@ -44,15 +44,15 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
           ownerId: contractCreatorId
         }
       });
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
-    dispatchWalletActionLockModalOpen({ type: "TOGGLE_WALLET_ACTION_LOCK" });
+    dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
   }, [userWalletAddress, chainId]);
 
   if (error && !alerted) {
-    alert("Oops. Looks like something went wrong");
+    alert('Oops. Looks like something went wrong');
     setAlerted(true);
   }
 
@@ -60,7 +60,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
     <div>
       <div>
         {!userWalletAddress ? (
-          <ChooseConnectorButton buttonText={"Connect Wallet"} />
+          <ChooseConnectorButton buttonText={'Connect Wallet'} />
         ) : (
           <Button
             className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"

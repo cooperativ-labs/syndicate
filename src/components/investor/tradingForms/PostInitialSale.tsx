@@ -1,22 +1,22 @@
-import { useMutation } from "@apollo/client/react";
-import { Maybe } from "@gql/graphql";
-import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import FormButton from "@src/components/buttons/FormButton";
-import Checkbox from "@src/components/form-components/Checkbox";
-import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
-import NewClassInputs from "@src/components/form-components/NewClassInputs";
-import NonInput from "@src/components/form-components/NonInput";
-import ChooseConnectorButton from "@src/containers/wallet/ChooseConnectorButton";
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { ADD_CONTRACT_PARTITION } from "@src/utils/graphQueries/crypto";
-import { CREATE_ORDER } from "@src/utils/graphQueries/orders";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { getAmountRemaining, ManagerModalType } from "@src/utils/helpersOffering";
-import { submitSwap } from "@src/web3/contractSwapCalls";
-import { String0x } from "@src/web3/helpersChain";
-import { Form, Formik } from "formik";
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
-import { useAccount } from "wagmi";
+import { useMutation } from '@apollo/client/react';
+import { Maybe } from '@gql/graphql';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
+import Checkbox from '@src/components/form-components/Checkbox';
+import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import NewClassInputs from '@src/components/form-components/NewClassInputs';
+import NonInput from '@src/components/form-components/NonInput';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
+import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
+import { submitSwap } from '@src/web3/contractSwapCalls';
+import { String0x } from '@src/web3/helpersChain';
+import { Form, Formik } from 'formik';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import { useAccount } from 'wagmi';
 
 export type PostInitialSaleProps = {
   sharesOutstanding: number | undefined;
@@ -51,7 +51,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   refetchOfferingInfo
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
   const [addPartition, { data: partitionData, error: partitionError }] =
     useMutation(ADD_CONTRACT_PARTITION);
@@ -66,7 +66,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
     return `Offer ${
       numShares
         ? `${numShares} out of ${sharesIssued} (${(numShares / sharesIssued) * 100}%) for sale`
-        : "shares"
+        : 'shares'
     } `;
   };
 
@@ -75,19 +75,19 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   };
 
   const saleAmountString = (numUnits: string, price: Maybe<number> | undefined) => {
-    if (!price) return "0";
+    if (!price) return '0';
     return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
   };
 
   return (
     <Formik
       initialValues={{
-        numShares: "",
+        numShares: '',
         price: priceStart,
-        minUnits: "",
-        maxUnits: "",
+        minUnits: '',
+        maxUnits: '',
         partition: partitions[0],
-        newPartition: ""
+        newPartition: ''
       }}
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
@@ -97,27 +97,27 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         const minUnits = parseInt(values.minUnits, 10);
 
         if (!numShares) {
-          errors.numShares = "Please indicate how many shares you want to send";
+          errors.numShares = 'Please indicate how many shares you want to send';
         } else if (numShares > sharesRemaining) {
           errors.numShares = `You only have ${sharesRemaining} remaining shares to send.`;
         }
         if (maxUnits && numShares && maxUnits > numShares) {
-          errors.maxUnits = "Maximum must be less then the total shares listed for sale";
+          errors.maxUnits = 'Maximum must be less then the total shares listed for sale';
         }
         if (
           (maxUnits && minUnits && maxUnits < 1) ||
           (maxUnits && minUnits && maxUnits < minUnits)
         ) {
-          errors.maxUnits = "Maximum must be greater than minimum";
+          errors.maxUnits = 'Maximum must be greater than minimum';
         }
         if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
-          errors.minUnits = "Minimum must be less than maximum";
+          errors.minUnits = 'Minimum must be less than maximum';
         }
         if (!values.partition) {
-          errors.partition = "Please select a partition";
+          errors.partition = 'Please select a partition';
         }
-        if (values.partition === "0xNew" && !values.newPartition) {
-          errors.newPartition = "Please enter a new partition";
+        if (values.partition === '0xNew' && !values.newPartition) {
+          errors.newPartition = 'Please enter a new partition';
         }
         return errors;
       }}
@@ -154,7 +154,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
             refetchAllContracts,
             refetchOfferingInfo
           });
-          setModal("shareSaleList");
+          setModal('shareSaleList');
         } catch (e: any) {
           throw new Error(e);
         }
@@ -207,9 +207,9 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
 
           <hr className="bg-grey-600 my-3 mb-4" />
           {!userWalletAddress ? (
-            <ChooseConnectorButton buttonText={"Connect Wallet"} />
+            <ChooseConnectorButton buttonText={'Connect Wallet'} />
           ) : (
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
+            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
               <LoadingButtonText
                 state={buttonStep}
                 idleText={formButtonText(values) as string}

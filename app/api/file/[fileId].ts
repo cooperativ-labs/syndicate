@@ -1,14 +1,14 @@
-import { Storage } from "@google-cloud/storage";
-import { initializeApollo } from "@src/utils/apolloClient";
-import { GET_DOCUMENT_EDITORS } from "@src/utils/dGraphQueries/document";
-import { GET_USER_PERMISSIONS } from "@src/utils/dGraphQueries/user";
-import { NextApiRequest, NextApiResponse } from "next";
-import { getSession } from "next-auth/react";
-import nextConnect from "next-connect";
-import { OrganizationUser } from "oldTypes";
-import path from "path";
+import { Storage } from '@google-cloud/storage';
+import { initializeApollo } from '@src/utils/apolloClient';
+import { GET_DOCUMENT_EDITORS } from '@src/utils/dGraphQueries/document';
+import { GET_USER_PERMISSIONS } from '@src/utils/dGraphQueries/user';
+import { NextApiRequest, NextApiResponse } from 'next';
+import { getSession } from 'next-auth/react';
+import nextConnect from 'next-connect';
+import { OrganizationUser } from 'oldTypes';
+import path from 'path';
 
-const keyFilePath = path.join(process.cwd(), "/syndicate-cloud-key-staging.json");
+const keyFilePath = path.join(process.cwd(), '/syndicate-cloud-key-staging.json');
 
 const storage = new Storage({
   projectId: process.env.NEXT_PRIVATE_GOOGLE_CLOUD_PROJECT_ID,
@@ -46,7 +46,7 @@ handler.delete(async (req, res) => {
   const apolloClient = initializeApollo();
 
   if (!session) {
-    return res.status(401).send("Unauthorized");
+    return res.status(401).send('Unauthorized');
   }
 
   try {
@@ -63,10 +63,10 @@ handler.delete(async (req, res) => {
         }).length > 0;
 
     if (!isDocEditor) {
-      return res.status(403).send("Forbidden");
+      return res.status(403).send('Forbidden');
     }
   } catch (error) {
-    return res.status(500).send({ error: "Error fetching user permissions" });
+    return res.status(500).send({ error: 'Error fetching user permissions' });
   }
 
   const file = bucket.file(fileId);
@@ -76,7 +76,7 @@ handler.delete(async (req, res) => {
 
     // TODO: Update your database to remove the relationship between the user and the file
 
-    res.status(200).send({ message: "File deleted successfully" });
+    res.status(200).send({ message: 'File deleted successfully' });
   } catch (error) {
     res.status(500).send({ error: error });
   }

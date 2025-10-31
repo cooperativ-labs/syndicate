@@ -1,21 +1,21 @@
-import { useMutation } from "@apollo/client/react";
-import { Maybe } from "@gql/graphql";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { UPDATE_OFFERING_PROFILE } from "@src/utils/graphQueries/offering";
-import { getBaseUrl } from "@src/utils/helpersURL";
-import { String0x } from "@src/web3/helpersChain";
-import cn from "classnames";
-import { Form, Formik } from "formik";
-import { Check, Copy, SquareArrowOutUpRight } from "lucide-react";
-import React, { FC, useState } from "react";
-import toast from "react-hot-toast";
+import { useMutation } from '@apollo/client/react';
+import { Maybe } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { String0x } from '@src/web3/helpersChain';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import { Check, Copy, SquareArrowOutUpRight } from 'lucide-react';
+import React, { FC, useState } from 'react';
+import toast from 'react-hot-toast';
 
-import Button from "../buttons/Button";
-import Input from "../form-components/Inputs";
-import FormattedCryptoAddress from "../FormattedCryptoAddress";
+import Button from '../buttons/Button';
+import Input from '../form-components/Inputs';
+import FormattedCryptoAddress from '../FormattedCryptoAddress';
 
-import AccessCodeForm from "./profile/AccessCodeForm";
-import ProfileVisibilityToggle from "./settings/ProfileVisibilityToggle";
+import AccessCodeForm from './profile/AccessCodeForm';
+import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
 
 type OfferingDashboardTitleProps = {
   profileVisibility: Maybe<boolean> | undefined;
@@ -99,7 +99,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.name) {
-          errors.name = "Please name this syndication.";
+          errors.name = 'Please name this syndication.';
         }
         return errors;
       }}
@@ -114,7 +114,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
       {({ isSubmitting }) => (
         <Form className="flex items-center">
           <Input
-            className={" bg-opacity-0"}
+            className={' bg-opacity-0'}
             required
             name="name"
             type="name"
@@ -188,7 +188,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           <h1
             className={cn(
               `text-2xl md:text-3xl font-bold text-gray-700 ${
-                isOfferingManager && "hover:cursor-pointer hover:underline"
+                isOfferingManager && 'hover:cursor-pointer hover:underline'
               }`
             )}
             onClick={() => {

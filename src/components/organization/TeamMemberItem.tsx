@@ -1,15 +1,15 @@
-import { Maybe, OrganizationPermissionType, OrganizationUser } from "@gql/graphql";
-import { getOrganizationPermissionOption } from "@src/utils/enumConverters";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import cn from "classnames";
-import React, { FC, useState } from "react";
+import { Maybe, OrganizationPermissionType, OrganizationUser } from '@gql/graphql';
+import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import cn from 'classnames';
+import React, { FC, useState } from 'react';
 
-import { EditButton } from "../form-components/ListItemButtons";
+import { EditButton } from '../form-components/ListItemButtons';
 
 export type TeamMemberBaseProps = {
   organizationId: Maybe<string>;
   currentUserId: Maybe<string> | undefined;
-  isAdmin: boolean | "" | undefined;
+  isAdmin: boolean | '' | undefined;
 };
 
 type TeamMemberListItemProps = TeamMemberBaseProps & {
@@ -35,16 +35,16 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
       // color refuses to render if I apply it directly to the class. It even appears in the CSS in the inspector, but it doesn't render. I have no idea why. The behavior is also inconsistent. Sometimes it works, sometimes it doesn't.
       const permissionClass = () => {
         switch (name) {
-          case "Admin":
+          case 'Admin':
             return `bg-blue-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
-          case "Editor":
+          case 'Editor':
             return `bg-green-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
-          case "Auditor":
+          case 'Auditor':
             return `bg-gray-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
-          case "Viewer":
+          case 'Viewer':
             return `bg-gray-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
           default:
-            return "green-600";
+            return 'green-600';
         }
       };
 

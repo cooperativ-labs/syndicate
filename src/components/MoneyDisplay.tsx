@@ -1,9 +1,9 @@
-import { Currency, CurrencyCode } from "@gql/graphql";
-import { getCurrencyById, getCurrencyOption } from "@src/utils/enumConverters";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { String0x } from "@src/web3/helpersChain";
-import cn from "classnames";
-import React, { FC } from "react";
+import { Currency, CurrencyCode } from '@gql/graphql';
+import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { String0x } from '@src/web3/helpersChain';
+import cn from 'classnames';
+import React, { FC } from 'react';
 
 type MoneyDisplayProps = {
   amount: number | undefined | null;
@@ -24,12 +24,12 @@ const MoneyDisplay: FC<MoneyDisplayProps> = ({ amount, paymentToken, currency, c
   const currencySymbol = normalizedCurrency?.symbol;
 
   return (
-    <div className={cn(className, "flex items-center")}>
-      {isUsd && "$"}
+    <div className={cn(className, 'flex items-center')}>
+      {isUsd && '$'}
       {numberWithCommas(amount)}
       {!isUsd &&
         (currencyLogo ? (
-          <img src={currencyLogo} className={"ml-1 h-4 border rounded-full"} />
+          <img src={currencyLogo} className={'ml-1 h-4 border rounded-full'} />
         ) : (
           <span className="text-xs ">{currencySymbol} </span>
         ))}

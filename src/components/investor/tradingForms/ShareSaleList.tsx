@@ -1,18 +1,18 @@
-import { Maybe, ShareOrder } from "@gql/graphql";
-import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import SectionBlock from "@src/containers/SectionBlock";
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { ManagerModalType } from "@src/utils/helpersOffering";
-import { claimProceeds } from "@src/web3/contractSwapCalls";
-import { swapContractABI } from "@src/web3/generated";
-import { String0x } from "@src/web3/helpersChain";
-import { toNormalNumber } from "@src/web3/util";
-import { RefreshCw } from "lucide-react";
-import React, { Dispatch, FC, SetStateAction, useState } from "react";
-import { useAccount, useContractRead } from "wagmi";
+import { Maybe, ShareOrder } from '@gql/graphql';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import SectionBlock from '@src/containers/SectionBlock';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { ManagerModalType } from '@src/utils/helpersOffering';
+import { claimProceeds } from '@src/web3/contractSwapCalls';
+import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
+import { toNormalNumber } from '@src/web3/util';
+import { RefreshCw } from 'lucide-react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import { useAccount, useContractRead } from 'wagmi';
 
-import ShareSaleListItem, { ShareSaleListItemProps } from "./ShareSaleListItem";
+import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
 
 export type ShareSaleListProps = ShareSaleListItemProps & {
   orders: Maybe<ShareOrder>[] | undefined;
@@ -36,11 +36,11 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   refetchOfferingInfo
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>("idle");
+  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
   const { data: contractData } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: "unclaimedProceeds",
+    functionName: 'unclaimedProceeds',
     args: [userWalletAddress as String0x]
   });
 
@@ -58,9 +58,9 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   const proceedsButton = proceeds !== 0 && (
     <Button
-      className={"p-3 shadow-md rounded-md bg-blue-600 text-white text-sm uppercase font-medium"}
+      className={'p-3 shadow-md rounded-md bg-blue-600 text-white text-sm uppercase font-medium'}
       onClick={handleClaimProceeds}
-      disabled={claimProceedsButton === "step1"}
+      disabled={claimProceedsButton === 'step1'}
     >
       <LoadingButtonText
         state={claimProceedsButton}
@@ -77,11 +77,11 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     <Button
       className="p-3 shadow-md hover:shadow-xl disabled:shadow-none rounded-md bg-slate-600 text-white text-sm  uppercase font-medium disabled:bg-gray-400"
       onClick={() => {
-        setModal("saleForm");
+        setModal('saleForm');
       }}
       disabled={!swapContractAddress}
     >
-      {!swapContractAddress ? "Buying and selling is not enabled" : `Post Bid/Ask`}
+      {!swapContractAddress ? 'Buying and selling is not enabled' : `Post Bid/Ask`}
     </Button>
   );
 
@@ -139,8 +139,8 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
       {archivedOrders?.length !== 0 && (
         <div className="w-full mt-4 border-2 border-slate-600 rounded-md">
           <SectionBlock
-            className={"p-3 bg-slate-600 text-white rounded-sm w-full font-semibold  "}
-            sectionTitle={"Archived offers"}
+            className={'p-3 bg-slate-600 text-white rounded-sm w-full font-semibold  '}
+            sectionTitle={'Archived offers'}
             mini
           >
             <div className=" items-center px-3 w-full">

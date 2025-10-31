@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import cn from "classnames";
-import { Form, Formik } from "formik";
-import { usePathname, useRouter } from "next/navigation";
-import React, { FC, useContext } from "react";
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import { usePathname, useRouter } from 'next/navigation';
+import React, { FC, useContext } from 'react';
 
-import { ApplicationStoreProps, store } from "@/contexts/store";
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
-import Input from "../form-components/Inputs";
+import Input from '../form-components/Inputs';
 
 type UserSearchProps = {
   fieldClass?: string;
@@ -22,16 +22,16 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
   const pathname = usePathname();
 
   const handleSubmit = (submission: string) => {
-    dispatch({ type: "SET_SEARCHTEXT", payload: submission });
-    if (pathname !== "/") {
-      router.push("/");
+    dispatch({ type: 'SET_SEARCHTEXT', payload: submission });
+    if (pathname !== '/') {
+      router.push('/');
     }
   };
 
   return (
     <Formik
       initialValues={{
-        searchText: ""
+        searchText: ''
       }}
       validate={() => {
         const errors: any = {}; /** @TODO : Shape */
@@ -44,9 +44,9 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
       }}
     >
       {({ isSubmitting }) => (
-        <Form className={cn(fullWidth && "w-full", "flex items-center h-14")}>
+        <Form className={cn(fullWidth && 'w-full', 'flex items-center h-14')}>
           <Input
-            fieldClass={cn(fieldClass ? fieldClass : "h-10 md:h-14 w-56 md:w-96 border-0")}
+            fieldClass={cn(fieldClass ? fieldClass : 'h-10 md:h-14 w-56 md:w-96 border-0')}
             type="text"
             name="searchText"
             placeholder="  Search by name, email, or username"
@@ -58,7 +58,7 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
             className={cn(
               buttonClass
                 ? buttonClass
-                : "h-10 md:h-14 bg-blue-900 hover:bg-blue-800 text-white text-sm md:text-base font-bold uppercase  px-2 md:p-4"
+                : 'h-10 md:h-14 bg-blue-900 hover:bg-blue-800 text-white text-sm md:text-base font-bold uppercase  px-2 md:p-4'
             )}
           >
             Search

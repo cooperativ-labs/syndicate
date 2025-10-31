@@ -1,9 +1,9 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import { MatchSupportedChains } from "@src/web3/connectors";
-import { setAllowance } from "@src/web3/contractSwapCalls";
-import { String0x } from "@src/web3/helpersChain";
-import React, { useState } from "react";
-import { useChainId } from "wagmi";
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { MatchSupportedChains } from '@src/web3/connectors';
+import { setAllowance } from '@src/web3/contractSwapCalls';
+import { String0x } from '@src/web3/helpersChain';
+import React, { useState } from 'react';
+import { useChainId } from 'wagmi';
 
 type SetAllowanceFormProps = {
   amount: number | undefined;
@@ -20,13 +20,13 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
   amount,
   refetchAllowance
 }) => {
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const chainId = useChainId();
   const chainName = MatchSupportedChains(chainId)?.name;
 
   const handleAllowance = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
     e.preventDefault();
-    setButtonStep("step1");
+    setButtonStep('step1');
     await setAllowance({
       paymentTokenAddress,
       paymentTokenDecimals,
@@ -34,7 +34,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
       amount,
       setButtonStep
     });
-    setButtonStep("confirmed");
+    setButtonStep('confirmed');
     refetchAllowance();
     return;
   };

@@ -1,4 +1,4 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 import {
   CORE_ENTITY_FIELDS,
@@ -6,7 +6,7 @@ import {
   CORE_ORGANIZATION_FIELDS,
   CORE_USER_FIELDS,
   SMART_CONTRACT_FIELDS
-} from "./fragments";
+} from './fragments';
 
 export const GET_USER_PROFILE = gql`
   query GetUserProfile($id: UUID!) {

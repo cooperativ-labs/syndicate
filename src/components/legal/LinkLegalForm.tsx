@@ -1,26 +1,26 @@
-"use client";
+'use client';
 
-import { useMutation } from "@apollo/client/react";
-import { CurrencyCode, Maybe, SmartContract } from "@gql/graphql";
-import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from "@src/utils/graphQueries/offering";
-import { getBaseUrl } from "@src/utils/helpersURL";
-import { setDocument } from "@src/web3/contractShareCalls";
+import { useMutation } from '@apollo/client/react';
+import { CurrencyCode, Maybe, SmartContract } from '@gql/graphql';
+import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { setDocument } from '@src/web3/contractShareCalls';
 import {
   hashBytes32FromString,
   StandardChainErrorHandling,
   String0x
-} from "@src/web3/helpersChain";
-import { Form, Formik } from "formik";
-import { useRouter } from "next/navigation";
-import router from "next/router";
-import React, { FC, useState } from "react";
-import { useAccount, useChainId } from "wagmi";
+} from '@src/web3/helpersChain';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
+import router from 'next/router';
+import React, { FC, useState } from 'react';
+import { useAccount, useChainId } from 'wagmi';
 
-import { LoadingButtonStateType, LoadingButtonText } from "../buttons/Button";
-import FormButton from "../buttons/FormButton";
-import Input, { defaultFieldDiv } from "../form-components/Inputs";
+import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import FormButton from '../buttons/FormButton';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
 
-import PresentLegalText from "./PresentLegalText";
+import PresentLegalText from './PresentLegalText';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
@@ -61,10 +61,10 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
     setAlerted(true);
   }
 
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const createDocHash = async (signature: string) => {
-    setButtonStep("step1");
+    setButtonStep('step1');
     const handleEstablish = async () => {
       try {
         await addLegalLink({
@@ -91,7 +91,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
           }
         });
 
-        setButtonStep("confirmed");
+        setButtonStep('confirmed');
         router.push(`${getBaseUrl()}/offerings/${offeringId}`);
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
@@ -114,7 +114,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
     <div className="bg-gray-100 pt-8 p-4 md:p-8 min-h-max mb-6 md:mb-10 md:rounded-lg bg-opacity-100 ">
       <Formik
         initialValues={{
-          signature: ""
+          signature: ''
         }}
         validate={values => {
           const errors: any = {}; /** @TODO : Shape */

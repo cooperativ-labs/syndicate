@@ -1,27 +1,27 @@
-import { useMutation } from "@apollo/client/react";
-import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from "@gql/graphql";
-import ChooseConnectorButton from "@src/containers/wallet/ChooseConnectorButton";
+import { useMutation } from '@apollo/client/react';
+import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@gql/graphql';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import WalletActionIndicator, {
   WalletActionStepType
-} from "@src/containers/wallet/WalletActionIndicator";
-import WalletActionModal from "@src/containers/wallet/WalletActionModal";
-import { bacOptions, getCurrencyById, getCurrencyOption } from "@src/utils/enumConverters";
-import { CREATE_SWAP_CONTRACT } from "@src/utils/graphQueries/crypto";
-import { UPDATE_INVESTMENT_CURRENCY } from "@src/utils/graphQueries/offering";
-import { MatchSupportedChains } from "@src/web3/connectors";
-import { deploySwapContract } from "@src/web3/contractFactory";
-import { setContractOperator } from "@src/web3/contractShareCalls";
-import { StandardChainErrorHandling, String0x } from "@src/web3/helpersChain";
-import { Form, Formik } from "formik";
-import React, { FC, useContext, useState } from "react";
-import { useAsyncFn } from "react-use";
-import { useAccount, useChainId, useNetwork } from "wagmi";
+} from '@src/containers/wallet/WalletActionIndicator';
+import WalletActionModal from '@src/containers/wallet/WalletActionModal';
+import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
+import { CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';
+import { UPDATE_INVESTMENT_CURRENCY } from '@src/utils/graphQueries/offering';
+import { MatchSupportedChains } from '@src/web3/connectors';
+import { deploySwapContract } from '@src/web3/contractFactory';
+import { setContractOperator } from '@src/web3/contractShareCalls';
+import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
+import { Form, Formik } from 'formik';
+import React, { FC, useContext, useState } from 'react';
+import { useAsyncFn } from 'react-use';
+import { useAccount, useChainId, useNetwork } from 'wagmi';
 
-import { ApplicationStoreProps, store } from "@/contexts/store";
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
-import Button, { LoadingButtonStateType, LoadingButtonText } from "../buttons/Button";
-import { defaultFieldDiv } from "../form-components/Inputs";
-import Select from "../form-components/Select";
+import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import { defaultFieldDiv } from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
 type CreateSwapContractProps = {
   contractSet: Maybe<OfferingSmartContractSet> | undefined;
@@ -38,7 +38,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
 }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress } = useAccount();
   const [addSwapContract, { data, error }] = useMutation(CREATE_SWAP_CONTRACT);
   const [updateInvestmentCurrency] = useMutation(UPDATE_INVESTMENT_CURRENCY);
@@ -52,9 +52,9 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
 
   const [, deploy] = useAsyncFn(
     async paymentTokenAddress => {
-      setButtonStep("step1");
+      setButtonStep('step1');
       const protocol = MatchSupportedChains(chainId)?.protocol;
-      dispatchWalletActionLockModalOpen({ type: "TOGGLE_WALLET_ACTION_LOCK" });
+      dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
       try {
         const contract = await deploySwapContract(
           userWalletAddress,
@@ -63,9 +63,9 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
           paymentTokenAddress
         );
         if (!contract.contractAddress) {
-          throw new Error("no contract address");
+          throw new Error('no contract address');
         }
-        setButtonStep("step2");
+        setButtonStep('step2');
         await setContractOperator({
           shareContractAddress,
           operator: contract.contractAddress,
@@ -94,23 +94,23 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
             }
           });
         }
-        setButtonStep("confirmed");
+        setButtonStep('confirmed');
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
       }
-      dispatchWalletActionLockModalOpen({ type: "TOGGLE_WALLET_ACTION_LOCK" });
+      dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
     },
     [userWalletAddress, shareContractAddress, chainId]
   );
 
   if (error && !alerted) {
-    alert("Oops. Looks like something went wrong");
+    alert('Oops. Looks like something went wrong');
     setAlerted(true);
   }
 
   return (
     <>
-      <WalletActionModal open={buttonStep === "step1" || buttonStep === "step2"}>
+      <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
         <WalletActionIndicator
           step={buttonStep}
           step1Text="Deploying swap contract"
@@ -128,7 +128,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
         </p>
         <div>
           {!userWalletAddress ? (
-            <ChooseConnectorButton buttonText={"Connect Wallet"} />
+            <ChooseConnectorButton buttonText={'Connect Wallet'} />
           ) : (
             <Formik
               initialValues={{
@@ -138,7 +138,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
                 const errors: any = {}; /** @TODO : Shape */
                 if (!values.investmentCurrencyAddress) {
                   errors.investmentCurrencyAddress =
-                    "You must choose a currency to use for buying and selling shares";
+                    'You must choose a currency to use for buying and selling shares';
                 }
                 return errors;
               }}

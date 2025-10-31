@@ -1,11 +1,11 @@
-import cn from "classnames";
-import Link from "next/link";
-import React, { FC } from "react";
+import cn from 'classnames';
+import Link from 'next/link';
+import React, { FC } from 'react';
 
-import Button, { ButtonProps } from "./Button";
+import Button, { ButtonProps } from './Button';
 
 const buttonGradient =
-  "bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm";
+  'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
 
 type MajorActionButtonProps = ButtonProps & {
   link?: string;
@@ -25,9 +25,9 @@ export const MajorActionButton: FC<MajorActionButtonProps> = ({
     <Button
       disabled={disabled}
       className={cn(
-        !disabled ? buttonGradient : "bg-gray-300",
+        !disabled ? buttonGradient : 'bg-gray-300',
         className,
-        "text-white font-bold uppercase mt-8 rounded p-4"
+        'text-white font-bold uppercase mt-8 rounded p-4'
       )}
       {...rest}
     >

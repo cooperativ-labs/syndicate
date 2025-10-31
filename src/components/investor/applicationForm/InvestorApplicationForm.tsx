@@ -1,39 +1,39 @@
-"use client";
+'use client';
 
-import { useMutation } from "@apollo/client/react";
-import { Maybe, Offering } from "@gql/graphql";
-import { GoogleMap, Marker } from "@react-google-maps/api";
-import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import FormButton from "@src/components/buttons/FormButton";
-import Checkbox from "@src/components/form-components/Checkbox";
+import { useMutation } from '@apollo/client/react';
+import { Maybe, Offering } from '@gql/graphql';
+import { GoogleMap, Marker } from '@react-google-maps/api';
+import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import FormButton from '@src/components/buttons/FormButton';
+import Checkbox from '@src/components/form-components/Checkbox';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
-} from "@src/components/form-components/CustomAddressAutocomplete";
-import Datepicker from "@src/components/form-components/Datepicker";
+} from '@src/components/form-components/CustomAddressAutocomplete';
+import Datepicker from '@src/components/form-components/Datepicker';
 import Input, {
   defaultFieldDiv,
   defaultFieldLabelClass
-} from "@src/components/form-components/Inputs";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import ChooseConnectorButton from "@src/containers/wallet/ChooseConnectorButton";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from "@src/utils/graphQueries/offering";
-import { checkDateInPast } from "@src/utils/helpersGeneral";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { Form, Formik } from "formik";
-import { useRouter } from "next/navigation";
-import React, { FC, useEffect, useState } from "react";
-import { geocodeByPlaceId } from "react-google-places-autocomplete";
-import { useAccount, useChainId } from "wagmi";
+} from '@src/components/form-components/Inputs';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/graphQueries/offering';
+import { checkDateInPast } from '@src/utils/helpersGeneral';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { Form, Formik } from 'formik';
+import { useRouter } from 'next/navigation';
+import React, { FC, useEffect, useState } from 'react';
+import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import { useAccount, useChainId } from 'wagmi';
 
-import FormCard from "../../cards/FormCard";
+import FormCard from '../../cards/FormCard';
 
-import AdditionalApplicationFields from "./AdditionalApplicationFields";
-import AdvisorFields from "./AdvisorFields";
-import InvestorApplicationPledgeFields from "./InvestorApplicationPledgeFields";
-import PrimaryApplicationFields from "./PrimaryApplicationFields";
-import PurchaserSummaryDisplay from "./PurchaserSummaryDisplay";
-import { GeneratedApplicationText } from "./SummaryGenerator";
+import AdditionalApplicationFields from './AdditionalApplicationFields';
+import AdvisorFields from './AdvisorFields';
+import InvestorApplicationPledgeFields from './InvestorApplicationPledgeFields';
+import PrimaryApplicationFields from './PrimaryApplicationFields';
+import PurchaserSummaryDisplay from './PurchaserSummaryDisplay';
+import { GeneratedApplicationText } from './SummaryGenerator';
 
 type InvestorApplicationFormProps = {
   offering: Offering;
@@ -98,7 +98,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
   const chainId = useChainId();
   const { address: userWalletAddress } = useAccount();
 
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const [addOfferingParticipant, { data, error }] = useMutation(
     ADD_OFFERING_PARTICIPANT_WITH_APPLICATION
@@ -137,57 +137,57 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
 
   const [agreementContent, setAgreementContent] = useState<InvestorFormInputsType>({
     isCompany: false,
-    walletAddress: "",
-    offeringEntityManager: "",
-    purchaserEntityName: "",
-    purchaserEntityManager: "",
-    purchaserEntityManagerTitle: "",
+    walletAddress: '',
+    offeringEntityManager: '',
+    purchaserEntityName: '',
+    purchaserEntityManager: '',
+    purchaserEntityManagerTitle: '',
     numUnitsPurchase: undefined,
-    purchaseMethod: "",
-    purchaserTitle: "",
-    enteringAgent: "",
-    dateSigned: "",
-    signature: "",
-    purchaserAddressLine1: "",
-    purchaserAddressLine2: "",
-    purchaserCity: "",
-    purchaserStateProvince: "",
-    purchaserPostalCode: "",
-    purchaserCountry: "",
-    purchaserEmail: "",
-    purchaserPhone: "",
-    taxId: "",
-    purchaserEntityJurisdiction: "",
+    purchaseMethod: '',
+    purchaserTitle: '',
+    enteringAgent: '',
+    dateSigned: '',
+    signature: '',
+    purchaserAddressLine1: '',
+    purchaserAddressLine2: '',
+    purchaserCity: '',
+    purchaserStateProvince: '',
+    purchaserPostalCode: '',
+    purchaserCountry: '',
+    purchaserEmail: '',
+    purchaserPhone: '',
+    taxId: '',
+    purchaserEntityJurisdiction: '',
     purchaserAge: undefined,
-    purchaserPrincipleResidence: "",
-    purchaserResidenceHistory: "",
-    purchaserTaxState: "",
+    purchaserPrincipleResidence: '',
+    purchaserResidenceHistory: '',
+    purchaserTaxState: '',
     purchaserAccredited: false,
-    purchaserAccreditedType: "",
-    purchaserAccreditedTypeOther: "",
+    purchaserAccreditedType: '',
+    purchaserAccreditedTypeOther: '',
     purchaserNetWorth: false,
     purchaserIncome: false,
-    purchaserIsWithOfferingCompany: "",
+    purchaserIsWithOfferingCompany: '',
     purchaserSophisticated: false,
     purchaserSophisticatedSelf: false,
     purchaserNonUs: false,
-    purchaserExperienceFinancial: "",
-    purchaserExperienceSecurities: "",
-    purchaserExperienceLLCs: "",
-    purchaserExperienceOther: "",
-    purchaserPriorRelationship: "",
+    purchaserExperienceFinancial: '',
+    purchaserExperienceSecurities: '',
+    purchaserExperienceLLCs: '',
+    purchaserExperienceOther: '',
+    purchaserPriorRelationship: '',
     workingWithAdvisor: false,
-    advisorRelationship: "",
-    advisorFullName: "",
-    advisorEmail: "",
-    advisorPhone: "",
-    advisor_addressLine1: "",
-    advisor_addressLine2: "",
-    advisor_addressLine3: "",
-    advisor_city: "",
-    advisor_stateProvince: "",
-    advisor_postalCode: "",
-    advisor_country: ""
+    advisorRelationship: '',
+    advisorFullName: '',
+    advisorEmail: '',
+    advisorPhone: '',
+    advisor_addressLine1: '',
+    advisor_addressLine2: '',
+    advisor_addressLine3: '',
+    advisor_city: '',
+    advisor_stateProvince: '',
+    advisor_postalCode: '',
+    advisor_country: ''
   });
 
   // if (!user) {
@@ -215,7 +215,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
     signature: string;
   }) => {
     const appTitle = `${values.purchaserEntityName}'s requests approval to invest in ${offering.name}`;
-    setButtonStep("step1");
+    setButtonStep('step1');
     try {
       await addOfferingParticipant({
         variables: {
@@ -229,16 +229,16 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
           // jurState: values.jurState,
           offeringId: offering.id,
           offeringEntityId: offering.offeringEntity?.id,
-          offeringUniqueId: offering.id + values.purchaserEntityName + "application",
+          offeringUniqueId: offering.id + values.purchaserEntityName + 'application',
           walletAddress: userWalletAddress,
           applicationText: ApplicationText.all,
           applicationTitle: appTitle,
           signature: values.signature
         }
       });
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
     } catch (e) {
-      setButtonStep("failed");
+      setButtonStep('failed');
     }
   };
 
@@ -259,63 +259,63 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
         initialValues={{
           isCompany: false,
           walletAddress: userWalletAddress as string,
-          offeringEntityManager: "",
-          purchaserEntityName: "",
-          purchaserEntityManager: "",
-          purchaserEntityManagerTitle: "",
+          offeringEntityManager: '',
+          purchaserEntityName: '',
+          purchaserEntityManager: '',
+          purchaserEntityManagerTitle: '',
           numUnitsPurchase: undefined,
-          purchaseMethod: "",
-          purchaserTitle: "",
-          enteringAgent: "",
-          dateSigned: "",
-          signature: "",
-          addressAutocomplete: "",
-          purchaserAddressLine1: "",
-          purchaserAddressLine2: "",
-          purchaserCity: "",
-          purchaserStateProvince: "",
-          purchaserPostalCode: "",
-          purchaserCountry: "",
-          purchaserEmail: "",
-          purchaserPhone: "",
-          taxId: "",
-          purchaserEntityJurisdiction: "",
+          purchaseMethod: '',
+          purchaserTitle: '',
+          enteringAgent: '',
+          dateSigned: '',
+          signature: '',
+          addressAutocomplete: '',
+          purchaserAddressLine1: '',
+          purchaserAddressLine2: '',
+          purchaserCity: '',
+          purchaserStateProvince: '',
+          purchaserPostalCode: '',
+          purchaserCountry: '',
+          purchaserEmail: '',
+          purchaserPhone: '',
+          taxId: '',
+          purchaserEntityJurisdiction: '',
           purchaserAge: undefined,
-          purchaserPrincipleResidence: "",
-          purchaserResidenceHistory: "",
-          purchaserTaxState: "",
+          purchaserPrincipleResidence: '',
+          purchaserResidenceHistory: '',
+          purchaserTaxState: '',
           purchaserAccredited: false,
-          purchaserAccreditedType: "",
-          purchaserAccreditedTypeOther: "",
+          purchaserAccreditedType: '',
+          purchaserAccreditedTypeOther: '',
           purchaserNetWorth: false,
           purchaserIncome: false,
-          purchaserIsWithOfferingCompany: "",
+          purchaserIsWithOfferingCompany: '',
           purchaserSophisticated: false,
           purchaserSophisticatedSelf: false,
           purchaserNonUs: false,
-          purchaserExperienceFinancial: "",
-          purchaserExperienceSecurities: "",
-          purchaserExperienceLLCs: "",
-          purchaserExperienceOther: "",
-          purchaserPriorRelationship: "",
+          purchaserExperienceFinancial: '',
+          purchaserExperienceSecurities: '',
+          purchaserExperienceLLCs: '',
+          purchaserExperienceOther: '',
+          purchaserPriorRelationship: '',
           workingWithAdvisor: false,
-          advisorRelationship: "",
-          advisorFullName: "",
-          advisorEmail: "",
-          advisorPhone: "",
-          advisor_addressLine1: "",
-          advisor_addressLine2: "",
-          advisor_addressLine3: "",
-          advisor_city: "",
-          advisor_stateProvince: "",
-          advisor_postalCode: "",
-          advisor_country: ""
+          advisorRelationship: '',
+          advisorFullName: '',
+          advisorEmail: '',
+          advisorPhone: '',
+          advisor_addressLine1: '',
+          advisor_addressLine2: '',
+          advisor_addressLine3: '',
+          advisor_city: '',
+          advisor_stateProvince: '',
+          advisor_postalCode: '',
+          advisor_country: ''
         }}
         validate={values => {
           setAgreementContent(values);
           const errors: any = {}; /** @TODO : Shape */
           if (checkDateInPast(values.dateSigned)) {
-            errors.dateSigned = "Signing date cannot be in the past";
+            errors.dateSigned = 'Signing date cannot be in the past';
           }
           return errors;
         }}
@@ -352,7 +352,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                         className="font-semibold"
                       />
                     ) : (
-                      <ChooseConnectorButton buttonText={"Connect Wallet to Apply"} />
+                      <ChooseConnectorButton buttonText={'Connect Wallet to Apply'} />
                     )}
                   </div>
                 </div>
@@ -365,7 +365,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                 />
 
                 <Checkbox
-                  labelText={`${values.purchaserEntityName ? values.purchaserEntityName : "Purchaser"} is a company`}
+                  labelText={`${values.purchaserEntityName ? values.purchaserEntityName : 'Purchaser'} is a company`}
                   className="mb-4"
                   fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
                   name="isCompany"
@@ -386,7 +386,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                     {latLang.lat && (
                       <div className="mt-4">
                         <GoogleMap
-                          mapContainerStyle={{ height: "300px", width: "100%" }}
+                          mapContainerStyle={{ height: '300px', width: '100%' }}
                           center={latLang}
                           zoom={14}
                         >
@@ -524,7 +524,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                 </div>
                 <hr className="mb-6 mt-10" />
                 {userWalletAddress ? (
-                  <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
+                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
                     <LoadingButtonText
                       state={buttonStep}
                       idleText={`Apply to become a ${offering.offeringEntity?.legalName} investor`}
@@ -536,7 +536,7 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                     />
                   </FormButton>
                 ) : (
-                  <ChooseConnectorButton buttonText={"Connect Wallet to Apply"} />
+                  <ChooseConnectorButton buttonText={'Connect Wallet to Apply'} />
                 )}
               </FormCard>
             </div>

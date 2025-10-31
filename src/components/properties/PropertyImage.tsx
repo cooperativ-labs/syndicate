@@ -1,10 +1,10 @@
-import { useMutation } from "@apollo/client/react";
-import { Image, Maybe } from "@gql/graphql";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { REMOVE_PROPERTY_IMAGE } from "@src/utils/graphQueries/reProperty";
-import React, { FC } from "react";
+import { useMutation } from '@apollo/client/react';
+import { Image, Maybe } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { REMOVE_PROPERTY_IMAGE } from '@src/utils/graphQueries/reProperty';
+import React, { FC } from 'react';
 
-import DeleteButton from "../buttons/DeleteButton";
+import DeleteButton from '../buttons/DeleteButton';
 
 type PropertyImageProps = {
   image: Maybe<Image>;
@@ -21,7 +21,7 @@ const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) =
   const handleDelete = async () => {
     try {
       const response = await fetch(`/api/file/${image?.fileId}`, {
-        method: "DELETE"
+        method: 'DELETE'
       });
 
       if (!response.ok) {
@@ -35,14 +35,14 @@ const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) =
         variables: { currentDate: currentDate, propertyId: propertyId, imageId: image?.id }
       });
     } catch (error: any) {
-      throw new Error("Error details:", error);
+      throw new Error('Error details:', error);
     }
   };
   return (
     <div className="m-2 relative">
       {isOwner && (
         <div className="absolute -right-1 -top-1">
-          <DeleteButton onDelete={handleDelete} iconColor={"gray-800"} bgColor={"white"} />
+          <DeleteButton onDelete={handleDelete} iconColor={'gray-800'} bgColor={'white'} />
         </div>
       )}
       <img className="h-64" src={image?.url} />

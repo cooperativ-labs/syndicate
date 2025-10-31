@@ -1,7 +1,7 @@
-import cn from "classnames";
-import React, { ReactNode } from "react";
+import cn from 'classnames';
+import React, { ReactNode } from 'react';
 
-import { defaultFieldLabelClass } from "./Inputs";
+import { defaultFieldLabelClass } from './Inputs';
 
 export type CustomNonInputProps = {
   labelText?: string;
@@ -17,7 +17,7 @@ export const NonInput: React.FC<CustomNonInputProps> = ({
   children
 }) => {
   return (
-    <div className={cn(className, "flex flex-col w-full")}>
+    <div className={cn(className, 'flex flex-col w-full')}>
       {labelText && (
         <label className={cn(fieldLabelClass ? fieldLabelClass : defaultFieldLabelClass)}>
           {labelText}

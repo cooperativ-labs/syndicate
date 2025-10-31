@@ -1,15 +1,15 @@
-import { useMutation } from "@apollo/client/react";
-import { EmailAddress, Maybe } from "@gql/graphql";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from "@src/utils/graphQueries/organization";
-import cn from "classnames";
-import { Form, Formik } from "formik";
-import { Trash } from "lucide-react";
-import React, { FC, useState } from "react";
+import { useMutation } from '@apollo/client/react';
+import { EmailAddress, Maybe } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/graphQueries/organization';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import { Trash } from 'lucide-react';
+import React, { FC, useState } from 'react';
 
-import Checkbox from "./form-components/Checkbox";
-import Input from "./form-components/Inputs";
-import { EditButton, MarkPublic } from "./form-components/ListItemButtons";
+import Checkbox from './form-components/Checkbox';
+import Input from './form-components/Inputs';
+import { EditButton, MarkPublic } from './form-components/ListItemButtons';
 
 type EmailAddressListItemProps = {
   email: Maybe<Maybe<EmailAddress>> | undefined;
@@ -29,7 +29,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
   }
 
   return (
-    <div className={cn(withEdit && "grid grid-cols-9 gap-3 items-center")}>
+    <div className={cn(withEdit && 'grid grid-cols-9 gap-3 items-center')}>
       <div className="p-3 border-2 rounded-lg col-span-8">
         <div className="md:w-auto ">
           <div className="text-large font-bold flex justify-between">
@@ -48,7 +48,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
           {name && <div className="flex justify-between">{name}</div>}
           {withEdit && (
             <div className="md:hidden">
-              <MarkPublic isPublic={isPublic} />{" "}
+              <MarkPublic isPublic={isPublic} />{' '}
             </div>
           )}
         </div>

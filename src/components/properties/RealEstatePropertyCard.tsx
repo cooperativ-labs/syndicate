@@ -1,12 +1,12 @@
-"use client";
+'use client';
 
-import { Address, CurrencyCode, Maybe, RealEstateProperty } from "@gql/graphql";
-import AddressDisplay from "@src/components/address/AddressDisplay";
-import cn from "classnames";
-import { useRouter } from "next/navigation";
-import React, { FC } from "react";
+import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@gql/graphql';
+import AddressDisplay from '@src/components/address/AddressDisplay';
+import cn from 'classnames';
+import { useRouter } from 'next/navigation';
+import React, { FC } from 'react';
 
-import MapPanel from "../MapPanel";
+import MapPanel from '../MapPanel';
 
 type RealEstatePropertyCardProps = {
   property: RealEstateProperty;
@@ -27,8 +27,8 @@ export const RealEstatePropertyCard: FC<RealEstatePropertyCardProps> = ({
   return (
     <div
       className={cn(
-        fullWidth ? "w-full " : "md:w-96",
-        "rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer"
+        fullWidth ? 'w-full ' : 'md:w-96',
+        'rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer'
       )}
       onClick={() => router.push(`/entities/${offeringEntityId}/properties/${id}`)}
     >

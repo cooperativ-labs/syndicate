@@ -1,6 +1,6 @@
-import ManagerWrapper from "@src/containers/ManagerWrapper";
-import OrganizationOverview from "@src/screens/OrganizationOverview";
-import React from "react";
+import ManagerWrapper from '@src/containers/ManagerWrapper';
+import OrganizationOverview from '@src/screens/OrganizationOverview';
+import React from 'react';
 
 const OrganizationPage = () => {
   return (

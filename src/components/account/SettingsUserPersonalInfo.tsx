@@ -1,14 +1,14 @@
-import { useMutation } from "@apollo/client/react";
-import { LegalEntity, User } from "@gql/graphql";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { UPDATE_USER } from "@src/utils/graphQueries/user";
-import { Form, Formik } from "formik";
-import React, { FC, useState } from "react";
+import { useMutation } from '@apollo/client/react';
+import { LegalEntity, User } from '@gql/graphql';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { UPDATE_USER } from '@src/utils/graphQueries/user';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
 
-import Checkbox from "../form-components/Checkbox";
-import Input from "../form-components/Inputs";
+import Checkbox from '../form-components/Checkbox';
+import Input from '../form-components/Inputs';
 
-const fieldDiv = "pt-3 my-2 bg-opacity-0";
+const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 type SettingUserPersonalInfoProps = {
   user: User;
@@ -20,7 +20,7 @@ const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ user }) => 
   const [alerted, setAlerted] = useState<boolean>(false);
 
   if (error) {
-    alert("Oops. Looks like something went wrong");
+    alert('Oops. Looks like something went wrong');
   }
   if (data && !alerted) {
     alert(`${data.updateUser.user[0].name} was successfully updated!`);
@@ -38,14 +38,14 @@ const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ user }) => 
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.name) {
-          errors.name = "Please include your full name.";
+          errors.name = 'Please include your full name.';
         } else if (!/^[a-z ,.'-]+$/i.test(values.name)) {
-          errors.name = "Please only use valid characters";
+          errors.name = 'Please only use valid characters';
         }
         if (!values.email) {
-          errors.email = "Please include an email address.";
+          errors.email = 'Please include an email address.';
         } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-          errors.email = "Invalid email address";
+          errors.email = 'Invalid email address';
         }
         return errors;
       }}

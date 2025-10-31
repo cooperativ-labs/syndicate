@@ -1,15 +1,15 @@
-"use client";
+'use client';
 
-import SetCookieContext from "@contexts/SetCookieContext";
-import CookieBanner from "@src/CookieBanner";
-import { getWagmiConfig } from "@src/web3/wagmi";
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import React, { useEffect, useState } from "react";
-import { State, WagmiProvider } from "wagmi";
+import SetCookieContext from '@contexts/SetCookieContext';
+import CookieBanner from '@src/CookieBanner';
+import { getWagmiConfig } from '@src/web3/wagmi';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import React, { useEffect, useState } from 'react';
+import { State, WagmiProvider } from 'wagmi';
 
-import { StateProvider } from "@/contexts/store";
+import { StateProvider } from '@/contexts/store';
 
-import { ApolloWrapper } from "./ApolloWrapper";
+import { ApolloWrapper } from './ApolloWrapper';
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -21,7 +21,7 @@ const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
   const [config] = useState(() => getWagmiConfig());
   const [queryClient] = useState(() => new QueryClient()); // This is required for Wagmi
   useEffect(() => {
-    const result = window.localStorage?.getItem("COOKIE_APPROVED");
+    const result = window.localStorage?.getItem('COOKIE_APPROVED');
     setCookiesApproved(result);
   }, []);
 
@@ -47,7 +47,7 @@ const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
       <WagmiProvider config={config} initialState={initialState}>
         <QueryClientProvider client={queryClient}>
           <StateProvider>
-            {cookiesApproved === "approved" ? withCookies : withoutCookies}
+            {cookiesApproved === 'approved' ? withCookies : withoutCookies}
           </StateProvider>
         </QueryClientProvider>
       </WagmiProvider>

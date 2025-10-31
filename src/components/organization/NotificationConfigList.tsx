@@ -1,9 +1,9 @@
-import { useMutation } from "@apollo/client/react";
-import { Maybe, NotificationConfiguration, OrganizationUser } from "@gql/graphql";
-import { REMOVE_NOTIFICATION_RULE } from "@src/utils/graphQueries/organization";
-import React, { FC } from "react";
+import { useMutation } from '@apollo/client/react';
+import { Maybe, NotificationConfiguration, OrganizationUser } from '@gql/graphql';
+import { REMOVE_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
+import React, { FC } from 'react';
 
-import NotificationConfigItem, { NotificationConfigItemBaseProps } from "./NotificationConfigItem";
+import NotificationConfigItem, { NotificationConfigItemBaseProps } from './NotificationConfigItem';
 
 type NotificationConfigListProps = {
   organizationUser: Maybe<OrganizationUser> | undefined;

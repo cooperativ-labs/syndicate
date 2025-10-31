@@ -1,6 +1,6 @@
-import { LinkedAccountType } from "@gql/graphql";
-import { getSocialAccountOption } from "@src/utils/enumConverters";
-import cn from "classnames";
+import { LinkedAccountType } from '@gql/graphql';
+import { getSocialAccountOption } from '@src/utils/enumConverters';
+import cn from 'classnames';
 import {
   Discord,
   Dribbble,
@@ -15,8 +15,8 @@ import {
   Send,
   Twitter,
   Youtube
-} from "lucide-react";
-import React, { FC } from "react";
+} from 'lucide-react';
+import React, { FC } from 'react';
 
 type SocialLinkItemProps = {
   type: LinkedAccountType | null | undefined;
@@ -28,33 +28,33 @@ const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
   const Icon = (() => {
     const iconName = getSocialAccountOption(type)?.icon;
     switch (iconName) {
-      case "linkedin":
+      case 'linkedin':
         return Linkedin;
-      case "github":
+      case 'github':
         return Github;
-      case "dribbble":
+      case 'dribbble':
         return Dribbble;
-      case "discord":
+      case 'discord':
         return Discord;
-      case "youtube":
+      case 'youtube':
         return Youtube;
-      case "soundcloud":
+      case 'soundcloud':
         return Newspaper; // closest generic brand placeholder
-      case "twitter":
+      case 'twitter':
         return Twitter;
-      case "facebook":
+      case 'facebook':
         return Facebook;
-      case "instagram":
+      case 'instagram':
         return Instagram;
-      case "medium":
+      case 'medium':
         return Newspaper;
-      case "telegram":
+      case 'telegram':
         return Send;
-      case "envelope":
+      case 'envelope':
         return Mail;
-      case "phone":
+      case 'phone':
         return PhoneIcon;
-      case "link":
+      case 'link':
         return LinkIcon;
       default:
         return LinkIcon;
@@ -67,7 +67,7 @@ const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
           className={cn(
             className
               ? className
-              : "flex max-w-min py-1 pl-2 pr-2 m-1s text-xl text-gray-700 items-center rounded-full"
+              : 'flex max-w-min py-1 pl-2 pr-2 m-1s text-xl text-gray-700 items-center rounded-full'
           )}
         >
           <Icon />

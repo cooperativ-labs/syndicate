@@ -1,9 +1,9 @@
-import useWindowSize from "@hooks/useWindowSize";
-import Card from "@src/components/cards/Card";
-import cn from "classnames";
-import React, { FC, useContext, useEffect } from "react";
+import useWindowSize from '@hooks/useWindowSize';
+import Card from '@src/components/cards/Card';
+import cn from 'classnames';
+import React, { FC, useContext, useEffect } from 'react';
 
-import { ApplicationStoreProps, store } from "@/contexts/store";
+import { ApplicationStoreProps, store } from '@/contexts/store';
 
 type WalletActionLockModelProps = {
   noModal?: boolean;
@@ -36,13 +36,13 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
           id="dialog-curtain"
           className={cn(
             noModal
-              ? "absolute top-0 bottom-0 right-0 left-0 md:relative"
-              : "w-screen md:h-screen absolute top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80"
+              ? 'absolute top-0 bottom-0 right-0 left-0 md:relative'
+              : 'w-screen md:h-screen absolute top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80'
           )}
         >
           <Card
             className="mx-4 p-6 absolute right-0 left-0 top-32 md:top-0 md:relative flex-col  rounded-xl md:rounded-lg shadow-modal bg-white"
-            style={{ overflow: "smooth", maxWidth: "500px" }}
+            style={{ overflow: 'smooth', maxWidth: '500px' }}
           >
             <div>
               <div className="animate-pulse">

@@ -1,7 +1,7 @@
-import cn from "classnames";
-import React, { FC, ReactNode } from "react";
+import cn from 'classnames';
+import React, { FC, ReactNode } from 'react';
 
-import Button, { ButtonProps } from "./Button";
+import Button, { ButtonProps } from './Button';
 
 interface FormButtonProps extends ButtonProps {
   outlined?: boolean;
@@ -14,7 +14,7 @@ const FormButton: FC<FormButtonProps> = ({
   textColor,
   backgroundColor,
   outlined,
-  color = "blue",
+  color = 'blue',
   borderColor,
   disabled,
   ...rest
@@ -26,7 +26,7 @@ const FormButton: FC<FormButtonProps> = ({
     <Button
       className={cn(
         [outlined ? outlinedClass : standardClass],
-        "text-sm p-3 px-6 font-semibold rounded-md relative"
+        'text-sm p-3 px-6 font-semibold rounded-md relative'
       )}
       {...rest}
     >

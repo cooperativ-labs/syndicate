@@ -6,8 +6,8 @@ import {
   Organization,
   OrganizationPermissionType,
   User
-} from "@gql/graphql";
-import { Country, State } from "country-state-city";
+} from '@gql/graphql';
+import { Country, State } from 'country-state-city';
 
 // export const getUserPersonalEntity = (user: User) => {
 //   const entityObject = user.legalEntities.find((entity) => entity.legalEntity.type === LegalEntityType.Individual);

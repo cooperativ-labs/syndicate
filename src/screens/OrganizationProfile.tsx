@@ -1,9 +1,9 @@
-import { LinkedAccountType, Organization } from "@gql/graphql";
-import OfferingCard from "@src/components/offering/OfferingCard";
-import BannerImage from "@src/components/organization/BannerImage";
-import SocialLinkItem from "@src/components/SocialLinkItem";
-import ChooseConnectorButton from "@src/containers/wallet/ChooseConnectorButton";
-import React, { FC } from "react";
+import { LinkedAccountType, Organization } from '@gql/graphql';
+import OfferingCard from '@src/components/offering/OfferingCard';
+import BannerImage from '@src/components/organization/BannerImage';
+import SocialLinkItem from '@src/components/SocialLinkItem';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import React, { FC } from 'react';
 
 type OrganizationProfileProps = {
   organization: Organization;
@@ -35,12 +35,12 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
       <div className="relative w-full pb-20">
         <div className="absolute right-4 top-4 flex justify-end ">
           <div className="flex items-center justify-center rounded-full bg-slate-50 shadow-sm">
-            <ChooseConnectorButton buttonText={"Connect Wallet"} />
+            <ChooseConnectorButton buttonText={'Connect Wallet'} />
           </div>
         </div>
         <BannerImage imageUrl={bannerImage as string} />
 
-        <div className="md:mx-auto " style={{ maxWidth: "1280px" }}>
+        <div className="md:mx-auto " style={{ maxWidth: '1280px' }}>
           <div className="mx-4 ">
             <div className="flex justify-between">
               <div>

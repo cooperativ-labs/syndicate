@@ -1,13 +1,13 @@
-"use client";
+'use client';
 
-import PortalWrapper from "@src/containers/PortalWrapper";
-import WalletChooserModal from "@src/containers/wallet/WalletChooserModal";
-import Footer from "@src/Footer/Footer";
-import OrganizationProfile from "@src/screens/OrganizationProfile";
-import PortalOrganization from "@src/screens/PortalOrganization";
-import { Organization } from "oldTypes";
-import React from "react";
-import { useAccount } from "wagmi";
+import PortalWrapper from '@src/containers/PortalWrapper';
+import WalletChooserModal from '@src/containers/wallet/WalletChooserModal';
+import Footer from '@src/Footer/Footer';
+import OrganizationProfile from '@src/screens/OrganizationProfile';
+import PortalOrganization from '@src/screens/PortalOrganization';
+import { Organization } from 'oldTypes';
+import React from 'react';
+import { useAccount } from 'wagmi';
 
 type ClientOrganizationPageProps = {
   organization: Organization | null;

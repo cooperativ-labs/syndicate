@@ -1,5 +1,5 @@
-import cn from "classnames";
-import React, { FC } from "react";
+import cn from 'classnames';
+import React, { FC } from 'react';
 
 export interface CardProps {
   children: React.ReactNode;
@@ -14,7 +14,7 @@ const Card: FC<CardProps> = ({ children, onClick, ...rest }) => {
   return (
     <div
       data-test="component-card"
-      className={cn(className, onClick && "hover:pointer-cursor")}
+      className={cn(className, onClick && 'hover:pointer-cursor')}
       style={style}
       onClick={onClick}
       {...props}

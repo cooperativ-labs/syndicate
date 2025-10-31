@@ -1,18 +1,18 @@
-import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from "@gql/graphql";
-import LoadingToggle from "@src/components/buttons/LoadingToggle";
-import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
-import SectionBlock from "@src/containers/SectionBlock";
-import { swapContractABI } from "@src/web3/generated";
-import { String0x } from "@src/web3/helpersChain";
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from "react";
+import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from '@gql/graphql';
+import LoadingToggle from '@src/components/buttons/LoadingToggle';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import SectionBlock from '@src/containers/SectionBlock';
+import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
+import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import {
   useChainId,
   useContractWrite,
   usePrepareContractWrite,
   useWaitForTransaction
-} from "wagmi";
+} from 'wagmi';
 
-import CreateSwapContract from "../CreateSwapContract";
+import CreateSwapContract from '../CreateSwapContract';
 
 export type SwapContractSettingsProps = {
   swapApprovalsEnabled: boolean | undefined;
@@ -37,22 +37,22 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
   refetchMainContracts
 }) => {
   const chainId = useChainId();
-  const [isLoading, setIsLoading] = useState<"txn" | "listing" | "">("");
+  const [isLoading, setIsLoading] = useState<'txn' | 'listing' | ''>('');
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
 
   const { offeringEntity, details } = offering;
-  const toggleClass = "flex align-middle justify-between items-center ";
+  const toggleClass = 'flex align-middle justify-between items-center ';
 
   const sharedContractInfo = { address: swapContractAddress, abi: swapContractABI };
 
   const { config: configSwapApproval } = usePrepareContractWrite({
     ...sharedContractInfo,
-    functionName: "toggleSwapApprovals"
+    functionName: 'toggleSwapApprovals'
   });
   const { config: configTxnApproval } = usePrepareContractWrite({
     ...sharedContractInfo,
-    functionName: "toggleTxnApprovals"
+    functionName: 'toggleTxnApprovals'
   });
 
   const { data: swapApprovalData, write: writeSwapApproval } = useContractWrite(configSwapApproval);
@@ -63,7 +63,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
     hash: swapApprovalData?.hash,
     onSuccess: () => {
       refetchMainContracts();
-      setIsLoading("");
+      setIsLoading('');
     }
   });
 
@@ -71,17 +71,17 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
     hash: txnApprovalData?.hash,
     onSuccess: () => {
       refetchMainContracts();
-      setIsLoading("");
+      setIsLoading('');
     }
   });
 
   const handleSwapToggle = async () => {
-    setIsLoading("listing");
+    setIsLoading('listing');
     writeSwapApproval && writeSwapApproval();
   };
 
   const handleTxnToggle = async () => {
-    setIsLoading("txn");
+    setIsLoading('txn');
     writeTxnApproval && writeTxnApproval();
   };
 
@@ -89,7 +89,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
     <div className={toggleClass}>
       <div className="text-sm font-medium text-gray-700 mr-2">Listings require approval</div>
       <LoadingToggle
-        isLoading={isLoading === "listing"}
+        isLoading={isLoading === 'listing'}
         toggleSubject={swapApprovalsEnabled}
         onClick={() => handleSwapToggle()}
       />
@@ -102,7 +102,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
         Each transaction requires approval
       </div>
       <LoadingToggle
-        isLoading={isLoading === "txn"}
+        isLoading={isLoading === 'txn'}
         toggleSubject={txnApprovalsEnabled}
         onClick={() => handleTxnToggle()}
       />
@@ -110,7 +110,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
   );
   return (
     <>
-      {!shareContractAddress && "Trading contract:"}
+      {!shareContractAddress && 'Trading contract:'}
       {shareContractAddress && !swapContractAddress && (
         <CreateSwapContract
           contractSet={contractSet}
@@ -134,7 +134,7 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
           <div className="mt-4 border-2 rounded-md px-2">
             <SectionBlock
               className=""
-              sectionTitle={"Trade approval settings"}
+              sectionTitle={'Trade approval settings'}
               mini
               startOpen
               asAccordion

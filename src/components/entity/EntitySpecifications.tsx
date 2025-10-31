@@ -1,26 +1,26 @@
-import { CurrencyCode, LegalEntity, Maybe } from "@gql/graphql";
-import { currencyOptionsExcludeCredits, getCurrencyOption } from "@src/utils/enumConverters";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { renderJurisdiction } from "@src/utils/helpersUserAndEntity";
-import cn from "classnames";
-import { Form, Formik } from "formik";
-import React, { FC, useState } from "react";
+import { CurrencyCode, LegalEntity, Maybe } from '@gql/graphql';
+import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import cn from 'classnames';
+import { Form, Formik } from 'formik';
+import React, { FC, useState } from 'react';
 
-import Button from "../buttons/Button";
-import ClickToEditItem from "../form-components/ClickToEditItem";
-import Input from "../form-components/Inputs";
-import JurisdictionSelect from "../form-components/JurisdictionSelect";
-import Select from "../form-components/Select";
-import { EditOrganizationSelectionType } from "../organization/OrganizationSpecifications";
+import Button from '../buttons/Button';
+import ClickToEditItem from '../form-components/ClickToEditItem';
+import Input from '../form-components/Inputs';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
+import Select from '../form-components/Select';
+import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 
 export type EditEntitySelectionType =
-  | "displayName"
-  | "legalName"
-  | "jurisdiction"
-  | "currency"
-  | "taxId"
-  | "purpose"
-  | "none";
+  | 'displayName'
+  | 'legalName'
+  | 'jurisdiction'
+  | 'currency'
+  | 'taxId'
+  | 'purpose'
+  | 'none';
 
 export type ChangeFormProps = {
   displayName: Maybe<string> | undefined;
@@ -53,13 +53,13 @@ export const changeForm = (
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.legalName) {
-          errors.legalName = "Please include the legal name of this syndication.";
+          errors.legalName = 'Please include the legal name of this syndication.';
         }
         if (!values.jurCountry) {
-          errors.jurCountry = "Please include the legal name of this syndication.";
+          errors.jurCountry = 'Please include the legal name of this syndication.';
         }
         if (!values.operatingCurrencyCode) {
-          errors.operatingCurrencyCode = "Please include the legal name of this syndication.";
+          errors.operatingCurrencyCode = 'Please include the legal name of this syndication.';
         }
 
         return errors;
@@ -73,21 +73,21 @@ export const changeForm = (
       {({ values, isSubmitting }) => (
         <Form
           className={cn(
-            itemType !== "purpose" && "md:grid",
-            "flex flex-col  grid-cols-5 w-full items-center gap-2 my-4"
+            itemType !== 'purpose' && 'md:grid',
+            'flex flex-col  grid-cols-5 w-full items-center gap-2 my-4'
           )}
         >
           <div className="w-full md:col-span-3">
-            {itemType === "displayName" && (
-              <Input className={" bg-opacity-0"} required name="displayName" />
+            {itemType === 'displayName' && (
+              <Input className={' bg-opacity-0'} required name="displayName" />
             )}
-            {itemType === "legalName" && (
-              <Input className={" bg-opacity-0"} required name="legalName" />
+            {itemType === 'legalName' && (
+              <Input className={' bg-opacity-0'} required name="legalName" />
             )}
 
-            {itemType === "jurisdiction" && <JurisdictionSelect values={values} />}
-            {itemType === "currency" && (
-              <Select className={" bg-opacity-0"} required name="operatingCurrencyCode">
+            {itemType === 'jurisdiction' && <JurisdictionSelect values={values} />}
+            {itemType === 'currency' && (
+              <Select className={' bg-opacity-0'} required name="operatingCurrencyCode">
                 {currencyOptionsExcludeCredits.map((option, i) => {
                   return (
                     <option key={i} value={option.value}>
@@ -97,11 +97,11 @@ export const changeForm = (
                 })}
               </Select>
             )}
-            {itemType === "taxId" && (
-              <Input className={" bg-opacity-0"} required name="taxId" placeholder="Tax ID" />
+            {itemType === 'taxId' && (
+              <Input className={' bg-opacity-0'} required name="taxId" placeholder="Tax ID" />
             )}
-            {itemType === "purpose" && (
-              <Input className={" bg-opacity-0 w-full"} required name="purpose" textArea />
+            {itemType === 'purpose' && (
+              <Input className={' bg-opacity-0 w-full'} required name="purpose" textArea />
             )}
           </div>
           <Button
@@ -115,7 +115,7 @@ export const changeForm = (
             className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
             onClick={e => {
               e.preventDefault();
-              setEditOn("none");
+              setEditOn('none');
             }}
           >
             Cancel
@@ -152,7 +152,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
 }) => {
   const [editOn, setEditOn] = useState<
     EditEntitySelectionType | EditOrganizationSelectionType | string
-  >("none");
+  >('none');
   const { id, legalName, displayName, operatingCurrency, taxId, purpose } = entity;
 
   const handleChange = async (values: ChangeFormProps) => {
@@ -171,7 +171,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
           purpose: purpose
         }
       });
-      setEditOn("none");
+      setEditOn('none');
     } catch (e: any) {
       alert(`Oops. Looks like something went wrong: ${e.message}`);
     }
@@ -182,7 +182,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Legal name"
         currentValue={legalName}
-        form={changeForm("legalName", entity, setEditOn, handleChange)}
+        form={changeForm('legalName', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="legalName"
         isManager={isManager}
@@ -191,7 +191,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="d/b/a"
         currentValue={displayName}
-        form={changeForm("displayName", entity, setEditOn, handleChange)}
+        form={changeForm('displayName', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="displayName"
         isManager={isManager}
@@ -200,7 +200,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Jurisdiction"
         currentValue={renderJurisdiction(entity.jurisdiction)}
-        form={changeForm("jurisdiction", entity, setEditOn, handleChange)}
+        form={changeForm('jurisdiction', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="jurisdiction"
         isManager={isManager}
@@ -209,7 +209,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Currency"
         currentValue={getCurrencyOption(operatingCurrency)?.symbol}
-        form={changeForm("currency", entity, setEditOn, handleChange)}
+        form={changeForm('currency', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="currency"
         isManager={isManager}
@@ -218,7 +218,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Tax ID"
         currentValue={taxId}
-        form={changeForm("taxId", entity, setEditOn, handleChange)}
+        form={changeForm('taxId', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="taxId"
         isManager={isManager}
@@ -227,7 +227,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Entity purpose"
         currentValue={purpose}
-        form={changeForm("purpose", entity, setEditOn, handleChange)}
+        form={changeForm('purpose', entity, setEditOn, handleChange)}
         editOn={editOn}
         itemType="purpose"
         isManager={isManager}

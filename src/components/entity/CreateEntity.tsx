@@ -1,21 +1,21 @@
-import { useMutation } from "@apollo/client/react";
-import { CurrencyCode, LegalEntity, Organization } from "@gql/graphql";
-import { currencyOptionsExcludeCredits, getEntityTypeOptions } from "@src/utils/enumConverters";
-import { ADD_ENTITY } from "@src/utils/graphQueries/entity";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { getEntityOptionsList } from "@src/utils/helpersUserAndEntity";
-import { Form, Formik, useFormikContext } from "formik";
-import React, { FC, useEffect, useState } from "react";
-import { geocodeByPlaceId } from "react-google-places-autocomplete";
-import toast from "react-hot-toast";
+import { useMutation } from '@apollo/client/react';
+import { CurrencyCode, LegalEntity, Organization } from '@gql/graphql';
+import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
+import { ADD_ENTITY } from '@src/utils/graphQueries/entity';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
+import { Form, Formik, useFormikContext } from 'formik';
+import React, { FC, useEffect, useState } from 'react';
+import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import toast from 'react-hot-toast';
 
-import MajorActionButton from "../buttons/MajorActionButton";
+import MajorActionButton from '../buttons/MajorActionButton';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
-} from "../form-components/CustomAddressAutocomplete";
-import Input, { defaultFieldDiv } from "../form-components/Inputs";
-import JurisdictionSelect from "../form-components/JurisdictionSelect";
-import Select from "../form-components/Select";
+} from '../form-components/CustomAddressAutocomplete';
+import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
+import Select from '../form-components/Select';
 
 export type CreateEntityType = {
   organization: Organization;
@@ -31,7 +31,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
 
   const setDefaultLogo = defaultLogo
     ? defaultLogo
-    : "/assets/images/logos/company-placeholder.jpeg";
+    : '/assets/images/logos/company-placeholder.jpeg';
 
   if (error) {
     alert(`Oops. Looks like something went wrong: ${error.message}`);
@@ -65,21 +65,21 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
   return (
     <Formik
       initialValues={{
-        website: "",
-        legalName: "",
-        entityPurpose: "",
-        addressLine1: "",
-        addressLine2: "",
-        addressLine3: "",
-        city: "",
-        stateProvince: "",
-        postalCode: "",
-        country: "",
+        website: '',
+        legalName: '',
+        entityPurpose: '',
+        addressLine1: '',
+        addressLine2: '',
+        addressLine3: '',
+        city: '',
+        stateProvince: '',
+        postalCode: '',
+        country: '',
         operatingCurrency: CurrencyCode.Usd,
-        jurCountry: "",
-        jurProvince: "",
+        jurCountry: '',
+        jurProvince: '',
         type: undefined,
-        addressAutocomplete: ""
+        addressAutocomplete: ''
       }}
       validate={values => {
         // if (values.nonHuman === 'false') {
@@ -87,19 +87,19 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
         // }
         const errors: any = {}; /** @TODO : Shape */
         if (!values.legalName) {
-          errors.legalName = "Please include a full legal name";
+          errors.legalName = 'Please include a full legal name';
         }
         if (!values.type) {
-          errors.type = "Please select a type of entity";
+          errors.type = 'Please select a type of entity';
         }
         if (!firstAddressLine) {
-          errors.addressAutocomplete = "Address must include street number and street name";
+          errors.addressAutocomplete = 'Address must include street number and street name';
         }
         if (!city) {
-          errors.addressAutocomplete = "Address must include a city";
+          errors.addressAutocomplete = 'Address must include a city';
         }
         if (!state) {
-          errors.addressAutocomplete = "Address must include a state";
+          errors.addressAutocomplete = 'Address must include a state';
         }
         return errors;
       }}
@@ -112,7 +112,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               displayName: values.legalName,
               legalName: values.legalName,
               entityPurpose: values.entityPurpose,
-              addressLabel: "Primary Operating Address",
+              addressLabel: 'Primary Operating Address',
               addressLine1: firstAddressLine,
               addressLine2: secondAddressLine,
               city: city,
@@ -174,7 +174,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
           </Select>
           <JurisdictionSelect
             className={defaultFieldDiv}
-            labelText={"Jurisdiction"}
+            labelText={'Jurisdiction'}
             values={values}
           />
 

@@ -1,37 +1,37 @@
-import { useQuery } from "@apollo/client/react";
-import { Maybe, ShareOrder, ShareTransferEvent } from "@gql/graphql";
-import RetrievalIssue from "@src/components/alerts/ContractRetrievalIssue";
-import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
-import CloseButton from "@src/components/buttons/CloseButton";
+import { useQuery } from '@apollo/client/react';
+import { Maybe, ShareOrder, ShareTransferEvent } from '@gql/graphql';
+import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
+import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import CloseButton from '@src/components/buttons/CloseButton';
 import PostBidAskForm, {
   PostBidAskFormProps
-} from "@src/components/investor/tradingForms/PostBidAskForm";
+} from '@src/components/investor/tradingForms/PostBidAskForm';
 import PostInitialSale, {
   PostInitialSaleProps
-} from "@src/components/investor/tradingForms/PostInitialSale";
+} from '@src/components/investor/tradingForms/PostInitialSale';
 import ShareSaleList, {
   ShareSaleListProps
-} from "@src/components/investor/tradingForms/ShareSaleList";
-import ShareSaleStatusWidget from "@src/components/investor/tradingForms/ShareSaleStatusWidget";
-import Loading from "@src/components/loading/Loading";
-import FormModal from "@src/containers/FormModal";
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { GET_USER } from "@src/utils/graphQueries/user";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { ManagerModalType } from "@src/utils/helpersOffering";
-import { claimProceeds } from "@src/web3/contractSwapCalls";
-import { swapContractABI } from "@src/web3/generated";
-import { String0x } from "@src/web3/helpersChain";
-import { toNormalNumber } from "@src/web3/util";
-import React, { FC, useState } from "react";
-import { useAccount, useContractRead } from "wagmi";
+} from '@src/components/investor/tradingForms/ShareSaleList';
+import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
+import Loading from '@src/components/loading/Loading';
+import FormModal from '@src/containers/FormModal';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { GET_USER } from '@src/utils/graphQueries/user';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { ManagerModalType } from '@src/utils/helpersOffering';
+import { claimProceeds } from '@src/web3/contractSwapCalls';
+import { swapContractABI } from '@src/web3/generated';
+import { String0x } from '@src/web3/helpersChain';
+import { toNormalNumber } from '@src/web3/util';
+import React, { FC, useState } from 'react';
+import { useAccount, useContractRead } from 'wagmi';
 
-import SendShares from "../SendShares";
+import SendShares from '../SendShares';
 
-import SmartContractsSettings, { SmartContractsSettingsProps } from "./SmartContractsSettings";
+import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
-export type ActionPanelActionsProps = boolean | "send" | "distribute" | "sale";
+export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
 type OfferingActionsProps = SmartContractsSettingsProps &
   PostBidAskFormProps &
@@ -73,10 +73,10 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const { data: userData } = useQuery(GET_USER, { variables: { id: userId } });
   const user = userData?.queryUser[0];
 
-  const [managerModal, setManagerModal] = useState<ManagerModalType>("none");
+  const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
   const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
-  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>("idle");
+  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
   const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
 
   // const [updateDistribution, { data: updateDistributionData }] = useMutation(UPDATE_DISTRIBUTION);
@@ -97,7 +97,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const { data: contractData } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: "unclaimedProceeds",
+    functionName: 'unclaimedProceeds',
     args: [userWalletAddress as String0x]
   });
 
@@ -112,8 +112,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const FormModals = (
     <>
       <FormModal
-        formOpen={managerModal === "shareSaleList"}
-        onClose={() => setManagerModal("none")}
+        formOpen={managerModal === 'shareSaleList'}
+        onClose={() => setManagerModal('none')}
         title={`Manage shares of ${offeringName}`}
       >
         {userWalletAddress && (
@@ -136,8 +136,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         )}
       </FormModal>
       <FormModal
-        formOpen={managerModal === "smartContractsSettings"}
-        onClose={() => setManagerModal("none")}
+        formOpen={managerModal === 'smartContractsSettings'}
+        onClose={() => setManagerModal('none')}
         title={`Smart contract settings`}
       >
         <SmartContractsSettings
@@ -153,17 +153,17 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         />
       </FormModal>
       <FormModal
-        formOpen={managerModal === "saleForm"}
-        onClose={() => setManagerModal("none")}
-        title={`${isExistingShares ? "Sell" : "Offer new"} shares of ${offeringName}`}
+        formOpen={managerModal === 'saleForm'}
+        onClose={() => setManagerModal('none')}
+        title={`${isExistingShares ? 'Sell' : 'Offer new'} shares of ${offeringName}`}
       >
         <button
           className="p-2 border-2 border-gray-300 text-sm text-gray-800 rounded-md"
           onClick={() => setIsExistingShares(!isExistingShares)}
         >{`${
           isExistingShares
-            ? "Create a fresh offering of orders"
-            : "Sell existing shares from your wallet instead."
+            ? 'Create a fresh offering of orders'
+            : 'Sell existing shares from your wallet instead.'
         }`}</button>
         {isExistingShares ? (
           <PostBidAskForm
@@ -222,7 +222,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           }}
         />
       </div>
-      {showActionPanel === "send" && (
+      {showActionPanel === 'send' && (
         <SendShares
           investmentCurrency={investmentCurrency}
           currentSalePrice={currentSalePrice}
@@ -245,14 +245,14 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         <>
           <Button
             className="p-3 bg-cLightBlue rounded-md text-white"
-            onClick={() => setManagerModal("smartContractsSettings")}
+            onClick={() => setManagerModal('smartContractsSettings')}
           >
             Configure shares & trading
           </Button>
 
           <Button
             onClick={() => {
-              setShowActionPanel("send");
+              setShowActionPanel('send');
             }}
             className={standardClass}
           >
@@ -261,7 +261,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           {swapContractAddress ? (
             <Button
               onClick={() => {
-                setManagerModal("shareSaleList");
+                setManagerModal('shareSaleList');
               }}
               className={standardClass}
             >
@@ -270,7 +270,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           ) : (
             <Button
               onClick={() => {
-                setManagerModal("smartContractsSettings");
+                setManagerModal('smartContractsSettings');
               }}
               className={standardClass}
             >
@@ -281,7 +281,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             <Button
               className={standardClass}
               onClick={handleClaimProceeds}
-              disabled={claimProceedsButton === "step1"}
+              disabled={claimProceedsButton === 'step1'}
             >
               <LoadingButtonText
                 state={claimProceedsButton}
@@ -309,7 +309,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       )}
       <Button
         className="p-3 bg-cLightBlue rounded-md text-white"
-        onClick={() => setManagerModal("smartContractsSettings")}
+        onClick={() => setManagerModal('smartContractsSettings')}
       >
         Configure shares & trading
       </Button>

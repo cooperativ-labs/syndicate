@@ -1,15 +1,15 @@
-import { useMutation } from "@apollo/client/react";
-import { LegalEntity, Organization } from "@gql/graphql";
-import { socialAccountOptions } from "@src/utils/enumConverters";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from "@src/utils/graphQueries/organization";
-import { Form, Formik } from "formik";
-import React, { FC } from "react";
+import { useMutation } from '@apollo/client/react';
+import { LegalEntity, Organization } from '@gql/graphql';
+import { socialAccountOptions } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/graphQueries/organization';
+import { Form, Formik } from 'formik';
+import React, { FC } from 'react';
 
-import Input from "../form-components/Inputs";
-import Select from "../form-components/Select";
+import Input from '../form-components/Inputs';
+import Select from '../form-components/Select';
 
-const fieldDiv = "pt-3 my-2 bg-opacity-0";
+const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 type SettingsSocialProps = {
   organization: Organization;
@@ -24,16 +24,16 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
   return (
     <Formik
       initialValues={{
-        url: "",
-        type: ""
+        url: '',
+        type: ''
       }}
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.url) {
-          errors.url = "Please include a url";
+          errors.url = 'Please include a url';
         }
         if (!values.type) {
-          errors.type = "Please select a platform";
+          errors.type = 'Please select a platform';
         }
         return errors;
       }}
