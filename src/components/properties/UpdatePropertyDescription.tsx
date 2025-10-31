@@ -23,7 +23,9 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({
   updateProperty,
   setModal
 }) => {
-  const [buttonState, setButtonState] = useState<'default' | 'disabled' | 'loading' | 'success' | 'error'>('default');
+  const [buttonState, setButtonState] = useState<
+    'default' | 'disabled' | 'loading' | 'success' | 'error'
+  >('default');
   const entityOperatingCurrency = property.owner?.operatingCurrency;
   return (
     <Formik

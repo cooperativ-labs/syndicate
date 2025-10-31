@@ -1,7 +1,7 @@
 import React from 'react';
 
 export default async function EmailConfirmationPage({
-  searchParams,
+  searchParams
 }: {
   searchParams: Promise<{ email: string }>;
 }) {

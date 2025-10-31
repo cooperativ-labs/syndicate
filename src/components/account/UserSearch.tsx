@@ -29,7 +29,11 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
     }
   };
 
-  const { register, handleSubmit: rhfHandleSubmit, formState } = useForm<{ searchText: string }>({
+  const {
+    register,
+    handleSubmit: rhfHandleSubmit,
+    formState
+  } = useForm<{ searchText: string }>({
     defaultValues: { searchText: '' }
   });
 

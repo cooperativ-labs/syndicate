@@ -157,6 +157,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
    */
   const handleSave = (e: FormEvent) => {
     e.preventDefault();
+    e.stopPropagation();
     try {
       addressSchema.parse({
         address1,
@@ -344,7 +345,15 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
               <Button type="reset" onClick={() => setOpen(false)} variant={'outline'}>
                 Cancel
               </Button>
-              <Button type="submit">Save</Button>
+              <Button
+                type="submit"
+                onClick={e => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                }}
+              >
+                Save
+              </Button>
             </DialogFooter>
           </form>
         )}

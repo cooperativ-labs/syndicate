@@ -3,7 +3,13 @@ import { Maybe, OfferingParticipant } from '@gql/graphql';
 import { LoadingButton } from '@src/components/ui/loading-button';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@src/components/ui/select';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@src/components/ui/select';
 import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
@@ -35,7 +41,9 @@ const ForceTransferForm = ({
   refetchContracts
 }: ForceTransferFormProps) => {
   const { address: userWalletAddress } = useAccount();
-  const [buttonState, setButtonState] = React.useState<'default' | 'disabled' | 'loading' | 'success' | 'error'>('default');
+  const [buttonState, setButtonState] = React.useState<
+    'default' | 'disabled' | 'loading' | 'success' | 'error'
+  >('default');
   const [partition, setPartition] = React.useState<String0x>(partitions[0]);
   const [targetBalance, setTargetBalance] = React.useState<number>(0);
   const [addIssuance] = useMutation(ADD_TRANSFER_EVENT);
@@ -64,8 +72,8 @@ const ForceTransferForm = ({
 
   const schema = z.object({
     partition: z.string().min(1, 'Required'),
-    amount: z
-      .coerce.number({ invalid_type_error: 'Invalid amount' })
+    amount: z.coerce
+      .number({ invalid_type_error: 'Invalid amount' })
       .positive('Amount must be positive')
       .max(targetBalance, 'Amount cannot exceed target balance'),
     recipient: z.string().min(1, 'Required')
@@ -77,7 +85,11 @@ const ForceTransferForm = ({
     recipient: string;
   }>({
     resolver: zodResolver(schema),
-    defaultValues: { partition: partitions[0] || '', amount: undefined as unknown as number, recipient: '' }
+    defaultValues: {
+      partition: partitions[0] || '',
+      amount: undefined as unknown as number,
+      recipient: ''
+    }
   });
 
   const watchedPartition = watch('partition');

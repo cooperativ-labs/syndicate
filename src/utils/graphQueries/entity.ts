@@ -18,12 +18,12 @@ export const GET_ENTITY = gql`
 export const ADD_ENTITY = gql`
   ${CORE_ENTITY_FIELDS}
   mutation AddLegalEntity(
-    $organizationId: UUID!
+    $organizationId: BigInt!
     $legalName: String!
-    $type: LegalEntityType!
+    $type: legal_entity_type! # required
     $jurCountry: String!
     $jurProvince: String
-    $operatingCurrency: CurrencyCode!
+    $operatingCurrency: currency_code!
     $entityPurpose: String
     $addressLabel: String
     $addressLine1: String!
@@ -48,7 +48,7 @@ export const ADD_ENTITY = gql`
     ) {
       affectedCount
       records {
-        ...entityData
+        ...LegalEntityFields
         organization_id
       }
     }
@@ -77,20 +77,19 @@ export const ADD_ENTITY_OWNER = gql`
 `;
 
 export const REMOVE_ENTITY_OWNER = gql`
-  mutation RemoveEntityOwner(
-    $removeEntityOwner: UUID!
-    $ownedEntityId: UUID!
-  ) {
+  mutation RemoveEntityOwner($removeEntityOwner: UUID!, $ownedEntityId: UUID!) {
     deleteFromlegal_entity_relationshipCollection(
       filter: {
         and: [
-          { parent_entity_id: { eq: $removeEntityOwner } },
+          { parent_entity_id: { eq: $removeEntityOwner } }
           { child_entity_id: { eq: $ownedEntityId } }
         ]
       }
     ) {
       affectedCount
-      records { id }
+      records {
+        id
+      }
     }
   }
 `;
@@ -102,7 +101,7 @@ export const UPDATE_ENTITY_INFORMATION = gql`
     $displayName: String!
     $jurCountry: String!
     $jurProvince: String
-    $operatingCurrencyCode: CurrencyCode!
+    $operatingCurrencyCode: currency_code!
     $taxId: String
   ) {
     updatelegal_entityCollection(
@@ -188,8 +187,8 @@ export const ADD_ENTITY_ADDRESS = gql`
     $stateProvince: String
     $postalCode: String
     $country: String!
-    $lat: Float
-    $lng: Float
+    $lat: BigFloat
+    $lng: BigFloat
   ) {
     insertIntoaddressCollection(
       objects: [
@@ -255,7 +254,6 @@ export const UPDATE_ADDRESS = gql`
 
 export const REMOVE_ENTITY_ADDRESS = gql`
   mutation RemoveEntityAddress($entityId: UUID!, $geoAddressId: UUID!) {
-      
     deleteFromaddressCollection(filter: { id: { eq: $geoAddressId } }) {
       affectedCount
     }
@@ -269,8 +267,8 @@ export const UPDATE_ENTITY_WALLETS = gql`
     $entityId: UUID!
     $name: String
     $walletAddress: String!
-    $protocol: CryptoAddressProtocol!
-    $type: CryptoAddressType!
+    $protocol: crypto_address_protocol!
+    $type: crypto_address_type!
     $chainId: Int
   ) {
     insertIntocrypto_addressCollection(
@@ -300,7 +298,6 @@ export const UPDATE_ENTITY_WALLETS = gql`
 
 export const REMOVE_ENTITY_WALLET = gql`
   mutation RemoveEntityWallet($entityId: UUID!, $walletAddress: String!) {
-   
     deleteFromcrypto_addressCollection(filter: { address: { eq: $walletAddress } }) {
       affectedCount
     }

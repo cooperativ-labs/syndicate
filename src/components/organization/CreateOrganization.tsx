@@ -24,7 +24,9 @@ export type CreateOrganizationType = {
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
   const { user } = useUserContext();
   const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? '');
-  const [buttonState, setButtonState] = useState<'default' | 'disabled' | 'loading' | 'success' | 'error'>('default');
+  const [buttonState, setButtonState] = useState<
+    'default' | 'disabled' | 'loading' | 'success' | 'error'
+  >('default');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
   const router = useRouter();

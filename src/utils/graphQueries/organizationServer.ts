@@ -1,6 +1,6 @@
-"use server";
+'use server';
 
-import { createClient } from "@supabase/utils/server";
+import { createClient } from '@supabase/utils/server';
 
 export const createOrganizationWithAdmin = async ({
   userId,
@@ -9,7 +9,7 @@ export const createOrganizationWithAdmin = async ({
   shortDescription,
   website,
   country,
-  slug,
+  slug
 }: {
   userId: string;
   name: string;
@@ -18,18 +18,16 @@ export const createOrganizationWithAdmin = async ({
   website: string;
   country: string;
   slug: string;
-}): Promise<
-  { organization_id: string; organization_user_id: string; slug: string }
-> => {
+}): Promise<{ organization_id: string; organization_user_id: string; slug: string }> => {
   const supabase = createClient();
-  const { data, error } = await supabase.rpc("create_organization_with_admin", {
+  const { data, error } = await supabase.rpc('create_organization_with_admin', {
     p_user_id: userId,
     p_name: name,
     p_logo: logo,
     p_short_description: shortDescription,
     p_website: website,
     p_country: country,
-    p_slug: slug,
+    p_slug: slug
   });
   if (error) {
     throw new Error(error.message);
@@ -38,6 +36,6 @@ export const createOrganizationWithAdmin = async ({
   return {
     organization_id: data[0].organization_id,
     organization_user_id: data[0].organization_user_id,
-    slug: data[0].slug,
+    slug: data[0].slug
   };
 };

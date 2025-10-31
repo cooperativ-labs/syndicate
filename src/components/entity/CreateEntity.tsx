@@ -1,28 +1,50 @@
+'use client';
+
 import { useMutation } from '@apollo/client/react';
-import { CurrencyCode, LegalEntity, Organization } from '@gql/graphql';
+import { CurrencyCode, LegalEntityType, Organization } from '@gql/graphql';
 import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
 import { ADD_ENTITY } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { Form, Formik, useFormikContext } from 'formik';
-import React, { FC, useEffect, useState } from 'react';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import { Country, IState, State } from 'country-state-city';
+
+import React, { FC, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 import toast from 'react-hot-toast';
 
 import AddressAutoComplete, { AddressType } from '../ui/address-autocomplete';
 import { LoadingButton } from '../ui/loading-button';
-import CustomAddressAutocomplete, {
-  normalizeGeoAddress
-} from '../form-components/CustomAddressAutocomplete';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import JurisdictionSelect from '../form-components/JurisdictionSelect';
-import Select from '../form-components/Select';
+import { Input } from '../ui/input';
+import { Label } from '../ui/label';
+import { Textarea } from '../ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 export type CreateEntityType = {
   organization: Organization;
   defaultLogo?: string;
   actionOnCompletion: () => void;
 };
+
+type FormData = {
+  legalName: string;
+  entityPurpose?: string;
+  operatingCurrency: CurrencyCode;
+  jurCountry: string;
+  jurProvince?: string;
+  type: LegalEntityType;
+  addressAutocomplete: string;
+};
+
+const schema = z.object({
+  legalName: z.string().min(1, 'Please include a full legal name'),
+  entityPurpose: z.string().optional(),
+  operatingCurrency: z.nativeEnum(CurrencyCode),
+  jurCountry: z.string().min(1, 'Please select a country'),
+  jurProvince: z.string().optional(),
+  type: z.nativeEnum(LegalEntityType),
+  addressAutocomplete: z.string()
+});
 
 const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionOnCompletion }) => {
   const [addLegalEntity, { data, error }] = useMutation(ADD_ENTITY);
@@ -42,39 +64,54 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
     lng: 0
   });
   const [searchInput, setSearchInput] = useState('');
+  const [states, setStates] = useState<IState[]>([]);
+
+  const countries = Country.getAllCountries();
 
   const setDefaultLogo = defaultLogo
     ? defaultLogo
     : '/assets/images/logos/company-placeholder.jpeg';
 
   if (error) {
-    alert(`Oops. Looks like something went wrong: ${error.message}`);
+    console.error(error);
+    toast.error(`Oops. Looks like something went wrong: ${error.message}`);
   }
   if (data) {
+    toast.success('Entity created successfully');
     actionOnCompletion();
   }
 
-  // const placeId = inputAddress && inputAddress.value.place_id;
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+    watch,
+    setError,
+    clearErrors
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      legalName: '',
+      entityPurpose: '',
+      operatingCurrency: CurrencyCode.Usd,
+      jurCountry: '',
+      jurProvince: '',
+      type: undefined as any,
+      addressAutocomplete: ''
+    }
+  });
 
-  // useEffect(() => {
-  //   geocodeByPlaceId(placeId)
-  //     .then(results => {
-  //       setAutocompleteResults(results);
-  //       const lat = results[0]?.geometry.location.lat();
-  //       const lng = results[0]?.geometry.location.lng();
-  //       setLatLang({ lat: lat, lng: lng });
-  //     })
-  //     .catch(error => {
-  //       return error;
-  //     });
-  // }, [placeId, setAutocompleteResults, setLatLang]);
+  const watchedJurCountry = watch('jurCountry');
 
-  if (!organization) {
-    return <></>;
-  }
+  // Update states when country changes
+  React.useEffect(() => {
+    if (watchedJurCountry) {
+      setStates(State.getStatesOfCountry(watchedJurCountry));
+    }
+  }, [watchedJurCountry]);
 
-  // const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
-  //   normalizeGeoAddress(autocompleteResults);
+  const watchedLegalName = watch('legalName');
 
   const firstAddressLine = inputAddress.address1;
   const secondAddressLine = inputAddress.address2;
@@ -85,173 +122,220 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
   const lat = inputAddress.lat;
   const lng = inputAddress.lng;
 
+  const onSubmit = async (values: FormData) => {
+    // Validate address
+    if (!firstAddressLine) {
+      setError('addressAutocomplete', {
+        type: 'manual',
+        message: 'Address must include street number and street name'
+      });
+      return;
+    }
+    if (!state) {
+      setError('addressAutocomplete', {
+        type: 'manual',
+        message: 'Address must include a state'
+      });
+      return;
+    }
+    clearErrors('addressAutocomplete');
+
+    setButtonState('loading');
+    try {
+      await addLegalEntity({
+        variables: {
+          organizationId: organization.id,
+          displayName: values.legalName,
+          legalName: values.legalName,
+          entityPurpose: values.entityPurpose,
+          addressLabel: 'Primary Operating Address',
+          addressLine1: firstAddressLine,
+          addressLine2: secondAddressLine,
+          city: city,
+          stateProvince: state,
+          postalCode: postalCode,
+          country: country,
+          lat: lat,
+          lng: lng,
+          operatingCurrency: values.operatingCurrency,
+          jurCountry: values.jurCountry,
+          jurProvince: values.jurProvince,
+          type: values.type,
+          currentDate: currentDate
+        }
+      });
+      setButtonState('success');
+      actionOnCompletion();
+    } catch (error: any) {
+      setButtonState('error');
+      toast.error(error.message);
+    }
+  };
+
+  const hasStates = states && states.length > 0;
+
   return (
-    <Formik
-      initialValues={{
-        website: '',
-        legalName: '',
-        entityPurpose: '',
-        addressLine1: '',
-        addressLine2: '',
-        addressLine3: '',
-        city: '',
-        stateProvince: '',
-        postalCode: '',
-        country: '',
-        operatingCurrency: CurrencyCode.Usd,
-        jurCountry: '',
-        jurProvince: '',
-        type: undefined,
-        addressAutocomplete: ''
-      }}
-      validate={values => {
-        // if (values.nonHuman === 'false') {
-        //   values.type = LegalEntityType.Individual;
-        // }
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.legalName) {
-          errors.legalName = 'Please include a full legal name';
-        }
-        if (!values.type) {
-          errors.type = 'Please select a type of entity';
-        }
-        if (!firstAddressLine) {
-          errors.addressAutocomplete = 'Address must include street number and street name';
-        }
-        if (!city) {
-          errors.addressAutocomplete = 'Address must include a city';
-        }
-        if (!state) {
-          errors.addressAutocomplete = 'Address must include a state';
-        }
-        return errors;
-      }}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
-        setButtonState('loading');
-        try {
-          await addLegalEntity({
-            variables: {
-              organizationId: organization.id,
-              displayName: values.legalName,
-              legalName: values.legalName,
-              entityPurpose: values.entityPurpose,
-              addressLabel: 'Primary Operating Address',
-              addressLine1: firstAddressLine,
-              addressLine2: secondAddressLine,
-              city: city,
-              stateProvince: state,
-              postalCode: postalCode,
-              country: country,
-              lat: lat,
-              lng: lng,
-              operatingCurrency: values.operatingCurrency,
-              jurCountry: values.jurCountry,
-              jurProvince: values.jurProvince,
-              type: values.type,
-              currentDate: currentDate
-            }
-          });
-          setButtonState('success');
-          actionOnCompletion();
-        } catch (error: any) {
-          setButtonState('error');
-          toast.error(error.message);
-        }
-        setSubmitting(false);
-      }}
-    >
-      {({ values, isSubmitting }) => (
-        <Form className="flex flex-col gap relative">
-          <Select className={defaultFieldDiv} required labelText="Type of entity" name="type">
-            <option value="">Select entity type</option>
-            {getEntityTypeOptions(true).map((type, i) => {
-              return (
-                <option key={i} value={type.value}>
-                  {type.name}
-                </option>
-              );
-            })}
-          </Select>
-          <Input
-            className={defaultFieldDiv}
-            required
-            labelText="Organization's legal name"
-            name="legalName"
-            type="text"
-            placeholder="Alphabet Inc."
-          />
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap relative">
+      {/* Type of entity */}
+      <div className="pt-3 bg-opacity-0">
+        <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+          Type of entity *
+        </Label>
+        <Controller
+          control={control}
+          name="type"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                <SelectValue placeholder="Select entity type" />
+              </SelectTrigger>
+              <SelectContent>
+                {getEntityTypeOptions(true).map((type, i) => (
+                  <SelectItem key={i} value={type.value}>
+                    {type.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.type && <div className="text-sm text-red-500 mt-1">{errors.type.message}</div>}
+      </div>
 
-          {/* <Input className={defaultFieldDiv} labelText="Logo" name="logo" type="text" /> */}
-          <Select
-            className={defaultFieldDiv}
-            required
-            name="operatingCurrency"
-            labelText="Operating currency"
-          >
-            <option value="">Select currency</option>;
-            {currencyOptionsExcludeCredits.map((option, i) => {
-              return (
-                <option key={i} value={option.value}>
-                  {option.symbol}
-                </option>
-              );
-            })}
-          </Select>
-          <JurisdictionSelect
-            className={defaultFieldDiv}
-            labelText={'Jurisdiction'}
-            values={values}
-          />
+      {/* Legal name */}
+      <div className="pt-3 bg-opacity-0">
+        <Label htmlFor="legalName" className="text-sm text-blue-900 font-semibold text-opacity-80">
+          Organization's legal name *
+        </Label>
+        <Input
+          id="legalName"
+          {...register('legalName')}
+          type="text"
+          placeholder="Alphabet Inc."
+          className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+        />
+        {errors.legalName && (
+          <div className="text-sm text-red-500 mt-1">{errors.legalName.message}</div>
+        )}
+      </div>
 
-          <Input
-            className={defaultFieldDiv}
-            labelText="Purpose of this entity"
-            name="entityPurpose"
-            textArea
-            fieldHeight="h-24"
-            type="text"
-            placeholder="Short description of the purpose of this entity."
-          />
+      {/* Operating currency */}
+      <div className="pt-3 bg-opacity-0">
+        <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+          Operating currency *
+        </Label>
+        <Controller
+          control={control}
+          name="operatingCurrency"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                <SelectValue placeholder="Select currency" />
+              </SelectTrigger>
+              <SelectContent>
+                {currencyOptionsExcludeCredits.map((option, i) => (
+                  <SelectItem key={i} value={option.value}>
+                    {option.symbol}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.operatingCurrency && (
+          <div className="text-sm text-red-500 mt-1">{errors.operatingCurrency.message}</div>
+        )}
+      </div>
 
-          <hr className="my-6" />
-          <div className="text-cLightBlue font-bold text-lg mb-4">Operating address</div>
-          <AddressAutoComplete
-            address={inputAddress}
-            setAddress={setInputAddress}
-            searchInput={searchInput}
-            setSearchInput={setSearchInput}
-            dialogTitle="Enter Address"
+      {/* Jurisdiction */}
+      <div className="pt-3 bg-opacity-0">
+        <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+          Jurisdiction *
+        </Label>
+        <Controller
+          control={control}
+          name="jurCountry"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                <SelectValue placeholder="Select a country" />
+              </SelectTrigger>
+              <SelectContent>
+                {countries.map((country, i) => (
+                  <SelectItem key={i} value={country.isoCode}>
+                    {country.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {errors.jurCountry && (
+          <div className="text-sm text-red-500 mt-1">{errors.jurCountry.message}</div>
+        )}
+        {hasStates && (
+          <Controller
+            control={control}
+            name="jurProvince"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none mt-2">
+                  <SelectValue placeholder="Select a state" />
+                </SelectTrigger>
+                <SelectContent>
+                  {states.map((state, i) => (
+                    <SelectItem key={i} value={state.isoCode}>
+                      {state.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           />
+        )}
+      </div>
 
-          {/* <CustomAddressAutocomplete
-            name="addressAutocomplete"
-            required
-            value={inputAddress}
-            setValue={setInputAddress}
-          /> */}
-          {/* {latLang.lat && (
-            <div className="mt-4">
-              <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>
-                <Marker position={latLang} />
-              </GoogleMap>
-            </div>
-          )} */}
+      {/* Purpose */}
+      <div className="pt-3 bg-opacity-0">
+        <Label
+          htmlFor="entityPurpose"
+          className="text-sm text-blue-900 font-semibold text-opacity-80"
+        >
+          Purpose of this entity
+        </Label>
+        <Textarea
+          id="entityPurpose"
+          {...register('entityPurpose')}
+          placeholder="Short description of the purpose of this entity."
+          className="h-24"
+        />
+      </div>
 
-          <LoadingButton
-            type="submit"
-            buttonState={buttonState}
-            setButtonState={setButtonState}
-            text={`Create ${values.legalName}`}
-            loadingText="Creating entity..."
-            successText="Entity created!"
-            errorText="Failed to create entity"
-            reset
-            className="mt-8"
-          />
-        </Form>
+      <hr className="my-6" />
+      <div className="text-cLightBlue font-bold text-lg mb-4">Operating address</div>
+      <AddressAutoComplete
+        address={inputAddress}
+        setAddress={setInputAddress}
+        searchInput={searchInput}
+        setSearchInput={setSearchInput}
+        dialogTitle="Confirm Address"
+      />
+      {errors.addressAutocomplete && (
+        <div className="text-sm text-red-500 mt-1">{errors.addressAutocomplete.message}</div>
       )}
-    </Formik>
+
+      <LoadingButton
+        type="submit"
+        buttonState={buttonState}
+        setButtonState={setButtonState}
+        text={`Create ${watchedLegalName || 'Entity'}`}
+        loadingText="Creating entity..."
+        successText="Entity created!"
+        errorText="Failed to create entity"
+        reset
+        className="mt-8"
+      />
+    </form>
   );
 };
 

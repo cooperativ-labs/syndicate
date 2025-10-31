@@ -38,14 +38,14 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   >('default');
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
-  const entityOptions =
-    organization &&
-    getEntityOptionsList(organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[]);
+  const entityOptions = organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[];
+  // organization &&
+  // getEntityOptionsList(organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[]);
 
   const entitiesWithoutOfferings = entityOptions.filter(
     entity => entity.offeringCollection?.edges.length === 0
   );
-
+  console.log(entitiesWithoutOfferings);
   const entitySubmissionCompletion = () => {
     refetch();
     setEntityModal(false);
@@ -122,7 +122,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
                       <SelectValue placeholder="Select an entity" />
                     </SelectTrigger>
                     <SelectContent>
-                      {entitiesWithoutOfferings.map(entity => (
+                      {entityOptions.map(entity => (
                         <SelectItem key={entity.id} value={entity.id}>
                           {entity.legal_name}
                         </SelectItem>
