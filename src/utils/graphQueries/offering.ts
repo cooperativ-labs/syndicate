@@ -12,31 +12,29 @@ import {
 export const ADD_OFFERING = gql`
   ${CORE_OFFERING_FIELDS}
   mutation AddOffering(
-    $currentDate: DateTime!
-    $offeringEntityId: ID!
+    $offeringEntityId: UUID!
     $name: String!
     $brandColor: String
     $image: String
     $shortDescription: String
     $website: String
   ) {
-    addOffering(
-      input: [
+    insertIntoofferingCollection(
+      objects: [
         {
-          creationDate: $currentDate
-          lastUpdate: $currentDate
-          waitlistOn: false
+          waitlist_on: false
           name: $name
-          shortDescription: $shortDescription
-          brandColor: $brandColor
+          short_description: $shortDescription
+          brand_color: $brandColor
           website: $website
           image: $image
-          offeringEntity: { id: $offeringEntityId }
+          offering_entity_id: $offeringEntityId
         }
       ]
     ) {
-      offering {
-        ...OfferingFields
+      affectedCount
+      records {
+        id
       }
     }
   }
@@ -81,8 +79,7 @@ export const GET_OFFERING = gql`
 
 export const UPDATE_OFFERING_PROFILE = gql`
   mutation UpdateOfferingProfile(
-    $offeringId: [ID!]
-    $currentDate: DateTime!
+    $offeringId: UUID!
     $name: String!
     $brandColor: String
     $lightBrand: Boolean
@@ -94,34 +91,33 @@ export const UPDATE_OFFERING_PROFILE = gql`
     $isPublic: Boolean
     $accessCode: String
   ) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        set: {
-          lastUpdate: $currentDate
-          name: $name
-          brandColor: $brandColor
-          lightBrand: $lightBrand
-          image: $image
-          bannerImage: $bannerImage
-          primaryVideo: $primaryVideo
-          website: $website
-          shortDescription: $shortDescription
-          isPublic: $isPublic
-          accessCode: $accessCode
-        }
+    updateofferingCollection(
+      filter: { id: { eq: $offeringId } }
+      set: {
+        name: $name,
+        brand_color: $brandColor,
+        light_brand: $lightBrand,
+        image: $image,
+        banner_image: $bannerImage,
+        primary_video: $primaryVideo,
+        website: $website,
+        short_description: $shortDescription,
+        is_public: $isPublic,
+        access_code: $accessCode,
+        updated_at: now()
       }
     ) {
-      offering {
+      affectedCount
+      records {
         id
         name
-        brandColor
+        brand_color
         website
-        isPublic
+        is_public
         image
-        bannerImage
-        primaryVideo
-        accessCode
+        banner_image
+        primary_video
+        access_code
       }
     }
   }

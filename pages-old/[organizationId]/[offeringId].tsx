@@ -1,14 +1,14 @@
-import Footer from '@src/Footer/Footer';
-import Head from 'next/head';
+import Footer from "@src/Footer/Footer";
+import Head from "next/head";
 
-import React from 'react';
-import { GetServerSideProps, NextPage } from 'next';
+import React from "react";
+import { GetServerSideProps, NextPage } from "next";
 
-import OfferingProfile from '@src/screens/OfferingProfile';
-import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
-import { GET_OFFERING } from '@src/utils/graphQueries/offering';
-import { initializeApollo } from '@src/utils/supabaseApolloClient';
-import { Offering } from '@gql/graphql';
+import OfferingProfile from "@src/screens/OfferingProfile";
+import ProfilePrivateModal from "@src/containers/wallet/ProfilePrivateModal";
+import { GET_OFFERING } from "@src/utils/graphQueries/offering";
+import { initializeApollo } from "@src/utils/supabaseApolloClient";
+import { Offering } from "@gql/graphql";
 
 type ResultProps = {
   result: Offering;
@@ -18,11 +18,11 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
   const offering = result;
   const orgId = offering?.offeringEntity?.organization.id;
   const isPublic = offering?.is_public ?? false;
-  const name = offering?.name ?? '';
-  const shortDescription = offering?.short_description ?? '';
+  const name = offering?.name ?? "";
+  const shortDescription = offering?.short_description ?? "";
   const sharingImage = offering?.sharing_image ?? null;
-  const id = offering?.id ?? '';
-  const accessCode = offering?.access_code ?? '';
+  const id = offering?.id ?? "";
+  const accessCode = offering?.access_code ?? "";
 
   return offering && isPublic ? (
     <div data-test="component-project" className="bg-gray-50">
@@ -37,7 +37,7 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
           content={
             sharingImage
               ? `/assets/images/sharing-images/${sharingImage?.url}`
-              : '/assets/images/share.png'
+              : "/assets/images/share.png"
           }
         />
         <meta property="og:url" content={`https://cooperativ.io/${orgId}/offerings/${id}`}></meta>
@@ -49,7 +49,7 @@ const ProjectProfile: NextPage<ResultProps> = ({ result }) => {
           content={
             sharingImage
               ? `/assets/images/sharing-images/${sharingImage?.url}`
-              : '/assets/images/share.png'
+              : "/assets/images/share.png"
           }
         />
         <meta name="twitter:card" content="summary_large_image" />
@@ -89,7 +89,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       props: { result }
     };
   } catch (error) {
-    console.log('error', error);
+    console.log("error", error);
 
     return {
       props: {

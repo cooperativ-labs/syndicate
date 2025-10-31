@@ -4,9 +4,8 @@ import { CORE_ORGANIZATION_FIELDS } from "./fragments";
 
 export const GET_ORGANIZATION = gql`
   ${CORE_ORGANIZATION_FIELDS}
-  query GetOrganization($id: ID!) {
+  query GetOrganization($id: UUID!) {
     organizationCollection(filter: { id: { eq: $id } }, first: 1) {
-      id
       edges {
         node {
           ...OrganizationFields
@@ -36,6 +35,7 @@ export const ADD_ORGANIZATION = gql`
         }
       ]
     ) {
+      affectedCount
       records {
         id
         name
@@ -53,11 +53,12 @@ export const ADD_ORGANIZATION_USER = gql`
   mutation AddOrganizationUser(
     $userId: UUID!
     $organizationId: UUID!
-    $permission: [OrganizationPermissionType]
+    $permission: [organization_permission_type]
   ) {
     insertIntoorganization_userCollection(
       objects: [{ user_id: $userId, organization_id: $organizationId, permissions: $permission }]
     ) {
+      affectedCount
       records {
         id
         user_id
@@ -69,23 +70,11 @@ export const ADD_ORGANIZATION_USER = gql`
 `;
 
 export const REMOVE_ORGANIZATION_USER = gql`
-  mutation RemoveOrganizationUser(
-    $organizationId: [ID!]
-    $organizationUserId: ID!
-    $currentDate: DateTime
-  ) {
-    deleteOrganizationUser(filter: { id: [$organizationUserId] }) {
-      msg
-    }
-    updateOrganization(
-      input: { filter: { id: $organizationId }, set: { lastUpdate: $currentDate } }
-    ) {
-      numUids
-      organization {
+  mutation RemoveOrganizationUser($organizationUserId: UUID!) {
+    deleteFromorganization_userCollection(filter: { id: { eq: $organizationUserId } }) {
+      affectedCount
+      records {
         id
-        users {
-          id
-        }
       }
     }
   }
@@ -93,8 +82,7 @@ export const REMOVE_ORGANIZATION_USER = gql`
 
 export const UPDATE_ORGANIZATION_INFORMATION = gql`
   mutation UpdateOrganization(
-    $currentDate: DateTime!
-    $organizationId: [ID!]
+    $organizationId: UUID!
     $name: String!
     $logo: String
     $bannerImage: String
@@ -103,29 +91,27 @@ export const UPDATE_ORGANIZATION_INFORMATION = gql`
     $description: String
     $country: String
   ) {
-    updateOrganization(
-      input: {
-        filter: { id: $organizationId }
-        set: {
-          lastUpdate: $currentDate
-          name: $name
-          logo: $logo
-          bannerImage: $bannerImage
-          isPublic: $isPublic
-          shortDescription: $shortDescription
-          description: $description
-          country: $country
-        }
+    updateorganizationCollection(
+      filter: { id: { eq: $organizationId } }
+      set: {
+        name: $name
+        logo: $logo
+        banner_image: $bannerImage
+        is_public: $isPublic
+        short_description: $shortDescription
+        description: $description
+        country: $country
       }
     ) {
-      organization {
+      affectedCount
+      records {
         id
         name
-        isPublic
+        is_public
         description
         country
         logo
-        bannerImage
+        banner_image
       }
     }
   }
@@ -135,65 +121,42 @@ export const UPDATE_ORGANIZATION_INFORMATION = gql`
 
 export const ADD_NOTIFICATION_RULE = gql`
   mutation AddNotificationRule(
-    $organizationUserId: ID!
-    $notificationRecipientType: NotificationRecipientType!
-    $NotificationMethod: NotificationMethod!
-    $notificationSubject: NotificationSubject!
+    $organizationUserId: UUID!
+    $notificationRecipientType: notification_recipient_type!
+    $notificationMethod: notification_method!
+    $notificationSubject: notification_subject!
   ) {
-    addNotificationConfiguration(
-      input: {
-        organizationUser: { id: $organizationUserId }
-        notificationRecipientType: $notificationRecipientType
-        notificationMethod: $NotificationMethod
-        notificationSubject: $notificationSubject
-      }
-    ) {
-      notificationConfiguration {
-        id
-        notificationRecipientType
-        notificationMethod
-        notificationSubject
-        organizationUser {
-          id
-          organization {
-            id
-            users {
-              id
-              notificationConfigurations {
-                id
-              }
-            }
-          }
+    insertIntonotification_configurationCollection(
+      objects: [
+        {
+          organization_user_id: $organizationUserId
+          notification_recipient_type: $notificationRecipientType
+          notification_method: $notificationMethod
+          notification_subject: $notificationSubject
         }
+      ]
+    ) {
+      affectedCount
+      records {
+        id
+        notification_recipient_type
+        notification_method
+        notification_subject
+        organization_user_id
       }
     }
   }
 `;
 
 export const REMOVE_NOTIFICATION_RULE = gql`
-  mutation RemoveNotificationRule($organizationUserId: [ID!], $notificationConfigurationId: ID!) {
-    updateOrganizationUser(
-      input: {
-        filter: { id: $organizationUserId }
-        remove: { notificationConfigurations: { id: $notificationConfigurationId } }
-      }
+  mutation RemoveNotificationRule($notificationConfigurationId: UUID!) {
+    deleteFromnotification_configurationCollection(
+      filter: { id: { eq: $notificationConfigurationId } }
     ) {
-      numUids
-      organizationUser {
+      affectedCount
+      records {
         id
-        organization {
-          id
-          users {
-            id
-            notificationConfigurations {
-              id
-            }
-          }
-        }
       }
-    }
-    deleteNotificationConfiguration(filter: { id: [$notificationConfigurationId] }) {
-      msg
     }
   }
 `;
@@ -202,55 +165,40 @@ export const REMOVE_NOTIFICATION_RULE = gql`
 
 export const ADD_ORGANIZATION_EMAIL = gql`
   mutation AddUserEmail(
-    $organizationId: ID!
+    $organizationId: UUID!
     $address: String!
     $name: String
     $description: String
     $isPublic: Boolean
   ) {
-    addEmailAddress(
-      input: {
-        address: $address
-        organization: { id: $organizationId }
-        name: $name
-        description: $description
-        isPublic: $isPublic
-      }
+    insertIntoemail_addressCollection(
+      objects: [
+        {
+          organization_id: $organizationId
+          address: $address
+          name: $name
+          description: $description
+          is_public: $isPublic
+        }
+      ]
     ) {
-      emailAddress {
+      affectedCount
+      records {
         id
         address
-        organization {
-          id
-        }
+        organization_id
       }
     }
   }
 `;
 
 export const REMOVE_ORGANIZATION_EMAIL = gql`
-  mutation RemoveOrganizationEmail(
-    $organizationId: [ID!]
-    $emailAddress: String!
-    $currentDate: DateTime
-  ) {
-    updateOrganization(
-      input: {
-        filter: { id: $organizationId }
-        remove: { emailAddresses: { address: $emailAddress } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      organization {
+  mutation RemoveOrganizationEmail($emailAddress: String!) {
+    deleteFromemail_addressCollection(filter: { address: { eq: $emailAddress } }) {
+      affectedCount
+      records {
         id
-        emailAddresses {
-          address
-        }
       }
-    }
-    deleteEmailAddress(filter: { address: { eq: $emailAddress } }) {
-      msg
     }
   }
 `;
@@ -262,22 +210,18 @@ export const UPDATE_EMAIL = gql`
     $description: String
     $isPublic: Boolean
   ) {
-    updateEmailAddress(
-      input: {
-        filter: { address: { eq: $address } }
-        set: { name: $name, description: $description, isPublic: $isPublic }
-      }
+    updateemail_addressCollection(
+      filter: { address: { eq: $address } }
+      set: { name: $name, description: $description, is_public: $isPublic }
     ) {
-      emailAddress {
+      affectedCount
+      records {
         id
         name
         address
-        isPublic
-        name
+        is_public
         description
-        organization {
-          id
-        }
+        organization_id
       }
     }
   }
@@ -286,60 +230,34 @@ export const UPDATE_EMAIL = gql`
 //USER SOCIAL
 
 export const ADD_ORGANIZATION_SOCIAL_ACCOUNTS = gql`
-  mutation (
-    $organizationId: [ID!]
+  mutation AddOrganizationSocialAccounts(
+    $organizationId: UUID!
     $url: String!
-    $type: LinkedAccountType!
-    $currentDate: DateTime!
+    $type: linked_account_type!
   ) {
-    updateOrganization(
-      input: {
-        filter: { id: $organizationId }
-        set: { linkedAccounts: { url: $url, type: $type }, lastUpdate: $currentDate }
-      }
+    insertIntolinked_accountCollection(
+      objects: [{ organization_id: $organizationId, url: $url, type: $type }]
     ) {
-      organization {
+      affectedCount
+      records {
         id
-        displayName
-        fullName
-        linkedAccounts {
-          id
-          url
-          type
-          verified
-          hidden
-          organization {
-            id
-          }
-        }
+        organization_id
+        url
+        type
+        verified
+        hidden
       }
     }
   }
 `;
 
 export const REMOVE_ORGANIZATION_SOCIAL_ACCOUNT = gql`
-  mutation RemoveOrganizationSocialAccount(
-    $organizationId: [ID!]
-    $socialId: ID!
-    $currentDate: DateTime!
-  ) {
-    updateOrganization(
-      input: {
-        filter: { id: $organizationId }
-        remove: { linkedAccounts: { id: $socialId } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      organization {
+  mutation RemoveOrganizationSocialAccount($socialId: UUID!) {
+    deleteFromlinked_accountCollection(filter: { id: { eq: $socialId } }) {
+      affectedCount
+      records {
         id
-        linkedAccounts {
-          id
-        }
       }
-    }
-    deleteLinkedAccount(filter: { id: [$socialId] }) {
-      msg
     }
   }
 `;

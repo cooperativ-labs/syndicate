@@ -1,9 +1,9 @@
-import Footer from '@src/Footer/Footer';
-import Head from 'next/head';
-import LandingHeader from '@src/marketingSite/LandingHeader';
-import PermissionedExchangeSection from '@src/marketingSite/PermissionedExchangeSection';
-import React from 'react';
-import { NextPage } from 'next';
+import Footer from "@src/Footer/Footer";
+import Head from "next/head";
+import LandingHeader from "@src/marketingSite/LandingHeader";
+import PermissionedExchangeSection from "@src/marketingSite/PermissionedExchangeSection";
+import React from "react";
+import { NextPage } from "next";
 
 const Application: NextPage = () => {
   return (

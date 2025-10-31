@@ -4,9 +4,13 @@ import { CORE_ENTITY_FIELDS } from "./fragments";
 
 export const GET_ENTITY = gql`
   ${CORE_ENTITY_FIELDS}
-  query GetEntity($id: ID!) {
-    getLegalEntity(id: $id) {
-      ...LegalEntityFields
+  query GetEntity($id: UUID!) {
+    legal_entityCollection(filter: { id: { eq: $id } }) {
+      edges {
+        node {
+          ...LegalEntityFields
+        }
+      }
     }
   }
 `;
@@ -14,8 +18,8 @@ export const GET_ENTITY = gql`
 export const ADD_ENTITY = gql`
   ${CORE_ENTITY_FIELDS}
   mutation AddLegalEntity(
-    $currentDate: DateTime!
-    $organizationId: ID!
+    $currentDate: Datetime!
+    $organizationId: UUID!
     $legalName: String!
     $type: LegalEntityType!
     $jurCountry: String!
@@ -31,66 +35,46 @@ export const ADD_ENTITY = gql`
     $postalCode: String
     $country: String!
   ) {
-    addLegalEntity(
-      input: [
+    insertIntolegal_entityCollection(
+      objects: [
         {
-          creationDate: $currentDate
-          lastUpdate: $currentDate
-          organization: { id: $organizationId }
+          created_at: $currentDate
+          updated_at: $currentDate
+          organization_id: $organizationId
           type: $type
-          legalName: $legalName
-          displayName: $legalName
-          jurisdiction: { country: $jurCountry, province: $jurProvince }
-          operatingCurrency: { code: $operatingCurrency }
+          legal_name: $legalName
+          display_name: $legalName
+          operating_currency: $operatingCurrency
           purpose: $entityPurpose
-          addresses: {
-            label: $addressLabel
-            line1: $addressLine1
-            line2: $addressLine2
-            line3: $addressLine3
-            city: $city
-            stateProvince: $stateProvince
-            postalCode: $postalCode
-            country: $country
-          }
         }
       ]
     ) {
-      legalEntity {
+      affectedCount
+      records {
         ...entityData
-        organization {
-          id
-          legalEntities {
-            id
-          }
-          users {
-            user {
-              id
-            }
-          }
-        }
+        organization_id
       }
     }
   }
 `;
 
 export const ADD_ENTITY_OWNER = gql`
-  mutation AddEntityOwner($currentDate: DateTime!, $addEntityOwner: ID!, $ownedEntityId: [ID!]) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $ownedEntityId }
-        set: { lastUpdate: $currentDate, owners: { id: $addEntityOwner } }
-      }
-    ) {
-      legalEntity {
-        id
-        legalName
-        owners {
-          id
-          subsidiaries {
-            id
-          }
+  mutation AddEntityOwner($currentDate: Datetime!, $addEntityOwner: UUID!, $ownedEntityId: UUID!) {
+    insertIntolegal_entity_relationshipCollection(
+      objects: [
+        {
+          created_at: $currentDate
+          parent_entity_id: $addEntityOwner
+          child_entity_id: $ownedEntityId
+          relationship_type: "OWNER"
         }
+      ]
+    ) {
+      affectedCount
+      records {
+        id
+        parent_entity_id
+        child_entity_id
       }
     }
   }
@@ -98,31 +82,34 @@ export const ADD_ENTITY_OWNER = gql`
 
 export const REMOVE_ENTITY_OWNER = gql`
   mutation RemoveEntityOwner(
-    $currentDate: DateTime!
-    $removeEntityOwner: ID!
-    $ownedEntityId: ID!
+    $currentDate: Datetime!
+    $removeEntityOwner: UUID!
+    $ownedEntityId: UUID!
   ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: [$ownedEntityId] }
-        set: { lastUpdate: $currentDate }
-        remove: { owners: { id: $removeEntityOwner } }
+    updatelgal_entityCollection(
+      filter: { id: { eq: $ownedEntityId } }
+      set: { updated_at: $currentDate }
+    ) {
+      affectedCount
+      records { id }
+    }
+    deleteFromlegal_entity_relationshipCollection(
+      filter: {
+        and: [
+          { parent_entity_id: { eq: $removeEntityOwner } },
+          { child_entity_id: { eq: $ownedEntityId } }
+        ]
       }
     ) {
-      legalEntity {
-        id
-        owners {
-          id
-        }
-      }
+      affectedCount
     }
   }
 `;
 
 export const UPDATE_ENTITY_INFORMATION = gql`
   mutation UpdateEntityInformation(
-    $currentDate: DateTime!
-    $entityId: [ID!]
+    $currentDate: Datetime!
+    $entityId: UUID!
     $legalName: String!
     $displayName: String!
     $jurCountry: String!
@@ -130,31 +117,22 @@ export const UPDATE_ENTITY_INFORMATION = gql`
     $operatingCurrencyCode: CurrencyCode!
     $taxId: String
   ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        set: {
-          lastUpdate: $currentDate
-          displayName: $displayName
-          legalName: $legalName
-          jurisdiction: { country: $jurCountry, province: $jurProvince }
-          operatingCurrency: { code: $operatingCurrencyCode }
-          taxId: $taxId
-        }
+    updatelegal_entityCollection(
+      filter: { id: { eq: $entityId } }
+      set: {
+        updated_at: $currentDate
+        display_name: $displayName
+        legal_name: $legalName
+        operating_currency: $operatingCurrencyCode
+        tax_id: $taxId
       }
     ) {
-      legalEntity {
+      affectedCount
+      records {
         id
-        legalName
-        displayName
-        jurisdiction {
-          id
-          country
-          province
-        }
-        operatingCurrency {
-          code
-        }
+        legal_name
+        display_name
+        operating_currency
       }
     }
   }
@@ -162,8 +140,8 @@ export const UPDATE_ENTITY_INFORMATION = gql`
 
 export const UPDATE_ENTITY_WITH_ADDRESS = gql`
   mutation UpdateEntityWithAddress(
-    $currentDate: DateTime!
-    $entityId: [ID!]
+    $currentDate: Datetime!
+    $entityId: UUID!
     $legalName: String!
     $displayName: String!
     $jurCountry: String!
@@ -177,31 +155,15 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
     $postalCode: String
     $country: String!
   ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        set: {
-          lastUpdate: $currentDate
-          displayName: $displayName
-          legalName: $legalName
-          jurisdiction: { country: $jurCountry, province: $jurProvince }
-          addresses: {
-            label: $addressLabel
-            line1: $addressLine1
-            line2: $addressLine2
-            line3: $addressLine3
-            city: $city
-            stateProvince: $stateProvince
-            postalCode: $postalCode
-            country: $country
-          }
-        }
-      }
+    updatelegal_entityCollection(
+      filter: { id: { eq: $entityId } }
+      set: { updated_at: $currentDate, display_name: $displayName, legal_name: $legalName }
     ) {
-      legalEntity {
+      affectedCount
+      records {
         id
-        legalName
-        displayName
+        legal_name
+        display_name
       }
     }
   }
@@ -211,7 +173,7 @@ export const UPDATE_ENTITY_WITH_ADDRESS = gql`
 
 export const ADD_ENTITY_ADDRESS = gql`
   mutation AddAddress(
-    $entityId: [ID!]
+    $entityId: UUID!
     $addressLabel: String
     $addressLine1: String!
     $addressLine2: String
@@ -223,40 +185,28 @@ export const ADD_ENTITY_ADDRESS = gql`
     $lat: Float
     $lng: Float
   ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        set: {
-          addresses: {
-            label: $addressLabel
-            line1: $addressLine1
-            line2: $addressLine2
-            line3: $addressLine3
-            city: $city
-            stateProvince: $stateProvince
-            postalCode: $postalCode
-            country: $country
-            lat: $lat
-            lng: $lng
-          }
+    insertIntoaddressCollection(
+      objects: [
+        {
+          legal_entity_id: $entityId
+          label: $addressLabel
+          line1: $addressLine1
+          line2: $addressLine2
+          line3: $addressLine3
+          city: $city
+          state_province: $stateProvince
+          postal_code: $postalCode
+          country: $country
+          lat: $lat
+          lng: $lng
         }
-      }
+      ]
     ) {
-      legalEntity {
+      affectedCount
+      records {
         id
-        addresses {
-          id
-          label
-          line1
-        }
-        organization {
-          users {
-            id
-            user {
-              id
-            }
-          }
-        }
+        label
+        line1
       }
     }
   }
@@ -264,7 +214,7 @@ export const ADD_ENTITY_ADDRESS = gql`
 
 export const UPDATE_ADDRESS = gql`
   mutation UpdateAddress(
-    $addressId: [ID!]
+    $addressId: UUID!
     $addressLabel: String
     $addressLine1: String!
     $addressLine2: String
@@ -274,22 +224,21 @@ export const UPDATE_ADDRESS = gql`
     $postalCode: String
     $country: String!
   ) {
-    updateAddress(
-      input: {
-        filter: { id: $addressId }
-        set: {
-          label: $addressLabel
-          line1: $addressLine1
-          line2: $addressLine2
-          line3: $addressLine3
-          city: $city
-          stateProvince: $stateProvince
-          postalCode: $postalCode
-          country: $country
-        }
+    updateaddressCollection(
+      filter: { id: { eq: $addressId } }
+      set: {
+        label: $addressLabel
+        line1: $addressLine1
+        line2: $addressLine2
+        line3: $addressLine3
+        city: $city
+        state_province: $stateProvince
+        postal_code: $postalCode
+        country: $country
       }
     ) {
-      address {
+      affectedCount
+      records {
         id
         label
         line1
@@ -299,24 +248,18 @@ export const UPDATE_ADDRESS = gql`
 `;
 
 export const REMOVE_ENTITY_ADDRESS = gql`
-  mutation RemoveEntityAddress($currentDate: DateTime!, $entityId: [ID!], $geoAddressId: ID!) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        remove: { addresses: { id: $geoAddressId } }
-        set: { lastUpdate: $currentDate }
-      }
+  mutation RemoveEntityAddress($currentDate: Datetime!, $entityId: UUID!, $geoAddressId: UUID!) {
+    updatelegal_entityCollection(
+      filter: { id: { eq: $entityId } }
+      set: { updated_at: $currentDate }
     ) {
-      numUids
-      legalEntity {
+      affectedCount
+      records {
         id
-        addresses {
-          line1
-        }
       }
     }
-    deleteAddress(filter: { id: [$geoAddressId] }) {
-      msg
+    deleteFromaddressCollection(filter: { id: { eq: $geoAddressId } }) {
+      affectedCount
     }
   }
 `;
@@ -325,62 +268,51 @@ export const REMOVE_ENTITY_ADDRESS = gql`
 
 export const UPDATE_ENTITY_WALLETS = gql`
   mutation UpdateEntityWallets(
-    $entityId: [ID!]
+    $entityId: UUID!
     $name: String
     $walletAddress: String!
     $protocol: CryptoAddressProtocol!
     $type: CryptoAddressType!
     $chainId: Int
   ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        set: {
-          lastUpdate: $currentDate
-          walletAddresses: {
-            name: $name
-            address: $walletAddress
-            protocol: $protocol
-            type: $type
-            chainId: $chainId
-            isPublic: true
-          }
+    insertIntocrypto_addressCollection(
+      objects: [
+        {
+          legal_entity_id: $entityId
+          name: $name
+          address: $walletAddress
+          protocol: $protocol
+          type: $type
+          chain_id: $chainId
+          is_public: true
         }
-      }
+      ]
     ) {
-      legalEntity {
+      affectedCount
+      records {
         id
-        displayName
-        walletAddresses {
-          name
-          type
-          address
-          chainId
-        }
+        name
+        address
+        chain_id
+        type
       }
     }
   }
 `;
 
 export const REMOVE_ENTITY_WALLET = gql`
-  mutation RemoveEntityWallet($entityId: [ID!], $walletAddress: String!) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        remove: { walletAddresses: { address: $walletAddress } }
-        set: { lastUpdate: $currentDate }
-      }
+  mutation RemoveEntityWallet($entityId: UUID!, $walletAddress: String!, $currentDate: Datetime!) {
+    updatelegal_entityCollection(
+      filter: { id: { eq: $entityId } }
+      set: { updated_at: $currentDate }
     ) {
-      numUids
-      legalEntity {
+      affectedCount
+      records {
         id
-        walletAddresses {
-          address
-        }
       }
     }
-    deleteCryptoAddress(filter: { address: { eq: $walletAddress } }) {
-      msg
+    deleteFromcrypto_addressCollection(filter: { address: { eq: $walletAddress } }) {
+      affectedCount
     }
   }
 `;

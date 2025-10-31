@@ -1,4 +1,5 @@
 /* eslint-disable */
+import { TypedDocumentNode as DocumentNode } from "@graphql-typed-document-node/core";
 export type Maybe<T> = T | null;
 export type InputMaybe<T> = T | null | undefined;
 export type Exact<T extends { [key: string]: unknown }> = { [K in keyof T]: T[K] };
@@ -9,7 +10,7 @@ export type MakeEmpty<T extends { [key: string]: unknown }, K extends keyof T> =
 };
 export type Incremental<T> =
   | T
-  | { [P in keyof T]?: P extends ' $fragmentName' | '__typename' ? T[P] : never };
+  | { [P in keyof T]?: P extends " $fragmentName" | "__typename" ? T[P] : never };
 /** All built-in and custom scalars, mapped to their actual values */
 export type Scalars = {
   ID: { input: string; output: string };
@@ -39,158 +40,158 @@ export type Scalars = {
 
 /** Boolean expression comparing fields on type "BigFloat" */
 export type BigFloatFilter = {
-  eq?: InputMaybe<Scalars['BigFloat']['input']>;
-  gt?: InputMaybe<Scalars['BigFloat']['input']>;
-  gte?: InputMaybe<Scalars['BigFloat']['input']>;
-  in?: InputMaybe<Array<Scalars['BigFloat']['input']>>;
+  eq?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  gt?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  gte?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  in?: InputMaybe<Array<Scalars["BigFloat"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  lt?: InputMaybe<Scalars['BigFloat']['input']>;
-  lte?: InputMaybe<Scalars['BigFloat']['input']>;
-  neq?: InputMaybe<Scalars['BigFloat']['input']>;
+  lt?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  lte?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  neq?: InputMaybe<Scalars["BigFloat"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "BigFloatList" */
 export type BigFloatListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['BigFloat']['input']>>;
-  contains?: InputMaybe<Array<Scalars['BigFloat']['input']>>;
-  eq?: InputMaybe<Array<Scalars['BigFloat']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["BigFloat"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["BigFloat"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["BigFloat"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['BigFloat']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["BigFloat"]["input"]>>;
 };
 
 /** Boolean expression comparing fields on type "BigInt" */
 export type BigIntFilter = {
-  eq?: InputMaybe<Scalars['BigInt']['input']>;
-  gt?: InputMaybe<Scalars['BigInt']['input']>;
-  gte?: InputMaybe<Scalars['BigInt']['input']>;
-  in?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  eq?: InputMaybe<Scalars["BigInt"]["input"]>;
+  gt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  gte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  in?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  lt?: InputMaybe<Scalars['BigInt']['input']>;
-  lte?: InputMaybe<Scalars['BigInt']['input']>;
-  neq?: InputMaybe<Scalars['BigInt']['input']>;
+  lt?: InputMaybe<Scalars["BigInt"]["input"]>;
+  lte?: InputMaybe<Scalars["BigInt"]["input"]>;
+  neq?: InputMaybe<Scalars["BigInt"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "BigIntList" */
 export type BigIntListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  contains?: InputMaybe<Array<Scalars['BigInt']['input']>>;
-  eq?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['BigInt']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["BigInt"]["input"]>>;
 };
 
 /** Boolean expression comparing fields on type "Boolean" */
 export type BooleanFilter = {
-  eq?: InputMaybe<Scalars['Boolean']['input']>;
+  eq?: InputMaybe<Scalars["Boolean"]["input"]>;
   is?: InputMaybe<FilterIs>;
 };
 
 /** Boolean expression comparing fields on type "BooleanList" */
 export type BooleanListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['Boolean']['input']>>;
-  contains?: InputMaybe<Array<Scalars['Boolean']['input']>>;
-  eq?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['Boolean']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["Boolean"]["input"]>>;
 };
 
 /** Boolean expression comparing fields on type "Date" */
 export type DateFilter = {
-  eq?: InputMaybe<Scalars['Date']['input']>;
-  gt?: InputMaybe<Scalars['Date']['input']>;
-  gte?: InputMaybe<Scalars['Date']['input']>;
-  in?: InputMaybe<Array<Scalars['Date']['input']>>;
+  eq?: InputMaybe<Scalars["Date"]["input"]>;
+  gt?: InputMaybe<Scalars["Date"]["input"]>;
+  gte?: InputMaybe<Scalars["Date"]["input"]>;
+  in?: InputMaybe<Array<Scalars["Date"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  lt?: InputMaybe<Scalars['Date']['input']>;
-  lte?: InputMaybe<Scalars['Date']['input']>;
-  neq?: InputMaybe<Scalars['Date']['input']>;
+  lt?: InputMaybe<Scalars["Date"]["input"]>;
+  lte?: InputMaybe<Scalars["Date"]["input"]>;
+  neq?: InputMaybe<Scalars["Date"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "DateList" */
 export type DateListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['Date']['input']>>;
-  contains?: InputMaybe<Array<Scalars['Date']['input']>>;
-  eq?: InputMaybe<Array<Scalars['Date']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["Date"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["Date"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["Date"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['Date']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["Date"]["input"]>>;
 };
 
 /** Boolean expression comparing fields on type "Datetime" */
 export type DatetimeFilter = {
-  eq?: InputMaybe<Scalars['Datetime']['input']>;
-  gt?: InputMaybe<Scalars['Datetime']['input']>;
-  gte?: InputMaybe<Scalars['Datetime']['input']>;
-  in?: InputMaybe<Array<Scalars['Datetime']['input']>>;
+  eq?: InputMaybe<Scalars["Datetime"]["input"]>;
+  gt?: InputMaybe<Scalars["Datetime"]["input"]>;
+  gte?: InputMaybe<Scalars["Datetime"]["input"]>;
+  in?: InputMaybe<Array<Scalars["Datetime"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  lt?: InputMaybe<Scalars['Datetime']['input']>;
-  lte?: InputMaybe<Scalars['Datetime']['input']>;
-  neq?: InputMaybe<Scalars['Datetime']['input']>;
+  lt?: InputMaybe<Scalars["Datetime"]["input"]>;
+  lte?: InputMaybe<Scalars["Datetime"]["input"]>;
+  neq?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "DatetimeList" */
 export type DatetimeListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['Datetime']['input']>>;
-  contains?: InputMaybe<Array<Scalars['Datetime']['input']>>;
-  eq?: InputMaybe<Array<Scalars['Datetime']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["Datetime"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["Datetime"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["Datetime"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['Datetime']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["Datetime"]["input"]>>;
 };
 
 export enum FilterIs {
-  notNull = 'NOT_NULL',
-  null = 'NULL'
+  NotNull = "NOT_NULL",
+  Null = "NULL"
 }
 
 /** Boolean expression comparing fields on type "Float" */
 export type FloatFilter = {
-  eq?: InputMaybe<Scalars['Float']['input']>;
-  gt?: InputMaybe<Scalars['Float']['input']>;
-  gte?: InputMaybe<Scalars['Float']['input']>;
-  in?: InputMaybe<Array<Scalars['Float']['input']>>;
+  eq?: InputMaybe<Scalars["Float"]["input"]>;
+  gt?: InputMaybe<Scalars["Float"]["input"]>;
+  gte?: InputMaybe<Scalars["Float"]["input"]>;
+  in?: InputMaybe<Array<Scalars["Float"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  lt?: InputMaybe<Scalars['Float']['input']>;
-  lte?: InputMaybe<Scalars['Float']['input']>;
-  neq?: InputMaybe<Scalars['Float']['input']>;
+  lt?: InputMaybe<Scalars["Float"]["input"]>;
+  lte?: InputMaybe<Scalars["Float"]["input"]>;
+  neq?: InputMaybe<Scalars["Float"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "FloatList" */
 export type FloatListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['Float']['input']>>;
-  contains?: InputMaybe<Array<Scalars['Float']['input']>>;
-  eq?: InputMaybe<Array<Scalars['Float']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["Float"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["Float"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["Float"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['Float']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["Float"]["input"]>>;
 };
 
 /** Boolean expression comparing fields on type "ID" */
 export type IdFilter = {
-  eq?: InputMaybe<Scalars['ID']['input']>;
+  eq?: InputMaybe<Scalars["ID"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "Int" */
 export type IntFilter = {
-  eq?: InputMaybe<Scalars['Int']['input']>;
-  gt?: InputMaybe<Scalars['Int']['input']>;
-  gte?: InputMaybe<Scalars['Int']['input']>;
-  in?: InputMaybe<Array<Scalars['Int']['input']>>;
+  eq?: InputMaybe<Scalars["Int"]["input"]>;
+  gt?: InputMaybe<Scalars["Int"]["input"]>;
+  gte?: InputMaybe<Scalars["Int"]["input"]>;
+  in?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  lt?: InputMaybe<Scalars['Int']['input']>;
-  lte?: InputMaybe<Scalars['Int']['input']>;
-  neq?: InputMaybe<Scalars['Int']['input']>;
+  lt?: InputMaybe<Scalars["Int"]["input"]>;
+  lte?: InputMaybe<Scalars["Int"]["input"]>;
+  neq?: InputMaybe<Scalars["Int"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "IntList" */
 export type IntListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['Int']['input']>>;
-  contains?: InputMaybe<Array<Scalars['Int']['input']>>;
-  eq?: InputMaybe<Array<Scalars['Int']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["Int"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["Int"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['Int']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["Int"]["input"]>>;
 };
 
 /** The root type for creating and mutating data */
 export type Mutation = {
-  __typename?: 'Mutation';
+  __typename?: "Mutation";
   /** Deletes zero or more records from the `address` collection */
   deleteFromaddressCollection: AddressDeleteResponse;
   /** Deletes zero or more records from the `crypto_address` collection */
@@ -357,163 +358,163 @@ export type Mutation = {
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromaddressCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<AddressFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromcryptoAddressCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<CryptoAddressFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromdocumentCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<DocumentFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromdocumentSignatoryCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<DocumentSignatoryFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromemailAddressCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<EmailAddressFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromimageCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ImageFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFrominvestorApplicationCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<InvestorApplicationFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromjurisdictionCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<JurisdictionFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromlegalEntityCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<LegalEntityFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromlegalEntityRelationshipCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<LegalEntityRelationshipFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromlinkedAccountCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<LinkedAccountFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromnotificationConfigurationCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<NotificationConfigurationFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromofferingCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromofferingDescriptionTextCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingDescriptionTextFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromofferingDetailCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingDetailFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromofferingDistributionCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingDistributionFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromofferingParticipantCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingParticipantFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromofferingSmartContractSetCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingSmartContractSetFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromorganizationCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OrganizationFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromorganizationUserCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OrganizationUserFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromprofileCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ProfileFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromrealEstatePropertyCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<RealEstatePropertyFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromrealEstatePropertyImageCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<RealEstatePropertyImageFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromshareOrderCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ShareOrderFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromshareTransferEventCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ShareTransferEventFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromsmartContractCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<SmartContractFilter>;
 };
 
 /** The root type for creating and mutating data */
 export type MutationDeleteFromwhitelistTransactionCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<WhitelistTransactionFilter>;
 };
 
@@ -654,227 +655,227 @@ export type MutationInsertIntowhitelistTransactionCollectionArgs = {
 
 /** The root type for creating and mutating data */
 export type MutationUpdateaddressCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<AddressFilter>;
   set: AddressUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatecryptoAddressCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<CryptoAddressFilter>;
   set: CryptoAddressUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatedocumentCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<DocumentFilter>;
   set: DocumentUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatedocumentSignatoryCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<DocumentSignatoryFilter>;
   set: DocumentSignatoryUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateemailAddressCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<EmailAddressFilter>;
   set: EmailAddressUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateimageCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ImageFilter>;
   set: ImageUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateinvestorApplicationCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<InvestorApplicationFilter>;
   set: InvestorApplicationUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatejurisdictionCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<JurisdictionFilter>;
   set: JurisdictionUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatelegalEntityCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<LegalEntityFilter>;
   set: LegalEntityUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatelegalEntityRelationshipCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<LegalEntityRelationshipFilter>;
   set: LegalEntityRelationshipUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatelinkedAccountCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<LinkedAccountFilter>;
   set: LinkedAccountUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatenotificationConfigurationCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<NotificationConfigurationFilter>;
   set: NotificationConfigurationUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateofferingCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingFilter>;
   set: OfferingUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateofferingDescriptionTextCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingDescriptionTextFilter>;
   set: OfferingDescriptionTextUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateofferingDetailCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingDetailFilter>;
   set: OfferingDetailUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateofferingDistributionCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingDistributionFilter>;
   set: OfferingDistributionUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateofferingParticipantCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingParticipantFilter>;
   set: OfferingParticipantUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateofferingSmartContractSetCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OfferingSmartContractSetFilter>;
   set: OfferingSmartContractSetUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateorganizationCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OrganizationFilter>;
   set: OrganizationUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateorganizationUserCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<OrganizationUserFilter>;
   set: OrganizationUserUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateprofileCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ProfileFilter>;
   set: ProfileUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdaterealEstatePropertyCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<RealEstatePropertyFilter>;
   set: RealEstatePropertyUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdaterealEstatePropertyImageCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<RealEstatePropertyImageFilter>;
   set: RealEstatePropertyImageUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateshareOrderCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ShareOrderFilter>;
   set: ShareOrderUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdateshareTransferEventCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<ShareTransferEventFilter>;
   set: ShareTransferEventUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatesmartContractCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<SmartContractFilter>;
   set: SmartContractUpdateInput;
 };
 
 /** The root type for creating and mutating data */
 export type MutationUpdatewhitelistTransactionCollectionArgs = {
-  atMost?: Scalars['Int']['input'];
+  atMost?: Scalars["Int"]["input"];
   filter?: InputMaybe<WhitelistTransactionFilter>;
   set: WhitelistTransactionUpdateInput;
 };
 
 export type Node = {
   /** Retrieves a record by `ID` */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
 };
 
 /** Boolean expression comparing fields on type "Opaque" */
 export type OpaqueFilter = {
-  eq?: InputMaybe<Scalars['Opaque']['input']>;
+  eq?: InputMaybe<Scalars["Opaque"]["input"]>;
   is?: InputMaybe<FilterIs>;
 };
 
 /** Defines a per-field sorting order */
 export enum OrderByDirection {
   /** Ascending order, nulls first */
-  ascNullsFirst = 'AscNullsFirst',
+  AscNullsFirst = "AscNullsFirst",
   /** Ascending order, nulls last */
-  ascNullsLast = 'AscNullsLast',
+  AscNullsLast = "AscNullsLast",
   /** Descending order, nulls first */
-  descNullsFirst = 'DescNullsFirst',
+  DescNullsFirst = "DescNullsFirst",
   /** Descending order, nulls last */
-  descNullsLast = 'DescNullsLast'
+  DescNullsLast = "DescNullsLast"
 }
 
 export type PageInfo = {
-  __typename?: 'PageInfo';
-  endCursor?: Maybe<Scalars['String']['output']>;
-  hasNextPage: Scalars['Boolean']['output'];
-  hasPreviousPage: Scalars['Boolean']['output'];
-  startCursor?: Maybe<Scalars['String']['output']>;
+  __typename?: "PageInfo";
+  endCursor?: Maybe<Scalars["String"]["output"]>;
+  hasNextPage: Scalars["Boolean"]["output"];
+  hasPreviousPage: Scalars["Boolean"]["output"];
+  startCursor?: Maybe<Scalars["String"]["output"]>;
 };
 
 /** The root type for querying data */
 export type Query = {
-  __typename?: 'Query';
+  __typename?: "Query";
   /** A pagable collection of type `address` */
   addressCollection?: Maybe<AddressConnection>;
   /** A pagable collection of type `crypto_address` */
@@ -889,8 +890,8 @@ export type Query = {
   imageCollection?: Maybe<ImageConnection>;
   /** A pagable collection of type `investor_application` */
   investor_applicationCollection?: Maybe<InvestorApplicationConnection>;
-  is_organization_admin?: Maybe<Scalars['Boolean']['output']>;
-  is_organization_member?: Maybe<Scalars['Boolean']['output']>;
+  is_organization_admin?: Maybe<Scalars["Boolean"]["output"]>;
+  is_organization_member?: Maybe<Scalars["Boolean"]["output"]>;
   /** A pagable collection of type `jurisdiction` */
   jurisdictionCollection?: Maybe<JurisdictionConnection>;
   /** A pagable collection of type `legal_entity` */
@@ -917,7 +918,7 @@ export type Query = {
   offering_smart_contract_setCollection?: Maybe<OfferingSmartContractSetConnection>;
   /** A pagable collection of type `organization` */
   organizationCollection?: Maybe<OrganizationConnection>;
-  organization_has_no_members?: Maybe<Scalars['Boolean']['output']>;
+  organization_has_no_members?: Maybe<Scalars["Boolean"]["output"]>;
   /** A pagable collection of type `organization_user` */
   organization_userCollection?: Maybe<OrganizationUserConnection>;
   /** A pagable collection of type `profile` */
@@ -930,7 +931,7 @@ export type Query = {
   share_orderCollection?: Maybe<ShareOrderConnection>;
   /** A pagable collection of type `share_transfer_event` */
   share_transfer_eventCollection?: Maybe<ShareTransferEventConnection>;
-  show_limit?: Maybe<Scalars['Float']['output']>;
+  show_limit?: Maybe<Scalars["Float"]["output"]>;
   /** A pagable collection of type `smart_contract` */
   smart_contractCollection?: Maybe<SmartContractConnection>;
   /** A pagable collection of type `whitelist_transaction` */
@@ -939,436 +940,436 @@ export type Query = {
 
 /** The root type for querying data */
 export type QueryAddressCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<AddressFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<AddressOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryCryptoAddressCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<CryptoAddressFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<CryptoAddressOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryDocumentCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<DocumentFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<DocumentOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryDocumentSignatoryCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<DocumentSignatoryFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<DocumentSignatoryOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryEmailAddressCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<EmailAddressFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<EmailAddressOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryImageCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<ImageFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<ImageOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryInvestorApplicationCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<InvestorApplicationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<InvestorApplicationOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryIsOrganizationAdminArgs = {
-  p_organization_id: Scalars['UUID']['input'];
-  p_user_id: Scalars['UUID']['input'];
+  p_organization_id: Scalars["UUID"]["input"];
+  p_user_id: Scalars["UUID"]["input"];
 };
 
 /** The root type for querying data */
 export type QueryIsOrganizationMemberArgs = {
-  p_organization_id: Scalars['UUID']['input'];
-  p_user_id: Scalars['UUID']['input'];
+  p_organization_id: Scalars["UUID"]["input"];
+  p_user_id: Scalars["UUID"]["input"];
 };
 
 /** The root type for querying data */
 export type QueryJurisdictionCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<JurisdictionFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<JurisdictionOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryLegalEntityCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<LegalEntityFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<LegalEntityOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryLegalEntityRelationshipCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<LegalEntityRelationshipFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<LegalEntityRelationshipOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryLinkedAccountCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<LinkedAccountFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<LinkedAccountOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryNodeArgs = {
-  nodeId: Scalars['ID']['input'];
+  nodeId: Scalars["ID"]["input"];
 };
 
 /** The root type for querying data */
 export type QueryNotificationConfigurationCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<NotificationConfigurationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<NotificationConfigurationOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOfferingCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOfferingDescriptionTextCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingDescriptionTextFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingDescriptionTextOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOfferingDetailCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingDetailFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingDetailOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOfferingDistributionCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingDistributionFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingDistributionOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOfferingParticipantCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingParticipantFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingParticipantOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOfferingSmartContractSetCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingSmartContractSetFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingSmartContractSetOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOrganizationCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OrganizationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OrganizationOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryOrganizationHasNoMembersArgs = {
-  p_organization_id: Scalars['UUID']['input'];
+  p_organization_id: Scalars["UUID"]["input"];
 };
 
 /** The root type for querying data */
 export type QueryOrganizationUserCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OrganizationUserFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OrganizationUserOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryProfileCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<ProfileFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<ProfileOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryRealEstatePropertyCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<RealEstatePropertyFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<RealEstatePropertyOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryRealEstatePropertyImageCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<RealEstatePropertyImageFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<RealEstatePropertyImageOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryShareOrderCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<ShareOrderFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<ShareOrderOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryShareTransferEventCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<ShareTransferEventFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<ShareTransferEventOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QuerySmartContractCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<SmartContractFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<SmartContractOrderBy>>;
 };
 
 /** The root type for querying data */
 export type QueryWhitelistTransactionCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<WhitelistTransactionFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<WhitelistTransactionOrderBy>>;
 };
 
 /** Boolean expression comparing fields on type "String" */
 export type StringFilter = {
-  eq?: InputMaybe<Scalars['String']['input']>;
-  gt?: InputMaybe<Scalars['String']['input']>;
-  gte?: InputMaybe<Scalars['String']['input']>;
-  ilike?: InputMaybe<Scalars['String']['input']>;
-  in?: InputMaybe<Array<Scalars['String']['input']>>;
-  iregex?: InputMaybe<Scalars['String']['input']>;
+  eq?: InputMaybe<Scalars["String"]["input"]>;
+  gt?: InputMaybe<Scalars["String"]["input"]>;
+  gte?: InputMaybe<Scalars["String"]["input"]>;
+  ilike?: InputMaybe<Scalars["String"]["input"]>;
+  in?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  iregex?: InputMaybe<Scalars["String"]["input"]>;
   is?: InputMaybe<FilterIs>;
-  like?: InputMaybe<Scalars['String']['input']>;
-  lt?: InputMaybe<Scalars['String']['input']>;
-  lte?: InputMaybe<Scalars['String']['input']>;
-  neq?: InputMaybe<Scalars['String']['input']>;
-  regex?: InputMaybe<Scalars['String']['input']>;
-  startsWith?: InputMaybe<Scalars['String']['input']>;
+  like?: InputMaybe<Scalars["String"]["input"]>;
+  lt?: InputMaybe<Scalars["String"]["input"]>;
+  lte?: InputMaybe<Scalars["String"]["input"]>;
+  neq?: InputMaybe<Scalars["String"]["input"]>;
+  regex?: InputMaybe<Scalars["String"]["input"]>;
+  startsWith?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "StringList" */
 export type StringListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['String']['input']>>;
-  contains?: InputMaybe<Array<Scalars['String']['input']>>;
-  eq?: InputMaybe<Array<Scalars['String']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["String"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["String"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['String']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["String"]["input"]>>;
 };
 
 /** Boolean expression comparing fields on type "Time" */
 export type TimeFilter = {
-  eq?: InputMaybe<Scalars['Time']['input']>;
-  gt?: InputMaybe<Scalars['Time']['input']>;
-  gte?: InputMaybe<Scalars['Time']['input']>;
-  in?: InputMaybe<Array<Scalars['Time']['input']>>;
+  eq?: InputMaybe<Scalars["Time"]["input"]>;
+  gt?: InputMaybe<Scalars["Time"]["input"]>;
+  gte?: InputMaybe<Scalars["Time"]["input"]>;
+  in?: InputMaybe<Array<Scalars["Time"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  lt?: InputMaybe<Scalars['Time']['input']>;
-  lte?: InputMaybe<Scalars['Time']['input']>;
-  neq?: InputMaybe<Scalars['Time']['input']>;
+  lt?: InputMaybe<Scalars["Time"]["input"]>;
+  lte?: InputMaybe<Scalars["Time"]["input"]>;
+  neq?: InputMaybe<Scalars["Time"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "TimeList" */
 export type TimeListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['Time']['input']>>;
-  contains?: InputMaybe<Array<Scalars['Time']['input']>>;
-  eq?: InputMaybe<Array<Scalars['Time']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["Time"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["Time"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["Time"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['Time']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["Time"]["input"]>>;
 };
 
 /** Boolean expression comparing fields on type "UUID" */
 export type UuidFilter = {
-  eq?: InputMaybe<Scalars['UUID']['input']>;
-  in?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  eq?: InputMaybe<Scalars["UUID"]["input"]>;
+  in?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  neq?: InputMaybe<Scalars['UUID']['input']>;
+  neq?: InputMaybe<Scalars["UUID"]["input"]>;
 };
 
 /** Boolean expression comparing fields on type "UUIDList" */
 export type UuidListFilter = {
-  containedBy?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  contains?: InputMaybe<Array<Scalars['UUID']['input']>>;
-  eq?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  containedBy?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+  contains?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
+  eq?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
   is?: InputMaybe<FilterIs>;
-  overlaps?: InputMaybe<Array<Scalars['UUID']['input']>>;
+  overlaps?: InputMaybe<Array<Scalars["UUID"]["input"]>>;
 };
 
 export type Address = Node & {
-  __typename?: 'address';
-  city: Scalars['String']['output'];
-  country: Scalars['String']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
-  label?: Maybe<Scalars['String']['output']>;
-  lat?: Maybe<Scalars['BigFloat']['output']>;
+  __typename?: "address";
+  city: Scalars["String"]["output"];
+  country: Scalars["String"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
+  label?: Maybe<Scalars["String"]["output"]>;
+  lat?: Maybe<Scalars["BigFloat"]["output"]>;
   legal_entity?: Maybe<LegalEntity>;
-  legal_entity_id: Scalars['UUID']['output'];
-  line1?: Maybe<Scalars['String']['output']>;
-  line2?: Maybe<Scalars['String']['output']>;
-  line3?: Maybe<Scalars['String']['output']>;
-  lng?: Maybe<Scalars['BigFloat']['output']>;
+  legal_entity_id: Scalars["UUID"]["output"];
+  line1?: Maybe<Scalars["String"]["output"]>;
+  line2?: Maybe<Scalars["String"]["output"]>;
+  line3?: Maybe<Scalars["String"]["output"]>;
+  lng?: Maybe<Scalars["BigFloat"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  postal_code?: Maybe<Scalars['String']['output']>;
+  nodeId: Scalars["ID"]["output"];
+  postal_code?: Maybe<Scalars["String"]["output"]>;
   real_estate_propertyCollection?: Maybe<RealEstatePropertyConnection>;
-  state_province?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  state_province?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type AddressRealEstatePropertyCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<RealEstatePropertyFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<RealEstatePropertyOrderBy>>;
 };
 
 export type AddressConnection = {
-  __typename?: 'addressConnection';
+  __typename?: "addressConnection";
   edges: Array<AddressEdge>;
   pageInfo: PageInfo;
 };
 
 export type AddressDeleteResponse = {
-  __typename?: 'addressDeleteResponse';
+  __typename?: "addressDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Address>;
 };
 
 export type AddressEdge = {
-  __typename?: 'addressEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "addressEdge";
+  cursor: Scalars["String"]["output"];
   node: Address;
 };
 
@@ -1397,26 +1398,26 @@ export type AddressFilter = {
 };
 
 export type AddressInsertInput = {
-  city?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  label?: InputMaybe<Scalars['String']['input']>;
-  lat?: InputMaybe<Scalars['BigFloat']['input']>;
-  legal_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  line1?: InputMaybe<Scalars['String']['input']>;
-  line2?: InputMaybe<Scalars['String']['input']>;
-  line3?: InputMaybe<Scalars['String']['input']>;
-  lng?: InputMaybe<Scalars['BigFloat']['input']>;
-  postal_code?: InputMaybe<Scalars['String']['input']>;
-  state_province?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  city?: InputMaybe<Scalars["String"]["input"]>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  lat?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  legal_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  line1?: InputMaybe<Scalars["String"]["input"]>;
+  line2?: InputMaybe<Scalars["String"]["input"]>;
+  line3?: InputMaybe<Scalars["String"]["input"]>;
+  lng?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  postal_code?: InputMaybe<Scalars["String"]["input"]>;
+  state_province?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type AddressInsertResponse = {
-  __typename?: 'addressInsertResponse';
+  __typename?: "addressInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Address>;
 };
@@ -1439,37 +1440,37 @@ export type AddressOrderBy = {
 };
 
 export type AddressUpdateInput = {
-  city?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  label?: InputMaybe<Scalars['String']['input']>;
-  lat?: InputMaybe<Scalars['BigFloat']['input']>;
-  legal_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  line1?: InputMaybe<Scalars['String']['input']>;
-  line2?: InputMaybe<Scalars['String']['input']>;
-  line3?: InputMaybe<Scalars['String']['input']>;
-  lng?: InputMaybe<Scalars['BigFloat']['input']>;
-  postal_code?: InputMaybe<Scalars['String']['input']>;
-  state_province?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  city?: InputMaybe<Scalars["String"]["input"]>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  lat?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  legal_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  line1?: InputMaybe<Scalars["String"]["input"]>;
+  line2?: InputMaybe<Scalars["String"]["input"]>;
+  line3?: InputMaybe<Scalars["String"]["input"]>;
+  lng?: InputMaybe<Scalars["BigFloat"]["input"]>;
+  postal_code?: InputMaybe<Scalars["String"]["input"]>;
+  state_province?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type AddressUpdateResponse = {
-  __typename?: 'addressUpdateResponse';
+  __typename?: "addressUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Address>;
 };
 
 export enum AssetStatus {
-  closed = 'CLOSED',
-  dueDiligence = 'DUE_DILIGENCE',
-  forSale = 'FOR_SALE',
-  identified = 'IDENTIFIED',
-  inNegotiation = 'IN_NEGOTIATION',
-  underContract = 'UNDER_CONTRACT'
+  Closed = "CLOSED",
+  DueDiligence = "DUE_DILIGENCE",
+  ForSale = "FOR_SALE",
+  Identified = "IDENTIFIED",
+  InNegotiation = "IN_NEGOTIATION",
+  UnderContract = "UNDER_CONTRACT"
 }
 
 /** Boolean expression comparing fields on type "asset_status" */
@@ -1481,51 +1482,51 @@ export type AssetStatusFilter = {
 };
 
 export type CryptoAddress = Node & {
-  __typename?: 'crypto_address';
-  address: Scalars['String']['output'];
-  chain_id?: Maybe<Scalars['Int']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['UUID']['output'];
-  is_public?: Maybe<Scalars['Boolean']['output']>;
+  __typename?: "crypto_address";
+  address: Scalars["String"]["output"];
+  chain_id?: Maybe<Scalars["Int"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["UUID"]["output"];
+  is_public?: Maybe<Scalars["Boolean"]["output"]>;
   legal_entity?: Maybe<LegalEntity>;
-  legal_entity_id: Scalars['UUID']['output'];
-  name?: Maybe<Scalars['String']['output']>;
+  legal_entity_id: Scalars["UUID"]["output"];
+  name?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   protocol?: Maybe<CryptoAddressProtocol>;
   smart_contractCollection?: Maybe<SmartContractConnection>;
   type?: Maybe<CryptoAddressType>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type CryptoAddressSmartContractCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<SmartContractFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<SmartContractOrderBy>>;
 };
 
 export type CryptoAddressConnection = {
-  __typename?: 'crypto_addressConnection';
+  __typename?: "crypto_addressConnection";
   edges: Array<CryptoAddressEdge>;
   pageInfo: PageInfo;
 };
 
 export type CryptoAddressDeleteResponse = {
-  __typename?: 'crypto_addressDeleteResponse';
+  __typename?: "crypto_addressDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<CryptoAddress>;
 };
 
 export type CryptoAddressEdge = {
-  __typename?: 'crypto_addressEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "crypto_addressEdge";
+  cursor: Scalars["String"]["output"];
   node: CryptoAddress;
 };
 
@@ -1551,23 +1552,23 @@ export type CryptoAddressFilter = {
 };
 
 export type CryptoAddressInsertInput = {
-  address?: InputMaybe<Scalars['String']['input']>;
-  chain_id?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  legal_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars["String"]["input"]>;
+  chain_id?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  legal_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
   protocol?: InputMaybe<CryptoAddressProtocol>;
   type?: InputMaybe<CryptoAddressType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type CryptoAddressInsertResponse = {
-  __typename?: 'crypto_addressInsertResponse';
+  __typename?: "crypto_addressInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<CryptoAddress>;
 };
@@ -1587,32 +1588,32 @@ export type CryptoAddressOrderBy = {
 };
 
 export type CryptoAddressUpdateInput = {
-  address?: InputMaybe<Scalars['String']['input']>;
-  chain_id?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  legal_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
+  address?: InputMaybe<Scalars["String"]["input"]>;
+  chain_id?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  legal_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
   protocol?: InputMaybe<CryptoAddressProtocol>;
   type?: InputMaybe<CryptoAddressType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type CryptoAddressUpdateResponse = {
-  __typename?: 'crypto_addressUpdateResponse';
+  __typename?: "crypto_addressUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<CryptoAddress>;
 };
 
 export enum CryptoAddressProtocol {
-  ada = 'ADA',
-  algo = 'ALGO',
-  btc = 'BTC',
-  eth = 'ETH'
+  Ada = "ADA",
+  Algo = "ALGO",
+  Btc = "BTC",
+  Eth = "ETH"
 }
 
 /** Boolean expression comparing fields on type "crypto_address_protocol" */
@@ -1624,8 +1625,8 @@ export type CryptoAddressProtocolFilter = {
 };
 
 export enum CryptoAddressType {
-  contract = 'CONTRACT',
-  wallet = 'WALLET'
+  Contract = "CONTRACT",
+  Wallet = "WALLET"
 }
 
 /** Boolean expression comparing fields on type "crypto_address_type" */
@@ -1637,28 +1638,28 @@ export type CryptoAddressTypeFilter = {
 };
 
 export enum CurrencyCode {
-  ada = 'ADA',
-  algoUsdc = 'ALGO_USDC',
-  algoUsdcTest = 'ALGO_USDC_TEST_',
-  aud = 'AUD',
-  btc = 'BTC',
-  cad = 'CAD',
-  cc = 'CC',
-  dai = 'DAI',
-  daiMaticTest = 'DAI_MATIC_TEST_',
-  daiTest = 'DAI_TEST_',
-  eth = 'ETH',
-  eur = 'EUR',
-  gbp = 'GBP',
-  kyd = 'KYD',
-  matic = 'MATIC',
-  poSDai = 'PoS_DAI',
-  poSUsdc = 'PoS_USDC',
-  realShare = 'REAL_SHARE',
-  usd = 'USD',
-  usdc = 'USDC',
-  usdcMaticTest = 'USDC_MATIC_TEST_',
-  usdcTest = 'USDC_TEST_'
+  Ada = "ADA",
+  AlgoUsdc = "ALGO_USDC",
+  AlgoUsdcTest = "ALGO_USDC_TEST_",
+  Aud = "AUD",
+  Btc = "BTC",
+  Cad = "CAD",
+  Cc = "CC",
+  Dai = "DAI",
+  DaiMaticTest = "DAI_MATIC_TEST_",
+  DaiTest = "DAI_TEST_",
+  Eth = "ETH",
+  Eur = "EUR",
+  Gbp = "GBP",
+  Kyd = "KYD",
+  Matic = "MATIC",
+  PoSDai = "PoS_DAI",
+  PoSUsdc = "PoS_USDC",
+  RealShare = "REAL_SHARE",
+  Usd = "USD",
+  Usdc = "USDC",
+  UsdcMaticTest = "USDC_MATIC_TEST_",
+  UsdcTest = "USDC_TEST_"
 }
 
 /** Boolean expression comparing fields on type "currency_code" */
@@ -1670,14 +1671,14 @@ export type CurrencyCodeFilter = {
 };
 
 export enum DistributionPeriodType {
-  day = 'DAY',
-  described = 'DESCRIBED',
-  month = 'MONTH',
-  none = 'NONE',
-  quarter = 'QUARTER',
-  unspecified = 'UNSPECIFIED',
-  week = 'WEEK',
-  year = 'YEAR'
+  Day = "DAY",
+  Described = "DESCRIBED",
+  Month = "MONTH",
+  None = "NONE",
+  Quarter = "QUARTER",
+  Unspecified = "UNSPECIFIED",
+  Week = "WEEK",
+  Year = "YEAR"
 }
 
 /** Boolean expression comparing fields on type "distribution_period_type" */
@@ -1689,79 +1690,79 @@ export type DistributionPeriodTypeFilter = {
 };
 
 export type Document = Node & {
-  __typename?: 'document';
+  __typename?: "document";
   access?: Maybe<DocumentAccessType>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  date?: Maybe<Scalars['Datetime']['output']>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  date?: Maybe<Scalars["Datetime"]["output"]>;
   document_signatoryCollection?: Maybe<DocumentSignatoryConnection>;
-  file_id?: Maybe<Scalars['String']['output']>;
+  file_id?: Maybe<Scalars["String"]["output"]>;
   format?: Maybe<DocumentFormat>;
-  id: Scalars['UUID']['output'];
+  id: Scalars["UUID"]["output"];
   image?: Maybe<Image>;
   investor_applicationCollection?: Maybe<InvestorApplicationConnection>;
   legal_entity?: Maybe<LegalEntity>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  offering_id?: Maybe<Scalars['UUID']['output']>;
-  offering_unique_id: Scalars['String']['output'];
-  owner_id: Scalars['UUID']['output'];
+  nodeId: Scalars["ID"]["output"];
+  offering_id?: Maybe<Scalars["UUID"]["output"]>;
+  offering_unique_id: Scalars["String"]["output"];
+  owner_id: Scalars["UUID"]["output"];
   smart_contractCollection?: Maybe<SmartContractConnection>;
-  smart_contract_id?: Maybe<Scalars['UUID']['output']>;
-  text?: Maybe<Scalars['String']['output']>;
-  thumbnail_image_id?: Maybe<Scalars['UUID']['output']>;
-  title?: Maybe<Scalars['String']['output']>;
+  smart_contract_id?: Maybe<Scalars["UUID"]["output"]>;
+  text?: Maybe<Scalars["String"]["output"]>;
+  thumbnail_image_id?: Maybe<Scalars["UUID"]["output"]>;
+  title?: Maybe<Scalars["String"]["output"]>;
   type?: Maybe<DocumentType>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  url?: Maybe<Scalars['String']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  url?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type DocumentDocumentSignatoryCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<DocumentSignatoryFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<DocumentSignatoryOrderBy>>;
 };
 
 export type DocumentInvestorApplicationCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<InvestorApplicationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<InvestorApplicationOrderBy>>;
 };
 
 export type DocumentSmartContractCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<SmartContractFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<SmartContractOrderBy>>;
 };
 
 export type DocumentConnection = {
-  __typename?: 'documentConnection';
+  __typename?: "documentConnection";
   edges: Array<DocumentEdge>;
   pageInfo: PageInfo;
 };
 
 export type DocumentDeleteResponse = {
-  __typename?: 'documentDeleteResponse';
+  __typename?: "documentDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Document>;
 };
 
 export type DocumentEdge = {
-  __typename?: 'documentEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "documentEdge";
+  cursor: Scalars["String"]["output"];
   node: Document;
 };
 
@@ -1793,27 +1794,27 @@ export type DocumentFilter = {
 
 export type DocumentInsertInput = {
   access?: InputMaybe<DocumentAccessType>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  date?: InputMaybe<Scalars['Datetime']['input']>;
-  file_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  date?: InputMaybe<Scalars["Datetime"]["input"]>;
+  file_id?: InputMaybe<Scalars["String"]["input"]>;
   format?: InputMaybe<DocumentFormat>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_unique_id?: InputMaybe<Scalars['String']['input']>;
-  owner_id?: InputMaybe<Scalars['UUID']['input']>;
-  smart_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  thumbnail_image_id?: InputMaybe<Scalars['UUID']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_unique_id?: InputMaybe<Scalars["String"]["input"]>;
+  owner_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  smart_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  text?: InputMaybe<Scalars["String"]["input"]>;
+  thumbnail_image_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<DocumentType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type DocumentInsertResponse = {
-  __typename?: 'documentInsertResponse';
+  __typename?: "documentInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Document>;
 };
@@ -1839,36 +1840,36 @@ export type DocumentOrderBy = {
 
 export type DocumentUpdateInput = {
   access?: InputMaybe<DocumentAccessType>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  date?: InputMaybe<Scalars['Datetime']['input']>;
-  file_id?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  date?: InputMaybe<Scalars["Datetime"]["input"]>;
+  file_id?: InputMaybe<Scalars["String"]["input"]>;
   format?: InputMaybe<DocumentFormat>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_unique_id?: InputMaybe<Scalars['String']['input']>;
-  owner_id?: InputMaybe<Scalars['UUID']['input']>;
-  smart_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  thumbnail_image_id?: InputMaybe<Scalars['UUID']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_unique_id?: InputMaybe<Scalars["String"]["input"]>;
+  owner_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  smart_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  text?: InputMaybe<Scalars["String"]["input"]>;
+  thumbnail_image_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<DocumentType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type DocumentUpdateResponse = {
-  __typename?: 'documentUpdateResponse';
+  __typename?: "documentUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Document>;
 };
 
 export enum DocumentAccessType {
-  owner = 'OWNER',
-  public = 'PUBLIC',
-  signatory = 'SIGNATORY',
-  token = 'TOKEN'
+  Owner = "OWNER",
+  Public = "PUBLIC",
+  Signatory = "SIGNATORY",
+  Token = "TOKEN"
 }
 
 /** Boolean expression comparing fields on type "document_access_type" */
@@ -1880,19 +1881,19 @@ export type DocumentAccessTypeFilter = {
 };
 
 export enum DocumentFormat {
-  excel = 'EXCEL',
-  github = 'GITHUB',
-  googleDoc = 'GOOGLE_DOC',
-  googleDrive = 'GOOGLE_DRIVE',
-  googleSheet = 'GOOGLE_SHEET',
-  googleSlide = 'GOOGLE_SLIDE',
-  markdown = 'MARKDOWN',
-  notion = 'NOTION',
-  other = 'OTHER',
-  pdf = 'PDF',
-  powerpoint = 'POWERPOINT',
-  video = 'VIDEO',
-  wordDoc = 'WORD_DOC'
+  Excel = "EXCEL",
+  Github = "GITHUB",
+  GoogleDoc = "GOOGLE_DOC",
+  GoogleDrive = "GOOGLE_DRIVE",
+  GoogleSheet = "GOOGLE_SHEET",
+  GoogleSlide = "GOOGLE_SLIDE",
+  Markdown = "MARKDOWN",
+  Notion = "NOTION",
+  Other = "OTHER",
+  Pdf = "PDF",
+  Powerpoint = "POWERPOINT",
+  Video = "VIDEO",
+  WordDoc = "WORD_DOC"
 }
 
 /** Boolean expression comparing fields on type "document_format" */
@@ -1904,39 +1905,39 @@ export type DocumentFormatFilter = {
 };
 
 export type DocumentSignatory = Node & {
-  __typename?: 'document_signatory';
-  archived?: Maybe<Scalars['Boolean']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  date?: Maybe<Scalars['Datetime']['output']>;
+  __typename?: "document_signatory";
+  archived?: Maybe<Scalars["Boolean"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  date?: Maybe<Scalars["Datetime"]["output"]>;
   document?: Maybe<Document>;
-  document_id: Scalars['UUID']['output'];
-  id: Scalars['UUID']['output'];
+  document_id: Scalars["UUID"]["output"];
+  id: Scalars["UUID"]["output"];
   legal_entity?: Maybe<LegalEntity>;
-  legal_entity_id?: Maybe<Scalars['UUID']['output']>;
+  legal_entity_id?: Maybe<Scalars["UUID"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  signature?: Maybe<Scalars['String']['output']>;
-  signer_address?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  nodeId: Scalars["ID"]["output"];
+  signature?: Maybe<Scalars["String"]["output"]>;
+  signer_address?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type DocumentSignatoryConnection = {
-  __typename?: 'document_signatoryConnection';
+  __typename?: "document_signatoryConnection";
   edges: Array<DocumentSignatoryEdge>;
   pageInfo: PageInfo;
 };
 
 export type DocumentSignatoryDeleteResponse = {
-  __typename?: 'document_signatoryDeleteResponse';
+  __typename?: "document_signatoryDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<DocumentSignatory>;
 };
 
 export type DocumentSignatoryEdge = {
-  __typename?: 'document_signatoryEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "document_signatoryEdge";
+  cursor: Scalars["String"]["output"];
   node: DocumentSignatory;
 };
 
@@ -1960,21 +1961,21 @@ export type DocumentSignatoryFilter = {
 };
 
 export type DocumentSignatoryInsertInput = {
-  archived?: InputMaybe<Scalars['Boolean']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  date?: InputMaybe<Scalars['Datetime']['input']>;
-  document_id?: InputMaybe<Scalars['UUID']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  legal_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  signature?: InputMaybe<Scalars['String']['input']>;
-  signer_address?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  archived?: InputMaybe<Scalars["Boolean"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  date?: InputMaybe<Scalars["Datetime"]["input"]>;
+  document_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  legal_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  signature?: InputMaybe<Scalars["String"]["input"]>;
+  signer_address?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type DocumentSignatoryInsertResponse = {
-  __typename?: 'document_signatoryInsertResponse';
+  __typename?: "document_signatoryInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<DocumentSignatory>;
 };
@@ -1992,36 +1993,36 @@ export type DocumentSignatoryOrderBy = {
 };
 
 export type DocumentSignatoryUpdateInput = {
-  archived?: InputMaybe<Scalars['Boolean']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  date?: InputMaybe<Scalars['Datetime']['input']>;
-  document_id?: InputMaybe<Scalars['UUID']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  legal_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  signature?: InputMaybe<Scalars['String']['input']>;
-  signer_address?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  archived?: InputMaybe<Scalars["Boolean"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  date?: InputMaybe<Scalars["Datetime"]["input"]>;
+  document_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  legal_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  signature?: InputMaybe<Scalars["String"]["input"]>;
+  signer_address?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type DocumentSignatoryUpdateResponse = {
-  __typename?: 'document_signatoryUpdateResponse';
+  __typename?: "document_signatoryUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<DocumentSignatory>;
 };
 
 export enum DocumentType {
-  agreement = 'AGREEMENT',
-  disclosure = 'DISCLOSURE',
-  financialStatement = 'FINANCIAL_STATEMENT',
-  general = 'GENERAL',
-  offeringDocument = 'OFFERING_DOCUMENT',
-  operatingAgreement = 'OPERATING_AGREEMENT',
-  other = 'OTHER',
-  ppm = 'PPM',
-  regFiling = 'REG_FILING',
-  shareLink = 'SHARE_LINK'
+  Agreement = "AGREEMENT",
+  Disclosure = "DISCLOSURE",
+  FinancialStatement = "FINANCIAL_STATEMENT",
+  General = "GENERAL",
+  OfferingDocument = "OFFERING_DOCUMENT",
+  OperatingAgreement = "OPERATING_AGREEMENT",
+  Other = "OTHER",
+  Ppm = "PPM",
+  RegFiling = "REG_FILING",
+  ShareLink = "SHARE_LINK"
 }
 
 /** Boolean expression comparing fields on type "document_type" */
@@ -2033,37 +2034,37 @@ export type DocumentTypeFilter = {
 };
 
 export type EmailAddress = Node & {
-  __typename?: 'email_address';
-  address: Scalars['String']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  id: Scalars['UUID']['output'];
-  is_public?: Maybe<Scalars['Boolean']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  __typename?: "email_address";
+  address: Scalars["String"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["UUID"]["output"];
+  is_public?: Maybe<Scalars["Boolean"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   organization?: Maybe<Organization>;
-  organization_id: Scalars['UUID']['output'];
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  organization_id: Scalars["UUID"]["output"];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type EmailAddressConnection = {
-  __typename?: 'email_addressConnection';
+  __typename?: "email_addressConnection";
   edges: Array<EmailAddressEdge>;
   pageInfo: PageInfo;
 };
 
 export type EmailAddressDeleteResponse = {
-  __typename?: 'email_addressDeleteResponse';
+  __typename?: "email_addressDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<EmailAddress>;
 };
 
 export type EmailAddressEdge = {
-  __typename?: 'email_addressEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "email_addressEdge";
+  cursor: Scalars["String"]["output"];
   node: EmailAddress;
 };
 
@@ -2086,20 +2087,20 @@ export type EmailAddressFilter = {
 };
 
 export type EmailAddressInsertInput = {
-  address?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  address?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type EmailAddressInsertResponse = {
-  __typename?: 'email_addressInsertResponse';
+  __typename?: "email_addressInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<EmailAddress>;
 };
@@ -2116,86 +2117,86 @@ export type EmailAddressOrderBy = {
 };
 
 export type EmailAddressUpdateInput = {
-  address?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  address?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type EmailAddressUpdateResponse = {
-  __typename?: 'email_addressUpdateResponse';
+  __typename?: "email_addressUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<EmailAddress>;
 };
 
 export type Image = Node & {
-  __typename?: 'image';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
+  __typename?: "image";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
   documentCollection?: Maybe<DocumentConnection>;
-  file_id?: Maybe<Scalars['String']['output']>;
-  id: Scalars['UUID']['output'];
-  label?: Maybe<Scalars['String']['output']>;
+  file_id?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["UUID"]["output"];
+  label?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offeringCollection?: Maybe<OfferingConnection>;
   real_estate_property_imageCollection?: Maybe<RealEstatePropertyImageConnection>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  url: Scalars['String']['output'];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  url: Scalars["String"]["output"];
 };
 
 export type ImageDocumentCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<DocumentFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<DocumentOrderBy>>;
 };
 
 export type ImageOfferingCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingOrderBy>>;
 };
 
 export type ImageRealEstatePropertyImageCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<RealEstatePropertyImageFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<RealEstatePropertyImageOrderBy>>;
 };
 
 export type ImageConnection = {
-  __typename?: 'imageConnection';
+  __typename?: "imageConnection";
   edges: Array<ImageEdge>;
   pageInfo: PageInfo;
 };
 
 export type ImageDeleteResponse = {
-  __typename?: 'imageDeleteResponse';
+  __typename?: "imageDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Image>;
 };
 
 export type ImageEdge = {
-  __typename?: 'imageEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "imageEdge";
+  cursor: Scalars["String"]["output"];
   node: Image;
 };
 
@@ -2216,18 +2217,18 @@ export type ImageFilter = {
 };
 
 export type ImageInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  file_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  label?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  file_id?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ImageInsertResponse = {
-  __typename?: 'imageInsertResponse';
+  __typename?: "imageInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Image>;
 };
@@ -2242,52 +2243,52 @@ export type ImageOrderBy = {
 };
 
 export type ImageUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  file_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  label?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  file_id?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type ImageUpdateResponse = {
-  __typename?: 'imageUpdateResponse';
+  __typename?: "imageUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Image>;
 };
 
 export type InvestorApplication = Node & {
-  __typename?: 'investor_application';
-  application_doc_id: Scalars['UUID']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
+  __typename?: "investor_application";
+  application_doc_id: Scalars["UUID"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
   document?: Maybe<Document>;
-  id: Scalars['UUID']['output'];
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offering_participant?: Maybe<OfferingParticipant>;
-  offering_participant_id: Scalars['UUID']['output'];
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  offering_participant_id: Scalars["UUID"]["output"];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type InvestorApplicationConnection = {
-  __typename?: 'investor_applicationConnection';
+  __typename?: "investor_applicationConnection";
   edges: Array<InvestorApplicationEdge>;
   pageInfo: PageInfo;
 };
 
 export type InvestorApplicationDeleteResponse = {
-  __typename?: 'investor_applicationDeleteResponse';
+  __typename?: "investor_applicationDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<InvestorApplication>;
 };
 
 export type InvestorApplicationEdge = {
-  __typename?: 'investor_applicationEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "investor_applicationEdge";
+  cursor: Scalars["String"]["output"];
   node: InvestorApplication;
 };
 
@@ -2307,17 +2308,17 @@ export type InvestorApplicationFilter = {
 };
 
 export type InvestorApplicationInsertInput = {
-  application_doc_id?: InputMaybe<Scalars['UUID']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_participant_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  application_doc_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_participant_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type InvestorApplicationInsertResponse = {
-  __typename?: 'investor_applicationInsertResponse';
+  __typename?: "investor_applicationInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<InvestorApplication>;
 };
@@ -2331,71 +2332,71 @@ export type InvestorApplicationOrderBy = {
 };
 
 export type InvestorApplicationUpdateInput = {
-  application_doc_id?: InputMaybe<Scalars['UUID']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_participant_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  application_doc_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_participant_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type InvestorApplicationUpdateResponse = {
-  __typename?: 'investor_applicationUpdateResponse';
+  __typename?: "investor_applicationUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<InvestorApplication>;
 };
 
 export type Jurisdiction = Node & {
-  __typename?: 'jurisdiction';
-  country: Scalars['String']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "jurisdiction";
+  country: Scalars["String"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   legal_entityCollection?: Maybe<LegalEntityConnection>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offering_participantCollection?: Maybe<OfferingParticipantConnection>;
-  province?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  province?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type JurisdictionLegalEntityCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<LegalEntityFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<LegalEntityOrderBy>>;
 };
 
 export type JurisdictionOfferingParticipantCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingParticipantFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingParticipantOrderBy>>;
 };
 
 export type JurisdictionConnection = {
-  __typename?: 'jurisdictionConnection';
+  __typename?: "jurisdictionConnection";
   edges: Array<JurisdictionEdge>;
   pageInfo: PageInfo;
 };
 
 export type JurisdictionDeleteResponse = {
-  __typename?: 'jurisdictionDeleteResponse';
+  __typename?: "jurisdictionDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Jurisdiction>;
 };
 
 export type JurisdictionEdge = {
-  __typename?: 'jurisdictionEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "jurisdictionEdge";
+  cursor: Scalars["String"]["output"];
   node: Jurisdiction;
 };
 
@@ -2415,17 +2416,17 @@ export type JurisdictionFilter = {
 };
 
 export type JurisdictionInsertInput = {
-  country?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  province?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  province?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type JurisdictionInsertResponse = {
-  __typename?: 'jurisdictionInsertResponse';
+  __typename?: "jurisdictionInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Jurisdiction>;
 };
@@ -2439,145 +2440,145 @@ export type JurisdictionOrderBy = {
 };
 
 export type JurisdictionUpdateInput = {
-  country?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  province?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  province?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type JurisdictionUpdateResponse = {
-  __typename?: 'jurisdictionUpdateResponse';
+  __typename?: "jurisdictionUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Jurisdiction>;
 };
 
 export type LegalEntity = Node & {
-  __typename?: 'legal_entity';
+  __typename?: "legal_entity";
   addressCollection?: Maybe<AddressConnection>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
   crypto_addressCollection?: Maybe<CryptoAddressConnection>;
-  display_name?: Maybe<Scalars['String']['output']>;
+  display_name?: Maybe<Scalars["String"]["output"]>;
   documentCollection?: Maybe<DocumentConnection>;
   document_signatoryCollection?: Maybe<DocumentSignatoryConnection>;
-  id: Scalars['UUID']['output'];
+  id: Scalars["UUID"]["output"];
   jurisdiction?: Maybe<Jurisdiction>;
-  jurisdiction_id?: Maybe<Scalars['UUID']['output']>;
+  jurisdiction_id?: Maybe<Scalars["UUID"]["output"]>;
   legal_entity_relationshipCollection?: Maybe<LegalEntityRelationshipConnection>;
-  legal_name?: Maybe<Scalars['String']['output']>;
+  legal_name?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offeringCollection?: Maybe<OfferingConnection>;
   operating_currency?: Maybe<CurrencyCode>;
   organization?: Maybe<Organization>;
-  organization_id: Scalars['UUID']['output'];
-  purpose?: Maybe<Scalars['String']['output']>;
+  organization_id: Scalars["UUID"]["output"];
+  purpose?: Maybe<Scalars["String"]["output"]>;
   real_estate_propertyCollection?: Maybe<RealEstatePropertyConnection>;
   smart_contractCollection?: Maybe<SmartContractConnection>;
-  tax_id?: Maybe<Scalars['String']['output']>;
+  tax_id?: Maybe<Scalars["String"]["output"]>;
   type: LegalEntityType;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type LegalEntityAddressCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<AddressFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<AddressOrderBy>>;
 };
 
 export type LegalEntityCryptoAddressCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<CryptoAddressFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<CryptoAddressOrderBy>>;
 };
 
 export type LegalEntityDocumentCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<DocumentFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<DocumentOrderBy>>;
 };
 
 export type LegalEntityDocumentSignatoryCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<DocumentSignatoryFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<DocumentSignatoryOrderBy>>;
 };
 
 export type LegalEntityLegalEntityRelationshipCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<LegalEntityRelationshipFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<LegalEntityRelationshipOrderBy>>;
 };
 
 export type LegalEntityOfferingCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingOrderBy>>;
 };
 
 export type LegalEntityRealEstatePropertyCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<RealEstatePropertyFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<RealEstatePropertyOrderBy>>;
 };
 
 export type LegalEntitySmartContractCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<SmartContractFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<SmartContractOrderBy>>;
 };
 
 export type LegalEntityConnection = {
-  __typename?: 'legal_entityConnection';
+  __typename?: "legal_entityConnection";
   edges: Array<LegalEntityEdge>;
   pageInfo: PageInfo;
 };
 
 export type LegalEntityDeleteResponse = {
-  __typename?: 'legal_entityDeleteResponse';
+  __typename?: "legal_entityDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LegalEntity>;
 };
 
 export type LegalEntityEdge = {
-  __typename?: 'legal_entityEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "legal_entityEdge";
+  cursor: Scalars["String"]["output"];
   node: LegalEntity;
 };
 
@@ -2603,23 +2604,23 @@ export type LegalEntityFilter = {
 };
 
 export type LegalEntityInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  display_name?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  jurisdiction_id?: InputMaybe<Scalars['UUID']['input']>;
-  legal_name?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  display_name?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  jurisdiction_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  legal_name?: InputMaybe<Scalars["String"]["input"]>;
   operating_currency?: InputMaybe<CurrencyCode>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
-  purpose?: InputMaybe<Scalars['String']['input']>;
-  tax_id?: InputMaybe<Scalars['String']['input']>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  purpose?: InputMaybe<Scalars["String"]["input"]>;
+  tax_id?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<LegalEntityType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type LegalEntityInsertResponse = {
-  __typename?: 'legal_entityInsertResponse';
+  __typename?: "legal_entityInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LegalEntity>;
 };
@@ -2639,56 +2640,56 @@ export type LegalEntityOrderBy = {
 };
 
 export type LegalEntityUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  display_name?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  jurisdiction_id?: InputMaybe<Scalars['UUID']['input']>;
-  legal_name?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  display_name?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  jurisdiction_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  legal_name?: InputMaybe<Scalars["String"]["input"]>;
   operating_currency?: InputMaybe<CurrencyCode>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
-  purpose?: InputMaybe<Scalars['String']['input']>;
-  tax_id?: InputMaybe<Scalars['String']['input']>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  purpose?: InputMaybe<Scalars["String"]["input"]>;
+  tax_id?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<LegalEntityType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type LegalEntityUpdateResponse = {
-  __typename?: 'legal_entityUpdateResponse';
+  __typename?: "legal_entityUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LegalEntity>;
 };
 
 export type LegalEntityRelationship = Node & {
-  __typename?: 'legal_entity_relationship';
-  child_entity_id: Scalars['UUID']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "legal_entity_relationship";
+  child_entity_id: Scalars["UUID"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   legal_entity?: Maybe<LegalEntity>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  parent_entity_id: Scalars['UUID']['output'];
-  relationship_type: Scalars['String']['output'];
+  nodeId: Scalars["ID"]["output"];
+  parent_entity_id: Scalars["UUID"]["output"];
+  relationship_type: Scalars["String"]["output"];
 };
 
 export type LegalEntityRelationshipConnection = {
-  __typename?: 'legal_entity_relationshipConnection';
+  __typename?: "legal_entity_relationshipConnection";
   edges: Array<LegalEntityRelationshipEdge>;
   pageInfo: PageInfo;
 };
 
 export type LegalEntityRelationshipDeleteResponse = {
-  __typename?: 'legal_entity_relationshipDeleteResponse';
+  __typename?: "legal_entity_relationshipDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LegalEntityRelationship>;
 };
 
 export type LegalEntityRelationshipEdge = {
-  __typename?: 'legal_entity_relationshipEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "legal_entity_relationshipEdge";
+  cursor: Scalars["String"]["output"];
   node: LegalEntityRelationship;
 };
 
@@ -2708,17 +2709,17 @@ export type LegalEntityRelationshipFilter = {
 };
 
 export type LegalEntityRelationshipInsertInput = {
-  child_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  parent_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  relationship_type?: InputMaybe<Scalars['String']['input']>;
+  child_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  parent_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  relationship_type?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type LegalEntityRelationshipInsertResponse = {
-  __typename?: 'legal_entity_relationshipInsertResponse';
+  __typename?: "legal_entity_relationshipInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LegalEntityRelationship>;
 };
@@ -2732,26 +2733,26 @@ export type LegalEntityRelationshipOrderBy = {
 };
 
 export type LegalEntityRelationshipUpdateInput = {
-  child_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  parent_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  relationship_type?: InputMaybe<Scalars['String']['input']>;
+  child_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  parent_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  relationship_type?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type LegalEntityRelationshipUpdateResponse = {
-  __typename?: 'legal_entity_relationshipUpdateResponse';
+  __typename?: "legal_entity_relationshipUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LegalEntityRelationship>;
 };
 
 export enum LegalEntityType {
-  corporation = 'CORPORATION',
-  individual = 'INDIVIDUAL',
-  llc = 'LLC',
-  unincorporatedAssociation = 'UNINCORPORATED_ASSOCIATION'
+  Corporation = "CORPORATION",
+  Individual = "INDIVIDUAL",
+  Llc = "LLC",
+  UnincorporatedAssociation = "UNINCORPORATED_ASSOCIATION"
 }
 
 /** Boolean expression comparing fields on type "legal_entity_type" */
@@ -2763,39 +2764,39 @@ export type LegalEntityTypeFilter = {
 };
 
 export type LinkedAccount = Node & {
-  __typename?: 'linked_account';
-  account_provided_id?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  hidden?: Maybe<Scalars['Boolean']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "linked_account";
+  account_provided_id?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  hidden?: Maybe<Scalars["Boolean"]["output"]>;
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   organization?: Maybe<Organization>;
-  organization_id: Scalars['UUID']['output'];
+  organization_id: Scalars["UUID"]["output"];
   type?: Maybe<LinkedAccountType>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  url: Scalars['String']['output'];
-  username?: Maybe<Scalars['String']['output']>;
-  verified?: Maybe<Scalars['Boolean']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  url: Scalars["String"]["output"];
+  username?: Maybe<Scalars["String"]["output"]>;
+  verified?: Maybe<Scalars["Boolean"]["output"]>;
 };
 
 export type LinkedAccountConnection = {
-  __typename?: 'linked_accountConnection';
+  __typename?: "linked_accountConnection";
   edges: Array<LinkedAccountEdge>;
   pageInfo: PageInfo;
 };
 
 export type LinkedAccountDeleteResponse = {
-  __typename?: 'linked_accountDeleteResponse';
+  __typename?: "linked_accountDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LinkedAccount>;
 };
 
 export type LinkedAccountEdge = {
-  __typename?: 'linked_accountEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "linked_accountEdge";
+  cursor: Scalars["String"]["output"];
   node: LinkedAccount;
 };
 
@@ -2820,22 +2821,22 @@ export type LinkedAccountFilter = {
 };
 
 export type LinkedAccountInsertInput = {
-  account_provided_id?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  hidden?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
+  account_provided_id?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  hidden?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
   type?: InputMaybe<LinkedAccountType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
-  verified?: InputMaybe<Scalars['Boolean']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
+  username?: InputMaybe<Scalars["String"]["input"]>;
+  verified?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export type LinkedAccountInsertResponse = {
-  __typename?: 'linked_accountInsertResponse';
+  __typename?: "linked_accountInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LinkedAccount>;
 };
@@ -2854,44 +2855,44 @@ export type LinkedAccountOrderBy = {
 };
 
 export type LinkedAccountUpdateInput = {
-  account_provided_id?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  hidden?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
+  account_provided_id?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  hidden?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
   type?: InputMaybe<LinkedAccountType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  url?: InputMaybe<Scalars['String']['input']>;
-  username?: InputMaybe<Scalars['String']['input']>;
-  verified?: InputMaybe<Scalars['Boolean']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  url?: InputMaybe<Scalars["String"]["input"]>;
+  username?: InputMaybe<Scalars["String"]["input"]>;
+  verified?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export type LinkedAccountUpdateResponse = {
-  __typename?: 'linked_accountUpdateResponse';
+  __typename?: "linked_accountUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<LinkedAccount>;
 };
 
 export enum LinkedAccountType {
-  discord = 'DISCORD',
-  dribbble = 'DRIBBBLE',
-  email = 'EMAIL',
-  facebook = 'FACEBOOK',
-  github = 'GITHUB',
-  instagram = 'INSTAGRAM',
-  linkedin = 'LINKEDIN',
-  medium = 'MEDIUM',
-  mirror = 'MIRROR',
-  other = 'OTHER',
-  phone = 'PHONE',
-  soundcloud = 'SOUNDCLOUD',
-  substack = 'SUBSTACK',
-  telegram = 'TELEGRAM',
-  twitter = 'TWITTER',
-  website = 'WEBSITE',
-  youtube = 'YOUTUBE'
+  Discord = "DISCORD",
+  Dribbble = "DRIBBBLE",
+  Email = "EMAIL",
+  Facebook = "FACEBOOK",
+  Github = "GITHUB",
+  Instagram = "INSTAGRAM",
+  Linkedin = "LINKEDIN",
+  Medium = "MEDIUM",
+  Mirror = "MIRROR",
+  Other = "OTHER",
+  Phone = "PHONE",
+  Soundcloud = "SOUNDCLOUD",
+  Substack = "SUBSTACK",
+  Telegram = "TELEGRAM",
+  Twitter = "TWITTER",
+  Website = "WEBSITE",
+  Youtube = "YOUTUBE"
 }
 
 /** Boolean expression comparing fields on type "linked_account_type" */
@@ -2903,36 +2904,36 @@ export type LinkedAccountTypeFilter = {
 };
 
 export type NotificationConfiguration = Node & {
-  __typename?: 'notification_configuration';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "notification_configuration";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   notification_method: NotificationMethod;
   notification_recipient_type: NotificationRecipientType;
   notification_subject: NotificationSubject;
   organization_user?: Maybe<OrganizationUser>;
-  organization_user_id: Scalars['UUID']['output'];
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  organization_user_id: Scalars["UUID"]["output"];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type NotificationConfigurationConnection = {
-  __typename?: 'notification_configurationConnection';
+  __typename?: "notification_configurationConnection";
   edges: Array<NotificationConfigurationEdge>;
   pageInfo: PageInfo;
 };
 
 export type NotificationConfigurationDeleteResponse = {
-  __typename?: 'notification_configurationDeleteResponse';
+  __typename?: "notification_configurationDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<NotificationConfiguration>;
 };
 
 export type NotificationConfigurationEdge = {
-  __typename?: 'notification_configurationEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "notification_configurationEdge";
+  cursor: Scalars["String"]["output"];
   node: NotificationConfiguration;
 };
 
@@ -2954,19 +2955,19 @@ export type NotificationConfigurationFilter = {
 };
 
 export type NotificationConfigurationInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
   notification_method?: InputMaybe<NotificationMethod>;
   notification_recipient_type?: InputMaybe<NotificationRecipientType>;
   notification_subject?: InputMaybe<NotificationSubject>;
-  organization_user_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  organization_user_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type NotificationConfigurationInsertResponse = {
-  __typename?: 'notification_configurationInsertResponse';
+  __typename?: "notification_configurationInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<NotificationConfiguration>;
 };
@@ -2982,25 +2983,25 @@ export type NotificationConfigurationOrderBy = {
 };
 
 export type NotificationConfigurationUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
   notification_method?: InputMaybe<NotificationMethod>;
   notification_recipient_type?: InputMaybe<NotificationRecipientType>;
   notification_subject?: InputMaybe<NotificationSubject>;
-  organization_user_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  organization_user_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type NotificationConfigurationUpdateResponse = {
-  __typename?: 'notification_configurationUpdateResponse';
+  __typename?: "notification_configurationUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<NotificationConfiguration>;
 };
 
 export enum NotificationMethod {
-  email = 'EMAIL'
+  Email = "EMAIL"
 }
 
 /** Boolean expression comparing fields on type "notification_method" */
@@ -3012,8 +3013,8 @@ export type NotificationMethodFilter = {
 };
 
 export enum NotificationRecipientType {
-  manager = 'MANAGER',
-  participant = 'PARTICIPANT'
+  Manager = "MANAGER",
+  Participant = "PARTICIPANT"
 }
 
 /** Boolean expression comparing fields on type "notification_recipient_type" */
@@ -3025,12 +3026,12 @@ export type NotificationRecipientTypeFilter = {
 };
 
 export enum NotificationSubject {
-  newOrderLive = 'NEW_ORDER_LIVE',
-  offeringDistribution = 'OFFERING_DISTRIBUTION',
-  proceedsClaim = 'PROCEEDS_CLAIM',
-  tradeExecution = 'TRADE_EXECUTION',
-  transactionRequest = 'TRANSACTION_REQUEST',
-  whitelistApproval = 'WHITELIST_APPROVAL'
+  NewOrderLive = "NEW_ORDER_LIVE",
+  OfferingDistribution = "OFFERING_DISTRIBUTION",
+  ProceedsClaim = "PROCEEDS_CLAIM",
+  TradeExecution = "TRADE_EXECUTION",
+  TransactionRequest = "TRANSACTION_REQUEST",
+  WhitelistApproval = "WHITELIST_APPROVAL"
 }
 
 /** Boolean expression comparing fields on type "notification_subject" */
@@ -3042,89 +3043,89 @@ export type NotificationSubjectFilter = {
 };
 
 export type Offering = Node & {
-  __typename?: 'offering';
-  access_code?: Maybe<Scalars['String']['output']>;
-  banner_image?: Maybe<Scalars['String']['output']>;
-  brand_color?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "offering";
+  access_code?: Maybe<Scalars["String"]["output"]>;
+  banner_image?: Maybe<Scalars["String"]["output"]>;
+  brand_color?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   image?: Maybe<Image>;
-  is_public?: Maybe<Scalars['Boolean']['output']>;
+  is_public?: Maybe<Scalars["Boolean"]["output"]>;
   legal_entity?: Maybe<LegalEntity>;
-  light_brand?: Maybe<Scalars['Boolean']['output']>;
-  name: Scalars['String']['output'];
+  light_brand?: Maybe<Scalars["Boolean"]["output"]>;
+  name: Scalars["String"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offering_description_textCollection?: Maybe<OfferingDescriptionTextConnection>;
   offering_detailCollection?: Maybe<OfferingDetailConnection>;
-  offering_entity_id: Scalars['UUID']['output'];
+  offering_entity_id: Scalars["UUID"]["output"];
   offering_participantCollection?: Maybe<OfferingParticipantConnection>;
   offering_smart_contract_setCollection?: Maybe<OfferingSmartContractSetConnection>;
-  primary_video?: Maybe<Scalars['String']['output']>;
-  sharing_image_id?: Maybe<Scalars['UUID']['output']>;
-  short_description?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  waitlist_on?: Maybe<Scalars['Boolean']['output']>;
-  website?: Maybe<Scalars['String']['output']>;
+  primary_video?: Maybe<Scalars["String"]["output"]>;
+  sharing_image_id?: Maybe<Scalars["UUID"]["output"]>;
+  short_description?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  waitlist_on?: Maybe<Scalars["Boolean"]["output"]>;
+  website?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type OfferingOfferingDescriptionTextCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingDescriptionTextFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingDescriptionTextOrderBy>>;
 };
 
 export type OfferingOfferingDetailCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingDetailFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingDetailOrderBy>>;
 };
 
 export type OfferingOfferingParticipantCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingParticipantFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingParticipantOrderBy>>;
 };
 
 export type OfferingOfferingSmartContractSetCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingSmartContractSetFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingSmartContractSetOrderBy>>;
 };
 
 export type OfferingConnection = {
-  __typename?: 'offeringConnection';
+  __typename?: "offeringConnection";
   edges: Array<OfferingEdge>;
   pageInfo: PageInfo;
 };
 
 export type OfferingDeleteResponse = {
-  __typename?: 'offeringDeleteResponse';
+  __typename?: "offeringDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Offering>;
 };
 
 export type OfferingEdge = {
-  __typename?: 'offeringEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "offeringEdge";
+  cursor: Scalars["String"]["output"];
   node: Offering;
 };
 
@@ -3155,28 +3156,28 @@ export type OfferingFilter = {
 };
 
 export type OfferingInsertInput = {
-  access_code?: InputMaybe<Scalars['String']['input']>;
-  banner_image?: InputMaybe<Scalars['String']['input']>;
-  brand_color?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  light_brand?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  offering_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  primary_video?: InputMaybe<Scalars['String']['input']>;
-  sharing_image_id?: InputMaybe<Scalars['UUID']['input']>;
-  short_description?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  waitlist_on?: InputMaybe<Scalars['Boolean']['input']>;
-  website?: InputMaybe<Scalars['String']['input']>;
+  access_code?: InputMaybe<Scalars["String"]["input"]>;
+  banner_image?: InputMaybe<Scalars["String"]["input"]>;
+  brand_color?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  light_brand?: InputMaybe<Scalars["Boolean"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  offering_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  primary_video?: InputMaybe<Scalars["String"]["input"]>;
+  sharing_image_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  short_description?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  waitlist_on?: InputMaybe<Scalars["Boolean"]["input"]>;
+  website?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OfferingInsertResponse = {
-  __typename?: 'offeringInsertResponse';
+  __typename?: "offeringInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Offering>;
 };
@@ -3201,64 +3202,64 @@ export type OfferingOrderBy = {
 };
 
 export type OfferingUpdateInput = {
-  access_code?: InputMaybe<Scalars['String']['input']>;
-  banner_image?: InputMaybe<Scalars['String']['input']>;
-  brand_color?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  light_brand?: InputMaybe<Scalars['Boolean']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  offering_entity_id?: InputMaybe<Scalars['UUID']['input']>;
-  primary_video?: InputMaybe<Scalars['String']['input']>;
-  sharing_image_id?: InputMaybe<Scalars['UUID']['input']>;
-  short_description?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  waitlist_on?: InputMaybe<Scalars['Boolean']['input']>;
-  website?: InputMaybe<Scalars['String']['input']>;
+  access_code?: InputMaybe<Scalars["String"]["input"]>;
+  banner_image?: InputMaybe<Scalars["String"]["input"]>;
+  brand_color?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  light_brand?: InputMaybe<Scalars["Boolean"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  offering_entity_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  primary_video?: InputMaybe<Scalars["String"]["input"]>;
+  sharing_image_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  short_description?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  waitlist_on?: InputMaybe<Scalars["Boolean"]["input"]>;
+  website?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OfferingUpdateResponse = {
-  __typename?: 'offeringUpdateResponse';
+  __typename?: "offeringUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Offering>;
 };
 
 export type OfferingDescriptionText = Node & {
-  __typename?: 'offering_description_text';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "offering_description_text";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offering?: Maybe<Offering>;
-  offering_id: Scalars['UUID']['output'];
-  order: Scalars['Int']['output'];
+  offering_id: Scalars["UUID"]["output"];
+  order: Scalars["Int"]["output"];
   section: OfferingTabSection;
-  text: Scalars['String']['output'];
-  title: Scalars['String']['output'];
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  text: Scalars["String"]["output"];
+  title: Scalars["String"]["output"];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type OfferingDescriptionTextConnection = {
-  __typename?: 'offering_description_textConnection';
+  __typename?: "offering_description_textConnection";
   edges: Array<OfferingDescriptionTextEdge>;
   pageInfo: PageInfo;
 };
 
 export type OfferingDescriptionTextDeleteResponse = {
-  __typename?: 'offering_description_textDeleteResponse';
+  __typename?: "offering_description_textDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDescriptionText>;
 };
 
 export type OfferingDescriptionTextEdge = {
-  __typename?: 'offering_description_textEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "offering_description_textEdge";
+  cursor: Scalars["String"]["output"];
   node: OfferingDescriptionText;
 };
 
@@ -3281,20 +3282,20 @@ export type OfferingDescriptionTextFilter = {
 };
 
 export type OfferingDescriptionTextInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  order?: InputMaybe<Scalars['Int']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  order?: InputMaybe<Scalars["Int"]["input"]>;
   section?: InputMaybe<OfferingTabSection>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  text?: InputMaybe<Scalars["String"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingDescriptionTextInsertResponse = {
-  __typename?: 'offering_description_textInsertResponse';
+  __typename?: "offering_description_textInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDescriptionText>;
 };
@@ -3311,81 +3312,81 @@ export type OfferingDescriptionTextOrderBy = {
 };
 
 export type OfferingDescriptionTextUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  order?: InputMaybe<Scalars['Int']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  order?: InputMaybe<Scalars["Int"]["input"]>;
   section?: InputMaybe<OfferingTabSection>;
-  text?: InputMaybe<Scalars['String']['input']>;
-  title?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  text?: InputMaybe<Scalars["String"]["input"]>;
+  title?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingDescriptionTextUpdateResponse = {
-  __typename?: 'offering_description_textUpdateResponse';
+  __typename?: "offering_description_textUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDescriptionText>;
 };
 
 export type OfferingDetail = Node & {
-  __typename?: 'offering_detail';
-  additional_info?: Maybe<Scalars['String']['output']>;
-  admin_expense?: Maybe<Scalars['Int']['output']>;
-  cap_rate?: Maybe<Scalars['Int']['output']>;
-  coc_return?: Maybe<Scalars['Int']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  custom_onboarding_link?: Maybe<Scalars['String']['output']>;
+  __typename?: "offering_detail";
+  additional_info?: Maybe<Scalars["String"]["output"]>;
+  admin_expense?: Maybe<Scalars["Int"]["output"]>;
+  cap_rate?: Maybe<Scalars["Int"]["output"]>;
+  coc_return?: Maybe<Scalars["Int"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  custom_onboarding_link?: Maybe<Scalars["String"]["output"]>;
   distribution_currency?: Maybe<CurrencyCode>;
-  distribution_description?: Maybe<Scalars['String']['output']>;
-  distribution_frequency?: Maybe<Scalars['Int']['output']>;
+  distribution_description?: Maybe<Scalars["String"]["output"]>;
+  distribution_frequency?: Maybe<Scalars["Int"]["output"]>;
   distribution_period?: Maybe<DistributionPeriodType>;
-  id: Scalars['UUID']['output'];
+  id: Scalars["UUID"]["output"];
   investment_currency: CurrencyCode;
-  max_investors?: Maybe<Scalars['Int']['output']>;
-  max_raise?: Maybe<Scalars['BigInt']['output']>;
-  max_units_per_investor?: Maybe<Scalars['Int']['output']>;
-  min_investors?: Maybe<Scalars['Int']['output']>;
-  min_raise?: Maybe<Scalars['BigInt']['output']>;
-  min_units_per_investor?: Maybe<Scalars['Int']['output']>;
+  max_investors?: Maybe<Scalars["Int"]["output"]>;
+  max_raise?: Maybe<Scalars["BigInt"]["output"]>;
+  max_units_per_investor?: Maybe<Scalars["Int"]["output"]>;
+  min_investors?: Maybe<Scalars["Int"]["output"]>;
+  min_raise?: Maybe<Scalars["BigInt"]["output"]>;
+  min_units_per_investor?: Maybe<Scalars["Int"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  num_units?: Maybe<Scalars['Int']['output']>;
+  nodeId: Scalars["ID"]["output"];
+  num_units?: Maybe<Scalars["Int"]["output"]>;
   offering?: Maybe<Offering>;
-  offering_id: Scalars['UUID']['output'];
-  preferred_return?: Maybe<Scalars['Int']['output']>;
-  price_start?: Maybe<Scalars['Int']['output']>;
-  projected_appreciation?: Maybe<Scalars['Int']['output']>;
-  projected_irr?: Maybe<Scalars['Int']['output']>;
-  projected_irr_max?: Maybe<Scalars['Int']['output']>;
-  raise_period?: Maybe<Scalars['Int']['output']>;
-  raise_start?: Maybe<Scalars['Datetime']['output']>;
+  offering_id: Scalars["UUID"]["output"];
+  preferred_return?: Maybe<Scalars["Int"]["output"]>;
+  price_start?: Maybe<Scalars["Int"]["output"]>;
+  projected_appreciation?: Maybe<Scalars["Int"]["output"]>;
+  projected_irr?: Maybe<Scalars["Int"]["output"]>;
+  projected_irr_max?: Maybe<Scalars["Int"]["output"]>;
+  raise_period?: Maybe<Scalars["Int"]["output"]>;
+  raise_start?: Maybe<Scalars["Datetime"]["output"]>;
   stage?: Maybe<OfferingStage>;
-  target_equity_multiple?: Maybe<Scalars['Int']['output']>;
-  target_equity_multiple_max?: Maybe<Scalars['Int']['output']>;
+  target_equity_multiple?: Maybe<Scalars["Int"]["output"]>;
+  target_equity_multiple_max?: Maybe<Scalars["Int"]["output"]>;
   type?: Maybe<OfferingDetailsType>;
   unit_name?: Maybe<UnitName>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type OfferingDetailConnection = {
-  __typename?: 'offering_detailConnection';
+  __typename?: "offering_detailConnection";
   edges: Array<OfferingDetailEdge>;
   pageInfo: PageInfo;
 };
 
 export type OfferingDetailDeleteResponse = {
-  __typename?: 'offering_detailDeleteResponse';
+  __typename?: "offering_detailDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDetail>;
 };
 
 export type OfferingDetailEdge = {
-  __typename?: 'offering_detailEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "offering_detailEdge";
+  cursor: Scalars["String"]["output"];
   node: OfferingDetail;
 };
 
@@ -3433,45 +3434,45 @@ export type OfferingDetailFilter = {
 };
 
 export type OfferingDetailInsertInput = {
-  additional_info?: InputMaybe<Scalars['String']['input']>;
-  admin_expense?: InputMaybe<Scalars['Int']['input']>;
-  cap_rate?: InputMaybe<Scalars['Int']['input']>;
-  coc_return?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  custom_onboarding_link?: InputMaybe<Scalars['String']['input']>;
+  additional_info?: InputMaybe<Scalars["String"]["input"]>;
+  admin_expense?: InputMaybe<Scalars["Int"]["input"]>;
+  cap_rate?: InputMaybe<Scalars["Int"]["input"]>;
+  coc_return?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  custom_onboarding_link?: InputMaybe<Scalars["String"]["input"]>;
   distribution_currency?: InputMaybe<CurrencyCode>;
-  distribution_description?: InputMaybe<Scalars['String']['input']>;
-  distribution_frequency?: InputMaybe<Scalars['Int']['input']>;
+  distribution_description?: InputMaybe<Scalars["String"]["input"]>;
+  distribution_frequency?: InputMaybe<Scalars["Int"]["input"]>;
   distribution_period?: InputMaybe<DistributionPeriodType>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
   investment_currency?: InputMaybe<CurrencyCode>;
-  max_investors?: InputMaybe<Scalars['Int']['input']>;
-  max_raise?: InputMaybe<Scalars['BigInt']['input']>;
-  max_units_per_investor?: InputMaybe<Scalars['Int']['input']>;
-  min_investors?: InputMaybe<Scalars['Int']['input']>;
-  min_raise?: InputMaybe<Scalars['BigInt']['input']>;
-  min_units_per_investor?: InputMaybe<Scalars['Int']['input']>;
-  num_units?: InputMaybe<Scalars['Int']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  preferred_return?: InputMaybe<Scalars['Int']['input']>;
-  price_start?: InputMaybe<Scalars['Int']['input']>;
-  projected_appreciation?: InputMaybe<Scalars['Int']['input']>;
-  projected_irr?: InputMaybe<Scalars['Int']['input']>;
-  projected_irr_max?: InputMaybe<Scalars['Int']['input']>;
-  raise_period?: InputMaybe<Scalars['Int']['input']>;
-  raise_start?: InputMaybe<Scalars['Datetime']['input']>;
+  max_investors?: InputMaybe<Scalars["Int"]["input"]>;
+  max_raise?: InputMaybe<Scalars["BigInt"]["input"]>;
+  max_units_per_investor?: InputMaybe<Scalars["Int"]["input"]>;
+  min_investors?: InputMaybe<Scalars["Int"]["input"]>;
+  min_raise?: InputMaybe<Scalars["BigInt"]["input"]>;
+  min_units_per_investor?: InputMaybe<Scalars["Int"]["input"]>;
+  num_units?: InputMaybe<Scalars["Int"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  preferred_return?: InputMaybe<Scalars["Int"]["input"]>;
+  price_start?: InputMaybe<Scalars["Int"]["input"]>;
+  projected_appreciation?: InputMaybe<Scalars["Int"]["input"]>;
+  projected_irr?: InputMaybe<Scalars["Int"]["input"]>;
+  projected_irr_max?: InputMaybe<Scalars["Int"]["input"]>;
+  raise_period?: InputMaybe<Scalars["Int"]["input"]>;
+  raise_start?: InputMaybe<Scalars["Datetime"]["input"]>;
   stage?: InputMaybe<OfferingStage>;
-  target_equity_multiple?: InputMaybe<Scalars['Int']['input']>;
-  target_equity_multiple_max?: InputMaybe<Scalars['Int']['input']>;
+  target_equity_multiple?: InputMaybe<Scalars["Int"]["input"]>;
+  target_equity_multiple_max?: InputMaybe<Scalars["Int"]["input"]>;
   type?: InputMaybe<OfferingDetailsType>;
   unit_name?: InputMaybe<UnitName>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingDetailInsertResponse = {
-  __typename?: 'offering_detailInsertResponse';
+  __typename?: "offering_detailInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDetail>;
 };
@@ -3513,55 +3514,55 @@ export type OfferingDetailOrderBy = {
 };
 
 export type OfferingDetailUpdateInput = {
-  additional_info?: InputMaybe<Scalars['String']['input']>;
-  admin_expense?: InputMaybe<Scalars['Int']['input']>;
-  cap_rate?: InputMaybe<Scalars['Int']['input']>;
-  coc_return?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  custom_onboarding_link?: InputMaybe<Scalars['String']['input']>;
+  additional_info?: InputMaybe<Scalars["String"]["input"]>;
+  admin_expense?: InputMaybe<Scalars["Int"]["input"]>;
+  cap_rate?: InputMaybe<Scalars["Int"]["input"]>;
+  coc_return?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  custom_onboarding_link?: InputMaybe<Scalars["String"]["input"]>;
   distribution_currency?: InputMaybe<CurrencyCode>;
-  distribution_description?: InputMaybe<Scalars['String']['input']>;
-  distribution_frequency?: InputMaybe<Scalars['Int']['input']>;
+  distribution_description?: InputMaybe<Scalars["String"]["input"]>;
+  distribution_frequency?: InputMaybe<Scalars["Int"]["input"]>;
   distribution_period?: InputMaybe<DistributionPeriodType>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
   investment_currency?: InputMaybe<CurrencyCode>;
-  max_investors?: InputMaybe<Scalars['Int']['input']>;
-  max_raise?: InputMaybe<Scalars['BigInt']['input']>;
-  max_units_per_investor?: InputMaybe<Scalars['Int']['input']>;
-  min_investors?: InputMaybe<Scalars['Int']['input']>;
-  min_raise?: InputMaybe<Scalars['BigInt']['input']>;
-  min_units_per_investor?: InputMaybe<Scalars['Int']['input']>;
-  num_units?: InputMaybe<Scalars['Int']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  preferred_return?: InputMaybe<Scalars['Int']['input']>;
-  price_start?: InputMaybe<Scalars['Int']['input']>;
-  projected_appreciation?: InputMaybe<Scalars['Int']['input']>;
-  projected_irr?: InputMaybe<Scalars['Int']['input']>;
-  projected_irr_max?: InputMaybe<Scalars['Int']['input']>;
-  raise_period?: InputMaybe<Scalars['Int']['input']>;
-  raise_start?: InputMaybe<Scalars['Datetime']['input']>;
+  max_investors?: InputMaybe<Scalars["Int"]["input"]>;
+  max_raise?: InputMaybe<Scalars["BigInt"]["input"]>;
+  max_units_per_investor?: InputMaybe<Scalars["Int"]["input"]>;
+  min_investors?: InputMaybe<Scalars["Int"]["input"]>;
+  min_raise?: InputMaybe<Scalars["BigInt"]["input"]>;
+  min_units_per_investor?: InputMaybe<Scalars["Int"]["input"]>;
+  num_units?: InputMaybe<Scalars["Int"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  preferred_return?: InputMaybe<Scalars["Int"]["input"]>;
+  price_start?: InputMaybe<Scalars["Int"]["input"]>;
+  projected_appreciation?: InputMaybe<Scalars["Int"]["input"]>;
+  projected_irr?: InputMaybe<Scalars["Int"]["input"]>;
+  projected_irr_max?: InputMaybe<Scalars["Int"]["input"]>;
+  raise_period?: InputMaybe<Scalars["Int"]["input"]>;
+  raise_start?: InputMaybe<Scalars["Datetime"]["input"]>;
   stage?: InputMaybe<OfferingStage>;
-  target_equity_multiple?: InputMaybe<Scalars['Int']['input']>;
-  target_equity_multiple_max?: InputMaybe<Scalars['Int']['input']>;
+  target_equity_multiple?: InputMaybe<Scalars["Int"]["input"]>;
+  target_equity_multiple_max?: InputMaybe<Scalars["Int"]["input"]>;
   type?: InputMaybe<OfferingDetailsType>;
   unit_name?: InputMaybe<UnitName>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingDetailUpdateResponse = {
-  __typename?: 'offering_detailUpdateResponse';
+  __typename?: "offering_detailUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDetail>;
 };
 
 export enum OfferingDetailsType {
-  crypto = 'CRYPTO',
-  other = 'OTHER',
-  privateEquity = 'PRIVATE_EQUITY',
-  realEstate = 'REAL_ESTATE',
-  ventureCapital = 'VENTURE_CAPITAL'
+  Crypto = "CRYPTO",
+  Other = "OTHER",
+  PrivateEquity = "PRIVATE_EQUITY",
+  RealEstate = "REAL_ESTATE",
+  VentureCapital = "VENTURE_CAPITAL"
 }
 
 /** Boolean expression comparing fields on type "offering_details_type" */
@@ -3573,33 +3574,33 @@ export type OfferingDetailsTypeFilter = {
 };
 
 export type OfferingDistribution = Node & {
-  __typename?: 'offering_distribution';
-  contract_index: Scalars['Int']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "offering_distribution";
+  contract_index: Scalars["Int"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  transaction_hash: Scalars['String']['output'];
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  nodeId: Scalars["ID"]["output"];
+  transaction_hash: Scalars["String"]["output"];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type OfferingDistributionConnection = {
-  __typename?: 'offering_distributionConnection';
+  __typename?: "offering_distributionConnection";
   edges: Array<OfferingDistributionEdge>;
   pageInfo: PageInfo;
 };
 
 export type OfferingDistributionDeleteResponse = {
-  __typename?: 'offering_distributionDeleteResponse';
+  __typename?: "offering_distributionDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDistribution>;
 };
 
 export type OfferingDistributionEdge = {
-  __typename?: 'offering_distributionEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "offering_distributionEdge";
+  cursor: Scalars["String"]["output"];
   node: OfferingDistribution;
 };
 
@@ -3619,17 +3620,17 @@ export type OfferingDistributionFilter = {
 };
 
 export type OfferingDistributionInsertInput = {
-  contract_index?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  contract_index?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingDistributionInsertResponse = {
-  __typename?: 'offering_distributionInsertResponse';
+  __typename?: "offering_distributionInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDistribution>;
 };
@@ -3643,82 +3644,82 @@ export type OfferingDistributionOrderBy = {
 };
 
 export type OfferingDistributionUpdateInput = {
-  contract_index?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  contract_index?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingDistributionUpdateResponse = {
-  __typename?: 'offering_distributionUpdateResponse';
+  __typename?: "offering_distributionUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingDistribution>;
 };
 
 export type OfferingParticipant = Node & {
-  __typename?: 'offering_participant';
-  address_offering_id: Scalars['String']['output'];
-  chain_id: Scalars['Int']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  email_address?: Maybe<Scalars['String']['output']>;
-  external_id?: Maybe<Scalars['String']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "offering_participant";
+  address_offering_id: Scalars["String"]["output"];
+  chain_id: Scalars["Int"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  email_address?: Maybe<Scalars["String"]["output"]>;
+  external_id?: Maybe<Scalars["String"]["output"]>;
+  id: Scalars["UUID"]["output"];
   investor_applicationCollection?: Maybe<InvestorApplicationConnection>;
   jurisdiction?: Maybe<Jurisdiction>;
-  jurisdiction_id?: Maybe<Scalars['UUID']['output']>;
-  max_pledge?: Maybe<Scalars['Int']['output']>;
-  min_pledge?: Maybe<Scalars['Int']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  jurisdiction_id?: Maybe<Scalars["UUID"]["output"]>;
+  max_pledge?: Maybe<Scalars["Int"]["output"]>;
+  min_pledge?: Maybe<Scalars["Int"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offering?: Maybe<Offering>;
-  offering_id: Scalars['UUID']['output'];
-  paid?: Maybe<Scalars['Boolean']['output']>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  wallet_address: Scalars['String']['output'];
+  offering_id: Scalars["UUID"]["output"];
+  paid?: Maybe<Scalars["Boolean"]["output"]>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  wallet_address: Scalars["String"]["output"];
   whitelist_transactionCollection?: Maybe<WhitelistTransactionConnection>;
 };
 
 export type OfferingParticipantInvestorApplicationCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<InvestorApplicationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<InvestorApplicationOrderBy>>;
 };
 
 export type OfferingParticipantWhitelistTransactionCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<WhitelistTransactionFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<WhitelistTransactionOrderBy>>;
 };
 
 export type OfferingParticipantConnection = {
-  __typename?: 'offering_participantConnection';
+  __typename?: "offering_participantConnection";
   edges: Array<OfferingParticipantEdge>;
   pageInfo: PageInfo;
 };
 
 export type OfferingParticipantDeleteResponse = {
-  __typename?: 'offering_participantDeleteResponse';
+  __typename?: "offering_participantDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingParticipant>;
 };
 
 export type OfferingParticipantEdge = {
-  __typename?: 'offering_participantEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "offering_participantEdge";
+  cursor: Scalars["String"]["output"];
   node: OfferingParticipant;
 };
 
@@ -3747,26 +3748,26 @@ export type OfferingParticipantFilter = {
 };
 
 export type OfferingParticipantInsertInput = {
-  address_offering_id?: InputMaybe<Scalars['String']['input']>;
-  chain_id?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  email_address?: InputMaybe<Scalars['String']['input']>;
-  external_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  jurisdiction_id?: InputMaybe<Scalars['UUID']['input']>;
-  max_pledge?: InputMaybe<Scalars['Int']['input']>;
-  min_pledge?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  paid?: InputMaybe<Scalars['Boolean']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  wallet_address?: InputMaybe<Scalars['String']['input']>;
+  address_offering_id?: InputMaybe<Scalars["String"]["input"]>;
+  chain_id?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  email_address?: InputMaybe<Scalars["String"]["input"]>;
+  external_id?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  jurisdiction_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  max_pledge?: InputMaybe<Scalars["Int"]["input"]>;
+  min_pledge?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  paid?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  wallet_address?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OfferingParticipantInsertResponse = {
-  __typename?: 'offering_participantInsertResponse';
+  __typename?: "offering_participantInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingParticipant>;
 };
@@ -3789,62 +3790,62 @@ export type OfferingParticipantOrderBy = {
 };
 
 export type OfferingParticipantUpdateInput = {
-  address_offering_id?: InputMaybe<Scalars['String']['input']>;
-  chain_id?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  email_address?: InputMaybe<Scalars['String']['input']>;
-  external_id?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  jurisdiction_id?: InputMaybe<Scalars['UUID']['input']>;
-  max_pledge?: InputMaybe<Scalars['Int']['input']>;
-  min_pledge?: InputMaybe<Scalars['Int']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  paid?: InputMaybe<Scalars['Boolean']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  wallet_address?: InputMaybe<Scalars['String']['input']>;
+  address_offering_id?: InputMaybe<Scalars["String"]["input"]>;
+  chain_id?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  email_address?: InputMaybe<Scalars["String"]["input"]>;
+  external_id?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  jurisdiction_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  max_pledge?: InputMaybe<Scalars["Int"]["input"]>;
+  min_pledge?: InputMaybe<Scalars["Int"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  paid?: InputMaybe<Scalars["Boolean"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  wallet_address?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OfferingParticipantUpdateResponse = {
-  __typename?: 'offering_participantUpdateResponse';
+  __typename?: "offering_participantUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingParticipant>;
 };
 
 export type OfferingSmartContractSet = Node & {
-  __typename?: 'offering_smart_contract_set';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  distribution_contract_id?: Maybe<Scalars['UUID']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "offering_smart_contract_set";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  distribution_contract_id?: Maybe<Scalars["UUID"]["output"]>;
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offering?: Maybe<Offering>;
-  offering_id: Scalars['UUID']['output'];
-  share_contract_id?: Maybe<Scalars['UUID']['output']>;
+  offering_id: Scalars["UUID"]["output"];
+  share_contract_id?: Maybe<Scalars["UUID"]["output"]>;
   smart_contract?: Maybe<SmartContract>;
-  swap_contract_id?: Maybe<Scalars['UUID']['output']>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  swap_contract_id?: Maybe<Scalars["UUID"]["output"]>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type OfferingSmartContractSetConnection = {
-  __typename?: 'offering_smart_contract_setConnection';
+  __typename?: "offering_smart_contract_setConnection";
   edges: Array<OfferingSmartContractSetEdge>;
   pageInfo: PageInfo;
 };
 
 export type OfferingSmartContractSetDeleteResponse = {
-  __typename?: 'offering_smart_contract_setDeleteResponse';
+  __typename?: "offering_smart_contract_setDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingSmartContractSet>;
 };
 
 export type OfferingSmartContractSetEdge = {
-  __typename?: 'offering_smart_contract_setEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "offering_smart_contract_setEdge";
+  cursor: Scalars["String"]["output"];
   node: OfferingSmartContractSet;
 };
 
@@ -3866,19 +3867,19 @@ export type OfferingSmartContractSetFilter = {
 };
 
 export type OfferingSmartContractSetInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  distribution_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  share_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  swap_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  distribution_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  share_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  swap_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingSmartContractSetInsertResponse = {
-  __typename?: 'offering_smart_contract_setInsertResponse';
+  __typename?: "offering_smart_contract_setInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingSmartContractSet>;
 };
@@ -3894,30 +3895,30 @@ export type OfferingSmartContractSetOrderBy = {
 };
 
 export type OfferingSmartContractSetUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  distribution_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  offering_id?: InputMaybe<Scalars['UUID']['input']>;
-  share_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  swap_contract_id?: InputMaybe<Scalars['UUID']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  distribution_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  offering_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  share_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  swap_contract_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type OfferingSmartContractSetUpdateResponse = {
-  __typename?: 'offering_smart_contract_setUpdateResponse';
+  __typename?: "offering_smart_contract_setUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OfferingSmartContractSet>;
 };
 
 export enum OfferingStage {
-  closed = 'CLOSED',
-  dueDiligence = 'DUE_DILIGENCE',
-  identified = 'IDENTIFIED',
-  inNegotiation = 'IN_NEGOTIATION',
-  locked = 'LOCKED',
-  sale = 'SALE'
+  Closed = "CLOSED",
+  DueDiligence = "DUE_DILIGENCE",
+  Identified = "IDENTIFIED",
+  InNegotiation = "IN_NEGOTIATION",
+  Locked = "LOCKED",
+  Sale = "SALE"
 }
 
 /** Boolean expression comparing fields on type "offering_stage" */
@@ -3929,11 +3930,11 @@ export type OfferingStageFilter = {
 };
 
 export enum OfferingTabSection {
-  details = 'DETAILS',
-  disclosures = 'DISCLOSURES',
-  financials = 'FINANCIALS',
-  offerorInfo = 'OFFEROR_INFO',
-  terms = 'TERMS'
+  Details = "DETAILS",
+  Disclosures = "DISCLOSURES",
+  Financials = "FINANCIALS",
+  OfferorInfo = "OFFEROR_INFO",
+  Terms = "TERMS"
 }
 
 /** Boolean expression comparing fields on type "offering_tab_section" */
@@ -3945,87 +3946,87 @@ export type OfferingTabSectionFilter = {
 };
 
 export type Organization = Node & {
-  __typename?: 'organization';
-  banner_image?: Maybe<Scalars['String']['output']>;
-  brand_color?: Maybe<Scalars['String']['output']>;
-  country?: Maybe<Scalars['String']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  creation_date?: Maybe<Scalars['Datetime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
+  __typename?: "organization";
+  banner_image?: Maybe<Scalars["String"]["output"]>;
+  brand_color?: Maybe<Scalars["String"]["output"]>;
+  country?: Maybe<Scalars["String"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  creation_date?: Maybe<Scalars["Datetime"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
   email_addressCollection?: Maybe<EmailAddressConnection>;
-  id: Scalars['UUID']['output'];
-  is_public?: Maybe<Scalars['Boolean']['output']>;
+  id: Scalars["UUID"]["output"];
+  is_public?: Maybe<Scalars["Boolean"]["output"]>;
   legal_entityCollection?: Maybe<LegalEntityConnection>;
   linked_accountCollection?: Maybe<LinkedAccountConnection>;
-  logo?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  logo?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   organization_userCollection?: Maybe<OrganizationUserConnection>;
-  phone?: Maybe<Scalars['String']['output']>;
-  short_description?: Maybe<Scalars['String']['output']>;
-  slug?: Maybe<Scalars['String']['output']>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  website?: Maybe<Scalars['String']['output']>;
+  phone?: Maybe<Scalars["String"]["output"]>;
+  short_description?: Maybe<Scalars["String"]["output"]>;
+  slug?: Maybe<Scalars["String"]["output"]>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  website?: Maybe<Scalars["String"]["output"]>;
 };
 
 export type OrganizationEmailAddressCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<EmailAddressFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<EmailAddressOrderBy>>;
 };
 
 export type OrganizationLegalEntityCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<LegalEntityFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<LegalEntityOrderBy>>;
 };
 
 export type OrganizationLinkedAccountCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<LinkedAccountFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<LinkedAccountOrderBy>>;
 };
 
 export type OrganizationOrganizationUserCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OrganizationUserFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OrganizationUserOrderBy>>;
 };
 
 export type OrganizationConnection = {
-  __typename?: 'organizationConnection';
+  __typename?: "organizationConnection";
   edges: Array<OrganizationEdge>;
   pageInfo: PageInfo;
 };
 
 export type OrganizationDeleteResponse = {
-  __typename?: 'organizationDeleteResponse';
+  __typename?: "organizationDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Organization>;
 };
 
 export type OrganizationEdge = {
-  __typename?: 'organizationEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "organizationEdge";
+  cursor: Scalars["String"]["output"];
   node: Organization;
 };
 
@@ -4055,27 +4056,27 @@ export type OrganizationFilter = {
 };
 
 export type OrganizationInsertInput = {
-  banner_image?: InputMaybe<Scalars['String']['input']>;
-  brand_color?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  creation_date?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  logo?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
-  short_description?: InputMaybe<Scalars['String']['input']>;
-  slug?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  website?: InputMaybe<Scalars['String']['input']>;
+  banner_image?: InputMaybe<Scalars["String"]["input"]>;
+  brand_color?: InputMaybe<Scalars["String"]["input"]>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  creation_date?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  logo?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  phone?: InputMaybe<Scalars["String"]["input"]>;
+  short_description?: InputMaybe<Scalars["String"]["input"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  website?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OrganizationInsertResponse = {
-  __typename?: 'organizationInsertResponse';
+  __typename?: "organizationInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Organization>;
 };
@@ -4099,36 +4100,36 @@ export type OrganizationOrderBy = {
 };
 
 export type OrganizationUpdateInput = {
-  banner_image?: InputMaybe<Scalars['String']['input']>;
-  brand_color?: InputMaybe<Scalars['String']['input']>;
-  country?: InputMaybe<Scalars['String']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  creation_date?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  is_public?: InputMaybe<Scalars['Boolean']['input']>;
-  logo?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  phone?: InputMaybe<Scalars['String']['input']>;
-  short_description?: InputMaybe<Scalars['String']['input']>;
-  slug?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  website?: InputMaybe<Scalars['String']['input']>;
+  banner_image?: InputMaybe<Scalars["String"]["input"]>;
+  brand_color?: InputMaybe<Scalars["String"]["input"]>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  creation_date?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  is_public?: InputMaybe<Scalars["Boolean"]["input"]>;
+  logo?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  phone?: InputMaybe<Scalars["String"]["input"]>;
+  short_description?: InputMaybe<Scalars["String"]["input"]>;
+  slug?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  website?: InputMaybe<Scalars["String"]["input"]>;
 };
 
 export type OrganizationUpdateResponse = {
-  __typename?: 'organizationUpdateResponse';
+  __typename?: "organizationUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Organization>;
 };
 
 export enum OrganizationPermissionType {
-  admin = 'ADMIN',
-  auditor = 'AUDITOR',
-  editor = 'EDITOR',
-  viewer = 'VIEWER'
+  Admin = "ADMIN",
+  Auditor = "AUDITOR",
+  Editor = "EDITOR",
+  Viewer = "VIEWER"
 }
 
 /** Boolean expression comparing fields on type "organization_permission_type" */
@@ -4140,46 +4141,46 @@ export type OrganizationPermissionTypeFilter = {
 };
 
 export type OrganizationUser = Node & {
-  __typename?: 'organization_user';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "organization_user";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   notification_configurationCollection?: Maybe<NotificationConfigurationConnection>;
   organization?: Maybe<Organization>;
-  organization_id: Scalars['UUID']['output'];
+  organization_id: Scalars["UUID"]["output"];
   permissions?: Maybe<Array<Maybe<OrganizationPermissionType>>>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  user_id: Scalars['UUID']['output'];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  user_id: Scalars["UUID"]["output"];
 };
 
 export type OrganizationUserNotificationConfigurationCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<NotificationConfigurationFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<NotificationConfigurationOrderBy>>;
 };
 
 export type OrganizationUserConnection = {
-  __typename?: 'organization_userConnection';
+  __typename?: "organization_userConnection";
   edges: Array<OrganizationUserEdge>;
   pageInfo: PageInfo;
 };
 
 export type OrganizationUserDeleteResponse = {
-  __typename?: 'organization_userDeleteResponse';
+  __typename?: "organization_userDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OrganizationUser>;
 };
 
 export type OrganizationUserEdge = {
-  __typename?: 'organization_userEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "organization_userEdge";
+  cursor: Scalars["String"]["output"];
   node: OrganizationUser;
 };
 
@@ -4199,18 +4200,18 @@ export type OrganizationUserFilter = {
 };
 
 export type OrganizationUserInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
   permissions?: InputMaybe<Array<InputMaybe<OrganizationPermissionType>>>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  user_id?: InputMaybe<Scalars['UUID']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  user_id?: InputMaybe<Scalars["UUID"]["input"]>;
 };
 
 export type OrganizationUserInsertResponse = {
-  __typename?: 'organization_userInsertResponse';
+  __typename?: "organization_userInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OrganizationUser>;
 };
@@ -4224,29 +4225,29 @@ export type OrganizationUserOrderBy = {
 };
 
 export type OrganizationUserUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  organization_id?: InputMaybe<Scalars['UUID']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  organization_id?: InputMaybe<Scalars["UUID"]["input"]>;
   permissions?: InputMaybe<Array<InputMaybe<OrganizationPermissionType>>>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  user_id?: InputMaybe<Scalars['UUID']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  user_id?: InputMaybe<Scalars["UUID"]["input"]>;
 };
 
 export type OrganizationUserUpdateResponse = {
-  __typename?: 'organization_userUpdateResponse';
+  __typename?: "organization_userUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<OrganizationUser>;
 };
 
 export enum OrganizationUserRole {
-  advisor = 'ADVISOR',
-  boardMember = 'BOARD_MEMBER',
-  investor = 'INVESTOR',
-  partner = 'PARTNER',
-  supporter = 'SUPPORTER',
-  team = 'TEAM'
+  Advisor = "ADVISOR",
+  BoardMember = "BOARD_MEMBER",
+  Investor = "INVESTOR",
+  Partner = "PARTNER",
+  Supporter = "SUPPORTER",
+  Team = "TEAM"
 }
 
 /** Boolean expression comparing fields on type "organization_user_role" */
@@ -4258,33 +4259,33 @@ export type OrganizationUserRoleFilter = {
 };
 
 export type Profile = Node & {
-  __typename?: 'profile';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
-  image?: Maybe<Scalars['String']['output']>;
-  name?: Maybe<Scalars['String']['output']>;
+  __typename?: "profile";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
+  image?: Maybe<Scalars["String"]["output"]>;
+  name?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  nodeId: Scalars["ID"]["output"];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type ProfileConnection = {
-  __typename?: 'profileConnection';
+  __typename?: "profileConnection";
   edges: Array<ProfileEdge>;
   pageInfo: PageInfo;
 };
 
 export type ProfileDeleteResponse = {
-  __typename?: 'profileDeleteResponse';
+  __typename?: "profileDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Profile>;
 };
 
 export type ProfileEdge = {
-  __typename?: 'profileEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "profileEdge";
+  cursor: Scalars["String"]["output"];
   node: Profile;
 };
 
@@ -4304,17 +4305,17 @@ export type ProfileFilter = {
 };
 
 export type ProfileInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type ProfileInsertResponse = {
-  __typename?: 'profileInsertResponse';
+  __typename?: "profileInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Profile>;
 };
@@ -4328,72 +4329,72 @@ export type ProfileOrderBy = {
 };
 
 export type ProfileUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  image?: InputMaybe<Scalars['String']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  image?: InputMaybe<Scalars["String"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type ProfileUpdateResponse = {
-  __typename?: 'profileUpdateResponse';
+  __typename?: "profileUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<Profile>;
 };
 
 export type RealEstateProperty = Node & {
-  __typename?: 'real_estate_property';
+  __typename?: "real_estate_property";
   address?: Maybe<Address>;
-  address_id?: Maybe<Scalars['UUID']['output']>;
-  amenities_description?: Maybe<Scalars['String']['output']>;
-  asset_value?: Maybe<Scalars['Int']['output']>;
-  asset_value_note?: Maybe<Scalars['String']['output']>;
-  closing_costs?: Maybe<Scalars['Int']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  description?: Maybe<Scalars['String']['output']>;
-  down_payment?: Maybe<Scalars['Int']['output']>;
-  id: Scalars['UUID']['output'];
+  address_id?: Maybe<Scalars["UUID"]["output"]>;
+  amenities_description?: Maybe<Scalars["String"]["output"]>;
+  asset_value?: Maybe<Scalars["Int"]["output"]>;
+  asset_value_note?: Maybe<Scalars["String"]["output"]>;
+  closing_costs?: Maybe<Scalars["Int"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  description?: Maybe<Scalars["String"]["output"]>;
+  down_payment?: Maybe<Scalars["Int"]["output"]>;
+  id: Scalars["UUID"]["output"];
   investment_status?: Maybe<AssetStatus>;
   legal_entity?: Maybe<LegalEntity>;
-  lender_fees?: Maybe<Scalars['Int']['output']>;
-  loan?: Maybe<Scalars['Int']['output']>;
+  lender_fees?: Maybe<Scalars["Int"]["output"]>;
+  loan?: Maybe<Scalars["Int"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  owner_id: Scalars['UUID']['output'];
+  nodeId: Scalars["ID"]["output"];
+  owner_id: Scalars["UUID"]["output"];
   property_type: RealEstatePropertyType;
   real_estate_property_imageCollection?: Maybe<RealEstatePropertyImageConnection>;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type RealEstatePropertyRealEstatePropertyImageCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<RealEstatePropertyImageFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<RealEstatePropertyImageOrderBy>>;
 };
 
 export type RealEstatePropertyConnection = {
-  __typename?: 'real_estate_propertyConnection';
+  __typename?: "real_estate_propertyConnection";
   edges: Array<RealEstatePropertyEdge>;
   pageInfo: PageInfo;
 };
 
 export type RealEstatePropertyDeleteResponse = {
-  __typename?: 'real_estate_propertyDeleteResponse';
+  __typename?: "real_estate_propertyDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<RealEstateProperty>;
 };
 
 export type RealEstatePropertyEdge = {
-  __typename?: 'real_estate_propertyEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "real_estate_propertyEdge";
+  cursor: Scalars["String"]["output"];
   node: RealEstateProperty;
 };
 
@@ -4423,27 +4424,27 @@ export type RealEstatePropertyFilter = {
 };
 
 export type RealEstatePropertyInsertInput = {
-  address_id?: InputMaybe<Scalars['UUID']['input']>;
-  amenities_description?: InputMaybe<Scalars['String']['input']>;
-  asset_value?: InputMaybe<Scalars['Int']['input']>;
-  asset_value_note?: InputMaybe<Scalars['String']['input']>;
-  closing_costs?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  down_payment?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
+  address_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  amenities_description?: InputMaybe<Scalars["String"]["input"]>;
+  asset_value?: InputMaybe<Scalars["Int"]["input"]>;
+  asset_value_note?: InputMaybe<Scalars["String"]["input"]>;
+  closing_costs?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  down_payment?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
   investment_status?: InputMaybe<AssetStatus>;
-  lender_fees?: InputMaybe<Scalars['Int']['input']>;
-  loan?: InputMaybe<Scalars['Int']['input']>;
-  owner_id?: InputMaybe<Scalars['UUID']['input']>;
+  lender_fees?: InputMaybe<Scalars["Int"]["input"]>;
+  loan?: InputMaybe<Scalars["Int"]["input"]>;
+  owner_id?: InputMaybe<Scalars["UUID"]["input"]>;
   property_type?: InputMaybe<RealEstatePropertyType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type RealEstatePropertyInsertResponse = {
-  __typename?: 'real_estate_propertyInsertResponse';
+  __typename?: "real_estate_propertyInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<RealEstateProperty>;
 };
@@ -4467,60 +4468,60 @@ export type RealEstatePropertyOrderBy = {
 };
 
 export type RealEstatePropertyUpdateInput = {
-  address_id?: InputMaybe<Scalars['UUID']['input']>;
-  amenities_description?: InputMaybe<Scalars['String']['input']>;
-  asset_value?: InputMaybe<Scalars['Int']['input']>;
-  asset_value_note?: InputMaybe<Scalars['String']['input']>;
-  closing_costs?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  description?: InputMaybe<Scalars['String']['input']>;
-  down_payment?: InputMaybe<Scalars['Int']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
+  address_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  amenities_description?: InputMaybe<Scalars["String"]["input"]>;
+  asset_value?: InputMaybe<Scalars["Int"]["input"]>;
+  asset_value_note?: InputMaybe<Scalars["String"]["input"]>;
+  closing_costs?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  down_payment?: InputMaybe<Scalars["Int"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
   investment_status?: InputMaybe<AssetStatus>;
-  lender_fees?: InputMaybe<Scalars['Int']['input']>;
-  loan?: InputMaybe<Scalars['Int']['input']>;
-  owner_id?: InputMaybe<Scalars['UUID']['input']>;
+  lender_fees?: InputMaybe<Scalars["Int"]["input"]>;
+  loan?: InputMaybe<Scalars["Int"]["input"]>;
+  owner_id?: InputMaybe<Scalars["UUID"]["input"]>;
   property_type?: InputMaybe<RealEstatePropertyType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type RealEstatePropertyUpdateResponse = {
-  __typename?: 'real_estate_propertyUpdateResponse';
+  __typename?: "real_estate_propertyUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<RealEstateProperty>;
 };
 
 export type RealEstatePropertyImage = Node & {
-  __typename?: 'real_estate_property_image';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
+  __typename?: "real_estate_property_image";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
   image?: Maybe<Image>;
-  image_id: Scalars['UUID']['output'];
+  image_id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  property_id: Scalars['UUID']['output'];
+  nodeId: Scalars["ID"]["output"];
+  property_id: Scalars["UUID"]["output"];
   real_estate_property?: Maybe<RealEstateProperty>;
 };
 
 export type RealEstatePropertyImageConnection = {
-  __typename?: 'real_estate_property_imageConnection';
+  __typename?: "real_estate_property_imageConnection";
   edges: Array<RealEstatePropertyImageEdge>;
   pageInfo: PageInfo;
 };
 
 export type RealEstatePropertyImageDeleteResponse = {
-  __typename?: 'real_estate_property_imageDeleteResponse';
+  __typename?: "real_estate_property_imageDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<RealEstatePropertyImage>;
 };
 
 export type RealEstatePropertyImageEdge = {
-  __typename?: 'real_estate_property_imageEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "real_estate_property_imageEdge";
+  cursor: Scalars["String"]["output"];
   node: RealEstatePropertyImage;
 };
 
@@ -4539,16 +4540,16 @@ export type RealEstatePropertyImageFilter = {
 };
 
 export type RealEstatePropertyImageInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  image_id?: InputMaybe<Scalars['UUID']['input']>;
-  property_id?: InputMaybe<Scalars['UUID']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  image_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  property_id?: InputMaybe<Scalars["UUID"]["input"]>;
 };
 
 export type RealEstatePropertyImageInsertResponse = {
-  __typename?: 'real_estate_property_imageInsertResponse';
+  __typename?: "real_estate_property_imageInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<RealEstatePropertyImage>;
 };
@@ -4561,26 +4562,26 @@ export type RealEstatePropertyImageOrderBy = {
 };
 
 export type RealEstatePropertyImageUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  image_id?: InputMaybe<Scalars['UUID']['input']>;
-  property_id?: InputMaybe<Scalars['UUID']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  image_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  property_id?: InputMaybe<Scalars["UUID"]["input"]>;
 };
 
 export type RealEstatePropertyImageUpdateResponse = {
-  __typename?: 'real_estate_property_imageUpdateResponse';
+  __typename?: "real_estate_property_imageUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<RealEstatePropertyImage>;
 };
 
 export enum RealEstatePropertyType {
-  commercial = 'COMMERCIAL',
-  landOnly = 'LAND_ONLY',
-  multiFamily = 'MULTI_FAMILY',
-  selfStorage = 'SELF_STORAGE',
-  singleFamily = 'SINGLE_FAMILY'
+  Commercial = "COMMERCIAL",
+  LandOnly = "LAND_ONLY",
+  MultiFamily = "MULTI_FAMILY",
+  SelfStorage = "SELF_STORAGE",
+  SingleFamily = "SINGLE_FAMILY"
 }
 
 /** Boolean expression comparing fields on type "real_estate_property_type" */
@@ -4592,39 +4593,39 @@ export type RealEstatePropertyTypeFilter = {
 };
 
 export type ShareOrder = Node & {
-  __typename?: 'share_order';
-  archived?: Maybe<Scalars['Boolean']['output']>;
-  contract_index: Scalars['Int']['output'];
-  created_at?: Maybe<Scalars['Datetime']['output']>;
-  id: Scalars['UUID']['output'];
-  initiator: Scalars['String']['output'];
-  max_units?: Maybe<Scalars['Int']['output']>;
-  min_units?: Maybe<Scalars['Int']['output']>;
+  __typename?: "share_order";
+  archived?: Maybe<Scalars["Boolean"]["output"]>;
+  contract_index: Scalars["Int"]["output"];
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
+  id: Scalars["UUID"]["output"];
+  initiator: Scalars["String"]["output"];
+  max_units?: Maybe<Scalars["Int"]["output"]>;
+  min_units?: Maybe<Scalars["Int"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  swap_contract_address: Scalars['String']['output'];
-  transaction_hash: Scalars['String']['output'];
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
-  visible?: Maybe<Scalars['Boolean']['output']>;
+  nodeId: Scalars["ID"]["output"];
+  swap_contract_address: Scalars["String"]["output"];
+  transaction_hash: Scalars["String"]["output"];
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
+  visible?: Maybe<Scalars["Boolean"]["output"]>;
 };
 
 export type ShareOrderConnection = {
-  __typename?: 'share_orderConnection';
+  __typename?: "share_orderConnection";
   edges: Array<ShareOrderEdge>;
   pageInfo: PageInfo;
 };
 
 export type ShareOrderDeleteResponse = {
-  __typename?: 'share_orderDeleteResponse';
+  __typename?: "share_orderDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<ShareOrder>;
 };
 
 export type ShareOrderEdge = {
-  __typename?: 'share_orderEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "share_orderEdge";
+  cursor: Scalars["String"]["output"];
   node: ShareOrder;
 };
 
@@ -4650,23 +4651,23 @@ export type ShareOrderFilter = {
 };
 
 export type ShareOrderInsertInput = {
-  archived?: InputMaybe<Scalars['Boolean']['input']>;
-  contract_index?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  initiator?: InputMaybe<Scalars['String']['input']>;
-  max_units?: InputMaybe<Scalars['Int']['input']>;
-  min_units?: InputMaybe<Scalars['Int']['input']>;
-  swap_contract_address?: InputMaybe<Scalars['String']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  visible?: InputMaybe<Scalars['Boolean']['input']>;
+  archived?: InputMaybe<Scalars["Boolean"]["input"]>;
+  contract_index?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  initiator?: InputMaybe<Scalars["String"]["input"]>;
+  max_units?: InputMaybe<Scalars["Int"]["input"]>;
+  min_units?: InputMaybe<Scalars["Int"]["input"]>;
+  swap_contract_address?: InputMaybe<Scalars["String"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  visible?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export type ShareOrderInsertResponse = {
-  __typename?: 'share_orderInsertResponse';
+  __typename?: "share_orderInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<ShareOrder>;
 };
@@ -4686,64 +4687,64 @@ export type ShareOrderOrderBy = {
 };
 
 export type ShareOrderUpdateInput = {
-  archived?: InputMaybe<Scalars['Boolean']['input']>;
-  contract_index?: InputMaybe<Scalars['Int']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  initiator?: InputMaybe<Scalars['String']['input']>;
-  max_units?: InputMaybe<Scalars['Int']['input']>;
-  min_units?: InputMaybe<Scalars['Int']['input']>;
-  swap_contract_address?: InputMaybe<Scalars['String']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
-  visible?: InputMaybe<Scalars['Boolean']['input']>;
+  archived?: InputMaybe<Scalars["Boolean"]["input"]>;
+  contract_index?: InputMaybe<Scalars["Int"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  initiator?: InputMaybe<Scalars["String"]["input"]>;
+  max_units?: InputMaybe<Scalars["Int"]["input"]>;
+  min_units?: InputMaybe<Scalars["Int"]["input"]>;
+  swap_contract_address?: InputMaybe<Scalars["String"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  visible?: InputMaybe<Scalars["Boolean"]["input"]>;
 };
 
 export type ShareOrderUpdateResponse = {
-  __typename?: 'share_orderUpdateResponse';
+  __typename?: "share_orderUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<ShareOrder>;
 };
 
 export type ShareTransferEvent = Node & {
-  __typename?: 'share_transfer_event';
-  amount: Scalars['Int']['output'];
-  archived?: Maybe<Scalars['Boolean']['output']>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
+  __typename?: "share_transfer_event";
+  amount: Scalars["Int"]["output"];
+  archived?: Maybe<Scalars["Boolean"]["output"]>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
   currency_code?: Maybe<CurrencyCode>;
-  id: Scalars['UUID']['output'];
+  id: Scalars["UUID"]["output"];
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  order_index?: Maybe<Scalars['Int']['output']>;
-  partition: Scalars['String']['output'];
-  price?: Maybe<Scalars['String']['output']>;
-  recipient_address: Scalars['String']['output'];
-  sender_address: Scalars['String']['output'];
-  share_contract_address: Scalars['String']['output'];
-  transaction_hash: Scalars['String']['output'];
+  nodeId: Scalars["ID"]["output"];
+  order_index?: Maybe<Scalars["Int"]["output"]>;
+  partition: Scalars["String"]["output"];
+  price?: Maybe<Scalars["String"]["output"]>;
+  recipient_address: Scalars["String"]["output"];
+  sender_address: Scalars["String"]["output"];
+  share_contract_address: Scalars["String"]["output"];
+  transaction_hash: Scalars["String"]["output"];
   type: ShareTransferEventType;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type ShareTransferEventConnection = {
-  __typename?: 'share_transfer_eventConnection';
+  __typename?: "share_transfer_eventConnection";
   edges: Array<ShareTransferEventEdge>;
   pageInfo: PageInfo;
 };
 
 export type ShareTransferEventDeleteResponse = {
-  __typename?: 'share_transfer_eventDeleteResponse';
+  __typename?: "share_transfer_eventDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<ShareTransferEvent>;
 };
 
 export type ShareTransferEventEdge = {
-  __typename?: 'share_transfer_eventEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "share_transfer_eventEdge";
+  cursor: Scalars["String"]["output"];
   node: ShareTransferEvent;
 };
 
@@ -4772,26 +4773,26 @@ export type ShareTransferEventFilter = {
 };
 
 export type ShareTransferEventInsertInput = {
-  amount?: InputMaybe<Scalars['Int']['input']>;
-  archived?: InputMaybe<Scalars['Boolean']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
+  amount?: InputMaybe<Scalars["Int"]["input"]>;
+  archived?: InputMaybe<Scalars["Boolean"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
   currency_code?: InputMaybe<CurrencyCode>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  order_index?: InputMaybe<Scalars['Int']['input']>;
-  partition?: InputMaybe<Scalars['String']['input']>;
-  price?: InputMaybe<Scalars['String']['input']>;
-  recipient_address?: InputMaybe<Scalars['String']['input']>;
-  sender_address?: InputMaybe<Scalars['String']['input']>;
-  share_contract_address?: InputMaybe<Scalars['String']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  order_index?: InputMaybe<Scalars["Int"]["input"]>;
+  partition?: InputMaybe<Scalars["String"]["input"]>;
+  price?: InputMaybe<Scalars["String"]["input"]>;
+  recipient_address?: InputMaybe<Scalars["String"]["input"]>;
+  sender_address?: InputMaybe<Scalars["String"]["input"]>;
+  share_contract_address?: InputMaybe<Scalars["String"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<ShareTransferEventType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type ShareTransferEventInsertResponse = {
-  __typename?: 'share_transfer_eventInsertResponse';
+  __typename?: "share_transfer_eventInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<ShareTransferEvent>;
 };
@@ -4814,37 +4815,37 @@ export type ShareTransferEventOrderBy = {
 };
 
 export type ShareTransferEventUpdateInput = {
-  amount?: InputMaybe<Scalars['Int']['input']>;
-  archived?: InputMaybe<Scalars['Boolean']['input']>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
+  amount?: InputMaybe<Scalars["Int"]["input"]>;
+  archived?: InputMaybe<Scalars["Boolean"]["input"]>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
   currency_code?: InputMaybe<CurrencyCode>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  order_index?: InputMaybe<Scalars['Int']['input']>;
-  partition?: InputMaybe<Scalars['String']['input']>;
-  price?: InputMaybe<Scalars['String']['input']>;
-  recipient_address?: InputMaybe<Scalars['String']['input']>;
-  sender_address?: InputMaybe<Scalars['String']['input']>;
-  share_contract_address?: InputMaybe<Scalars['String']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  order_index?: InputMaybe<Scalars["Int"]["input"]>;
+  partition?: InputMaybe<Scalars["String"]["input"]>;
+  price?: InputMaybe<Scalars["String"]["input"]>;
+  recipient_address?: InputMaybe<Scalars["String"]["input"]>;
+  sender_address?: InputMaybe<Scalars["String"]["input"]>;
+  share_contract_address?: InputMaybe<Scalars["String"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<ShareTransferEventType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type ShareTransferEventUpdateResponse = {
-  __typename?: 'share_transfer_eventUpdateResponse';
+  __typename?: "share_transfer_eventUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<ShareTransferEvent>;
 };
 
 export enum ShareTransferEventType {
-  approval = 'APPROVAL',
-  disapproval = 'DISAPPROVAL',
-  forced = 'FORCED',
-  issuance = 'ISSUANCE',
-  trade = 'TRADE',
-  transfer = 'TRANSFER'
+  Approval = "APPROVAL",
+  Disapproval = "DISAPPROVAL",
+  Forced = "FORCED",
+  Issuance = "ISSUANCE",
+  Trade = "TRADE",
+  Transfer = "TRANSFER"
 }
 
 /** Boolean expression comparing fields on type "share_transfer_event_type" */
@@ -4856,55 +4857,55 @@ export type ShareTransferEventTypeFilter = {
 };
 
 export type SmartContract = Node & {
-  __typename?: 'smart_contract';
+  __typename?: "smart_contract";
   backing_token?: Maybe<CurrencyCode>;
-  created_at?: Maybe<Scalars['Datetime']['output']>;
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
   crypto_address?: Maybe<CryptoAddress>;
-  crypto_address_id: Scalars['UUID']['output'];
+  crypto_address_id: Scalars["UUID"]["output"];
   document?: Maybe<Document>;
-  document_id?: Maybe<Scalars['UUID']['output']>;
-  established?: Maybe<Scalars['Boolean']['output']>;
-  id: Scalars['UUID']['output'];
+  document_id?: Maybe<Scalars["UUID"]["output"]>;
+  established?: Maybe<Scalars["Boolean"]["output"]>;
+  id: Scalars["UUID"]["output"];
   legal_entity?: Maybe<LegalEntity>;
-  name?: Maybe<Scalars['String']['output']>;
+  name?: Maybe<Scalars["String"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
-  num_tokens_authorized?: Maybe<Scalars['BigInt']['output']>;
+  nodeId: Scalars["ID"]["output"];
+  num_tokens_authorized?: Maybe<Scalars["BigInt"]["output"]>;
   offering_smart_contract_setCollection?: Maybe<OfferingSmartContractSetConnection>;
-  owner_id: Scalars['UUID']['output'];
-  partitions?: Maybe<Array<Maybe<Scalars['String']['output']>>>;
-  sub_type?: Maybe<Scalars['String']['output']>;
+  owner_id: Scalars["UUID"]["output"];
+  partitions?: Maybe<Array<Maybe<Scalars["String"]["output"]>>>;
+  sub_type?: Maybe<Scalars["String"]["output"]>;
   type: SmartContractType;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type SmartContractOfferingSmartContractSetCollectionArgs = {
-  after?: InputMaybe<Scalars['Cursor']['input']>;
-  before?: InputMaybe<Scalars['Cursor']['input']>;
+  after?: InputMaybe<Scalars["Cursor"]["input"]>;
+  before?: InputMaybe<Scalars["Cursor"]["input"]>;
   filter?: InputMaybe<OfferingSmartContractSetFilter>;
-  first?: InputMaybe<Scalars['Int']['input']>;
-  last?: InputMaybe<Scalars['Int']['input']>;
-  offset?: InputMaybe<Scalars['Int']['input']>;
+  first?: InputMaybe<Scalars["Int"]["input"]>;
+  last?: InputMaybe<Scalars["Int"]["input"]>;
+  offset?: InputMaybe<Scalars["Int"]["input"]>;
   orderBy?: InputMaybe<Array<OfferingSmartContractSetOrderBy>>;
 };
 
 export type SmartContractConnection = {
-  __typename?: 'smart_contractConnection';
+  __typename?: "smart_contractConnection";
   edges: Array<SmartContractEdge>;
   pageInfo: PageInfo;
 };
 
 export type SmartContractDeleteResponse = {
-  __typename?: 'smart_contractDeleteResponse';
+  __typename?: "smart_contractDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<SmartContract>;
 };
 
 export type SmartContractEdge = {
-  __typename?: 'smart_contractEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "smart_contractEdge";
+  cursor: Scalars["String"]["output"];
   node: SmartContract;
 };
 
@@ -4933,24 +4934,24 @@ export type SmartContractFilter = {
 
 export type SmartContractInsertInput = {
   backing_token?: InputMaybe<CurrencyCode>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  crypto_address_id?: InputMaybe<Scalars['UUID']['input']>;
-  document_id?: InputMaybe<Scalars['UUID']['input']>;
-  established?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  num_tokens_authorized?: InputMaybe<Scalars['BigInt']['input']>;
-  owner_id?: InputMaybe<Scalars['UUID']['input']>;
-  partitions?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  sub_type?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  crypto_address_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  document_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  established?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  num_tokens_authorized?: InputMaybe<Scalars["BigInt"]["input"]>;
+  owner_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  partitions?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
+  sub_type?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<SmartContractType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type SmartContractInsertResponse = {
-  __typename?: 'smart_contractInsertResponse';
+  __typename?: "smart_contractInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<SmartContract>;
 };
@@ -4972,36 +4973,36 @@ export type SmartContractOrderBy = {
 
 export type SmartContractUpdateInput = {
   backing_token?: InputMaybe<CurrencyCode>;
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  crypto_address_id?: InputMaybe<Scalars['UUID']['input']>;
-  document_id?: InputMaybe<Scalars['UUID']['input']>;
-  established?: InputMaybe<Scalars['Boolean']['input']>;
-  id?: InputMaybe<Scalars['UUID']['input']>;
-  name?: InputMaybe<Scalars['String']['input']>;
-  num_tokens_authorized?: InputMaybe<Scalars['BigInt']['input']>;
-  owner_id?: InputMaybe<Scalars['UUID']['input']>;
-  partitions?: InputMaybe<Array<InputMaybe<Scalars['String']['input']>>>;
-  sub_type?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  crypto_address_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  document_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  established?: InputMaybe<Scalars["Boolean"]["input"]>;
+  id?: InputMaybe<Scalars["UUID"]["input"]>;
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  num_tokens_authorized?: InputMaybe<Scalars["BigInt"]["input"]>;
+  owner_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  partitions?: InputMaybe<Array<InputMaybe<Scalars["String"]["input"]>>>;
+  sub_type?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<SmartContractType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type SmartContractUpdateResponse = {
-  __typename?: 'smart_contractUpdateResponse';
+  __typename?: "smart_contractUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<SmartContract>;
 };
 
 export enum SmartContractType {
-  c2 = 'C2',
-  c3 = 'C3',
-  distribution = 'DISTRIBUTION',
-  erc20 = 'ERC20',
-  erc1410 = 'ERC1410',
-  other = 'OTHER',
-  swap = 'SWAP'
+  C2 = "C2",
+  C3 = "C3",
+  Distribution = "DISTRIBUTION",
+  Erc20 = "ERC20",
+  Erc1410 = "ERC1410",
+  Other = "OTHER",
+  Swap = "SWAP"
 }
 
 /** Boolean expression comparing fields on type "smart_contract_type" */
@@ -5013,10 +5014,10 @@ export type SmartContractTypeFilter = {
 };
 
 export enum UnitName {
-  membershipInterest = 'MEMBERSHIP_INTEREST',
-  share = 'SHARE',
-  token = 'TOKEN',
-  unit = 'UNIT'
+  MembershipInterest = "MEMBERSHIP_INTEREST",
+  Share = "SHARE",
+  Token = "TOKEN",
+  Unit = "UNIT"
 }
 
 /** Boolean expression comparing fields on type "unit_name" */
@@ -5028,34 +5029,34 @@ export type UnitNameFilter = {
 };
 
 export type WhitelistTransaction = Node & {
-  __typename?: 'whitelist_transaction';
-  created_at?: Maybe<Scalars['Datetime']['output']>;
+  __typename?: "whitelist_transaction";
+  created_at?: Maybe<Scalars["Datetime"]["output"]>;
   /** Globally Unique Record Identifier */
-  nodeId: Scalars['ID']['output'];
+  nodeId: Scalars["ID"]["output"];
   offering_participant?: Maybe<OfferingParticipant>;
-  offering_participant_id: Scalars['UUID']['output'];
-  transaction_hash: Scalars['String']['output'];
+  offering_participant_id: Scalars["UUID"]["output"];
+  transaction_hash: Scalars["String"]["output"];
   type: WhitelistTransactionType;
-  updated_at?: Maybe<Scalars['Datetime']['output']>;
+  updated_at?: Maybe<Scalars["Datetime"]["output"]>;
 };
 
 export type WhitelistTransactionConnection = {
-  __typename?: 'whitelist_transactionConnection';
+  __typename?: "whitelist_transactionConnection";
   edges: Array<WhitelistTransactionEdge>;
   pageInfo: PageInfo;
 };
 
 export type WhitelistTransactionDeleteResponse = {
-  __typename?: 'whitelist_transactionDeleteResponse';
+  __typename?: "whitelist_transactionDeleteResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<WhitelistTransaction>;
 };
 
 export type WhitelistTransactionEdge = {
-  __typename?: 'whitelist_transactionEdge';
-  cursor: Scalars['String']['output'];
+  __typename?: "whitelist_transactionEdge";
+  cursor: Scalars["String"]["output"];
   node: WhitelistTransaction;
 };
 
@@ -5075,17 +5076,17 @@ export type WhitelistTransactionFilter = {
 };
 
 export type WhitelistTransactionInsertInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  offering_participant_id?: InputMaybe<Scalars['UUID']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  offering_participant_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<WhitelistTransactionType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type WhitelistTransactionInsertResponse = {
-  __typename?: 'whitelist_transactionInsertResponse';
+  __typename?: "whitelist_transactionInsertResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<WhitelistTransaction>;
 };
@@ -5099,24 +5100,24 @@ export type WhitelistTransactionOrderBy = {
 };
 
 export type WhitelistTransactionUpdateInput = {
-  created_at?: InputMaybe<Scalars['Datetime']['input']>;
-  offering_participant_id?: InputMaybe<Scalars['UUID']['input']>;
-  transaction_hash?: InputMaybe<Scalars['String']['input']>;
+  created_at?: InputMaybe<Scalars["Datetime"]["input"]>;
+  offering_participant_id?: InputMaybe<Scalars["UUID"]["input"]>;
+  transaction_hash?: InputMaybe<Scalars["String"]["input"]>;
   type?: InputMaybe<WhitelistTransactionType>;
-  updated_at?: InputMaybe<Scalars['Datetime']['input']>;
+  updated_at?: InputMaybe<Scalars["Datetime"]["input"]>;
 };
 
 export type WhitelistTransactionUpdateResponse = {
-  __typename?: 'whitelist_transactionUpdateResponse';
+  __typename?: "whitelist_transactionUpdateResponse";
   /** Count of the records impacted by the mutation */
-  affectedCount: Scalars['Int']['output'];
+  affectedCount: Scalars["Int"]["output"];
   /** Array of records impacted by the mutation */
   records: Array<WhitelistTransaction>;
 };
 
 export enum WhitelistTransactionType {
-  add = 'ADD',
-  remove = 'REMOVE'
+  Add = "ADD",
+  Remove = "REMOVE"
 }
 
 /** Boolean expression comparing fields on type "whitelist_transaction_type" */
@@ -5126,3 +5127,5741 @@ export type WhitelistTransactionTypeFilter = {
   is?: InputMaybe<FilterIs>;
   neq?: InputMaybe<WhitelistTransactionType>;
 };
+
+export type GetCryptoAddressQueryVariables = Exact<{
+  walletAddress: Scalars["String"]["input"];
+}>;
+
+export type GetCryptoAddressQuery = {
+  __typename: "Query";
+  crypto_addressCollection?: {
+    __typename: "crypto_addressConnection";
+    edges: Array<{
+      __typename: "crypto_addressEdge";
+      node: {
+        __typename: "crypto_address";
+        id: string;
+        address: string;
+        legal_entity?: {
+          __typename: "legal_entity";
+          id: string;
+          legal_name?: string | null;
+        } | null;
+      };
+    }>;
+  } | null;
+};
+
+export type UpdateCryptoAddressMutationVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  isPublic?: InputMaybe<Scalars["Boolean"]["input"]>;
+}>;
+
+export type UpdateCryptoAddressMutation = {
+  __typename: "Mutation";
+  updatecrypto_addressCollection: {
+    __typename: "crypto_addressUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "crypto_address";
+      id: string;
+      name?: string | null;
+      address: string;
+      is_public?: boolean | null;
+      description?: string | null;
+      legal_entity_id: string;
+    }>;
+  };
+};
+
+export type AddContractPartitionMutationVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+  partition: Scalars["String"]["input"];
+}>;
+
+export type AddContractPartitionMutation = {
+  __typename: "Mutation";
+  updatesmart_contractCollection: {
+    __typename: "smart_contractUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "smart_contract";
+      id: string;
+      partitions?: Array<string | null> | null;
+      owner_id: string;
+    }>;
+  };
+};
+
+export type AddShareContractMutationVariables = Exact<{
+  cryptoAddressId: Scalars["UUID"]["input"];
+  ownerId: Scalars["UUID"]["input"];
+  type: SmartContractType;
+}>;
+
+export type AddShareContractMutation = {
+  __typename: "Mutation";
+  insertIntosmart_contractCollection?: {
+    __typename: "smart_contractInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "smart_contract";
+      id: string;
+      owner_id: string;
+      crypto_address_id: string;
+      type: SmartContractType;
+      established?: boolean | null;
+    }>;
+  } | null;
+};
+
+export type AddSwapContractMutationVariables = Exact<{
+  contractSetId: Scalars["UUID"]["input"];
+  swapContractId: Scalars["UUID"]["input"];
+}>;
+
+export type AddSwapContractMutation = {
+  __typename: "Mutation";
+  updateoffering_smart_contract_setCollection: {
+    __typename: "offering_smart_contract_setUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "offering_smart_contract_set";
+      id: string;
+      swap_contract_id?: string | null;
+      offering_id: string;
+    }>;
+  };
+};
+
+export type AddDistributionContractMutationVariables = Exact<{
+  contractSetId: Scalars["UUID"]["input"];
+  distributionContractId: Scalars["UUID"]["input"];
+}>;
+
+export type AddDistributionContractMutation = {
+  __typename: "Mutation";
+  updateoffering_smart_contract_setCollection: {
+    __typename: "offering_smart_contract_setUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "offering_smart_contract_set";
+      id: string;
+      distribution_contract_id?: string | null;
+      offering_id: string;
+    }>;
+  };
+};
+
+export type UpdateSmartContractMutationVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+  established?: InputMaybe<Scalars["Boolean"]["input"]>;
+}>;
+
+export type UpdateSmartContractMutation = {
+  __typename: "Mutation";
+  updatesmart_contractCollection: {
+    __typename: "smart_contractUpdateResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "smart_contract"; id: string; owner_id: string }>;
+  };
+};
+
+export type LinkedAccountFieldsFragment = {
+  __typename: "linked_account";
+  id: string;
+  account_provided_id?: string | null;
+  username?: string | null;
+  url: string;
+  type?: LinkedAccountType | null;
+  verified?: boolean | null;
+  hidden?: boolean | null;
+  organization_id: string;
+} & { " $fragmentName"?: "LinkedAccountFieldsFragment" };
+
+export type AddressFieldsFragment = {
+  __typename: "address";
+  id: string;
+  label?: string | null;
+  line1?: string | null;
+  line2?: string | null;
+  line3?: string | null;
+  city: string;
+  state_province?: string | null;
+  postal_code?: string | null;
+  country: string;
+  lat?: string | null;
+  lng?: string | null;
+  legal_entity_id: string;
+} & { " $fragmentName"?: "AddressFieldsFragment" };
+
+export type DocumentFieldsFragment = {
+  __typename: "document";
+  id: string;
+  title?: string | null;
+  file_id?: string | null;
+  date?: string | null;
+  format?: DocumentFormat | null;
+  type?: DocumentType | null;
+  text?: string | null;
+  url?: string | null;
+  thumbnail_image_id?: string | null;
+  owner_id: string;
+  access?: DocumentAccessType | null;
+  offering_id?: string | null;
+  offering_unique_id: string;
+} & { " $fragmentName"?: "DocumentFieldsFragment" };
+
+export type ApplicationFieldsFragment = {
+  __typename: "investor_application";
+  id: string;
+  offering_participant_id: string;
+  application_doc_id: string;
+} & { " $fragmentName"?: "ApplicationFieldsFragment" };
+
+export type SmartContractFieldsFragment = {
+  __typename: "smart_contract";
+  id: string;
+  crypto_address_id: string;
+  type: SmartContractType;
+  num_tokens_authorized?: string | null;
+  backing_token?: CurrencyCode | null;
+  owner_id: string;
+  established?: boolean | null;
+  partitions?: Array<string | null> | null;
+} & { " $fragmentName"?: "SmartContractFieldsFragment" };
+
+export type SmartContractSetFieldsFragment = {
+  __typename: "offering_smart_contract_set";
+  id: string;
+  offering_id: string;
+  share_contract_id?: string | null;
+  swap_contract_id?: string | null;
+  distribution_contract_id?: string | null;
+} & { " $fragmentName"?: "SmartContractSetFieldsFragment" };
+
+export type OfferingDetailsFieldsFragment = {
+  __typename: "offering_detail";
+  id: string;
+  type?: OfferingDetailsType | null;
+  custom_onboarding_link?: string | null;
+  stage?: OfferingStage | null;
+  investment_currency: CurrencyCode;
+  num_units?: number | null;
+  min_units_per_investor?: number | null;
+  max_units_per_investor?: number | null;
+  max_raise?: string | null;
+  min_raise?: string | null;
+  price_start?: number | null;
+  max_investors?: number | null;
+  min_investors?: number | null;
+  raise_start?: string | null;
+  raise_period?: number | null;
+  additional_info?: string | null;
+  distribution_period?: DistributionPeriodType | null;
+  distribution_frequency?: number | null;
+  distribution_currency?: CurrencyCode | null;
+  distribution_description?: string | null;
+  admin_expense?: number | null;
+  projected_irr?: number | null;
+  projected_irr_max?: number | null;
+  target_equity_multiple?: number | null;
+  target_equity_multiple_max?: number | null;
+  preferred_return?: number | null;
+  coc_return?: number | null;
+  projected_appreciation?: number | null;
+  cap_rate?: number | null;
+} & { " $fragmentName"?: "OfferingDetailsFieldsFragment" };
+
+export type RealEstatePropertyFieldsFragment = {
+  __typename: "real_estate_property";
+  id: string;
+  property_type: RealEstatePropertyType;
+  investment_status?: AssetStatus | null;
+  address_id?: string | null;
+  amenities_description?: string | null;
+  description?: string | null;
+  asset_value?: number | null;
+  asset_value_note?: string | null;
+  loan?: number | null;
+  down_payment?: number | null;
+  lender_fees?: number | null;
+  closing_costs?: number | null;
+  owner_id: string;
+} & { " $fragmentName"?: "RealEstatePropertyFieldsFragment" };
+
+export type OfferingParticipantFieldsFragment = {
+  __typename: "offering_participant";
+  id: string;
+  address_offering_id: string;
+  wallet_address: string;
+  chain_id: number;
+  name?: string | null;
+  external_id?: string | null;
+  min_pledge?: number | null;
+  max_pledge?: number | null;
+  offering_id: string;
+} & { " $fragmentName"?: "OfferingParticipantFieldsFragment" };
+
+export type LegalEntityFieldsFragment = {
+  __typename: "legal_entity";
+  id: string;
+  tax_id?: string | null;
+  display_name?: string | null;
+  legal_name?: string | null;
+  purpose?: string | null;
+  jurisdiction_id?: string | null;
+  operating_currency?: CurrencyCode | null;
+  organization_id: string;
+  type: LegalEntityType;
+} & { " $fragmentName"?: "LegalEntityFieldsFragment" };
+
+export type OfferingFieldsFragment = {
+  __typename: "offering";
+  id: string;
+  name: string;
+  is_public?: boolean | null;
+  access_code?: string | null;
+  waitlist_on?: boolean | null;
+  banner_image?: string | null;
+  primary_video?: string | null;
+  brand_color?: string | null;
+  light_brand?: boolean | null;
+  website?: string | null;
+  short_description?: string | null;
+  image?: {
+    __typename: "image";
+    id: string;
+    url: string;
+    label?: string | null;
+    file_id?: string | null;
+  } | null;
+} & { " $fragmentName"?: "OfferingFieldsFragment" };
+
+export type OrganizationFieldsFragment = {
+  __typename: "organization";
+  id: string;
+  name?: string | null;
+  description?: string | null;
+  logo?: string | null;
+  brand_color?: string | null;
+  banner_image?: string | null;
+  website?: string | null;
+  is_public?: boolean | null;
+  phone?: string | null;
+  country?: string | null;
+} & { " $fragmentName"?: "OrganizationFieldsFragment" };
+
+export type UserFieldsFragment = { __typename: "profile"; id: string } & {
+  " $fragmentName"?: "UserFieldsFragment";
+};
+
+export type DocumentSignatoryFieldsFragment = {
+  __typename: "document_signatory";
+  id: string;
+  document_id: string;
+  signer_address?: string | null;
+  legal_entity_id?: string | null;
+} & { " $fragmentName"?: "DocumentSignatoryFieldsFragment" };
+
+export type RetrieveTransferEventsQueryVariables = Exact<{
+  shareContractAddress: Scalars["String"]["input"];
+}>;
+
+export type RetrieveTransferEventsQuery = {
+  __typename: "Query";
+  share_transfer_eventCollection?: {
+    __typename: "share_transfer_eventConnection";
+    edges: Array<{
+      __typename: "share_transfer_eventEdge";
+      node: {
+        __typename: "share_transfer_event";
+        id: string;
+        share_contract_address: string;
+        order_index?: number | null;
+        recipient_address: string;
+        sender_address: string;
+        amount: number;
+        price?: string | null;
+        currency_code?: CurrencyCode | null;
+        transaction_hash: string;
+        partition: string;
+        type: ShareTransferEventType;
+      };
+    }>;
+  } | null;
+};
+
+export type AddTransferEventMutationVariables = Exact<{
+  shareContractAddress: Scalars["String"]["input"];
+  orderIndex?: InputMaybe<Scalars["Int"]["input"]>;
+  recipientAddress: Scalars["String"]["input"];
+  senderAddress: Scalars["String"]["input"];
+  amount: Scalars["Int"]["input"];
+  price?: InputMaybe<Scalars["String"]["input"]>;
+  currencyCode?: InputMaybe<CurrencyCode>;
+  transactionHash: Scalars["String"]["input"];
+  partition: Scalars["String"]["input"];
+  type: ShareTransferEventType;
+}>;
+
+export type AddTransferEventMutation = {
+  __typename: "Mutation";
+  insertIntoshare_transfer_eventCollection?: {
+    __typename: "share_transfer_eventInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "share_transfer_event";
+      id: string;
+      share_contract_address: string;
+      order_index?: number | null;
+      recipient_address: string;
+      sender_address: string;
+      amount: number;
+      price?: string | null;
+      currency_code?: CurrencyCode | null;
+      transaction_hash: string;
+      partition: string;
+      type: ShareTransferEventType;
+    }>;
+  } | null;
+};
+
+export type AddDistributionMutationVariables = Exact<{
+  transactionHash: Scalars["String"]["input"];
+  contractIndex: Scalars["Int"]["input"];
+}>;
+
+export type AddDistributionMutation = {
+  __typename: "Mutation";
+  insertIntooffering_distributionCollection?: {
+    __typename: "offering_distributionInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "offering_distribution";
+      id: string;
+      transaction_hash: string;
+      contract_index: number;
+    }>;
+  } | null;
+};
+
+export type UpdateOfferingDistributionMutationVariables = Exact<{
+  distributionId: Scalars["UUID"]["input"];
+  contractIndex: Scalars["Int"]["input"];
+}>;
+
+export type UpdateOfferingDistributionMutation = {
+  __typename: "Mutation";
+  updateoffering_distributionCollection: {
+    __typename: "offering_distributionUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "offering_distribution";
+      id: string;
+      transaction_hash: string;
+      contract_index: number;
+    }>;
+  };
+};
+
+export type UpdateContractStatusMutationVariables = Exact<{
+  smartshareContractId: Scalars["UUID"]["input"];
+  established?: InputMaybe<Scalars["Boolean"]["input"]>;
+}>;
+
+export type UpdateContractStatusMutation = {
+  __typename: "Mutation";
+  updatesmart_contractCollection: {
+    __typename: "smart_contractUpdateResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "smart_contract"; id: string; established?: boolean | null }>;
+  };
+};
+
+export type CreateOrderMutationVariables = Exact<{
+  contractIndex: Scalars["Int"]["input"];
+  swapContractAddress: Scalars["String"]["input"];
+  minUnits?: InputMaybe<Scalars["Int"]["input"]>;
+  maxUnits?: InputMaybe<Scalars["Int"]["input"]>;
+  visible: Scalars["Boolean"]["input"];
+  initiator: Scalars["String"]["input"];
+  transactionHash: Scalars["String"]["input"];
+}>;
+
+export type CreateOrderMutation = {
+  __typename: "Mutation";
+  insertIntoshare_orderCollection?: {
+    __typename: "share_orderInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "share_order";
+      id: string;
+      contract_index: number;
+      initiator: string;
+      transaction_hash: string;
+    }>;
+  } | null;
+};
+
+export type RetrieveOrdersQueryVariables = Exact<{
+  swapContractAddress: Scalars["String"]["input"];
+}>;
+
+export type RetrieveOrdersQuery = {
+  __typename: "Query";
+  share_orderCollection?: {
+    __typename: "share_orderConnection";
+    edges: Array<{
+      __typename: "share_orderEdge";
+      node: {
+        __typename: "share_order";
+        id: string;
+        contract_index: number;
+        initiator: string;
+        transaction_hash: string;
+        swap_contract_address: string;
+        min_units?: number | null;
+        max_units?: number | null;
+        visible?: boolean | null;
+        archived?: boolean | null;
+      };
+    }>;
+  } | null;
+};
+
+export type UpdateSaleMutationVariables = Exact<{
+  orderId: Scalars["UUID"]["input"];
+  visible: Scalars["Boolean"]["input"];
+  archived: Scalars["Boolean"]["input"];
+}>;
+
+export type UpdateSaleMutation = {
+  __typename: "Mutation";
+  updateshare_orderCollection: {
+    __typename: "share_orderUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "share_order";
+      id: string;
+      visible?: boolean | null;
+      archived?: boolean | null;
+    }>;
+  };
+};
+
+export type RemoveShareOrderMutationVariables = Exact<{
+  orderId: Scalars["UUID"]["input"];
+}>;
+
+export type RemoveShareOrderMutation = {
+  __typename: "Mutation";
+  deleteFromshare_orderCollection: {
+    __typename: "share_orderDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "share_order"; id: string }>;
+  };
+};
+
+export type GetOrganizationQueryVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+}>;
+
+export type GetOrganizationQuery = {
+  __typename: "Query";
+  organizationCollection?: {
+    __typename: "organizationConnection";
+    edges: Array<{
+      __typename: "organizationEdge";
+      node: { __typename: "organization" } & {
+        " $fragmentRefs"?: { OrganizationFieldsFragment: OrganizationFieldsFragment };
+      };
+    }>;
+  } | null;
+};
+
+export type AddOrganizationMutationVariables = Exact<{
+  name: Scalars["String"]["input"];
+  logo?: InputMaybe<Scalars["String"]["input"]>;
+  shortDescription?: InputMaybe<Scalars["String"]["input"]>;
+  website?: InputMaybe<Scalars["String"]["input"]>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type AddOrganizationMutation = {
+  __typename: "Mutation";
+  insertIntoorganizationCollection?: {
+    __typename: "organizationInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "organization";
+      id: string;
+      name?: string | null;
+      is_public?: boolean | null;
+      logo?: string | null;
+      website?: string | null;
+      country?: string | null;
+      short_description?: string | null;
+    }>;
+  } | null;
+};
+
+export type AddOrganizationUserMutationVariables = Exact<{
+  userId: Scalars["UUID"]["input"];
+  organizationId: Scalars["UUID"]["input"];
+  permission?: InputMaybe<
+    Array<InputMaybe<OrganizationPermissionType>> | InputMaybe<OrganizationPermissionType>
+  >;
+}>;
+
+export type AddOrganizationUserMutation = {
+  __typename: "Mutation";
+  insertIntoorganization_userCollection?: {
+    __typename: "organization_userInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "organization_user";
+      id: string;
+      user_id: string;
+      organization_id: string;
+      permissions?: Array<OrganizationPermissionType | null> | null;
+    }>;
+  } | null;
+};
+
+export type RemoveOrganizationUserMutationVariables = Exact<{
+  organizationUserId: Scalars["UUID"]["input"];
+}>;
+
+export type RemoveOrganizationUserMutation = {
+  __typename: "Mutation";
+  deleteFromorganization_userCollection: {
+    __typename: "organization_userDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "organization_user"; id: string }>;
+  };
+};
+
+export type UpdateOrganizationMutationVariables = Exact<{
+  organizationId: Scalars["UUID"]["input"];
+  name: Scalars["String"]["input"];
+  logo?: InputMaybe<Scalars["String"]["input"]>;
+  bannerImage?: InputMaybe<Scalars["String"]["input"]>;
+  isPublic?: InputMaybe<Scalars["Boolean"]["input"]>;
+  shortDescription?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  country?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type UpdateOrganizationMutation = {
+  __typename: "Mutation";
+  updateorganizationCollection: {
+    __typename: "organizationUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "organization";
+      id: string;
+      name?: string | null;
+      is_public?: boolean | null;
+      description?: string | null;
+      country?: string | null;
+      logo?: string | null;
+      banner_image?: string | null;
+    }>;
+  };
+};
+
+export type AddNotificationRuleMutationVariables = Exact<{
+  organizationUserId: Scalars["UUID"]["input"];
+  notificationRecipientType: NotificationRecipientType;
+  notificationMethod: NotificationMethod;
+  notificationSubject: NotificationSubject;
+}>;
+
+export type AddNotificationRuleMutation = {
+  __typename: "Mutation";
+  insertIntonotification_configurationCollection?: {
+    __typename: "notification_configurationInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "notification_configuration";
+      id: string;
+      notification_recipient_type: NotificationRecipientType;
+      notification_method: NotificationMethod;
+      notification_subject: NotificationSubject;
+      organization_user_id: string;
+    }>;
+  } | null;
+};
+
+export type RemoveNotificationRuleMutationVariables = Exact<{
+  notificationConfigurationId: Scalars["UUID"]["input"];
+}>;
+
+export type RemoveNotificationRuleMutation = {
+  __typename: "Mutation";
+  deleteFromnotification_configurationCollection: {
+    __typename: "notification_configurationDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "notification_configuration"; id: string }>;
+  };
+};
+
+export type AddUserEmailMutationVariables = Exact<{
+  organizationId: Scalars["UUID"]["input"];
+  address: Scalars["String"]["input"];
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  isPublic?: InputMaybe<Scalars["Boolean"]["input"]>;
+}>;
+
+export type AddUserEmailMutation = {
+  __typename: "Mutation";
+  insertIntoemail_addressCollection?: {
+    __typename: "email_addressInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "email_address";
+      id: string;
+      address: string;
+      organization_id: string;
+    }>;
+  } | null;
+};
+
+export type RemoveOrganizationEmailMutationVariables = Exact<{
+  emailAddress: Scalars["String"]["input"];
+}>;
+
+export type RemoveOrganizationEmailMutation = {
+  __typename: "Mutation";
+  deleteFromemail_addressCollection: {
+    __typename: "email_addressDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "email_address"; id: string }>;
+  };
+};
+
+export type UpdateUserEmailMutationVariables = Exact<{
+  address: Scalars["String"]["input"];
+  name?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  isPublic?: InputMaybe<Scalars["Boolean"]["input"]>;
+}>;
+
+export type UpdateUserEmailMutation = {
+  __typename: "Mutation";
+  updateemail_addressCollection: {
+    __typename: "email_addressUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "email_address";
+      id: string;
+      name?: string | null;
+      address: string;
+      is_public?: boolean | null;
+      description?: string | null;
+      organization_id: string;
+    }>;
+  };
+};
+
+export type AddOrganizationSocialAccountsMutationVariables = Exact<{
+  organizationId: Scalars["UUID"]["input"];
+  url: Scalars["String"]["input"];
+  type: LinkedAccountType;
+}>;
+
+export type AddOrganizationSocialAccountsMutation = {
+  __typename: "Mutation";
+  insertIntolinked_accountCollection?: {
+    __typename: "linked_accountInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "linked_account";
+      id: string;
+      organization_id: string;
+      url: string;
+      type?: LinkedAccountType | null;
+      verified?: boolean | null;
+      hidden?: boolean | null;
+    }>;
+  } | null;
+};
+
+export type RemoveOrganizationSocialAccountMutationVariables = Exact<{
+  socialId: Scalars["UUID"]["input"];
+}>;
+
+export type RemoveOrganizationSocialAccountMutation = {
+  __typename: "Mutation";
+  deleteFromlinked_accountCollection: {
+    __typename: "linked_accountDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "linked_account"; id: string }>;
+  };
+};
+
+export type GetRealEstatePropertyQueryVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+}>;
+
+export type GetRealEstatePropertyQuery = {
+  __typename: "Query";
+  real_estate_propertyCollection?: {
+    __typename: "real_estate_propertyConnection";
+    edges: Array<{
+      __typename: "real_estate_propertyEdge";
+      node: { __typename: "real_estate_property" } & {
+        " $fragmentRefs"?: { RealEstatePropertyFieldsFragment: RealEstatePropertyFieldsFragment };
+      };
+    }>;
+  } | null;
+};
+
+export type AddRePropertyInfoMutationVariables = Exact<{
+  entityId: Scalars["UUID"]["input"];
+  propertyType: RealEstatePropertyType;
+  investmentStatus: AssetStatus;
+  amenitiesDescription?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  downPayment?: InputMaybe<Scalars["Int"]["input"]>;
+  lenderFees?: InputMaybe<Scalars["Int"]["input"]>;
+  closingCosts?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
+
+export type AddRePropertyInfoMutation = {
+  __typename: "Mutation";
+  insertIntoreal_estate_propertyCollection?: {
+    __typename: "real_estate_propertyInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "real_estate_property";
+      id: string;
+      investment_status?: AssetStatus | null;
+    }>;
+  } | null;
+};
+
+export type UpdateRePropertyInfoMutationVariables = Exact<{
+  rePropertyId: Scalars["UUID"]["input"];
+  propertyType: RealEstatePropertyType;
+  investmentStatus: AssetStatus;
+  amenitiesDescription?: InputMaybe<Scalars["String"]["input"]>;
+  description?: InputMaybe<Scalars["String"]["input"]>;
+  assetValue?: InputMaybe<Scalars["Int"]["input"]>;
+  assetValueNote?: InputMaybe<Scalars["String"]["input"]>;
+  downPayment?: InputMaybe<Scalars["Int"]["input"]>;
+  lenderFees?: InputMaybe<Scalars["Int"]["input"]>;
+  closingCosts?: InputMaybe<Scalars["Int"]["input"]>;
+  loanAmount?: InputMaybe<Scalars["Int"]["input"]>;
+}>;
+
+export type UpdateRePropertyInfoMutation = {
+  __typename: "Mutation";
+  updatereal_estate_propertyCollection: {
+    __typename: "real_estate_propertyUpdateResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "real_estate_property";
+      id: string;
+      investment_status?: AssetStatus | null;
+      amenities_description?: string | null;
+      description?: string | null;
+      asset_value?: number | null;
+      asset_value_note?: string | null;
+      down_payment?: number | null;
+      lender_fees?: number | null;
+      closing_costs?: number | null;
+      loan?: number | null;
+      owner_id: string;
+    }>;
+  };
+};
+
+export type RemoveRePropertyMutationVariables = Exact<{
+  propertyId: Scalars["UUID"]["input"];
+}>;
+
+export type RemoveRePropertyMutation = {
+  __typename: "Mutation";
+  deleteFromreal_estate_propertyCollection: {
+    __typename: "real_estate_propertyDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "real_estate_property"; id: string }>;
+  };
+};
+
+export type AddPropertyAddressMutationVariables = Exact<{
+  propertyId: Scalars["UUID"]["input"];
+  addressLabel?: InputMaybe<Scalars["String"]["input"]>;
+  addressLine1: Scalars["String"]["input"];
+  addressLine2?: InputMaybe<Scalars["String"]["input"]>;
+  addressLine3?: InputMaybe<Scalars["String"]["input"]>;
+  city: Scalars["String"]["input"];
+  stateProvince?: InputMaybe<Scalars["String"]["input"]>;
+  postalCode?: InputMaybe<Scalars["String"]["input"]>;
+  country: Scalars["String"]["input"];
+}>;
+
+export type AddPropertyAddressMutation = {
+  __typename: "Mutation";
+  insertIntoaddressCollection?: {
+    __typename: "addressInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "address";
+      id: string;
+      label?: string | null;
+      line1?: string | null;
+    }>;
+  } | null;
+};
+
+export type RemovePropertyAddressMutationVariables = Exact<{
+  geoAddressId: Scalars["UUID"]["input"];
+}>;
+
+export type RemovePropertyAddressMutation = {
+  __typename: "Mutation";
+  deleteFromaddressCollection: {
+    __typename: "addressDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "address"; id: string }>;
+  };
+};
+
+export type AddPropertyImageMutationVariables = Exact<{
+  url: Scalars["String"]["input"];
+  label?: InputMaybe<Scalars["String"]["input"]>;
+  fileId?: InputMaybe<Scalars["String"]["input"]>;
+}>;
+
+export type AddPropertyImageMutation = {
+  __typename: "Mutation";
+  insertIntoimageCollection?: {
+    __typename: "imageInsertResponse";
+    affectedCount: number;
+    records: Array<{
+      __typename: "image";
+      id: string;
+      label?: string | null;
+      url: string;
+      file_id?: string | null;
+    }>;
+  } | null;
+};
+
+export type RemovePropertyImageMutationVariables = Exact<{
+  imageId: Scalars["UUID"]["input"];
+}>;
+
+export type RemovePropertyImageMutation = {
+  __typename: "Mutation";
+  deleteFromimageCollection: {
+    __typename: "imageDeleteResponse";
+    affectedCount: number;
+    records: Array<{ __typename: "image"; id: string }>;
+  };
+};
+
+export type GetUserProfileQueryVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+}>;
+
+export type GetUserProfileQuery = {
+  __typename: "Query";
+  profileCollection?: {
+    __typename: "profileConnection";
+    edges: Array<{
+      __typename: "profileEdge";
+      node: { __typename: "profile"; id: string; name?: string | null; image?: string | null };
+    }>;
+  } | null;
+};
+
+export type GetUserQueryVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+}>;
+
+export type GetUserQuery = {
+  __typename: "Query";
+  profileCollection?: {
+    __typename: "profileConnection";
+    edges: Array<{
+      __typename: "profileEdge";
+      node: { __typename: "profile"; id: string; name?: string | null };
+    }>;
+  } | null;
+  organization_userCollection?: {
+    __typename: "organization_userConnection";
+    edges: Array<{
+      __typename: "organization_userEdge";
+      node: {
+        __typename: "organization_user";
+        organization?:
+          | ({ __typename: "organization" } & {
+              " $fragmentRefs"?: { OrganizationFieldsFragment: OrganizationFieldsFragment };
+            })
+          | null;
+      };
+    }>;
+  } | null;
+};
+
+export type GetUserRoleQueryVariables = Exact<{
+  id: Scalars["UUID"]["input"];
+}>;
+
+export type GetUserRoleQuery = {
+  __typename: "Query";
+  organization_userCollection?: {
+    __typename: "organization_userConnection";
+    edges: Array<{
+      __typename: "organization_userEdge";
+      node: {
+        __typename: "organization_user";
+        permissions?: Array<OrganizationPermissionType | null> | null;
+        organization?:
+          | ({ __typename: "organization" } & {
+              " $fragmentRefs"?: { OrganizationFieldsFragment: OrganizationFieldsFragment };
+            })
+          | null;
+      };
+    }>;
+  } | null;
+};
+
+export const LinkedAccountFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "LinkedAccountFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "linked_account" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "account_provided_id" } },
+          { kind: "Field", name: { kind: "Name", value: "username" } },
+          { kind: "Field", name: { kind: "Name", value: "url" } },
+          { kind: "Field", name: { kind: "Name", value: "type" } },
+          { kind: "Field", name: { kind: "Name", value: "verified" } },
+          { kind: "Field", name: { kind: "Name", value: "hidden" } },
+          { kind: "Field", name: { kind: "Name", value: "organization_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<LinkedAccountFieldsFragment, unknown>;
+export const AddressFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "AddressFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "address" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "label" } },
+          { kind: "Field", name: { kind: "Name", value: "line1" } },
+          { kind: "Field", name: { kind: "Name", value: "line2" } },
+          { kind: "Field", name: { kind: "Name", value: "line3" } },
+          { kind: "Field", name: { kind: "Name", value: "city" } },
+          { kind: "Field", name: { kind: "Name", value: "state_province" } },
+          { kind: "Field", name: { kind: "Name", value: "postal_code" } },
+          { kind: "Field", name: { kind: "Name", value: "country" } },
+          { kind: "Field", name: { kind: "Name", value: "lat" } },
+          { kind: "Field", name: { kind: "Name", value: "lng" } },
+          { kind: "Field", name: { kind: "Name", value: "legal_entity_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddressFieldsFragment, unknown>;
+export const DocumentFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "DocumentFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "document" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "title" } },
+          { kind: "Field", name: { kind: "Name", value: "file_id" } },
+          { kind: "Field", name: { kind: "Name", value: "date" } },
+          { kind: "Field", name: { kind: "Name", value: "format" } },
+          { kind: "Field", name: { kind: "Name", value: "type" } },
+          { kind: "Field", name: { kind: "Name", value: "text" } },
+          { kind: "Field", name: { kind: "Name", value: "url" } },
+          { kind: "Field", name: { kind: "Name", value: "thumbnail_image_id" } },
+          { kind: "Field", name: { kind: "Name", value: "owner_id" } },
+          { kind: "Field", name: { kind: "Name", value: "access" } },
+          { kind: "Field", name: { kind: "Name", value: "offering_id" } },
+          { kind: "Field", name: { kind: "Name", value: "offering_unique_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<DocumentFieldsFragment, unknown>;
+export const ApplicationFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "ApplicationFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "investor_application" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "offering_participant_id" } },
+          { kind: "Field", name: { kind: "Name", value: "application_doc_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<ApplicationFieldsFragment, unknown>;
+export const SmartContractFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SmartContractFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "smart_contract" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "crypto_address_id" } },
+          { kind: "Field", name: { kind: "Name", value: "type" } },
+          { kind: "Field", name: { kind: "Name", value: "num_tokens_authorized" } },
+          { kind: "Field", name: { kind: "Name", value: "backing_token" } },
+          { kind: "Field", name: { kind: "Name", value: "owner_id" } },
+          { kind: "Field", name: { kind: "Name", value: "established" } },
+          { kind: "Field", name: { kind: "Name", value: "partitions" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<SmartContractFieldsFragment, unknown>;
+export const SmartContractSetFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "SmartContractSetFields" },
+      typeCondition: {
+        kind: "NamedType",
+        name: { kind: "Name", value: "offering_smart_contract_set" }
+      },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "offering_id" } },
+          { kind: "Field", name: { kind: "Name", value: "share_contract_id" } },
+          { kind: "Field", name: { kind: "Name", value: "swap_contract_id" } },
+          { kind: "Field", name: { kind: "Name", value: "distribution_contract_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<SmartContractSetFieldsFragment, unknown>;
+export const OfferingDetailsFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OfferingDetailsFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "offering_detail" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "type" } },
+          { kind: "Field", name: { kind: "Name", value: "custom_onboarding_link" } },
+          { kind: "Field", name: { kind: "Name", value: "stage" } },
+          { kind: "Field", name: { kind: "Name", value: "investment_currency" } },
+          { kind: "Field", name: { kind: "Name", value: "num_units" } },
+          { kind: "Field", name: { kind: "Name", value: "min_units_per_investor" } },
+          { kind: "Field", name: { kind: "Name", value: "max_units_per_investor" } },
+          { kind: "Field", name: { kind: "Name", value: "max_raise" } },
+          { kind: "Field", name: { kind: "Name", value: "min_raise" } },
+          { kind: "Field", name: { kind: "Name", value: "price_start" } },
+          { kind: "Field", name: { kind: "Name", value: "max_investors" } },
+          { kind: "Field", name: { kind: "Name", value: "min_investors" } },
+          { kind: "Field", name: { kind: "Name", value: "raise_start" } },
+          { kind: "Field", name: { kind: "Name", value: "raise_period" } },
+          { kind: "Field", name: { kind: "Name", value: "additional_info" } },
+          { kind: "Field", name: { kind: "Name", value: "distribution_period" } },
+          { kind: "Field", name: { kind: "Name", value: "distribution_frequency" } },
+          { kind: "Field", name: { kind: "Name", value: "distribution_currency" } },
+          { kind: "Field", name: { kind: "Name", value: "distribution_description" } },
+          { kind: "Field", name: { kind: "Name", value: "admin_expense" } },
+          { kind: "Field", name: { kind: "Name", value: "projected_irr" } },
+          { kind: "Field", name: { kind: "Name", value: "projected_irr_max" } },
+          { kind: "Field", name: { kind: "Name", value: "target_equity_multiple" } },
+          { kind: "Field", name: { kind: "Name", value: "target_equity_multiple_max" } },
+          { kind: "Field", name: { kind: "Name", value: "preferred_return" } },
+          { kind: "Field", name: { kind: "Name", value: "coc_return" } },
+          { kind: "Field", name: { kind: "Name", value: "projected_appreciation" } },
+          { kind: "Field", name: { kind: "Name", value: "cap_rate" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<OfferingDetailsFieldsFragment, unknown>;
+export const RealEstatePropertyFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "RealEstatePropertyFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "real_estate_property" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "property_type" } },
+          { kind: "Field", name: { kind: "Name", value: "investment_status" } },
+          { kind: "Field", name: { kind: "Name", value: "address_id" } },
+          { kind: "Field", name: { kind: "Name", value: "amenities_description" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "asset_value" } },
+          { kind: "Field", name: { kind: "Name", value: "asset_value_note" } },
+          { kind: "Field", name: { kind: "Name", value: "loan" } },
+          { kind: "Field", name: { kind: "Name", value: "down_payment" } },
+          { kind: "Field", name: { kind: "Name", value: "lender_fees" } },
+          { kind: "Field", name: { kind: "Name", value: "closing_costs" } },
+          { kind: "Field", name: { kind: "Name", value: "owner_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RealEstatePropertyFieldsFragment, unknown>;
+export const OfferingParticipantFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OfferingParticipantFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "offering_participant" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "address_offering_id" } },
+          { kind: "Field", name: { kind: "Name", value: "wallet_address" } },
+          { kind: "Field", name: { kind: "Name", value: "chain_id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "external_id" } },
+          { kind: "Field", name: { kind: "Name", value: "min_pledge" } },
+          { kind: "Field", name: { kind: "Name", value: "max_pledge" } },
+          { kind: "Field", name: { kind: "Name", value: "offering_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<OfferingParticipantFieldsFragment, unknown>;
+export const LegalEntityFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "LegalEntityFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "legal_entity" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "tax_id" } },
+          { kind: "Field", name: { kind: "Name", value: "display_name" } },
+          { kind: "Field", name: { kind: "Name", value: "legal_name" } },
+          { kind: "Field", name: { kind: "Name", value: "purpose" } },
+          { kind: "Field", name: { kind: "Name", value: "jurisdiction_id" } },
+          { kind: "Field", name: { kind: "Name", value: "operating_currency" } },
+          { kind: "Field", name: { kind: "Name", value: "organization_id" } },
+          { kind: "Field", name: { kind: "Name", value: "type" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<LegalEntityFieldsFragment, unknown>;
+export const OfferingFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OfferingFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "offering" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "is_public" } },
+          { kind: "Field", name: { kind: "Name", value: "access_code" } },
+          { kind: "Field", name: { kind: "Name", value: "waitlist_on" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "image" },
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "id" } },
+                { kind: "Field", name: { kind: "Name", value: "url" } },
+                { kind: "Field", name: { kind: "Name", value: "label" } },
+                { kind: "Field", name: { kind: "Name", value: "file_id" } }
+              ]
+            }
+          },
+          { kind: "Field", name: { kind: "Name", value: "banner_image" } },
+          { kind: "Field", name: { kind: "Name", value: "primary_video" } },
+          { kind: "Field", name: { kind: "Name", value: "brand_color" } },
+          { kind: "Field", name: { kind: "Name", value: "light_brand" } },
+          { kind: "Field", name: { kind: "Name", value: "website" } },
+          { kind: "Field", name: { kind: "Name", value: "short_description" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<OfferingFieldsFragment, unknown>;
+export const OrganizationFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OrganizationFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "organization" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "logo" } },
+          { kind: "Field", name: { kind: "Name", value: "brand_color" } },
+          { kind: "Field", name: { kind: "Name", value: "banner_image" } },
+          { kind: "Field", name: { kind: "Name", value: "website" } },
+          { kind: "Field", name: { kind: "Name", value: "is_public" } },
+          { kind: "Field", name: { kind: "Name", value: "phone" } },
+          { kind: "Field", name: { kind: "Name", value: "country" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<OrganizationFieldsFragment, unknown>;
+export const UserFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "UserFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "profile" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UserFieldsFragment, unknown>;
+export const DocumentSignatoryFieldsFragmentDoc = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "DocumentSignatoryFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "document_signatory" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "document_id" } },
+          { kind: "Field", name: { kind: "Name", value: "signer_address" } },
+          { kind: "Field", name: { kind: "Name", value: "legal_entity_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<DocumentSignatoryFieldsFragment, unknown>;
+export const GetCryptoAddressDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetCryptoAddress" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "walletAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "crypto_addressCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "address" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "walletAddress" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "address" } },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "legal_entity" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                                  { kind: "Field", name: { kind: "Name", value: "id" } },
+                                  { kind: "Field", name: { kind: "Name", value: "legal_name" } }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetCryptoAddressQuery, GetCryptoAddressQueryVariables>;
+export const UpdateCryptoAddressDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateCryptoAddress" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "isPublic" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updatecrypto_addressCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "name" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "name" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_public" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "isPublic" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "address" } },
+                      { kind: "Field", name: { kind: "Name", value: "is_public" } },
+                      { kind: "Field", name: { kind: "Name", value: "description" } },
+                      { kind: "Field", name: { kind: "Name", value: "legal_entity_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateCryptoAddressMutation, UpdateCryptoAddressMutationVariables>;
+export const AddContractPartitionDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddContractPartition" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "partition" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updatesmart_contractCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "partitions" },
+                      value: {
+                        kind: "ListValue",
+                        values: [{ kind: "Variable", name: { kind: "Name", value: "partition" } }]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "partitions" } },
+                      { kind: "Field", name: { kind: "Name", value: "owner_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddContractPartitionMutation, AddContractPartitionMutationVariables>;
+export const AddShareContractDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddShareContract" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "cryptoAddressId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "ownerId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "type" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "smart_contract_type" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntosmart_contractCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "crypto_address_id" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "cryptoAddressId" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "owner_id" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "ownerId" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "type" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "type" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "established" },
+                          value: { kind: "BooleanValue", value: false }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "owner_id" } },
+                      { kind: "Field", name: { kind: "Name", value: "crypto_address_id" } },
+                      { kind: "Field", name: { kind: "Name", value: "type" } },
+                      { kind: "Field", name: { kind: "Name", value: "established" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddShareContractMutation, AddShareContractMutationVariables>;
+export const AddSwapContractDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddSwapContract" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "contractSetId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "swapContractId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateoffering_smart_contract_setCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "contractSetId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "swap_contract_id" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "swapContractId" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "swap_contract_id" } },
+                      { kind: "Field", name: { kind: "Name", value: "offering_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddSwapContractMutation, AddSwapContractMutationVariables>;
+export const AddDistributionContractDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddDistributionContract" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "contractSetId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "distributionContractId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateoffering_smart_contract_setCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "contractSetId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "distribution_contract_id" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "distributionContractId" }
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "distribution_contract_id" } },
+                      { kind: "Field", name: { kind: "Name", value: "offering_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  AddDistributionContractMutation,
+  AddDistributionContractMutationVariables
+>;
+export const UpdateSmartContractDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateSmartContract" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "established" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updatesmart_contractCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "established" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "established" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "owner_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateSmartContractMutation, UpdateSmartContractMutationVariables>;
+export const RetrieveTransferEventsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "RetrieveTransferEvents" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "shareContractAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "share_transfer_eventCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "share_contract_address" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "shareContractAddress" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "share_contract_address" }
+                            },
+                            { kind: "Field", name: { kind: "Name", value: "order_index" } },
+                            { kind: "Field", name: { kind: "Name", value: "recipient_address" } },
+                            { kind: "Field", name: { kind: "Name", value: "sender_address" } },
+                            { kind: "Field", name: { kind: "Name", value: "amount" } },
+                            { kind: "Field", name: { kind: "Name", value: "price" } },
+                            { kind: "Field", name: { kind: "Name", value: "currency_code" } },
+                            { kind: "Field", name: { kind: "Name", value: "transaction_hash" } },
+                            { kind: "Field", name: { kind: "Name", value: "partition" } },
+                            { kind: "Field", name: { kind: "Name", value: "type" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RetrieveTransferEventsQuery, RetrieveTransferEventsQueryVariables>;
+export const AddTransferEventDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddTransferEvent" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "shareContractAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "orderIndex" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "recipientAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "senderAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "amount" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "price" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "currencyCode" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "currency_code" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "transactionHash" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "partition" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "type" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "share_transfer_event_type" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoshare_transfer_eventCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "share_contract_address" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "shareContractAddress" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "order_index" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "orderIndex" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "recipient_address" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "recipientAddress" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "sender_address" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "senderAddress" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "amount" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "amount" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "price" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "price" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "currency_code" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "currencyCode" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "transaction_hash" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "transactionHash" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "partition" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "partition" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "type" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "type" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "archived" },
+                          value: { kind: "BooleanValue", value: false }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "share_contract_address" } },
+                      { kind: "Field", name: { kind: "Name", value: "order_index" } },
+                      { kind: "Field", name: { kind: "Name", value: "recipient_address" } },
+                      { kind: "Field", name: { kind: "Name", value: "sender_address" } },
+                      { kind: "Field", name: { kind: "Name", value: "amount" } },
+                      { kind: "Field", name: { kind: "Name", value: "price" } },
+                      { kind: "Field", name: { kind: "Name", value: "currency_code" } },
+                      { kind: "Field", name: { kind: "Name", value: "transaction_hash" } },
+                      { kind: "Field", name: { kind: "Name", value: "partition" } },
+                      { kind: "Field", name: { kind: "Name", value: "type" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddTransferEventMutation, AddTransferEventMutationVariables>;
+export const AddDistributionDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddDistribution" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "transactionHash" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "contractIndex" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntooffering_distributionCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "transaction_hash" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "transactionHash" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "contract_index" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "contractIndex" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "transaction_hash" } },
+                      { kind: "Field", name: { kind: "Name", value: "contract_index" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddDistributionMutation, AddDistributionMutationVariables>;
+export const UpdateOfferingDistributionDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateOfferingDistribution" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "distributionId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "contractIndex" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateoffering_distributionCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "distributionId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "contract_index" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "contractIndex" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "transaction_hash" } },
+                      { kind: "Field", name: { kind: "Name", value: "contract_index" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  UpdateOfferingDistributionMutation,
+  UpdateOfferingDistributionMutationVariables
+>;
+export const UpdateContractStatusDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateContractStatus" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "smartshareContractId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "established" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updatesmart_contractCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "smartshareContractId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "established" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "established" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "established" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateContractStatusMutation, UpdateContractStatusMutationVariables>;
+export const CreateOrderDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "CreateOrder" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "contractIndex" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "swapContractAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "minUnits" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "maxUnits" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "visible" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "initiator" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "transactionHash" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoshare_orderCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "contract_index" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "contractIndex" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "swap_contract_address" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "swapContractAddress" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "min_units" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "minUnits" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "max_units" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "maxUnits" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "initiator" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "initiator" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "transaction_hash" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "transactionHash" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "visible" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "visible" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "archived" },
+                          value: { kind: "BooleanValue", value: false }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "contract_index" } },
+                      { kind: "Field", name: { kind: "Name", value: "initiator" } },
+                      { kind: "Field", name: { kind: "Name", value: "transaction_hash" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<CreateOrderMutation, CreateOrderMutationVariables>;
+export const RetrieveOrdersDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "RetrieveOrders" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "swapContractAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "share_orderCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "swap_contract_address" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "swapContractAddress" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "contract_index" } },
+                            { kind: "Field", name: { kind: "Name", value: "initiator" } },
+                            { kind: "Field", name: { kind: "Name", value: "transaction_hash" } },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "swap_contract_address" }
+                            },
+                            { kind: "Field", name: { kind: "Name", value: "min_units" } },
+                            { kind: "Field", name: { kind: "Name", value: "max_units" } },
+                            { kind: "Field", name: { kind: "Name", value: "visible" } },
+                            { kind: "Field", name: { kind: "Name", value: "archived" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RetrieveOrdersQuery, RetrieveOrdersQueryVariables>;
+export const UpdateSaleDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateSale" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "orderId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "visible" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "archived" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateshare_orderCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "orderId" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "archived" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "archived" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "visible" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "visible" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "visible" } },
+                      { kind: "Field", name: { kind: "Name", value: "archived" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateSaleMutation, UpdateSaleMutationVariables>;
+export const RemoveShareOrderDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveShareOrder" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "orderId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromshare_orderCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "orderId" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RemoveShareOrderMutation, RemoveShareOrderMutationVariables>;
+export const GetOrganizationDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetOrganization" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "organizationCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "first" },
+                value: { kind: "IntValue", value: "1" }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            {
+                              kind: "FragmentSpread",
+                              name: { kind: "Name", value: "OrganizationFields" }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OrganizationFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "organization" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "logo" } },
+          { kind: "Field", name: { kind: "Name", value: "brand_color" } },
+          { kind: "Field", name: { kind: "Name", value: "banner_image" } },
+          { kind: "Field", name: { kind: "Name", value: "website" } },
+          { kind: "Field", name: { kind: "Name", value: "is_public" } },
+          { kind: "Field", name: { kind: "Name", value: "phone" } },
+          { kind: "Field", name: { kind: "Name", value: "country" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetOrganizationQuery, GetOrganizationQueryVariables>;
+export const AddOrganizationDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddOrganization" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "logo" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "shortDescription" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "website" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "country" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoorganizationCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "name" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "name" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "is_public" },
+                          value: { kind: "BooleanValue", value: false }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "logo" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "logo" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "website" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "website" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "country" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "country" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "short_description" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "shortDescription" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "is_public" } },
+                      { kind: "Field", name: { kind: "Name", value: "logo" } },
+                      { kind: "Field", name: { kind: "Name", value: "website" } },
+                      { kind: "Field", name: { kind: "Name", value: "country" } },
+                      { kind: "Field", name: { kind: "Name", value: "short_description" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddOrganizationMutation, AddOrganizationMutationVariables>;
+export const AddOrganizationUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddOrganizationUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "userId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "organizationId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "permission" } },
+          type: {
+            kind: "ListType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "organization_permission_type" }
+            }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoorganization_userCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "user_id" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "userId" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "organization_id" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "organizationId" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "permissions" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "permission" } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "user_id" } },
+                      { kind: "Field", name: { kind: "Name", value: "organization_id" } },
+                      { kind: "Field", name: { kind: "Name", value: "permissions" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddOrganizationUserMutation, AddOrganizationUserMutationVariables>;
+export const RemoveOrganizationUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveOrganizationUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "organizationUserId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromorganization_userCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "organizationUserId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  RemoveOrganizationUserMutation,
+  RemoveOrganizationUserMutationVariables
+>;
+export const UpdateOrganizationDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateOrganization" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "organizationId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "logo" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "bannerImage" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "isPublic" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "shortDescription" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "country" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateorganizationCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "organizationId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "name" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "name" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "logo" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "logo" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "banner_image" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "bannerImage" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_public" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "isPublic" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "short_description" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "shortDescription" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "description" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "description" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "country" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "country" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "is_public" } },
+                      { kind: "Field", name: { kind: "Name", value: "description" } },
+                      { kind: "Field", name: { kind: "Name", value: "country" } },
+                      { kind: "Field", name: { kind: "Name", value: "logo" } },
+                      { kind: "Field", name: { kind: "Name", value: "banner_image" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateOrganizationMutation, UpdateOrganizationMutationVariables>;
+export const AddNotificationRuleDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddNotificationRule" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "organizationUserId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "notificationRecipientType" }
+          },
+          type: {
+            kind: "NonNullType",
+            type: {
+              kind: "NamedType",
+              name: { kind: "Name", value: "notification_recipient_type" }
+            }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "notificationMethod" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "notification_method" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "notificationSubject" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "notification_subject" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntonotification_configurationCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "organization_user_id" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "organizationUserId" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "notification_recipient_type" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "notificationRecipientType" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "notification_method" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "notificationMethod" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "notification_subject" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "notificationSubject" }
+                          }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "notification_recipient_type" }
+                      },
+                      { kind: "Field", name: { kind: "Name", value: "notification_method" } },
+                      { kind: "Field", name: { kind: "Name", value: "notification_subject" } },
+                      { kind: "Field", name: { kind: "Name", value: "organization_user_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddNotificationRuleMutation, AddNotificationRuleMutationVariables>;
+export const RemoveNotificationRuleDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveNotificationRule" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: {
+            kind: "Variable",
+            name: { kind: "Name", value: "notificationConfigurationId" }
+          },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromnotification_configurationCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "notificationConfigurationId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  RemoveNotificationRuleMutation,
+  RemoveNotificationRuleMutationVariables
+>;
+export const AddUserEmailDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddUserEmail" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "organizationId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "address" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "isPublic" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoemail_addressCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "organization_id" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "organizationId" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "address" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "address" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "name" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "name" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "description" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "description" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "is_public" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "isPublic" } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "address" } },
+                      { kind: "Field", name: { kind: "Name", value: "organization_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddUserEmailMutation, AddUserEmailMutationVariables>;
+export const RemoveOrganizationEmailDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveOrganizationEmail" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "emailAddress" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromemail_addressCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "address" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "emailAddress" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  RemoveOrganizationEmailMutation,
+  RemoveOrganizationEmailMutationVariables
+>;
+export const UpdateUserEmailDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateUserEmail" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "address" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "name" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "isPublic" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Boolean" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updateemail_addressCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "address" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "address" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "name" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "name" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "description" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "description" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "is_public" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "isPublic" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "name" } },
+                      { kind: "Field", name: { kind: "Name", value: "address" } },
+                      { kind: "Field", name: { kind: "Name", value: "is_public" } },
+                      { kind: "Field", name: { kind: "Name", value: "description" } },
+                      { kind: "Field", name: { kind: "Name", value: "organization_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateUserEmailMutation, UpdateUserEmailMutationVariables>;
+export const AddOrganizationSocialAccountsDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddOrganizationSocialAccounts" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "organizationId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "url" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "type" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "linked_account_type" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntolinked_accountCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "organization_id" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "organizationId" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "url" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "url" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "type" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "type" } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "organization_id" } },
+                      { kind: "Field", name: { kind: "Name", value: "url" } },
+                      { kind: "Field", name: { kind: "Name", value: "type" } },
+                      { kind: "Field", name: { kind: "Name", value: "verified" } },
+                      { kind: "Field", name: { kind: "Name", value: "hidden" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  AddOrganizationSocialAccountsMutation,
+  AddOrganizationSocialAccountsMutationVariables
+>;
+export const RemoveOrganizationSocialAccountDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveOrganizationSocialAccount" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "socialId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromlinked_accountCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "socialId" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<
+  RemoveOrganizationSocialAccountMutation,
+  RemoveOrganizationSocialAccountMutationVariables
+>;
+export const GetRealEstatePropertyDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetRealEstateProperty" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "real_estate_propertyCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "first" },
+                value: { kind: "IntValue", value: "1" }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            {
+                              kind: "FragmentSpread",
+                              name: { kind: "Name", value: "RealEstatePropertyFields" }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "RealEstatePropertyFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "real_estate_property" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "property_type" } },
+          { kind: "Field", name: { kind: "Name", value: "investment_status" } },
+          { kind: "Field", name: { kind: "Name", value: "address_id" } },
+          { kind: "Field", name: { kind: "Name", value: "amenities_description" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "asset_value" } },
+          { kind: "Field", name: { kind: "Name", value: "asset_value_note" } },
+          { kind: "Field", name: { kind: "Name", value: "loan" } },
+          { kind: "Field", name: { kind: "Name", value: "down_payment" } },
+          { kind: "Field", name: { kind: "Name", value: "lender_fees" } },
+          { kind: "Field", name: { kind: "Name", value: "closing_costs" } },
+          { kind: "Field", name: { kind: "Name", value: "owner_id" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetRealEstatePropertyQuery, GetRealEstatePropertyQueryVariables>;
+export const AddRePropertyInfoDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddRePropertyInfo" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "entityId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "propertyType" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "real_estate_property_type" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "investmentStatus" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "asset_status" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "amenitiesDescription" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "downPayment" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "lenderFees" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "closingCosts" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoreal_estate_propertyCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "owner_id" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "entityId" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "property_type" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "propertyType" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "investment_status" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "investmentStatus" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "amenities_description" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "amenitiesDescription" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "description" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "description" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "down_payment" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "downPayment" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "lender_fees" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "lenderFees" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "closing_costs" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "closingCosts" } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "investment_status" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddRePropertyInfoMutation, AddRePropertyInfoMutationVariables>;
+export const UpdateRePropertyInfoDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "UpdateRePropertyInfo" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "rePropertyId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "propertyType" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "real_estate_property_type" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "investmentStatus" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "asset_status" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "amenitiesDescription" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "description" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "assetValue" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "assetValueNote" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "downPayment" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "lenderFees" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "closingCosts" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "loanAmount" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "Int" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "updatereal_estate_propertyCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "rePropertyId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "set" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "property_type" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "propertyType" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "investment_status" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "investmentStatus" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "amenities_description" },
+                      value: {
+                        kind: "Variable",
+                        name: { kind: "Name", value: "amenitiesDescription" }
+                      }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "description" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "description" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "asset_value" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "assetValue" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "asset_value_note" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "assetValueNote" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "down_payment" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "downPayment" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "lender_fees" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "lenderFees" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "closing_costs" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "closingCosts" } }
+                    },
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "loan" },
+                      value: { kind: "Variable", name: { kind: "Name", value: "loanAmount" } }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "investment_status" } },
+                      { kind: "Field", name: { kind: "Name", value: "amenities_description" } },
+                      { kind: "Field", name: { kind: "Name", value: "description" } },
+                      { kind: "Field", name: { kind: "Name", value: "asset_value" } },
+                      { kind: "Field", name: { kind: "Name", value: "asset_value_note" } },
+                      { kind: "Field", name: { kind: "Name", value: "down_payment" } },
+                      { kind: "Field", name: { kind: "Name", value: "lender_fees" } },
+                      { kind: "Field", name: { kind: "Name", value: "closing_costs" } },
+                      { kind: "Field", name: { kind: "Name", value: "loan" } },
+                      { kind: "Field", name: { kind: "Name", value: "owner_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<UpdateRePropertyInfoMutation, UpdateRePropertyInfoMutationVariables>;
+export const RemoveRePropertyDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemoveReProperty" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "propertyId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromreal_estate_propertyCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "propertyId" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RemoveRePropertyMutation, RemoveRePropertyMutationVariables>;
+export const AddPropertyAddressDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddPropertyAddress" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "propertyId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "addressLabel" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "addressLine1" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "addressLine2" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "addressLine3" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "city" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "stateProvince" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "postalCode" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "country" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoaddressCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "label" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "addressLabel" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "line1" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "addressLine1" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "line2" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "addressLine2" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "line3" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "addressLine3" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "city" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "city" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "state_province" },
+                          value: {
+                            kind: "Variable",
+                            name: { kind: "Name", value: "stateProvince" }
+                          }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "postal_code" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "postalCode" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "country" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "country" } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "label" } },
+                      { kind: "Field", name: { kind: "Name", value: "line1" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddPropertyAddressMutation, AddPropertyAddressMutationVariables>;
+export const RemovePropertyAddressDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemovePropertyAddress" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "geoAddressId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromaddressCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: {
+                              kind: "Variable",
+                              name: { kind: "Name", value: "geoAddressId" }
+                            }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RemovePropertyAddressMutation, RemovePropertyAddressMutationVariables>;
+export const AddPropertyImageDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "AddPropertyImage" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "url" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+          }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "label" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        },
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "fileId" } },
+          type: { kind: "NamedType", name: { kind: "Name", value: "String" } }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "insertIntoimageCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "objects" },
+                value: {
+                  kind: "ListValue",
+                  values: [
+                    {
+                      kind: "ObjectValue",
+                      fields: [
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "url" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "url" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "label" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "label" } }
+                        },
+                        {
+                          kind: "ObjectField",
+                          name: { kind: "Name", value: "file_id" },
+                          value: { kind: "Variable", name: { kind: "Name", value: "fileId" } }
+                        }
+                      ]
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } },
+                      { kind: "Field", name: { kind: "Name", value: "label" } },
+                      { kind: "Field", name: { kind: "Name", value: "url" } },
+                      { kind: "Field", name: { kind: "Name", value: "file_id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<AddPropertyImageMutation, AddPropertyImageMutationVariables>;
+export const RemovePropertyImageDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "mutation",
+      name: { kind: "Name", value: "RemovePropertyImage" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "imageId" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "deleteFromimageCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "imageId" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                { kind: "Field", name: { kind: "Name", value: "affectedCount" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "records" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      { kind: "Field", name: { kind: "Name", value: "id" } }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<RemovePropertyImageMutation, RemovePropertyImageMutationVariables>;
+export const GetUserProfileDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetUserProfile" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "profileCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "first" },
+                value: { kind: "IntValue", value: "1" }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } },
+                            { kind: "Field", name: { kind: "Name", value: "image" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetUserProfileQuery, GetUserProfileQueryVariables>;
+export const GetUserDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetUser" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "profileCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              },
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "first" },
+                value: { kind: "IntValue", value: "1" }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            { kind: "Field", name: { kind: "Name", value: "id" } },
+                            { kind: "Field", name: { kind: "Name", value: "name" } }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "organization_userCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "user_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "organization" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                                  {
+                                    kind: "FragmentSpread",
+                                    name: { kind: "Name", value: "OrganizationFields" }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OrganizationFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "organization" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "logo" } },
+          { kind: "Field", name: { kind: "Name", value: "brand_color" } },
+          { kind: "Field", name: { kind: "Name", value: "banner_image" } },
+          { kind: "Field", name: { kind: "Name", value: "website" } },
+          { kind: "Field", name: { kind: "Name", value: "is_public" } },
+          { kind: "Field", name: { kind: "Name", value: "phone" } },
+          { kind: "Field", name: { kind: "Name", value: "country" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetUserQuery, GetUserQueryVariables>;
+export const GetUserRoleDocument = {
+  kind: "Document",
+  definitions: [
+    {
+      kind: "OperationDefinition",
+      operation: "query",
+      name: { kind: "Name", value: "GetUserRole" },
+      variableDefinitions: [
+        {
+          kind: "VariableDefinition",
+          variable: { kind: "Variable", name: { kind: "Name", value: "id" } },
+          type: {
+            kind: "NonNullType",
+            type: { kind: "NamedType", name: { kind: "Name", value: "UUID" } }
+          }
+        }
+      ],
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          {
+            kind: "Field",
+            name: { kind: "Name", value: "organization_userCollection" },
+            arguments: [
+              {
+                kind: "Argument",
+                name: { kind: "Name", value: "filter" },
+                value: {
+                  kind: "ObjectValue",
+                  fields: [
+                    {
+                      kind: "ObjectField",
+                      name: { kind: "Name", value: "user_id" },
+                      value: {
+                        kind: "ObjectValue",
+                        fields: [
+                          {
+                            kind: "ObjectField",
+                            name: { kind: "Name", value: "eq" },
+                            value: { kind: "Variable", name: { kind: "Name", value: "id" } }
+                          }
+                        ]
+                      }
+                    }
+                  ]
+                }
+              }
+            ],
+            selectionSet: {
+              kind: "SelectionSet",
+              selections: [
+                { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                {
+                  kind: "Field",
+                  name: { kind: "Name", value: "edges" },
+                  selectionSet: {
+                    kind: "SelectionSet",
+                    selections: [
+                      { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                      {
+                        kind: "Field",
+                        name: { kind: "Name", value: "node" },
+                        selectionSet: {
+                          kind: "SelectionSet",
+                          selections: [
+                            { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                            { kind: "Field", name: { kind: "Name", value: "permissions" } },
+                            {
+                              kind: "Field",
+                              name: { kind: "Name", value: "organization" },
+                              selectionSet: {
+                                kind: "SelectionSet",
+                                selections: [
+                                  { kind: "Field", name: { kind: "Name", value: "__typename" } },
+                                  {
+                                    kind: "FragmentSpread",
+                                    name: { kind: "Name", value: "OrganizationFields" }
+                                  }
+                                ]
+                              }
+                            }
+                          ]
+                        }
+                      }
+                    ]
+                  }
+                }
+              ]
+            }
+          }
+        ]
+      }
+    },
+    {
+      kind: "FragmentDefinition",
+      name: { kind: "Name", value: "OrganizationFields" },
+      typeCondition: { kind: "NamedType", name: { kind: "Name", value: "organization" } },
+      selectionSet: {
+        kind: "SelectionSet",
+        selections: [
+          { kind: "Field", name: { kind: "Name", value: "__typename" } },
+          { kind: "Field", name: { kind: "Name", value: "id" } },
+          { kind: "Field", name: { kind: "Name", value: "name" } },
+          { kind: "Field", name: { kind: "Name", value: "description" } },
+          { kind: "Field", name: { kind: "Name", value: "logo" } },
+          { kind: "Field", name: { kind: "Name", value: "brand_color" } },
+          { kind: "Field", name: { kind: "Name", value: "banner_image" } },
+          { kind: "Field", name: { kind: "Name", value: "website" } },
+          { kind: "Field", name: { kind: "Name", value: "is_public" } },
+          { kind: "Field", name: { kind: "Name", value: "phone" } },
+          { kind: "Field", name: { kind: "Name", value: "country" } }
+        ]
+      }
+    }
+  ]
+} as unknown as DocumentNode<GetUserRoleQuery, GetUserRoleQueryVariables>;

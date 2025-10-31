@@ -1,4 +1,4 @@
-import { useRouter } from 'next/router';
+import { useRouter } from "next/router";
 
 export default function EmailConfirmationPage() {
   const router = useRouter();
@@ -7,7 +7,7 @@ export default function EmailConfirmationPage() {
     <div className="flex items-center justify-center w-screen h-screen">
       <div className="flex flex-col items-center w-64 md:w-96 text-center p-3 rounded-lg bg-zinc-100">
         <h1 className="text-lg font-semibold mb-2">{`Check your email.`}</h1>
-        <p className="">{`Click the link we emailed to ${email ? email : 'you'} to log in.`}</p>
+        <p className="">{`Click the link we emailed to ${email ? email : "you"} to log in.`}</p>
       </div>
     </div>
   );

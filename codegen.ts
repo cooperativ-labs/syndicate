@@ -10,15 +10,16 @@ const config: CodegenConfig = {
     "hooks/**/*.{ts,tsx}",
     "supabase/**/*.{ts,tsx}",
     "!gql/**",
-    "!node_modules/**",
+    "!node_modules/**"
   ],
   overwrite: true,
   ignoreNoDocuments: true,
   config: {
     namingConvention: {
-      enumValues: "change-case#camelCase",
-      transformUnderscore: true,
-    },
+      typeNames: "change-case#pascalCase",
+      enumValues: "change-case#pascalCase",
+      transformUnderscore: true
+    }
   },
   generates: {
     "gql/": {
@@ -34,14 +35,14 @@ const config: CodegenConfig = {
           JSON: "string",
           BigInt: "string",
           BigFloat: "string",
-          Opaque: "any",
-        },
-      },
-    },
+          Opaque: "any"
+        }
+      }
+    }
   },
   hooks: {
-    afterAllFileWrite: ["yarn prettier"], // optional
-  },
+    afterAllFileWrite: ["yarn prettier"] // optional
+  }
 };
 
 export default config;

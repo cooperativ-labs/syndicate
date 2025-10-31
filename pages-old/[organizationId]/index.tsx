@@ -1,15 +1,15 @@
-import Footer from '@src/Footer/Footer';
-import Head from 'next/head';
+import Footer from "@src/Footer/Footer";
+import Head from "next/head";
 
-import OrganizationProfile from '@src/screens/OrganizationProfile';
-import PortalOrganization from '@src/screens/PortalOrganization';
-import PortalWrapper from '@src/containers/PortalWrapper';
+import OrganizationProfile from "@src/screens/OrganizationProfile";
+import PortalOrganization from "@src/screens/PortalOrganization";
+import PortalWrapper from "@src/containers/PortalWrapper";
 
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { GetServerSideProps, NextPage } from 'next';
-import { initializeApollo } from '@src/utils/supabaseApolloClient';
-import { Organization } from '@gql/graphql';
-import { useAccount } from 'wagmi';
+import { GET_ORGANIZATION } from "@src/utils/graphQueries/organization";
+import { GetServerSideProps, NextPage } from "next";
+import { initializeApollo } from "@src/utils/supabaseApolloClient";
+import { Organization } from "@gql/graphql";
+import { useAccount } from "wagmi";
 
 type ResultProps = {
   result: Organization;
@@ -38,27 +38,27 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
       <Head>
         <title>{name}</title>
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
-        <meta property="og:title" content={name ?? ''} />
+        <meta property="og:title" content={name ?? ""} />
         <meta property="og:type" content="website" />
-        <meta property="og:description" content={shortDescription ?? ''} />
+        <meta property="og:description" content={shortDescription ?? ""} />
         <meta
           property="og:image"
           content={
             sharingImage
               ? `/assets/images/sharing-images/${sharingImage?.url}`
-              : '/assets/images/share.png'
+              : "/assets/images/share.png"
           }
         />
         <meta property="og:url" content={`https://cooperativ.io/${id}/portal/`}></meta>
         Twitter
-        <meta name="twitter:title" content={name ?? ''} />
-        <meta name="twitter:description" content={shortDescription ?? ''} />
+        <meta name="twitter:title" content={name ?? ""} />
+        <meta name="twitter:description" content={shortDescription ?? ""} />
         <meta
           name="twitter:image"
           content={
             sharingImage
               ? `/assets/images/sharing-images/${sharingImage?.url}`
-              : '/assets/images/share.png'
+              : "/assets/images/share.png"
           }
         />
         <meta name="twitter:card" content="summary_large_image" />
@@ -66,7 +66,7 @@ const OfferorProfile: NextPage<ResultProps> = ({ result }) => {
       {/* <WalletChooserModal /> */}
       {isParticipant ? (
         <PortalWrapper>
-          <PortalOrganization />{' '}
+          <PortalOrganization />{" "}
         </PortalWrapper>
       ) : (
         <OrganizationProfile organization={organization} />

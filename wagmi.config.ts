@@ -1,18 +1,18 @@
-import { defineConfig } from '@wagmi/cli';
-import { distributionABI, shareABI, swapABI } from '@src/web3/ABI';
+import { defineConfig } from "@wagmi/cli";
+import { distributionABI, shareABI, swapABI } from "@src/web3/ABI";
 
 export default defineConfig({
-  out: 'src/web3/generated.ts',
+  out: "src/web3/generated.ts",
   contracts: [
     {
-      name: 'ShareContract',
+      name: "ShareContract",
       abi: shareABI
     },
     {
-      name: 'SwapContract',
+      name: "SwapContract",
       abi: swapABI
     },
-    { name: 'DividendContract', abi: distributionABI }
+    { name: "DividendContract", abi: distributionABI }
   ],
   plugins: [
     // sourcify({

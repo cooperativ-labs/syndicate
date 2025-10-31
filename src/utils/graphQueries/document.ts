@@ -4,12 +4,19 @@ import { CORE_DOCUMENT_FIELDS } from "./fragments";
 
 export const GET_DOCUMENT_EDITORS = gql`
   query GetDocumentEditors($fileId: String!) {
-    queryDocument(filter: { fileId: { allofterms: $fileId } }) {
-      owner {
-        organization {
-          users(filter: { permissions: { in: [EDITOR, ADMIN] } }) {
-            user {
-              id
+    documentCollection(filter: { file_id: { eq: $fileId } }) {
+      edges {
+        node {
+          legal_entity {
+            organization {
+              organization_userCollection {
+                edges {
+                  node {
+                    user_id
+                    permissions
+                  }
+                }
+              }
             }
           }
         }
@@ -21,66 +28,59 @@ export const GET_DOCUMENT_EDITORS = gql`
 export const ADD_OFFERING_DOCUMENT = gql`
   ${CORE_DOCUMENT_FIELDS}
   mutation AddOfferingDocument(
-    $offeringId: ID!
-    $entityId: ID!
+    $offeringId: UUID!
+    $entityId: UUID!
     $offeringUniqueId: String!
-    $currentDate: DateTime!
     $title: String!
     $fileId: String!
     $docUrl: String!
-    $docType: DocumentType!
-    $format: DocumentFormat!
+    $docType: document_type!
+    $format: document_format!
   ) {
-    addDocument(
-      input: {
-        title: $title
-        url: $docUrl
-        fileId: $fileId
-        creationDate: $currentDate
-        lastUpdate: $currentDate
-        type: $docType
-        format: $format
-        offering: { id: $offeringId }
-        owner: { id: $entityId }
-        offeringUniqueId: $offeringUniqueId
-      }
-      upsert: true
+    insertIntodocumentCollection(
+      objects: [{
+        title: $title,
+        url: $docUrl,
+        file_id: $fileId,
+        type: $docType,
+        format: $format,
+        offering_id: $offeringId,
+        owner_id: $entityId,
+        offering_unique_id: $offeringUniqueId
+      }]
     ) {
-      document {
+      affectedCount
+      records {
         ...DocumentFields
       }
     }
-    updateOffering(input: { filter: { id: [$offeringId] }, set: { lastUpdate: $currentDate } }) {
-      offering {
+    updateofferingCollection(
+      filter: { id: { eq: $offeringId } }
+      set: { updated_at: now() }
+    ) {
+      affectedCount
+      records {
         id
-        lastUpdate
-        documents {
-          id
-        }
+        updated_at
       }
     }
   }
 `;
 
 export const REMOVE_OFFERING_DOCUMENT = gql`
-  mutation RemoveOfferingDocument($offeringId: [ID!], $documentId: ID!, $currentDate: DateTime) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        remove: { documents: { id: $documentId } }
-        set: { lastUpdate: $currentDate }
-      }
+  mutation RemoveOfferingDocument($offeringId: UUID!, $documentId: UUID!) {
+    updateofferingCollection(
+      filter: { id: { eq: $offeringId } }
+      set: { updated_at: now() }
     ) {
-      numUids
-      offering {
+      affectedCount
+      records {
         id
-        documents {
-          id
-        }
+        updated_at
       }
     }
-    deleteDocument(filter: { id: [$documentId] }) {
-      msg
+    deleteFromdocumentCollection(filter: { id: [$documentId] }) {
+      affectedCount
     }
   }
 `;

@@ -1,109 +1,69 @@
 import { gql } from "@apollo/client";
 
 export const CORE_LINKED_ACCOUNT_FIELDS = gql`
-  fragment LinkedAccountFields on linked_accounts {
+  fragment LinkedAccountFields on linked_account {
     id
-    accountProvidedId
+    account_provided_id
     username
     url
     type
     verified
     hidden
-    organization {
-      id
-    }
+    organization_id
   }
 `;
 
 export const CORE_ADDRESS_FIELDS = gql`
-  fragment AddressFields on addresses {
+  fragment AddressFields on address {
     id
     label
     line1
     line2
     line3
     city
-    stateProvince
-    postalCode
+    state_province
+    postal_code
     country
     lat
     lng
-    owner {
-      id
-      legalName
-    }
+    legal_entity_id
   }
 `;
 
 export const CORE_DOCUMENT_FIELDS = gql`
-  fragment DocumentFields on documents {
+  fragment DocumentFields on document {
     id
     title
-    fileId
+    file_id
     date
     format
     type
     text
     url
-    thumbnailImage {
-      id
-      label
-      url
-    }
-    owner {
-      id
-      organization {
-        id
-        name
-      }
-    }
-    signatories {
-      id
-    }
-    smartContract {
-      id
-    }
+    thumbnail_image_id
+    owner_id
     access
-    offering {
-      id
-    }
-    offeringUniqueId
+    offering_id
+    offering_unique_id
   }
 `;
 
 export const CORE_APPLICATION_FIELDS = gql`
-  fragment ApplicationFields on investor_applications {
+  fragment ApplicationFields on investor_application {
     id
-    creationDate
-    offeringParticipant {
-      id
-    }
-    applicationDoc {
-      ...DocumentFields
-    }
+    offering_participant_id
+    application_doc_id
   }
 `;
 
 export const SMART_CONTRACT_FIELDS = gql`
-  fragment SmartContractFields on smart_contracts {
+  fragment SmartContractFields on smart_contract {
     id
-    cryptoAddress {
-      id
-      address
-      protocol
-      chainId
-      owner {
-        id
-      }
-    }
+    crypto_address_id
     type
-    numTokensAuthorized
-    backingToken {
-      code
-    }
-    owner {
-      id
-    }
+    num_tokens_authorized
+    backing_token
+    owner_id
     established
     partitions
   }
@@ -111,307 +71,96 @@ export const SMART_CONTRACT_FIELDS = gql`
 
 export const SMART_CONTRACT_SET_FIELDS = gql`
   ${SMART_CONTRACT_FIELDS}
-  fragment SmartContractSetFields on offering_smart_contract_sets {
+  fragment SmartContractSetFields on offering_smart_contract_set {
     id
-    offering {
-      id
-    }
-    shareContract {
-      ...SmartContractFields
-    }
-    swapContract {
-      ...SmartContractFields
-    }
-    distributionContract {
-      ...SmartContractFields
-    }
+    offering_id
+    share_contract_id
+    swap_contract_id
+    distribution_contract_id
   }
 `;
 
 export const CORE_INVESTMENT_OFFERING_FIELDS = gql`
   ${CORE_DOCUMENT_FIELDS}
 
-  fragment OfferingDetailsFields on offering_details {
+  fragment OfferingDetailsFields on offering_detail {
     id
     type
-    customOnboardingLink
+    custom_onboarding_link
     stage
-    investmentCurrency {
-      code
-    }
-    numUnits
-    minUnitsPerInvestor
-    maxUnitsPerInvestor
-    maxRaise
-    minRaise
-    priceStart
-    maxInvestors
-    minInvestors
-    raiseStart
-    raisePeriod
-    additionalInfo
-    distributionPeriod
-    distributionFrequency
-    distributionCurrency {
-      code
-    }
-    distributionDescription
-    adminExpense
-    projectedIrr
-    projectedIrrMax
-    targetEquityMultiple
-    targetEquityMultipleMax
-    preferredReturn
-    cocReturn
-    projectedAppreciation
-    capRate
+    investment_currency
+    num_units
+    min_units_per_investor
+    max_units_per_investor
+    max_raise
+    min_raise
+    price_start
+    max_investors
+    min_investors
+    raise_start
+    raise_period
+    additional_info
+    distribution_period
+    distribution_frequency
+    distribution_currency
+    distribution_description
+    admin_expense
+    projected_irr
+    projected_irr_max
+    target_equity_multiple
+    target_equity_multiple_max
+    preferred_return
+    coc_return
+    projected_appreciation
+    cap_rate
   }
 `;
 
 export const CORE_RE_PROPERTY_FIELDS = gql`
   ${CORE_ADDRESS_FIELDS}
-  fragment RealEstatePropertyFields on real_estate_properties {
+  fragment RealEstatePropertyFields on real_estate_property {
     id
-    propertyType
-    investmentStatus
-    address {
-      ...AddressFields
-    }
-    amenitiesDescription
-    images {
-      id
-      label
-      url
-      fileId
-    }
+    property_type
+    investment_status
+    address_id
+    amenities_description
     description
-    assetValue
-    assetValueNote
+    asset_value
+    asset_value_note
     loan
-    downPayment
-    lenderFees
-    closingCosts
-    owner {
-      id
-      operatingCurrency {
-        code
-      }
-      offerings {
-        id
-      }
-      organization {
-        users {
-          user {
-            id
-          }
-        }
-      }
-    }
+    down_payment
+    lender_fees
+    closing_costs
+    owner_id
   }
 `;
 
 export const CORE_INVESTMENT_PARTICIPANT_FIELDS = gql`
   ${CORE_APPLICATION_FIELDS}
   ${CORE_INVESTMENT_OFFERING_FIELDS}
-  fragment OfferingParticipantFields on offering_participants {
+  fragment OfferingParticipantFields on offering_participant {
     id
-    addressOfferingId
-    walletAddress
-    chainId
-
+    address_offering_id
+    wallet_address
+    chain_id
     name
-    jurisdiction {
-      id
-      country
-      province
-    }
-    externalId
-    whitelistTransactions {
-      transactionHash
-      type
-    }
-    minPledge
-    maxPledge
-    investorApplication {
-      ...ApplicationFields
-    }
-    offering {
-      id
-      offeringEntity {
-        organization {
-          users {
-            permissions
-            user {
-              id
-            }
-            notificationConfigurations {
-              id
-              notificationRecipientType
-              notificationMethod
-              notificationSubject
-              organizationUser {
-                id
-                organization {
-                  id
-                }
-              }
-            }
-          }
-        }
-      }
-      distributions {
-        id
-        transactionHash
-        contractIndex
-      }
-      details {
-        ...OfferingDetailsFields
-      }
-    }
+    external_id
+    min_pledge
+    max_pledge
+    offering_id
   }
 `;
 
 export const CORE_ENTITY_FIELDS = gql`
-  ${CORE_ADDRESS_FIELDS}
-  ${CORE_DOCUMENT_FIELDS}
-  ${CORE_RE_PROPERTY_FIELDS}
-
-  ${SMART_CONTRACT_FIELDS}
-  ${CORE_INVESTMENT_OFFERING_FIELDS}
-  fragment LegalEntityFields on legal_entities {
+  fragment LegalEntityFields on legal_entity {
     id
-    taxId
-    displayName
-    legalName
+    tax_id
+    display_name
+    legal_name
     purpose
-    jurisdiction {
-      id
-      country
-      province
-    }
-    operatingCurrency {
-      code
-    }
-    purpose
-    organization {
-      id
-      name
-      logo
-      legalEntities {
-        id
-        legalName
-      }
-      users {
-        id
-        permissions
-        user {
-          id
-          name
-          email
-        }
-        notificationConfigurations {
-          id
-          notificationRecipientType
-          notificationMethod
-          notificationSubject
-          organizationUser {
-            id
-            organization {
-              id
-            }
-          }
-        }
-      }
-    }
-    owners {
-      id
-      legalName
-      displayName
-      purpose
-      addresses {
-        ...AddressFields
-      }
-      organization {
-        id
-      }
-    }
-    subsidiaries {
-      id
-      displayName
-      legalName
-      jurisdiction {
-        id
-        country
-        province
-      }
-      offerings {
-        id
-        name
-        brandColor
-        image
-        details {
-          ...OfferingDetailsFields
-        }
-        # orders {
-        #   swapContractAddress
-        #   initiator
-        #   contractIndex
-        #   transactionHash
-        # }
-      }
-      organization {
-        id
-      }
-    }
-
-    addresses {
-      ...AddressFields
-    }
-
-    walletAddresses {
-      id
-      address
-      name
-      chainId
-      description
-      isPublic
-    }
-    documentsOwned {
-      ...DocumentFields
-    }
-    documentsSigned {
-      id
-      signature
-      document {
-        ...DocumentFields
-      }
-    }
-    offerings {
-      id
-      name
-      image
-      brandColor
-      website
-      details {
-        ...OfferingDetailsFields
-      }
-      participants {
-        id
-        walletAddress
-      }
-
-      distributions {
-        id
-        contractIndex
-        transactionHash
-      }
-    }
-    smartContracts {
-      ...SmartContractFields
-    }
-    realEstateProperties {
-      ...RealEstatePropertyFields
-    }
+    jurisdiction_id
+    operating_currency
+    organization_id
     type
   }
 `;
@@ -422,211 +171,57 @@ export const CORE_OFFERING_FIELDS = gql`
   ${CORE_INVESTMENT_PARTICIPANT_FIELDS}
   ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
-  fragment OfferingFields on offerings {
+  fragment OfferingFields on offering {
     id
     name
     is_public
     access_code
     waitlist_on
-    image
+    image {
+      id
+      url
+      label
+      file_id
+    }
     banner_image
     primary_video
     brand_color
     light_brand
     website
     short_description
-    ... on offering_smart_contract_sets {
-      ...SmartContractSetFields
-    }
-    ... on images {
-      id
-      url
-      label
-      fileId
-    }
-
-    details {
-      edges {
-        node {
-          ...OfferingDetailsFields
-        }
-      }
-    }
-    profile_descriptions {
-      id
-      section
-      title
-      text
-      order
-      offering {
-        id
-      }
-    }
-    offering_entity {
-      edges {
-        node {
-          ...LegalEntityFields
-        }
-      }
-    }
-    # orders {
-    #   id
-    #   minUnits
-    #   maxUnits
-    #   visible
-    #   swapContractAddress
-    #   initiator
-    #   contractIndex
-    #   transactionHash
-    #   relatedOffering {
-    #     id
-    #   }
-    # }
-    participants {
-      edges {
-        node {
-          ...OfferingParticipantFields
-        }
-      }
-    }
-    distributions {
-      id
-      contractIndex
-      transaction_hash
-    }
-    documents {
-      edges {
-        node {
-          ...DocumentFields
-        }
-      }
-    }
   }
 `;
 
 export const CORE_ORGANIZATION_FIELDS = gql`
   ${CORE_LINKED_ACCOUNT_FIELDS}
   ${CORE_OFFERING_FIELDS}
-  fragment OrganizationFields on organizations {
+  fragment OrganizationFields on organization {
     id
     name
     description
     logo
-    brandColor
-    bannerImage
-    sharingImage {
-      id
-      url
-      label
-      fileId
-    }
+    brand_color
+    banner_image
     website
-    isPublic
+    is_public
     phone
     country
-    linkedAccounts {
-      ...LinkedAccountFields
-    }
-    emailAddresses {
-      id
-      address
-      name
-      description
-      isPublic
-      organization {
-        id
-      }
-    }
-    users {
-      id
-      permissions
-
-      user {
-        id
-        name
-        email
-        image
-      }
-      notificationConfigurations {
-        id
-        notificationRecipientType
-        notificationMethod
-        notificationSubject
-        organizationUser {
-          id
-          organization {
-            id
-          }
-        }
-      }
-    }
-    legalEntities {
-      id
-      legalName
-      displayName
-      jurisdiction {
-        id
-        country
-        province
-      }
-      organization {
-        id
-        slug
-      }
-      offerings {
-        ...OfferingFields
-      }
-      subsidiaries {
-        id
-        legalName
-        displayName
-        organization {
-          id
-          slug
-        }
-      }
-      owners {
-        id
-        legalName
-        displayName
-        organization {
-          id
-          slug
-        }
-      }
-      organization {
-        id
-      }
-    }
   }
 `;
 
 export const CORE_USER_FIELDS = gql`
   ${CORE_ENTITY_FIELDS}
-  fragment UserFields on users {
+  fragment UserFields on profile {
     id
-    id
-    organizations {
-      organization {
-        ...LegalEntityFields
-      }
-    }
   }
 `;
 
 export const CORE_DOCUMENT_SIGNATORY_FIELDS = gql`
   ${CORE_DOCUMENT_FIELDS}
-  fragment DocumentSignatoryFields on document_signatories {
+  fragment DocumentSignatoryFields on document_signatory {
     id
-    document {
-      ...DocumentFields
-    }
-    signerAddress {
-      id
-      address
-    }
-    legalEntity {
-      id
-    }
+    document_id
+    signer_address
+    legal_entity_id
   }
 `;

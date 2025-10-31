@@ -1,8 +1,8 @@
-const multer = require('multer');
-import path from 'path';
-import MulterGoogleStorage from 'multer-google-storage';
+const multer = require("multer");
+import path from "path";
+import MulterGoogleStorage from "multer-google-storage";
 
-const keyFilePath = path.join(process.cwd(), '/syndicate-cloud-key-staging.json');
+const keyFilePath = path.join(process.cwd(), "/syndicate-cloud-key-staging.json");
 
 export const upload = multer({
   storage: new MulterGoogleStorage({

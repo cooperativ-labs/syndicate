@@ -2,20 +2,24 @@ import { gql } from "@apollo/client";
 
 export const RETRIEVE_TRANSFER_EVENT = gql`
   query RetrieveTransferEvents($shareContractAddress: String!) {
-    queryShareTransferEvent(
-      filter: { shareContractAddress: { anyofterms: $shareContractAddress } }
+    share_transfer_eventCollection(
+      filter: { share_contract_address: { eq: $shareContractAddress } }
     ) {
-      id
-      shareContractAddress
-      orderIndex
-      recipientAddress
-      senderAddress
-      amount
-      price
-      currencyCode
-      transactionHash
-      partition
-      type
+      edges {
+        node {
+          id
+          share_contract_address
+          order_index
+          recipient_address
+          sender_address
+          amount
+          price
+          currency_code
+          transaction_hash
+          partition
+          type
+        }
+      }
     }
   }
 `;
@@ -28,38 +32,39 @@ export const ADD_TRANSFER_EVENT = gql`
     $senderAddress: String!
     $amount: Int!
     $price: String
-    $currencyCode: CurrencyCode
+    $currencyCode: currency_code
     $transactionHash: String!
     $partition: String!
-    $type: ShareTransferEventType!
+    $type: share_transfer_event_type!
   ) {
-    addShareTransferEvent(
-      input: [
+    insertIntoshare_transfer_eventCollection(
+      objects: [
         {
-          shareContractAddress: $shareContractAddress
-          orderIndex: $orderIndex
-          recipientAddress: $recipientAddress
-          senderAddress: $senderAddress
+          share_contract_address: $shareContractAddress
+          order_index: $orderIndex
+          recipient_address: $recipientAddress
+          sender_address: $senderAddress
           amount: $amount
           price: $price
-          currencyCode: $currencyCode
-          transactionHash: $transactionHash
+          currency_code: $currencyCode
+          transaction_hash: $transactionHash
           partition: $partition
           type: $type
           archived: false
         }
       ]
     ) {
-      shareTransferEvent {
+      affectedCount
+      records {
         id
-        shareContractAddress
-        orderIndex
-        recipientAddress
-        senderAddress
+        share_contract_address
+        order_index
+        recipient_address
+        sender_address
         amount
         price
-        currencyCode
-        transactionHash
+        currency_code
+        transaction_hash
         partition
         type
       }
@@ -68,62 +73,44 @@ export const ADD_TRANSFER_EVENT = gql`
 `;
 
 export const ADD_DISTRIBUTION = gql`
-  mutation AddDistribution($offeringId: [ID!], $transactionHash: String!, $contractIndex: Int!) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        set: { distributions: { transactionHash: $transactionHash, contractIndex: $contractIndex } }
-      }
+  mutation AddDistribution($transactionHash: String!, $contractIndex: Int!) {
+    insertIntooffering_distributionCollection(
+      objects: [{ transaction_hash: $transactionHash, contract_index: $contractIndex }]
     ) {
-      offering {
+      affectedCount
+      records {
         id
-        distributions {
-          id
-          transactionHash
-          contractIndex
-        }
+        transaction_hash
+        contract_index
       }
     }
   }
 `;
 
 export const UPDATE_CONTRACT_INDEX = gql`
-  mutation UpdateOfferingDistribution($distributionId: [ID!], $contractIndex: Int!) {
-    updateOfferingDistribution(
-      input: { filter: { id: $distributionId }, set: { contractIndex: $contractIndex } }
+  mutation UpdateOfferingDistribution($distributionId: UUID!, $contractIndex: Int!) {
+    updateoffering_distributionCollection(
+      filter: { id: { eq: $distributionId } }
+      set: { contract_index: $contractIndex }
     ) {
-      offeringDistribution {
+      affectedCount
+      records {
         id
-        transactionHash
-        contractIndex
+        transaction_hash
+        contract_index
       }
     }
   }
 `;
 
 export const UPDATE_CONTRACT_STATUS = gql`
-  mutation UpdateContractStatus(
-    $offeringId: [ID!]
-    $smartshareContractId: ID!
-    $established: Boolean
-  ) {
-    updateOffering(
-      input: {
-        filter: { id: $offeringId }
-        set: { smartContracts: { id: $smartshareContractId, set: { established: $established } } }
-      }
+  mutation UpdateContractStatus($smartshareContractId: UUID!, $established: Boolean) {
+    updatesmart_contractCollection(
+      filter: { id: { eq: $smartshareContractId } }
+      set: { established: $established }
     ) {
-      offering {
-        smartContracts {
-          id
-          established
-        }
-      }
-    }
-    updateSmartContract(
-      input: { filter: { id: [$smartshareContractId] }, set: { established: $established } }
-    ) {
-      smartContract {
+      affectedCount
+      records {
         id
         established
       }
@@ -135,7 +122,6 @@ export const UPDATE_CONTRACT_STATUS = gql`
 
 export const CREATE_ORDER = gql`
   mutation CreateOrder(
-    $currentDate: DateTime!
     $contractIndex: Int!
     $swapContractAddress: String!
     $minUnits: Int
@@ -144,28 +130,26 @@ export const CREATE_ORDER = gql`
     $initiator: String!
     $transactionHash: String!
   ) {
-    addShareOrder(
-      input: [
+    insertIntoshare_orderCollection(
+      objects: [
         {
-          creationDate: $currentDate
-          lastUpdate: $currentDate
-          contractIndex: $contractIndex
-          swapContractAddress: $swapContractAddress
-          minUnits: $minUnits
-          maxUnits: $maxUnits
+          contract_index: $contractIndex
+          swap_contract_address: $swapContractAddress
+          min_units: $minUnits
+          max_units: $maxUnits
           initiator: $initiator
-          transactionHash: $transactionHash
+          transaction_hash: $transactionHash
           visible: $visible
           archived: false
         }
       ]
     ) {
-      shareOrder {
+      affectedCount
+      records {
         id
-        creationDate
-        contractIndex
+        contract_index
         initiator
-        transactionHash
+        transaction_hash
       }
     }
   }
@@ -173,59 +157,45 @@ export const CREATE_ORDER = gql`
 
 export const RETRIEVE_ORDERS = gql`
   query RetrieveOrders($swapContractAddress: String!) {
-    queryShareOrder(filter: { swapContractAddress: { anyofterms: $swapContractAddress } }) {
-      id
-      creationDate
-      contractIndex
-      initiator
-      transactionHash
-      swapContractAddress
-      minUnits
-      maxUnits
-      visible
-      archived
+    share_orderCollection(filter: { swap_contract_address: { eq: $swapContractAddress } }) {
+      edges {
+        node {
+          id
+          contract_index
+          initiator
+          transaction_hash
+          swap_contract_address
+          min_units
+          max_units
+          visible
+          archived
+        }
+      }
     }
   }
 `;
 
 export const UPDATE_ORDER = gql`
-  mutation UpdateSale(
-    $currentDate: DateTime!
-    $orderId: ID!
-    $visible: Boolean!
-    $archived: Boolean!
-  ) {
-    updateShareOrder(
-      input: {
-        filter: { id: [$orderId] }
-        set: { lastUpdate: $currentDate, archived: $archived, visible: $visible }
-      }
+  mutation UpdateSale($orderId: UUID!, $visible: Boolean!, $archived: Boolean!) {
+    updateshare_orderCollection(
+      filter: { id: { eq: $orderId } }
+      set: { archived: $archived, visible: $visible }
     ) {
-      shareOrder {
+      affectedCount
+      records {
         id
-        lastUpdate
         visible
+        archived
       }
     }
   }
 `;
 
 export const DELETE_ORDER = gql`
-  mutation RemoveShareOrder($orderId: [ID!]) {
-    # updateOffering(
-    #   input: { filter: { id: $offeringId }, remove: { orders: { id: $orderId } }, set: { lastUpdate: $currentDate } }
-    # ) {
-    #   offering {
-    #     id
-    #     orders {
-    #       id
-    #     }
-    #   }
-    # }
-    deleteShareOrder(filter: { id: $orderId }) {
-      msg
-      numUids
-      shareOrder {
+  mutation RemoveShareOrder($orderId: UUID!) {
+    deleteFromshare_orderCollection(filter: { id: { eq: $orderId } }) {
+      affectedCount
+      records {
         id
       }
     }

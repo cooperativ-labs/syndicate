@@ -4,72 +4,46 @@ import { CORE_RE_PROPERTY_FIELDS } from "./fragments";
 
 export const GET_RE_PROPERTY = gql`
   ${CORE_RE_PROPERTY_FIELDS}
-  query GetRealEstateProperty($id: ID!) {
-    getRealEstateProperty(id: $id) {
-      ...RealEstatePropertyFields
+  query GetRealEstateProperty($id: UUID!) {
+    real_estate_propertyCollection(filter: { id: { eq: $id } }, first: 1) {
+      edges {
+        node {
+          ...RealEstatePropertyFields
+        }
+      }
     }
   }
 `;
 
 export const ADD_RE_PROPERTY_INFO = gql`
   mutation AddRePropertyInfo(
-    $currentDate: DateTime!
-    $entityId: [ID!]
-    $propertyType: RealEstatePropertyType!
-    $investmentStatus: AssetStatus!
+    $entityId: UUID!
+    $propertyType: real_estate_property_type!
+    $investmentStatus: asset_status!
     $amenitiesDescription: String
     $description: String
     $downPayment: Int
     $lenderFees: Int
     $closingCosts: Int
-    $addressLine1: String
-    $addressLine2: String
-    $addressLine3: String
-    $city: String!
-    $stateProvince: String
-    $postalCode: String
-    $country: String!
-    $lat: Float!
-    $lng: Float!
   ) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $entityId }
-        set: {
-          lastUpdate: $currentDate
-          realEstateProperties: {
-            creationDate: $currentDate
-            lastUpdate: $currentDate
-            propertyType: $propertyType
-            investmentStatus: $investmentStatus
-            address: {
-              line1: $addressLine1
-              line2: $addressLine2
-              line3: $addressLine3
-              city: $city
-              stateProvince: $stateProvince
-              postalCode: $postalCode
-              country: $country
-              lat: $lat
-              lng: $lng
-            }
-            amenitiesDescription: $amenitiesDescription
-            description: $description
-            # images: [{ url: $imageUrl }]
-            downPayment: $downPayment
-            lenderFees: $lenderFees
-            closingCosts: $closingCosts
-          }
+    insertIntoreal_estate_propertyCollection(
+      objects: [
+        {
+          owner_id: $entityId
+          property_type: $propertyType
+          investment_status: $investmentStatus
+          amenities_description: $amenitiesDescription
+          description: $description
+          down_payment: $downPayment
+          lender_fees: $lenderFees
+          closing_costs: $closingCosts
         }
-      }
+      ]
     ) {
-      legalEntity {
+      affectedCount
+      records {
         id
-        fullName
-        realEstateProperties {
-          id
-          investmentStatus
-        }
+        investment_status
       }
     }
   }
@@ -77,10 +51,9 @@ export const ADD_RE_PROPERTY_INFO = gql`
 
 export const UPDATE_RE_PROPERTY_INFO = gql`
   mutation UpdateRePropertyInfo(
-    $currentDate: DateTime!
-    $rePropertyId: [ID!]
-    $propertyType: RealEstatePropertyType!
-    $investmentStatus: AssetStatus!
+    $rePropertyId: UUID!
+    $propertyType: real_estate_property_type!
+    $investmentStatus: asset_status!
     $amenitiesDescription: String
     $description: String
     $assetValue: Int
@@ -90,41 +63,34 @@ export const UPDATE_RE_PROPERTY_INFO = gql`
     $closingCosts: Int
     $loanAmount: Int
   ) {
-    updateRealEstateProperty(
-      input: {
-        filter: { id: $rePropertyId }
-        set: {
-          lastUpdate: $currentDate
-          propertyType: $propertyType
-          investmentStatus: $investmentStatus
-          amenitiesDescription: $amenitiesDescription
-          description: $description
-          assetValue: $assetValue
-          assetValueNote: $assetValueNote
-          downPayment: $downPayment
-          lenderFees: $lenderFees
-          closingCosts: $closingCosts
-          loan: $loanAmount
-        }
+    updatereal_estate_propertyCollection(
+      filter: { id: { eq: $rePropertyId } }
+      set: {
+        property_type: $propertyType
+        investment_status: $investmentStatus
+        amenities_description: $amenitiesDescription
+        description: $description
+        asset_value: $assetValue
+        asset_value_note: $assetValueNote
+        down_payment: $downPayment
+        lender_fees: $lenderFees
+        closing_costs: $closingCosts
+        loan: $loanAmount
       }
     ) {
-      realEstateProperty {
+      affectedCount
+      records {
         id
-        investmentStatus
-        amenitiesDescription
+        investment_status
+        amenities_description
         description
-        assetValue
-        assetValueNote
-        downPayment
-        lenderFees
-        closingCosts
+        asset_value
+        asset_value_note
+        down_payment
+        lender_fees
+        closing_costs
         loan
-        owner {
-          id
-          offerings {
-            id
-          }
-        }
+        owner_id
       }
     }
   }
@@ -132,21 +98,12 @@ export const UPDATE_RE_PROPERTY_INFO = gql`
 
 // TO DO: cascaded delete associated images - not yet a GraphQL feature of Dgraph
 export const REMOVE_ENTITY_PROPERTY = gql`
-  mutation RemoveReProperty($currentDate: DateTime, $ownerId: [ID!], $propertyId: ID!) {
-    updateLegalEntity(
-      input: {
-        filter: { id: $ownerId }
-        remove: { realEstateProperties: { id: $propertyId } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      legalEntity {
+  mutation RemoveReProperty($propertyId: UUID!) {
+    deleteFromreal_estate_propertyCollection(filter: { id: { eq: $propertyId } }) {
+      affectedCount
+      records {
         id
       }
-    }
-    deleteRealEstateProperty(filter: { id: [$propertyId] }) {
-      msg
     }
   }
 `;
@@ -155,7 +112,7 @@ export const REMOVE_ENTITY_PROPERTY = gql`
 
 export const ADD_PROPERTY_ADDRESS = gql`
   mutation AddPropertyAddress(
-    $propertyId: [ID!]
+    $propertyId: UUID!
     $addressLabel: String
     $addressLine1: String!
     $addressLine2: String
@@ -164,55 +121,38 @@ export const ADD_PROPERTY_ADDRESS = gql`
     $stateProvince: String
     $postalCode: String
     $country: String!
-    $ownerId: [ID!]
   ) {
-    updateRealEstateProperty(
-      input: {
-        filter: { id: $propertyId }
-        set: {
-          addresses: {
-            label: $addressLabel
-            line1: $addressLine1
-            line2: $addressLine2
-            line3: $addressLine3
-            city: $city
-            stateProvince: $stateProvince
-            postalCode: $postalCode
-            country: $country
-            owner: { id: $ownerId }
-          }
-          lastUpdate: $currentDate
+    insertIntoaddressCollection(
+      objects: [
+        {
+          label: $addressLabel
+          line1: $addressLine1
+          line2: $addressLine2
+          line3: $addressLine3
+          city: $city
+          state_province: $stateProvince
+          postal_code: $postalCode
+          country: $country
         }
-      }
+      ]
     ) {
-      realEstateProperty {
+      affectedCount
+      records {
         id
-        address {
-          id
-          label
-          line1
-        }
+        label
+        line1
       }
     }
   }
 `;
 
 export const REMOVE_PROPERTY_ADDRESS = gql`
-  mutation RemovePropertyAddress($propertyId: [ID!], $geoAddressId: ID!) {
-    updateRealEstateProperty(
-      input: {
-        filter: { id: $propertyId }
-        remove: { address: { id: $geoAddressId } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      realEstateProperty {
+  mutation RemovePropertyAddress($geoAddressId: UUID!) {
+    deleteFromaddressCollection(filter: { id: { eq: $geoAddressId } }) {
+      affectedCount
+      records {
         id
       }
-    }
-    deleteAddress(filter: { id: $geoAddressId }) {
-      msg
     }
   }
 `;
@@ -220,52 +160,24 @@ export const REMOVE_PROPERTY_ADDRESS = gql`
 // --------------- Image ----------------
 
 export const ADD_PROPERTY_IMAGE = gql`
-  mutation AddPropertyImage(
-    $currentDate: DateTime!
-    $propertyId: [ID!]
-    $url: String!
-    $label: String
-    $fileId: String
-  ) {
-    updateRealEstateProperty(
-      input: {
-        filter: { id: $propertyId }
-        set: { lastUpdate: $currentDate, images: { url: $url, label: $label, fileId: $fileId } }
-      }
-    ) {
-      realEstateProperty {
+  mutation AddPropertyImage($url: String!, $label: String, $fileId: String) {
+    insertIntoimageCollection(objects: [{ url: $url, label: $label, file_id: $fileId }]) {
+      affectedCount
+      records {
         id
-        images {
-          id
-          label
-          url
-          fileId
-        }
+        label
+        url
+        file_id
       }
     }
   }
 `;
 
 export const REMOVE_PROPERTY_IMAGE = gql`
-  mutation RemovePropertyImage($currentDate: DateTime!, $propertyId: [ID!], $imageId: ID!) {
-    updateRealEstateProperty(
-      input: {
-        filter: { id: $propertyId }
-        remove: { images: { id: $imageId } }
-        set: { lastUpdate: $currentDate }
-      }
-    ) {
-      numUids
-      realEstateProperty {
-        id
-        images {
-          id
-        }
-      }
-    }
-    deleteImage(filter: { id: [$imageId] }) {
-      msg
-      image {
+  mutation RemovePropertyImage($imageId: UUID!) {
+    deleteFromimageCollection(filter: { id: { eq: $imageId } }) {
+      affectedCount
+      records {
         id
       }
     }

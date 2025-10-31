@@ -23,7 +23,7 @@ import { String0x } from "@src/web3/helpersChain";
 import { toNormalNumber } from "@src/web3/util";
 import { useParams } from "next/navigation";
 import React, { FC, useState } from "react";
-import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from "wagmi";
+import { useAccount, useBalance, useReadContracts } from "wagmi";
 
 type PortalOfferingProps = {
   offering: Offering;
@@ -39,18 +39,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     skip: !orgId
   });
 
-  const {
-    details,
-    brandColor,
-    website,
-    offeringEntity,
-    name: offeringName,
-    id: offeringId,
-    distributions,
-    participants,
-
-    smartContractSets
-  } = offering;
+  const { details, name: offeringName, id: offeringId, participants } = offering;
 
   const minUnitsPerInvestor = details?.minUnitsPerInvestor;
   const [managerModal, setManagerModal] = useState<ManagerModalType>("none");
@@ -81,7 +70,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     abi: shareContractABI
   };
 
-  const { data } = useContractReads({
+  const { data } = useReadContracts({
     contracts: [
       {
         ...sharedContractSpecs,

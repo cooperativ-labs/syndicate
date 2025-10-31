@@ -1,11 +1,11 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import axios from 'axios';
+import type { NextApiRequest, NextApiResponse } from "next";
+import axios from "axios";
 
 const OPENAI_API_KEY = process.env.NEXT_PUBLIC_OPENAI_API_KEY;
-const OPENAI_URL = 'https://api.openai.com/v1/chat/completions';
+const OPENAI_URL = "https://api.openai.com/v1/chat/completions";
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method === 'POST') {
+  if (req.method === "POST") {
     const {
       messages,
       presencePenalty = 0,
@@ -18,7 +18,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const response = await axios.post(
         OPENAI_URL,
         {
-          model: 'gpt-3.5-turbo',
+          model: "gpt-3.5-turbo",
           messages: messages,
           presence_penalty: presencePenalty,
           frequency_penalty: frequencyPenalty,
@@ -28,7 +28,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
         },
         {
           headers: {
-            'Content-Type': 'application/json',
+            "Content-Type": "application/json",
             Authorization: `Bearer ${OPENAI_API_KEY}`
           }
         }
@@ -38,13 +38,13 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
 
       res.status(200).json({ message: assistantMessage });
     } catch (error: any) {
-      console.error('OpenAI API Error:', error.response.data, error.response.message);
+      console.error("OpenAI API Error:", error.response.data, error.response.message);
       res.status(500).json({
-        message: 'I am having trouble connecting to my server. Try sending me another message.'
+        message: "I am having trouble connecting to my server. Try sending me another message."
       });
     }
   } else {
-    res.setHeader('Allow', 'POST');
-    res.status(405).end('Method Not Allowed');
+    res.setHeader("Allow", "POST");
+    res.status(405).end("Method Not Allowed");
   }
 }

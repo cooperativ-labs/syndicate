@@ -1,207 +1,129 @@
 import { gql } from "@apollo/client";
 
-export const CHECK_WALLET_EXIST = () => {
-  return gql`
-    query ($address: String!) {
-      getCryptoAddress(address: $address) {
-        address
-      }
-    }
-  `;
-};
+// export const CHECK_WALLET_EXIST = () => {
+//   return gql`
+//     query ($address: String!) {
+//       crypto_addressCollection(filter: { address: { eq: $address } }) {
+//         edges {
+//           node {
+//             address
+//           }
+//         }
+//       }
+//     }
+//   `;
+// };
 
 export const GET_CRYPTO_ADDRESS = gql`
   query GetCryptoAddress($walletAddress: String!) {
-    getCryptoAddress(address: $walletAddress) {
-      id
-      address
-      owner {
-        id
-        fullName
+    crypto_addressCollection(filter: { address: { eq: $walletAddress } }) {
+      edges {
+        node {
+          id
+          address
+          legal_entity {
+            id
+            legal_name
+          }
+        }
       }
     }
   }
 `;
 
 export const UPDATE_CRYPTO_ADDRESS = gql`
-  mutation UpdateCryptoAddress($id: [ID!], $name: String, $isPublic: Boolean) {
-    updateCryptoAddress(input: { filter: { id: $id }, set: { name: $name, isPublic: $isPublic } }) {
-      cryptoAddress {
+  mutation UpdateCryptoAddress($id: UUID!, $name: String, $isPublic: Boolean) {
+    updatecrypto_addressCollection(
+      filter: { id: { eq: $id } }
+      set: { name: $name, is_public: $isPublic }
+    ) {
+      affectedCount
+      records {
         id
         name
         address
-        isPublic
+        is_public
         description
-        owner {
-          id
-          fullName
-        }
+        legal_entity_id
       }
     }
   }
 `;
 
 export const ADD_CONTRACT_PARTITION = gql`
-  mutation AddContractPartition($id: [ID!], $partition: String) {
-    updateSmartContract(input: { filter: { id: $id }, set: { partitions: [$partition] } }) {
-      smartContract {
+  mutation AddContractPartition($id: UUID!, $partition: String!) {
+    updatesmart_contractCollection(filter: { id: { eq: $id } }, set: { partitions: [$partition] }) {
+      affectedCount
+      records {
         id
         partitions
-        owner {
-          id
-        }
+        owner_id
       }
     }
   }
 `;
 
 export const CREATE_SHARE_CONTRACT = gql`
-  mutation AddShareContract(
-    $cryptoAddress: String!
-    $chainId: Int!
-    $type: SmartContractType!
-    $protocol: CryptoAddressProtocol
-    $ownerId: ID!
-  ) {
-    addSmartContract(
-      input: [
-        {
-          cryptoAddress: {
-            address: $cryptoAddress
-            type: CONTRACT
-            chainId: $chainId
-            protocol: $protocol
-            owner: { id: $ownerId }
-          }
-          owner: { id: $ownerId }
-          type: $type
-          established: false
-        }
+  mutation AddShareContract($cryptoAddressId: UUID!, $ownerId: UUID!, $type: smart_contract_type!) {
+    insertIntosmart_contractCollection(
+      objects: [
+        { crypto_address_id: $cryptoAddressId, owner_id: $ownerId, type: $type, established: false }
       ]
     ) {
-      smartContract {
+      affectedCount
+      records {
         id
-
-        owner {
-          id
-          smartContracts {
-            id
-          }
-          organization {
-            id
-          }
-        }
-        cryptoAddress {
-          id
-          address
-          chainId
-        }
+        owner_id
+        crypto_address_id
+        type
+        established
       }
     }
   }
 `;
 
 export const CREATE_SWAP_CONTRACT = gql`
-  mutation AddSwapContract(
-    $cryptoAddress: String!
-    $chainId: Int!
-    $backingToken: CurrencyCode
-    $type: SmartContractType!
-    $protocol: CryptoAddressProtocol
-    $ownerId: ID!
-    $contractSetId: ID!
-  ) {
-    updateOfferingSmartContractSet(
-      input: {
-        filter: { id: [$contractSetId] }
-        set: {
-          swapContract: {
-            cryptoAddress: {
-              address: $cryptoAddress
-              type: CONTRACT
-              chainId: $chainId
-              protocol: $protocol
-              owner: { id: $ownerId }
-            }
-            owner: { id: $ownerId }
-            backingToken: { code: $backingToken }
-            type: $type
-            established: false
-          }
-        }
-      }
+  mutation AddSwapContract($contractSetId: UUID!, $swapContractId: UUID!) {
+    updateoffering_smart_contract_setCollection(
+      filter: { id: { eq: $contractSetId } }
+      set: { swap_contract_id: $swapContractId }
     ) {
-      offeringSmartContractSet {
+      affectedCount
+      records {
         id
-        swapContract {
-          id
-        }
-        offering {
-          id
-          details {
-            investmentCurrency {
-              code
-            }
-          }
-        }
+        swap_contract_id
+        offering_id
       }
     }
   }
 `;
 
 export const CREATE_DISTRIBUTION_CONTRACT = gql`
-  mutation AddDistributionContract(
-    $cryptoAddress: String!
-    $chainId: Int!
-    $type: SmartContractType!
-    $protocol: CryptoAddressProtocol
-    $ownerId: ID!
-    $contractSetId: ID!
-  ) {
-    updateOfferingSmartContractSet(
-      input: {
-        filter: { id: [$contractSetId] }
-        set: {
-          distributionContract: {
-            cryptoAddress: {
-              address: $cryptoAddress
-              type: CONTRACT
-              chainId: $chainId
-              protocol: $protocol
-              owner: { id: $ownerId }
-            }
-            owner: { id: $ownerId }
-            type: $type
-            established: false
-          }
-        }
-      }
+  mutation AddDistributionContract($contractSetId: UUID!, $distributionContractId: UUID!) {
+    updateoffering_smart_contract_setCollection(
+      filter: { id: { eq: $contractSetId } }
+      set: { distribution_contract_id: $distributionContractId }
     ) {
-      offeringSmartContractSet {
+      affectedCount
+      records {
         id
-        distributionContract {
-          id
-        }
-        offering {
-          id
-        }
+        distribution_contract_id
+        offering_id
       }
     }
   }
 `;
 
 export const UPDATE_UNESTABLISHED_SMART_CONTRACT = gql`
-  mutation updateSmartContract($id: [ID!], $established: Boolean) {
-    updateSmartContract(input: { filter: { id: $id }, set: { established: $established } }) {
-      smartContract {
+  mutation UpdateSmartContract($id: UUID!, $established: Boolean) {
+    updatesmart_contractCollection(
+      filter: { id: { eq: $id } }
+      set: { established: $established }
+    ) {
+      affectedCount
+      records {
         id
-        owner {
-          id
-          fullName
-          offerings {
-            id
-          }
-        }
+        owner_id
       }
     }
   }

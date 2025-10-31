@@ -2,7 +2,7 @@
 
 import { useMutation } from "@apollo/client/react";
 import { useUserContext } from "@contexts/UserContext";
-import { AddOrganizationMutation } from "@gql/graphql";
+import { AddOrganizationMutation, MutationAddOrganizationArgs } from "@gql/graphql";
 import { ADD_ORGANIZATION, ADD_ORGANIZATION_USER } from "@src/utils/graphQueries/organization";
 import { Form, Formik } from "formik";
 import { useRouter } from "next/navigation";

@@ -38,8 +38,8 @@ The Apollo Client (`src/utils/supabaseApolloClient.ts`) is configured with:
 The `ApolloProvider` wraps your entire app, making the Apollo Client available to all components:
 
 ```tsx
-import { ApolloProvider } from '@apollo/client/react';
-import supabaseApolloClient from '@src/utils/supabaseApolloClient';
+import { ApolloProvider } from "@apollo/client/react";
+import supabaseApolloClient from "@src/utils/supabaseApolloClient";
 
 function MyApp({ Component, pageProps }) {
   return <ApolloProvider client={supabaseApolloClient}>{/* Your app components */}</ApolloProvider>;
@@ -65,8 +65,8 @@ This will:
 Here's how to write a GraphQL query with type-safety:
 
 ```tsx
-import { useQuery } from '@apollo/client/react';
-import { graphql } from './gql';
+import { useQuery } from "@apollo/client/react";
+import { graphql } from "./gql";
 
 const allItemsQueryDocument = graphql(/* GraphQL */ `
   query AllItems($cursor: Cursor) {
