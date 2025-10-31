@@ -11,7 +11,7 @@ import cn from 'classnames';
 import { Form, Formik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
 
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 type DocumentAdderProps = {
   offeringId?: string;
@@ -19,7 +19,7 @@ type DocumentAdderProps = {
 };
 
 const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
-  const { user } = useSupabaseAuth();
+  const { user } = useUserContext();
   const userId = user?.id;
   const [addFile, { error: addFileError }] = useMutation(ADD_OFFERING_DOCUMENT, {
     variables: {

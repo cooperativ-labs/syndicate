@@ -2,24 +2,24 @@
 
 import SetCookieContext from '@contexts/SetCookieContext';
 import CookieBanner from '@src/CookieBanner';
-import { config as wagmiConfig } from '@src/web3/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import React, { useEffect, useState } from 'react';
-import { Toaster } from 'react-hot-toast';
-import { WagmiProvider } from 'wagmi';
 
+import { State, WagmiProvider } from 'wagmi';
+import { getWagmiConfig } from '@src/web3/wagmi';
 import { StateProvider } from '@/contexts/store';
-import { SupabaseAuthProvider } from '@/contexts/SupabaseAuthContext';
 
 import { ApolloWrapper } from './ApolloWrapper';
 
 type ProvidersProps = {
   children: React.ReactNode;
+  initialState: State | undefined;
 };
 
-const Providers: React.FC<ProvidersProps> = ({ children }) => {
+const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
   const [cookiesApproved, setCookiesApproved] = useState<string | null>(null);
-
+  const [config] = useState(() => getWagmiConfig());
+  const [queryClient] = useState(() => new QueryClient()); // This is required for Wagmi
   useEffect(() => {
     const result = window.localStorage?.getItem('COOKIE_APPROVED');
     setCookiesApproved(result);
@@ -42,21 +42,16 @@ const Providers: React.FC<ProvidersProps> = ({ children }) => {
     </div>
   );
 
-  const [queryClient] = useState(() => new QueryClient()); // This is required for Wagmi
-
   return (
-    <SupabaseAuthProvider>
-      <ApolloWrapper>
-        <WagmiProvider config={wagmiConfig}>
-          <QueryClientProvider client={queryClient}>
-            <Toaster />
-            <StateProvider>
-              {cookiesApproved === 'approved' ? withCookies : withoutCookies}
-            </StateProvider>
-          </QueryClientProvider>
-        </WagmiProvider>
-      </ApolloWrapper>
-    </SupabaseAuthProvider>
+    <ApolloWrapper>
+      <WagmiProvider config={config} initialState={initialState}>
+        <QueryClientProvider client={queryClient}>
+          <StateProvider>
+            {cookiesApproved === 'approved' ? withCookies : withoutCookies}
+          </StateProvider>
+        </QueryClientProvider>
+      </WagmiProvider>
+    </ApolloWrapper>
   );
 };
 

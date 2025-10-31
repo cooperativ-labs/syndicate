@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Pencil, X } from 'lucide-react';
 import { CryptoAddress, CryptoAddressType, Maybe } from '@gql/graphql';
 import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
 import { REMOVE_ENTITY_WALLET } from '@src/utils/graphQueries/entity';
@@ -149,9 +149,9 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
         <div className="flex col-span-1 justify-center">
           <button aria-label="edit address info" onClick={() => setEditOn(!editOn)}>
             {editOn ? (
-              <FontAwesomeIcon icon="times" className="text-xl text-gray-600 mr-2" />
+              <X className="text-xl text-gray-600 mr-2" />
             ) : (
-              <FontAwesomeIcon icon="pen" className="text-xl text-gray-600 mr-2" />
+              <Pencil className="text-xl text-gray-600 mr-2" />
             )}
           </button>
         </div>

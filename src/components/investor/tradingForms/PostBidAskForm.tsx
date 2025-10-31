@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Maybe, Offering, OfferingParticipant } from '@gql/graphql';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
@@ -267,11 +267,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                               <div className="flex text-left">
                                 {`I accept this offering's Terms and Conditions`}
                                 <div className="ml-2">
-                                  {tocOpen ? (
-                                    <FontAwesomeIcon icon="chevron-up" />
-                                  ) : (
-                                    <FontAwesomeIcon icon="chevron-down" />
-                                  )}
+                                  {tocOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </div>
                               </div>
                             </button>

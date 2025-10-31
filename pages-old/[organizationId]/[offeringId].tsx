@@ -83,7 +83,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params }) => {
       variables: { id: offeringId }
     });
 
-    const result = data?.offeringsCollection?.edges[0]?.node;
+    const result = data?.offeringCollection?.edges[0]?.node;
 
     return {
       props: { result }

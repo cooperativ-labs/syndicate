@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Check, Copy, SquareArrowOutUpRight } from 'lucide-react';
 import { Maybe } from '@gql/graphql';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
@@ -173,7 +173,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
       )}
       {profileVisibility && (
         <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
-          <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg ml-2" />
+          <SquareArrowOutUpRight className="text-lg ml-2" />
         </a>
       )}
     </div>
@@ -210,8 +210,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             }, 1000);
           }}
         >
-          Copy investor portal link{' '}
-          {copied ? <FontAwesomeIcon icon="check" /> : <FontAwesomeIcon icon="copy" />}
+          Copy investor portal link {copied ? <Check /> : <Copy />}
         </button>
       </div>
       <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">

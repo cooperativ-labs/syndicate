@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChevronDown } from 'lucide-react';
 import Button from '@src/components/buttons/Button';
 import DisconnectButton from '@src/components/buttons/DisconnectButton';
 import LogoutButton from '@src/components/buttons/LogoutButton';
@@ -9,13 +9,13 @@ import Link from 'next/link';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 
 const UserMenu: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
-  const { user } = useSupabaseAuth();
+  const { user } = useUserContext();
   const isAuthenticated = !!user;
   const { address: userWalletAddress, isConnected } = useAccount();
   const chainId = useChainId();
@@ -46,7 +46,7 @@ const UserMenu: FC = () => {
           </div>
           {userWalletAddress && `Wallet: ${userWalletAddress.slice(-4)}`}
           <div className="p-1 pl-2">
-            <FontAwesomeIcon icon="chevron-down" />
+            <ChevronDown size={16} />
           </div>
         </Button>
 

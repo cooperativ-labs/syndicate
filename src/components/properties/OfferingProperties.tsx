@@ -1,6 +1,6 @@
 'use client';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Plus } from 'lucide-react';
 import { LegalEntity, Maybe } from '@gql/graphql';
 import Button from '@src/components/buttons/Button';
 import { useRouter } from 'next/navigation';
@@ -35,7 +35,7 @@ const OfferingProperties: FC<OfferingPropertiesProps> = ({
           className="mt-3 md:mt-0 p-3 border-2 border-cLightBlue rounded-md md:rounded-full text-cLightBlue text-bold text-xl w-full md:h-20 md:w-20  hover:text-white hover:bg-cLightBlue self-center m-8"
           onClick={() => router.push(`./${offeringId}/add-property`)}
         >
-          <FontAwesomeIcon icon="plus" />
+          <Plus size={16} />
         </Button>
       )}
     </div>

@@ -1,5 +1,4 @@
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Plus } from 'lucide-react';
 import { Organization } from '@gql/graphql';
 import CooperativLogo from '@src/components/CooperativLogo';
 import { handleOrganizationChange } from '@src/utils/helpersOrganization';
@@ -53,7 +52,7 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
           onClick={() => dispatch({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
         >
           <div className=" flex items-center justify-center w-14 h-14">
-            <FontAwesomeIcon icon={'fa-plus' as IconProp} />
+            <Plus />
           </div>
         </button>
         <div className="absolute bottom-3 left-3 justify-center">

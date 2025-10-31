@@ -1,4 +1,3 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import Button from '@src/components/buttons/Button';
 import { WalletErrorCodes } from '@src/web3/helpersChain';
 import cn from 'classnames';

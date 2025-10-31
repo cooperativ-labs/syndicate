@@ -1,7 +1,6 @@
 'use client';
 
-import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { UploadCloud } from 'lucide-react';
 import { DocumentType } from '@gql/graphql';
 import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
 import cn from 'classnames';
@@ -113,10 +112,7 @@ const FileUpload: FC<FileUploadProps> = ({
                 : 'flex p-3 mt-1 bg-gray-100  h-24 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40'
             )}
           >
-            <FontAwesomeIcon
-              icon={'arrow-up-from-bracket' as IconName}
-              className="text-3xl text-gray-600 mr-4"
-            />
+            <UploadCloud className="text-3xl text-gray-600 mr-4" />
             <div>
               <div className="text-gray-700 text-bold text-lg uppercase">{uploaderText}</div>
               <div className="text-sm mt-1 "> Drag and drop or click to upload</div>

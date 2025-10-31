@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation, useQuery } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
 import { Maybe, Organization } from '@gql/graphql';
 import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import SettingsSocial from '@src/components/account/SettingsSocial';
@@ -34,10 +34,10 @@ import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity'
 import { useRouter } from 'next/router';
 import React, { FC, useState } from 'react';
 
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 const OrganizationSettings: FC = () => {
-  const { user } = useSupabaseAuth();
+  const { user } = useUserContext();
   const userId = user?.id;
   const router = useRouter();
   const { organizationId: orgId } = router.query;
@@ -195,7 +195,7 @@ const OrganizationSettings: FC = () => {
             aria-label="edit banner image"
             name="Edit banner image"
           >
-            <FontAwesomeIcon icon="pen" />
+            <Pencil size={16} />
           </button>
         </div>
       </div>
@@ -213,7 +213,7 @@ const OrganizationSettings: FC = () => {
                   />
                 )}
                 <a href={`/${organization.id}`} target="_blank" rel="noreferrer" className="ml-2">
-                  <FontAwesomeIcon icon="square-arrow-up-right" className="text-lg " />
+                  <SquareArrowOutUpRight className="text-lg " />
                 </a>
               </div>
             </div>

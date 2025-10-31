@@ -4,12 +4,6 @@ import { cookieStorage, createConfig, createStorage, http } from 'wagmi';
 import { base, Chain, mainnet, polygon, polygonMumbai, sepolia } from 'wagmi/chains';
 import { baseAccount, injected, metaMask, safe, walletConnect } from 'wagmi/connectors';
 
-// declare module "wagmi" {
-//   interface Register {
-//     config: ReturnType<typeof getConfig>;
-//   }
-// }
-
 export const SupportedChains: readonly [Chain, ...Chain[]] = [
   base,
   mainnet,
@@ -20,20 +14,25 @@ export const SupportedChains: readonly [Chain, ...Chain[]] = [
 
 let cachedConfig: ReturnType<typeof createConfig> | null = null;
 
-const initializeConfig = () => {
+export const getWagmiConfig = () => {
   if (cachedConfig) {
     return cachedConfig;
   }
+  const isBrowser = typeof window !== 'undefined';
+
+  const connectors = isBrowser
+    ? [
+        injected(),
+        baseAccount(),
+        metaMask(),
+        safe(),
+        walletConnect({ projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID! })
+      ]
+    : [];
 
   cachedConfig = createConfig({
     chains: SupportedChains,
-    connectors: [
-      injected(),
-      baseAccount(),
-      metaMask(),
-      safe(),
-      walletConnect({ projectId: process.env.NEXT_PUBLIC_WC_PROJECT_ID! })
-    ],
+    connectors,
     storage: createStorage({
       storage: cookieStorage
     }),
@@ -49,8 +48,6 @@ const initializeConfig = () => {
 
   return cachedConfig;
 };
-
-export const config = initializeConfig();
 
 // Create and export a singleton config to avoid multiple WalletConnect Core initializations
 

@@ -2,9 +2,8 @@
 
 import React, { useEffect, useMemo, useState } from 'react';
 
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
-
 import LoginModal from './LoginModal';
+import { useUserContext } from '@contexts/UserContext';
 
 interface WithAuthenticationProps {
   redirectTo?: string;
@@ -12,24 +11,22 @@ interface WithAuthenticationProps {
 }
 
 const WithAuthentication: React.FC<WithAuthenticationProps> = ({ children }) => {
-  const { user, loading } = useSupabaseAuth();
-
-  const isNotLoggedIn = useMemo(() => !user && !loading, [user, loading]);
+  const { userId } = useUserContext();
 
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {
-    if (isNotLoggedIn) {
+    if (!userId) {
       setShowLoginModal(true);
     } else {
       setShowLoginModal(false);
     }
-  }, [isNotLoggedIn]);
+  }, [userId]);
 
   return (
     <>
       {showLoginModal && <LoginModal />}
-      {!isNotLoggedIn && children}
+      {userId && children}
     </>
   );
 };

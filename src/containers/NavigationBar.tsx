@@ -8,7 +8,7 @@ import React, { FC, useContext } from 'react';
 import { useAccount } from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 import UserMenu from './UserMenu';
@@ -20,7 +20,7 @@ type NavBarProps = {
 };
 
 export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
-  const { user } = useSupabaseAuth();
+  const { user } = useUserContext();
   const router = useRouter();
   const isAuthenticated = !!user;
   const applicationStore: ApplicationStoreProps = useContext(store);

@@ -12,10 +12,10 @@ import { useParams } from 'next/navigation';
 import router, { useRouter } from 'next/router';
 import React, { FC } from 'react';
 
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 const EntityDashboard: FC = () => {
-  const { user } = useSupabaseAuth();
+  const { user } = useUserContext();
   const params = useParams<{ organizationId: string }>();
   const router = useRouter();
   const orgId = params?.organizationId;

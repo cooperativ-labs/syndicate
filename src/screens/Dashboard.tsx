@@ -7,9 +7,9 @@ import EnsureOrganization from '@src/containers/EnsureOrganization';
 import { getOrgsFromUser, handleOrganizationChange } from '@src/utils/helpersOrganization';
 import React, { FC, useEffect, useState } from 'react';
 
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 const Dashboard: FC = () => {
-  const { user, supabase } = useSupabaseAuth();
+  const { user } = useUserContext();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
 
   useEffect(() => {
@@ -34,7 +34,7 @@ const Dashboard: FC = () => {
     return () => {
       isMounted = false;
     };
-  }, [supabase, user]);
+  }, [user]);
 
   const hasOrganizations = organizations.length > 0;
 

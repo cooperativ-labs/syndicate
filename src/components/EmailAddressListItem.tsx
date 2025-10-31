@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Trash } from 'lucide-react';
 import { EmailAddress, Maybe } from '@gql/graphql';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/graphQueries/organization';
@@ -118,7 +118,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
               })
             }
           >
-            <FontAwesomeIcon icon="trash" className="text-lg text-gray-600 mr-2" />
+            <Trash className="text-lg text-gray-600 mr-2" />
           </button>
         </div>
       )}

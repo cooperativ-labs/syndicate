@@ -1,5 +1,18 @@
-import { IconName } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import {
+  Discord,
+  Dribbble,
+  Facebook,
+  Github,
+  Instagram,
+  Link as LinkIcon,
+  Linkedin,
+  Mail,
+  Newspaper,
+  Phone as PhoneIcon,
+  Send,
+  Twitter,
+  Youtube
+} from 'lucide-react';
 import { LinkedAccountType } from '@gql/graphql';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
 import cn from 'classnames';
@@ -12,12 +25,41 @@ type SocialLinkItemProps = {
 };
 
 const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
-  const iconType =
-    type === LinkedAccountType.Phone ||
-    type === LinkedAccountType.Email ||
-    type === LinkedAccountType.Website
-      ? 'fas'
-      : 'fab';
+  const Icon = (() => {
+    const iconName = getSocialAccountOption(type)?.icon;
+    switch (iconName) {
+      case 'linkedin':
+        return Linkedin;
+      case 'github':
+        return Github;
+      case 'dribbble':
+        return Dribbble;
+      case 'discord':
+        return Discord;
+      case 'youtube':
+        return Youtube;
+      case 'soundcloud':
+        return Newspaper; // closest generic brand placeholder
+      case 'twitter':
+        return Twitter;
+      case 'facebook':
+        return Facebook;
+      case 'instagram':
+        return Instagram;
+      case 'medium':
+        return Newspaper;
+      case 'telegram':
+        return Send;
+      case 'envelope':
+        return Mail;
+      case 'phone':
+        return PhoneIcon;
+      case 'link':
+        return LinkIcon;
+      default:
+        return LinkIcon;
+    }
+  })();
   if (url) {
     return (
       <a href={url}>
@@ -28,10 +70,7 @@ const SocialLinkItem: FC<SocialLinkItemProps> = ({ type, url, className }) => {
               : 'flex max-w-min py-1 pl-2 pr-2 m-1s text-xl text-gray-700 items-center rounded-full'
           )}
         >
-          <FontAwesomeIcon
-            icon={[iconType, getSocialAccountOption(type)?.icon as IconName]}
-            // className="text-lg text-gray-100 mr-2"
-          />
+          <Icon />
         </div>
       </a>
     );

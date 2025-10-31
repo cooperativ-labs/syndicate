@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import cn from 'classnames';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import React, { useState } from 'react';
@@ -39,11 +39,7 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
           {sectionTitle}
         </h2>
         <div className="ml-2">
-          {detailsShown ? (
-            <FontAwesomeIcon icon="chevron-up" />
-          ) : (
-            <FontAwesomeIcon icon="chevron-down" />
-          )}
+          {detailsShown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
         </div>
       </button>
       {detailsShown && <div>{children}</div>}

@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Pencil, X } from 'lucide-react';
 import React, { FC } from 'react';
 
 type MarkPublicProps = {
@@ -26,9 +26,9 @@ export const EditButton: FC<EditButtonProps> = ({ toggle, setToggle }) => {
   return (
     <button aria-label="edit address info" onClick={() => setToggle(!toggle)}>
       {toggle ? (
-        <FontAwesomeIcon icon="times" className="text-xl text-gray-600 mr-2" />
+        <X className="text-xl text-gray-600 mr-2" />
       ) : (
-        <FontAwesomeIcon icon="pen" className="text-xl text-gray-600 mr-2" />
+        <Pencil className="text-xl text-gray-600 mr-2" />
       )}
     </button>
   );

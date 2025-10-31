@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Menu } from 'lucide-react';
 import Button from '@src/components/buttons/Button';
 import CloseButton from '@src/components/buttons/CloseButton';
 import cn from 'classnames';
@@ -55,7 +55,7 @@ const RightSidebar: FC<RightSidebarProps> = ({ children, formOpen, onClose }) =>
                     onClose();
                   }}
                 >
-                  <FontAwesomeIcon icon={['fas', 'bars']} size="lg" />
+                  <Menu size={18} />
                 </Button>
               </div>
             </div>

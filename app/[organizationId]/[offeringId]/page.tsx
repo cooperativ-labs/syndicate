@@ -1,4 +1,4 @@
-import { Offering } from '@gql/graphql';
+// Types intentionally omitted here to avoid runtime typing issues in RSC
 import { initializeApollo } from '@src/utils/apolloClient';
 import { GET_OFFERING } from '@src/utils/graphQueries/offering';
 import type { Metadata } from 'next';
@@ -19,7 +19,7 @@ const fetchOffering = cache(async (offeringId: string | undefined) => {
       variables: { id: offeringId }
     });
 
-    return (data?.getOffering ?? null) as Offering | null;
+    return (data as any)?.getOffering ?? null;
   } catch (error) {
     console.error('Failed to load offering', error);
     return null;
@@ -27,11 +27,14 @@ const fetchOffering = cache(async (offeringId: string | undefined) => {
 });
 
 type Params = {
-  params: { organizationId: string; offeringId: string };
+  params:
+    | Promise<{ organizationId: string; offeringId: string }>
+    | { organizationId: string; offeringId: string };
 };
 
 export const generateMetadata = async ({ params }: Params): Promise<Metadata> => {
-  const offering = await fetchOffering(params.offeringId);
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const offering = await fetchOffering(resolvedParams.offeringId);
 
   if (!offering || !offering.isPublic) {
     return { title: 'Offering not available' };
@@ -62,7 +65,8 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
 };
 
 const OfferingPage = async ({ params }: Params) => {
-  const offering = await fetchOffering(params.offeringId);
+  const resolvedParams = params instanceof Promise ? await params : params;
+  const offering = await fetchOffering(resolvedParams.offeringId);
   return <ClientOfferingPage offering={offering} />;
 };
 

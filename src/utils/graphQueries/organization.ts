@@ -1,11 +1,12 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
-import { CORE_ORGANIZATION_FIELDS } from './fragments';
+import { CORE_ORGANIZATION_FIELDS } from "./fragments";
 
 export const GET_ORGANIZATION = gql`
   ${CORE_ORGANIZATION_FIELDS}
   query GetOrganization($id: ID!) {
     organizationCollection(filter: { id: { eq: $id } }, first: 1) {
+      id
       edges {
         node {
           ...OrganizationFields

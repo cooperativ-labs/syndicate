@@ -1,4 +1,5 @@
-import { defaultDataIdFromObject, InMemoryCache } from '@apollo/client';
+import { defaultDataIdFromObject } from '@apollo/client';
+import { InMemoryCache } from '@apollo/client-integration-nextjs';
 
 export const createApolloCache = () =>
   new InMemoryCache({

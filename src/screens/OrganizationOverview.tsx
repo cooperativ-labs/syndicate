@@ -15,23 +15,17 @@ import SectionBlock from '@src/containers/SectionBlock';
 import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { GET_USER } from '@src/utils/graphQueries/user';
-import {
-  getIsAdmin,
-  getIsEditorOrAdmin,
-  getOrgOfferingsFromEntity
-} from '@src/utils/helpersUserAndEntity';
-import { useRouter } from 'next/router';
-import React, { FC, useContext } from 'react';
-import toast, { Toaster } from 'react-hot-toast';
+import { Organization, OrganizationConnection } from '@gql/graphql';
+import { useParams } from 'next/navigation';
+import React, { FC } from 'react';
 import { useAccount } from 'wagmi';
-
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 const OrganizationOverview: FC = () => {
-  const { user } = useSupabaseAuth();
+  const { user } = useUserContext();
   const { address: userWalletAddress } = useAccount();
-  const router = useRouter();
-  const orgId = router.query.organizationId;
+  const params = useParams<{ organizationId: string }>();
+  const orgId = params?.organizationId;
   const userId = user?.id;
   const {
     data: organizationData,
@@ -39,7 +33,10 @@ const OrganizationOverview: FC = () => {
     loading,
     refetch
   } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
-  const organization = organizationData?.organizationCollection?.edges[0]?.node;
+
+  const organization = organizationData?.organizationCollection?.edges?.[0]?.node;
+  console.log('organization', organization);
+
   const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
     variables: { walletAddress: userWalletAddress }
   });
@@ -52,7 +49,8 @@ const OrganizationOverview: FC = () => {
     );
   }
 
-  const participantOfferings = participantData?.offeringParticipantCollection?.edges.map(
+  console.log('participantData', participantData);
+  const participantOfferings = participantData?.offering_participantCollection?.edges.map(
     (offeringParticipant: OfferingParticipant) => {
       return offeringParticipant.offering;
     }

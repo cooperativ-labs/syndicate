@@ -5,13 +5,49 @@ import type { Metadata } from 'next';
 import Script from 'next/script';
 import React from 'react';
 
+import { createClient } from '@supabase/utils/server';
+import { UserProvider } from '@/contexts/UserContext';
 import Providers from './providers';
-
+import { createServerApolloClient } from '@src/lib/apolloServer';
+import { GET_USER_PROFILE } from '@src/utils/graphQueries/user';
+import { cookieToInitialState } from 'wagmi';
+import { getWagmiConfig } from '@src/web3/wagmi';
+import { headers } from 'next/headers';
 export const metadata: Metadata = {
-  title: 'Cooperativ'
+  title: 'Cooperativ',
+  icons: {
+    icon: [
+      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
+      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' }
+    ],
+    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
+    shortcut: ['/site-icon.png']
+  },
+  manifest: '/site.webmanifest'
 };
 
-const RootLayout = ({ children }: { children: React.ReactNode }) => {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const supabase = createClient();
+  const {
+    data: { user }
+  } = await supabase.auth.getUser();
+
+  const config = getWagmiConfig();
+  const initialState = cookieToInitialState(config, (await headers()).get('cookie'));
+
+  const { data: sessionData } = await supabase.auth.getSession();
+
+  let userProfile: any = null;
+  if (user?.id) {
+    const apollo = createServerApolloClient({ accessToken: sessionData.session?.access_token });
+    const { data } = await apollo.query<any>({
+      query: GET_USER_PROFILE,
+      variables: { id: user.id },
+      fetchPolicy: 'no-cache'
+    });
+    userProfile = data?.profileCollection?.edges?.[0]?.node ?? null;
+  }
+
   return (
     <html lang="en">
       <head>
@@ -21,14 +57,11 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
           href="https://fonts.googleapis.com/css2?family=Inter&family=Ubuntu:wght@400;700&display=swap"
           rel="stylesheet"
         />
-        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-        <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-        <link rel="shortcut icon" href="/site-icon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
       </head>
       <body>
-        <Providers>{children}</Providers>
+        <UserProvider userProfile={userProfile} user={user}>
+          <Providers initialState={initialState}>{children}</Providers>
+        </UserProvider>
         <Script
           async
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&libraries=places`}
@@ -37,6 +70,4 @@ const RootLayout = ({ children }: { children: React.ReactNode }) => {
       </body>
     </html>
   );
-};
-
-export default RootLayout;
+}

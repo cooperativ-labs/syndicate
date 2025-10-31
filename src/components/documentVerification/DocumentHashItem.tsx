@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Check, Copy } from 'lucide-react';
 import { Document, Maybe } from '@gql/graphql';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import React, { FC, useState } from 'react';
@@ -41,7 +41,7 @@ const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
             }, 1000);
           }}
         >
-          {copied ? <FontAwesomeIcon icon="check" /> : <FontAwesomeIcon icon="copy" />}
+          {copied ? <Check /> : <Copy />}
         </button>
       </span>
     </div>

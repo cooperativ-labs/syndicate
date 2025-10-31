@@ -1,5 +1,5 @@
 import { useQuery } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Check } from 'lucide-react';
 import { GET_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
 import React, { FC, useState } from 'react';
 
@@ -29,7 +29,7 @@ const PresentWalletUser: FC<PresentWalletUserProps> = ({ walletAddress, classNam
           }}
         >
           {copied ? (
-            <FontAwesomeIcon icon="check" />
+            <Check size={16} />
           ) : (
             <div className="border-2 rounded-md text-xs p-1 text-gray-500">copy address</div>
           )}

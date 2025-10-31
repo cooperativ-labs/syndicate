@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Trash } from 'lucide-react';
 import cn from 'classnames';
 import React, { FC } from 'react';
 
@@ -22,7 +22,7 @@ const DeleteButton: FC<DeleteButtonProps> = ({ iconColor, bgColor, onDelete }) =
         'hover:shadow-lg w-10 h-10 m-2 rounded-full'
       )}
     >
-      <FontAwesomeIcon icon="trash" />
+      <Trash size={16} />
     </button>
   );
 };

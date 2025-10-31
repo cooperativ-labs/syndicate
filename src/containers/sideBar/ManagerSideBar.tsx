@@ -1,6 +1,6 @@
 'use client';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Menu } from 'lucide-react';
 import Button from '@src/components/buttons/Button';
 import cn from 'classnames';
 import { useParams } from 'next/navigation';
@@ -88,7 +88,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
                   dispatchSidebar({ type: 'TOGGLE_MANAGER_SIDEBAR' });
                 }}
               >
-                <FontAwesomeIcon icon={['fas', 'bars']} size="lg" />
+                <Menu size={18} />
               </Button>
             </div>
           </div>

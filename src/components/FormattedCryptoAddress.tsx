@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { CheckIcon, CopyIcon } from 'lucide-react';
 import useWindowSize from '@hooks/useWindowSize';
 import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
@@ -73,7 +73,7 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
             }, 1000);
           }}
         >
-          {copied ? <FontAwesomeIcon icon="check" /> : <FontAwesomeIcon icon="copy" />}
+          {copied ? <CheckIcon className="w-4 h-4" /> : <CopyIcon className="w-4 h-4" />}
         </button>
       )}
     </span>

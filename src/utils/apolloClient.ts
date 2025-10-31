@@ -1,7 +1,12 @@
 import 'server-only';
 
 import { HttpLink } from '@apollo/client';
-import { ApolloClient, registerApolloClient } from '@apollo/client-integration-nextjs';
+import {
+  ApolloClient,
+  InMemoryCache,
+  registerApolloClient,
+  SSRMultipartLink
+} from '@apollo/client-integration-nextjs';
 
 import { createApolloCache, getGraphQLEndpoint } from './apolloConfig';
 
@@ -42,9 +47,11 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
     }
   });
 
+  const link = new SSRMultipartLink({ stripDefer: true }).concat(httpLink);
+
   return new ApolloClient({
-    cache: createApolloCache(),
-    link: httpLink
+    cache: new InMemoryCache(),
+    link
   });
 });
 

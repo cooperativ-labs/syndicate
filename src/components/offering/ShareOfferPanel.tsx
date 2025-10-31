@@ -1,6 +1,6 @@
 'use client';
 
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Info } from 'lucide-react';
 import { Offering, Organization } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -22,7 +22,7 @@ const ShareOfferPanelItem: FC<ShareOfferPanelItemProps> = ({ children, title, no
             className="relative ml-1 text-xs text-gray-500 hover:cursor-pointer"
             onClick={() => setShowNote(!showNote)}
           >
-            <FontAwesomeIcon icon="info-circle" />
+            <Info size={16} />
             {showNote && (
               <div
                 className="absolute -left-12 z-40 bg-white border border-gray-300 rounded-lg p-2 text-xs text-gray-700 w-48 "

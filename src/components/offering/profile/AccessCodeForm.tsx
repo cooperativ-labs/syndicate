@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChevronRight } from 'lucide-react';
 import Input from '@src/components/form-components/Inputs';
 import cn from 'classnames';
 import { Form, Formik } from 'formik';
@@ -65,11 +65,7 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({
                 placeholder={isOfferingManager ? '1234' : 'e.g. 1234'}
               />
               <button type="submit" disabled={isSubmitting} className={buttonClasses}>
-                {mini ? (
-                  'Set access code'
-                ) : (
-                  <FontAwesomeIcon icon="chevron-right" className="mr-2 text-lg" />
-                )}
+                {mini ? 'Set access code' : <ChevronRight className="mr-2 text-lg" />}
               </button>
             </Form>
           )}

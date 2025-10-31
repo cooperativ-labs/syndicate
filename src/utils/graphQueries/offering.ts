@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 import {
   CORE_APPLICATION_FIELDS,
@@ -6,8 +6,8 @@ import {
   CORE_INVESTMENT_OFFERING_FIELDS,
   CORE_INVESTMENT_PARTICIPANT_FIELDS,
   CORE_OFFERING_FIELDS,
-  SMART_CONTRACT_SET_FIELDS
-} from './fragments';
+  SMART_CONTRACT_SET_FIELDS,
+} from "./fragments";
 
 export const ADD_OFFERING = gql`
   ${CORE_OFFERING_FIELDS}
@@ -49,7 +49,7 @@ export const GET_OFFERING = gql`
   ${SMART_CONTRACT_SET_FIELDS}
   ${CORE_APPLICATION_FIELDS}
   query GetOffering($id: UUID!) {
-    offeringsCollection(filter: { id: { eq: $id } }, first: 1) {
+    offeringCollection(filter: { id: { eq: $id } }, first: 1) {
       edges {
         node {
           id

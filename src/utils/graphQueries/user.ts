@@ -17,6 +17,20 @@ export const GET_USERS = gql`
   }
 `;
 
+export const GET_USER_PROFILE = gql`
+  query GetUserProfile($id: UUID!) {
+    profileCollection(filter: { id: { eq: $id } }, first: 1) {
+      edges {
+        node {
+          id
+          name
+          image
+        }
+      }
+    }
+  }
+`;
+
 export const CHECK_EMAIL_EXISTS = gql`
   query CheckEmailExists($emailAddress: String!) {
     getEmailAddress(address: $address) {

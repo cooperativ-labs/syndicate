@@ -13,10 +13,10 @@ import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helper
 import router from 'next/router';
 import React, { FC } from 'react';
 
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 const Offerings: FC = () => {
-  const { user } = useSupabaseAuth();
+  const { user } = useUserContext();
   const [entityFormOpen, setEntityFormOpen] = React.useState(false);
   const orgId = router.query.organizationId;
   const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {

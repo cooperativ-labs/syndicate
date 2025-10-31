@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Offering, ShareOrder } from '@gql/graphql';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
@@ -202,11 +202,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                     <div className="flex">
                       {`I have read this offering's Risks & Considerations`}
                       <div className="ml-2">
-                        {disclosuresOpen ? (
-                          <FontAwesomeIcon icon="chevron-up" />
-                        ) : (
-                          <FontAwesomeIcon icon="chevron-down" />
-                        )}
+                        {disclosuresOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                       </div>
                     </div>
                   </button>
@@ -261,11 +257,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                     <div className="flex">
                       <div className="">{`I accept this offering's Terms and Conditions`}</div>
                       <div className="ml-2">
-                        {tocOpen ? (
-                          <FontAwesomeIcon icon="chevron-up" />
-                        ) : (
-                          <FontAwesomeIcon icon="chevron-down" />
-                        )}
+                        {tocOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                       </div>
                     </div>
                   </button>

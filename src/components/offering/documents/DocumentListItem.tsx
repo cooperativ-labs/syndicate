@@ -1,6 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { IconName } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from 'lucide-react';
 import { Document, Maybe } from '@gql/graphql';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
@@ -62,7 +61,27 @@ const DocumentListItem: FC<{
         className="flex items-center shrink-0"
       >
         <div className="ml-2 w-10 h-10 text-3xl text-blue-900">
-          <FontAwesomeIcon icon={`${getDocFormatOption(format)?.icon}` as IconName} />
+          {(() => {
+            const iconName = getDocFormatOption(format)?.icon;
+            switch (iconName) {
+              case 'file-pdf':
+                return <FileText />;
+              case 'file-excel':
+                return <FileSpreadsheet />;
+              case 'file-alt':
+                return <FileText />;
+              case 'file-powerpoint':
+                return <FileText />;
+              case 'file-word':
+                return <FileText />;
+              case 'play':
+                return <Play />;
+              case 'github':
+                return <Github />;
+              default:
+                return <FileIcon />;
+            }
+          })()}
         </div>
         <div className="d-block">
           <h1 className="font-bold text-sm truncate w:42  ">{title}</h1>
@@ -73,7 +92,7 @@ const DocumentListItem: FC<{
       </a>
       {deleteButton && (
         <button aria-label="delete-document" onClick={handleDelete}>
-          <FontAwesomeIcon icon="trash" className="text-lg text-gray-600 mr-2" />
+          <Trash className="text-lg text-gray-600 mr-2" />
         </button>
       )}
     </div>

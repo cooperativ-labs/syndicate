@@ -1,7 +1,12 @@
 'use client';
 
 import { HttpLink } from '@apollo/client';
-import { ApolloClient, ApolloNextAppProvider } from '@apollo/client-integration-nextjs';
+import {
+  ApolloClient,
+  ApolloNextAppProvider,
+  InMemoryCache,
+  SSRMultipartLink
+} from '@apollo/client-integration-nextjs';
 import { createApolloCache, getGraphQLEndpoint } from '@src/utils/apolloConfig';
 import { createClient } from '@supabase/utils/client';
 import type { ReactNode } from 'react';
@@ -28,9 +33,14 @@ function makeClient() {
     }
   });
 
+  const link =
+    typeof window === 'undefined'
+      ? new SSRMultipartLink({ stripDefer: true }).concat(httpLink)
+      : httpLink;
+
   return new ApolloClient({
-    cache: createApolloCache(),
-    link: httpLink
+    cache: new InMemoryCache(),
+    link
   });
 }
 

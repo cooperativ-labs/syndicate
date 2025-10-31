@@ -1,5 +1,3 @@
-import { IconName, IconPrefix } from '@fortawesome/free-brands-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
 import { ErrorMessage, Field, Form, Formik } from 'formik';
 import Link from 'next/link';
@@ -12,15 +10,13 @@ export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
 
 type SSOButtonProps = {
-  icon: string;
-  iconPrefix: IconPrefix;
   text: ReactNode;
   onClick: () => void;
 };
-const SSOButton: FC<SSOButtonProps> = ({ onClick, iconPrefix, icon, text }) => {
+const SSOButton: FC<SSOButtonProps> = ({ onClick, text }) => {
   return (
     <button className={loginButtonClass} onClick={() => onClick()}>
-      <FontAwesomeIcon icon={[iconPrefix, icon as IconName]} className="mr-2" /> {text}
+      {text}
     </button>
   );
 };

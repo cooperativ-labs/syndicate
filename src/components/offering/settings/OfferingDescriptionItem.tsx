@@ -1,5 +1,5 @@
 import { useMutation } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Menu, Pencil, X } from 'lucide-react';
 import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
 import Button from '@src/components/buttons/Button';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
@@ -51,16 +51,14 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({
             aria-label={open ? 'expand section' : 'collapse section'}
             onClick={() => setOpen(!open)}
           >
-            <div className="p-1">
-              {open ? <FontAwesomeIcon icon="close" /> : <FontAwesomeIcon icon="pen" />}
-            </div>
+            <div className="p-1">{open ? <X size={16} /> : <Pencil size={16} />}</div>
           </Button>
           <div
             className={`focus:outline-none pr-2 rounded-full font-semibold text-lg text-gray-700`}
             aria-label={'drag to reorder section'}
           >
             <div className="p-1">
-              <FontAwesomeIcon icon="bars" />
+              <Menu size={16} />
             </div>
           </div>
         </div>

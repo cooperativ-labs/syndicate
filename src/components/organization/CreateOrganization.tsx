@@ -4,15 +4,16 @@ import { useMutation } from '@apollo/client/react';
 import { ADD_ORGANIZATION, ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useContext, useEffect, useState } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 import MajorActionButton from '../buttons/MajorActionButton';
 import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import { OrganizationConnection, OrganizationInsertResponse } from '@gql/graphql';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
@@ -20,24 +21,14 @@ export type CreateOrganizationType = {
 };
 
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
-  const { user, supabase } = useSupabaseAuth();
-  console.log('user - CreateOrganization', user);
+  const { user } = useUserContext();
   const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? '');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
   const router = useRouter();
-
   const [addOrganization, { data: organization, error: orgError }] = useMutation(ADD_ORGANIZATION);
   const [addOrganizationUser, { data: organizationUser, error: orgUserError }] =
     useMutation(ADD_ORGANIZATION_USER);
-
-  console.log('organization', organization?.data?.addOrganization.records, orgError);
-  console.log(
-    'organizationUser',
-    organizationUser?.data?.addOrganizationUser.records,
-    orgUserError
-  );
-
   if (!user) {
     return null;
   }
@@ -73,13 +64,12 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
             }
           });
 
-          console.log('organization', organization?.data?.addOrganization.records);
-
-          if (orgError) {
-            throw new Error(orgError.message);
+          const org = organization?.insertIntoorganizationCollection?.records[0];
+          if (!org) {
+            throw new Error('Organization not found');
           }
 
-          const orgId = organization?.data?.addOrganization.records[0].id;
+          const orgId = org.id;
 
           // Add organization_user relationship with the new organization ID
           await addOrganizationUser({

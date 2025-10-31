@@ -10,8 +10,8 @@ const nextConfig = {
     '@reown/appkit',
     '@reown/appkit-common',
     '@reown/appkit-universal-connector',
-    '@reown/walletkit',
-    '@walletconnect/ethereum-provider'
+    '@reown/walletkit'
+    // '@walletconnect/ethereum-provider'
   ]
 };
 

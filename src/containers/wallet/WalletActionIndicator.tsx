@@ -1,5 +1,4 @@
-import { faCheck, faClockFour, faWaveSquare, faXmark } from '@fortawesome/free-solid-svg-icons';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Check, Waves, X } from 'lucide-react';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import cn from 'classnames';
 import React, { FC } from 'react';
@@ -21,11 +20,11 @@ const WalletActionStep: FC<{
         className="h-10 mr-1 animate-spin bg-white rounded-full"
       />
     ) : stepStatus === 'success' ? (
-      <FontAwesomeIcon icon={faCheck} className="" />
+      <Check />
     ) : stepStatus === 'error' ? (
-      <FontAwesomeIcon icon={faXmark} />
+      <X />
     ) : (
-      <FontAwesomeIcon icon={faWaveSquare} />
+      <Waves />
     );
 
   return (

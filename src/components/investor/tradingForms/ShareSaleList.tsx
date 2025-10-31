@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { RefreshCw } from 'lucide-react';
 import { Maybe, ShareOrder } from '@gql/graphql';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import SectionBlock from '@src/containers/SectionBlock';
@@ -93,7 +93,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
         refetchMainContracts();
       }}
     >
-      <FontAwesomeIcon icon="sync" className="mr-2" />
+      <RefreshCw className="mr-2" />
     </Button>
   );
 

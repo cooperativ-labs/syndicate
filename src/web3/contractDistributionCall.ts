@@ -1,7 +1,7 @@
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { config } from '@src/web3/wagmi';
+import { getWagmiConfig } from '@src/web3/wagmi';
 import { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 // Apollo types are intentionally not imported to avoid version-specific generics
@@ -38,6 +38,7 @@ export const submitDistribution = async ({
   addDistribution
 }: SubmitDistributionProps) => {
   const call = async () => {
+    const config = getWagmiConfig();
     const publicClient = getPublicClient(config);
     const block = await publicClient!.getBlock();
     if (!block) {
@@ -102,6 +103,7 @@ export const claimDistribution = async ({
   distributionContractIndex,
   setButtonStep
 }: ClaimDividendProps) => {
+  const config = getWagmiConfig();
   setButtonStep('step1');
   const call = async () => {
     try {

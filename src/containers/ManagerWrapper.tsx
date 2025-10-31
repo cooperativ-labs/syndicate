@@ -12,7 +12,7 @@ import { useAccount, useDisconnect } from 'wagmi';
 
 // End of Selection
 import { ApplicationStoreProps, store } from '@/contexts/store';
-import { useSupabaseAuth } from '@/contexts/SupabaseAuthContext';
+import { useUserContext } from '@contexts/UserContext';
 
 import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
@@ -27,7 +27,7 @@ type ManagerProps = {
 };
 
 const Manager: FC<ManagerProps> = ({ children }) => {
-  const { user, loading, supabase } = useSupabaseAuth();
+  const { user, loading, supabase } = useUserContext();
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   const { disconnect } = useDisconnect();
 

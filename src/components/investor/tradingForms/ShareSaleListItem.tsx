@@ -1,4 +1,4 @@
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { ChevronDown, ChevronUp } from 'lucide-react';
 import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
@@ -153,11 +153,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                 </div>
 
                 <div className="flex items-center p-1 justify-end">
-                  {!open ? (
-                    <FontAwesomeIcon icon="chevron-down" />
-                  ) : (
-                    <FontAwesomeIcon icon="chevron-up" />
-                  )}
+                  {!open ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
                 </div>
               </div>
             </div>

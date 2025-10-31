@@ -2,8 +2,7 @@
 
 import 'wagmi/window';
 
-import { IconProp } from '@fortawesome/fontawesome-svg-core';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Plus, Wallet } from 'lucide-react';
 import React, { useState } from 'react';
 
 interface AddTokenToMetamaskProps {
@@ -51,8 +50,7 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
         }
         onClick={handleClick}
       >
-        <FontAwesomeIcon icon={'fa-plus' as IconProp} />{' '}
-        <FontAwesomeIcon icon={'fa-wallet' as IconProp} />
+        <Plus size={14} /> <Wallet size={14} />
       </button>
       {status && <p>{status}</p>}
     </div>

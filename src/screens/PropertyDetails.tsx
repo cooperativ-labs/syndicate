@@ -1,7 +1,7 @@
 'use client';
 
 import { useMutation } from '@apollo/client/react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { Pencil } from 'lucide-react';
 import { RealEstateProperty } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import UpdateAddress from '@src/components/address/UpdateAddress';
@@ -170,7 +170,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           </div>
           {isEntityManager && (
             <Button onClick={() => setAddressModal(true)}>
-              <FontAwesomeIcon icon="pen" />
+              <Pencil size={16} />
             </Button>
           )}
         </div>
@@ -181,7 +181,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           </div>
           {isEntityManager && (
             <Button onClick={() => setDetailsModal(true)}>
-              <FontAwesomeIcon icon="pen" />
+              <Pencil size={16} />
             </Button>
           )}
         </div>
@@ -201,7 +201,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           </div>
           {isEntityManager && (
             <Button onClick={() => setFinancialsModal(true)}>
-              <FontAwesomeIcon icon="pen" />
+              <Pencil size={16} />
             </Button>
           )}
         </div>
