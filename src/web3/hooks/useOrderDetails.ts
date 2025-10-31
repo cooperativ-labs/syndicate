@@ -1,16 +1,16 @@
-import { useContractRead } from 'wagmi';
+import { useContractRead } from "wagmi";
 
-import { swapContractABI } from '../generated';
-import { String0x } from '../helpersChain';
-import { shareContractDecimals, toNormalNumber } from '../util';
+import { swapContractABI } from "../generated";
+import { String0x } from "../helpersChain";
+import { shareContractDecimals, toNormalNumber } from "../util";
 
 export type OrderDetailsType = {
-  initiator: String0x | '' | undefined;
-  partition: String0x | '' | undefined;
+  initiator: String0x | "" | undefined;
+  partition: String0x | "" | undefined;
   amount: number | undefined;
   price: number | undefined;
   filledAmount: number | undefined;
-  filler: String0x | '' | undefined;
+  filler: String0x | "" | undefined;
   isApproved: boolean | undefined;
   isCancelled: boolean | undefined;
   isAccepted: boolean | undefined;
@@ -36,7 +36,7 @@ export const useOrderDetails = (
   } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: 'orders',
+    functionName: "orders",
     args: [BigInt(contractIndex)]
   });
 

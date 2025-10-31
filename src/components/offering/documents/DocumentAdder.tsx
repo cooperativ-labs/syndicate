@@ -1,17 +1,16 @@
-import { useMutation } from '@apollo/client/react';
-import { DocumentFormat, DocumentType } from '@gql/graphql';
-import Button from '@src/components/buttons/Button';
-import FileUpload from '@src/components/form-components/FileUpload';
-import Input from '@src/components/form-components/Inputs';
-import SectionBlock from '@src/containers/SectionBlock';
-import { getDocFormatOption } from '@src/utils/enumConverters';
-import { ADD_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import cn from 'classnames';
-import { Form, Formik } from 'formik';
-import React, { FC, useContext, useState } from 'react';
-
-import { useUserContext } from '@contexts/UserContext';
+import { useMutation } from "@apollo/client/react";
+import { useUserContext } from "@contexts/UserContext";
+import { DocumentFormat, DocumentType } from "@gql/graphql";
+import Button from "@src/components/buttons/Button";
+import FileUpload from "@src/components/form-components/FileUpload";
+import Input from "@src/components/form-components/Inputs";
+import SectionBlock from "@src/containers/SectionBlock";
+import { getDocFormatOption } from "@src/utils/enumConverters";
+import { ADD_OFFERING_DOCUMENT } from "@src/utils/graphQueries/document";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import cn from "classnames";
+import { Form, Formik } from "formik";
+import React, { FC, useContext, useState } from "react";
 
 type DocumentAdderProps = {
   offeringId?: string;
@@ -63,7 +62,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
       <div className="mt-4 border-2 rounded-md px-2">
         <SectionBlock
           className="font-bold"
-          sectionTitle={'Attach links and documents'}
+          sectionTitle={"Attach links and documents"}
           mini
           asAccordion
         >
@@ -74,20 +73,20 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
             urlToDatabase={() => {}}
             docType={DocumentType.OfferingDocument}
             accept={[
-              'pdf',
-              'doc',
-              'docx',
-              'xml',
-              'application/msword',
-              'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
-              'md'
+              "pdf",
+              "doc",
+              "docx",
+              "xml",
+              "application/msword",
+              "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
+              "md"
             ]}
           />
           <div className="grid grid-cols-3 gap-3 mb-2">
             <div
               className={cn(
-                fileFormat === DocumentFormat.Video && 'bg-gray-600 text-white',
-                'mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1'
+                fileFormat === DocumentFormat.Video && "bg-gray-600 text-white",
+                "mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1"
               )}
               onClick={() => setFileFormat(DocumentFormat.Video)}
             >
@@ -95,8 +94,8 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
             </div>
             <div
               className={cn(
-                fileFormat === DocumentFormat.Powerpoint && 'bg-gray-600 text-white',
-                'mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1'
+                fileFormat === DocumentFormat.Powerpoint && "bg-gray-600 text-white",
+                "mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1"
               )}
               onClick={() => setFileFormat(DocumentFormat.Powerpoint)}
             >
@@ -104,8 +103,8 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
             </div>
             <div
               className={cn(
-                fileFormat === DocumentFormat.Other && 'bg-gray-600 text-white',
-                'mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1'
+                fileFormat === DocumentFormat.Other && "bg-gray-600 text-white",
+                "mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1"
               )}
               onClick={() => setFileFormat(DocumentFormat.Other)}
             >
@@ -115,17 +114,17 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
           {fileFormat !== null && (
             <Formik
               initialValues={{
-                title: '',
-                docUrl: '',
+                title: "",
+                docUrl: "",
                 format: fileFormat
               }}
               validate={values => {
                 const errors: any = {}; /** @TODO : Shape */
                 if (!values.title) {
-                  errors.title = 'Please title this document.';
+                  errors.title = "Please title this document.";
                 }
                 if (!values.docUrl) {
-                  errors.docUrl = 'URL is required.';
+                  errors.docUrl = "URL is required.";
                 }
                 return errors;
               }}
@@ -134,7 +133,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
                 setSubmitting(true);
                 addFileToDB(
                   values.docUrl,
-                  'external',
+                  "external",
                   values.title,
                   DocumentType.OfferingDocument,
                   fileFormat
@@ -144,8 +143,8 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
             >
               {({ isSubmitting }) => (
                 <Form className="flex flex-col items-center">
-                  <Input className={' bg-opacity-0'} required name="title" placeholder="Title" />
-                  <Input className={' bg-opacity-0'} required name="docUrl" placeholder="URL" />
+                  <Input className={" bg-opacity-0"} required name="title" placeholder="Title" />
+                  <Input className={" bg-opacity-0"} required name="docUrl" placeholder="URL" />
 
                   <Button
                     type="submit"

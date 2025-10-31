@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client/react';
-import FormCard from '@src/components/cards/FormCard';
-import LoadingModal from '@src/components/loading/ModalLoading';
-import AddPropertyInfo from '@src/components/offering/AddPropertyInfo';
-import ManagerWrapper from '@src/containers/ManagerWrapper';
-import { GET_OFFERING } from '@src/utils/graphQueries/offering';
-import { useParams } from 'next/navigation';
-import React from 'react';
+import { useQuery } from "@apollo/client/react";
+import FormCard from "@src/components/cards/FormCard";
+import LoadingModal from "@src/components/loading/ModalLoading";
+import AddPropertyInfo from "@src/components/offering/AddPropertyInfo";
+import ManagerWrapper from "@src/containers/ManagerWrapper";
+import { GET_OFFERING } from "@src/utils/graphQueries/offering";
+import { useParams } from "next/navigation";
+import React from "react";
 
 const AddProperty = () => {
   const params = useParams<{ offeringId: string }>();

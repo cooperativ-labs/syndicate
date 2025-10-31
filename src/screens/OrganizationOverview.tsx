@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client/react';
-import { OfferingParticipant } from '@gql/graphql';
-import DashboardCard from '@src/components/cards/DashboardCard';
-import { toastExperiment } from '@src/components/indicators/Notifications';
-import LoadingModal from '@src/components/loading/ModalLoading';
-import CreateOffering from '@src/components/offering/CreateOffering';
-import OfferingFinder from '@src/components/offering/OfferingFinder';
-import OfferingsList from '@src/components/offering/OfferingsList';
-import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamMember';
-import TeamMemberList from '@src/components/organization/TeamMemberList';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import SectionBlock from '@src/containers/SectionBlock';
-import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { GET_USER } from '@src/utils/graphQueries/user';
-import { Organization, OrganizationConnection } from '@gql/graphql';
-import { useParams } from 'next/navigation';
-import React, { FC } from 'react';
-import { useAccount } from 'wagmi';
-import { useUserContext } from '@contexts/UserContext';
+import { useQuery } from "@apollo/client/react";
+import { useUserContext } from "@contexts/UserContext";
+import { GetOfferingParticipantQuery, OfferingParticipant } from "@gql/graphql";
+import { GetOrganizationQuery, Organization, OrganizationConnection } from "@gql/graphql";
+import DashboardCard from "@src/components/cards/DashboardCard";
+import { toastExperiment } from "@src/components/indicators/Notifications";
+import LoadingModal from "@src/components/loading/ModalLoading";
+import CreateOffering from "@src/components/offering/CreateOffering";
+import OfferingFinder from "@src/components/offering/OfferingFinder";
+import OfferingsList from "@src/components/offering/OfferingsList";
+import SettingsAddTeamMember from "@src/components/organization/SettingsAddTeamMember";
+import TeamMemberList from "@src/components/organization/TeamMemberList";
+import TwoColumnLayout from "@src/containers/Layouts/TwoColumnLayout";
+import SectionBlock from "@src/containers/SectionBlock";
+import { GET_OFFERING_PARTICIPANT } from "@src/utils/graphQueries/offering";
+import { GET_ORGANIZATION } from "@src/utils/graphQueries/organization";
+import { GET_USER } from "@src/utils/graphQueries/user";
+import { useParams } from "next/navigation";
+import React, { FC } from "react";
+import { useAccount } from "wagmi";
 
 const OrganizationOverview: FC = () => {
   const { user } = useUserContext();
@@ -32,14 +32,17 @@ const OrganizationOverview: FC = () => {
     error,
     loading,
     refetch
-  } = useQuery(GET_ORGANIZATION, { variables: { id: orgId } });
+  } = useQuery<GetOrganizationQuery>(GET_ORGANIZATION, { variables: { id: orgId } });
 
-  const organization = organizationData?.organizationCollection?.edges?.[0]?.node;
-  console.log('organization', organization);
+  const organization = organizationData?.organizationCollection?.edges?.[0]?.node as Organization;
+  console.log("organization", organization);
 
-  const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
-    variables: { walletAddress: userWalletAddress }
-  });
+  const { data: participantData } = useQuery<GetOfferingParticipantQuery>(
+    GET_OFFERING_PARTICIPANT,
+    {
+      variables: { walletAddress: userWalletAddress }
+    }
+  );
 
   if (!organization) {
     return (
@@ -49,7 +52,7 @@ const OrganizationOverview: FC = () => {
     );
   }
 
-  console.log('participantData', participantData);
+  console.log("participantData", participantData);
   const participantOfferings = participantData?.offering_participantCollection?.edges.map(
     (offeringParticipant: OfferingParticipant) => {
       return offeringParticipant.offering;
@@ -74,13 +77,13 @@ const OrganizationOverview: FC = () => {
         {hasOfferings && (
           <div>
             <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">
-              Your current offerings:{' '}
+              Your current offerings:{" "}
             </h2>
             <OfferingsList offerings={offerings} />
           </div>
         )}
         <DashboardCard>
-          <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">{`${isAdmin ? 'Manage ' : ''}Team`}</h2>
+          <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">{`${isAdmin ? "Manage " : ""}Team`}</h2>
           <TeamMemberList
             teamMembers={organization.users}
             organizationId={organization.id}
@@ -88,7 +91,7 @@ const OrganizationOverview: FC = () => {
             isAdmin={isAdmin}
           />
           <div className="mt-3 rounded-lg p-1 px-2 ">
-            <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
+            <SectionBlock className="font-bold " sectionTitle={"Add team members"} mini asAccordion>
               <SettingsAddTeamMember organizationId={organization.id} />
             </SectionBlock>
           </div>

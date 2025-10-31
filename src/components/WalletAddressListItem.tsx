@@ -1,18 +1,18 @@
-import { useMutation } from '@apollo/client/react';
-import { Pencil, X } from 'lucide-react';
-import { CryptoAddress, CryptoAddressType, Maybe } from '@gql/graphql';
-import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
-import { REMOVE_ENTITY_WALLET } from '@src/utils/graphQueries/entity';
-import { MatchSupportedChains } from '@src/web3/connectors';
-import cn from 'classnames';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useMutation } from "@apollo/client/react";
+import { CryptoAddress, CryptoAddressType, Maybe } from "@gql/graphql";
+import { UPDATE_CRYPTO_ADDRESS } from "@src/utils/graphQueries/crypto";
+import { REMOVE_ENTITY_WALLET } from "@src/utils/graphQueries/entity";
+import { MatchSupportedChains } from "@src/web3/connectors";
+import cn from "classnames";
+import { Form, Formik } from "formik";
+import { Pencil, X } from "lucide-react";
+import React, { FC, useState } from "react";
+import { useAccount } from "wagmi";
 
-import Checkbox from './form-components/Checkbox';
-import Input from './form-components/Inputs';
-import { MarkPublic } from './form-components/ListItemButtons';
-import FormattedCryptoAddress from './FormattedCryptoAddress';
+import Checkbox from "./form-components/Checkbox";
+import Input from "./form-components/Inputs";
+import { MarkPublic } from "./form-components/ListItemButtons";
+import FormattedCryptoAddress from "./FormattedCryptoAddress";
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;
@@ -34,28 +34,28 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
   const getChainLogo = (chainId: Maybe<number> | undefined) => {
     return (
       <div className="flex">
-        only:{' '}
+        only:{" "}
         {MatchSupportedChains(chainId)?.icon ? (
           <div>
             <img
               src={MatchSupportedChains(chainId)?.icon}
               className="ml-1 h-6"
               alt={name as string}
-            />{' '}
+            />{" "}
           </div>
         ) : (
           MatchSupportedChains(chainId)?.name
-        )}{' '}
+        )}{" "}
       </div>
     );
   };
 
   return (
-    <div className={cn(withEdit && 'grid grid-cols-9 gap-3 items-center')}>
+    <div className={cn(withEdit && "grid grid-cols-9 gap-3 items-center")}>
       <div className="p-3 border-2 rounded-lg col-span-8">
         <div className="flex justify-between">
-          {name}{' '}
-          {type === CryptoAddressType.Contract ? getChainLogo(chainId) : <div> all EVM chains</div>}{' '}
+          {name}{" "}
+          {type === CryptoAddressType.Contract ? getChainLogo(chainId) : <div> all EVM chains</div>}{" "}
           {withEdit && (
             <div className="items-center">
               <MarkPublic isPublic={isPublic} />
@@ -125,9 +125,9 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
               <button
                 className={cn(
                   userWalletAddress === wallet.address
-                    ? 'bg-gray-300 hover:bg-gray-300 text-gray-700'
-                    : 'bg-red-900 hover:bg-red-800 text-white',
-                  'font-bold uppercase mt-4 rounded p-2 w-full'
+                    ? "bg-gray-300 hover:bg-gray-300 text-gray-700"
+                    : "bg-red-900 hover:bg-red-800 text-white",
+                  "font-bold uppercase mt-4 rounded p-2 w-full"
                 )}
                 disabled={userWalletAddress === wallet.address}
                 aria-label="remove wallet from account"
@@ -138,8 +138,8 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                 }
               >
                 {userWalletAddress === wallet.address
-                  ? 'You cannot remove your login wallet'
-                  : 'Remove this wallet from my account'}
+                  ? "You cannot remove your login wallet"
+                  : "Remove this wallet from my account"}
               </button>
             </div>
           </div>

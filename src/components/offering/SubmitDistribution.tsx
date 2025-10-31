@@ -1,20 +1,20 @@
-import { useMutation } from '@apollo/client/react';
-import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
-import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { ADD_DISTRIBUTION } from '@src/utils/graphQueries/orders';
-import { isMetaMask } from '@src/web3/connectors';
-import { submitDistribution } from '@src/web3/contractDistributionCall';
-import { setAllowance } from '@src/web3/contractSwapCalls';
-import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
-import { erc20ABI, useAccount, useContractRead } from 'wagmi';
+import { useMutation } from "@apollo/client/react";
+import WalletActionIndicator from "@src/containers/wallet/WalletActionIndicator";
+import WalletActionModal from "@src/containers/wallet/WalletActionModal";
+import { ADD_DISTRIBUTION } from "@src/utils/graphQueries/orders";
+import { isMetaMask } from "@src/web3/connectors";
+import { submitDistribution } from "@src/web3/contractDistributionCall";
+import { setAllowance } from "@src/web3/contractSwapCalls";
+import { String0x, stringFromBytes32 } from "@src/web3/helpersChain";
+import { toNormalNumber } from "@src/web3/util";
+import { Form, Formik } from "formik";
+import React, { FC, useState } from "react";
+import { erc20ABI, useAccount, useContractRead } from "wagmi";
 
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import Select from '../form-components/Select';
+import { LoadingButtonStateType, LoadingButtonText } from "../buttons/Button";
+import FormButton from "../buttons/FormButton";
+import Input, { defaultFieldDiv } from "../form-components/Inputs";
+import Select from "../form-components/Select";
 
 type SubmitDistributionProps = {
   distributionContractAddress: String0x | undefined;
@@ -34,13 +34,13 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
 }) => {
   const { address: userWalletAddress, connector } = useAccount();
 
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
   const [addDistribution, { error }] = useMutation(ADD_DISTRIBUTION);
 
   const { data: rawAllowance } = useContractRead({
     address: distributionTokenAddress,
     abi: erc20ABI,
-    functionName: 'allowance',
+    functionName: "allowance",
     args: [userWalletAddress as String0x, distributionContractAddress as String0x]
   });
 
@@ -64,7 +64,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     };
 
     if (!isAllowanceSufficient) {
-      setButtonStep('step1');
+      setButtonStep("step1");
       await setAllowance({
         paymentTokenAddress: distributionTokenAddress,
         paymentTokenDecimals: distributionTokenDecimals,
@@ -72,10 +72,10 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         amount: allowanceRequiredForPurchase,
         setButtonStep
       });
-      setButtonStep('step2');
+      setButtonStep("step2");
       await callSubmitDistribution();
     } else if (isAllowanceSufficient) {
-      setButtonStep('step2');
+      setButtonStep("step2");
       await callSubmitDistribution();
     }
     refetchContracts();
@@ -83,7 +83,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
   return (
     <>
       <WalletActionModal
-        open={buttonStep === 'step1' || buttonStep === 'step2'}
+        open={buttonStep === "step1" || buttonStep === "step2"}
         metaMaskWarning={isMetaMask(connector)}
       >
         <WalletActionIndicator
@@ -97,13 +97,13 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
 
       <Formik
         initialValues={{
-          amount: '',
+          amount: "",
           partition: partitions[0]
         }}
         validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           if (!values.amount) {
-            errors.type = 'Please indicate how many shares you want to send';
+            errors.type = "Please indicate how many shares you want to send";
           }
         }}
         onSubmit={async (values, { setSubmitting }) => {
@@ -123,7 +123,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
                 placeholder="2000"
                 required
               />
-              <Select className={'mt-3'} name="partition" labelText="Share class">
+              <Select className={"mt-3"} name="partition" labelText="Share class">
                 <option value="">Select class</option>
 
                 {partitions.map((partition, i) => {
@@ -135,7 +135,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
                 })}
               </Select>
               <div className="mt-4" />
-              <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
+              <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
                 <LoadingButtonText
                   state={buttonStep}
                   idleText={`Distribute funds to shareholders`}

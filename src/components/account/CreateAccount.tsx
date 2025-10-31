@@ -1,13 +1,13 @@
-import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
-import Link from 'next/link';
-import React, { FC, ReactNode, useState } from 'react';
-import * as Yup from 'yup';
+import { signIn, signInWithEmail } from "@src/utils/actions/userActions";
+import { ErrorMessage, Field, Form, Formik } from "formik";
+import Link from "next/link";
+import React, { FC, ReactNode, useState } from "react";
+import * as Yup from "yup";
 
-import CooperativLogo from '../CooperativLogo';
+import CooperativLogo from "../CooperativLogo";
 
 export const loginButtonClass =
-  'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
+  "flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full";
 
 type SSOButtonProps = {
   text: ReactNode;
@@ -57,11 +57,11 @@ const CreateAccount: FC = () => {
   };
 
   const MagicLinkLoginSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email address').required('Email is required')
+    email: Yup.string().email("Invalid email address").required("Email is required")
   });
   const magicLinkForm = (
     <Formik
-      initialValues={{ email: '', password: '' }}
+      initialValues={{ email: "", password: "" }}
       validationSchema={MagicLinkLoginSchema}
       onSubmit={values => handleMagicLink(values.email)}
     >
@@ -74,7 +74,7 @@ const CreateAccount: FC = () => {
               aria-label="login-email"
               placeholder="you@example.com"
               className={`w-full rounded-sm h-14 border-2 ${
-                touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
+                touched.email && errors.email ? "border-red-400" : "border-cLightBlue"
               } focus:no-outline focus:ring-2 focus:ring-blue-400`}
             />
             {/* <Field

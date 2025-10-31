@@ -1,9 +1,9 @@
 function useCurrencyFormatter(amount: number, currency: string | undefined) {
   if (amount > 1000) {
-    const rounded = `${Math.round(amount / 1000)}k ${currency !== 'Contributor Credits' ? currency : ''} `;
+    const rounded = `${Math.round(amount / 1000)}k ${currency !== "Contributor Credits" ? currency : ""} `;
     return { amount, rounded };
   }
-  const rounded = `${Math.round(amount / 1)} ${currency !== 'Contributor Credits' ? (currency ? currency : '') : ''}  `;
+  const rounded = `${Math.round(amount / 1)} ${currency !== "Contributor Credits" ? (currency ? currency : "") : ""}  `;
   return { amount, rounded };
 }
 

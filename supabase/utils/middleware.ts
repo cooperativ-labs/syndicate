@@ -1,28 +1,28 @@
-import { createServerClient } from '@supabase/ssr';
-import { type NextRequest, NextResponse } from 'next/server';
+import { createServerClient } from "@supabase/ssr";
+import { type NextRequest, NextResponse } from "next/server";
 
 const PUBLIC_ROUTES = [
-  '/confirm-your-email',
-  '/check-your-email',
-  '/create-organization',
-  '/login/confirm' // Add your new confirmation page
+  "/confirm-your-email",
+  "/check-your-email",
+  "/create-organization",
+  "/login/confirm" // Add your new confirmation page
 ] as const as string[];
 
 const STATIC_ASSETS = [
-  '/robots.txt',
-  '/manifest.json',
-  '/sitemap.xml',
-  '/favicon.ico'
+  "/robots.txt",
+  "/manifest.json",
+  "/sitemap.xml",
+  "/favicon.ico"
 ] as const as string[];
 
-const PUBLIC_PREFIXES = ['/auth', '/_next', '/api'] as const as string[];
+const PUBLIC_PREFIXES = ["/auth", "/_next", "/api"] as const as string[];
 
 export async function updateSession(request: NextRequest) {
   const { pathname } = request.nextUrl;
 
-  if (pathname.startsWith('/api')) {
+  if (pathname.startsWith("/api")) {
     return NextResponse.next({
-      headers: { 'x-middleware': 'api-skip' } // debug header
+      headers: { "x-middleware": "api-skip" } // debug header
     });
   }
 

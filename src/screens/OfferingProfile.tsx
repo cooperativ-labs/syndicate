@@ -1,33 +1,33 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client/react';
-import { DocumentType, Offering } from '@gql/graphql';
-import AddressDisplay from '@src/components/address/AddressDisplay';
-import DistributionList from '@src/components/offering/distributions/DistributionList';
-import DocumentList from '@src/components/offering/documents/DocumentList';
-import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
-import { contentSectionHeader } from '@src/components/offering/tabs/TextSection';
-import OfferingProperties from '@src/components/properties/OfferingProperties';
-import Header from '@src/containers/Header';
-import Container from '@src/containers/Layouts/Container';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
-import { getDocumentsOfType } from '@src/utils/helpersDocuments';
+import { useQuery } from "@apollo/client/react";
+import { DocumentType, Offering } from "@gql/graphql";
+import AddressDisplay from "@src/components/address/AddressDisplay";
+import DistributionList from "@src/components/offering/distributions/DistributionList";
+import DocumentList from "@src/components/offering/documents/DocumentList";
+import ShareOfferPanel from "@src/components/offering/ShareOfferPanel";
+import { contentSectionHeader } from "@src/components/offering/tabs/TextSection";
+import OfferingProperties from "@src/components/properties/OfferingProperties";
+import Header from "@src/containers/Header";
+import Container from "@src/containers/Layouts/Container";
+import TwoColumnLayout from "@src/containers/Layouts/TwoColumnLayout";
+import ProfileTabContainer from "@src/containers/ProfileTabContainer";
+import ChooseConnectorButton from "@src/containers/wallet/ChooseConnectorButton";
+import { RETRIEVE_ORDERS } from "@src/utils/graphQueries/orders";
+import { getDocumentsOfType } from "@src/utils/helpersDocuments";
 import {
   ContractOrder,
   getCurrentOrderPrice,
   getOrderArrayFromContract
-} from '@src/utils/helpersOrder';
-import { getBaseUrl } from '@src/utils/helpersURL';
-import { String0x } from '@src/web3/helpersChain';
-import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-import cn from 'classnames';
-import { useRouter } from 'next/navigation';
-import React, { FC, useState } from 'react';
-import { useAsync } from 'react-use';
-import { useAccount } from 'wagmi';
+} from "@src/utils/helpersOrder";
+import { getBaseUrl } from "@src/utils/helpersURL";
+import { String0x } from "@src/web3/helpersChain";
+import { useSwapContractInfo } from "@src/web3/hooks/useSwapContractInfo";
+import cn from "classnames";
+import { useRouter } from "next/navigation";
+import React, { FC, useState } from "react";
+import { useAsync } from "react-use";
+import { useAccount } from "wagmi";
 
 type OfferingProfileProps = {
   offering: Offering;
@@ -83,9 +83,9 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
   const OfferingReProperties = offering.offeringEntity?.realEstateProperties;
   const operatingCurrency = offering.offeringEntity?.operatingCurrency;
 
-  const { id: orgId, name: orgName, logo } = organization || { id: '', name: '', logo: '' };
+  const { id: orgId, name: orgName, logo } = organization || { id: "", name: "", logo: "" };
 
-  const OrgLogo = logo ? logo : '/assets/images/logos/company-placeholder.jpeg';
+  const OrgLogo = logo ? logo : "/assets/images/logos/company-placeholder.jpeg";
 
   return (
     <div data-test="layout-project" className="w-full h-full pb-10 md:pb-20">
@@ -97,7 +97,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
       </div> */}
       <div className="absolute right-4 top-4 flex justify-end ">
         <div className="flex items-center justify-center rounded-full bg-slate-50 shadow-sm">
-          <ChooseConnectorButton buttonText={'Connect Wallet'} />
+          <ChooseConnectorButton buttonText={"Connect Wallet"} />
         </div>
       </div>
       {/* <WalletChooserModal /> */}
@@ -105,7 +105,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
         <TwoColumnLayout twoThirdsLayout className="lg:-mt-24">
           {/* Slot 1 */}
           <div className="grow flex flex-col justify-center z-10">
-            <h1 className={cn(['mt-24 text-3xl ubuntu font-bold text-gray-800'])}>
+            <h1 className={cn(["mt-24 text-3xl ubuntu font-bold text-gray-800"])}>
               <span className="flex items-center">
                 {offeringName}
 
@@ -128,7 +128,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               <img
                 className="h-10 w-10 bg-slate-400 border border-slate-400 rounded-full"
                 src={OrgLogo}
-              />{' '}
+              />{" "}
               <span className="pl-2 pr-4 font-semibold">{orgName}</span>
             </div>
             {offeringEntity?.addresses?.map((address, i) => (

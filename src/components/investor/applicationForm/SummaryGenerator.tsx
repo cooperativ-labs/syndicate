@@ -1,15 +1,15 @@
-import { Address, CurrencyCode, LegalEntity, Offering } from '@gql/graphql';
-import { getCurrencyOption } from '@src/utils/enumConverters';
+import { Address, CurrencyCode, LegalEntity, Offering } from "@gql/graphql";
+import { getCurrencyOption } from "@src/utils/enumConverters";
 import {
   GenerateInvestorApplicationSummary,
   GenerateSubscriptionAgreementSuitabilityAttestation,
   GenerateSubscriptionPurchaseAttestation
-} from '@src/utils/helpersAgreement';
-import { getHumanDate } from '@src/utils/helpersGeneral';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
-import axios from 'axios';
-import { useAsync } from 'react-use';
+} from "@src/utils/helpersAgreement";
+import { getHumanDate } from "@src/utils/helpersGeneral";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { entityNotHuman } from "@src/utils/helpersUserAndEntity";
+import axios from "axios";
+import { useAsync } from "react-use";
 type AgreementText = {
   custom: string;
   standard: string;
@@ -88,27 +88,27 @@ export const GeneratedApplicationText = (
   // applicantPurchaseAttestationText: string
 ) => {
   const applicationSummary = `/assets/subscription-agreement/application-summary.md`;
-  const getApplicationSummary = async (): Promise<AgreementText['standard']> =>
+  const getApplicationSummary = async (): Promise<AgreementText["standard"]> =>
     axios.get(applicationSummary).then(resp => resp.data);
   const { value: applicationSummaryText } = useAsync(getApplicationSummary, []);
 
   const applicantSuitabilityAttestation = `/assets/subscription-agreement/applicant-suitability-attestation.md`;
-  const getApplicantSuitability = async (): Promise<AgreementText['standard']> =>
+  const getApplicantSuitability = async (): Promise<AgreementText["standard"]> =>
     axios.get(applicantSuitabilityAttestation).then(resp => resp.data);
   const { value: applicantSuitabilityAttestationText } = useAsync(getApplicantSuitability, []);
 
   const applicantPurchaseAttestation = `/assets/subscription-agreement/applicant-purchase-attestation.md`;
-  const getApplicantPurchaseAttestation = async (): Promise<AgreementText['standard']> =>
+  const getApplicantPurchaseAttestation = async (): Promise<AgreementText["standard"]> =>
     axios.get(applicantPurchaseAttestation).then(resp => resp.data);
   const { value: applicantPurchaseAttestationText } = useAsync(getApplicantPurchaseAttestation, []);
 
   const risks = `/assets/subscription-agreement/risks-disclosure.md`;
-  const getRisks = async (): Promise<AgreementText['standard']> =>
+  const getRisks = async (): Promise<AgreementText["standard"]> =>
     axios.get(risks).then(resp => resp.data);
   const { value: risksText } = useAsync(getRisks, []);
 
   const considerations = `/assets/subscription-agreement/considerations-disclosure.md`;
-  const getConsiderations = async (): Promise<AgreementText['standard']> =>
+  const getConsiderations = async (): Promise<AgreementText["standard"]> =>
     axios.get(considerations).then(resp => resp.data);
   const { value: considerationsText } = useAsync(getConsiderations, []);
 
@@ -185,7 +185,7 @@ export const GeneratedApplicationText = (
       taxId: taxId,
       purchaseMethod: purchaseMethod
     },
-    applicationSummaryText ?? ''
+    applicationSummaryText ?? ""
   );
 
   const ApplicationSuitability = GenerateSubscriptionAgreementSuitabilityAttestation(
@@ -198,18 +198,18 @@ export const GeneratedApplicationText = (
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
       offeringEntityName: offeringEntity?.legalName,
       purchaserEntityName: purchaserEntityName,
-      purchaserAge: purchaserAge ? numberWithCommas(purchaserAge) : '',
+      purchaserAge: purchaserAge ? numberWithCommas(purchaserAge) : "",
       purchaserPrincipleResidence: purchaserPrincipleResidence,
       purchaserResidenceHistory: purchaserResidenceHistory,
       purchaserTaxState: purchaserTaxState,
       purchaserAccredited: purchaserAccredited,
       purchaserNetWorth: purchaserNetWorth,
       purchaserIncome: purchaserIncome,
-      purchaserAccreditedType: purchaserAccredited ? purchaserAccreditedType : '',
-      purchaserAccreditedTypeOther: purchaserAccredited ? purchaserAccreditedTypeOther : '',
+      purchaserAccreditedType: purchaserAccredited ? purchaserAccreditedType : "",
+      purchaserAccreditedTypeOther: purchaserAccredited ? purchaserAccreditedTypeOther : "",
       purchaserSophisticated: purchaserSophisticated,
       purchaserSophisticatedSelf: purchaserSophisticated && purchaserSophisticatedSelf,
-      purchaserExperienceFinancial: purchaserAccredited ? purchaserExperienceFinancial : '',
+      purchaserExperienceFinancial: purchaserAccredited ? purchaserExperienceFinancial : "",
       purchaserExperienceSecurities: purchaserExperienceSecurities,
       purchaserExperienceLLCs: purchaserExperienceLLCs,
       purchaserExperienceOther: purchaserExperienceOther,
@@ -233,19 +233,19 @@ export const GeneratedApplicationText = (
       pricePerUnit: offering.details?.priceStart,
       investmentCurrency: getCurrencyOption(offering.details?.investmentCurrency)?.symbol
     },
-    applicantSuitabilityAttestationText ?? ''
+    applicantSuitabilityAttestationText ?? ""
   );
 
   const PurchaseAttestation = GenerateSubscriptionPurchaseAttestation(
     {
       isNonHuman: isCompany,
       offeringEntityName: offeringEntity?.legalName,
-      numUnitsPurchase: numUnitsPurchase ? numberWithCommas(numUnitsPurchase) : '',
-      offeringPrice: offeringPrice ? numberWithCommas(offeringPrice / 100) : '',
+      numUnitsPurchase: numUnitsPurchase ? numberWithCommas(numUnitsPurchase) : "",
+      offeringPrice: offeringPrice ? numberWithCommas(offeringPrice / 100) : "",
       purchasePrice:
         numUnitsPurchase && offeringPrice
           ? numberWithCommas((numUnitsPurchase * offeringPrice) / 100)
-          : '',
+          : "",
       purchaseCurrency: offeringCurrency as string,
       purchaseMethod: purchaseMethod,
       purchaserEntityName: purchaserEntityName,
@@ -266,7 +266,7 @@ export const GeneratedApplicationText = (
       signature: signature,
       walletAddress: walletAddress
     },
-    applicantPurchaseAttestationText ?? ''
+    applicantPurchaseAttestationText ?? ""
   );
   const all = ApplicationSummary + ApplicationSuitability + PurchaseAttestation;
   return { ApplicationSummary, ApplicationSuitability, PurchaseAttestation, all };

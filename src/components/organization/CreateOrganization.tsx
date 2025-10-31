@@ -1,19 +1,19 @@
-'use client';
+"use client";
 
-import { useMutation } from '@apollo/client/react';
-import { ADD_ORGANIZATION, ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
-import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import { useMutation } from "@apollo/client/react";
+import { useUserContext } from "@contexts/UserContext";
+import { AddOrganizationMutation } from "@gql/graphql";
+import { ADD_ORGANIZATION, ADD_ORGANIZATION_USER } from "@src/utils/graphQueries/organization";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/navigation";
+import React, { FC, useContext, useEffect, useState } from "react";
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
-import { useUserContext } from '@contexts/UserContext';
+import { ApplicationStoreProps, store } from "@/contexts/store";
 
-import MajorActionButton from '../buttons/MajorActionButton';
-import CountrySelect from '../form-components/CountrySelect';
-import FileUpload from '../form-components/FileUpload';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import { OrganizationConnection, OrganizationInsertResponse } from '@gql/graphql';
+import MajorActionButton from "../buttons/MajorActionButton";
+import CountrySelect from "../form-components/CountrySelect";
+import FileUpload from "../form-components/FileUpload";
+import Input, { defaultFieldDiv } from "../form-components/Inputs";
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
@@ -22,14 +22,20 @@ export type CreateOrganizationType = {
 
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
   const { user } = useUserContext();
-  const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? '');
+  const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? "");
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
   const router = useRouter();
-  const [addOrganization, { data: organization, error: orgError }] = useMutation(ADD_ORGANIZATION);
+  const [addOrganization, { data: organizationData, error: orgError }] =
+    useMutation<AddOrganizationMutation>(ADD_ORGANIZATION);
   const [addOrganizationUser, { data: organizationUser, error: orgUserError }] =
     useMutation(ADD_ORGANIZATION_USER);
+
   if (!user) {
+    return null;
+  }
+  if (orgError || orgUserError) {
+    alert(`Oops. Looks like something went wrong: ${orgError?.message || orgUserError?.message}`);
     return null;
   }
 
@@ -38,55 +44,52 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   return (
     <Formik
       initialValues={{
-        name: '',
-        website: '',
-        shortDescription: '',
-        country: ''
+        name: "",
+        website: "",
+        shortDescription: "",
+        country: ""
       }}
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.name) {
-          errors.name = 'Please include a name';
+          errors.name = "Please include a name";
         }
         return errors;
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
+        dispatchPageIsLoading({ type: "TOGGLE_LOADING_PAGE_ON" });
         try {
           await addOrganization({
             variables: {
               name: values.name,
-              logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
+              logo: logoUrl ? logoUrl : "/assets/images/logos/company-placeholder.jpeg",
               website: values.website,
               shortDescription: values.shortDescription,
               country: values.country
             }
           });
 
-          const org = organization?.insertIntoorganizationCollection?.records[0];
-          if (!org) {
-            throw new Error('Organization not found');
+          const orgId = organizationData?.insertIntoorganizationCollection.records[0]?.id;
+          if (!orgId) {
+            throw new Error("Organization not found");
           }
-
-          const orgId = org.id;
-
           // Add organization_user relationship with the new organization ID
           await addOrganizationUser({
             variables: {
               userId: userId,
               organizationId: orgId,
-              permission: ['ADMIN']
+              permission: ["ADMIN"]
             }
           });
 
-          window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgId);
+          window.sessionStorage.setItem("CHOSEN_ORGANIZATION", orgId);
           router.push(`/${orgId}/overview`);
-          dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
+          dispatchPageIsLoading({ type: "TOGGLE_LOADING_PAGE_OFF" });
           actionOnCompletion && actionOnCompletion();
         } catch (error: any) {
           alert(`Oops. Looks like something went wrong: ${error.message}`);
-          dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
+          dispatchPageIsLoading({ type: "TOGGLE_LOADING_PAGE_OFF" });
         }
         setSubmitting(false);
       }}
@@ -102,7 +105,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
                 name="name"
                 type="text"
                 placeholder="Alphabet Inc."
-              />{' '}
+              />{" "}
               <CountrySelect
                 className={defaultFieldDiv}
                 labelText="Country of operation"
@@ -113,7 +116,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
               <FileUpload
                 uploaderText="Add logo"
                 urlToDatabase={setLogoUrl}
-                accept={['jpg', 'jpeg', 'png', 'svg']}
+                accept={["jpg", "jpeg", "png", "svg"]}
                 imagePreview={logoUrl}
                 setImagePreview={setLogoUrl}
                 className="flex p-3 bg-gray-100  h-40 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40"

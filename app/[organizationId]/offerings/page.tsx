@@ -1,6 +1,6 @@
-import ManagerWrapper from '@src/containers/ManagerWrapper';
-import Offerings from '@src/screens/Offerings';
-import React from 'react';
+import ManagerWrapper from "@src/containers/ManagerWrapper";
+import Offerings from "@src/screens/Offerings";
+import React from "react";
 
 const OfferingsPage = () => {
   return (

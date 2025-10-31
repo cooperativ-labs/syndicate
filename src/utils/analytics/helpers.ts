@@ -1,10 +1,10 @@
 export function parseDataAttributes(element: any) {
-  const event = element.getAttribute('data-analytics-event');
-  const category = element.getAttribute('data-analytics-category');
-  const action = element.getAttribute('data-analytics-action');
-  const label = element.getAttribute('data-analytics-label');
-  const value = element.getAttribute('data-analytics-value');
-  const rest = element.getAttribute('data-analytics-custom-dimensions');
+  const event = element.getAttribute("data-analytics-event");
+  const category = element.getAttribute("data-analytics-category");
+  const action = element.getAttribute("data-analytics-action");
+  const label = element.getAttribute("data-analytics-label");
+  const value = element.getAttribute("data-analytics-value");
+  const rest = element.getAttribute("data-analytics-custom-dimensions");
   return { rest, core: { event, category, action, label, value } };
 }
 

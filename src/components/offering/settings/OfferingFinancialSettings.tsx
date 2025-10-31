@@ -1,22 +1,22 @@
-import { useMutation } from '@apollo/client/react';
-import { Offering, OfferingDetails } from '@gql/graphql';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import Checkbox from '@src/components/form-components/Checkbox';
-import Datepicker from '@src/components/form-components/Datepicker';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import NonInput from '@src/components/form-components/NonInput';
-import Select from '@src/components/form-components/Select';
+import { useMutation } from "@apollo/client/react";
+import { Offering, OfferingDetails } from "@gql/graphql";
+import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import FormButton from "@src/components/buttons/FormButton";
+import Checkbox from "@src/components/form-components/Checkbox";
+import Datepicker from "@src/components/form-components/Datepicker";
+import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
+import NonInput from "@src/components/form-components/NonInput";
+import Select from "@src/components/form-components/Select";
 import {
   distributionPeriodOptions,
   getCurrencyOption,
   StageOptions
-} from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_OFFERING_FINANCIAL } from '@src/utils/graphQueries/offering';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
+} from "@src/utils/enumConverters";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { UPDATE_OFFERING_FINANCIAL } from "@src/utils/graphQueries/offering";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { Form, Formik } from "formik";
+import React, { FC, useState } from "react";
 
 type OfferingFinancialSettingsProps = {
   offering: Offering;
@@ -24,7 +24,7 @@ type OfferingFinancialSettingsProps = {
 
 const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offering }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_FINANCIAL);
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
   const [alerted, setAlerted] = useState<boolean>(false);
 
   const { details } = offering;
@@ -60,7 +60,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
   const operatingCurrency = offering.offeringEntity?.operatingCurrency;
 
   if (error) {
-    alert('Oops. Looks like something went wrong');
+    alert("Oops. Looks like something went wrong");
   }
   if (data && !alerted) {
     setAlerted(true);
@@ -96,12 +96,12 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (values.minRaise > maxRaise) {
-          errors.minRaise = 'Minimum raise must be less than maximum raise.';
+          errors.minRaise = "Minimum raise must be less than maximum raise.";
         }
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
-        setButtonStep('step1');
+        setButtonStep("step1");
         setAlerted(false);
         setSubmitting(true);
         try {
@@ -135,9 +135,9 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               capRate: values.capRate && values.capRate * 100
             }
           });
-          setButtonStep('confirmed');
+          setButtonStep("confirmed");
         } catch (e) {
-          setButtonStep('failed');
+          setButtonStep("failed");
           alert(e);
         }
         setSubmitting(false);
@@ -274,7 +274,7 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               labelText={`Target equity multiple Max (x - Optional)`}
               name="targetEquityMultipleMax"
               type="number"
-            />{' '}
+            />{" "}
             <Input
               className={defaultFieldDiv}
               labelText={`Preferred Return (%)`}

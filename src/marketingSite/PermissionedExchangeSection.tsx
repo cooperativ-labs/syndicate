@@ -1,5 +1,5 @@
-import useWindowSize from '@hooks/useWindowSize';
-import React, { FC } from 'react';
+import useWindowSize from "@hooks/useWindowSize";
+import React, { FC } from "react";
 
 const FeatureItem: FC<{
   image: string;
@@ -11,13 +11,13 @@ const FeatureItem: FC<{
   const windowSize = useWindowSize();
   const isMobile = windowSize.width && windowSize.width < 768;
   const imageItem = (
-    <div className={'col-span-3 rounded-lg shadow-lg bg-white p-4'}>
+    <div className={"col-span-3 rounded-lg shadow-lg bg-white p-4"}>
       <img src={image} />
     </div>
   );
 
   const textItem = (
-    <div className={'col-span-2'}>
+    <div className={"col-span-2"}>
       <h1 className="text-3xl mb-4 mt-8 font-bold">{title}</h1>
       <h3 className="text-gray-700 mb-4 font-bold">{subtitle}</h3>
       <div className=" mb-10">{description}</div>
@@ -40,7 +40,7 @@ const FeatureItem: FC<{
 const PermissionedExchangeSection: FC = () => {
   return (
     <div className="md:py-10 pb-10 md:pb-20 px-4 bg-cLightCream">
-      <div className="flex-col min-h-full mx-auto pt-10" style={{ maxWidth: '1000px' }}>
+      <div className="flex-col min-h-full mx-auto pt-10" style={{ maxWidth: "1000px" }}>
         <div className="flex flex-col md:mx-4 gap-8 md:gap-20">
           <FeatureItem
             reverse

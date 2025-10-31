@@ -1,23 +1,23 @@
-import { useQuery } from '@apollo/client/react';
-import { DocumentType, Offering, ShareOrder } from '@gql/graphql';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
-import { getDocumentsOfType } from '@src/utils/helpersDocuments';
+import { useQuery } from "@apollo/client/react";
+import { DocumentType, Offering, ShareOrder } from "@gql/graphql";
+import { getCurrencyOption } from "@src/utils/enumConverters";
+import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from "@src/utils/graphQueries/orders";
+import { getDocumentsOfType } from "@src/utils/helpersDocuments";
 import {
   confirmNoLiveOrders,
   ContractOrder,
   getCurrentOrderPrice,
   getOrderArrayFromContract
-} from '@src/utils/helpersOrder';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { dividendContractABI } from '@src/web3/generated';
-import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
-import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
-import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-import { toNormalNumber } from '@src/web3/util';
-import { useState } from 'react';
-import { useAsync } from 'react-use';
-import { useAccount, useChainId, useReadContract } from 'wagmi';
+} from "@src/utils/helpersOrder";
+import { getIsEditorOrAdmin } from "@src/utils/helpersUserAndEntity";
+import { dividendContractABI } from "@src/web3/generated";
+import { normalizeEthAddress, String0x } from "@src/web3/helpersChain";
+import { useShareContractInfo } from "@src/web3/hooks/useShareContractInfo";
+import { useSwapContractInfo } from "@src/web3/hooks/useSwapContractInfo";
+import { toNormalNumber } from "@src/web3/util";
+import { useState } from "react";
+import { useAsync } from "react-use";
+import { useAccount, useChainId, useReadContract } from "wagmi";
 
 const useOfferingDetails = (offering: Offering, userId?: string | undefined) => {
   const { address: userWalletAddress } = useAccount();
@@ -88,7 +88,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   const { data: distributionData } = useReadContract({
     address: distributionContractAddress,
     abi: dividendContractABI,
-    functionName: 'balances',
+    functionName: "balances",
     args: [distributionPaymentTokenAddress as String0x]
   });
   const totalDistributed = toNormalNumber(distributionData, distributionPaymentTokenDecimals);

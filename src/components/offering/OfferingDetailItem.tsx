@@ -1,5 +1,5 @@
-import cn from 'classnames';
-import React, { FC, ReactNode } from 'react';
+import cn from "classnames";
+import React, { FC, ReactNode } from "react";
 
 type OfferingDetailItemProps = {
   title: string;
@@ -12,8 +12,8 @@ const OfferingDetailItem: FC<OfferingDetailItemProps> = ({ title, children, bran
     <div className="border-2 border-gray-200 p-2 rounded-md">
       <div
         className={cn(
-          brandColor ? '' : 'text-green-600',
-          'flex justify-center text-lg  font bold text-center'
+          brandColor ? "" : "text-green-600",
+          "flex justify-center text-lg  font bold text-center"
         )}
         style={brandColor ? { color: brandColor } : undefined}
       >

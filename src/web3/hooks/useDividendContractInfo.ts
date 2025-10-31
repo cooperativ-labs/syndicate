@@ -1,7 +1,7 @@
-import { useContractReads } from 'wagmi';
+import { useContractReads } from "wagmi";
 
-import { dividendContractABI } from '../generated';
-import { String0x } from '../helpersChain';
+import { dividendContractABI } from "../generated";
+import { String0x } from "../helpersChain";
 
 export type DividendContractInfoType = {
   shareTokenAddress: String0x | undefined;
@@ -27,9 +27,9 @@ export const useDividendContractInfo = (
     refetch: refetchSwapContract
   } = useContractReads({
     contracts: [
-      { ...baseContractInfo, functionName: 'sharesToken' },
-      { ...baseContractInfo, functionName: 'reclaim_time' },
-      { ...baseContractInfo, functionName: 'contractVersion' }
+      { ...baseContractInfo, functionName: "sharesToken" },
+      { ...baseContractInfo, functionName: "reclaim_time" },
+      { ...baseContractInfo, functionName: "contractVersion" }
     ]
   });
 

@@ -1,28 +1,28 @@
-import { useMutation } from '@apollo/client/react';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
-import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
-import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
-import { swapContractABI } from '@src/web3/generated';
-import { String0x } from '@src/web3/helpersChain';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import React, { Dispatch, FC, SetStateAction } from 'react';
-import { erc20ABI, useAccount, useBalance, useContractRead } from 'wagmi';
+import { useMutation } from "@apollo/client/react";
+import { LoadingButtonStateType } from "@src/components/buttons/Button";
+import { ADD_TRANSFER_EVENT } from "@src/utils/graphQueries/orders";
+import { getIsAllowanceSufficient } from "@src/utils/helpersAllowance";
+import { acceptOrder, fillOrder, setAllowance } from "@src/web3/contractSwapCalls";
+import { swapContractABI } from "@src/web3/generated";
+import { String0x } from "@src/web3/helpersChain";
+import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
+import React, { Dispatch, FC, SetStateAction } from "react";
+import { erc20ABI, useAccount, useBalance, useContractRead } from "wagmi";
 
-import OrderStatusBar from './OrderStatusBar';
-import ShareCompleteSwap from './ShareCompleteSwap';
+import OrderStatusBar from "./OrderStatusBar";
+import ShareCompleteSwap from "./ShareCompleteSwap";
 import SharePurchaseSaleRequest, {
   SharePurchaseSaleRequestProps
-} from './SharePurchaseSaleRequest';
+} from "./SharePurchaseSaleRequest";
 
 type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   isApproved: boolean;
   isFilled: boolean;
   isCancelled: boolean;
   isAccepted: boolean;
-  filler: String0x | '';
+  filler: String0x | "";
   filledAmount: number;
-  initiator: String0x | '';
+  initiator: String0x | "";
   shareQtyRemaining: number;
   shareContractAddress: String0x;
   partition: String0x;
@@ -61,7 +61,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const { data: orderQtyData, refetch } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: 'acceptedOrderQty',
+    functionName: "acceptedOrderQty",
     args: [filler as String0x, BigInt(order.contractIndex)]
   });
 
@@ -77,7 +77,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
 
   const myBacBalance = bacBalanceData?.formatted;
   const acceptedOrderQty = toNormalNumber(orderQtyData, shareContractDecimals);
-  const isFiller = filler !== '0x0000000000000000000000000000000000000000';
+  const isFiller = filler !== "0x0000000000000000000000000000000000000000";
   const organization = offering.offeringEntity.organization;
   const recipient = (isAskOrder ? filler : initiator) as String0x;
   const sender = (isAskOrder ? initiator : filler) as String0x;
@@ -101,7 +101,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const { data: allowanceData } = useContractRead({
     address: paymentTokenAddress,
     abi: erc20ABI,
-    functionName: 'allowance',
+    functionName: "allowance",
     args: [userWalletAddress as String0x, swapContractAddress]
   });
 
@@ -112,7 +112,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
 
   const callFillOrder = async ({ amount, setButtonStep }: CallFillOrderType) => {
     if ((!isAskOrder && !currentUserInitiator) || (txnApprovalsEnabled && !isAccepted)) {
-      setButtonStep('step1');
+      setButtonStep("step1");
       await acceptOrder({
         swapContractAddress: swapContractAddress,
         contractIndex: order.contractIndex,
@@ -131,7 +131,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         allowanceRequiredForPurchase
       );
       if (isAllowanceSufficient) {
-        setButtonStep('step2');
+        setButtonStep("step2");
         await fillOrder({
           swapContractAddress,
           shareContractAddress,
@@ -150,7 +150,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           refetchAllContracts: refetchAllPlusAccepted
         });
       } else {
-        setButtonStep('step1');
+        setButtonStep("step1");
         await setAllowance({
           paymentTokenAddress,
           paymentTokenDecimals,
@@ -158,7 +158,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           amount: allowanceRequiredForPurchase,
           setButtonStep
         });
-        setButtonStep('step2');
+        setButtonStep("step2");
         await fillOrder({
           swapContractAddress,
           shareContractAddress,
@@ -184,7 +184,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     function capitalizeFirstLetter(str: string) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
-    const action = isAskOrder ? 'purchase' : 'sell';
+    const action = isAskOrder ? "purchase" : "sell";
     const mainText = txnApprovalsEnabled
       ? `1. Request to ${action}`
       : `1. ${capitalizeFirstLetter(action)}`;

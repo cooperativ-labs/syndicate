@@ -1,9 +1,9 @@
-var postmark = require('postmark');
+var postmark = require("postmark");
 
 // Send an email:
 export const postmarkClient = new postmark.ServerClient(process.env.NEXT_PUBLIC_POSTMARK_API_KEY);
 
-type MessageStreamOptions = 'outbound' | 'magic-link-stream' | 'notifications';
+type MessageStreamOptions = "outbound" | "magic-link-stream" | "notifications";
 
 export async function sendEmail(
   to: string,
@@ -14,7 +14,7 @@ export async function sendEmail(
 ) {
   try {
     await postmarkClient.sendEmail({
-      From: 'notifications@cooperativ.io',
+      From: "notifications@cooperativ.io",
       To: to,
       Subject: subject,
       HtmlBody: htmlBody,
@@ -22,7 +22,7 @@ export async function sendEmail(
       MessageStream: messageStream
     });
   } catch (error: any) {
-    throw new Error('Error sending email:', error);
+    throw new Error("Error sending email:", error);
   }
 }
 

@@ -1,29 +1,30 @@
-import '../styles/tailwind.css';
-import '../styles/main.css';
+import "../styles/tailwind.css";
+import "../styles/main.css";
 
-import type { Metadata } from 'next';
-import Script from 'next/script';
-import React from 'react';
+import { createServerApolloClient } from "@src/lib/apolloServer";
+import { GET_USER_PROFILE } from "@src/utils/graphQueries/user";
+import { getWagmiConfig } from "@src/web3/wagmi";
+import { createClient } from "@supabase/utils/server";
+import type { Metadata } from "next";
+import { headers } from "next/headers";
+import Script from "next/script";
+import React from "react";
+import { cookieToInitialState } from "wagmi";
 
-import { createClient } from '@supabase/utils/server';
-import { UserProvider } from '@/contexts/UserContext';
-import Providers from './providers';
-import { createServerApolloClient } from '@src/lib/apolloServer';
-import { GET_USER_PROFILE } from '@src/utils/graphQueries/user';
-import { cookieToInitialState } from 'wagmi';
-import { getWagmiConfig } from '@src/web3/wagmi';
-import { headers } from 'next/headers';
+import { UserProvider } from "@/contexts/UserContext";
+
+import Providers from "./providers";
 export const metadata: Metadata = {
-  title: 'Cooperativ',
+  title: "Cooperativ",
   icons: {
     icon: [
-      { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
-      { url: '/favicon-16x16.png', sizes: '16x16', type: 'image/png' }
+      { url: "/favicon-32x32.png", sizes: "32x32", type: "image/png" },
+      { url: "/favicon-16x16.png", sizes: "16x16", type: "image/png" }
     ],
-    apple: [{ url: '/apple-touch-icon.png', sizes: '180x180' }],
-    shortcut: ['/site-icon.png']
+    apple: [{ url: "/apple-touch-icon.png", sizes: "180x180" }],
+    shortcut: ["/site-icon.png"]
   },
-  manifest: '/site.webmanifest'
+  manifest: "/site.webmanifest"
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
@@ -33,7 +34,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   } = await supabase.auth.getUser();
 
   const config = getWagmiConfig();
-  const initialState = cookieToInitialState(config, (await headers()).get('cookie'));
+  const initialState = cookieToInitialState(config, (await headers()).get("cookie"));
 
   const { data: sessionData } = await supabase.auth.getSession();
 
@@ -43,7 +44,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     const { data } = await apollo.query<any>({
       query: GET_USER_PROFILE,
       variables: { id: user.id },
-      fetchPolicy: 'no-cache'
+      fetchPolicy: "no-cache"
     });
     userProfile = data?.profileCollection?.edges?.[0]?.node ?? null;
   }

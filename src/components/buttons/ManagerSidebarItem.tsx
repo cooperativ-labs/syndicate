@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { ManagerSideBarItemSelectionType } from '@src/containers/sideBar/ManagerSideBarContents';
-import cn from 'classnames';
-import Link from 'next/link';
-import { usePathname } from 'next/navigation';
-import React, { FC, useContext } from 'react';
+import { ManagerSideBarItemSelectionType } from "@src/containers/sideBar/ManagerSideBarContents";
+import cn from "classnames";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
+import React, { FC, useContext } from "react";
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
+import { ApplicationStoreProps, store } from "@/contexts/store";
 
 interface ManagerSidebarItemProps {
   title: ManagerSideBarItemSelectionType;
@@ -17,16 +17,16 @@ const ManagerSidebarItem: FC<ManagerSidebarItemProps> = ({ title, link }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar } = applicationStore;
   const pathname = usePathname();
-  const path = pathname?.split('/')[2];
+  const path = pathname?.split("/")[2];
   const isSelected = path === title.toLocaleLowerCase();
 
   const buttonClass = cn(
-    'p-3 m-1 w-full text-sm text-left font-semibold uppercase  hover:text-cDarkBlue hover:bg-gray-100 rounded-md focus:outline-none',
-    isSelected ? 'bg-gray-200 text-cDarkBlue hover:bg-gray-200' : 'text-gray-500'
+    "p-3 m-1 w-full text-sm text-left font-semibold uppercase  hover:text-cDarkBlue hover:bg-gray-100 rounded-md focus:outline-none",
+    isSelected ? "bg-gray-200 text-cDarkBlue hover:bg-gray-200" : "text-gray-500"
   );
 
   const handleClick = () => {
-    dispatchSidebar({ type: 'TOGGLE_MANAGER_SIDEBAR' });
+    dispatchSidebar({ type: "TOGGLE_MANAGER_SIDEBAR" });
   };
 
   return (

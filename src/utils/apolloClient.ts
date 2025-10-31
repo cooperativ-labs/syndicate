@@ -1,17 +1,17 @@
-import 'server-only';
+import "server-only";
 
-import { HttpLink } from '@apollo/client';
+import { HttpLink } from "@apollo/client";
 import {
   ApolloClient,
   InMemoryCache,
   registerApolloClient,
   SSRMultipartLink
-} from '@apollo/client-integration-nextjs';
+} from "@apollo/client-integration-nextjs";
 
-import { createApolloCache, getGraphQLEndpoint } from './apolloConfig';
+import { createApolloCache, getGraphQLEndpoint } from "./apolloConfig";
 
 type SupabaseServerClient = Awaited<
-  ReturnType<(typeof import('@supabase/utils/server'))['createClient']>
+  ReturnType<(typeof import("@supabase/utils/server"))["createClient"]>
 >;
 
 export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
@@ -19,7 +19,7 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
 
   const getSupabaseClient = async () => {
     if (!supabaseClientPromise) {
-      supabaseClientPromise = import('@supabase/utils/server').then(({ createClient }) =>
+      supabaseClientPromise = import("@supabase/utils/server").then(({ createClient }) =>
         createClient()
       );
     }
@@ -41,7 +41,7 @@ export const { getClient, query, PreloadQuery } = registerApolloClient(() => {
         headers: {
           ...options?.headers,
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ''
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ""
         }
       });
     }

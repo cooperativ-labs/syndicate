@@ -1,11 +1,11 @@
 // Types intentionally omitted here to avoid runtime typing issues in RSC
-import { initializeApollo } from '@src/utils/apolloClient';
-import { GET_OFFERING } from '@src/utils/graphQueries/offering';
-import type { Metadata } from 'next';
-import { cache } from 'react';
-import React from 'react';
+import { initializeApollo } from "@src/utils/apolloClient";
+import { GET_OFFERING } from "@src/utils/graphQueries/offering";
+import type { Metadata } from "next";
+import { cache } from "react";
+import React from "react";
 
-import ClientOfferingPage from './ClientOfferingPage';
+import ClientOfferingPage from "./ClientOfferingPage";
 
 const fetchOffering = cache(async (offeringId: string | undefined) => {
   if (!offeringId) {
@@ -21,7 +21,7 @@ const fetchOffering = cache(async (offeringId: string | undefined) => {
 
     return (data as any)?.getOffering ?? null;
   } catch (error) {
-    console.error('Failed to load offering', error);
+    console.error("Failed to load offering", error);
     return null;
   }
 });
@@ -37,20 +37,20 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
   const offering = await fetchOffering(resolvedParams.offeringId);
 
   if (!offering || !offering.isPublic) {
-    return { title: 'Offering not available' };
+    return { title: "Offering not available" };
   }
 
   const { name, shortDescription, sharingImage, offeringEntity, id } = offering;
   const orgId = offeringEntity?.organization.id;
   const imageUrl = sharingImage
     ? `/assets/images/sharing-images/${sharingImage.url}`
-    : '/assets/images/share.png';
+    : "/assets/images/share.png";
 
   return {
     title: name,
     openGraph: {
       title: name,
-      type: 'website',
+      type: "website",
       description: shortDescription ?? undefined,
       url: `https://cooperativ.io/${orgId}/offerings/${id}`,
       images: [imageUrl]
@@ -58,7 +58,7 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
     twitter: {
       title: name,
       description: shortDescription ?? undefined,
-      card: 'summary_large_image',
+      card: "summary_large_image",
       images: [imageUrl]
     }
   };

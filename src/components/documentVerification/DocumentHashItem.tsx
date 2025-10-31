@@ -1,9 +1,9 @@
-import { Check, Copy } from 'lucide-react';
-import { Document, Maybe } from '@gql/graphql';
-import { DownloadFile } from '@src/utils/helpersAgreement';
-import React, { FC, useState } from 'react';
+import { Document, Maybe } from "@gql/graphql";
+import { DownloadFile } from "@src/utils/helpersAgreement";
+import { Check, Copy } from "lucide-react";
+import React, { FC, useState } from "react";
 
-import StandardButton from '../buttons/StandardButton';
+import StandardButton from "../buttons/StandardButton";
 
 type HashInstructionsProps = {
   agreementTexts: Document[];
@@ -27,7 +27,7 @@ const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
         link=""
         color="blue"
         text="Download Agreement"
-        onClick={() => text && DownloadFile(text, 'agreement-text.md')}
+        onClick={() => text && DownloadFile(text, "agreement-text.md")}
       />
       <span className="mb-1 mr-2">{`Agreement Hash: ${hash.slice(0, 7)}...${hash.slice(-7)}`}</span>
 

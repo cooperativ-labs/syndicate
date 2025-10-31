@@ -1,7 +1,7 @@
-import { ShareTransferEvent } from '@gql/graphql';
-import React, { FC } from 'react';
+import { ShareTransferEvent } from "@gql/graphql";
+import React, { FC } from "react";
 
-import TransferEventItem from './TransferEventItem';
+import TransferEventItem from "./TransferEventItem";
 
 export type TransferEventListProps = { transferEvents: ShareTransferEvent[] };
 
@@ -14,11 +14,11 @@ const TransferEventList: FC<TransferEventListProps> = ({ transferEvents }) => {
         </div>
 
         <div className="flex col-span-1 justify-center">
-          <div className="text-sm font-bold text-gray-700">{'Sender'}</div>
+          <div className="text-sm font-bold text-gray-700">{"Sender"}</div>
         </div>
 
         <div className="flex col-span-1 justify-center">
-          <div className="text-sm font-bold text-gray-700">{'Recipient'}</div>
+          <div className="text-sm font-bold text-gray-700">{"Recipient"}</div>
         </div>
 
         <div className="flex col-span-1 justify-center">

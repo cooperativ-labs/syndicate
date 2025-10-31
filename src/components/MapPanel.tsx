@@ -1,6 +1,6 @@
-import { Address, Maybe } from '@gql/graphql';
-import { GoogleMap, Marker } from '@react-google-maps/api';
-import React, { FC, useState } from 'react';
+import { Address, Maybe } from "@gql/graphql";
+import { GoogleMap, Marker } from "@react-google-maps/api";
+import React, { FC, useState } from "react";
 
 type MapPanelProps = {
   address?: Maybe<Address> | undefined;
@@ -28,7 +28,7 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
         const formatted_address = `${address?.line1}, ${address?.city}, ${address?.stateProvince} ${address?.postalCode}`;
         const request = {
           query: formatted_address,
-          fields: ['name', 'geometry']
+          fields: ["name", "geometry"]
         };
 
         const service = new window.google.maps.places.PlacesService(map);

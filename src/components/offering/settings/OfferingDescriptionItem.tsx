@@ -1,12 +1,12 @@
-import { useMutation } from '@apollo/client/react';
-import { Menu, Pencil, X } from 'lucide-react';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
-import Button from '@src/components/buttons/Button';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
-import React, { FC, useState } from 'react';
+import { useMutation } from "@apollo/client/react";
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from "@gql/graphql";
+import Button from "@src/components/buttons/Button";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from "@src/utils/graphQueries/offering";
+import { Menu, Pencil, X } from "lucide-react";
+import React, { FC, useState } from "react";
 
-import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
+import OfferingProfileDescriptionForm from "./OfferingProfileDescriptionForm";
 
 type OfferingDescriptionItemProps = {
   offering: Offering;
@@ -48,14 +48,14 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({
         <div className="col-span-3 flex ">
           <Button
             className={`focus:outline-none pr-5 rounded-full font-semibold text-lg text-gray-700`}
-            aria-label={open ? 'expand section' : 'collapse section'}
+            aria-label={open ? "expand section" : "collapse section"}
             onClick={() => setOpen(!open)}
           >
             <div className="p-1">{open ? <X size={16} /> : <Pencil size={16} />}</div>
           </Button>
           <div
             className={`focus:outline-none pr-2 rounded-full font-semibold text-lg text-gray-700`}
-            aria-label={'drag to reorder section'}
+            aria-label={"drag to reorder section"}
           >
             <div className="p-1">
               <Menu size={16} />

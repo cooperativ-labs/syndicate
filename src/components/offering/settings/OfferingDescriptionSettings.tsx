@@ -1,16 +1,16 @@
-import { useMutation } from '@apollo/client/react';
-import { Offering, OfferingTabSection } from '@gql/graphql';
-import AddItemButton from '@src/components/buttons/AddItemButton';
-import CloseButton from '@src/components/buttons/CloseButton';
-import Card from '@src/components/cards/Card';
-import { tabSectionOptions } from '@src/utils/enumConverters';
-import { CREATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
-import React, { FC, useState } from 'react';
-import toast from 'react-hot-toast';
+import { useMutation } from "@apollo/client/react";
+import { Offering, OfferingTabSection } from "@gql/graphql";
+import AddItemButton from "@src/components/buttons/AddItemButton";
+import CloseButton from "@src/components/buttons/CloseButton";
+import Card from "@src/components/cards/Card";
+import { tabSectionOptions } from "@src/utils/enumConverters";
+import { CREATE_DESCRIPTION_TEXT } from "@src/utils/graphQueries/offering";
+import React, { FC, useState } from "react";
+import toast from "react-hot-toast";
 
-import OfferingDescriptionItem from './OfferingDescriptionItem';
-import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
-import TabDescriptionList from './OfferingTabDescriptionList';
+import OfferingDescriptionItem from "./OfferingDescriptionItem";
+import OfferingProfileDescriptionForm from "./OfferingProfileDescriptionForm";
+import TabDescriptionList from "./OfferingTabDescriptionList";
 
 type OfferingDescriptionSettingsProps = {
   offering: Offering;
@@ -22,7 +22,7 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
   const [selectedTab, setSelectedTab] = useState<OfferingTabSection>(OfferingTabSection.Details);
 
   if (errorAdd) {
-    toast.error('Oops. Looks like something went wrong');
+    toast.error("Oops. Looks like something went wrong");
   }
   if (dataAdd && !alerted) {
     setAlerted(true);

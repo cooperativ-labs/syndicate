@@ -1,17 +1,16 @@
-import { ChevronDown } from 'lucide-react';
-import Button from '@src/components/buttons/Button';
-import DisconnectButton from '@src/components/buttons/DisconnectButton';
-import LogoutButton from '@src/components/buttons/LogoutButton';
-import Card from '@src/components/cards/Card';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
-import Link from 'next/link';
-import React, { FC, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useUserContext } from "@contexts/UserContext";
+import Button from "@src/components/buttons/Button";
+import DisconnectButton from "@src/components/buttons/DisconnectButton";
+import LogoutButton from "@src/components/buttons/LogoutButton";
+import Card from "@src/components/cards/Card";
+import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
+import { networkIcon, NetworkIndicatorDot } from "@src/components/indicators/NetworkIndicator";
+import { ChevronDown } from "lucide-react";
+import Link from "next/link";
+import React, { FC, useState } from "react";
+import { useAccount, useChainId } from "wagmi";
 
-import { useUserContext } from '@contexts/UserContext';
-
-import ChooseConnectorButton from './wallet/ChooseConnectorButton';
+import ChooseConnectorButton from "./wallet/ChooseConnectorButton";
 
 const UserMenu: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
@@ -24,7 +23,7 @@ const UserMenu: FC = () => {
   const networkImage =
     userWalletAddress && isConnected ? networkIcon(chainId, userWalletAddress) : undefined;
 
-  const profileImg = userImageUrl ? userImageUrl : '/assets/images/user-images/placeholder.png';
+  const profileImg = userImageUrl ? userImageUrl : "/assets/images/user-images/placeholder.png";
   return (
     <>
       {open && (
@@ -34,7 +33,7 @@ const UserMenu: FC = () => {
         <Button
           className={`border-gray-300 hover:border-gray-500
               border-2 focus:outline-none pr-2 flex items-center rounded-full font-semibold text-xs text-gray-700`}
-          aria-label={open ? 'expand section' : 'collapse section'}
+          aria-label={open ? "expand section" : "collapse section"}
           onClick={() => setOpen(!open)}
         >
           <div className="pr-2">
@@ -76,7 +75,7 @@ const UserMenu: FC = () => {
                   </div>
                 </div>
               ) : (
-                <ChooseConnectorButton buttonText={'Connect Wallet'} />
+                <ChooseConnectorButton buttonText={"Connect Wallet"} />
               )}
               {isAuthenticated && (
                 <div>

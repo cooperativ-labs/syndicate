@@ -1,29 +1,29 @@
-import { useMutation } from '@apollo/client/react';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Maybe, Offering, OfferingParticipant } from '@gql/graphql';
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import StandardButton from '@src/components/buttons/StandardButton';
-import Checkbox from '@src/components/form-components/Checkbox';
+import { useMutation } from "@apollo/client/react";
+import { Maybe, Offering, OfferingParticipant } from "@gql/graphql";
+import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import FormButton from "@src/components/buttons/FormButton";
+import StandardButton from "@src/components/buttons/StandardButton";
+import Checkbox from "@src/components/form-components/Checkbox";
 import Input, {
   defaultFieldDiv,
   defaultFieldLabelClass
-} from '@src/components/form-components/Inputs';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import PresentLegalText from '@src/components/legal/PresentLegalText';
-import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
-import { DownloadFile } from '@src/utils/helpersAgreement';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
-import { submitSwap } from '@src/web3/contractSwapCalls';
-import { bytes32FromString, String0x } from '@src/web3/helpersChain';
-import cn from 'classnames';
-import { Form, Formik } from 'formik';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+} from "@src/components/form-components/Inputs";
+import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
+import PresentLegalText from "@src/components/legal/PresentLegalText";
+import { getCurrencyById, getCurrencyOption } from "@src/utils/enumConverters";
+import { CREATE_ORDER } from "@src/utils/graphQueries/orders";
+import { DownloadFile } from "@src/utils/helpersAgreement";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { getAmountRemaining, ManagerModalType } from "@src/utils/helpersOffering";
+import { submitSwap } from "@src/web3/contractSwapCalls";
+import { bytes32FromString, String0x } from "@src/web3/helpersChain";
+import cn from "classnames";
+import { Form, Formik } from "formik";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import React, { Dispatch, FC, SetStateAction, useContext, useState } from "react";
+import { useAccount, useChainId } from "wagmi";
 
-import NonInput from '../../form-components/NonInput';
+import NonInput from "../../form-components/NonInput";
 
 export type PostBidAskFormProps = {
   offering: Offering;
@@ -62,7 +62,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   refetchOfferingInfo
 }) => {
   const chainId = useChainId();
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const [isAsk, setIsAsk] = useState<boolean>(true);
   const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
@@ -75,7 +75,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   };
 
   const saleAmountString = (numUnits: string, price: Maybe<number> | undefined) => {
-    if (!price) return '0';
+    if (!price) return "0";
     return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price), 2);
   };
 
@@ -97,21 +97,21 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
           const errors: any = {}; /** @TODO : Shape */
           const { numUnits, price, approvalRequired, minUnits, maxUnits, toc } = values;
           if (!numUnits) {
-            errors.numUnits = `You must choose a number of shares to ${isAsk ? 'sell' : 'buy'}.`;
+            errors.numUnits = `You must choose a number of shares to ${isAsk ? "sell" : "buy"}.`;
           }
 
           if (isContractOwner) {
             if (maxUnits && numUnits && maxUnits > numUnits) {
-              errors.maxUnits = 'Maximum must be less then the total shares listed for sale';
+              errors.maxUnits = "Maximum must be less then the total shares listed for sale";
             }
             if (
               (maxUnits && minUnits && maxUnits < 1) ||
               (maxUnits && minUnits && maxUnits < minUnits)
             ) {
-              errors.maxUnits = 'Maximum must be greater than minimum';
+              errors.maxUnits = "Maximum must be greater than minimum";
             }
             if ((minUnits && minUnits < 1) || (maxUnits && minUnits && minUnits > maxUnits)) {
-              errors.minUnits = 'Minimum must be less than maximum';
+              errors.minUnits = "Minimum must be less than maximum";
             }
           }
           if (isAsk && numUnits && myShareQty && numUnits > myShareQty) {
@@ -123,7 +123,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
 
           if (!isContractOwner && !approvalRequired) {
             errors.approvalRequired =
-              'You must confirm that you understand that offerer approval is required.';
+              "You must confirm that you understand that offerer approval is required.";
           }
           if (!isContractOwner && toc === false) {
             errors.toc = "You must accept this offering's Terms & Conditions";
@@ -159,7 +159,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             refetchAllContracts,
             refetchOfferingInfo
           });
-          setModal('shareSaleList');
+          setModal("shareSaleList");
 
           setSubmitting(false);
         }}
@@ -167,14 +167,14 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
         {({ isSubmitting, values }) => (
           <>
             <Button className="w-full p-2 border-2 rounded-md" onClick={() => setIsAsk(!isAsk)}>
-              {`Switch to ${isAsk ? 'Bid' : 'Ask'}`}
+              {`Switch to ${isAsk ? "Bid" : "Ask"}`}
             </Button>
 
             <Form className="">
               <div className="mt-4 mb-2">
                 <div
                   className={defaultFieldLabelClass}
-                >{`${isAsk ? 'Selling' : 'Buying'} wallet:`}</div>
+                >{`${isAsk ? "Selling" : "Buying"} wallet:`}</div>
                 <FormattedCryptoAddress
                   chainId={chainId}
                   address={walletAddress}
@@ -186,13 +186,13 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                 <div>You do not have any shares to sell </div>
               ) : (
                 <>
-                  <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`${isAsk ? 'Sale' : 'Purchase'}`}</h2>
+                  <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`${isAsk ? "Sale" : "Purchase"}`}</h2>
                   {/* <OfferingSummaryPanel offering={offering} /> */}
                   <div className="md:grid grid-cols-3 gap-3">
                     <Input
-                      className={cn(defaultFieldDiv, 'col-span-2')}
+                      className={cn(defaultFieldDiv, "col-span-2")}
                       labelText={`How many shares would you like to ${
-                        isAsk ? `sell? ${showSharesAvailable}` : 'buy?'
+                        isAsk ? `sell? ${showSharesAvailable}` : "buy?"
                       } `}
                       name="numUnits"
                       type="number"
@@ -200,7 +200,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                       required
                     />
                     <Input
-                      className={cn(defaultFieldDiv, 'col-span-2')}
+                      className={cn(defaultFieldDiv, "col-span-2")}
                       labelText={`At what price per share? (${
                         details?.investmentCurrency &&
                         getCurrencyOption(details?.investmentCurrency)?.symbol
@@ -212,7 +212,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     />
                     <NonInput
                       className={`${defaultFieldDiv} col-span-1 pl-1`}
-                      labelText={`Total ${isAsk ? 'Sale' : 'Purchase'}:`}
+                      labelText={`Total ${isAsk ? "Sale" : "Purchase"}:`}
                     >
                       <>
                         {values.numUnits &&
@@ -242,7 +242,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                           placeholder="e.g. 120"
                         />
                       </div>
-                      <hr className="my-6 mt-8" />{' '}
+                      <hr className="my-6 mt-8" />{" "}
                     </div>
                   )}
 
@@ -309,26 +309,26 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                           name="approvalRequired"
                           checked={values.approvalRequired}
                           sideLabel
-                          labelText={`I understand that this ${isAsk ? 'sale' : 'purchase'} requires approval from ${
+                          labelText={`I understand that this ${isAsk ? "sale" : "purchase"} requires approval from ${
                             offeringEntity?.legalName
                           }.`}
                         />
                       </div>
                     </>
                   )}
-                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
+                  <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
                     <LoadingButtonText
                       state={buttonStep}
                       idleText={`${
                         isContractOwner
-                          ? `${isAsk ? 'Sell' : 'Propose to purchase'}`
-                          : `Propose ${isAsk ? 'sale' : 'purchase'} of`
-                      } ${values.numUnits ?? ''} shares ${
+                          ? `${isAsk ? "Sell" : "Propose to purchase"}`
+                          : `Propose ${isAsk ? "sale" : "purchase"} of`
+                      } ${values.numUnits ?? ""} shares ${
                         values.numUnits
                           ? `for ${saleAmountString(values.numUnits, values.price)} ${
                               getCurrencyOption(details?.investmentCurrency)?.symbol
                             } `
-                          : ''
+                          : ""
                       }`}
                       step1Text="Creating sale..."
                       confirmedText="Confirmed!"

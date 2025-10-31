@@ -1,5 +1,5 @@
 // store.js
-import React, { createContext, ReactNode, useReducer } from 'react';
+import React, { createContext, ReactNode, useReducer } from "react";
 
 export interface ApplicationStoreProps {
   ManagerSidebarOpen: boolean;
@@ -33,29 +33,29 @@ const { Provider } = store;
 const StateProvider = ({ children }: { children: ReactNode }) => {
   const [state, dispatch] = useReducer((state: any, action: any) => {
     switch (action.type) {
-      case 'TOGGLE_MANAGER_SIDEBAR':
+      case "TOGGLE_MANAGER_SIDEBAR":
         return { ...state, ManagerSidebarOpen: !state.ManagerSidebarOpen };
-      case 'TOGGLE_WALLET_MODAL':
+      case "TOGGLE_WALLET_MODAL":
         return { ...state, WalletModalOpen: !state.WalletModalOpen };
-      case 'TOGGLE_WALLET_ACTION_LOCK':
+      case "TOGGLE_WALLET_ACTION_LOCK":
         return { ...state, WalletActionLockModalOpen: !state.WalletActionLockModalOpen };
-      case 'TOGGLE_CREATE_ORG_MODAL':
+      case "TOGGLE_CREATE_ORG_MODAL":
         return { ...state, CreateOrgModalOpen: !state.CreateOrgModalOpen };
-      case 'TOGGLE_LOADING_PAGE_OFF':
+      case "TOGGLE_LOADING_PAGE_OFF":
         return { ...state, PageIsLoading: false };
-      case 'TOGGLE_LOADING_PAGE_ON':
+      case "TOGGLE_LOADING_PAGE_ON":
         return { ...state, PageIsLoading: true };
-      case 'SET_PROFILE_PRIVATE_MODAL_OFF':
+      case "SET_PROFILE_PRIVATE_MODAL_OFF":
         return { ...state, ProfilePrivateModalOn: false };
-      case 'SET_PROFILE_PRIVATE_MODAL_ON':
+      case "SET_PROFILE_PRIVATE_MODAL_ON":
         return { ...state, ProfilePrivateModalOn: true };
       // case 'TOGGLE_SIDEBAR':
       //   return { ...state, SidebarOpen: !state.SidebarOpen };
-      case 'TOGGLE_NOTICES':
+      case "TOGGLE_NOTICES":
         return { ...state, NoticesOpen: !state.NoticesOpen };
-      case 'SET_SEARCHTEXT':
+      case "SET_SEARCHTEXT":
         return { ...state, SearchText: action.payload };
-      case 'SET_ACTIVE_ORG':
+      case "SET_ACTIVE_ORG":
         return { ...state, ActiveOrg: action.payload };
       default:
         return { ...state };

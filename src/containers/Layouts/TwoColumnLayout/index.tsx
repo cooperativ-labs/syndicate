@@ -1,3 +1,3 @@
-import TwoColumnLayout from './TwoColumnLayout';
+import TwoColumnLayout from "./TwoColumnLayout";
 
 export default TwoColumnLayout;

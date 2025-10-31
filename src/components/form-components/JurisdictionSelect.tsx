@@ -1,8 +1,8 @@
-import { Maybe } from '@gql/graphql';
-import cn from 'classnames';
-import { Country, IState, State } from 'country-state-city';
-import { ErrorMessage, Field } from 'formik';
-import React, { ChangeEvent, FC, use, useState } from 'react';
+import { Maybe } from "@gql/graphql";
+import cn from "classnames";
+import { Country, IState, State } from "country-state-city";
+import { ErrorMessage, Field } from "formik";
+import React, { ChangeEvent, FC, use, useState } from "react";
 
 type JurisdictionSelectProps = {
   id?: any;
@@ -38,25 +38,25 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
   const hasStates = states && states.length > 0;
 
   return (
-    <div className={cn(className, 'flex flex-col')}>
+    <div className={cn(className, "flex flex-col")}>
       {labelText && (
         <label
           htmlFor="jurCountry"
           className={cn(
             fieldLabelClass
               ? fieldLabelClass
-              : 'text-sm text-blue-900 font-semibold text-opacity-80 '
+              : "text-sm text-blue-900 font-semibold text-opacity-80 "
           )}
         >
           {labelText}
-          {required ? ' *' : ''}
+          {required ? " *" : ""}
         </label>
       )}
       <Field
         as="select"
         id={id}
         disabled={disabled}
-        name={'jurCountry'}
+        name={"jurCountry"}
         multiple={multiple}
         required={required}
         onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -66,7 +66,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
         className={cn(
           fieldClass
             ? fieldClass
-            : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
+            : "text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
         )}
       >
         <option>Select a country</option>
@@ -76,19 +76,19 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
           </option>
         ))}
       </Field>
-      <ErrorMessage name={'jurCountry'} component="div" className="text-sm text-red-500" />
+      <ErrorMessage name={"jurCountry"} component="div" className="text-sm text-red-500" />
       {hasStates && (
         <Field
           as="select"
           id={id}
           disabled={disabled}
-          name={'jurProvince'}
+          name={"jurProvince"}
           multiple={multiple}
           required={required}
           className={cn(
             fieldClass
               ? fieldClass
-              : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
+              : "text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
           )}
         >
           <option>Select a state</option>
@@ -99,7 +99,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
           ))}
         </Field>
       )}
-      <ErrorMessage name={'jurProvince'} component="div" className="text-sm text-red-500" />
+      <ErrorMessage name={"jurProvince"} component="div" className="text-sm text-red-500" />
     </div>
   );
 };

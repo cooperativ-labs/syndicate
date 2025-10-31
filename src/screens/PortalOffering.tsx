@@ -1,29 +1,29 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client/react';
-import { DocumentType, Offering } from '@gql/graphql';
-import useOfferingDetails from '@hooks/useOfferingDetails';
-import DashboardCard from '@src/components/cards/DashboardCard';
-import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
-import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
-import DistributionList from '@src/components/offering/distributions/DistributionList';
-import DocumentList from '@src/components/offering/documents/DocumentList';
-import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
-import FormModal from '@src/containers/FormModal';
-import Container from '@src/containers/Layouts/Container';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { floatWithCommas } from '@src/utils/helpersMoney';
-import { ManagerModalType } from '@src/utils/helpersOffering';
-import { shareContractABI } from '@src/web3/generated';
-import { String0x } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
-import { useParams } from 'next/navigation';
-import React, { FC, useState } from 'react';
-import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from 'wagmi';
+import { useQuery } from "@apollo/client/react";
+import { DocumentType, Offering } from "@gql/graphql";
+import useOfferingDetails from "@hooks/useOfferingDetails";
+import DashboardCard from "@src/components/cards/DashboardCard";
+import HashInstructions from "@src/components/documentVerification/HashInstructions";
+import PostBidAskForm from "@src/components/investor/tradingForms/PostBidAskForm";
+import ShareSaleList from "@src/components/investor/tradingForms/ShareSaleList";
+import DistributionList from "@src/components/offering/distributions/DistributionList";
+import DocumentList from "@src/components/offering/documents/DocumentList";
+import OfferingDetailsDisplay from "@src/components/offering/OfferingDetailsDisplay";
+import FormModal from "@src/containers/FormModal";
+import Container from "@src/containers/Layouts/Container";
+import TwoColumnLayout from "@src/containers/Layouts/TwoColumnLayout";
+import ProfileTabContainer from "@src/containers/ProfileTabContainer";
+import { GET_ORGANIZATION } from "@src/utils/graphQueries/organization";
+import { getDocumentsOfType } from "@src/utils/helpersDocuments";
+import { floatWithCommas } from "@src/utils/helpersMoney";
+import { ManagerModalType } from "@src/utils/helpersOffering";
+import { shareContractABI } from "@src/web3/generated";
+import { String0x } from "@src/web3/helpersChain";
+import { toNormalNumber } from "@src/web3/util";
+import { useParams } from "next/navigation";
+import React, { FC, useState } from "react";
+import { useAccount, useBalance, useContractRead, useContractReads, useNetwork } from "wagmi";
 
 type PortalOfferingProps = {
   offering: Offering;
@@ -53,7 +53,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
   } = offering;
 
   const minUnitsPerInvestor = details?.minUnitsPerInvestor;
-  const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
+  const [managerModal, setManagerModal] = useState<ManagerModalType>("none");
 
   const {
     shareContractAddress,
@@ -85,12 +85,12 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
     contracts: [
       {
         ...sharedContractSpecs,
-        functionName: 'partitionsOf',
+        functionName: "partitionsOf",
         args: [userWalletAddress as String0x]
       },
       {
         ...sharedContractSpecs,
-        functionName: 'isWhitelisted',
+        functionName: "isWhitelisted",
         args: [userWalletAddress as String0x]
       }
     ]
@@ -178,8 +178,8 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
       className="flex flex-col w-full h-full mx-auto px-4 pt-10"
     >
       <FormModal
-        formOpen={managerModal === 'saleForm'}
-        onClose={() => setManagerModal('none')}
+        formOpen={managerModal === "saleForm"}
+        onClose={() => setManagerModal("none")}
         title={`Buy or sell shares of ${offeringName}`}
       >
         <PostBidAskForm
@@ -265,7 +265,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
               documents={offeringDocs}
               isOfferingManager={false}
               offeringId={offering.id}
-            />{' '}
+            />{" "}
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
             {legalLinkTexts &&
               smartContractDocuments &&

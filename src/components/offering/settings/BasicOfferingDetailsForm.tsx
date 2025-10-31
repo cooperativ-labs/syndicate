@@ -1,16 +1,16 @@
-import { useMutation } from '@apollo/client/react';
-import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from '@gql/graphql';
-import FormButton from '@src/components/buttons/FormButton';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import NonInput from '@src/components/form-components/NonInput';
-import Select from '@src/components/form-components/Select';
-import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_OFFERING_DETAILS } from '@src/utils/graphQueries/offering';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Form, Formik } from 'formik';
-import React, { FC, use, useState } from 'react';
-import { useChainId } from 'wagmi';
+import { useMutation } from "@apollo/client/react";
+import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from "@gql/graphql";
+import FormButton from "@src/components/buttons/FormButton";
+import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
+import NonInput from "@src/components/form-components/NonInput";
+import Select from "@src/components/form-components/Select";
+import { bacOptions, getCurrencyOption } from "@src/utils/enumConverters";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { ADD_OFFERING_DETAILS } from "@src/utils/graphQueries/offering";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { Form, Formik } from "formik";
+import React, { FC, use, useState } from "react";
+import { useChainId } from "wagmi";
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;
@@ -34,20 +34,20 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
     <div className="bg-gray-100 pt-8 p-4 md:p-8 min-h-max mb-6 md:mb-10 md:rounded-lg bg-opacity-100 ">
       <Formik
         initialValues={{
-          initialPrice: '',
-          investmentCurrencyCode: '' as CurrencyCode,
-          numUnits: ''
+          initialPrice: "",
+          investmentCurrencyCode: "" as CurrencyCode,
+          numUnits: ""
           // minUnitsPerInvestor: '',
           // maxUnitsPerInvestor: '',
         }}
         validate={values => {
           const errors: any = {}; /** @TODO : Shape */
-          if (!values.numUnits || values.numUnits === '') {
-            errors.numUnits = 'You must set a number of units';
+          if (!values.numUnits || values.numUnits === "") {
+            errors.numUnits = "You must set a number of units";
           }
 
-          if (!values.initialPrice || values.initialPrice === '') {
-            errors.initialPrice = 'You must set a price';
+          if (!values.initialPrice || values.initialPrice === "") {
+            errors.initialPrice = "You must set a price";
           }
           return errors;
         }}
@@ -124,7 +124,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
               required
             /> */}
 
-            <NonInput className={`pt-3 col-span-1 pl-1`} labelText={'Total raise'}>
+            <NonInput className={`pt-3 col-span-1 pl-1`} labelText={"Total raise"}>
               <>
                 {values.numUnits &&
                   values.investmentCurrencyCode &&

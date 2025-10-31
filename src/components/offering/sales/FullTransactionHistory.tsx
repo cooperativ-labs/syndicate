@@ -1,6 +1,6 @@
-import React, { FC } from 'react';
+import React, { FC } from "react";
 
-import TransferEventList, { TransferEventListProps } from './TransferEventList';
+import TransferEventList, { TransferEventListProps } from "./TransferEventList";
 
 export const FullTransactionHistory: FC<TransferEventListProps> = ({ transferEvents }) => {
   return (

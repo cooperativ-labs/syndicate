@@ -1,15 +1,15 @@
-import { useMutation } from '@apollo/client/react';
-import { Organization } from '@gql/graphql';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import { ADD_WHITELIST_MEMBER } from '@src/utils/graphQueries/offering';
-import { addWhitelistMember } from '@src/web3/contractShareCalls';
-import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
-import { isAddress } from 'viem';
-import { useChainId } from 'wagmi';
+import { useMutation } from "@apollo/client/react";
+import { Organization } from "@gql/graphql";
+import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import FormButton from "@src/components/buttons/FormButton";
+import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
+import { ADD_WHITELIST_MEMBER } from "@src/utils/graphQueries/offering";
+import { addWhitelistMember } from "@src/web3/contractShareCalls";
+import { getAddressFromEns, String0x } from "@src/web3/helpersChain";
+import { Form, Formik } from "formik";
+import React, { FC, useState } from "react";
+import { isAddress } from "viem";
+import { useChainId } from "wagmi";
 
 export type AddWhitelistAddressProps = {
   organization: Organization;
@@ -22,29 +22,29 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
   organization
 }) => {
   const chainId = useChainId();
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
   const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
 
   return (
     <Formik
       initialValues={{
-        address: '',
-        name: '',
-        externalId: ''
+        address: "",
+        name: "",
+        externalId: ""
       }}
       validate={async values => {
         const errors: any = {}; /** @TODO : Shape */
         const address = await getAddressFromEns(values.address);
         if (!address) {
-          errors.address = 'Please enter an address to approve';
+          errors.address = "Please enter an address to approve";
         } else if (!isAddress(address)) {
-          errors.address = 'This is not a valid address.';
+          errors.address = "This is not a valid address.";
         }
         return errors;
       }}
       onSubmit={async (values, { setSubmitting, resetForm }) => {
         const address = await getAddressFromEns(values.address);
-        setButtonStep('step1');
+        setButtonStep("step1");
         setSubmitting(true);
         await addWhitelistMember({
           shareContractAddress,
@@ -88,7 +88,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
               placeholder="934834 (optional)"
             />
           </div>
-          <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
+          <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
             <LoadingButtonText
               state={buttonStep}
               idleText={`Approve ${values.address}`}

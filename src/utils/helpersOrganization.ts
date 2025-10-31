@@ -1,10 +1,10 @@
-import type { Organization } from '@gql/graphql';
-import type { User } from '@supabase/supabase-js';
-import { createClient } from '@supabase/utils/client';
-import router from 'next/router';
+import type { Organization } from "@gql/graphql";
+import type { User } from "@supabase/supabase-js";
+import { createClient } from "@supabase/utils/client";
+import router from "next/router";
 
 export const handleOrganizationChange = (id: string, postSelectionAction?: () => void) => {
-  window.sessionStorage.setItem('CHOSEN_ORGANIZATION', id);
+  window.sessionStorage.setItem("CHOSEN_ORGANIZATION", id);
   router.push(`/${id}/overview`);
 };
 
@@ -14,9 +14,9 @@ export const getOrgsFromUser = async (user: User | null) => {
     return [];
   }
   const { data: memberships, error } = await supabase
-    .from('organization_user')
-    .select('organization_id')
-    .eq('user_id', user.id);
+    .from("organization_user")
+    .select("organization_id")
+    .eq("user_id", user.id);
   if (error) {
     console.error(error);
     return [];
@@ -27,10 +27,10 @@ export const getOrgsFromUser = async (user: User | null) => {
   }
 
   const { data: organizations, error: organizationsError } = await supabase
-    .from('organization')
-    .select('*')
+    .from("organization")
+    .select("*")
     .in(
-      'id',
+      "id",
       memberships.map(org => org.organization_id)
     );
   if (organizationsError) {

@@ -1,8 +1,8 @@
-import { CryptoAddressProtocol } from '@gql/graphql';
-import { Maybe } from '@gql/graphql';
-import { cookieStorage, createConfig, createStorage, http } from 'wagmi';
-import { base, Chain, mainnet, polygon, polygonMumbai, sepolia } from 'wagmi/chains';
-import { baseAccount, injected, metaMask, safe, walletConnect } from 'wagmi/connectors';
+import { CryptoAddressProtocol } from "@gql/graphql";
+import { Maybe } from "@gql/graphql";
+import { cookieStorage, createConfig, createStorage, http } from "wagmi";
+import { base, Chain, mainnet, polygon, polygonMumbai, sepolia } from "wagmi/chains";
+import { baseAccount, injected, metaMask, safe, walletConnect } from "wagmi/connectors";
 
 export const SupportedChains: readonly [Chain, ...Chain[]] = [
   base,
@@ -18,7 +18,7 @@ export const getWagmiConfig = () => {
   if (cachedConfig) {
     return cachedConfig;
   }
-  const isBrowser = typeof window !== 'undefined';
+  const isBrowser = typeof window !== "undefined";
 
   const connectors = isBrowser
     ? [
@@ -57,18 +57,18 @@ export const SupportedChainsAddendum = [
     name: mainnet.name,
     blockExplorer: mainnet.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.eth,
-    icon: '/assets/images/chain-icons/ethereum-eth-logo.svg',
+    icon: "/assets/images/chain-icons/ethereum-eth-logo.svg",
     contractsSupported: true,
-    color: 'emerald-600'
+    color: "emerald-600"
   },
   {
     id: sepolia.id,
     name: sepolia.name,
     blockExplorer: sepolia.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.eth,
-    icon: '/assets/images/chain-logos/sepolia-logo.png',
+    icon: "/assets/images/chain-logos/sepolia-logo.png",
     contractsSupported: true,
-    color: 'blue-300'
+    color: "blue-300"
   },
 
   // {
@@ -85,27 +85,27 @@ export const SupportedChainsAddendum = [
     name: polygon.name,
     blockExplorer: polygon.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.eth,
-    icon: '/assets/images/chain-icons/polygon-matic-logo.svg',
+    icon: "/assets/images/chain-icons/polygon-matic-logo.svg",
     contractsSupported: true,
-    color: 'purple-600'
+    color: "purple-600"
   },
   {
     id: polygonMumbai.id,
     name: polygonMumbai.name,
     blockExplorer: polygonMumbai.blockExplorers.default.url,
-    faucet: 'https://faucet.matic.network/',
+    faucet: "https://faucet.matic.network/",
     protocol: CryptoAddressProtocol.eth,
     contractsSupported: true,
-    color: 'purple-300'
+    color: "purple-300"
   },
   {
     id: base.id,
     name: base.name,
     blockExplorer: base.blockExplorers.default.url,
     protocol: CryptoAddressProtocol.eth,
-    icon: '/assets/images/chain-icons/base-logo.svg',
+    icon: "/assets/images/chain-icons/base-logo.svg",
     contractsSupported: true,
-    color: 'purple-600'
+    color: "purple-600"
   }
 ];
 

@@ -1,8 +1,8 @@
-import { Maybe, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
-import { swapContractABI } from '@src/web3/generated';
-import { String0x } from '@src/web3/helpersChain';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { readContract } from 'wagmi/actions';
+import { Maybe, ShareOrder, ShareTransferEvent, ShareTransferEventType } from "@gql/graphql";
+import { swapContractABI } from "@src/web3/generated";
+import { String0x } from "@src/web3/helpersChain";
+import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
+import { readContract } from "wagmi/actions";
 
 export type ContractOrder = {
   orderId: string | undefined;
@@ -50,7 +50,7 @@ export async function getOrderArrayFromContract(
       (await readContract({
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: 'orders',
+        functionName: "orders",
         args: [BigInt(order.contractIndex)]
       }));
     const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
@@ -87,7 +87,7 @@ export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]) => {
   const activeOrders = liveOrders?.find(
     order =>
       order.isAccepted ||
-      order.filler !== '0x0000000000000000000000000000000000000000' ||
+      order.filler !== "0x0000000000000000000000000000000000000000" ||
       order.isApproved
   );
   return !activeOrders;

@@ -1,11 +1,11 @@
-import { Plus } from 'lucide-react';
-import { Organization } from '@gql/graphql';
-import CooperativLogo from '@src/components/CooperativLogo';
-import { handleOrganizationChange } from '@src/utils/helpersOrganization';
-import cn from 'classnames';
-import React, { FC, useContext } from 'react';
+import { Organization } from "@gql/graphql";
+import CooperativLogo from "@src/components/CooperativLogo";
+import { handleOrganizationChange } from "@src/utils/helpersOrganization";
+import cn from "classnames";
+import { Plus } from "lucide-react";
+import React, { FC, useContext } from "react";
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
+import { ApplicationStoreProps, store } from "@/contexts/store";
 
 type OrganizationSwitcherProps = {
   organizations: Organization[];
@@ -13,34 +13,34 @@ type OrganizationSwitcherProps = {
   // onOrganizationChange: (id: string) => void;
 };
 
-const backgroundColor = ' bg-gray-200';
+const backgroundColor = " bg-gray-200";
 
 const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) => {
-  const OrganizationIdFromSessionStorage = window.sessionStorage?.getItem('CHOSEN_ORGANIZATION');
+  const OrganizationIdFromSessionStorage = window.sessionStorage?.getItem("CHOSEN_ORGANIZATION");
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch } = applicationStore;
 
   return (
-    <div className={cn('relative min-h-full', backgroundColor)}>
+    <div className={cn("relative min-h-full", backgroundColor)}>
       <div className="z-10 flex flex-col min-w-max pt-2 rounded-md focus:outline-none">
         {organizations.map(org => (
           <button
             key={org.id}
             type="button"
             className={cn(
-              'flex items-center overflow-hidden m-2 rounded-lg hover:border-white  border-4 focus:outline-none',
+              "flex items-center overflow-hidden m-2 rounded-lg hover:border-white  border-4 focus:outline-none",
 
-              OrganizationIdFromSessionStorage === org.id ? 'border-4 border-slate-600' : ''
+              OrganizationIdFromSessionStorage === org.id ? "border-4 border-slate-600" : ""
             )}
             onClick={() =>
               handleOrganizationChange(org.id, () =>
-                dispatch({ type: 'SET_ACTIVE_ORG', payload: org.id })
+                dispatch({ type: "SET_ACTIVE_ORG", payload: org.id })
               )
             }
           >
             <img
               className="w-14 h-14"
-              src={org.logo ?? '/assets/images/logos/company-placeholder.jpeg'}
+              src={org.logo ?? "/assets/images/logos/company-placeholder.jpeg"}
               alt=""
             />
 
@@ -49,7 +49,7 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
         ))}
         <button
           className="flex  mx-2 rounded-lg border-4 text-gray-800 hover:text-gray-800 text-xl  focus:outline-none"
-          onClick={() => dispatch({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
+          onClick={() => dispatch({ type: "TOGGLE_CREATE_ORG_MODAL" })}
         >
           <div className=" flex items-center justify-center w-14 h-14">
             <Plus />

@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client/react';
-import { OfferingParticipant } from '@gql/graphql';
-import DashboardCard from '@src/components/cards/DashboardCard';
-import LoadingModal from '@src/components/loading/ModalLoading';
-import OfferingsList from '@src/components/offering/OfferingsList';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { useParams } from 'next/navigation';
-import React, { FC } from 'react';
-import { useAccount } from 'wagmi';
+import { useQuery } from "@apollo/client/react";
+import { OfferingParticipant } from "@gql/graphql";
+import DashboardCard from "@src/components/cards/DashboardCard";
+import LoadingModal from "@src/components/loading/ModalLoading";
+import OfferingsList from "@src/components/offering/OfferingsList";
+import TwoColumnLayout from "@src/containers/Layouts/TwoColumnLayout";
+import { GET_OFFERING_PARTICIPANT } from "@src/utils/graphQueries/offering";
+import { GET_ORGANIZATION } from "@src/utils/graphQueries/organization";
+import { getOrgOfferingsFromEntity } from "@src/utils/helpersUserAndEntity";
+import { useParams } from "next/navigation";
+import React, { FC } from "react";
+import { useAccount } from "wagmi";
 
 const PortalOrganization: FC = () => {
   const { address: userWalletAddress } = useAccount();

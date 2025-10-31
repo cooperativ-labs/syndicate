@@ -1,6 +1,6 @@
-import { ApolloClient, HttpLink } from '@apollo/client';
-import { InMemoryCache, SSRMultipartLink } from '@apollo/client-integration-nextjs';
-import { getGraphQLEndpoint } from '@src/utils/apolloConfig';
+import { ApolloClient, HttpLink } from "@apollo/client";
+import { InMemoryCache, SSRMultipartLink } from "@apollo/client-integration-nextjs";
+import { getGraphQLEndpoint } from "@src/utils/apolloConfig";
 
 type CreateServerApolloClientOptions = {
   accessToken?: string | null;
@@ -17,7 +17,7 @@ export function createServerApolloClient(options: CreateServerApolloClientOption
         headers: {
           ...init?.headers,
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ''
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ""
         }
       })
   });

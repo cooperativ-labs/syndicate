@@ -1,9 +1,9 @@
-import Card from '@src/components/cards/Card';
-import { MatchSupportedChains } from '@src/web3/wagmi';
-import React, { FC } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import Card from "@src/components/cards/Card";
+import { MatchSupportedChains } from "@src/web3/wagmi";
+import React, { FC } from "react";
+import { useAccount, useChainId } from "wagmi";
 
-import ChooseConnectorButton from './ChooseConnectorButton';
+import ChooseConnectorButton from "./ChooseConnectorButton";
 
 type EnsureCompatibleNetworkProps = { children: React.ReactNode };
 
@@ -15,7 +15,7 @@ const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children })
       <div className="flex flex-col h-full w-screen items-center justify-center">
         <Card className="md:w-96 rounded-lg mx-4 md:mx-auto mt-4  p-4 ">
           <div className="text-center mb-4">Please connect your wallet.</div>
-          <ChooseConnectorButton buttonText={'Connect'} />
+          <ChooseConnectorButton buttonText={"Connect"} />
         </Card>
       </div>
     );
@@ -23,7 +23,7 @@ const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children })
     return (
       <div className="flex flex-col h-full w-screen items-center justify-center">
         <Card className="md:w-96 rounded-lg mx-4 md:mx-auto mt-4  p-4 ">
-          The blockchain you are using is not compatible with Cooperativ. Please use{' '}
+          The blockchain you are using is not compatible with Cooperativ. Please use{" "}
           <a
             className="underline font-bold"
             href="https://sepolia.dev/"
@@ -31,8 +31,8 @@ const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children })
             rel="noreferrer"
           >
             Sepolia
-          </a>{' '}
-          for testing and the <strong>Ethereum Mainnet</strong> or{' '}
+          </a>{" "}
+          for testing and the <strong>Ethereum Mainnet</strong> or{" "}
           <a
             className="underline font-bold"
             href="https://chainlist.org/chain/137"
@@ -40,8 +40,8 @@ const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children })
             rel="noreferrer"
           >
             Polygon
-          </a>{' '}
-          for real transactions.{' '}
+          </a>{" "}
+          for real transactions.{" "}
         </Card>
       </div>
     );

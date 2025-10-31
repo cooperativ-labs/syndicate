@@ -1,8 +1,8 @@
-import TagManager from 'react-gtm-module';
+import TagManager from "react-gtm-module";
 
 const _defaults = {
   root: null,
-  rootMargin: '0%',
+  rootMargin: "0%",
   threshold: 0.5,
   once: false,
   callback: () => {}
@@ -49,25 +49,25 @@ function trackEvent(event, category, action, label, value, rest = {}) {
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackPageView(title, url, rest = {}) {
-  trackEvent('Pageview', 'pages', 'pageview', title, url, rest);
+  trackEvent("Pageview", "pages", "pageview", title, url, rest);
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackClick(label, value, rest = {}) {
-  trackEvent('Event', 'interaction', 'click', label, value, rest);
+  trackEvent("Event", "interaction", "click", label, value, rest);
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackFocus(label, value, rest = {}) {
-  trackEvent('Event', 'interaction', 'focus', label, value, rest);
+  trackEvent("Event", "interaction", "focus", label, value, rest);
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackBlur(label, value, rest = {}) {
-  trackEvent('Event', 'interaction', 'blur', label, value, rest);
+  trackEvent("Event", "interaction", "blur", label, value, rest);
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackExternalLink(label, value, rest = {}) {
-  trackEvent('ExternalLink', 'interaction', 'Externallink', label, value, rest);
+  trackEvent("ExternalLink", "interaction", "Externallink", label, value, rest);
 }
 // @ts-expect-error - analytics helpers are intentionally untyped for flexibility
 export function trackImpression(label, value, rest = {}) {
-  trackEvent('Event', 'impression', 'impression', label, value, rest);
+  trackEvent("Event", "impression", "impression", label, value, rest);
 }

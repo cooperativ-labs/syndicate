@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useEffect, useMemo, useState } from 'react';
+import { useUserContext } from "@contexts/UserContext";
+import React, { useEffect, useMemo, useState } from "react";
 
-import LoginModal from './LoginModal';
-import { useUserContext } from '@contexts/UserContext';
+import LoginModal from "./LoginModal";
 
 interface WithAuthenticationProps {
   redirectTo?: string;

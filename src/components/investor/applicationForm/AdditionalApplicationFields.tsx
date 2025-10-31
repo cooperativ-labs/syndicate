@@ -1,8 +1,8 @@
-import React, { FC } from 'react';
+import React, { FC } from "react";
 
-import Checkbox from '../../form-components/Checkbox';
-import Input, { defaultFieldDiv } from '../../form-components/Inputs';
-import Select from '../../form-components/Select';
+import Checkbox from "../../form-components/Checkbox";
+import Input, { defaultFieldDiv } from "../../form-components/Inputs";
+import Select from "../../form-components/Select";
 
 type AdditionalApplicationFieldsProps = {
   values: any;
@@ -77,7 +77,7 @@ const AdditionalApplicationFields: FC<AdditionalApplicationFieldsProps> = ({
             </option>
             <option value="a">other (explain below)</option>
           </Select>
-          {values.purchaserAccreditedType === 'a' && (
+          {values.purchaserAccreditedType === "a" && (
             <Input
               labelText={`Please explain`}
               className={defaultFieldDiv}
@@ -144,7 +144,7 @@ const AdditionalApplicationFields: FC<AdditionalApplicationFieldsProps> = ({
                 checked={values.workingWithAdvisor && values.purchaserSophisticated}
                 sideLabel
               />
-              {values.workingWithAdvisor && 'Please complete advisor section below.'}
+              {values.workingWithAdvisor && "Please complete advisor section below."}
 
               <hr className="my-4" />
             </div>
@@ -175,7 +175,7 @@ const AdditionalApplicationFields: FC<AdditionalApplicationFieldsProps> = ({
         name="purchaserPriorRelationship"
         placeholder="e.g. "
         textArea
-      />{' '}
+      />{" "}
       <Input
         labelText={`Please include any additional information that may assist the Company in determining whether you are
             able to evaluate the risks and merits of this investment.`}

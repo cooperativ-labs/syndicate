@@ -18,20 +18,20 @@ export const currentDate = rfc3339(date);
 
 export function rfc3339(d: Date) {
   function pad(n: number) {
-    return n < 10 ? '0' + n : n;
+    return n < 10 ? "0" + n : n;
   }
 
   return (
     d.getFullYear() +
-    '-' +
+    "-" +
     pad(d.getMonth() + 1) +
-    '-' +
+    "-" +
     pad(d.getDate()) +
-    'T' +
+    "T" +
     pad(d.getHours()) +
-    ':' +
+    ":" +
     pad(d.getMinutes()) +
-    ':' +
+    ":" +
     pad(d.getSeconds())
   );
 }
@@ -39,28 +39,28 @@ export function rfc3339(d: Date) {
 export function timezoneOffset(offset: number) {
   var sign;
   if (offset === 0) {
-    return 'Z';
+    return "Z";
   }
 
   function pad(n: number) {
-    return n < 10 ? '0' + n : n;
+    return n < 10 ? "0" + n : n;
   }
 
-  sign = offset > 0 ? '-' : '+';
+  sign = offset > 0 ? "-" : "+";
   offset = Math.abs(offset);
-  return sign + pad(Math.floor(offset / 60)) + ':' + pad(offset % 60);
+  return sign + pad(Math.floor(offset / 60)) + ":" + pad(offset % 60);
 }
 
 export function formatTag(text: string) {
-  return text.replace(/[^\w-]+/g, ' ');
+  return text.replace(/[^\w-]+/g, " ");
 }
 
 export function formatSlug(text: string) {
   return text
     .toLowerCase()
     .trim()
-    .replace(/ /g, '')
-    .replace(/[^\w-]+/g, '');
+    .replace(/ /g, "")
+    .replace(/[^\w-]+/g, "");
 }
 
 // export async function checkEmailTaken(emailAddress: string) {

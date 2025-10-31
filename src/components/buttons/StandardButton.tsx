@@ -1,7 +1,7 @@
-import cn from 'classnames';
-import React, { FC } from 'react';
+import cn from "classnames";
+import React, { FC } from "react";
 
-import Button, { ButtonProps } from './Button';
+import Button, { ButtonProps } from "./Button";
 
 interface StandardButtonProps extends ButtonProps {
   external?: boolean;
@@ -24,21 +24,21 @@ const StandardButton: FC<StandardButtonProps> = ({
   link,
   text,
   onClick,
-  color = 'cLightBlue',
-  hoverColor = 'cDarkBlue',
+  color = "cLightBlue",
+  hoverColor = "cDarkBlue",
   className,
   disabled
 }) => {
   const standardClass = `text-white shadow-lg hover:shadow-xl bg-${color} hover:bg-${hoverColor}`;
   const outlinedClass = `text-${color} hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-${hoverColor} border-2 border-${color} hover:border-white`;
-  const disabledClass = 'text-gray-500 bg-opacity-100 border-2 border-gray-500';
+  const disabledClass = "text-gray-500 bg-opacity-100 border-2 border-gray-500";
   const ButtonWithoutLink = (
     <Button
       className={cn(
         [disabled ? disabledClass : outlined ? outlinedClass : standardClass],
-        [large ? 'p-4 px-10 font-bold' : 'text-sm p-3 px-6 font-semibold '],
-        [fullWidth ? 'w-full' : null],
-        'rounded-md relative'
+        [large ? "p-4 px-10 font-bold" : "text-sm p-3 px-6 font-semibold "],
+        [fullWidth ? "w-full" : null],
+        "rounded-md relative"
       )}
       aria-label={`button-${text}`}
       disabled={disabled}
@@ -53,8 +53,8 @@ const StandardButton: FC<StandardButtonProps> = ({
       {link ? (
         <a
           href={link}
-          target={external ? '_blank' : undefined}
-          rel={external ? 'noreferrer' : undefined}
+          target={external ? "_blank" : undefined}
+          rel={external ? "noreferrer" : undefined}
         >
           {ButtonWithoutLink}
         </a>

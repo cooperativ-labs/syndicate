@@ -1,6 +1,6 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
-import { CORE_RE_PROPERTY_FIELDS } from './fragments';
+import { CORE_RE_PROPERTY_FIELDS } from "./fragments";
 
 export const GET_RE_PROPERTY = gql`
   ${CORE_RE_PROPERTY_FIELDS}

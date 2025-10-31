@@ -1,9 +1,9 @@
-import 'react-datepicker/dist/react-datepicker.css';
+import "react-datepicker/dist/react-datepicker.css";
 
-import cn from 'classnames';
-import { ErrorMessage, useField, useFormikContext } from 'formik';
-import React from 'react';
-import DatePicker, { CalendarContainer } from 'react-datepicker';
+import cn from "classnames";
+import { ErrorMessage, useField, useFormikContext } from "formik";
+import React from "react";
+import DatePicker, { CalendarContainer } from "react-datepicker";
 
 export interface InputProps {
   name: string;
@@ -39,27 +39,27 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
     children: React.ReactNode[];
   }) => {
     return (
-      <div style={{ color: '#fff' }}>
+      <div style={{ color: "#fff" }}>
         <CalendarContainer className={className}>
-          <div style={{ position: 'relative' }}>{children}</div>
+          <div style={{ position: "relative" }}>{children}</div>
         </CalendarContainer>
       </div>
     );
   };
 
   return (
-    <div className={cn(className, 'flex flex-col')}>
+    <div className={cn(className, "flex flex-col")}>
       {labelText && (
         <label
           htmlFor={name}
           className={cn(
             fieldLabelClass
               ? fieldLabelClass
-              : 'text-sm text-blue-900 font-semibold text-opacity-80 '
+              : "text-sm text-blue-900 font-semibold text-opacity-80 "
           )}
         >
           {labelText}
-          {required ? ' *' : ''}
+          {required ? " *" : ""}
         </label>
       )}
       <DatePicker
@@ -72,7 +72,7 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
         className={cn(
           fieldClass
             ? fieldClass
-            : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none',
+            : "text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none",
           fieldHeight
         )}
       />

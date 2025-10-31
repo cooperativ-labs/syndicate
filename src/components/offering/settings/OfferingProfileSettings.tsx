@@ -1,16 +1,16 @@
-import { useMutation } from '@apollo/client/react';
-import { Offering } from '@gql/graphql';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import Checkbox from '@src/components/form-components/Checkbox';
-import FileUpload from '@src/components/form-components/FileUpload';
-import Input from '@src/components/form-components/Inputs';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
+import { useMutation } from "@apollo/client/react";
+import { Offering } from "@gql/graphql";
+import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import FormButton from "@src/components/buttons/FormButton";
+import Checkbox from "@src/components/form-components/Checkbox";
+import FileUpload from "@src/components/form-components/FileUpload";
+import Input from "@src/components/form-components/Inputs";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { UPDATE_OFFERING_PROFILE } from "@src/utils/graphQueries/offering";
+import { Form, Formik } from "formik";
+import React, { FC, useState } from "react";
 
-const fieldDiv = 'my-2 bg-opacity-0';
+const fieldDiv = "my-2 bg-opacity-0";
 
 type OfferingProfileSettingsProps = {
   offering: Offering;
@@ -19,7 +19,7 @@ type OfferingProfileSettingsProps = {
 
 const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, userId }) => {
   const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
 
   const addLogoToDb = (url: string) => {
     updateOffering({
@@ -46,7 +46,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
   const [alerted, setAlerted] = useState<boolean>(false);
 
   if (error) {
-    alert('Oops. Looks like something went wrong');
+    alert("Oops. Looks like something went wrong");
   }
   if (data && !alerted) {
     setAlerted(true);
@@ -70,12 +70,12 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             validate={values => {
               const errors: any = {}; /** @TODO : Shape */
               if (!values.name) {
-                errors.name = 'Please name this syndication.';
+                errors.name = "Please name this syndication.";
               }
               return errors;
             }}
             onSubmit={(values, { setSubmitting }) => {
-              setButtonStep('step1');
+              setButtonStep("step1");
               setAlerted(false);
               setSubmitting(true);
               try {
@@ -90,9 +90,9 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
                     website: values.website
                   }
                 });
-                setButtonStep('confirmed');
+                setButtonStep("confirmed");
               } catch (e) {
-                setButtonStep('failed');
+                setButtonStep("failed");
                 alert(e);
               }
               setSubmitting(false);
@@ -169,7 +169,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             <FileUpload
               uploaderText="Add Banner"
               urlToDatabase={addBannerImageToDb}
-              accept={['jpg', 'jpeg', 'png']}
+              accept={["jpg", "jpeg", "png"]}
               baseUploadUrl={`/offerings/${offering.id}/image/${userId}`}
             />
           </div>
@@ -180,7 +180,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             <FileUpload
               uploaderText="Add Logo"
               urlToDatabase={addLogoToDb}
-              accept={['jpg', 'jpeg', 'png']}
+              accept={["jpg", "jpeg", "png"]}
               baseUploadUrl={`/offerings/${offering.id}/image/${userId}`}
             />
           </div>

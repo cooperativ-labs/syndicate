@@ -1,10 +1,10 @@
-import Button from '@src/components/buttons/Button';
-import { WalletErrorCodes } from '@src/web3/helpersChain';
-import cn from 'classnames';
-import React, { FC, useContext } from 'react';
-import { Connector, useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
+import Button from "@src/components/buttons/Button";
+import { WalletErrorCodes } from "@src/web3/helpersChain";
+import cn from "classnames";
+import React, { FC, useContext } from "react";
+import { Connector, useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from "wagmi";
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
+import { ApplicationStoreProps, store } from "@/contexts/store";
 
 export function Account() {
   const { address } = useAccount();

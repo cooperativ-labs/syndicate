@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import { Info } from 'lucide-react';
-import { Offering, Organization } from '@gql/graphql';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import cn from 'classnames';
-import { useRouter } from 'next/navigation';
-import React, { FC, useState } from 'react';
-import { Maybe } from 'yup';
+import { Offering, Organization } from "@gql/graphql";
+import { getCurrencyOption } from "@src/utils/enumConverters";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import cn from "classnames";
+import { Info } from "lucide-react";
+import { useRouter } from "next/navigation";
+import React, { FC, useState } from "react";
+import { Maybe } from "yup";
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 
@@ -33,7 +33,7 @@ const ShareOfferPanelItem: FC<ShareOfferPanelItemProps> = ({ children, title, no
             )}
           </div>
         )}
-      </div>{' '}
+      </div>{" "}
       <div className="col-span-1">{children}</div>
     </div>
   );
@@ -88,7 +88,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
     minUnitsPerInvestor: undefined
   };
 
-  const buttonText = !permittedEntity ? 'Manage Investment' : 'Apply to Invest';
+  const buttonText = !permittedEntity ? "Manage Investment" : "Apply to Invest";
   const buttonLink =
     !permittedEntity && organization
       ? `/${organization.id}/portal/${offering.id}`
@@ -99,7 +99,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
       data-test="share-offer-panel"
       onClick={() => router.push(buttonLink)}
       className={cn([
-        'ubuntu rounded-md font-bold bg-green-700 text-slate-100 px-4 py-2 items-center justify-center shadow-lg mt-4 flex w-full '
+        "ubuntu rounded-md font-bold bg-green-700 text-slate-100 px-4 py-2 items-center justify-center shadow-lg mt-4 flex w-full "
       ])}
     >
       {buttonText}
@@ -120,8 +120,8 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
       <div className="mt-5 flex items-center gap-2">
         <div className="w-full h-2 bg-gray-200 rounded">
           <div
-            style={{ background: '#275A8F', width: `${percentPledged}%` }}
-            className={'h-2 rounded'}
+            style={{ background: "#275A8F", width: `${percentPledged}%` }}
+            className={"h-2 rounded"}
           />
         </div>
         <div className="text-xs text-gray-500 whitespace-nowrap">{`${percentPledged}% funded`}</div>
@@ -135,7 +135,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
               note="This is an estimate. Returns are not guaranteed."
             >
               {`${projectedIrr / 100}`}
-              {projectedIrrMax ? ` - ${projectedIrrMax / 100}` : ''}%
+              {projectedIrrMax ? ` - ${projectedIrrMax / 100}` : ""}%
             </ShareOfferPanelItem>
           </div>
         ) : (
@@ -153,7 +153,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
             title="CoC Return"
             note="This is an estimate. Returns are not guaranteed."
           >
-            <div className="col-span-1">{cocReturn ? `${cocReturn / 100}` : ''}% </div>
+            <div className="col-span-1">{cocReturn ? `${cocReturn / 100}` : ""}% </div>
           </ShareOfferPanelItem>
         ) : (
           <></>
@@ -162,7 +162,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
       <div>{ApplyManageButton}</div>
       {minUnitsPerInvestor ? (
         <div className="mt-2 font-semibold text-xs  text-gray-300 lg:text-gray-700 text-center">{`* Minimum purchase: ${minUnitsPerInvestor} share${
-          minUnitsPerInvestor !== 1 ? 's' : ''
+          minUnitsPerInvestor !== 1 ? "s" : ""
         }  (${numberWithCommas(currentSalePrice ? currentSalePrice * minUnitsPerInvestor : undefined)} ${
           getCurrencyOption(investmentCurrency)?.symbol
         })`}</div>

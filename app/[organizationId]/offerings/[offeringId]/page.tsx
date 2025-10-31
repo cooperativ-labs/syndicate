@@ -1,12 +1,12 @@
-'use client';
+"use client";
 
-import { useQuery } from '@apollo/client/react';
-import LoadingModal from '@src/components/loading/ModalLoading';
-import ManagerWrapper from '@src/containers/ManagerWrapper';
-import OfferingDetails from '@src/screens/OfferingDetails';
-import { GET_OFFERING } from '@src/utils/graphQueries/offering';
-import { useParams } from 'next/navigation';
-import React from 'react';
+import { useQuery } from "@apollo/client/react";
+import LoadingModal from "@src/components/loading/ModalLoading";
+import ManagerWrapper from "@src/containers/ManagerWrapper";
+import OfferingDetails from "@src/screens/OfferingDetails";
+import { GET_OFFERING } from "@src/utils/graphQueries/offering";
+import { useParams } from "next/navigation";
+import React from "react";
 
 const OfferingPage = () => {
   const params = useParams<{ offeringId: string }>();

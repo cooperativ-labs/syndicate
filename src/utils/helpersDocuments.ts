@@ -1,4 +1,4 @@
-import { Document, DocumentFormat, DocumentType, Maybe } from '@gql/graphql';
+import { Document, DocumentFormat, DocumentType, Maybe } from "@gql/graphql";
 
 export type urlToDatabaseProps = (
   url: string,
@@ -11,15 +11,15 @@ export type urlToDatabaseProps = (
 export const getFileFormat = (file: File) => {
   const fileType = file.type;
   switch (fileType) {
-    case 'application/pdf':
+    case "application/pdf":
       return DocumentFormat.Pdf;
-    case 'application/msword':
-    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
+    case "application/msword":
+    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
       return DocumentFormat.WordDoc;
-    case 'text/markdown':
+    case "text/markdown":
       return DocumentFormat.Markdown;
-    case 'xls':
-    case 'xlsx':
+    case "xls":
+    case "xlsx":
       return DocumentFormat.Excel;
     default:
       return DocumentFormat.Other;

@@ -1,5 +1,5 @@
-import React from 'react';
-import toast from 'react-hot-toast';
+import React from "react";
+import toast from "react-hot-toast";
 
 export const toastExperiment = ({ title, message }: { title: string; message: string }) => {
   toast(
@@ -19,8 +19,8 @@ export const toastExperiment = ({ title, message }: { title: string; message: st
       </div>
     ),
     {
-      position: 'top-center',
-      style: { borderRadius: '10px', padding: '0px' },
+      position: "top-center",
+      style: { borderRadius: "10px", padding: "0px" },
       duration: 50000
       // style: { borderRadius: '0px', background: '#333', color: '#fff' },
     }

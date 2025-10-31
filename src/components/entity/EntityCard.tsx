@@ -1,11 +1,11 @@
-'use client';
+"use client";
 
-import { LegalEntity, Maybe } from '@gql/graphql';
-import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import router, { useRouter } from 'next/router';
-import React from 'react';
+import { LegalEntity, Maybe } from "@gql/graphql";
+import { renderJurisdiction } from "@src/utils/helpersUserAndEntity";
+import router, { useRouter } from "next/router";
+import React from "react";
 
-import Card from '../cards/Card';
+import Card from "../cards/Card";
 
 export type EntityCardProps = {
   entity: Maybe<Maybe<LegalEntity>>;
@@ -29,10 +29,10 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
           <div>
             <h1 className="text-lg font-bold">{displayName}</h1>
             <div className="text-xs text-gray-600 mb-1">
-              {owners?.length} {`owner${owners?.length === 1 ? '' : `s`}`}
+              {owners?.length} {`owner${owners?.length === 1 ? "" : `s`}`}
             </div>
             <div className="text-xs text-gray-600 mb-4">
-              {subsidiaries?.length} {`subsidiar${subsidiaries?.length === 1 ? 'y' : 'ies'}`}
+              {subsidiaries?.length} {`subsidiar${subsidiaries?.length === 1 ? "y" : "ies"}`}
             </div>
           </div>
         </div>

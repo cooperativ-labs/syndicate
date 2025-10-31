@@ -1,25 +1,25 @@
-import { useMutation } from '@apollo/client/react';
-import { ShareOrder } from '@gql/graphql';
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { getCurrencyById } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/graphQueries/orders';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { useMutation } from "@apollo/client/react";
+import { ShareOrder } from "@gql/graphql";
+import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
+import OrderVisibilityToggle from "@src/components/offering/sales/SaleVisibilityToggle";
+import { getCurrencyById } from "@src/utils/enumConverters";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from "@src/utils/graphQueries/orders";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { getIsEditorOrAdmin } from "@src/utils/helpersUserAndEntity";
 import {
   approveRejectSwap,
   cancelAcceptance,
   cancelSwap,
   claimProceeds
-} from '@src/web3/contractSwapCalls';
-import { swapContractABI } from '@src/web3/generated';
-import { String0x } from '@src/web3/helpersChain';
-import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
-import cn from 'classnames';
-import React, { FC, useState } from 'react';
-import { useAccount, useChainId, useContractRead } from 'wagmi';
+} from "@src/web3/contractSwapCalls";
+import { swapContractABI } from "@src/web3/generated";
+import { String0x } from "@src/web3/helpersChain";
+import { shareContractDecimals, toContractNumber, toNormalNumber } from "@src/web3/util";
+import cn from "classnames";
+import React, { FC, useState } from "react";
+import { useAccount, useChainId, useContractRead } from "wagmi";
 
 export type SaleMangerPanelProps = {
   swapContractAddress: String0x | undefined;
@@ -41,12 +41,12 @@ type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
   isCancelled: boolean | undefined;
   isAskOrder: boolean | undefined;
   isFilled: boolean | undefined;
-  filler: String0x | '' | undefined;
-  initiator: String0x | '';
+  filler: String0x | "" | undefined;
+  initiator: String0x | "";
   order: ShareOrder;
   amount: number | undefined;
   price: number | undefined;
-  partition: String0x | undefined | '';
+  partition: String0x | undefined | "";
   small?: boolean;
   shareContractAddress: String0x | undefined;
   refetchAllContracts: () => void;
@@ -80,22 +80,22 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const chainId = useChainId();
   const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
   const [addApprovalRecord, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
-  const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
+  const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>("idle");
 
   const { data: contractData } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: 'unclaimedProceeds',
+    functionName: "unclaimedProceeds",
     args: [userWalletAddress as String0x]
   });
 
   const { data: acceptedQty } = useContractRead({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: 'acceptedOrderQty',
+    functionName: "acceptedOrderQty",
     args: [filler as String0x, BigInt(order.contractIndex)]
   });
 
@@ -188,13 +188,13 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   // Buttons ==========================================================================================================
 
   const buttonClass =
-    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
+    "text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full";
 
   const cancelButton = (
     <Button
       className={buttonClass}
       onClick={() => handleCancel()}
-      disabled={cancelButtonStep === 'step1'}
+      disabled={cancelButtonStep === "step1"}
     >
       <LoadingButtonText
         state={cancelButtonStep}
@@ -211,9 +211,9 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     <Button
       className={buttonClass}
       onClick={() => handleArchive(!order.archived)}
-      disabled={claimProceedsButton === 'step1'}
+      disabled={claimProceedsButton === "step1"}
     >
-      {order.archived ? 'Unarchive' : `Archive completed swap`}
+      {order.archived ? "Unarchive" : `Archive completed swap`}
     </Button>
   );
 
@@ -227,11 +227,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
             ? updateListingVisibility(true)
             : updateListingVisibility(false)
       }
-      disabled={approveButtonStep === 'step1'}
+      disabled={approveButtonStep === "step1"}
     >
       <LoadingButtonText
         state={approveButtonStep}
-        idleText={`${transactionIsAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'}`}
+        idleText={`${transactionIsAccepted ? "Approve Trade" : listingIsApproved ? "Hide Listing" : "Approve Listing"}`}
         step1Text="Approving..."
         confirmedText="Approved"
         failedText="Transaction failed"
@@ -244,11 +244,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     <Button
       className={buttonClass}
       onClick={() => handleApprove({ isDisapprove: true })}
-      disabled={approveButtonStep === 'step1'}
+      disabled={approveButtonStep === "step1"}
     >
       <LoadingButtonText
         state={disapproveButtonStep}
-        idleText={`Disapprove ${transactionIsAccepted ? 'Trade' : 'Listing'}`}
+        idleText={`Disapprove ${transactionIsAccepted ? "Trade" : "Listing"}`}
         step1Text="Disapproving..."
         confirmedText="Disapproved"
         failedText="Transaction failed"
@@ -275,16 +275,16 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       {`${
         txnApprovalsEnabled
           ? isAskOrder
-            ? 'is requesting to purchase'
-            : 'is offering to sell'
-          : 'is offering to sell'
+            ? "is requesting to purchase"
+            : "is offering to sell"
+          : "is offering to sell"
       } `}
       {numShares} shares to &nbsp;
       <FormattedCryptoAddress
         chainId={chainId}
         address={isAskOrder ? senderAddress : recipientAddress}
         className="text-base"
-      />{' '}
+      />{" "}
       &nbsp; for {numberWithCommas(price)} {getCurrencyById(paymentTokenAddress)?.symbol} per share.
     </span>
   );
@@ -297,7 +297,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
           {isAccepted && (
             <div className="pl-1 mb-2 font-semibold text-cDarkBlue">{requestStatementText} </div>
           )}
-          <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
+          <div className={cn(small ? "flex flex-col gap-2" : "grid grid-cols-2 gap-3")}>
             {(swapApprovalsEnabled || txnApprovalsEnabled) && (
               <>
                 {!isApproved ? (

@@ -1,5 +1,5 @@
-import cn from 'classnames';
-import React from 'react';
+import cn from "classnames";
+import React from "react";
 
 export interface TwoColumnLayoutProps {
   className?: string;
@@ -37,11 +37,11 @@ const TwoColumnLayout: React.FunctionComponent<TwoColumnLayoutProps> = ({
     <div
       className={cn(
         `gap-${gap}`,
-        twoThirdsLayout ? 'lg:grid-cols-3' : 'lg:grid-cols-2',
-        'hidden md:grid '
+        twoThirdsLayout ? "lg:grid-cols-3" : "lg:grid-cols-2",
+        "hidden md:grid "
       )}
     >
-      <div className={cn(twoThirdsLayout ? 'lg:col-span-2' : 'lg:col-span-1', 'my-5')}>
+      <div className={cn(twoThirdsLayout ? "lg:col-span-2" : "lg:col-span-1", "my-5")}>
         {leftChildren.map((child, index) => {
           if (child) {
             return (
@@ -67,7 +67,7 @@ const TwoColumnLayout: React.FunctionComponent<TwoColumnLayoutProps> = ({
   );
 
   return (
-    <div data-test="layout-two-column" className={cn(className, 'pt-2 md:mt-4 w-full')}>
+    <div data-test="layout-two-column" className={cn(className, "pt-2 md:mt-4 w-full")}>
       <div>
         {mobileLayout}
         {desktopLayout}

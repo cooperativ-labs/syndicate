@@ -1,5 +1,5 @@
-import { Maybe } from '@gql/graphql';
-import fileDownload from 'js-file-download';
+import { Maybe } from "@gql/graphql";
+import fileDownload from "js-file-download";
 
 export function DownloadFile(content: string, fileName: string) {
   fileDownload(content, fileName);
@@ -23,11 +23,11 @@ type LegalLinkAgreementBaseType = AgreementBase & {
 export const GenerateLegalLink = (props: LegalLinkAgreementBaseType, legalText: string): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText ?? ''
+      (acc, value) => (acc ?? "").split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ""
     )
     .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) =>
-      props[cond] ? value : ''
+      props[cond] ? value : ""
     );
 
 type PpmAgreementBaseType = LegalLinkAgreementBaseType & {
@@ -56,11 +56,11 @@ export type GeneratePpmAgreementType = PpmAgreementBaseType & {
 export const GeneratePPM = (props: GeneratePpmAgreementType, legalText: string): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText ?? ''
+      (acc, value) => (acc ?? "").split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ""
     )
     .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) =>
-      props[cond] ? value : ''
+      props[cond] ? value : ""
     );
 
 // ### INVESTOR APPLICATION
@@ -93,13 +93,13 @@ export const GenerateInvestorApplicationSummary = (
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText ?? ''
+      (acc, value) => (acc ?? "").split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ""
     )
     .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string | boolean, value: string) => {
       const key = String(cond);
       const propsRecord = props as unknown as Record<string, unknown>;
-      return propsRecord[key] ? value : '';
+      return propsRecord[key] ? value : "";
     });
 
 export type SubscriptionAgreementSuitabilityAttestationType = InvestorApplicationBaseType & {
@@ -148,12 +148,12 @@ export const GenerateSubscriptionAgreementSuitabilityAttestation = (
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText ?? ''
+      (acc, value) => (acc ?? "").split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ""
     )
     .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) => {
       const propsRecord = props as unknown as Record<string, unknown>;
-      return propsRecord[cond] ? value : '';
+      return propsRecord[cond] ? value : "";
     });
 
 export type SubscriptionPurchaseAttestationType = InvestorApplicationBaseType & {
@@ -189,12 +189,12 @@ export const GenerateSubscriptionPurchaseAttestation = (
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText ?? ''
+      (acc, value) => (acc ?? "").split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ""
     )
     .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) => {
       const propsRecord = props as unknown as Record<string, unknown>;
-      return propsRecord[cond] ? value : '';
+      return propsRecord[cond] ? value : "";
     });
 
 export type SubscriptionAgreementType = SubscriptionAgreementSuitabilityAttestationType &
@@ -207,10 +207,10 @@ export const GenerateSubscriptionAgreement = (
 ): string =>
   Object.entries(props)
     .reduce(
-      (acc, value) => (acc ?? '').split(`{{ ${value[0]} }}`).join(`${value[1]}`),
-      legalText ?? ''
+      (acc, value) => (acc ?? "").split(`{{ ${value[0]} }}`).join(`${value[1]}`),
+      legalText ?? ""
     )
     .replace(/{% (.+):\n([^%]+)%}/gm, (match, cond: string, value: string) => {
       const propsRecord = props as unknown as Record<string, unknown>;
-      return propsRecord[cond] ? value : '';
+      return propsRecord[cond] ? value : "";
     });

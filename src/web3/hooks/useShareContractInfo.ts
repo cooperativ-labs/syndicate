@@ -1,8 +1,8 @@
-import { useContractReads } from 'wagmi';
+import { useContractReads } from "wagmi";
 
-import { shareContractABI } from '../generated';
-import { String0x } from '../helpersChain';
-import { shareContractDecimals, toNormalNumber } from '../util';
+import { shareContractABI } from "../generated";
+import { String0x } from "../helpersChain";
+import { shareContractDecimals, toNormalNumber } from "../util";
 
 export type ShareContractInfoType = {
   contractOwner: string | undefined;
@@ -35,26 +35,26 @@ export const useShareContractInfo = (
     refetch: refetchShareContract
   } = useContractReads({
     contracts: [
-      { ...baseContractInfo, functionName: 'owner' },
+      { ...baseContractInfo, functionName: "owner" },
       {
         ...baseContractInfo,
-        functionName: 'isManager',
+        functionName: "isManager",
         args: [userWalletAddress as `0x${string}}`]
       },
       {
         ...baseContractInfo,
-        functionName: 'isWhitelisted',
+        functionName: "isWhitelisted",
         args: [userWalletAddress as `0x${string}}`]
       },
       {
         ...baseContractInfo,
-        functionName: 'balanceOf',
+        functionName: "balanceOf",
         args: [userWalletAddress as `0x${string}}`]
       },
-      { ...baseContractInfo, functionName: 'totalSupply' },
-      { ...baseContractInfo, functionName: 'getAllDocuments' },
-      { ...baseContractInfo, functionName: 'partitionList', args: [BigInt(0)] },
-      { ...baseContractInfo, functionName: 'contractVersion' }
+      { ...baseContractInfo, functionName: "totalSupply" },
+      { ...baseContractInfo, functionName: "getAllDocuments" },
+      { ...baseContractInfo, functionName: "partitionList", args: [BigInt(0)] },
+      { ...baseContractInfo, functionName: "contractVersion" }
     ]
   });
 

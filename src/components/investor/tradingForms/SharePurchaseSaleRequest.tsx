@@ -1,25 +1,25 @@
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import { Offering, ShareOrder } from '@gql/graphql';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import StandardButton from '@src/components/buttons/StandardButton';
-import Checkbox from '@src/components/form-components/Checkbox';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import PresentLegalText from '@src/components/legal/PresentLegalText';
-import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
-import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { DownloadFile } from '@src/utils/helpersAgreement';
-import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
-import { isMetaMask } from '@src/web3/connectors';
-import axios from 'axios';
-import cn from 'classnames';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
-import { useAsync } from 'react-use';
-import { useAccount } from 'wagmi';
+import { Offering, ShareOrder } from "@gql/graphql";
+import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import FormButton from "@src/components/buttons/FormButton";
+import StandardButton from "@src/components/buttons/StandardButton";
+import Checkbox from "@src/components/form-components/Checkbox";
+import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
+import PresentLegalText from "@src/components/legal/PresentLegalText";
+import WalletActionIndicator from "@src/containers/wallet/WalletActionIndicator";
+import WalletActionModal from "@src/containers/wallet/WalletActionModal";
+import { getCurrencyOption } from "@src/utils/enumConverters";
+import { DownloadFile } from "@src/utils/helpersAgreement";
+import { floatWithCommas, numberWithCommas } from "@src/utils/helpersMoney";
+import { isMetaMask } from "@src/web3/connectors";
+import axios from "axios";
+import cn from "classnames";
+import { Form, Formik } from "formik";
+import { ChevronDown, ChevronUp } from "lucide-react";
+import React, { FC, useState } from "react";
+import { useAsync } from "react-use";
+import { useAccount } from "wagmi";
 
-import NonInput from '../../form-components/NonInput';
+import NonInput from "../../form-components/NonInput";
 
 export type SharePurchaseSaleRequestProps = {
   offering: Offering;
@@ -52,7 +52,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
 }) => {
   const { connector } = useAccount();
 
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
 
@@ -66,7 +66,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   };
 
   const purchaseString = (numUnitsPurchase: string | undefined) => {
-    if (!numUnitsPurchase) return '0';
+    if (!numUnitsPurchase) return "0";
     return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)), 2);
   };
 
@@ -79,15 +79,15 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
     function capitalizeFirstLetter(str: string) {
       return str.charAt(0).toUpperCase() + str.slice(1);
     }
-    const action = isAskOrder ? 'purchase' : 'sell';
+    const action = isAskOrder ? "purchase" : "sell";
     const mainText = txnApprovalsEnabled
       ? `Request to ${action}`
       : `${capitalizeFirstLetter(action)}`;
 
-    return `${mainText} ${numUnitsPurchase ?? ''} shares ${
+    return `${mainText} ${numUnitsPurchase ?? ""} shares ${
       numUnitsPurchase
         ? `for ${purchaseString(numUnitsPurchase)} ${getCurrencyOption(offering.details?.investmentCurrency)?.symbol} `
-        : ''
+        : ""
     }`;
   };
 
@@ -95,20 +95,20 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
     <>
       {!txnApprovalsEnabled && (
         <WalletActionModal
-          open={buttonStep === 'step1' || buttonStep === 'step2'}
+          open={buttonStep === "step1" || buttonStep === "step2"}
           metaMaskWarning={isMetaMask(connector)}
         >
           <WalletActionIndicator
             step={buttonStep}
-            step1Text={isAskOrder ? 'Setting contract allowance' : 'Submitting Bid'}
+            step1Text={isAskOrder ? "Setting contract allowance" : "Submitting Bid"}
             step1SubText={
               isAskOrder
-                ? 'This will allow the contract to spend your tokens on your behalf'
-                : 'Please confirm in our wallet'
+                ? "This will allow the contract to spend your tokens on your behalf"
+                : "Please confirm in our wallet"
             }
-            step2Text={isAskOrder ? 'Executing purchase' : undefined}
+            step2Text={isAskOrder ? "Executing purchase" : undefined}
             step2SubText={
-              isAskOrder ? 'This will execute the trade and purchase the shares' : undefined
+              isAskOrder ? "This will execute the trade and purchase the shares" : undefined
             }
           />
         </WalletActionModal>
@@ -116,7 +116,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
 
       <Formik
         initialValues={{
-          numUnitsPurchase: '',
+          numUnitsPurchase: "",
           disclosures: false,
           toc: false
         }}
@@ -124,7 +124,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           const errors: any = {}; /** @TODO : Shape */
           const numUnitsPurchase = parseInt(values.numUnitsPurchase, 10);
           if (!values.numUnitsPurchase) {
-            errors.numUnitsPurchase = 'You must choose a number of shares to purchase.';
+            errors.numUnitsPurchase = "You must choose a number of shares to purchase.";
           }
           if (numUnitsPurchase && numUnitsPurchase > shareQtyRemaining) {
             errors.numUnitsPurchase = `There are only ${shareQtyRemaining} for sale.`;
@@ -145,7 +145,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
-          if (values.numUnitsPurchase === '') return;
+          if (values.numUnitsPurchase === "") return;
           setSubmitting(true);
           handlePurchaseSaleRequest(values);
           setSubmitting(false);
@@ -155,8 +155,8 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           <Form className="">
             <div className="md:grid grid-cols-3 gap-3">
               <Input
-                className={cn(defaultFieldDiv, 'col-span-2')}
-                labelText={`How many units would you like to ${isAskOrder ? 'purchase' : 'sell'}? (${
+                className={cn(defaultFieldDiv, "col-span-2")}
+                labelText={`How many units would you like to ${isAskOrder ? "purchase" : "sell"}? (${
                   isAskOrder ? shareQtyRemaining : myShareQty
                 } available)`}
                 name="numUnitsPurchase"
@@ -166,7 +166,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
               />
               <NonInput
                 className={`${defaultFieldDiv} col-span-1 pl-1`}
-                labelText={`${isAskOrder ? 'Purchase' : 'Sale'} Price:`}
+                labelText={`${isAskOrder ? "Purchase" : "Sale"} Price:`}
               >
                 <>
                   {values.numUnitsPurchase &&
@@ -293,12 +293,12 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                 </div>
               </div>
             )}
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
+            <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
               <LoadingButtonText
                 state={buttonStep}
                 idleText={formButtonText(values.numUnitsPurchase)}
                 step1Text={
-                  txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'
+                  txnApprovalsEnabled ? "Submitting request" : "Setting contract allowance..."
                 }
                 step2Text="Executing transaction..."
                 confirmedText="Executed!"

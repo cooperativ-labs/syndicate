@@ -1,27 +1,27 @@
-import { DocumentType, Offering } from '@gql/graphql';
-import useOfferingDetails from '@hooks/useOfferingDetails';
-import AlertBanner from '@src/components/alerts/AlertBanner';
-import Button from '@src/components/buttons/Button';
-import DashboardCard from '@src/components/cards/DashboardCard';
-import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import OfferingActions from '@src/components/offering/actions/OfferingActions';
-import DocumentList from '@src/components/offering/documents/DocumentList';
-import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
-import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
-import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
-import BasicOfferingDetailsForm from '@src/components/offering/settings/BasicOfferingDetailsForm';
-import OfferingDescriptionSettings from '@src/components/offering/settings/OfferingDescriptionSettings';
-import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
-import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import OfferingTabContainer from '@src/containers/OfferingTabContainer';
-import RightSideBar from '@src/containers/sideBar/RightSidebar';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { MatchSupportedChains } from '@src/web3/connectors';
-import { useSession } from 'next-auth/react';
-import React, { FC, useState } from 'react';
-import { readContracts, useAccount } from 'wagmi';
+import { DocumentType, Offering } from "@gql/graphql";
+import useOfferingDetails from "@hooks/useOfferingDetails";
+import AlertBanner from "@src/components/alerts/AlertBanner";
+import Button from "@src/components/buttons/Button";
+import DashboardCard from "@src/components/cards/DashboardCard";
+import HashInstructions from "@src/components/documentVerification/HashInstructions";
+import OfferingActions from "@src/components/offering/actions/OfferingActions";
+import DocumentList from "@src/components/offering/documents/DocumentList";
+import OfferingDashboardTitle from "@src/components/offering/OfferingDashboardTitle";
+import OfferingDetailsDisplay from "@src/components/offering/OfferingDetailsDisplay";
+import FullTransactionHistory from "@src/components/offering/sales/FullTransactionHistory";
+import BasicOfferingDetailsForm from "@src/components/offering/settings/BasicOfferingDetailsForm";
+import OfferingDescriptionSettings from "@src/components/offering/settings/OfferingDescriptionSettings";
+import OfferingFinancialSettings from "@src/components/offering/settings/OfferingFinancialSettings";
+import OfferingProfileSettings from "@src/components/offering/settings/OfferingProfileSettings";
+import TwoColumnLayout from "@src/containers/Layouts/TwoColumnLayout";
+import OfferingTabContainer from "@src/containers/OfferingTabContainer";
+import RightSideBar from "@src/containers/sideBar/RightSidebar";
+import ChooseConnectorButton from "@src/containers/wallet/ChooseConnectorButton";
+import { getDocumentsOfType } from "@src/utils/helpersDocuments";
+import { MatchSupportedChains } from "@src/web3/connectors";
+import { useSession } from "next-auth/react";
+import React, { FC, useState } from "react";
+import { readContracts, useAccount } from "wagmi";
 
 type OfferingDetailsProps = {
   offering: Offering;
@@ -120,8 +120,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
           color="orange-600"
           text={`${
             isContractOwner
-              ? 'Your account does not manage this offering, but the connected wallet manages the associated shares.'
-              : 'Your account manages this offering, but the connected wallet does not manage the associated shares. To manage shares, please switch to the appropriate wallet.'
+              ? "Your account does not manage this offering, but the connected wallet manages the associated shares."
+              : "Your account manages this offering, but the connected wallet does not manage the associated shares. To manage shares, please switch to the appropriate wallet."
           }`}
         />
         <AlertBanner
@@ -170,7 +170,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
             ) : isOfferingManager ? (
               !userWalletAddress ? (
                 <div className="flex mt-4">
-                  <ChooseConnectorButton buttonText={'Connect wallet to continue'} large />
+                  <ChooseConnectorButton buttonText={"Connect wallet to continue"} large />
                 </div>
               ) : (
                 <BasicOfferingDetailsForm
@@ -179,7 +179,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                 />
               )
             ) : (
-              'This offering has no details yet.'
+              "This offering has no details yet."
             )}
 
             <hr className="my-10" />
@@ -219,7 +219,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                   <div className="font-xl font-semibold">Smart contract actions</div>
                   <div className="mt-4">
                     {!userWalletAddress ? (
-                      <ChooseConnectorButton buttonText={'Connect Wallet'} />
+                      <ChooseConnectorButton buttonText={"Connect Wallet"} />
                     ) : (
                       <OfferingActions
                         userId={userId}

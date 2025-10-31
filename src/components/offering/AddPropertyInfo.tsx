@@ -1,25 +1,25 @@
-'use client';
+"use client";
 
-import { useMutation } from '@apollo/client/react';
-import { CurrencyCode } from '@gql/graphql';
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { useMutation } from "@apollo/client/react";
+import { CurrencyCode } from "@gql/graphql";
+import { GoogleMap, Marker } from "@react-google-maps/api";
 import {
   assetStatusOptions,
   getCurrencyOption,
   propertyTypeOptions
-} from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_RE_PROPERTY_INFO } from '@src/utils/graphQueries/reProperty';
-import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
-import React, { FC, useEffect, useState } from 'react';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+} from "@src/utils/enumConverters";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { ADD_RE_PROPERTY_INFO } from "@src/utils/graphQueries/reProperty";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/navigation";
+import React, { FC, useEffect, useState } from "react";
+import { geocodeByPlaceId } from "react-google-places-autocomplete";
 
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
-} from '../form-components/CustomAddressAutocomplete';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import Select from '../form-components/Select';
+} from "../form-components/CustomAddressAutocomplete";
+import Input, { defaultFieldDiv } from "../form-components/Inputs";
+import Select from "../form-components/Select";
 
 type AddPropertyInfoProps = {
   entityId: string;
@@ -62,30 +62,30 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
   return (
     <Formik
       initialValues={{
-        propertyType: '',
-        investmentStatus: '',
-        amenitiesDescription: '',
-        description: '',
+        propertyType: "",
+        investmentStatus: "",
+        amenitiesDescription: "",
+        description: "",
         downPayment: null,
         lenderFees: null,
         closingCosts: null,
-        jurisdiction: '',
-        addressAutocomplete: ''
+        jurisdiction: "",
+        addressAutocomplete: ""
       }}
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (values.downPayment && parseInt(values.downPayment, 10) < 0) {
-          errors.downPayment = 'Please set a positive amount';
+          errors.downPayment = "Please set a positive amount";
         }
         if (values.lenderFees && parseInt(values.lenderFees, 10) < 0) {
-          errors.lenderFees = 'Please set a positive amount';
+          errors.lenderFees = "Please set a positive amount";
         }
 
         if (values.closingCosts && parseInt(values.closingCosts, 10) < 0) {
-          errors.closingCosts = 'Please set a positive amount';
+          errors.closingCosts = "Please set a positive amount";
         }
         if (!city || !state) {
-          errors.addressAutocomplete = 'Please select a valid address';
+          errors.addressAutocomplete = "Please select a valid address";
         }
 
         return errors;
@@ -198,7 +198,7 @@ const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCu
             {latLang.lat && (
               <div className="mt-4">
                 <GoogleMap
-                  mapContainerStyle={{ height: '300px', width: '100%' }}
+                  mapContainerStyle={{ height: "300px", width: "100%" }}
                   center={latLang}
                   zoom={14}
                 >

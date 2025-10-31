@@ -1,16 +1,16 @@
-'use client';
+"use client";
 
-import { Menu } from 'lucide-react';
-import Button from '@src/components/buttons/Button';
-import cn from 'classnames';
-import { useParams } from 'next/navigation';
-import React, { FC, useContext, useEffect, useState } from 'react';
-import { useWindowSize } from 'react-use';
+import Button from "@src/components/buttons/Button";
+import cn from "classnames";
+import { Menu } from "lucide-react";
+import { useParams } from "next/navigation";
+import React, { FC, useContext, useEffect, useState } from "react";
+import { useWindowSize } from "react-use";
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
+import { ApplicationStoreProps, store } from "@/contexts/store";
 
-import ManagerSideBarContents from './ManagerSideBarContents';
-import OrganizationSwitcher from './OrganizationSwitcher';
+import ManagerSideBarContents from "./ManagerSideBarContents";
+import OrganizationSwitcher from "./OrganizationSwitcher";
 
 type ManagerSideBarProps = {
   organizations: any[];
@@ -26,7 +26,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
     string | null
   >(null);
   useEffect(() => {
-    const organizationId = window?.sessionStorage?.getItem('CHOSEN_ORGANIZATION');
+    const organizationId = window?.sessionStorage?.getItem("CHOSEN_ORGANIZATION");
     setOrganizationIdFromSessionStorage(organizationId);
   }, []);
   const setOrgId = OrganizationIdFromSessionStorage ?? orgId;
@@ -35,12 +35,12 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
 
   useEffect(() => {
     if (ManagerSidebarOpen && windowSize.width < 768) {
-      document.body.style.position = 'fixed';
+      document.body.style.position = "fixed";
       document.body.style.top = `-${window.scrollY}px`;
     } else {
       // const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
+      document.body.style.position = "";
+      document.body.style.top = "";
       // window.scrollTo(0, parseInt(scrollY));
     }
   }, [ManagerSidebarOpen, windowSize]);
@@ -68,8 +68,8 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
       className="w-screen h-screen absolute top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-40 bg-gray-500 bg-opacity-80 overflow-y-auto"
       onClick={(e: any) => {
         /** @TODO : fix typescript */
-        if (e.target.id === 'sidebar-curtain') {
-          dispatchSidebar({ type: 'TOGGLE_MANAGER_SIDEBAR' });
+        if (e.target.id === "sidebar-curtain") {
+          dispatchSidebar({ type: "TOGGLE_MANAGER_SIDEBAR" });
         }
       }}
     >
@@ -79,13 +79,13 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
             <OrganizationSwitcher organizations={organizations} />
           </div>
         )}
-        <div className={'w-64 z-50  p-3 bg-white shadow-xl'}>
+        <div className={"w-64 z-50  p-3 bg-white shadow-xl"}>
           <div className="flex justify-between items-center mb-5">
             <div className="px-2 pr-4"></div>
-            <div className={cn(ManagerSidebarOpen ? 'flex md:hidden' : 'hidden')}>
+            <div className={cn(ManagerSidebarOpen ? "flex md:hidden" : "hidden")}>
               <Button
                 onClick={() => {
-                  dispatchSidebar({ type: 'TOGGLE_MANAGER_SIDEBAR' });
+                  dispatchSidebar({ type: "TOGGLE_MANAGER_SIDEBAR" });
                 }}
               >
                 <Menu size={18} />

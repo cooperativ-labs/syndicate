@@ -1,6 +1,6 @@
-import cn from 'classnames';
-import { ErrorMessage, Field } from 'formik';
-import React, { ReactNode } from 'react';
+import cn from "classnames";
+import { ErrorMessage, Field } from "formik";
+import React, { ReactNode } from "react";
 
 export interface SelectProps {
   id?: any;
@@ -30,18 +30,18 @@ const Select: React.FC<CustomSelectProps> = ({
   children
 }) => {
   return (
-    <div className={cn(className, 'flex flex-col')}>
+    <div className={cn(className, "flex flex-col")}>
       {labelText && (
         <label
           htmlFor={name}
           className={cn(
             fieldLabelClass
               ? fieldLabelClass
-              : 'text-sm text-blue-900 font-semibold text-opacity-80 '
+              : "text-sm text-blue-900 font-semibold text-opacity-80 "
           )}
         >
           {labelText}
-          {required ? ' *' : ''}
+          {required ? " *" : ""}
         </label>
       )}
       <Field
@@ -54,7 +54,7 @@ const Select: React.FC<CustomSelectProps> = ({
         className={cn(
           fieldClass
             ? fieldClass
-            : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
+            : "text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
         )}
       >
         {children}

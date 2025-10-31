@@ -1,40 +1,39 @@
-'use client';
+"use client";
 
-import { useMutation, useQuery } from '@apollo/client/react';
-import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
-import { Maybe, Organization } from '@gql/graphql';
-import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
-import SettingsSocial from '@src/components/account/SettingsSocial';
-import DashboardCard from '@src/components/cards/DashboardCard';
-import EmailAddressList from '@src/components/EmailAddressList';
-import FileUpload from '@src/components/form-components/FileUpload';
-import LinkedAccountsList from '@src/components/LinkedAccountsList';
-import ModalLoading from '@src/components/loading/ModalLoading';
-import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
-import NotificationConfigList from '@src/components/organization/NotificationConfigList';
+import { useMutation, useQuery } from "@apollo/client/react";
+import { useUserContext } from "@contexts/UserContext";
+import { Maybe, Organization } from "@gql/graphql";
+import SettingsAddEmail from "@src/components/account/SettingsAddEmail";
+import SettingsSocial from "@src/components/account/SettingsSocial";
+import DashboardCard from "@src/components/cards/DashboardCard";
+import EmailAddressList from "@src/components/EmailAddressList";
+import FileUpload from "@src/components/form-components/FileUpload";
+import LinkedAccountsList from "@src/components/LinkedAccountsList";
+import ModalLoading from "@src/components/loading/ModalLoading";
+import ProfileVisibilityToggle from "@src/components/offering/settings/ProfileVisibilityToggle";
+import NotificationConfigList from "@src/components/organization/NotificationConfigList";
 import OrganizationSpecifications, {
   changeForm,
   EditOrganizationSelectionType
-} from '@src/components/organization/OrganizationSpecifications';
-import SettingsAddNotification from '@src/components/organization/SettingsAddNotification';
-import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamMember';
-import TeamMemberList from '@src/components/organization/TeamMemberList';
-import RoundedImage from '@src/components/RoundedImage';
-import FormModal from '@src/containers/FormModal';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import SectionBlock from '@src/containers/SectionBlock';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+} from "@src/components/organization/OrganizationSpecifications";
+import SettingsAddNotification from "@src/components/organization/SettingsAddNotification";
+import SettingsAddTeamMember from "@src/components/organization/SettingsAddTeamMember";
+import TeamMemberList from "@src/components/organization/TeamMemberList";
+import RoundedImage from "@src/components/RoundedImage";
+import FormModal from "@src/containers/FormModal";
+import TwoColumnLayout from "@src/containers/Layouts/TwoColumnLayout";
+import SectionBlock from "@src/containers/SectionBlock";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
 import {
   GET_ORGANIZATION,
   UPDATE_ORGANIZATION_INFORMATION
-} from '@src/utils/graphQueries/organization';
-import { getOrganizationUser } from '@src/utils/helpersOrganization';
-import { getBaseUrl } from '@src/utils/helpersURL';
-import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useRouter } from 'next/router';
-import React, { FC, useState } from 'react';
-
-import { useUserContext } from '@contexts/UserContext';
+} from "@src/utils/graphQueries/organization";
+import { getOrganizationUser } from "@src/utils/helpersOrganization";
+import { getBaseUrl } from "@src/utils/helpersURL";
+import { getIsAdmin, getIsEditorOrAdmin } from "@src/utils/helpersUserAndEntity";
+import { Pencil, SquareArrowOutUpRight } from "lucide-react";
+import { useRouter } from "next/router";
+import React, { FC, useState } from "react";
 
 const OrganizationSettings: FC = () => {
   const { user } = useUserContext();
@@ -54,7 +53,7 @@ const OrganizationSettings: FC = () => {
   );
 
   const [imageModal, setImageModal] = useState<boolean>(false);
-  const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
+  const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>("none");
   const [alerted, setAlerted] = useState<boolean>(false);
 
   const error = updateOrgError || getOrgError;
@@ -96,7 +95,7 @@ const OrganizationSettings: FC = () => {
         country: country
       }
     }).then(res => {
-      setNameEditOn('none');
+      setNameEditOn("none");
       window.location.reload();
     });
   };
@@ -150,7 +149,7 @@ const OrganizationSettings: FC = () => {
             <FileUpload
               uploaderText="Add logo"
               urlToDatabase={addLogoToDB}
-              accept={['jpg', 'jpeg', 'png', 'svg']}
+              accept={["jpg", "jpeg", "png", "svg"]}
               baseUploadUrl={`/${organization.id}/`}
             />
           </div>
@@ -159,7 +158,7 @@ const OrganizationSettings: FC = () => {
             <FileUpload
               uploaderText="Add banner image"
               urlToDatabase={addBannerImageToDb}
-              accept={['jpg', 'jpeg', 'png', 'svg']}
+              accept={["jpg", "jpeg", "png", "svg"]}
               baseUploadUrl={`/${organization.id}/`}
             />
           </div>
@@ -177,12 +176,12 @@ const OrganizationSettings: FC = () => {
             />
 
             <div>
-              {nameEditOn === 'name' ? (
-                changeForm('name', organization, setNameEditOn, handleNameChange)
+              {nameEditOn === "name" ? (
+                changeForm("name", organization, setNameEditOn, handleNameChange)
               ) : (
                 <div
                   className="font-ubuntu text-3xl text-white font-semibold hover:cursor-pointer"
-                  onClick={() => isEditorOrAdmin && setNameEditOn('name')}
+                  onClick={() => isEditorOrAdmin && setNameEditOn("name")}
                 >
                   {name}
                 </div>
@@ -226,7 +225,7 @@ const OrganizationSettings: FC = () => {
 
             <div>
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
-                <SectionBlock asAccordion sectionTitle={'Email addresses'}>
+                <SectionBlock asAccordion sectionTitle={"Email addresses"}>
                   <EmailAddressList
                     emailAddresses={emailAddresses}
                     withEdit
@@ -239,7 +238,7 @@ const OrganizationSettings: FC = () => {
               </div>
 
               <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
-                <SectionBlock asAccordion sectionTitle={'Socials'}>
+                <SectionBlock asAccordion sectionTitle={"Socials"}>
                   <LinkedAccountsList
                     linkedAccounts={linkedAccounts}
                     isOrganizationManager={isEditorOrAdmin}
@@ -259,7 +258,7 @@ const OrganizationSettings: FC = () => {
             isAdmin={isAdmin}
           />
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
-            <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
+            <SectionBlock className="font-bold " sectionTitle={"Add team members"} mini asAccordion>
               <SettingsAddTeamMember organizationId={organization.id} />
             </SectionBlock>
           </div>
@@ -271,7 +270,7 @@ const OrganizationSettings: FC = () => {
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
             <SectionBlock
               className="font-bold "
-              sectionTitle={'Add Notification Rule'}
+              sectionTitle={"Add Notification Rule"}
               mini
               asAccordion
             >

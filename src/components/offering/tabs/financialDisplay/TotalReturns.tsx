@@ -1,7 +1,7 @@
-import { OfferingDetails } from '@gql/graphql';
-import React, { FC } from 'react';
+import { OfferingDetails } from "@gql/graphql";
+import React, { FC } from "react";
 
-import FinancialFactItem from './FinancialFactItem';
+import FinancialFactItem from "./FinancialFactItem";
 
 type TotalReturnsProps = {
   offeringDetails: OfferingDetails;

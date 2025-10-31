@@ -1,20 +1,20 @@
-'use client';
+"use client";
 
-import { useMutation } from '@apollo/client/react';
-import { LegalEntity, Organization } from '@gql/graphql';
-import FormModal from '@src/containers/FormModal';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_OFFERING } from '@src/utils/graphQueries/offering';
-import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
-import React, { FC, useState } from 'react';
+import { useMutation } from "@apollo/client/react";
+import { LegalEntity, Organization } from "@gql/graphql";
+import FormModal from "@src/containers/FormModal";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { ADD_OFFERING } from "@src/utils/graphQueries/offering";
+import { getEntityOptionsList } from "@src/utils/helpersUserAndEntity";
+import { Form, Formik } from "formik";
+import { useRouter } from "next/navigation";
+import React, { FC, useState } from "react";
 
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
-import CreateEntity from '../entity/CreateEntity';
-import EntitySelector from '../form-components/EntitySelector';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import { LoadingButtonStateType, LoadingButtonText } from "../buttons/Button";
+import FormButton from "../buttons/FormButton";
+import CreateEntity from "../entity/CreateEntity";
+import EntitySelector from "../form-components/EntitySelector";
+import Input, { defaultFieldDiv } from "../form-components/Inputs";
 
 type CreateOfferingType = {
   organization: Organization;
@@ -24,7 +24,7 @@ type CreateOfferingType = {
 const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   const [entityModal, setEntityModal] = useState<boolean>(false);
   const [addOffering, { data, error }] = useMutation(ADD_OFFERING);
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
   const entityOptions =
@@ -48,8 +48,8 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
           currentDate: currentDate,
           offeringEntityId: values.offeringEntityId,
           name: values.name,
-          image: '/assets/images/logos/company-placeholder.jpeg',
-          brandColor: '#275A8F'
+          image: "/assets/images/logos/company-placeholder.jpeg",
+          brandColor: "#275A8F"
         }
       });
       const offeringId = result.data?.addOffering.offering[0].id;
@@ -70,20 +70,20 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
       </FormModal>
       <Formik
         initialValues={{
-          offeringEntityId: '',
-          name: ''
+          offeringEntityId: "",
+          name: ""
         }}
         validate={values => {
           const errors: any = {}; /** @TODO : Shape */
           if (!values.name) {
-            errors.name = 'Please set an name';
+            errors.name = "Please set an name";
           }
 
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
           setSubmitting(true);
-          setButtonStep('step1');
+          setButtonStep("step1");
           handleSubmit(values);
           setSubmitting(false);
         }}

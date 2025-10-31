@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const CORE_LINKED_ACCOUNT_FIELDS = gql`
   fragment LinkedAccountFields on linked_accounts {

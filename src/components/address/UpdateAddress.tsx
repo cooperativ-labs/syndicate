@@ -1,14 +1,14 @@
-import { Address, Maybe } from '@gql/graphql';
-import { GoogleMap, Marker } from '@react-google-maps/api';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-import React, { FC, useEffect, useState } from 'react';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import { Address, Maybe } from "@gql/graphql";
+import { GoogleMap, Marker } from "@react-google-maps/api";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { Form, Formik } from "formik";
+import React, { FC, useEffect, useState } from "react";
+import { geocodeByPlaceId } from "react-google-places-autocomplete";
 
-import MajorActionButton from '../buttons/MajorActionButton';
+import MajorActionButton from "../buttons/MajorActionButton";
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
-} from '../form-components/CustomAddressAutocomplete';
+} from "../form-components/CustomAddressAutocomplete";
 
 export type UpdateAddressType = {
   address: Maybe<Address> | undefined;
@@ -60,16 +60,16 @@ const UpdateAddress: FC<UpdateAddressType> = ({
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.addressLine1) {
-          errors.addressLine1 = 'Please include a street address.';
+          errors.addressLine1 = "Please include a street address.";
         }
         if (!values.city) {
-          errors.city = 'Please include a city.';
+          errors.city = "Please include a city.";
         }
         if (!values.postalCode) {
-          errors.postalCode = 'Please include a postal code.';
+          errors.postalCode = "Please include a postal code.";
         }
         if (!values.country) {
-          errors.country = 'Please include a country address';
+          errors.country = "Please include a country address";
         }
       }}
       onSubmit={async (values, { setSubmitting }) => {
@@ -103,7 +103,7 @@ const UpdateAddress: FC<UpdateAddressType> = ({
           {latLang.lat && (
             <div className="mt-4">
               <GoogleMap
-                mapContainerStyle={{ height: '300px', width: '100%' }}
+                mapContainerStyle={{ height: "300px", width: "100%" }}
                 center={latLang}
                 zoom={14}
               >

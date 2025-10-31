@@ -1,30 +1,30 @@
-'use client';
+"use client";
 
-import { useMutation } from '@apollo/client/react';
-import { Pencil } from 'lucide-react';
-import { RealEstateProperty } from '@gql/graphql';
-import AddressDisplay from '@src/components/address/AddressDisplay';
-import UpdateAddress from '@src/components/address/UpdateAddress';
-import Button from '@src/components/buttons/Button';
-import FileUpload from '@src/components/form-components/FileUpload';
-import Progress from '@src/components/offering/profile/Progress';
-import PropertyImage from '@src/components/properties/PropertyImage';
-import UpdatePropertyDescription from '@src/components/properties/UpdatePropertyDescription';
-import UpdatePropertyFinancials from '@src/components/properties/UpdatePropertyFinancials';
-import FormModal from '@src/containers/FormModal';
-import { getPropertyTypeOption } from '@src/utils/enumConverters';
-import { UPDATE_ADDRESS } from '@src/utils/graphQueries/entity';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { useMutation } from "@apollo/client/react";
+import { RealEstateProperty } from "@gql/graphql";
+import AddressDisplay from "@src/components/address/AddressDisplay";
+import UpdateAddress from "@src/components/address/UpdateAddress";
+import Button from "@src/components/buttons/Button";
+import FileUpload from "@src/components/form-components/FileUpload";
+import Progress from "@src/components/offering/profile/Progress";
+import PropertyImage from "@src/components/properties/PropertyImage";
+import UpdatePropertyDescription from "@src/components/properties/UpdatePropertyDescription";
+import UpdatePropertyFinancials from "@src/components/properties/UpdatePropertyFinancials";
+import FormModal from "@src/containers/FormModal";
+import { getPropertyTypeOption } from "@src/utils/enumConverters";
+import { UPDATE_ADDRESS } from "@src/utils/graphQueries/entity";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
 import {
   ADD_PROPERTY_IMAGE,
   REMOVE_ENTITY_PROPERTY,
   UPDATE_RE_PROPERTY_INFO
-} from '@src/utils/graphQueries/reProperty';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import React, { FC, useContext, useState } from 'react';
+} from "@src/utils/graphQueries/reProperty";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { getIsEditorOrAdmin } from "@src/utils/helpersUserAndEntity";
+import { Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
+import { useSession } from "next-auth/react";
+import React, { FC, useContext, useState } from "react";
 
 type PropertyDetailsProps = {
   property: RealEstateProperty;
@@ -88,11 +88,11 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
   };
 
   return (
-    <div className="flex min-h-full mx-auto px-4 md:px-8 md:mt-8" style={{ maxWidth: '1280px' }}>
+    <div className="flex min-h-full mx-auto px-4 md:px-8 md:mt-8" style={{ maxWidth: "1280px" }}>
       <FormModal
         formOpen={addressModal}
         onClose={() => setAddressModal(false)}
-        title={'Edit Address'}
+        title={"Edit Address"}
       >
         <UpdateAddress
           address={address}
@@ -105,7 +105,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
       <FormModal
         formOpen={detailsModal}
         onClose={() => setDetailsModal(false)}
-        title={'Edit Property Details'}
+        title={"Edit Property Details"}
       >
         <UpdatePropertyDescription
           property={property}
@@ -116,7 +116,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
       <FormModal
         formOpen={financialsModal}
         onClose={() => setFinancialsModal(false)}
-        title={'Edit Property Financials'}
+        title={"Edit Property Financials"}
       >
         <UpdatePropertyFinancials
           property={property}
@@ -127,7 +127,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
       <div className=" z-10 md:z-10 min-h-screen w-full">
         <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{address?.line1}</h1>
         <Progress
-          brandColor={'#275A8F'}
+          brandColor={"#275A8F"}
           lightBrand={false}
           propertyInvestmentStage={investmentStatus}
           className="flex mb-4"
@@ -157,7 +157,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             <FileUpload
               uploaderText="Add Picture"
               urlToDatabase={addImageToDb}
-              accept={['jpg', 'jpeg', 'png']}
+              accept={["jpg", "jpeg", "png"]}
               baseUploadUrl={`/properties/${id}/${userId}`}
             />
           )}
@@ -190,7 +190,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
 
         <div className="flex justify-between">
           <div>
-            <h2 className="font-bold text-gray-700">Financials</h2>{' '}
+            <h2 className="font-bold text-gray-700">Financials</h2>{" "}
             <div>
               Asset value: {numberWithCommas(assetValue)} {assetValueNote && `(${assetValueNote})`}
             </div>

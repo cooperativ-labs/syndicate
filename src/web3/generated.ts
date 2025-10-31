@@ -6,430 +6,430 @@
 
 export const shareContractABI = [
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
-    inputs: [{ name: 'account', internalType: 'address', type: 'address', indexed: true }],
-    name: 'AddressAddedToWhitelist'
+    inputs: [{ name: "account", internalType: "address", type: "address", indexed: true }],
+    name: "AddressAddedToWhitelist"
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
-    inputs: [{ name: 'account', internalType: 'address', type: 'address', indexed: true }],
-    name: 'AddressRemovedFromWhitelist'
+    inputs: [{ name: "account", internalType: "address", type: "address", indexed: true }],
+    name: "AddressRemovedFromWhitelist"
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
-    inputs: [{ name: 'operator', internalType: 'address', type: 'address', indexed: true }],
-    name: 'AuthorizedOperator'
+    inputs: [{ name: "operator", internalType: "address", type: "address", indexed: true }],
+    name: "AuthorizedOperator"
   },
   {
-    type: 'event',
-    anonymous: false,
-    inputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'operator', internalType: 'address', type: 'address', indexed: true }
-    ],
-    name: 'AuthorizedOperatorByPartition'
-  },
-  {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: '_name', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: '_uri', internalType: 'string', type: 'string', indexed: false },
-      { name: '_documentHash', internalType: 'bytes32', type: 'bytes32', indexed: false }
+      { name: "partition", internalType: "bytes32", type: "bytes32", indexed: true },
+      { name: "operator", internalType: "address", type: "address", indexed: true }
     ],
-    name: 'DocumentRemoved'
+    name: "AuthorizedOperatorByPartition"
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: '_name', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: '_uri', internalType: 'string', type: 'string', indexed: false },
-      { name: '_documentHash', internalType: 'bytes32', type: 'bytes32', indexed: false }
+      { name: "_name", internalType: "bytes32", type: "bytes32", indexed: true },
+      { name: "_uri", internalType: "string", type: "string", indexed: false },
+      { name: "_documentHash", internalType: "bytes32", type: "bytes32", indexed: false }
     ],
-    name: 'DocumentUpdated'
+    name: "DocumentRemoved"
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'to', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: "_name", internalType: "bytes32", type: "bytes32", indexed: true },
+      { name: "_uri", internalType: "string", type: "string", indexed: false },
+      { name: "_documentHash", internalType: "bytes32", type: "bytes32", indexed: false }
     ],
-    name: 'IssuedByPartition'
+    name: "DocumentUpdated"
   },
   {
-    type: 'event',
-    anonymous: false,
-    inputs: [{ name: 'manager', internalType: 'address', type: 'address', indexed: true }],
-    name: 'ManagerAdded'
-  },
-  {
-    type: 'event',
-    anonymous: false,
-    inputs: [{ name: 'manager', internalType: 'address', type: 'address', indexed: true }],
-    name: 'ManagerRemoved'
-  },
-  {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'previousOwner', internalType: 'address', type: 'address', indexed: true },
-      { name: 'newOwner', internalType: 'address', type: 'address', indexed: true }
+      { name: "partition", internalType: "bytes32", type: "bytes32", indexed: true },
+      { name: "to", internalType: "address", type: "address", indexed: true },
+      { name: "value", internalType: "uint256", type: "uint256", indexed: false }
     ],
-    name: 'OwnershipTransferred'
+    name: "IssuedByPartition"
   },
   {
-    type: 'event',
+    type: "event",
+    anonymous: false,
+    inputs: [{ name: "manager", internalType: "address", type: "address", indexed: true }],
+    name: "ManagerAdded"
+  },
+  {
+    type: "event",
+    anonymous: false,
+    inputs: [{ name: "manager", internalType: "address", type: "address", indexed: true }],
+    name: "ManagerRemoved"
+  },
+  {
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'operator', internalType: 'address', type: 'address', indexed: true },
-      { name: 'from', internalType: 'address', type: 'address', indexed: true },
-      { name: 'value', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: "previousOwner", internalType: "address", type: "address", indexed: true },
+      { name: "newOwner", internalType: "address", type: "address", indexed: true }
     ],
-    name: 'RedeemedByPartition'
+    name: "OwnershipTransferred"
   },
   {
-    type: 'event',
-    anonymous: false,
-    inputs: [{ name: 'operator', internalType: 'address', type: 'address', indexed: true }],
-    name: 'RevokedOperator'
-  },
-  {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: 'operator', internalType: 'address', type: 'address', indexed: true }
+      { name: "partition", internalType: "bytes32", type: "bytes32", indexed: true },
+      { name: "operator", internalType: "address", type: "address", indexed: true },
+      { name: "from", internalType: "address", type: "address", indexed: true },
+      { name: "value", internalType: "uint256", type: "uint256", indexed: false }
     ],
-    name: 'RevokedOperatorByPartition'
+    name: "RedeemedByPartition"
   },
   {
-    type: 'event',
+    type: "event",
+    anonymous: false,
+    inputs: [{ name: "operator", internalType: "address", type: "address", indexed: true }],
+    name: "RevokedOperator"
+  },
+  {
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: '_fromPartition', internalType: 'bytes32', type: 'bytes32', indexed: true },
-      { name: '_from', internalType: 'address', type: 'address', indexed: true },
-      { name: '_to', internalType: 'address', type: 'address', indexed: true },
-      { name: '_value', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: "partition", internalType: "bytes32", type: "bytes32", indexed: true },
+      { name: "operator", internalType: "address", type: "address", indexed: true }
     ],
-    name: 'TransferByPartition'
+    name: "RevokedOperatorByPartition"
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_manager', internalType: 'address', type: 'address' }],
-    name: 'addManager',
+    type: "event",
+    anonymous: false,
+    inputs: [
+      { name: "_fromPartition", internalType: "bytes32", type: "bytes32", indexed: true },
+      { name: "_from", internalType: "address", type: "address", indexed: true },
+      { name: "_to", internalType: "address", type: "address", indexed: true },
+      { name: "_value", internalType: "uint256", type: "uint256", indexed: false }
+    ],
+    name: "TransferByPartition"
+  },
+  {
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_manager", internalType: "address", type: "address" }],
+    name: "addManager",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'addToWhitelist',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "account", internalType: "address", type: "address" }],
+    name: "addToWhitelist",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_operator', internalType: 'address', type: 'address' }],
-    name: 'authorizeOperator',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_operator", internalType: "address", type: "address" }],
+    name: "authorizeOperator",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_operator', internalType: 'address', type: 'address' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_operator", internalType: "address", type: "address" }
     ],
-    name: 'authorizeOperatorByPartition',
+    name: "authorizeOperatorByPartition",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_tokenHolder', internalType: 'address', type: 'address' }],
-    name: 'balanceOf',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_tokenHolder", internalType: "address", type: "address" }],
+    name: "balanceOf",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_owner', internalType: 'address', type: 'address' },
-      { name: '_blockNumber', internalType: 'uint256', type: 'uint256' }
+      { name: "partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_owner", internalType: "address", type: "address" },
+      { name: "_blockNumber", internalType: "uint256", type: "uint256" }
     ],
-    name: 'balanceOfAt',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "balanceOfAt",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_tokenHolder', internalType: 'address', type: 'address' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_tokenHolder", internalType: "address", type: "address" }
     ],
-    name: 'balanceOfByPartition',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "balanceOfByPartition",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '_from', internalType: 'address', type: 'address' },
-      { name: '_to', internalType: 'address', type: 'address' },
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' }
+      { name: "_from", internalType: "address", type: "address" },
+      { name: "_to", internalType: "address", type: "address" },
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_value", internalType: "uint256", type: "uint256" }
     ],
-    name: 'canTransferByPartition',
+    name: "canTransferByPartition",
     outputs: [
-      { name: '', internalType: 'bytes1', type: 'bytes1' },
-      { name: '', internalType: 'bytes32', type: 'bytes32' },
-      { name: '', internalType: 'bytes32', type: 'bytes32' }
+      { name: "", internalType: "bytes1", type: "bytes1" },
+      { name: "", internalType: "bytes32", type: "bytes32" },
+      { name: "", internalType: "bytes32", type: "bytes32" }
     ]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'contractVersion',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }]
+    name: "contractVersion",
+    outputs: [{ name: "", internalType: "string", type: "string" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'getAllDocuments',
-    outputs: [{ name: '', internalType: 'bytes32[]', type: 'bytes32[]' }]
+    name: "getAllDocuments",
+    outputs: [{ name: "", internalType: "bytes32[]", type: "bytes32[]" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_name', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'getDocument',
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_name", internalType: "bytes32", type: "bytes32" }],
+    name: "getDocument",
     outputs: [
-      { name: '', internalType: 'string', type: 'string' },
-      { name: '', internalType: 'bytes32', type: 'bytes32' },
-      { name: '', internalType: 'uint256', type: 'uint256' }
+      { name: "", internalType: "string", type: "string" },
+      { name: "", internalType: "bytes32", type: "bytes32" },
+      { name: "", internalType: "uint256", type: "uint256" }
     ]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_manager', internalType: 'address', type: 'address' }],
-    name: 'isManager',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_manager", internalType: "address", type: "address" }],
+    name: "isManager",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_operator', internalType: 'address', type: 'address' }],
-    name: 'isOperator',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_operator", internalType: "address", type: "address" }],
+    name: "isOperator",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_operator', internalType: 'address', type: 'address' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_operator", internalType: "address", type: "address" }
     ],
-    name: 'isOperatorForPartition',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    name: "isOperatorForPartition",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_account', internalType: 'address', type: 'address' }],
-    name: 'isOwner',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_account", internalType: "address", type: "address" }],
+    name: "isOwner",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_address', internalType: 'address', type: 'address' }],
-    name: 'isWhitelisted',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_address", internalType: "address", type: "address" }],
+    name: "isWhitelisted",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_tokenHolder', internalType: 'address', type: 'address' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_tokenHolder", internalType: "address", type: "address" },
+      { name: "_value", internalType: "uint256", type: "uint256" }
     ],
-    name: 'issueByPartition',
+    name: "issueByPartition",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_tokenHolder', internalType: 'address', type: 'address' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_tokenHolder", internalType: "address", type: "address" },
+      { name: "_value", internalType: "uint256", type: "uint256" }
     ],
-    name: 'operatorIssueByPartition',
+    name: "operatorIssueByPartition",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_tokenHolder', internalType: 'address', type: 'address' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_tokenHolder", internalType: "address", type: "address" },
+      { name: "_value", internalType: "uint256", type: "uint256" }
     ],
-    name: 'operatorRedeemByPartition',
+    name: "operatorRedeemByPartition",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_from', internalType: 'address', type: 'address' },
-      { name: '_to', internalType: 'address', type: 'address' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_from", internalType: "address", type: "address" },
+      { name: "_to", internalType: "address", type: "address" },
+      { name: "_value", internalType: "uint256", type: "uint256" }
     ],
-    name: 'operatorTransferByPartition',
-    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }]
+    name: "operatorTransferByPartition",
+    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'owner',
-    outputs: [{ name: '', internalType: 'address', type: 'address' }]
+    name: "owner",
+    outputs: [{ name: "", internalType: "address", type: "address" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    name: 'partitionList',
-    outputs: [{ name: '', internalType: 'bytes32', type: 'bytes32' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "partitionList",
+    outputs: [{ name: "", internalType: "bytes32", type: "bytes32" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_tokenHolder', internalType: 'address', type: 'address' }],
-    name: 'partitionsOf',
-    outputs: [{ name: '', internalType: 'bytes32[]', type: 'bytes32[]' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_tokenHolder", internalType: "address", type: "address" }],
+    name: "partitionsOf",
+    outputs: [{ name: "", internalType: "bytes32[]", type: "bytes32[]" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_value', internalType: 'uint256', type: 'uint256' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_value", internalType: "uint256", type: "uint256" }
     ],
-    name: 'redeemByPartition',
+    name: "redeemByPartition",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_name', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'removeDocument',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_name", internalType: "bytes32", type: "bytes32" }],
+    name: "removeDocument",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: 'account', internalType: 'address', type: 'address' }],
-    name: 'removeFromWhitelist',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "account", internalType: "address", type: "address" }],
+    name: "removeFromWhitelist",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_manager', internalType: 'address', type: 'address' }],
-    name: 'removeManager',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_manager", internalType: "address", type: "address" }],
+    name: "removeManager",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [],
-    name: 'renounceOwnership',
+    name: "renounceOwnership",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_operator', internalType: 'address', type: 'address' }],
-    name: 'revokeOperator',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_operator", internalType: "address", type: "address" }],
+    name: "revokeOperator",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_operator', internalType: 'address', type: 'address' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_operator", internalType: "address", type: "address" }
     ],
-    name: 'revokeOperatorByPartition',
+    name: "revokeOperatorByPartition",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_name', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_uri', internalType: 'string', type: 'string' },
-      { name: '_documentHash', internalType: 'bytes32', type: 'bytes32' }
+      { name: "_name", internalType: "bytes32", type: "bytes32" },
+      { name: "_uri", internalType: "string", type: "string" },
+      { name: "_documentHash", internalType: "bytes32", type: "bytes32" }
     ],
-    name: 'setDocument',
+    name: "setDocument",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'totalSupply',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "totalSupply",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_blockNumber', internalType: 'uint256', type: 'uint256' }
+      { name: "partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_blockNumber", internalType: "uint256", type: "uint256" }
     ],
-    name: 'totalSupplyAt',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "totalSupplyAt",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '_partition', internalType: 'bytes32', type: 'bytes32' }],
-    name: 'totalSupplyByPartition',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "_partition", internalType: "bytes32", type: "bytes32" }],
+    name: "totalSupplyByPartition",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: 'newOwner', internalType: 'address', type: 'address' }],
-    name: 'transferOwnership',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "newOwner", internalType: "address", type: "address" }],
+    name: "transferOwnership",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: '_to', internalType: 'address', type: 'address' }
+      { name: "_partition", internalType: "bytes32", type: "bytes32" },
+      { name: "_to", internalType: "address", type: "address" }
     ],
-    name: 'validPartitionForReceiver',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    name: "validPartitionForReceiver",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   }
 ] as const;
 
@@ -439,240 +439,240 @@ export const shareContractABI = [
 
 export const swapContractABI = [
   {
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    stateMutability: "nonpayable",
+    type: "constructor",
     inputs: [
-      { name: '_shareToken', internalType: 'contract IERC1410', type: 'address' },
-      { name: '_paymentToken', internalType: 'contract IERC20', type: 'address' }
+      { name: "_shareToken", internalType: "contract IERC1410", type: "address" },
+      { name: "_paymentToken", internalType: "contract IERC20", type: "address" }
     ]
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'orderId', internalType: 'uint256', type: 'uint256', indexed: true },
-      { name: 'timestamp', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: "orderId", internalType: "uint256", type: "uint256", indexed: true },
+      { name: "timestamp", internalType: "uint256", type: "uint256", indexed: false }
     ],
-    name: 'OrderReset'
+    name: "OrderReset"
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'recipient', internalType: 'address', type: 'address', indexed: true },
-      { name: 'ethAmount', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'tokenAmount', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: "recipient", internalType: "address", type: "address", indexed: true },
+      { name: "ethAmount", internalType: "uint256", type: "uint256", indexed: false },
+      { name: "tokenAmount", internalType: "uint256", type: "uint256", indexed: false }
     ],
-    name: 'ProceedsWithdrawn'
+    name: "ProceedsWithdrawn"
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [],
-    name: 'UnsafeWithdrawAllProceeds',
-    outputs: [{ name: 'success', internalType: 'bool', type: 'bool' }]
+    name: "UnsafeWithdrawAllProceeds",
+    outputs: [{ name: "success", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: 'orderId', internalType: 'uint256', type: 'uint256' },
-      { name: 'amount', internalType: 'uint256', type: 'uint256' }
+      { name: "orderId", internalType: "uint256", type: "uint256" },
+      { name: "amount", internalType: "uint256", type: "uint256" }
     ],
-    name: 'acceptOrder',
+    name: "acceptOrder",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '', internalType: 'address', type: 'address' },
-      { name: '', internalType: 'uint256', type: 'uint256' }
+      { name: "", internalType: "address", type: "address" },
+      { name: "", internalType: "uint256", type: "uint256" }
     ],
-    name: 'acceptedOrderQty',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "acceptedOrderQty",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: 'orderId', internalType: 'uint256', type: 'uint256' }],
-    name: 'approveOrder',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "orderId", internalType: "uint256", type: "uint256" }],
+    name: "approveOrder",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_address', internalType: 'address', type: 'address' }],
-    name: 'banAddress',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_address", internalType: "address", type: "address" }],
+    name: "banAddress",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: 'orderId', internalType: 'uint256', type: 'uint256' },
-      { name: 'amount', internalType: 'uint256', type: 'uint256' }
+      { name: "orderId", internalType: "uint256", type: "uint256" },
+      { name: "amount", internalType: "uint256", type: "uint256" }
     ],
-    name: 'canFillOrder',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    name: "canFillOrder",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: 'orderId', internalType: 'uint256', type: 'uint256' }],
-    name: 'cancelAcceptance',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "orderId", internalType: "uint256", type: "uint256" }],
+    name: "cancelAcceptance",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: 'orderId', internalType: 'uint256', type: 'uint256' }],
-    name: 'cancelOrder',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "orderId", internalType: "uint256", type: "uint256" }],
+    name: "cancelOrder",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '', internalType: 'address', type: 'address' }],
-    name: 'cannotPurchase',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "cannotPurchase",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [],
-    name: 'claimProceeds',
+    name: "claimProceeds",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'contractVersion',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }]
+    name: "contractVersion",
+    outputs: [{ name: "", internalType: "string", type: "string" }]
   },
   {
-    stateMutability: 'payable',
-    type: 'function',
+    stateMutability: "payable",
+    type: "function",
     inputs: [
-      { name: 'orderId', internalType: 'uint256', type: 'uint256' },
-      { name: 'amt', internalType: 'uint256', type: 'uint256' }
+      { name: "orderId", internalType: "uint256", type: "uint256" },
+      { name: "amt", internalType: "uint256", type: "uint256" }
     ],
-    name: 'fillOrder',
+    name: "fillOrder",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'amount', internalType: 'uint256', type: 'uint256' },
-      { name: 'price', internalType: 'uint256', type: 'uint256' },
-      { name: 'isAskOrder', internalType: 'bool', type: 'bool' },
-      { name: 'isShareIssuance', internalType: 'bool', type: 'bool' },
-      { name: 'isErc20Payment', internalType: 'bool', type: 'bool' }
+      { name: "partition", internalType: "bytes32", type: "bytes32" },
+      { name: "amount", internalType: "uint256", type: "uint256" },
+      { name: "price", internalType: "uint256", type: "uint256" },
+      { name: "isAskOrder", internalType: "bool", type: "bool" },
+      { name: "isShareIssuance", internalType: "bool", type: "bool" },
+      { name: "isErc20Payment", internalType: "bool", type: "bool" }
     ],
-    name: 'initiateOrder',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "initiateOrder",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: 'orderId', internalType: 'uint256', type: 'uint256' }],
-    name: 'managerResetOrder',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "orderId", internalType: "uint256", type: "uint256" }],
+    name: "managerResetOrder",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'nextOrderId',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "nextOrderId",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    name: 'orders',
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "orders",
     outputs: [
-      { name: 'initiator', internalType: 'address', type: 'address' },
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'amount', internalType: 'uint256', type: 'uint256' },
-      { name: 'price', internalType: 'uint256', type: 'uint256' },
-      { name: 'filledAmount', internalType: 'uint256', type: 'uint256' },
-      { name: 'filler', internalType: 'address', type: 'address' },
+      { name: "initiator", internalType: "address", type: "address" },
+      { name: "partition", internalType: "bytes32", type: "bytes32" },
+      { name: "amount", internalType: "uint256", type: "uint256" },
+      { name: "price", internalType: "uint256", type: "uint256" },
+      { name: "filledAmount", internalType: "uint256", type: "uint256" },
+      { name: "filler", internalType: "address", type: "address" },
       {
-        name: 'orderType',
-        internalType: 'struct SwapContract.orderType',
-        type: 'tuple',
+        name: "orderType",
+        internalType: "struct SwapContract.orderType",
+        type: "tuple",
         components: [
-          { name: 'isShareIssuance', internalType: 'bool', type: 'bool' },
-          { name: 'isAskOrder', internalType: 'bool', type: 'bool' },
-          { name: 'isErc20Payment', internalType: 'bool', type: 'bool' }
+          { name: "isShareIssuance", internalType: "bool", type: "bool" },
+          { name: "isAskOrder", internalType: "bool", type: "bool" },
+          { name: "isErc20Payment", internalType: "bool", type: "bool" }
         ]
       },
       {
-        name: 'status',
-        internalType: 'struct SwapContract.status',
-        type: 'tuple',
+        name: "status",
+        internalType: "struct SwapContract.status",
+        type: "tuple",
         components: [
-          { name: 'isApproved', internalType: 'bool', type: 'bool' },
-          { name: 'isCancelled', internalType: 'bool', type: 'bool' },
-          { name: 'orderAccepted', internalType: 'bool', type: 'bool' }
+          { name: "isApproved", internalType: "bool", type: "bool" },
+          { name: "isCancelled", internalType: "bool", type: "bool" },
+          { name: "orderAccepted", internalType: "bool", type: "bool" }
         ]
       }
     ]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'paymentToken',
-    outputs: [{ name: '', internalType: 'contract IERC20', type: 'address' }]
+    name: "paymentToken",
+    outputs: [{ name: "", internalType: "contract IERC20", type: "address" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'shareToken',
-    outputs: [{ name: '', internalType: 'contract IERC1410', type: 'address' }]
+    name: "shareToken",
+    outputs: [{ name: "", internalType: "contract IERC1410", type: "address" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'swapApprovalsEnabled',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    name: "swapApprovalsEnabled",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [],
-    name: 'toggleSwapApprovals',
+    name: "toggleSwapApprovals",
     outputs: []
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [],
-    name: 'toggleTxnApprovals',
+    name: "toggleTxnApprovals",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'txnApprovalsEnabled',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    name: "txnApprovalsEnabled",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '', internalType: 'address', type: 'address' }],
-    name: 'unclaimedProceeds',
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "unclaimedProceeds",
     outputs: [
-      { name: 'ethProceeds', internalType: 'uint256', type: 'uint256' },
-      { name: 'tokenProceeds', internalType: 'uint256', type: 'uint256' }
+      { name: "ethProceeds", internalType: "uint256", type: "uint256" },
+      { name: "tokenProceeds", internalType: "uint256", type: "uint256" }
     ]
   }
 ] as const;
@@ -683,151 +683,151 @@ export const swapContractABI = [
 
 export const dividendContractABI = [
   {
-    stateMutability: 'nonpayable',
-    type: 'constructor',
+    stateMutability: "nonpayable",
+    type: "constructor",
     inputs: [
-      { name: '_sharesToken', internalType: 'contract IERC1410', type: 'address' },
-      { name: '_reclaim_time', internalType: 'uint256', type: 'uint256' }
+      { name: "_sharesToken", internalType: "contract IERC1410", type: "address" },
+      { name: "_reclaim_time", internalType: "uint256", type: "uint256" }
     ]
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'claimer', internalType: 'address', type: 'address', indexed: true },
-      { name: 'dividendIndex', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'amount', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'isERC20', internalType: 'bool', type: 'bool', indexed: false }
+      { name: "claimer", internalType: "address", type: "address", indexed: true },
+      { name: "dividendIndex", internalType: "uint256", type: "uint256", indexed: false },
+      { name: "amount", internalType: "uint256", type: "uint256", indexed: false },
+      { name: "isERC20", internalType: "bool", type: "bool", indexed: false }
     ],
-    name: 'DividendClaimed'
+    name: "DividendClaimed"
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'depositor', internalType: 'address', type: 'address', indexed: true },
-      { name: 'dividendIndex', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'blockNumber', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'amount', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32', indexed: false },
-      { name: 'isERC20', internalType: 'bool', type: 'bool', indexed: false }
+      { name: "depositor", internalType: "address", type: "address", indexed: true },
+      { name: "dividendIndex", internalType: "uint256", type: "uint256", indexed: false },
+      { name: "blockNumber", internalType: "uint256", type: "uint256", indexed: false },
+      { name: "amount", internalType: "uint256", type: "uint256", indexed: false },
+      { name: "partition", internalType: "bytes32", type: "bytes32", indexed: false },
+      { name: "isERC20", internalType: "bool", type: "bool", indexed: false }
     ],
-    name: 'DividendDeposited'
+    name: "DividendDeposited"
   },
   {
-    type: 'event',
+    type: "event",
     anonymous: false,
     inputs: [
-      { name: 'recycler', internalType: 'address', type: 'address', indexed: true },
-      { name: 'dividendIndex', internalType: 'uint256', type: 'uint256', indexed: false },
-      { name: 'amount', internalType: 'uint256', type: 'uint256', indexed: false }
+      { name: "recycler", internalType: "address", type: "address", indexed: true },
+      { name: "dividendIndex", internalType: "uint256", type: "uint256", indexed: false },
+      { name: "amount", internalType: "uint256", type: "uint256", indexed: false }
     ],
-    name: 'DividendRecycled'
+    name: "DividendRecycled"
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '', internalType: 'address', type: 'address' }],
-    name: 'balances',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "address", type: "address" }],
+    name: "balances",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_dividendIndex', internalType: 'uint256', type: 'uint256' }],
-    name: 'claimDividend',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_dividendIndex", internalType: "uint256", type: "uint256" }],
+    name: "claimDividend",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '', internalType: 'address', type: 'address' },
-      { name: '', internalType: 'uint256', type: 'uint256' }
+      { name: "", internalType: "address", type: "address" },
+      { name: "", internalType: "uint256", type: "uint256" }
     ],
-    name: 'claimedAmount',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "claimedAmount",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'contractVersion',
-    outputs: [{ name: '', internalType: 'string', type: 'string' }]
+    name: "contractVersion",
+    outputs: [{ name: "", internalType: "string", type: "string" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
+    stateMutability: "nonpayable",
+    type: "function",
     inputs: [
-      { name: '_blockNumber', internalType: 'uint256', type: 'uint256' },
-      { name: '_exDividendDate', internalType: 'uint256', type: 'uint256' },
-      { name: '_recordDate', internalType: 'uint256', type: 'uint256' },
-      { name: '_payoutDate', internalType: 'uint256', type: 'uint256' },
-      { name: '_amount', internalType: 'uint256', type: 'uint256' },
-      { name: '_payoutToken', internalType: 'address', type: 'address' },
-      { name: '_partition', internalType: 'bytes32', type: 'bytes32' }
+      { name: "_blockNumber", internalType: "uint256", type: "uint256" },
+      { name: "_exDividendDate", internalType: "uint256", type: "uint256" },
+      { name: "_recordDate", internalType: "uint256", type: "uint256" },
+      { name: "_payoutDate", internalType: "uint256", type: "uint256" },
+      { name: "_amount", internalType: "uint256", type: "uint256" },
+      { name: "_payoutToken", internalType: "address", type: "address" },
+      { name: "_partition", internalType: "bytes32", type: "bytes32" }
     ],
-    name: 'depositDividend',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "depositDividend",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
-    inputs: [{ name: '', internalType: 'uint256', type: 'uint256' }],
-    name: 'dividends',
+    stateMutability: "view",
+    type: "function",
+    inputs: [{ name: "", internalType: "uint256", type: "uint256" }],
+    name: "dividends",
     outputs: [
-      { name: 'partition', internalType: 'bytes32', type: 'bytes32' },
-      { name: 'blockNumber', internalType: 'uint256', type: 'uint256' },
-      { name: 'exDividendDate', internalType: 'uint256', type: 'uint256' },
-      { name: 'recordDate', internalType: 'uint256', type: 'uint256' },
-      { name: 'payoutDate', internalType: 'uint256', type: 'uint256' },
-      { name: 'amount', internalType: 'uint256', type: 'uint256' },
-      { name: 'totalSupplyOfShares', internalType: 'uint256', type: 'uint256' },
-      { name: 'payoutToken', internalType: 'address', type: 'address' },
-      { name: 'isERC20Payout', internalType: 'bool', type: 'bool' },
-      { name: 'amountRemaining', internalType: 'uint256', type: 'uint256' },
-      { name: 'recycled', internalType: 'bool', type: 'bool' }
+      { name: "partition", internalType: "bytes32", type: "bytes32" },
+      { name: "blockNumber", internalType: "uint256", type: "uint256" },
+      { name: "exDividendDate", internalType: "uint256", type: "uint256" },
+      { name: "recordDate", internalType: "uint256", type: "uint256" },
+      { name: "payoutDate", internalType: "uint256", type: "uint256" },
+      { name: "amount", internalType: "uint256", type: "uint256" },
+      { name: "totalSupplyOfShares", internalType: "uint256", type: "uint256" },
+      { name: "payoutToken", internalType: "address", type: "address" },
+      { name: "isERC20Payout", internalType: "bool", type: "bool" },
+      { name: "amountRemaining", internalType: "uint256", type: "uint256" },
+      { name: "recycled", internalType: "bool", type: "bool" }
     ]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '_address', internalType: 'address', type: 'address' },
-      { name: '_dividendIndex', internalType: 'uint256', type: 'uint256' }
+      { name: "_address", internalType: "address", type: "address" },
+      { name: "_dividendIndex", internalType: "uint256", type: "uint256" }
     ],
-    name: 'getClaimableAmount',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "getClaimableAmount",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [
-      { name: '_address', internalType: 'address', type: 'address' },
-      { name: '_dividendIndex', internalType: 'uint256', type: 'uint256' }
+      { name: "_address", internalType: "address", type: "address" },
+      { name: "_dividendIndex", internalType: "uint256", type: "uint256" }
     ],
-    name: 'hasClaimedDividend',
-    outputs: [{ name: '', internalType: 'bool', type: 'bool' }]
+    name: "hasClaimedDividend",
+    outputs: [{ name: "", internalType: "bool", type: "bool" }]
   },
   {
-    stateMutability: 'nonpayable',
-    type: 'function',
-    inputs: [{ name: '_dividendIndex', internalType: 'uint256', type: 'uint256' }],
-    name: 'reclaimDividend',
+    stateMutability: "nonpayable",
+    type: "function",
+    inputs: [{ name: "_dividendIndex", internalType: "uint256", type: "uint256" }],
+    name: "reclaimDividend",
     outputs: []
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'reclaim_time',
-    outputs: [{ name: '', internalType: 'uint256', type: 'uint256' }]
+    name: "reclaim_time",
+    outputs: [{ name: "", internalType: "uint256", type: "uint256" }]
   },
   {
-    stateMutability: 'view',
-    type: 'function',
+    stateMutability: "view",
+    type: "function",
     inputs: [],
-    name: 'sharesToken',
-    outputs: [{ name: '', internalType: 'contract IERC1410', type: 'address' }]
+    name: "sharesToken",
+    outputs: [{ name: "", internalType: "contract IERC1410", type: "address" }]
   }
 ] as const;

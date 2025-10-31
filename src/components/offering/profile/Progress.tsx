@@ -1,8 +1,8 @@
-import { AssetStatus, Maybe, OfferingStage } from '@gql/graphql';
-import { getAssetStatusOption } from '@src/utils/enumConverters';
-import cn from 'classnames';
-import useBrandColor from 'hooks/useBrandColor';
-import React from 'react';
+import { AssetStatus, Maybe, OfferingStage } from "@gql/graphql";
+import { getAssetStatusOption } from "@src/utils/enumConverters";
+import cn from "classnames";
+import useBrandColor from "hooks/useBrandColor";
+import React from "react";
 
 type ProgressProps = {
   offeringStage?: OfferingStage;
@@ -21,8 +21,8 @@ const Progress: React.FunctionComponent<ProgressProps> = ({
 }) => {
   const stage = offeringStage ?? propertyInvestmentStage;
   return (
-    <div data-test="atom-progress" className={cn(className, 'items-center grow')}>
-      <div className="flex text-sm md:text-base flex-col mr-2 grow" style={{ minWidth: '100px' }}>
+    <div data-test="atom-progress" className={cn(className, "items-center grow")}>
+      <div className="flex text-sm md:text-base flex-col mr-2 grow" style={{ minWidth: "100px" }}>
         <span className="font-bold">Stage: {getAssetStatusOption(stage)?.name}</span>
         <div className="w-full h-2 bg-gray-200 mt-2 rounded">
           <div
@@ -30,7 +30,7 @@ const Progress: React.FunctionComponent<ProgressProps> = ({
               background: useBrandColor(brandColor, lightBrand),
               width: getAssetStatusOption(stage)?.width
             }}
-            className={'h-2 rounded'}
+            className={"h-2 rounded"}
           />
         </div>
       </div>

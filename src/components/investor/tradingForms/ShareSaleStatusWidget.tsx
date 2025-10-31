@@ -1,14 +1,14 @@
-import { Maybe, ShareOrder } from '@gql/graphql';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import { getSwapStatusOption } from '@src/utils/enumConverters';
-import { getAmountRemaining } from '@src/utils/helpersOffering';
-import { String0x } from '@src/web3/helpersChain';
-import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
-import cn from 'classnames';
-import React, { FC } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { Maybe, ShareOrder } from "@gql/graphql";
+import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
+import { getSwapStatusOption } from "@src/utils/enumConverters";
+import { getAmountRemaining } from "@src/utils/helpersOffering";
+import { String0x } from "@src/web3/helpersChain";
+import { useOrderDetails } from "@src/web3/hooks/useOrderDetails";
+import cn from "classnames";
+import React, { FC } from "react";
+import { useAccount, useChainId } from "wagmi";
 
-import SaleManagerPanel from './ShareManagerPanel';
+import SaleManagerPanel from "./ShareManagerPanel";
 
 type ShareOrderStatusItemProps = {
   order: Maybe<ShareOrder>;
@@ -49,11 +49,11 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   return (
     <div className="flex justify-between items-center p-1 px-2 border-2 rounded-md my-1">
       <div className="text-sm font-bold">
-        <FormattedCryptoAddress chainId={chainId} address={initiator} />{' '}
+        <FormattedCryptoAddress chainId={chainId} address={initiator} />{" "}
       </div>
       <div
         className={cn(
-          'text-xs font-semibold rounded-md max-w-min px-1 h-5 border-2 min-w-max',
+          "text-xs font-semibold rounded-md max-w-min px-1 h-5 border-2 min-w-max",
           `text-${statusColor}`,
           // 'text-white font-semibold',
           `border-${statusColor}`

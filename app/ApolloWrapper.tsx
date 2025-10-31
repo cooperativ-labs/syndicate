@@ -1,15 +1,15 @@
-'use client';
+"use client";
 
-import { HttpLink } from '@apollo/client';
+import { HttpLink } from "@apollo/client";
 import {
   ApolloClient,
   ApolloNextAppProvider,
   InMemoryCache,
   SSRMultipartLink
-} from '@apollo/client-integration-nextjs';
-import { createApolloCache, getGraphQLEndpoint } from '@src/utils/apolloConfig';
-import { createClient } from '@supabase/utils/client';
-import type { ReactNode } from 'react';
+} from "@apollo/client-integration-nextjs";
+import { createApolloCache, getGraphQLEndpoint } from "@src/utils/apolloConfig";
+import { createClient } from "@supabase/utils/client";
+import type { ReactNode } from "react";
 
 function makeClient() {
   const supabase = createClient();
@@ -27,14 +27,14 @@ function makeClient() {
         headers: {
           ...options?.headers,
           ...(token ? { Authorization: `Bearer ${token}` } : {}),
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ''
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ""
         }
       });
     }
   });
 
   const link =
-    typeof window === 'undefined'
+    typeof window === "undefined"
       ? new SSRMultipartLink({ stripDefer: true }).concat(httpLink)
       : httpLink;
 

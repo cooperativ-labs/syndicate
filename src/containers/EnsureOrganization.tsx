@@ -1,8 +1,8 @@
-'use client';
-import { Organization } from '@gql/graphql';
-import { getOrgsFromUser } from '@src/utils/helpersOrganization';
-import type { User } from '@supabase/supabase-js';
-import React, { FC, useEffect, useState } from 'react';
+"use client";
+import { Organization } from "@gql/graphql";
+import { getOrgsFromUser } from "@src/utils/helpersOrganization";
+import type { User } from "@supabase/supabase-js";
+import React, { FC, useEffect, useState } from "react";
 
 type EnsureProfileCompletionProps = {
   children: React.ReactNode;

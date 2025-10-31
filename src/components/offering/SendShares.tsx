@@ -1,26 +1,26 @@
-import { useMutation } from '@apollo/client/react';
-import { Currency, CurrencyCode, Maybe, OfferingParticipant } from '@gql/graphql';
-import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
-import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
-import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getAmountRemaining } from '@src/utils/helpersOffering';
-import { sendShares } from '@src/web3/contractShareCalls';
-import { shareContractABI } from '@src/web3/generated';
-import { addressWithoutEns, String0x } from '@src/web3/helpersChain';
-import { adjustUserEnteredDecimalsToMatchCurrency } from '@src/web3/util';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
-import toast from 'react-hot-toast';
-import { useAccount, useChainId, useContractRead } from 'wagmi';
+import { useMutation } from "@apollo/client/react";
+import { Currency, CurrencyCode, Maybe, OfferingParticipant } from "@gql/graphql";
+import { bacOptions, fiatOptions, getCurrencyByCode } from "@src/utils/enumConverters";
+import { ADD_CONTRACT_PARTITION } from "@src/utils/graphQueries/crypto";
+import { ADD_TRANSFER_EVENT } from "@src/utils/graphQueries/orders";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { getAmountRemaining } from "@src/utils/helpersOffering";
+import { sendShares } from "@src/web3/contractShareCalls";
+import { shareContractABI } from "@src/web3/generated";
+import { addressWithoutEns, String0x } from "@src/web3/helpersChain";
+import { adjustUserEnteredDecimalsToMatchCurrency } from "@src/web3/util";
+import { Form, Formik } from "formik";
+import React, { FC, useState } from "react";
+import toast from "react-hot-toast";
+import { useAccount, useChainId, useContractRead } from "wagmi";
 
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import NewClassInputs from '../form-components/NewClassInputs';
-import Select from '../form-components/Select';
+import { LoadingButtonStateType, LoadingButtonText } from "../buttons/Button";
+import FormButton from "../buttons/FormButton";
+import Input, { defaultFieldDiv } from "../form-components/Inputs";
+import NewClassInputs from "../form-components/NewClassInputs";
+import Select from "../form-components/Select";
 
-import SetOperatorButton from './actions/SetOperatorButton';
+import SetOperatorButton from "./actions/SetOperatorButton";
 
 export type SendSharesProps = {
   sharesIssued: Maybe<number> | undefined;
@@ -49,14 +49,14 @@ const SendShares: FC<SendSharesProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
   const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
   const [addIssuance, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
 
   const { data: isOperator, refetch } = useContractRead({
     address: shareContractAddress,
     abi: shareContractABI,
-    functionName: 'isOperator',
+    functionName: "isOperator",
     args: [userWalletAddress as String0x]
   });
 
@@ -72,47 +72,47 @@ const SendShares: FC<SendSharesProps> = ({
       return `Send ${
         values.numShares
           ? `${values.numShares} out of ${sharesIssued} (${(values.numShares / sharesIssued) * 100}%)`
-          : ''
+          : ""
         // } shares to`;
       } shares to ${recipient}`;
     }
-    return 'Send shares';
+    return "Send shares";
   };
 
   return (
     <Formik
       initialValues={{
-        isIssuance: 'yes',
-        numShares: '',
+        isIssuance: "yes",
+        numShares: "",
         price: currentSalePrice,
         currencyCode: investmentCurrency?.code as CurrencyCode,
-        recipient: '' as String0x,
+        recipient: "" as String0x,
         partition: partitions[0],
-        newPartition: ''
+        newPartition: ""
       }}
       validate={values => {
         const paymentTokenDecimals = getCurrencyByCode(values.currencyCode)?.decimals;
 
         const errors: any = {}; /** @TODO : Shape */
         if (!values.numShares) {
-          errors.numShares = 'Please indicate how many shares you want to send';
+          errors.numShares = "Please indicate how many shares you want to send";
         } else if (parseInt(values.numShares, 10) > sharesRemaining) {
           errors.numShares = `You only have ${sharesRemaining} remaining shares to send.`;
         }
         if (!values.recipient) {
-          errors.recipient = 'Please indicate who you want to send shares to';
+          errors.recipient = "Please indicate who you want to send shares to";
         }
         if (!values.price) {
-          errors.price = 'Please set a price';
+          errors.price = "Please set a price";
         }
         if (!values.partition) {
           if (!values.newPartition) {
-            errors.partition = 'Please specify a class of shares';
+            errors.partition = "Please specify a class of shares";
           }
         }
-        if (values.partition === '0xNew') {
+        if (values.partition === "0xNew") {
           if (!values.newPartition) {
-            errors.newPartition = 'Please specify a class of shares';
+            errors.newPartition = "Please specify a class of shares";
           }
         }
         return errors;
@@ -120,7 +120,7 @@ const SendShares: FC<SendSharesProps> = ({
       onSubmit={async (values, { setSubmitting }) => {
         const paymentTokenDecimals = getCurrencyByCode(values.currencyCode)?.decimals;
         setSubmitting(true);
-        const isIssuance = values.isIssuance === 'yes' ? true : false;
+        const isIssuance = values.isIssuance === "yes" ? true : false;
         try {
           await sendShares({
             shareContractAddress,
@@ -149,14 +149,14 @@ const SendShares: FC<SendSharesProps> = ({
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
           {myShareQty ? (
-            <Select className={'mt-3'} name={'isIssuance'} labelText="Send type">
+            <Select className={"mt-3"} name={"isIssuance"} labelText="Send type">
               <option value="yes">Issue new shares</option>
               <option value="no">Transfer held shares</option>
             </Select>
           ) : (
             <></>
           )}
-          <Select className={'mt-3'} name={'recipient'} labelText="Investor's wallet address">
+          <Select className={"mt-3"} name={"recipient"} labelText="Investor's wallet address">
             <option value="">Select recipient</option>
             {offeringParticipants?.map((participant, i) => {
               const presentableAddress =
@@ -182,8 +182,8 @@ const SendShares: FC<SendSharesProps> = ({
             placeholder="100"
             required
           />
-          {values.isIssuance === 'yes' ? (
-            <Select className={'mt-3'} name={'currencyCode'} labelText="Currency">
+          {values.isIssuance === "yes" ? (
+            <Select className={"mt-3"} name={"currencyCode"} labelText="Currency">
               <option value="">Currency used for purchase</option>
               {purchaseCurrencyOptions.map((option, i) => {
                 return (
@@ -200,7 +200,7 @@ const SendShares: FC<SendSharesProps> = ({
           <Input
             className={defaultFieldDiv}
             labelText={`Number of shares to send (${
-              values.isIssuance === 'yes'
+              values.isIssuance === "yes"
                 ? numberWithCommas(sharesRemaining)
                 : numberWithCommas(myShareQty)
             } available )`}
@@ -210,10 +210,10 @@ const SendShares: FC<SendSharesProps> = ({
             // required
           />
           <hr className="bg-grey-600 my-3 mb-4" />
-          {!isOperator && values.isIssuance === 'no' ? (
+          {!isOperator && values.isIssuance === "no" ? (
             <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
           ) : (
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
+            <FormButton type="submit" disabled={isSubmitting || buttonStep === "step1"}>
               <LoadingButtonText
                 state={buttonStep}
                 idleText={formButtonText({

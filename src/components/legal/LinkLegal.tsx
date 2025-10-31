@@ -1,17 +1,17 @@
-import { Offering, User } from '@gql/graphql';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { GenerateLegalLink } from '@src/utils/helpersAgreement';
-import { getAvailableContracts } from '@src/utils/helpersContracts';
-import { MatchSupportedChains } from '@src/web3/connectors';
-import axios from 'axios';
-import React, { useState } from 'react';
-import { useAsync } from 'react-use';
-import { useChainId, useNetwork } from 'wagmi';
+import { Offering, User } from "@gql/graphql";
+import { getCurrencyOption } from "@src/utils/enumConverters";
+import { GenerateLegalLink } from "@src/utils/helpersAgreement";
+import { getAvailableContracts } from "@src/utils/helpersContracts";
+import { MatchSupportedChains } from "@src/web3/connectors";
+import axios from "axios";
+import React, { useState } from "react";
+import { useAsync } from "react-use";
+import { useChainId, useNetwork } from "wagmi";
 
-import CreateShareContract from '../offering/CreateShareContract';
-import UnestablishedContractCard from '../offering/UnestablishedContractCard';
+import CreateShareContract from "../offering/CreateShareContract";
+import UnestablishedContractCard from "../offering/UnestablishedContractCard";
 
-import LinkLegalForm from './LinkLegalForm';
+import LinkLegalForm from "./LinkLegalForm";
 
 export type AgreementContentType = {
   signature: string;
@@ -32,11 +32,11 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const { chain } = useNetwork();
 
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
-    signature: ''
+    signature: ""
   });
 
   const standardAgreement = `/assets/legal-link/legal-link.md`;
-  const getStandardAgreementText = async (): Promise<AgreementText['standard']> =>
+  const getStandardAgreementText = async (): Promise<AgreementText["standard"]> =>
     axios.get(standardAgreement).then(resp => resp.data);
   const { value: standardAgreementText } = useAsync(getStandardAgreementText, []);
 
@@ -70,7 +70,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
       agreementCurrency: bacName,
       baseUrl: window.location.origin
     },
-    standardAgreementText ?? ''
+    standardAgreementText ?? ""
   );
 
   return (

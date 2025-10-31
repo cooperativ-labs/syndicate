@@ -1,15 +1,15 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import Input from '@src/components/form-components/Inputs';
-import Select from '@src/components/form-components/Select';
-import { tabSectionOptions } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { getDescriptionsByTab } from '@src/utils/helpersOffering';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from "@gql/graphql";
+import { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import FormButton from "@src/components/buttons/FormButton";
+import Input from "@src/components/form-components/Inputs";
+import Select from "@src/components/form-components/Select";
+import { tabSectionOptions } from "@src/utils/enumConverters";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { getDescriptionsByTab } from "@src/utils/helpersOffering";
+import { Form, Formik } from "formik";
+import React, { FC, useState } from "react";
 
-const fieldDiv = 'pt-3 my-2 bg-opacity-0';
+const fieldDiv = "pt-3 my-2 bg-opacity-0";
 
 export type OfferingProfileDescriptionFormProps = {
   offering: Offering;
@@ -29,7 +29,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   tab,
   onSubmit
 }) => {
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
 
   const isUpdate = !!description;
 
@@ -74,34 +74,34 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   return (
     <Formik
       initialValues={{
-        title: description?.title ?? '',
-        text: description?.text ?? '',
+        title: description?.title ?? "",
+        text: description?.text ?? "",
         tab: description?.section ?? tab
       }}
       validate={values => {
         const errors: any = {}; /** @TODO : Shape */
         if (!values.title) {
-          errors.title = 'Please give this a title.';
+          errors.title = "Please give this a title.";
         }
         if (!values.text) {
-          errors.text = 'Please include text.';
+          errors.text = "Please include text.";
         }
         if (!values.tab) {
-          errors.tab = 'Please indicate the tab where you want this text to appear.';
+          errors.tab = "Please indicate the tab where you want this text to appear.";
         }
 
         return errors;
       }}
       onSubmit={(values, { setSubmitting, resetForm }) => {
-        setButtonStep('step1');
+        setButtonStep("step1");
         setAlerted(false);
         setSubmitting(true);
         try {
           handleSubmission(values);
-          setButtonStep('confirmed');
+          setButtonStep("confirmed");
           onSubmit && onSubmit();
         } catch (e) {
-          setButtonStep('failed');
+          setButtonStep("failed");
           alert(e);
         }
         setSubmitting(false);
@@ -130,14 +130,14 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
           <Input
             className={fieldDiv}
             textArea
-            fieldHeight={'h-96'}
+            fieldHeight={"h-96"}
             required
             labelText="Content"
             name="text"
             placeholder=""
           />
           <div className="text-sm ">
-            You can add styling to this text using{' '}
+            You can add styling to this text using{" "}
             <span className="underline">
               <a
                 href="https://rawgit.com/fletcher/human-markdown-reference/master/index.html"
@@ -156,9 +156,9 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
           >
             <LoadingButtonText
               state={buttonStep}
-              idleText={`Update ${isUpdate ? 'Description' : offering.name}`}
+              idleText={`Update ${isUpdate ? "Description" : offering.name}`}
               step1Text="Saving"
-              confirmedText={`${isUpdate ? 'Description' : offering.name} updated!`}
+              confirmedText={`${isUpdate ? "Description" : offering.name} updated!`}
               failedText="Oops. Something went wrong"
             />
           </FormButton>

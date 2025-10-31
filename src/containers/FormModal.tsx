@@ -1,8 +1,8 @@
-import useWindowSize from '@hooks/useWindowSize';
-import CloseButton from '@src/components/buttons/CloseButton';
-import Card from '@src/components/cards/Card';
-import cn from 'classnames';
-import React, { FC, useEffect } from 'react';
+import useWindowSize from "@hooks/useWindowSize";
+import CloseButton from "@src/components/buttons/CloseButton";
+import Card from "@src/components/cards/Card";
+import cn from "classnames";
+import React, { FC, useEffect } from "react";
 
 type FormModalProps = {
   noModal?: boolean;
@@ -22,7 +22,7 @@ const FormModal: FC<FormModalProps> = ({
   children
 }) => {
   useEffect(() => {
-    let targetElement = document.getElementById('dialog-curtain');
+    let targetElement = document.getElementById("dialog-curtain");
     function handleMouseDown(e: MouseEvent) {
       if (e.target === targetElement) {
         onClose();
@@ -31,11 +31,11 @@ const FormModal: FC<FormModalProps> = ({
     function handleMouseUp(e: MouseEvent) {
       e.stopPropagation();
     }
-    targetElement?.addEventListener('mousedown', handleMouseDown);
-    targetElement?.addEventListener('mouseup', handleMouseUp, true);
+    targetElement?.addEventListener("mousedown", handleMouseDown);
+    targetElement?.addEventListener("mouseup", handleMouseUp, true);
     return () => {
-      targetElement?.removeEventListener('mousedown', handleMouseDown);
-      targetElement?.removeEventListener('mouseup', handleMouseUp);
+      targetElement?.removeEventListener("mousedown", handleMouseDown);
+      targetElement?.removeEventListener("mouseup", handleMouseUp);
     };
   }, [onClose]);
 
@@ -46,14 +46,14 @@ const FormModal: FC<FormModalProps> = ({
         id="dialog-curtain"
         className={cn(
           noModal
-            ? 'fixed top-0 bottom-0 right-0 left-0 md:relative'
-            : 'w-screen md:h-screen fixed top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80 overflow-y-scroll'
+            ? "fixed top-0 bottom-0 right-0 left-0 md:relative"
+            : "w-screen md:h-screen fixed top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80 overflow-y-scroll"
         )}
       >
         <div className="absolute top-32 ">
           <Card
             className="relative mx-4 p-6 mb-10 flex-col md:mx-auto rounded-xl md:rounded-lg shadow-modal bg-white "
-            style={{ overflow: 'smooth', maxWidth: '800px', minWidth: '800px' }}
+            style={{ overflow: "smooth", maxWidth: "800px", minWidth: "800px" }}
           >
             <div className="absolute -top-1 right-0">
               <CloseButton onClick={onClose} />

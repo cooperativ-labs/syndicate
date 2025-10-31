@@ -1,27 +1,27 @@
-import { useMutation, useQuery } from '@apollo/client/react';
-import { CurrencyCode, LegalEntity, Maybe, Offering } from '@gql/graphql';
-import AddressDisplay from '@src/components/address/AddressDisplay';
-import CreateAddress from '@src/components/address/CreateAddress';
-import Button from '@src/components/buttons/Button';
-import DeleteButton from '@src/components/buttons/DeleteButton';
-import AddOwningEntity from '@src/components/entity/AddOwningEntity';
+import { useMutation, useQuery } from "@apollo/client/react";
+import { CurrencyCode, LegalEntity, Maybe, Offering } from "@gql/graphql";
+import AddressDisplay from "@src/components/address/AddressDisplay";
+import CreateAddress from "@src/components/address/CreateAddress";
+import Button from "@src/components/buttons/Button";
+import DeleteButton from "@src/components/buttons/DeleteButton";
+import AddOwningEntity from "@src/components/entity/AddOwningEntity";
 import EntitySpecifications, {
   changeForm,
   EditEntitySelectionType
-} from '@src/components/entity/EntitySpecifications';
-import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
-import FormModal from '@src/containers/FormModal';
-import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import SectionBlock from '@src/containers/SectionBlock';
+} from "@src/components/entity/EntitySpecifications";
+import EntityTabContainer from "@src/containers/entity/EntityTabContainer";
+import FormModal from "@src/containers/FormModal";
+import TwoColumnLayout from "@src/containers/Layouts/TwoColumnLayout";
+import SectionBlock from "@src/containers/SectionBlock";
 import {
   REMOVE_ENTITY_ADDRESS,
   REMOVE_ENTITY_OWNER,
   UPDATE_ENTITY_INFORMATION
-} from '@src/utils/graphQueries/entity';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useSession } from 'next-auth/react';
-import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
+} from "@src/utils/graphQueries/entity";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { getIsAdmin, getIsEditorOrAdmin } from "@src/utils/helpersUserAndEntity";
+import { useSession } from "next-auth/react";
+import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from "react";
 
 type EntityDetailsProps = {
   entity: LegalEntity;
@@ -37,7 +37,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const [removeOwner, { data, error: removeError }] = useMutation(REMOVE_ENTITY_OWNER);
 
   const [addOwnerModal, setAddOwnerModal] = useState<boolean>(false);
-  const [nameEditOn, setNameEditOn] = useState<EditEntitySelectionType>('none');
+  const [nameEditOn, setNameEditOn] = useState<EditEntitySelectionType>("none");
   const [alerted, setAlerted] = useState<boolean>(false);
   const organization = entity.organization;
   const userId = session?.user.id;
@@ -80,7 +80,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         operatingCurrencyCode: operatingCurrency?.code
       }
     }).then(res => {
-      setNameEditOn('none');
+      setNameEditOn("none");
     });
   };
 
@@ -115,12 +115,12 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       </FormModal>
       <div className="flex items-center">
         <div>
-          {nameEditOn === 'displayName' ? (
-            changeForm('displayName', entity, setNameEditOn, handleDisplayNameChange)
+          {nameEditOn === "displayName" ? (
+            changeForm("displayName", entity, setNameEditOn, handleDisplayNameChange)
           ) : (
             <div
               className="font-ubuntu text-3xl text-cDarkBlue font-semibold hover:cursor-pointer"
-              onClick={() => setNameEditOn('displayName')}
+              onClick={() => setNameEditOn("displayName")}
             >
               {displayName}
             </div>
@@ -138,20 +138,20 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
 
           <div>
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
-              <SectionBlock asAccordion sectionTitle={'Locations'}>
+              <SectionBlock asAccordion sectionTitle={"Locations"}>
                 <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
                   {addresses?.map((address, i) => {
                     return (
                       <div key={i} className="p-3 bg-slate-100 rounded-md relative">
                         <div className="mr-10">
-                          <AddressDisplay address={address} withCountry withLabel />{' '}
+                          <AddressDisplay address={address} withCountry withLabel />{" "}
                         </div>
                         {address && (
                           <div className="absolute -right-1 -top-1">
                             <DeleteButton
                               onDelete={() => handleDeleteAddress(address.id)}
-                              iconColor={'gray-800'}
-                              bgColor={'white'}
+                              iconColor={"gray-800"}
+                              bgColor={"white"}
                             />
                           </div>
                         )}
@@ -170,7 +170,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
               </SectionBlock>
             </div>
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
-              <SectionBlock asAccordion sectionTitle={'Owners'}>
+              <SectionBlock asAccordion sectionTitle={"Owners"}>
                 <div className="flex flex-col md:flex-row md:flex-wrap gap-4 mt-4">
                   {owners?.map((owner, i) => {
                     return (
@@ -180,8 +180,8 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                           <div className="absolute -right-1 -top-1">
                             <DeleteButton
                               onDelete={() => handleRemoveOwner(owner.id)}
-                              iconColor={'gray-800'}
-                              bgColor={'white'}
+                              iconColor={"gray-800"}
+                              bgColor={"white"}
                             />
                           </div>
                         )}

@@ -1,20 +1,20 @@
-import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
-import Button from '@src/components/buttons/Button';
-import DistributionList from '@src/components/offering/distributions/DistributionList';
-import SubmitDistribution from '@src/components/offering/SubmitDistribution';
-import Tab from '@src/components/offering/tabs/Tab';
-import AddWhitelistAddress from '@src/components/offering/whitelist/AddWhitelistAddress';
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from "@gql/graphql";
+import Button from "@src/components/buttons/Button";
+import DistributionList from "@src/components/offering/distributions/DistributionList";
+import SubmitDistribution from "@src/components/offering/SubmitDistribution";
+import Tab from "@src/components/offering/tabs/Tab";
+import AddWhitelistAddress from "@src/components/offering/whitelist/AddWhitelistAddress";
 import WhitelistAddressList, {
   WhitelistAddressListProps
-} from '@src/components/offering/whitelist/WhitelistAddressList';
-import OfferingProperties from '@src/components/properties/OfferingProperties';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { String0x } from '@src/web3/helpersChain';
-import cn from 'classnames';
-import React, { FC, useState } from 'react';
-import { useAccount } from 'wagmi';
+} from "@src/components/offering/whitelist/WhitelistAddressList";
+import OfferingProperties from "@src/components/properties/OfferingProperties";
+import { getCurrencyOption } from "@src/utils/enumConverters";
+import { String0x } from "@src/web3/helpersChain";
+import cn from "classnames";
+import React, { FC, useState } from "react";
+import { useAccount } from "wagmi";
 
-import FormModal from './FormModal';
+import FormModal from "./FormModal";
 
 type OfferingTabContainerProps = WhitelistAddressListProps & {
   offering: Offering;
@@ -31,9 +31,9 @@ type OfferingTabContainerProps = WhitelistAddressListProps & {
 };
 
 const TabOptions = [
-  { value: 'investors', name: 'Investors', showInvestors: false },
-  { value: 'distributions', name: 'Distributions', showInvestors: true },
-  { value: 'properties', name: 'Properties', showInvestors: true }
+  { value: "investors", name: "Investors", showInvestors: false },
+  { value: "distributions", name: "Distributions", showInvestors: true },
+  { value: "properties", name: "Properties", showInvestors: true }
 ];
 
 const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
@@ -56,10 +56,10 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   const distArraylength = distributions?.length;
   const hasDistributions = distArraylength && distArraylength > 0;
   const startingTab = isOfferingManager
-    ? 'investors'
+    ? "investors"
     : hasDistributions
-      ? 'distributions'
-      : 'properties';
+      ? "distributions"
+      : "properties";
   const [activeTab, setActiveTab] = useState<string>(startingTab);
   const investorTabOptions = TabOptions.filter(tab => tab.showInvestors);
   const tabList = isOfferingManager ? TabOptions : investorTabOptions;
@@ -106,7 +106,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
         })}
       </div>
       <div>
-        {activeTab === 'properties' && (
+        {activeTab === "properties" && (
           <div className="mt-8">
             <div className="mb-6">
               <h1 className="text-cDarkBlue text-2xl font-medium  ">Properties</h1>
@@ -118,7 +118,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
             />
           </div>
         )}
-        {activeTab === 'investors' && (
+        {activeTab === "investors" && (
           <div className="mt-8">
             {shareContractAddress ? (
               <div>
@@ -148,7 +148,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
             )}
           </div>
         )}
-        {activeTab === 'distributions' && (
+        {activeTab === "distributions" && (
           <div className="mt-8">
             <div className="flex justify-between items-center mb-6">
               <h1 className="text-cDarkBlue text-2xl font-medium ">Distributions</h1>

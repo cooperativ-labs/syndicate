@@ -1,5 +1,5 @@
-import cn from 'classnames';
-import React, { FC } from 'react';
+import cn from "classnames";
+import React, { FC } from "react";
 
 type WarningBannerProps = {
   color: string;
@@ -9,8 +9,8 @@ type WarningBannerProps = {
 
 const WarningBanner: FC<WarningBannerProps> = ({ color, text, textClass }) => {
   return (
-    <div className={cn(`bg-${color}`, 'mx-auto p-2 ')}>
-      <div className={textClass} style={{ maxWidth: '1580px' }}>
+    <div className={cn(`bg-${color}`, "mx-auto p-2 ")}>
+      <div className={textClass} style={{ maxWidth: "1580px" }}>
         {text}
       </div>
     </div>

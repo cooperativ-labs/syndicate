@@ -1,4 +1,4 @@
-import { Maybe, SmartContract, SmartContractType } from '@gql/graphql';
+import { Maybe, SmartContract, SmartContractType } from "@gql/graphql";
 
 const contractIsSameChain = (contract: Maybe<SmartContract>, chainId: number): boolean => {
   return contract?.cryptoAddress.chainId === chainId;

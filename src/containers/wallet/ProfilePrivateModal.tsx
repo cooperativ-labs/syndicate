@@ -1,10 +1,10 @@
-import useWindowSize from '@hooks/useWindowSize';
-import Card from '@src/components/cards/Card';
-import AccessCodeForm from '@src/components/offering/profile/AccessCodeForm';
-import cn from 'classnames';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import useWindowSize from "@hooks/useWindowSize";
+import Card from "@src/components/cards/Card";
+import AccessCodeForm from "@src/components/offering/profile/AccessCodeForm";
+import cn from "classnames";
+import React, { FC, useContext, useEffect, useState } from "react";
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
+import { ApplicationStoreProps, store } from "@/contexts/store";
 
 type ProfilePrivateModalProps = {
   offeringId: string;
@@ -21,7 +21,7 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
 
   const handleCodeSubmission = (code: string) => {
     if (code === accessCode) {
-      setPrivacyModal({ type: 'SET_PROFILE_PRIVATE_MODAL_OFF' });
+      setPrivacyModal({ type: "SET_PROFILE_PRIVATE_MODAL_OFF" });
       accessState?.setItem(offeringId, accessCode);
     }
   };
@@ -30,16 +30,16 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
     const pageAccess = window.localStorage?.getItem(offeringId);
     setAccessState(window.localStorage);
     if (accessCode && accessCode !== pageAccess) {
-      setPrivacyModal({ type: 'SET_PROFILE_PRIVATE_MODAL_ON' });
+      setPrivacyModal({ type: "SET_PROFILE_PRIVATE_MODAL_ON" });
     }
     if (ProfilePrivateModalOn && isDesktop) {
       // setScrollY(window.scrollY);
-      document.body.style.position = 'fixed';
+      document.body.style.position = "fixed";
       document.body.style.top = `-${window.scrollY}px`;
     } else {
       // const scrollY = document.body.style.top;
-      document.body.style.position = '';
-      document.body.style.top = '';
+      document.body.style.position = "";
+      document.body.style.top = "";
       // window.scrollTo(0, parseInt(scrollY));
     }
   }, [ProfilePrivateModalOn, windowSize, accessCode, offeringId, setPrivacyModal, isDesktop]);
@@ -53,12 +53,12 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
             // noModal
             //   ? 'absolute top-0 bottom-0 right-0 left-0 md:relative'
             // :
-            'w-screen md:h-screen absolute top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80 backdrop-blur-md '
+            "w-screen md:h-screen absolute top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80 backdrop-blur-md "
           )}
         >
           <Card
             className="mx-4 p-6 absolute right-0 left-0 top-32 md:top-0 md:relative flex-col md:w-96  rounded-xl md:rounded-lg shadow-modal"
-            style={{ overflow: 'smooth' }}
+            style={{ overflow: "smooth" }}
           >
             <div>
               <div className="">

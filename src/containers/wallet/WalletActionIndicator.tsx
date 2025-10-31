@@ -1,9 +1,9 @@
-import { Check, Waves, X } from 'lucide-react';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import cn from 'classnames';
-import React, { FC } from 'react';
+import { LoadingButtonStateType } from "@src/components/buttons/Button";
+import cn from "classnames";
+import { Check, Waves, X } from "lucide-react";
+import React, { FC } from "react";
 
-type StepStatusType = 'waiting' | 'pending' | 'success' | 'error';
+type StepStatusType = "waiting" | "pending" | "success" | "error";
 
 export type WalletActionStepType = LoadingButtonStateType;
 
@@ -13,15 +13,15 @@ const WalletActionStep: FC<{
   subMessage?: string;
 }> = ({ stepStatus, message, subMessage }) => {
   const icon =
-    stepStatus === 'pending' ? (
+    stepStatus === "pending" ? (
       <img
         src="/assets/images/loading-circle.png"
         aria-label="loading"
         className="h-10 mr-1 animate-spin bg-white rounded-full"
       />
-    ) : stepStatus === 'success' ? (
+    ) : stepStatus === "success" ? (
       <Check />
-    ) : stepStatus === 'error' ? (
+    ) : stepStatus === "error" ? (
       <X />
     ) : (
       <Waves />
@@ -30,14 +30,14 @@ const WalletActionStep: FC<{
   return (
     <div
       className={cn(
-        stepStatus === 'pending'
-          ? 'border-gray-300 text-cDarkBlue'
-          : 'border-gray-100 text-gray-500',
-        'grid grid-cols-8 p-3 border-2 rounded-lg items-center '
+        stepStatus === "pending"
+          ? "border-gray-300 text-cDarkBlue"
+          : "border-gray-100 text-gray-500",
+        "grid grid-cols-8 p-3 border-2 rounded-lg items-center "
       )}
     >
       <div className="flex justify-center col-span-1 text-2xl">{icon}</div>
-      <div className={'col-span-7'}>
+      <div className={"col-span-7"}>
         <div className="font-semibold text-lg mb-1">{message}</div>
         {subMessage && <div className="font-medium text-sm">{subMessage}</div>}
       </div>
@@ -63,31 +63,31 @@ const WalletActionIndicator: FC<WalletActionIndicatorProps> = ({
 }) => {
   const step1Status = () => {
     switch (step) {
-      case 'idle':
-        return 'waiting';
-      case 'step1':
-        return 'pending';
-      case 'step2':
-        return 'success';
-      case 'confirmed':
-        return 'success';
+      case "idle":
+        return "waiting";
+      case "step1":
+        return "pending";
+      case "step2":
+        return "success";
+      case "confirmed":
+        return "success";
       default:
-        return 'waiting';
+        return "waiting";
     }
   };
 
   const step2Status = () => {
     switch (step) {
-      case 'idle':
-        return 'waiting';
-      case 'step1':
-        return 'waiting';
-      case 'step2':
-        return 'pending';
-      case 'confirmed':
-        return 'success';
+      case "idle":
+        return "waiting";
+      case "step1":
+        return "waiting";
+      case "step2":
+        return "pending";
+      case "confirmed":
+        return "success";
       default:
-        return 'waiting';
+        return "waiting";
     }
   };
 

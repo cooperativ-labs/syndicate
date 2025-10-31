@@ -1,13 +1,13 @@
-import { ShareTransferEvent } from '@gql/graphql';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import { getCurrencyByCode, getTransferEventOption } from '@src/utils/enumConverters';
-import { getHumanDate } from '@src/utils/helpersGeneral';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
-import React, { FC } from 'react';
-import { useAsync } from 'react-use';
-import { useChainId, usePublicClient, useTransaction } from 'wagmi';
+import { ShareTransferEvent } from "@gql/graphql";
+import FormattedCryptoAddress from "@src/components/FormattedCryptoAddress";
+import { getCurrencyByCode, getTransferEventOption } from "@src/utils/enumConverters";
+import { getHumanDate } from "@src/utils/helpersGeneral";
+import { numberWithCommas } from "@src/utils/helpersMoney";
+import { String0x, stringFromBytes32 } from "@src/web3/helpersChain";
+import { toNormalNumber } from "@src/web3/util";
+import React, { FC } from "react";
+import { useAsync } from "react-use";
+import { useChainId, usePublicClient, useTransaction } from "wagmi";
 
 const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEvent }) => {
   const chainId = useChainId();
@@ -46,7 +46,7 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
   return (
     <div className="relative md:grid grid-cols-7 gap-3 items-center p-3 border-b-2 ">
       <div className="flex col-span-1 justify-start">
-        <div className="font-medium text-base ">{blockTime ? getHumanDate(blockTime) : ''}</div>
+        <div className="font-medium text-base ">{blockTime ? getHumanDate(blockTime) : ""}</div>
       </div>
 
       <FormattedCryptoAddress
@@ -56,7 +56,7 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
       />
 
       <FormattedCryptoAddress
-        className={'font-medium flex col-span-1 justify-center'}
+        className={"font-medium flex col-span-1 justify-center"}
         chainId={chainId}
         address={recipientAddress}
       />
@@ -68,7 +68,7 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
       </div>
 
       <FormattedCryptoAddress
-        className={'font-medium flex col-span-1 justify-center '}
+        className={"font-medium flex col-span-1 justify-center "}
         chainId={chainId}
         address={transactionHash}
         lookupType="tx"
@@ -80,7 +80,7 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
         <div className={`font-medium`}>{type}</div>
       </div>
       <div className="flex col-span-1 justify-center">
-        <div className={`font-medium`}>{price ? numberWithCommas(humanPrice, 2) : 'N/A'}</div>
+        <div className={`font-medium`}>{price ? numberWithCommas(humanPrice, 2) : "N/A"}</div>
       </div>
     </div>
   );

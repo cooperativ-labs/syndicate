@@ -1,26 +1,26 @@
-'use client';
+"use client";
 
-import { Organization } from '@gql/graphql';
-import AlertBanner from '@src/components/alerts/AlertBanner';
-import AlertPopup from '@src/components/alerts/AlertPopup';
-import LoadingModal from '@src/components/loading/ModalLoading';
-import { signOut } from '@src/utils/actions/userActions';
-import { getOrgsFromUser } from '@src/utils/helpersOrganization';
-import cn from 'classnames';
-import React, { FC, useContext, useEffect, useState } from 'react';
-import { useAccount, useDisconnect } from 'wagmi';
+import { useUserContext } from "@contexts/UserContext";
+import { Organization } from "@gql/graphql";
+import AlertBanner from "@src/components/alerts/AlertBanner";
+import AlertPopup from "@src/components/alerts/AlertPopup";
+import LoadingModal from "@src/components/loading/ModalLoading";
+import { signOut } from "@src/utils/actions/userActions";
+import { getOrgsFromUser } from "@src/utils/helpersOrganization";
+import cn from "classnames";
+import React, { FC, useContext, useEffect, useState } from "react";
+import { useAccount, useDisconnect } from "wagmi";
 
 // End of Selection
-import { ApplicationStoreProps, store } from '@/contexts/store';
-import { useUserContext } from '@contexts/UserContext';
+import { ApplicationStoreProps, store } from "@/contexts/store";
 
-import ManagerSideBar from './sideBar/ManagerSideBar';
-import NavBar from './NavigationBar';
-import NewOrganizationModal from './NewOrganizationModal';
-import WithAuthentication from './WithAuthentication';
+import ManagerSideBar from "./sideBar/ManagerSideBar";
+import NavBar from "./NavigationBar";
+import NewOrganizationModal from "./NewOrganizationModal";
+import WithAuthentication from "./WithAuthentication";
 
 // const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
-const BackgroundGradient = 'bg-white';
+const BackgroundGradient = "bg-white";
 
 type ManagerProps = {
   children: React.ReactNode;
@@ -65,7 +65,7 @@ const Manager: FC<ManagerProps> = ({ children }) => {
   return (
     <div className="flex">
       <div className="flex z-30 md:z-10 min-h-screen">
-        <ManagerSideBar organizations={organizations} />{' '}
+        <ManagerSideBar organizations={organizations} />{" "}
       </div>
       <div className="md:mx-6 w-full">
         <NavBar />
@@ -94,7 +94,7 @@ const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
 
   return (
     <div className="h-full">
-      <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
+      <div className={cn(BackgroundGradient, "w-screen min-h-screen")}>
         <WithAuthentication>
           <NewOrganizationModal />
           {/* <WalletActionLockModel /> */}
@@ -103,7 +103,7 @@ const ManagerWrapper: FC<ManagerWrapperProps> = ({ children }) => {
             show={!!isConnected && !chain}
             color="red-600"
             text={
-              ' The blockchain you are using is not compatible with Cooperativ. Please switch to Sepolia for testing or Mainnet or Polygon for real transactions'
+              " The blockchain you are using is not compatible with Cooperativ. Please switch to Sepolia for testing or Mainnet or Polygon for real transactions"
             }
           />
           <AlertPopup text="This is an alpha version. Please use with caution." />

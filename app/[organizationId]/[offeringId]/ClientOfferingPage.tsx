@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import { Offering } from '@gql/graphql';
-import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
-import Footer from '@src/Footer/Footer';
-import OfferingProfile from '@src/screens/OfferingProfile';
-import React from 'react';
+import { Offering } from "@gql/graphql";
+import ProfilePrivateModal from "@src/containers/wallet/ProfilePrivateModal";
+import Footer from "@src/Footer/Footer";
+import OfferingProfile from "@src/screens/OfferingProfile";
+import React from "react";
 
 type ClientOfferingPageProps = {
   offering: Offering | null;

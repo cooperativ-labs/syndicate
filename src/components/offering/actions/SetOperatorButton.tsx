@@ -1,9 +1,9 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import { setContractOperator } from '@src/web3/contractShareCalls';
-import { String0x } from '@src/web3/helpersChain';
-import React, { useState } from 'react';
-import { useAccount } from 'wagmi';
+import Button, { LoadingButtonStateType, LoadingButtonText } from "@src/components/buttons/Button";
+import Input, { defaultFieldDiv } from "@src/components/form-components/Inputs";
+import { setContractOperator } from "@src/web3/contractShareCalls";
+import { String0x } from "@src/web3/helpersChain";
+import React, { useState } from "react";
+import { useAccount } from "wagmi";
 
 type SetOperatorButtonProps = {
   shareContractAddress: String0x;
@@ -17,11 +17,11 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
   refetch
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [operatorAddress, setOperatorAddress] = useState<String0x | ''>('');
+  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>("idle");
+  const [operatorAddress, setOperatorAddress] = useState<String0x | "">("");
 
   const handleSetOperator = async (e: React.MouseEvent<HTMLButtonElement, MouseEvent>) => {
-    setButtonStep('step1');
+    setButtonStep("step1");
     e.preventDefault();
     await setContractOperator({
       shareContractAddress,
@@ -29,7 +29,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
       setButtonStep,
       refetch
     });
-    setButtonStep('confirmed');
+    setButtonStep("confirmed");
     return;
   };
 

@@ -1,6 +1,6 @@
-import ManagerWrapper from '@src/containers/ManagerWrapper';
-import EntityDashboard from '@src/screens/EntityDashboard';
-import React from 'react';
+import ManagerWrapper from "@src/containers/ManagerWrapper";
+import EntityDashboard from "@src/screens/EntityDashboard";
+import React from "react";
 
 const EntitiesPage = () => {
   return (

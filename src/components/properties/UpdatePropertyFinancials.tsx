@@ -1,11 +1,11 @@
-import { RealEstateProperty } from '@gql/graphql';
-import { getCurrencyOption } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
-import React, { FC } from 'react';
+import { RealEstateProperty } from "@gql/graphql";
+import { getCurrencyOption } from "@src/utils/enumConverters";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { Form, Formik } from "formik";
+import React, { FC } from "react";
 
-import MajorActionButton from '../buttons/MajorActionButton';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import MajorActionButton from "../buttons/MajorActionButton";
+import Input, { defaultFieldDiv } from "../form-components/Inputs";
 
 export type UpdatePropertyFinancialsType = {
   property: RealEstateProperty;

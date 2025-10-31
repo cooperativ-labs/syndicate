@@ -1,9 +1,9 @@
 // components/AddTokenToMetamask.tsx
 
-import 'wagmi/window';
+import "wagmi/window";
 
-import { Plus, Wallet } from 'lucide-react';
-import React, { useState } from 'react';
+import { Plus, Wallet } from "lucide-react";
+import React, { useState } from "react";
 
 interface AddTokenToMetamaskProps {
   tokenAddress: string;
@@ -18,16 +18,16 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
   tokenDecimals,
   tokenImage
 }) => {
-  const [status, setStatus] = useState<string>('');
+  const [status, setStatus] = useState<string>("");
 
   const handleClick = async () => {
-    if (window.ethereum && typeof window.ethereum !== 'undefined') {
+    if (window.ethereum && typeof window.ethereum !== "undefined") {
       try {
         // @ts-ignore
         await window.ethereum.request({
-          method: 'wallet_watchAsset',
+          method: "wallet_watchAsset",
           params: {
-            type: 'ERC20',
+            type: "ERC20",
             options: {
               address: tokenAddress,
               symbol: tokenSymbol,
@@ -46,7 +46,7 @@ const AddTokenToMetamask: React.FC<AddTokenToMetamaskProps> = ({
     <div>
       <button
         className={
-          'text-xs font-bold text-slate-200 p-1 px-2 my-1 rounded-full bg-linear-to-r from-cyan-600 to-blue-600 hover:bg-linear-to-l '
+          "text-xs font-bold text-slate-200 p-1 px-2 my-1 rounded-full bg-linear-to-r from-cyan-600 to-blue-600 hover:bg-linear-to-l "
         }
         onClick={handleClick}
       >
