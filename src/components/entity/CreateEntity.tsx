@@ -190,12 +190,12 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
 
           <hr className="my-6" />
           <div className="text-cLightBlue font-bold text-lg mb-4">Operating address</div>
-          <CustomAddressAutocomplete
+          {/* <CustomAddressAutocomplete
             name="addressAutocomplete"
             required
             value={inputAddress}
             setValue={setInputAddress}
-          />
+          /> */}
           {/* {latLang.lat && (
             <div className="mt-4">
               <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>

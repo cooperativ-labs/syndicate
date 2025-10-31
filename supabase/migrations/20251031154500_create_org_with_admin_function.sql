@@ -18,7 +18,7 @@ returns table (
   organization_user_id uuid
 )
 language plpgsql
-security definer
+security invoker
 set search_path = public
 as $$
 declare
@@ -42,10 +42,7 @@ begin
   )
   returning id into v_org_user_id;
 
-  organization_id := v_org_id;
-  organization_user_id := v_org_user_id;
-  organization_slug := v_org_slug; 
-  return;
+  return query select v_org_id, v_org_slug, v_org_user_id;
 end;
 $$;
 

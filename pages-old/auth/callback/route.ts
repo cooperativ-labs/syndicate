@@ -4,7 +4,6 @@ import { createClient } from "@supabase/utils/server";
 
 export async function GET(request: Request) {
   const { searchParams, origin } = new URL(request.url);
-  const siteUrl = process.env.NEXT_PUBLIC_SITE_URL;
   const code = searchParams.get("code");
   // if "next" is in param, use it as the redirect URL
   const next = searchParams.get("next") ?? "/";

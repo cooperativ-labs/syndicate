@@ -77,6 +77,19 @@ export const GET_OFFERING = gql`
   }
 `;
 
+export const GET_ORG_OFFERINGS = gql`
+  ${CORE_OFFERING_FIELDS}
+  query GetOrgOfferings($organizationId: ID!) {
+    offeringCollection(filter: { organization_id: { eq: $organizationId } }) {
+      edges {
+        node {
+          ...OfferingFields
+        }
+      }
+    }
+  }
+`;
+
 export const UPDATE_OFFERING_PROFILE = gql`
   mutation UpdateOfferingProfile(
     $offeringId: UUID!
@@ -323,11 +336,15 @@ export const ADD_LEGAL_SHARE_LINK = gql`
 export const GET_OFFERING_PARTICIPANT = gql`
   ${CORE_OFFERING_FIELDS}
   query GetOfferingParticipant($walletAddress: String!) {
-    offeringParticipants(filter: { walletAddress: { alloftext: $walletAddress } }) {
-      id
-      name
-      offering {
-        ...OfferingFields
+    offering_participantCollection(filter: { wallet_address: { alloftext: $walletAddress } }) {
+      edges {
+        node {
+          id
+          name
+          offering {
+            ...OfferingFields
+          }
+        }
       }
     }
   }

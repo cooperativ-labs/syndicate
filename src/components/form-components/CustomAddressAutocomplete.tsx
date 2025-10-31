@@ -97,7 +97,7 @@ const CustomAddressAutocomplete: FC<CustomAddressAutocompleteProps> = ({
           className={cn(fieldLabelClass ? fieldLabelClass : [defaultFieldLabelClass, 'mt-2 mb-1'])}
         >
           {labelText}
-          {required ? ' *' : ''}
+          {/* {required ? ' *' : ''} */}
         </label>
       )}
       <GooglePlacesAutocomplete

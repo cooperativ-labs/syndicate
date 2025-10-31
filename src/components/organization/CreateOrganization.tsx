@@ -53,7 +53,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
         setSubmitting(true);
         dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
         try {
-          const { organization_id } = await createOrganizationWithAdmin({
+          const orgData = await createOrganizationWithAdmin({
             userId,
             name: values.name,
             logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
@@ -62,9 +62,8 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
             country: values.country,
             slug: formatSlug(values.name)
           });
-
-          window.sessionStorage.setItem('CHOSEN_ORGANIZATION', organization_id);
-          router.push(`/${organization_id}/overview`);
+          window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgData.organization_id);
+          router.push(`/${orgData.organization_id}/overview`);
           dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
           actionOnCompletion && actionOnCompletion();
         } catch (error: any) {

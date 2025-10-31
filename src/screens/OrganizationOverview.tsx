@@ -2,8 +2,19 @@
 
 import { useQuery } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
-import { GetOfferingParticipantQuery, OfferingParticipant } from '@gql/graphql';
-import { GetOrganizationQuery, Organization, OrganizationConnection } from '@gql/graphql';
+import {
+  OfferingConnection,
+  OfferingEdge,
+  OfferingParticipant,
+  OfferingParticipantConnection,
+  OfferingParticipantEdge
+} from '@gql/graphql';
+import {
+  GetOrganizationQuery,
+  GetOffering_participantQuery,
+  Organization,
+  OrganizationConnection
+} from '@gql/graphql';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import { toastExperiment } from '@src/components/indicators/Notifications';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -14,12 +25,14 @@ import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamM
 import TeamMemberList from '@src/components/organization/TeamMemberList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
-import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
+import { GET_OFFERING_PARTICIPANT, GET_ORG_OFFERINGS } from '@src/utils/graphQueries/offering';
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { GET_USER } from '@src/utils/graphQueries/user';
 import { useParams } from 'next/navigation';
 import React, { FC } from 'react';
 import { useAccount } from 'wagmi';
+import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 
 const OrganizationOverview: FC = () => {
   const { user } = useUserContext();
@@ -27,22 +40,24 @@ const OrganizationOverview: FC = () => {
   const params = useParams<{ organizationId: string }>();
   const orgId = params?.organizationId;
   const userId = user?.id;
+
   const {
     data: organizationData,
     error,
     loading,
     refetch
   } = useQuery<GetOrganizationQuery>(GET_ORGANIZATION, { variables: { id: orgId } });
-
   const organization = organizationData?.organizationCollection?.edges?.[0]?.node as Organization;
-  console.log('organization', organization);
-
-  const { data: participantData } = useQuery<GetOfferingParticipantQuery>(
+  console.log(organization);
+  const { data: participantData } = useQuery<GetOffering_participantQuery>(
     GET_OFFERING_PARTICIPANT,
     {
       variables: { walletAddress: userWalletAddress }
     }
   );
+  const { data: offeringsData } = useQuery<OfferingConnection>(GET_ORG_OFFERINGS, {
+    variables: { organizationId: orgId }
+  });
 
   if (!organization) {
     return (
@@ -52,14 +67,15 @@ const OrganizationOverview: FC = () => {
     );
   }
 
-  console.log('participantData', participantData);
-  const participantOfferings = participantData?.offering_participantCollection?.edges.map(
-    (offeringParticipant: OfferingParticipant) => {
-      return offeringParticipant.offering;
+  const participantOfferings = participantData?.participantCollection?.edges?.map(
+    (offeringParticipant: OfferingParticipantEdge) => {
+      return offeringParticipant.node.offering;
     }
   );
 
-  const offerings = organization && getOrgOfferingsFromEntity(organization);
+  const offerings = offeringsData?.offeringCollection?.edges?.map((offering: OfferingEdge) => {
+    return offering.node;
+  });
   const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;
   const isAdmin = userId && getIsAdmin(userId, organization);

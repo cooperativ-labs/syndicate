@@ -18,7 +18,9 @@ export const createOrganizationWithAdmin = async ({
   website: string;
   country: string;
   slug: string;
-}): Promise<{ organization_id: string; organization_user_id: string }> => {
+}): Promise<
+  { organization_id: string; organization_user_id: string; slug: string }
+> => {
   const supabase = createClient();
   const { data, error } = await supabase.rpc("create_organization_with_admin", {
     p_user_id: userId,
@@ -29,10 +31,13 @@ export const createOrganizationWithAdmin = async ({
     p_country: country,
     p_slug: slug,
   });
-
   if (error) {
     throw new Error(error.message);
   }
 
-  return data;
+  return {
+    organization_id: data[0].organization_id,
+    organization_user_id: data[0].organization_user_id,
+    slug: data[0].slug,
+  };
 };

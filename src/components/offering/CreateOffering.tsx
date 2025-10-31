@@ -28,7 +28,9 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
   const entityOptions =
-    organization && getEntityOptionsList(organization.legalEntities as LegalEntity[]);
+    organization &&
+    getEntityOptionsList(organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[]);
+
   const entitiesWithoutOfferings = entityOptions.filter(entity => entity.offerings?.length === 0);
 
   const entitySubmissionCompletion = () => {

@@ -1,4 +1,4 @@
-import { gql } from '@apollo/client';
+import { gql } from "@apollo/client";
 
 export const CORE_LINKED_ACCOUNT_FIELDS = gql`
   fragment LinkedAccountFields on linked_account {
@@ -177,6 +177,7 @@ export const CORE_OFFERING_FIELDS = gql`
     is_public
     access_code
     waitlist_on
+    
     image {
       id
       url
@@ -206,6 +207,25 @@ export const CORE_ORGANIZATION_FIELDS = gql`
     is_public
     phone
     country
+    legal_entities: legal_entityCollection {
+      edges {
+        node {
+          id
+          ...LegalEntityFields
+         
+        }
+      }
+    }
+    team: organization_userCollection {
+      edges {
+        node {
+          id
+          user_id
+          organization_id
+          permissions
+        }
+      }
+    }
   }
 `;
 
