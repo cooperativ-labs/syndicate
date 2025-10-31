@@ -1,13 +1,13 @@
-import Container from "@src/containers/Layouts/Container";
-import LoadingModal from "@src/components/loading/ModalLoading";
-import PortalOffering from "@src/screens/PortalOffering";
-import PortalWrapper from "@src/containers/PortalWrapper";
-import router from "next/router";
-import { GET_OFFERING } from "@src/utils/graphQueries/offering";
-import { useQuery } from "@apollo/client/react";
+import Container from '@src/containers/Layouts/Container';
+import LoadingModal from '@src/components/loading/ModalLoading';
+import PortalOffering from '@src/screens/PortalOffering';
+import PortalWrapper from '@src/containers/PortalWrapper';
+import router from 'next/router';
+import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+import { useQuery } from '@apollo/client/react';
 
-import React, { FC } from "react";
-import { Offering } from "@gql/graphql";
+import React, { FC } from 'react';
+import { Offering } from '@gql/graphql';
 
 const PortalOfferingPage: FC = () => {
   const offeringId = router.query.offeringId;

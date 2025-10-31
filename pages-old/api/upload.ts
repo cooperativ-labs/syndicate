@@ -1,19 +1,19 @@
 // upload.ts
-import nextConnect from "next-connect";
-import { NextApiRequest, NextApiResponse } from "next";
+import nextConnect from 'next-connect';
+import { NextApiRequest, NextApiResponse } from 'next';
 //@ts-ignore
-import { Multer } from "multer";
-import { upload } from "./file/upload";
+import { Multer } from 'multer';
+import { upload } from './file/upload';
 
-import { initializeApollo } from "@src/utils/supabaseApolloClient";
-import { GET_USER_PERMISSIONS } from "@src/utils/graphQueries/user";
+import { initializeApollo } from '@src/utils/supabaseApolloClient';
+import { GET_USER_PERMISSIONS } from '@src/utils/graphQueries/user';
 
 type NextApiRequestWithFile = NextApiRequest & {
   file: Multer.GoogleCloudStorage.File;
 };
 
 const handler = nextConnect<NextApiRequestWithFile, NextApiResponse>()
-  .use(upload.single("file"))
+  .use(upload.single('file'))
   .post(async (req, res) => {
     const session = await getServerSession(req, res, options);
     const apolloClient = initializeApollo();
@@ -21,10 +21,10 @@ const handler = nextConnect<NextApiRequestWithFile, NextApiResponse>()
       query: GET_USER_PERMISSIONS,
       variables: { id: session?.user?.id }
     });
-    const isOrgUser = data?.queryUser[0].organizations[0].permissions.includes("ADMIN", "EDITOR");
+    const isOrgUser = data?.queryUser[0].organizations[0].permissions.includes('ADMIN', 'EDITOR');
 
     if (!session) {
-      return res.status(401).send("Unauthorized");
+      return res.status(401).send('Unauthorized');
     }
     try {
       res.status(200).json({ url: req.file.path, fileId: req.file.filename });

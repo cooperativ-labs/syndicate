@@ -1,14 +1,14 @@
-import React from "react";
-import { ADD_ORGANIZATION_EMAIL } from "@src/utils/graphQueries/organization";
-import { sha256 } from "js-sha256";
-import { useEffect } from "react";
-import { useMutation, useQuery } from "@apollo/client/react";
-import { useRouter } from "next/router";
+import React from 'react';
+import { ADD_ORGANIZATION_EMAIL } from '@src/utils/graphQueries/organization';
+import { sha256 } from 'js-sha256';
+import { useEffect } from 'react';
+import { useMutation, useQuery } from '@apollo/client/react';
+import { useRouter } from 'next/router';
 
 const ConfirmEmail = () => {
   const router = useRouter();
   const { token, organizationId: orgId } = router.query;
-  const storedEmail = window.localStorage.getItem("email");
+  const storedEmail = window.localStorage.getItem('email');
   const hashStoredEmail = storedEmail && sha256(storedEmail);
 
   const [addOrganizationEmail, { error: errorEmail }] = useMutation(ADD_ORGANIZATION_EMAIL);
@@ -24,8 +24,8 @@ const ConfirmEmail = () => {
   useEffect(() => {
     if (storedEmail && hashStoredEmail) {
       if (hashStoredEmail !== token) {
-        window.localStorage.removeItem("email");
-        alert("Oops. Looks like there was a problem confirming your email address.");
+        window.localStorage.removeItem('email');
+        alert('Oops. Looks like there was a problem confirming your email address.');
         router.push(`/${orgId}/settings`);
         return;
       }
@@ -36,8 +36,8 @@ const ConfirmEmail = () => {
           isPublic: true
         }
       });
-      window.localStorage.removeItem("email");
-      alert("Email confirmed successfully!");
+      window.localStorage.removeItem('email');
+      alert('Email confirmed successfully!');
       router.push(`/${orgId}/settings`);
     }
   }, [storedEmail, router, hashStoredEmail, token, orgId, addOrganizationEmail]);

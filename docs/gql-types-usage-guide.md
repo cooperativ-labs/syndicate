@@ -57,11 +57,11 @@ function OrganizationPage({ orgId }: { orgId: string }) {
 Import types from `gql/graphql.ts` for function parameters, return types, etc.:
 
 ```typescript
-import type { Organizations, Query, Mutation } from "@gql/graphql";
+import type { Organizations, Query, Mutation } from '@gql/graphql';
 
 // Use in function signatures
 function processOrganization(org: Organizations): string {
-  return org.name || "Unnamed";
+  return org.name || 'Unnamed';
 }
 
 // Use query input types
@@ -123,7 +123,7 @@ function CreateOrgForm() {
 Get the return type of a query automatically:
 
 ```typescript
-import { graphql, DocumentType } from "@gql/index";
+import { graphql, DocumentType } from '@gql/index';
 
 const GET_ORGANIZATION_QUERY = graphql(`
   query GetOrganization($id: UUID!) {
@@ -188,14 +188,14 @@ function OrganizationCard({
 ### 6. **Using Enum Types**
 
 ```typescript
-import type { Currency_Code, Organization_Permission_Type } from "@gql/graphql";
+import type { Currency_Code, Organization_Permission_Type } from '@gql/graphql';
 
 function handleCurrency(currency: Currency_Code) {
   switch (currency) {
-    case "USD":
-      return "$";
-    case "EUR":
-      return "€";
+    case 'USD':
+      return '$';
+    case 'EUR':
+      return '€';
     // TypeScript will ensure all cases are covered
   }
 }
@@ -209,7 +209,7 @@ const filter: OrganizationsFilter = {
 ### 7. **Using Filter Types**
 
 ```typescript
-import type { OrganizationsFilter, UuidFilter, StringFilter } from "@gql/graphql";
+import type { OrganizationsFilter, UuidFilter, StringFilter } from '@gql/graphql';
 
 // Build type-safe filters
 function buildFilter(orgId: string, name?: string): OrganizationsFilter {
@@ -232,7 +232,7 @@ If you have existing queries using plain `gql`, migrate them like this:
 **Before:**
 
 ```typescript
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
 const GET_ORG = gql`
   query GetOrg($id: UUID!) {
@@ -251,7 +251,7 @@ const GET_ORG = gql`
 **After (with types):**
 
 ```typescript
-import { graphql } from "@gql/index";
+import { graphql } from '@gql/index';
 
 const GET_ORG = graphql(`
   query GetOrg($id: UUID!) {
@@ -294,13 +294,13 @@ import type {
   Query,
   Mutation
   // ... etc
-} from "@gql/graphql";
+} from '@gql/graphql';
 
 // Query helpers
-import { graphql, DocumentType } from "@gql/index";
+import { graphql, DocumentType } from '@gql/index';
 
 // Fragment helpers (if using fragments)
-import { FragmentType, useFragment } from "@gql/index";
+import { FragmentType, useFragment } from '@gql/index';
 ```
 
 ## Tips
