@@ -1,41 +1,34 @@
 'use client';
 
-import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
+import { useForm } from 'react-hook-form';
 
-import Button from '../buttons/Button';
-import Input from '../form-components/Inputs';
+import { Button } from '@src/components/ui/button';
+import { Input } from '@src/components/ui/input';
 
 const OfferingFinder: FC = () => {
   const router = useRouter();
+  const { register, handleSubmit, formState } = useForm<{ offeringId: string }>({
+    defaultValues: { offeringId: '' }
+  });
+
   return (
-    <Formik
-      initialValues={{
-        offeringId: ''
-      }}
-      validate={values => {}}
-      onSubmit={(values, { setSubmitting }) => {
-        setSubmitting(true);
-        router.push(`/offerings/${values.offeringId}`);
-        setSubmitting(false);
-      }}
+    <form
+      className="w-full md:grid grid-cols-3 gap-2 items-center"
+      onSubmit={handleSubmit(values => router.push(`/offerings/${values.offeringId}`))}
     >
-      {({ isSubmitting, values }) => (
-        <Form className="w-full md:grid grid-cols-3 gap-2 items-center">
-          <div className="col-span-2">
-            <Input name="offeringId"></Input>
-          </div>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-cLightBlue hover:bg-blue-800 text-white font-bold text-sm uppercase mt-4 md:mt-0 rounded p-4 w-full "
-          >
-            Find Offering
-          </Button>
-        </Form>
-      )}
-    </Formik>
+      <div className="col-span-2">
+        <Input {...register('offeringId')} />
+      </div>
+      <Button
+        type="submit"
+        disabled={formState.isSubmitting}
+        className="bg-cLightBlue hover:bg-blue-800 text-white font-bold text-sm uppercase mt-4 md:mt-0 rounded p-4 w-full "
+      >
+        Find Offering
+      </Button>
+    </form>
   );
 };
 

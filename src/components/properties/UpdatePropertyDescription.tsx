@@ -6,9 +6,9 @@ import {
 } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 
-import MajorActionButton from '../buttons/MajorActionButton';
+import { LoadingButton } from '../ui/loading-button';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
 
@@ -23,6 +23,7 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({
   updateProperty,
   setModal
 }) => {
+  const [buttonState, setButtonState] = useState<'default' | 'disabled' | 'loading' | 'success' | 'error'>('default');
   const entityOperatingCurrency = property.owner?.operatingCurrency;
   return (
     <Formik
@@ -40,20 +41,26 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
-        updateProperty({
-          variables: {
-            currentDate: currentDate,
-            rePropertyId: property.id,
-            propertyType: values.propertyType,
-            investmentStatus: values.investmentStatus,
-            amenitiesDescription: values.amenitiesDescription,
-            description: values.description,
-            downPayment: values.downPayment,
-            lenderFees: values.lenderFees,
-            closingCosts: values.closingCosts
-          }
-        });
-        setModal(false);
+        setButtonState('loading');
+        try {
+          await updateProperty({
+            variables: {
+              currentDate: currentDate,
+              rePropertyId: property.id,
+              propertyType: values.propertyType,
+              investmentStatus: values.investmentStatus,
+              amenitiesDescription: values.amenitiesDescription,
+              description: values.description,
+              downPayment: values.downPayment,
+              lenderFees: values.lenderFees,
+              closingCosts: values.closingCosts
+            }
+          });
+          setButtonState('success');
+          setModal(false);
+        } catch (error) {
+          setButtonState('error');
+        }
         setSubmitting(false);
       }}
     >
@@ -127,9 +134,17 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({
             labelText={`Closing costs (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
             name="closingCosts"
           />
-          <MajorActionButton type="submit" disabled={isSubmitting}>
-            {`Update ${property.address?.line1}`}
-          </MajorActionButton>
+          <LoadingButton
+            type="submit"
+            buttonState={buttonState}
+            setButtonState={setButtonState}
+            text={`Update ${property.address?.line1}`}
+            loadingText="Updating property..."
+            successText="Property updated!"
+            errorText="Failed to update property"
+            reset
+            className="mt-8"
+          />
         </Form>
       )}
     </Formik>

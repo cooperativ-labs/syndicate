@@ -1,19 +1,21 @@
 import { useMutation } from '@apollo/client/react';
 import { Maybe, OfferingParticipant } from '@gql/graphql';
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import Select from '@src/components/form-components/Select';
+import { LoadingButton } from '@src/components/ui/loading-button';
+import { Input } from '@src/components/ui/input';
+import { Label } from '@src/components/ui/label';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@src/components/ui/select';
 import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { Form, Formik } from 'formik';
+import { Controller, useForm } from 'react-hook-form';
 import React from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useContractRead } from 'wagmi';
 import { readContract } from 'wagmi/actions';
-import * as Yup from 'yup';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
 import SetOperatorButton from './SetOperatorButton';
 
@@ -33,7 +35,7 @@ const ForceTransferForm = ({
   refetchContracts
 }: ForceTransferFormProps) => {
   const { address: userWalletAddress } = useAccount();
-  const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
+  const [buttonState, setButtonState] = React.useState<'default' | 'disabled' | 'loading' | 'success' | 'error'>('default');
   const [partition, setPartition] = React.useState<String0x>(partitions[0]);
   const [targetBalance, setTargetBalance] = React.useState<number>(0);
   const [addIssuance] = useMutation(ADD_TRANSFER_EVENT);
@@ -60,98 +62,142 @@ const ForceTransferForm = ({
     setTargetBalance(targetBalance);
   }, [partition, shareContractAddress, target]);
 
+  const schema = z.object({
+    partition: z.string().min(1, 'Required'),
+    amount: z
+      .coerce.number({ invalid_type_error: 'Invalid amount' })
+      .positive('Amount must be positive')
+      .max(targetBalance, 'Amount cannot exceed target balance'),
+    recipient: z.string().min(1, 'Required')
+  });
+
+  const { control, register, handleSubmit, formState, watch } = useForm<{
+    partition: string;
+    amount: number;
+    recipient: string;
+  }>({
+    resolver: zodResolver(schema),
+    defaultValues: { partition: partitions[0] || '', amount: undefined as unknown as number, recipient: '' }
+  });
+
+  const watchedPartition = watch('partition');
+  const watchedRecipient = watch('recipient');
+
+  React.useEffect(() => {
+    if (watchedPartition) {
+      setPartition(watchedPartition as String0x);
+    }
+  }, [watchedPartition]);
+
   return (
-    <Formik
-      initialValues={{ partition: partitions[0], amount: '', recipient: '' }}
-      validate={values => {
-        setPartition(values.partition as String0x);
-      }}
-      validationSchema={Yup.object().shape({
-        partition: Yup.string().required('Required'),
-        amount: Yup.number()
-          .typeError('Invalid amount')
-          .required('Required')
-          .positive('Amount must be positive')
-          .max(targetBalance, 'Amount cannot exceed target balance'),
-        recipient: Yup.string().required('Required')
-      })}
-      onSubmit={async (values, { setSubmitting }) => {
-        setButtonStep('step1');
+    <form
+      onSubmit={handleSubmit(async values => {
+        setButtonState('loading');
         await forceTransfer({
           shareContractAddress,
           partition: values.partition as String0x,
-          amount: parseInt(values.amount, 10),
+          amount: Number(values.amount),
           target,
           recipient: values.recipient as String0x,
-          setButtonStep,
+          setButtonStep: (state: any) => {
+            if (state === 'idle' || state === 'confirmed') {
+              setButtonState('success');
+            } else if (state === 'failed' || state === 'rejected') {
+              setButtonState('error');
+            } else if (state === 'step1' || state === 'step2' || state === 'step3') {
+              setButtonState('loading');
+            }
+          },
           addIssuance,
           refetchContracts
         });
-        setSubmitting(false);
-      }}
+      })}
     >
-      {({ isSubmitting, values }) => (
-        <Form>
-          <Select className={'mt-3'} name="partition" labelText="Share class">
-            <option value="">Select class</option>
-
-            {partitions.map((partition, i) => {
-              return (
-                <option key={i} value={partition}>
-                  {stringFromBytes32(partition)}
-                </option>
-              );
-            })}
-          </Select>
-          <Input
-            className={defaultFieldDiv}
-            labelText={`Amount to transfer (${targetBalance} available)`}
-            name="amount"
-            type="number"
-            placeholder="5"
-            required
-          />
-
-          <Select className={'mt-3'} name={'recipient'} labelText="Receives Shares">
-            <option value="">Select recipient</option>
-
-            {recipientOptions?.map((participant, i) => {
-              const presentableAddress = addressWithoutEns({
-                address: participant?.walletAddress,
-                userName: participant?.name
-              });
-              return (
-                <option key={i} value={participant?.walletAddress}>
-                  {presentableAddress}
-                </option>
-              );
-            })}
-          </Select>
-          {!isOperator ? (
-            <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
-          ) : (
-            <Button
-              className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
-              type="submit"
-              disabled={isSubmitting}
-            >
-              <LoadingButtonText
-                state={buttonStep}
-                idleText={
-                  values.recipient
-                    ? `Force Transfer to ${addressWithoutEns({ address: values.recipient })}`
-                    : 'Force Transfer'
-                }
-                step1Text="Transferring..."
-                confirmedText="Shares transferred!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </Button>
+      <div className={'mt-3'}>
+        <Label>Share class</Label>
+        <Controller
+          control={control}
+          name="partition"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select class" />
+              </SelectTrigger>
+              <SelectContent>
+                {partitions.map((p, i) => (
+                  <SelectItem key={i} value={p}>
+                    {stringFromBytes32(p)}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
           )}
-        </Form>
+        />
+        {formState.errors.partition && (
+          <div className="text-sm text-red-500 mt-1">{formState.errors.partition.message}</div>
+        )}
+      </div>
+
+      <div className={'mt-3'}>
+        <Label>{`Amount to transfer (${targetBalance} available)`}</Label>
+        <Input type="number" placeholder="5" aria-label="Amount" {...register('amount')} />
+        {formState.errors.amount && (
+          <div className="text-sm text-red-500 mt-1">{formState.errors.amount.message}</div>
+        )}
+      </div>
+
+      <div className={'mt-3'}>
+        <Label>Receives Shares</Label>
+        <Controller
+          control={control}
+          name="recipient"
+          render={({ field }) => (
+            <Select value={field.value} onValueChange={field.onChange}>
+              <SelectTrigger>
+                <SelectValue placeholder="Select recipient" />
+              </SelectTrigger>
+              <SelectContent>
+                {recipientOptions?.map((participant, i) => {
+                  const presentableAddress = addressWithoutEns({
+                    address: participant?.walletAddress,
+                    userName: participant?.name
+                  });
+                  return (
+                    <SelectItem key={i} value={participant?.walletAddress as String0x}>
+                      {presentableAddress}
+                    </SelectItem>
+                  );
+                })}
+              </SelectContent>
+            </Select>
+          )}
+        />
+        {formState.errors.recipient && (
+          <div className="text-sm text-red-500 mt-1">{formState.errors.recipient.message}</div>
+        )}
+      </div>
+
+      {!isOperator ? (
+        <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
+      ) : (
+        <LoadingButton
+          variant="destructive"
+          buttonState={buttonState}
+          setButtonState={setButtonState}
+          text={
+            watchedRecipient
+              ? `Force Transfer to ${addressWithoutEns({ address: watchedRecipient as String0x })}`
+              : 'Force Transfer'
+          }
+          loadingText="Transferring..."
+          successText="Shares transferred!"
+          errorText="Transaction failed"
+          reset
+          className="mt-2 w-full"
+          type="submit"
+        />
       )}
-    </Formik>
+    </form>
   );
 };
 

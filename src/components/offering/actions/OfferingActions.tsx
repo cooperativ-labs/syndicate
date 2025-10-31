@@ -1,7 +1,8 @@
 import { useQuery } from '@apollo/client/react';
 import { Maybe, ShareOrder, ShareTransferEvent } from '@gql/graphql';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { Button } from '@src/components/ui/button';
+import { LoadingButton } from '@src/components/ui/loading-button';
 import CloseButton from '@src/components/buttons/CloseButton';
 import PostBidAskForm, {
   PostBidAskFormProps
@@ -76,7 +77,9 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
   const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
-  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
+  const [claimProceedsButton, setClaimProceedsButton] = useState<
+    'default' | 'disabled' | 'loading' | 'success' | 'error'
+  >('default');
   const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
 
   // const [updateDistribution, { data: updateDistributionData }] = useMutation(UPDATE_DISTRIBUTION);
@@ -106,7 +109,18 @@ const OfferingActions: FC<OfferingActionsProps> = ({
     paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
 
   const handleClaimProceeds = async () => {
-    await claimProceeds({ swapContractAddress, setButtonStep: setClaimProceedsButton });
+    await claimProceeds({
+      swapContractAddress,
+      setButtonStep: (state: any) => {
+        if (state === 'idle' || state === 'confirmed') {
+          setClaimProceedsButton('success');
+        } else if (state === 'failed' || state === 'rejected') {
+          setClaimProceedsButton('error');
+        } else if (state === 'step1' || state === 'step2' || state === 'step3') {
+          setClaimProceedsButton('loading');
+        }
+      }
+    });
   };
 
   const FormModals = (
@@ -157,14 +171,15 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         onClose={() => setManagerModal('none')}
         title={`${isExistingShares ? 'Sell' : 'Offer new'} shares of ${offeringName}`}
       >
-        <button
-          className="p-2 border-2 border-gray-300 text-sm text-gray-800 rounded-md"
+        <Button
+          variant="outline"
+          size="sm"
           onClick={() => setIsExistingShares(!isExistingShares)}
         >{`${
           isExistingShares
             ? 'Create a fresh offering of orders'
             : 'Sell existing shares from your wallet instead.'
-        }`}</button>
+        }`}</Button>
         {isExistingShares ? (
           <PostBidAskForm
             offering={offering}
@@ -244,7 +259,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       {isOfferingManager ? (
         <>
           <Button
-            className="p-3 bg-cLightBlue rounded-md text-white"
+            variant="default"
+            className="p-3"
             onClick={() => setManagerModal('smartContractsSettings')}
           >
             Configure shares & trading
@@ -254,7 +270,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
             onClick={() => {
               setShowActionPanel('send');
             }}
-            className={standardClass}
           >
             Send shares
           </Button>
@@ -263,7 +278,6 @@ const OfferingActions: FC<OfferingActionsProps> = ({
               onClick={() => {
                 setManagerModal('shareSaleList');
               }}
-              className={standardClass}
             >
               Manage Share Sales
             </Button>
@@ -272,26 +286,21 @@ const OfferingActions: FC<OfferingActionsProps> = ({
               onClick={() => {
                 setManagerModal('smartContractsSettings');
               }}
-              className={standardClass}
             >
               Configure trading
             </Button>
           )}
           {proceeds !== 0 && (
-            <Button
-              className={standardClass}
+            <LoadingButton
+              buttonState={claimProceedsButton}
+              setButtonState={setClaimProceedsButton}
+              text={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
+              loadingText="Claiming Proceeds..."
+              successText="Proceeds Claimed!"
+              errorText="Transaction failed"
+              reset
               onClick={handleClaimProceeds}
-              disabled={claimProceedsButton === 'step1'}
-            >
-              <LoadingButtonText
-                state={claimProceedsButton}
-                idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-                step1Text="Claiming Proceeds..."
-                confirmedText="Proceeds Claimed!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </Button>
+            />
           )}
         </>
       ) : (
@@ -308,7 +317,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         </div>
       )}
       <Button
-        className="p-3 bg-cLightBlue rounded-md text-white"
+        variant="default"
+        className="p-3"
         onClick={() => setManagerModal('smartContractsSettings')}
       >
         Configure shares & trading

@@ -67,11 +67,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
             {children} <Toaster />
           </Providers>
         </UserProvider>
-        <Script
+        {/* <Script
           async
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&libraries=places`}
           strategy="afterInteractive"
-        />
+        /> */}
       </body>
     </html>
   );

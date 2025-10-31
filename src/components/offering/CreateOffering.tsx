@@ -6,32 +6,45 @@ import FormModal from '@src/containers/FormModal';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { ADD_OFFERING } from '@src/utils/graphQueries/offering';
 import { getEntityOptionsList } from '@src/utils/helpersUserAndEntity';
-import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import { z } from 'zod';
+import { zodResolver } from '@hookform/resolvers/zod';
 
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
+import { LoadingButton } from '../ui/loading-button';
 import CreateEntity from '../entity/CreateEntity';
-import EntitySelector from '../form-components/EntitySelector';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import { Input } from '@src/components/ui/input';
+import { Label } from '@src/components/ui/label';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@src/components/ui/select';
+import { Button } from '../ui/button';
 
 type CreateOfferingType = {
-  organization: Organization;
+  organization: Organization & { legal_entities: { edges: { node: LegalEntity }[] } };
   refetch: () => void;
 };
 
 const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   const [entityModal, setEntityModal] = useState<boolean>(false);
   const [addOffering, { data, error }] = useMutation(ADD_OFFERING);
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonState, setButtonState] = useState<
+    'default' | 'disabled' | 'loading' | 'success' | 'error'
+  >('default');
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
   const entityOptions =
     organization &&
     getEntityOptionsList(organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[]);
 
-  const entitiesWithoutOfferings = entityOptions.filter(entity => entity.offerings?.length === 0);
+  const entitiesWithoutOfferings = entityOptions.filter(
+    entity => entity.offeringCollection?.edges.length === 0
+  );
 
   const entitySubmissionCompletion = () => {
     refetch();
@@ -43,23 +56,41 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
     setAlerted(true);
   }
 
-  const handleSubmit = async (values: { offeringEntityId: string; name: string }) => {
+  const onSubmit = async (values: { offeringEntityId: string; name: string }) => {
     try {
-      const result = await addOffering({
+      const result: any = await addOffering({
         variables: {
-          currentDate: currentDate,
           offeringEntityId: values.offeringEntityId,
           name: values.name,
           image: '/assets/images/logos/company-placeholder.jpeg',
           brandColor: '#275A8F'
         }
       });
-      const offeringId = result.data?.addOffering.offering[0].id;
-      router.push(`/${organization.id}/offerings/${offeringId}`);
+      const offeringId = result.data?.insertIntoofferingCollection?.records[0].id;
+      if (offeringId) {
+        router.push(`/${organization.id}/offerings/${offeringId}`);
+      }
+      setButtonState('success');
     } catch (e: any) {
+      setButtonState('error');
       alert(`Oops. Looks like something went wrong: ${e.message}`);
     }
   };
+
+  const schema = z.object({
+    offeringEntityId: z.string().min(1, 'Please select an entity'),
+    name: z.string().min(1, 'Please set a name')
+  });
+
+  const { control, register, handleSubmit, formState, watch } = useForm<{
+    offeringEntityId: string;
+    name: string;
+  }>({
+    resolver: zodResolver(schema),
+    defaultValues: { offeringEntityId: '', name: '' }
+  });
+
+  const watchedName = watch('name');
 
   return (
     <>
@@ -70,59 +101,78 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
       >
         <CreateEntity organization={organization} actionOnCompletion={entitySubmissionCompletion} />
       </FormModal>
-      <Formik
-        initialValues={{
-          offeringEntityId: '',
-          name: ''
-        }}
-        validate={values => {
-          const errors: any = {}; /** @TODO : Shape */
-          if (!values.name) {
-            errors.name = 'Please set an name';
-          }
-
-          return errors;
-        }}
-        onSubmit={async (values, { setSubmitting }) => {
-          setSubmitting(true);
-          setButtonStep('step1');
-          handleSubmit(values);
-          setSubmitting(false);
-        }}
+      <form
+        onSubmit={handleSubmit(async values => {
+          setButtonState('loading');
+          await onSubmit(values);
+        })}
       >
-        {({ isSubmitting, values }) => (
-          <Form className="">
-            <EntitySelector
-              entities={entityOptions}
-              fieldName="offeringEntityId"
-              setModal={setEntityModal}
-              label="In which entity are you offering shares?"
-              excludeIndividuals
-              withAdd
-            />
-            <Input
-              className={defaultFieldDiv}
-              required
-              labelText="What do you call this offering"
-              name="name"
-              placeholder="e.g. First Fund"
-            />
-            <FormButton
-              type="submit"
-              disabled={isSubmitting}
-              className="border-2 border-cLightBlue text-cLightBlue hover:bg-cLightBlue hover:text-white font-bold uppercase test-sm mt-8 rounded p-3 w-full"
-            >
-              <LoadingButtonText
-                state={buttonStep}
-                idleText={`Create ${values.name}`}
-                step1Text={`Creating ${values.name}`}
-                confirmedText="Created!"
-                failedText="Oops. Something went wrong"
+        <div className="md:grid grid-cols-5 gap-4">
+          <div className="col-span-3 align-end ">
+            <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+              In which entity are you offering shares?
+            </Label>
+            <div className="flex items-center gap-3 mt-1">
+              <Controller
+                control={control}
+                name="offeringEntityId"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select an entity" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {entitiesWithoutOfferings.map(entity => (
+                        <SelectItem key={entity.id} value={entity.id}>
+                          {entity.legal_name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
               />
-            </FormButton>
-          </Form>
-        )}
-      </Formik>
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={e => {
+                  e.preventDefault();
+                  setEntityModal(true);
+                }}
+                type="button"
+              >
+                Add New Entity
+              </Button>
+            </div>
+            {formState.errors.offeringEntityId && (
+              <div className="text-sm text-red-500 mt-1">
+                {formState.errors.offeringEntityId.message}
+              </div>
+            )}
+          </div>
+        </div>
+
+        <div className="flex flex-col mt-6">
+          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+            What do you call this offering
+          </Label>
+          <Input placeholder="e.g. First Fund" aria-label="Offering name" {...register('name')} />
+          {formState.errors.name && (
+            <div className="text-sm text-red-500 mt-1">{formState.errors.name.message}</div>
+          )}
+        </div>
+
+        <LoadingButton
+          type="submit"
+          buttonState={buttonState}
+          setButtonState={setButtonState}
+          text={`Create ${watchedName}`}
+          loadingText={`Creating ${watchedName}`}
+          successText="Created!"
+          errorText="Oops. Something went wrong"
+          reset
+          className="mt-8 w-full"
+        />
+      </form>
     </>
   );
 };

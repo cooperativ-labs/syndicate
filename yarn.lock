@@ -2756,6 +2756,17 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@hookform/resolvers@npm:^5.2.2":
+  version: 5.2.2
+  resolution: "@hookform/resolvers@npm:5.2.2"
+  dependencies:
+    "@standard-schema/utils": "npm:^0.3.0"
+  peerDependencies:
+    react-hook-form: ^7.55.0
+  checksum: 10c0/0692cd61dcc2a70cbb27b88a37f733c39e97f555c036ba04a81bd42b0467461cfb6bafacb46c16f173672f9c8a216bd7928a2330d4e49c700d130622bf1defaf
+  languageName: node
+  linkType: hard
+
 "@humanfs/core@npm:^0.19.1":
   version: 0.19.1
   resolution: "@humanfs/core@npm:0.19.1"
@@ -4584,7 +4595,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-compose-refs@npm:1.1.2":
+"@radix-ui/react-compose-refs@npm:1.1.2, @radix-ui/react-compose-refs@npm:^1.1.1":
   version: 1.1.2
   resolution: "@radix-ui/react-compose-refs@npm:1.1.2"
   peerDependencies:
@@ -4610,7 +4621,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-dialog@npm:^1.1.15":
+"@radix-ui/react-dialog@npm:^1.1.15, @radix-ui/react-dialog@npm:^1.1.6":
   version: 1.1.15
   resolution: "@radix-ui/react-dialog@npm:1.1.15"
   dependencies:
@@ -4737,7 +4748,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-id@npm:1.1.1":
+"@radix-ui/react-id@npm:1.1.1, @radix-ui/react-id@npm:^1.1.0":
   version: 1.1.1
   resolution: "@radix-ui/react-id@npm:1.1.1"
   dependencies:
@@ -4936,7 +4947,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@radix-ui/react-primitive@npm:2.1.3":
+"@radix-ui/react-primitive@npm:2.1.3, @radix-ui/react-primitive@npm:^2.0.2":
   version: 2.1.3
   resolution: "@radix-ui/react-primitive@npm:2.1.3"
   dependencies:
@@ -5756,6 +5767,13 @@ __metadata:
   version: 3.1.2
   resolution: "@socket.io/component-emitter@npm:3.1.2"
   checksum: 10c0/c4242bad66f67e6f7b712733d25b43cbb9e19a595c8701c3ad99cbeb5901555f78b095e24852f862fffb43e96f1d8552e62def885ca82ae1bb05da3668fd87d7
+  languageName: node
+  linkType: hard
+
+"@standard-schema/utils@npm:^0.3.0":
+  version: 0.3.0
+  resolution: "@standard-schema/utils@npm:0.3.0"
+  checksum: 10c0/6eb74cd13e52d5fc74054df51e37d947ef53f3ab9e02c085665dcca3c38c60ece8d735cebbdf18fbb13c775fbcb9becb3f53109b0e092a63f0f7389ce0993fd0
   languageName: node
   linkType: hard
 
@@ -9438,6 +9456,21 @@ __metadata:
   languageName: node
   linkType: hard
 
+"cmdk@npm:^1.1.1":
+  version: 1.1.1
+  resolution: "cmdk@npm:1.1.1"
+  dependencies:
+    "@radix-ui/react-compose-refs": "npm:^1.1.1"
+    "@radix-ui/react-dialog": "npm:^1.1.6"
+    "@radix-ui/react-id": "npm:^1.1.0"
+    "@radix-ui/react-primitive": "npm:^2.0.2"
+  peerDependencies:
+    react: ^18 || ^19 || ^19.0.0-rc
+    react-dom: ^18 || ^19 || ^19.0.0-rc
+  checksum: 10c0/5605ac4396ec9bc65c82f954da19dd89a0636a54026df72780e2470da1381f9d57434a80a53f2d57eaa4e759660a3ebba9232b74258dc09970576591eae03116
+  languageName: node
+  linkType: hard
+
 "co@npm:^4.6.0":
   version: 4.6.0
   resolution: "co@npm:4.6.0"
@@ -10336,7 +10369,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"dequal@npm:^2.0.0":
+"dequal@npm:^2.0.0, dequal@npm:^2.0.3":
   version: 2.0.3
   resolution: "dequal@npm:2.0.3"
   checksum: 10c0/f98860cdf58b64991ae10205137c0e97d384c3a4edc7f807603887b7c4b850af1224a33d88012009f150861cbee4fa2d322c4cc04b9313bee312e47f6ecaa888
@@ -14986,6 +15019,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"libphonenumber-js@npm:^1.12.25":
+  version: 1.12.25
+  resolution: "libphonenumber-js@npm:1.12.25"
+  checksum: 10c0/071c942e34e32d7883fb08a3c6f53003eca7067d06d19511c8ba7312fefe5420b998479afd078a5be6958bac163481072ba2560b4ccb5c680b7c6aa67b6810c2
+  languageName: node
+  linkType: hard
+
 "lightningcss-android-arm64@npm:1.30.2":
   version: 1.30.2
   resolution: "lightningcss-android-arm64@npm:1.30.2"
@@ -17634,6 +17674,7 @@ __metadata:
     "@graphql-codegen/client-preset": "npm:^5.1.1"
     "@graphql-codegen/typescript": "npm:^4.0.1"
     "@graphql-codegen/typescript-react-query": "npm:^4.1.0"
+    "@hookform/resolvers": "npm:^5.2.2"
     "@radix-ui/react-accordion": "npm:^1.2.12"
     "@radix-ui/react-checkbox": "npm:^1.3.3"
     "@radix-ui/react-dialog": "npm:^1.1.15"
@@ -17682,6 +17723,7 @@ __metadata:
     check-prop-types: "npm:^1.1.2"
     class-variance-authority: "npm:^0.7.1"
     clsx: "npm:^2.1.1"
+    cmdk: "npm:^1.1.1"
     compressorjs: "npm:^1.2.1"
     country-state-city: "npm:^3.2.1"
     date-fns: "npm:^4.1.0"
@@ -17703,6 +17745,7 @@ __metadata:
     js-file-download: "npm:^0.4.12"
     js-sha256: "npm:^0.9.0"
     jsonwebtoken: "npm:^9.0.0"
+    libphonenumber-js: "npm:^1.12.25"
     lokijs: "npm:^1.5.12"
     lucide-react: "npm:^0.548.0"
     markdown-loader: "npm:^6.0.0"
@@ -17738,6 +17781,7 @@ __metadata:
     shadcn: "npm:^3.5.0"
     sonner: "npm:^2.0.7"
     supports-color: "npm:^9.4.0"
+    swr: "npm:^2.3.6"
     tailwind: "npm:^4.0.0"
     tailwind-merge: "npm:^3.3.1"
     tailwindcss: "npm:^4.1.16"
@@ -17750,6 +17794,7 @@ __metadata:
     viem: "npm:latest"
     wagmi: "npm:latest"
     yup: "npm:^1.7.1"
+    zod: "npm:^4.1.12"
   languageName: unknown
   linkType: soft
 
@@ -21153,6 +21198,18 @@ __metadata:
   languageName: node
   linkType: hard
 
+"swr@npm:^2.3.6":
+  version: 2.3.6
+  resolution: "swr@npm:2.3.6"
+  dependencies:
+    dequal: "npm:^2.0.3"
+    use-sync-external-store: "npm:^1.4.0"
+  peerDependencies:
+    react: ^16.11.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/9534f350982e36a3ae0a13da8c0f7da7011fc979e77f306e60c4e5db0f9b84f17172c44f973441ba56bb684b69b0d9838ab40011a6b6b3e32d0cd7f3d5405f99
+  languageName: node
+  linkType: hard
+
 "sync-fetch@npm:0.6.0-2":
   version: 0.6.0-2
   resolution: "sync-fetch@npm:0.6.0-2"
@@ -22352,6 +22409,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"use-sync-external-store@npm:^1.4.0":
+  version: 1.6.0
+  resolution: "use-sync-external-store@npm:1.6.0"
+  peerDependencies:
+    react: ^16.8.0 || ^17.0.0 || ^18.0.0 || ^19.0.0
+  checksum: 10c0/35e1179f872a53227bdf8a827f7911da4c37c0f4091c29b76b1e32473d1670ebe7bcd880b808b7549ba9a5605c233350f800ffab963ee4a4ee346ee983b6019b
+  languageName: node
+  linkType: hard
+
 "utf-8-validate@npm:^5.0.2":
   version: 5.0.10
   resolution: "utf-8-validate@npm:5.0.10"
@@ -23185,7 +23251,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.1.11, zod@npm:^4.1.5":
+"zod@npm:^3.25.0 || ^4.0.0, zod@npm:^4.1.11, zod@npm:^4.1.12, zod@npm:^4.1.5":
   version: 4.1.12
   resolution: "zod@npm:4.1.12"
   checksum: 10c0/b64c1feb19e99d77075261eaf613e0b2be4dfcd3551eff65ad8b4f2a079b61e379854d066f7d447491fcf193f45babd8095551a9d47973d30b46b6d8e2c46774

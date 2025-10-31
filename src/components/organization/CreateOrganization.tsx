@@ -10,7 +10,7 @@ import { toast } from 'sonner';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
-import MajorActionButton from '../buttons/MajorActionButton';
+import { LoadingButton } from '../ui/loading-button';
 import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
@@ -24,6 +24,7 @@ export type CreateOrganizationType = {
 const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
   const { user } = useUserContext();
   const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? '');
+  const [buttonState, setButtonState] = useState<'default' | 'disabled' | 'loading' | 'success' | 'error'>('default');
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchPageIsLoading } = applicationStore;
   const router = useRouter();
@@ -51,6 +52,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
+        setButtonState('loading');
         dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_ON' });
         try {
           const orgData = await createOrganizationWithAdmin({
@@ -62,11 +64,13 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
             country: values.country,
             slug: formatSlug(values.name)
           });
+          setButtonState('success');
           window.sessionStorage.setItem('CHOSEN_ORGANIZATION', orgData.organization_id);
           router.push(`/${orgData.organization_id}/overview`);
           dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
           actionOnCompletion && actionOnCompletion();
         } catch (error: any) {
+          setButtonState('error');
           toast.error(`Oops. Looks like something went wrong: ${error.message}`);
           dispatchPageIsLoading({ type: 'TOGGLE_LOADING_PAGE_OFF' });
         }
@@ -122,9 +126,17 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
 
           <hr className="my-6" />
 
-          <MajorActionButton type="submit" disabled={isSubmitting}>
-            {`Create ${values.name}`}
-          </MajorActionButton>
+          <LoadingButton
+            type="submit"
+            buttonState={buttonState}
+            setButtonState={setButtonState}
+            text={`Create ${values.name}`}
+            loadingText="Creating organization..."
+            successText="Organization created!"
+            errorText="Failed to create organization"
+            reset
+            className="mt-8"
+          />
         </Form>
       )}
     </Formik>

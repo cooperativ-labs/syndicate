@@ -9,7 +9,8 @@ import React, { FC, useEffect, useState } from 'react';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import toast from 'react-hot-toast';
 
-import MajorActionButton from '../buttons/MajorActionButton';
+import AddressAutoComplete, { AddressType } from '../ui/address-autocomplete';
+import { LoadingButton } from '../ui/loading-button';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
 } from '../form-components/CustomAddressAutocomplete';
@@ -25,9 +26,22 @@ export type CreateEntityType = {
 
 const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionOnCompletion }) => {
   const [addLegalEntity, { data, error }] = useMutation(ADD_ENTITY);
-  const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
-  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
-  const [inputAddress, setInputAddress] = useState<{ value: any }>();
+  const [buttonState, setButtonState] = useState<
+    'default' | 'disabled' | 'loading' | 'success' | 'error'
+  >('default');
+
+  const [inputAddress, setInputAddress] = useState<AddressType>({
+    address1: '',
+    address2: '',
+    formattedAddress: '',
+    city: '',
+    region: '',
+    postalCode: '',
+    country: '',
+    lat: 0,
+    lng: 0
+  });
+  const [searchInput, setSearchInput] = useState('');
 
   const setDefaultLogo = defaultLogo
     ? defaultLogo
@@ -40,27 +54,36 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
     actionOnCompletion();
   }
 
-  const placeId = inputAddress && inputAddress.value.place_id;
+  // const placeId = inputAddress && inputAddress.value.place_id;
 
-  useEffect(() => {
-    geocodeByPlaceId(placeId)
-      .then(results => {
-        setAutocompleteResults(results);
-        const lat = results[0]?.geometry.location.lat();
-        const lng = results[0]?.geometry.location.lng();
-        setLatLang({ lat: lat, lng: lng });
-      })
-      .catch(error => {
-        return error;
-      });
-  }, [placeId, setAutocompleteResults, setLatLang]);
+  // useEffect(() => {
+  //   geocodeByPlaceId(placeId)
+  //     .then(results => {
+  //       setAutocompleteResults(results);
+  //       const lat = results[0]?.geometry.location.lat();
+  //       const lng = results[0]?.geometry.location.lng();
+  //       setLatLang({ lat: lat, lng: lng });
+  //     })
+  //     .catch(error => {
+  //       return error;
+  //     });
+  // }, [placeId, setAutocompleteResults, setLatLang]);
 
   if (!organization) {
     return <></>;
   }
 
-  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
-    normalizeGeoAddress(autocompleteResults);
+  // const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
+  //   normalizeGeoAddress(autocompleteResults);
+
+  const firstAddressLine = inputAddress.address1;
+  const secondAddressLine = inputAddress.address2;
+  const city = inputAddress.city;
+  const state = inputAddress.region;
+  const postalCode = inputAddress.postalCode;
+  const country = inputAddress.country;
+  const lat = inputAddress.lat;
+  const lng = inputAddress.lng;
 
   return (
     <Formik
@@ -105,6 +128,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
       }}
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
+        setButtonState('loading');
         try {
           await addLegalEntity({
             variables: {
@@ -119,8 +143,8 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               stateProvince: state,
               postalCode: postalCode,
               country: country,
-              lat: latLang.lat,
-              lng: latLang.lng,
+              lat: lat,
+              lng: lng,
               operatingCurrency: values.operatingCurrency,
               jurCountry: values.jurCountry,
               jurProvince: values.jurProvince,
@@ -128,8 +152,10 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
               currentDate: currentDate
             }
           });
+          setButtonState('success');
           actionOnCompletion();
         } catch (error: any) {
+          setButtonState('error');
           toast.error(error.message);
         }
         setSubmitting(false);
@@ -190,6 +216,14 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
 
           <hr className="my-6" />
           <div className="text-cLightBlue font-bold text-lg mb-4">Operating address</div>
+          <AddressAutoComplete
+            address={inputAddress}
+            setAddress={setInputAddress}
+            searchInput={searchInput}
+            setSearchInput={setSearchInput}
+            dialogTitle="Enter Address"
+          />
+
           {/* <CustomAddressAutocomplete
             name="addressAutocomplete"
             required
@@ -204,9 +238,17 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
             </div>
           )} */}
 
-          <MajorActionButton type="submit" disabled={isSubmitting}>
-            {`Create ${values.legalName}`}
-          </MajorActionButton>
+          <LoadingButton
+            type="submit"
+            buttonState={buttonState}
+            setButtonState={setButtonState}
+            text={`Create ${values.legalName}`}
+            loadingText="Creating entity..."
+            successText="Entity created!"
+            errorText="Failed to create entity"
+            reset
+            className="mt-8"
+          />
         </Form>
       )}
     </Formik>
