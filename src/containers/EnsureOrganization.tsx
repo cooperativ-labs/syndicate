@@ -1,6 +1,6 @@
 'use client';
 import { Organization } from '@gql/graphql';
-import { getOrgsFromUser } from '@src/utils/helpersOrganization';
+import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 import type { User } from '@supabase/supabase-js';
 import React, { FC, useEffect, useState } from 'react';
 
@@ -18,7 +18,7 @@ const EnsureOrganization: FC<EnsureProfileCompletionProps> = ({
   const [organizations, setOrganizations] = useState<Organization[]>([]);
   useEffect(() => {
     const fetchOrganizations = async () => {
-      const organizations = await getOrgsFromUser(user);
+      const organizations = await getOrgsFromUser();
       setOrganizations(organizations as Organization[]);
     };
     fetchOrganizations();

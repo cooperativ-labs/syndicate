@@ -19,11 +19,12 @@ import { Input } from '../ui/input';
 import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { useRouter } from 'next/navigation';
+import { useOrganizations, useOrganizationsContext } from '@contexts/OrganizationsContext';
 
 export type CreateEntityType = {
-  organization: Organization;
   defaultLogo?: string;
-  actionOnCompletion: () => void;
+  actionOnCompletion?: () => void;
 };
 
 type FormData = {
@@ -46,11 +47,15 @@ const schema = z.object({
   addressAutocomplete: z.string()
 });
 
-const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionOnCompletion }) => {
+const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion }) => {
+  const { chosenOrganization } = useOrganizations();
+
   const [addLegalEntity, { data, error }] = useMutation(ADD_ENTITY);
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
+
+  const router = useRouter();
 
   const [inputAddress, setInputAddress] = useState<AddressType>({
     address1: '',
@@ -78,7 +83,7 @@ const CreateEntity: FC<CreateEntityType> = ({ organization, defaultLogo, actionO
   }
   if (data) {
     toast.success('Entity created successfully');
-    actionOnCompletion();
+    actionOnCompletion?.() ?? router.push(`/${chosenOrganization.id}/entities`);
   }
 
   const {

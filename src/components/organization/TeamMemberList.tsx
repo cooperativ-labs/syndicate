@@ -9,12 +9,7 @@ type TeamMemberListProps = TeamMemberBaseProps & {
   teamMembers: Maybe<Maybe<OrganizationUser>[]> | undefined;
 };
 
-const TeamMemberList: FC<TeamMemberListProps> = ({
-  teamMembers,
-  organizationId,
-  currentUserId,
-  isAdmin
-}) => {
+const TeamMemberList: FC<TeamMemberListProps> = ({ teamMembers, organizationId, isAdmin }) => {
   const [removeMember, { data: dataRemove, error: deleteError }] =
     useMutation(REMOVE_ORGANIZATION_USER);
 
@@ -31,7 +26,6 @@ const TeamMemberList: FC<TeamMemberListProps> = ({
               teamMember={member}
               removeMember={removeMember}
               organizationId={organizationId}
-              currentUserId={currentUserId}
               isAdmin={isAdmin}
             />
           </div>

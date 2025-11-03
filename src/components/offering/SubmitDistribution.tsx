@@ -2,14 +2,15 @@ import { useMutation } from '@apollo/client/react';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { ADD_DISTRIBUTION } from '@src/utils/graphQueries/orders';
-import { isMetaMask } from '@src/web3/connectors';
+// import { isMetaMask } from '@src/web3/wagmi';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { setAllowance } from '@src/web3/contractSwapCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
-import { erc20ABI, useAccount, useContractRead } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
+import { erc20Abi } from 'viem';
 
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import FormButton from '../buttons/FormButton';
@@ -37,9 +38,9 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [addDistribution, { error }] = useMutation(ADD_DISTRIBUTION);
 
-  const { data: rawAllowance } = useContractRead({
+  const { data: rawAllowance } = useReadContract({
     address: distributionTokenAddress,
-    abi: erc20ABI,
+    abi: erc20Abi,
     functionName: 'allowance',
     args: [userWalletAddress as String0x, distributionContractAddress as String0x]
   });
@@ -84,7 +85,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     <>
       <WalletActionModal
         open={buttonStep === 'step1' || buttonStep === 'step2'}
-        metaMaskWarning={isMetaMask(connector)}
+        // metaMaskWarning={isMetaMask(connector)}
       >
         <WalletActionIndicator
           step={buttonStep}

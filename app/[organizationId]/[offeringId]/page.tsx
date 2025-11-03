@@ -1,30 +1,9 @@
 // Types intentionally omitted here to avoid runtime typing issues in RSC
-import { initializeApollo } from '@src/utils/apolloClient';
-import { GET_OFFERING } from '@src/utils/graphQueries/offering';
+
 import type { Metadata } from 'next';
-import { cache } from 'react';
-import React from 'react';
 
 import ClientOfferingPage from './ClientOfferingPage';
-
-const fetchOffering = cache(async (offeringId: string | undefined) => {
-  if (!offeringId) {
-    return null;
-  }
-
-  try {
-    const apolloClient = initializeApollo();
-    const { data } = await apolloClient.query({
-      query: GET_OFFERING,
-      variables: { id: offeringId }
-    });
-
-    return (data as any)?.getOffering ?? null;
-  } catch (error) {
-    console.error('Failed to load offering', error);
-    return null;
-  }
-});
+import { getOfferingById, getOfferingWithDocumentsById } from '@src/utils/actions/offeringActions';
 
 type Params = {
   params:
@@ -33,17 +12,17 @@ type Params = {
 };
 
 export const generateMetadata = async ({ params }: Params): Promise<Metadata> => {
-  const resolvedParams = params instanceof Promise ? await params : params;
-  const offering = await fetchOffering(resolvedParams.offeringId);
+  const { offeringId } = await params;
+  const offering = await getOfferingById(offeringId);
 
-  if (!offering || !offering.isPublic) {
+  if (!offering || !offering.is_public) {
     return { title: 'Offering not available' };
   }
 
-  const { name, shortDescription, sharingImage, offeringEntity, id } = offering;
-  const orgId = offeringEntity?.organization.id;
-  const imageUrl = sharingImage
-    ? `/assets/images/sharing-images/${sharingImage.url}`
+  const { name, short_description, sharing_image, legal_entity, id } = offering;
+  const orgId = legal_entity?.organization?.id ?? '';
+  const imageUrl = sharing_image
+    ? `/assets/images/sharing-images/${sharing_image.url}`
     : '/assets/images/share.png';
 
   return {
@@ -51,13 +30,13 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
     openGraph: {
       title: name,
       type: 'website',
-      description: shortDescription ?? undefined,
+      description: short_description ?? undefined,
       url: `https://cooperativ.io/${orgId}/offerings/${id}`,
       images: [imageUrl]
     },
     twitter: {
       title: name,
-      description: shortDescription ?? undefined,
+      description: short_description ?? undefined,
       card: 'summary_large_image',
       images: [imageUrl]
     }
@@ -65,8 +44,8 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
 };
 
 const OfferingPage = async ({ params }: Params) => {
-  const resolvedParams = params instanceof Promise ? await params : params;
-  const offering = await fetchOffering(resolvedParams.offeringId);
+  const { offeringId } = await params;
+  const offering = await getOfferingWithDocumentsById(offeringId);
   return <ClientOfferingPage offering={offering} />;
 };
 

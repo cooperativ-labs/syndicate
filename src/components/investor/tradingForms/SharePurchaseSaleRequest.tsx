@@ -10,7 +10,7 @@ import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
-import { isMetaMask } from '@src/web3/connectors';
+// import { isMetaMask } from '@src/web3/wagmi';
 import axios from 'axios';
 import cn from 'classnames';
 import { Form, Formik } from 'formik';
@@ -96,7 +96,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
       {!txnApprovalsEnabled && (
         <WalletActionModal
           open={buttonStep === 'step1' || buttonStep === 'step2'}
-          metaMaskWarning={isMetaMask(connector)}
+          // metaMaskWarning={isMetaMask(connector)}
         >
           <WalletActionIndicator
             step={buttonStep}

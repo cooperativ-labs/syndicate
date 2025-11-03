@@ -6,6 +6,7 @@ import { Plus } from 'lucide-react';
 import React, { FC, useContext } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
+import { useOrganizations } from '@contexts/OrganizationsContext';
 
 type OrganizationSwitcherProps = {
   organizations: Organization[];
@@ -16,7 +17,7 @@ type OrganizationSwitcherProps = {
 const backgroundColor = ' bg-gray-200';
 
 const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) => {
-  const OrganizationIdFromSessionStorage = window.sessionStorage?.getItem('CHOSEN_ORGANIZATION');
+  const { chosenOrganizationId } = useOrganizations();
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch } = applicationStore;
 
@@ -30,13 +31,9 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
             className={cn(
               'flex items-center overflow-hidden m-2 rounded-lg hover:border-white  border-4 focus:outline-none',
 
-              OrganizationIdFromSessionStorage === org.id ? 'border-4 border-slate-600' : ''
+              chosenOrganizationId === org.id ? 'border-4 border-slate-600' : ''
             )}
-            onClick={() =>
-              handleOrganizationChange(org.id, () =>
-                dispatch({ type: 'SET_ACTIVE_ORG', payload: org.id })
-              )
-            }
+            onClick={() => handleOrganizationChange(org.id)}
           >
             <img
               className="w-14 h-14"

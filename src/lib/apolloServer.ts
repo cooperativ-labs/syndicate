@@ -1,13 +1,15 @@
-import { ApolloClient, HttpLink } from '@apollo/client';
-import { InMemoryCache, SSRMultipartLink } from '@apollo/client-integration-nextjs';
-import { getGraphQLEndpoint } from '@src/utils/apolloConfig';
+import { ApolloClient, HttpLink } from "@apollo/client";
+import {
+  InMemoryCache,
+  SSRMultipartLink,
+} from "@apollo/client-integration-nextjs";
+import { getGraphQLEndpoint } from "@src/utils/apolloConfig";
+import { createClient } from "@supabase/utils/server";
 
-type CreateServerApolloClientOptions = {
-  accessToken?: string | null;
-};
-
-export function createServerApolloClient(options: CreateServerApolloClientOptions = {}) {
-  const { accessToken } = options;
+export async function createServerApolloClient() {
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  const accessToken = session?.access_token ?? null;
 
   const httpLink = new HttpLink({
     uri: getGraphQLEndpoint(),
@@ -17,15 +19,15 @@ export function createServerApolloClient(options: CreateServerApolloClientOption
         headers: {
           ...init?.headers,
           ...(accessToken ? { Authorization: `Bearer ${accessToken}` } : {}),
-          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? ''
-        }
-      })
+          apikey: process.env.NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY ?? "",
+        },
+      }),
   });
 
   const link = new SSRMultipartLink({ stripDefer: true }).concat(httpLink);
 
   return new ApolloClient({
     cache: new InMemoryCache(),
-    link
+    link,
   });
 }

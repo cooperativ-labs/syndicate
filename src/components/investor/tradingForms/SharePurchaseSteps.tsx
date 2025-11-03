@@ -7,7 +7,8 @@ import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { erc20ABI, useAccount, useBalance, useContractRead } from 'wagmi';
+import { useAccount, useBalance, useReadContract } from 'wagmi';
+import { erc20Abi } from 'viem';
 
 import OrderStatusBar from './OrderStatusBar';
 import ShareCompleteSwap from './ShareCompleteSwap';
@@ -58,7 +59,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   const [addTrade] = useMutation(ADD_TRANSFER_EVENT);
   const isEnded = isCancelled || isFilled;
 
-  const { data: orderQtyData, refetch } = useContractRead({
+  const { data: orderQtyData, refetch } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'acceptedOrderQty',
@@ -98,9 +99,9 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     isApproved &&
     (isAskOrder ? currentUserFiller : currentUserInitiator && isFiller);
 
-  const { data: allowanceData } = useContractRead({
+  const { data: allowanceData } = useReadContract({
     address: paymentTokenAddress,
-    abi: erc20ABI,
+    abi: erc20Abi,
     functionName: 'allowance',
     args: [userWalletAddress as String0x, swapContractAddress]
   });

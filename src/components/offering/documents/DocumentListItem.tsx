@@ -1,7 +1,6 @@
-import { useMutation } from '@apollo/client/react';
 import { Document, Maybe } from '@gql/graphql';
 import { getDocFormatOption } from '@src/utils/enumConverters';
-import { REMOVE_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
+import { removeOfferingDocument } from '@src/utils/actions/documentActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from 'lucide-react';
 import React, { FC } from 'react';
@@ -11,19 +10,31 @@ const DocumentListItem: FC<{
   offeringId: string | undefined;
   deleteButton?: boolean | undefined;
 }> = ({ document, offeringId, deleteButton }) => {
-  const [deleteDocument, { error: deleteError }] = useMutation(REMOVE_OFFERING_DOCUMENT);
+  // const [deleteDocument, { error: deleteError }] = useMutation(REMOVE_OFFERING_DOCUMENT);
+
+  const deleteDocument = async ({
+    offeringId,
+    documentId
+  }: {
+    offeringId: string;
+    documentId: string;
+  }) => {
+    try {
+      const response = await removeOfferingDocument({ offeringId, documentId });
+      return response;
+    } catch (error: any) {
+      throw new Error('Error deleting document:', error);
+    }
+  };
 
   if (!document) return <></>;
 
-  const { url, id, fileId, format, title } = document;
+  const { url, id, format, title, file_id } = document;
 
-  if (deleteError) {
-    alert(`from Cloud Storage: ${deleteError}`);
-  }
   const handleDelete = async () => {
     if (url?.includes('cooperativ-filestore.storage.googleapis')) {
       try {
-        const response = await fetch(`/api/file/${fileId}`, {
+        const response = await fetch(`/api/file/${file_id}`, {
           method: 'DELETE'
         });
 

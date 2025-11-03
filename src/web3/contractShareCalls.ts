@@ -2,26 +2,30 @@ import {
   ApolloCache,
   DefaultContext,
   MutationFunctionOptions,
-  OperationVariables
-} from '@apollo/client';
+  OperationVariables,
+} from "@apollo/client";
 import {
   Currency,
   CurrencyCode,
   Organization,
   ShareTransferEventType,
-  WhitelistTransactionType
-} from '@gql/graphql';
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { handleWhitelistUpdateNotification } from '@src/components/notifications/notificationFunctions';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { getBaseUrl } from '@src/utils/helpersURL';
-import { config } from '@src/web3/wagmi';
-import { Dispatch, SetStateAction } from 'react';
-import toast from 'react-hot-toast';
-import { parseUnits, TransactionReceipt } from 'viem';
-import { simulateContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
+  WhitelistTransactionType,
+} from "@gql/graphql";
+import { LoadingButtonStateType } from "@src/components/buttons/Button";
+import { handleWhitelistUpdateNotification } from "@src/components/notifications/notificationFunctions";
+import { currentDate } from "@src/utils/graphQueries/gqlUtils";
+import { getBaseUrl } from "@src/utils/helpersURL";
+import { getWagmiConfig } from "@src/web3/wagmi";
+import { Dispatch, SetStateAction } from "react";
+import toast from "react-hot-toast";
+import { parseUnits, TransactionReceipt } from "viem";
+import {
+  simulateContract,
+  waitForTransactionReceipt,
+  writeContract,
+} from "wagmi/actions";
 
-import { shareContractABI } from './generated';
+import { shareContractABI } from "./generated";
 import {
   addressWithoutEns,
   bytes32FromString,
@@ -29,9 +33,9 @@ import {
   hashBytes32FromString,
   splitAddress,
   StandardChainErrorHandling,
-  String0x
-} from './helpersChain';
-import { shareContractDecimals, toContractNumber } from './util';
+  String0x,
+} from "./helpersChain";
+import { shareContractDecimals, toContractNumber } from "./util";
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
@@ -43,7 +47,12 @@ type AddWhitelistMemberProps = {
   organization: Organization;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   updateWhitelist: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchMainContracts?: () => void;
   triggerInvestorListRefresh?: () => void;
@@ -60,8 +69,9 @@ export const addWhitelistMember = async ({
   setButtonStep,
   updateWhitelist,
   refetchMainContracts,
-  triggerInvestorListRefresh
+  triggerInvestorListRefresh,
 }: AddWhitelistMemberProps) => {
+  const config = getWagmiConfig();
   const addToDb = async (transactionHash: string) => {
     try {
       updateWhitelist({
@@ -74,42 +84,43 @@ export const addWhitelistMember = async ({
           offering: offeringId,
           externalId: externalId,
           transactionHash: transactionHash,
-          type: WhitelistTransactionType.Add
-        }
+          type: WhitelistTransactionType.Add,
+        },
       });
     } catch (error: any) {
       throw new Error(error);
     }
   };
   const call = async () => {
-    setButtonStep('step1');
+    setButtonStep("step1");
     try {
       const { request, result } = await simulateContract(config, {
         address: shareContractAddress,
         abi: shareContractABI,
-        functionName: 'addToWhitelist',
-        args: [walletAddress]
+        functionName: "addToWhitelist",
+        args: [walletAddress],
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
-        hash
+        hash,
       });
       await addToDb(hash);
       await handleWhitelistUpdateNotification({
         organization,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText: `${walletAddress} was added to your offering's whitelist.`
+        notificationText:
+          `${walletAddress} was added to your offering's whitelist.`,
       });
       triggerInvestorListRefresh && triggerInvestorListRefresh();
       refetchMainContracts && refetchMainContracts();
       toast.success(`${walletAddress} was added to your offering's whitelist.`);
-      setButtonStep('confirmed');
+      setButtonStep("confirmed");
     } catch (e) {
       const parsedError = ChainErrorResponses(e, walletAddress);
       if (parsedError.code === 1001) {
-        await addToDb('unknown');
+        await addToDb("unknown");
 
-        setButtonStep('confirmed');
+        setButtonStep("confirmed");
       } else {
         StandardChainErrorHandling(e, setButtonStep, walletAddress);
       }
@@ -125,7 +136,12 @@ type RemoveWhitelistMemberProps = {
   organization: Organization;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   updateWhitelist: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchMainContracts?: () => void;
   triggerInvestorListRefresh?: () => void;
@@ -139,38 +155,42 @@ export const removeWhitelistMember = async ({
   setButtonStep,
   updateWhitelist,
   refetchMainContracts,
-  triggerInvestorListRefresh
+  triggerInvestorListRefresh,
 }: RemoveWhitelistMemberProps) => {
+  const config = getWagmiConfig();
   const call = async () => {
-    setButtonStep('step1');
+    setButtonStep("step1");
     try {
       const { request } = await simulateContract(config, {
         address: shareContractAddress,
         abi: shareContractABI,
-        functionName: 'removeFromWhitelist',
-        args: [walletAddress]
+        functionName: "removeFromWhitelist",
+        args: [walletAddress],
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
-        hash
+        hash,
       });
       await updateWhitelist({
         variables: {
           currentDate: currentDate,
           addressOfferingId: walletAddress + offeringId,
           transactionHash: hash,
-          type: WhitelistTransactionType.Remove
-        }
+          type: WhitelistTransactionType.Remove,
+        },
       });
       await handleWhitelistUpdateNotification({
         organization,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText: `${walletAddress} was removed from your offering's whitelist.`
+        notificationText:
+          `${walletAddress} was removed from your offering's whitelist.`,
       });
       refetchMainContracts && refetchMainContracts();
       triggerInvestorListRefresh && triggerInvestorListRefresh();
-      toast.success(`${walletAddress} was removed from your offering's whitelist.`);
-      setButtonStep('confirmed');
+      toast.success(
+        `${walletAddress} was removed from your offering's whitelist.`,
+      );
+      setButtonStep("confirmed");
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep, walletAddress);
     }
@@ -194,20 +214,21 @@ export const setDocument = async ({
   setButtonStep,
   callback,
   uri,
-  refetchMainContracts
+  refetchMainContracts,
 }: SetDocumentProps) => {
+  const config = getWagmiConfig();
   const name = bytes32FromString(docName);
   const docHash = hashBytes32FromString(text) as String0x;
   try {
     const { request } = await simulateContract(config, {
       address: shareContractAddress,
       abi: shareContractABI,
-      functionName: 'setDocument',
-      args: [name, uri, docHash]
+      functionName: "setDocument",
+      args: [name, uri, docHash],
     });
     const hash = await writeContract(config, request);
     await waitForTransactionReceipt(config, {
-      hash
+      hash,
     });
     refetchMainContracts && refetchMainContracts();
     callback();
@@ -231,10 +252,20 @@ type SendSharesProps = {
   isIssuance: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addPartition: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   addIssuance: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchMainContracts: () => void;
 };
@@ -254,40 +285,52 @@ export const sendShares = async ({
   setButtonStep,
   addPartition,
   addIssuance,
-  refetchMainContracts
+  refetchMainContracts,
 }: SendSharesProps): Promise<TransactionReceipt> => {
   const amt = toContractNumber(numShares, shareContractDecimals);
-
+  const config = getWagmiConfig();
   let transactionDetails = {} as TransactionReceipt;
   const call = async () => {
-    setButtonStep('step1');
-    const setPartition =
-      partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
-    const setFunctionName = isIssuance ? 'issueByPartition' : 'operatorTransferByPartition';
+    setButtonStep("step1");
+    const setPartition = partition === "0xNew"
+      ? bytes32FromString(newPartition)
+      : (partition as String0x);
+    const setFunctionName = isIssuance
+      ? "issueByPartition"
+      : "operatorTransferByPartition";
     const issueByPartitionArgs = [setPartition, recipient, amt] as readonly [
       String0x,
       String0x,
-      bigint
+      bigint,
     ];
-    const operatorTransferByPartitionArgs = [setPartition, sender, recipient, amt] as readonly [
+    const operatorTransferByPartitionArgs = [
+      setPartition,
+      sender,
+      recipient,
+      amt,
+    ] as readonly [
       String0x,
       String0x,
       String0x,
-      bigint
+      bigint,
     ];
-    const setArgs = isIssuance ? issueByPartitionArgs : operatorTransferByPartitionArgs;
-    const setType = isIssuance ? ShareTransferEventType.Issuance : ShareTransferEventType.Transfer;
+    const setArgs = isIssuance
+      ? issueByPartitionArgs
+      : operatorTransferByPartitionArgs;
+    const setType = isIssuance
+      ? ShareTransferEventType.Issuance
+      : ShareTransferEventType.Transfer;
     try {
       const { request } = await simulateContract(config, {
         address: shareContractAddress,
         abi: shareContractABI,
         functionName: setFunctionName,
-        args: setArgs
+        args: setArgs,
       });
 
       const hash = await writeContract(config, request);
       const details = await waitForTransactionReceipt(config, {
-        hash
+        hash,
       });
       transactionDetails = details;
       await addIssuance({
@@ -297,27 +340,34 @@ export const sendShares = async ({
           senderAddress: sender,
           amount: numShares,
           currencyCode,
-          price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
+          price: toContractNumber(
+            price as number,
+            paymentTokenDecimals as number,
+          ).toString(),
           transactionHash: transactionDetails.transactionHash,
           partition: setPartition,
-          type: setType
-        }
+          type: setType,
+        },
       });
-      if (partition === '0xNew') {
+      if (partition === "0xNew") {
         await addPartition({
           variables: {
             smartContractId: shareContractId,
-            partition: setPartition
-          }
+            partition: setPartition,
+          },
         });
       }
       refetchMainContracts();
       toast.success(
-        `${numShares} shares sent to ${addressWithoutEns({
-          address: recipient
-        })}. Transaction hash: ${splitAddress(transactionDetails.transactionHash)}`
+        `${numShares} shares sent to ${
+          addressWithoutEns({
+            address: recipient,
+          })
+        }. Transaction hash: ${
+          splitAddress(transactionDetails.transactionHash)
+        }`,
       );
-      setButtonStep('confirmed');
+      setButtonStep("confirmed");
     } catch (e: any) {
       toast.error(`Error sending shares: ${e.message}`);
       StandardChainErrorHandling(e, setButtonStep, recipient);
@@ -338,18 +388,19 @@ export const setContractOperator = async ({
   shareContractAddress,
   operator,
   setButtonStep,
-  refetch
+  refetch,
 }: SetContractOperatorProps) => {
+  const config = getWagmiConfig();
   try {
     const { request } = await simulateContract(config, {
       address: shareContractAddress,
       abi: shareContractABI,
-      functionName: 'authorizeOperator',
-      args: [operator]
+      functionName: "authorizeOperator",
+      args: [operator],
     });
     const hash = await writeContract(config, request);
     await waitForTransactionReceipt(config, {
-      hash
+      hash,
     });
     refetch();
   } catch (e) {
@@ -365,7 +416,12 @@ type ForceTransferProps = {
   recipient: String0x;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addIssuance: (
-    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
+    options?: MutationFunctionOptions<
+      any,
+      OperationVariables,
+      DefaultContext,
+      ApolloCache<any>
+    >,
   ) => Promise<any>;
   refetchContracts: () => void;
 };
@@ -378,20 +434,21 @@ export const forceTransfer = async ({
   recipient,
   setButtonStep,
   addIssuance,
-  refetchContracts
+  refetchContracts,
 }: ForceTransferProps) => {
-  setButtonStep('step1');
+  const config = getWagmiConfig();
+  setButtonStep("step1");
   const amt = toContractNumber(amount, shareContractDecimals);
   try {
     const { request } = await simulateContract(config, {
       address: shareContractAddress,
       abi: shareContractABI,
-      functionName: 'operatorTransferByPartition',
-      args: [partition, target, recipient, amt]
+      functionName: "operatorTransferByPartition",
+      args: [partition, target, recipient, amt],
     });
     const hash = await writeContract(config, request);
     const details = await waitForTransactionReceipt(config, {
-      hash
+      hash,
     });
     await addIssuance({
       variables: {
@@ -401,11 +458,11 @@ export const forceTransfer = async ({
         amount: amount,
         transactionHash: details.transactionHash,
         partition: partition,
-        type: ShareTransferEventType.Forced
-      }
+        type: ShareTransferEventType.Forced,
+      },
     });
     refetchContracts();
-    setButtonStep('confirmed');
+    setButtonStep("confirmed");
   } catch (e) {
     StandardChainErrorHandling(e, setButtonStep);
   }

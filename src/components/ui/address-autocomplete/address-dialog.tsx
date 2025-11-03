@@ -168,14 +168,16 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
       });
     } catch (error) {
       const zodError = error as ZodError;
-      const errorMap = z.treeifyError(zodError);
+      const errorMapJson = JSON.stringify(z.treeifyError(zodError));
+      console.log('errorMapJson', errorMapJson);
+      const errorMap = JSON.parse(errorMapJson) as Record<string, string[]>;
 
       setErrorMap({
-        address1: errorMap.address1 ?? '',
+        address1: errorMap.address1?.[0] ?? '',
         address2: errorMap.address2?.[0] ?? '',
-        city: errorMap.city ?? '',
-        region: errorMap.region ?? '',
-        postalCode: errorMap.postalCode ?? ''
+        city: errorMap.city?.[0] ?? '',
+        region: errorMap.region?.[0] ?? '',
+        postalCode: errorMap.postalCode?.[0] ?? ''
       });
 
       return;
@@ -348,7 +350,6 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
               <Button
                 type="submit"
                 onClick={e => {
-                  e.preventDefault();
                   e.stopPropagation();
                 }}
               >

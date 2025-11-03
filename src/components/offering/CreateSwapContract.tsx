@@ -8,14 +8,14 @@ import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';
 import { UPDATE_INVESTMENT_CURRENCY } from '@src/utils/graphQueries/offering';
-import { MatchSupportedChains } from '@src/web3/connectors';
+import { MatchSupportedChains } from '@src/web3/wagmi';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
-import { useAccount, useChainId, useNetwork } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
@@ -43,7 +43,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   const [addSwapContract, { data, error }] = useMutation(CREATE_SWAP_CONTRACT);
   const [updateInvestmentCurrency] = useMutation(UPDATE_INVESTMENT_CURRENCY);
   const chainId = useChainId();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
   const [alerted, setAlerted] = useState(false);
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;

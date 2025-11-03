@@ -4,7 +4,7 @@ import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator'
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { isMetaMask } from '@src/web3/connectors';
+// import { isMetaMask } from '@src/web3/wagmi';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
@@ -60,7 +60,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
       <>
         <WalletActionModal
           open={buttonStep === 'step1' || buttonStep === 'step2'}
-          metaMaskWarning={isMetaMask(connector)}
+          // metaMaskWarning={isMetaMask(connector)}
         >
           <WalletActionIndicator
             step={buttonStep}

@@ -28,7 +28,9 @@
     "fix-style-lint": "stylelint '**/*.css' --fix",
     "js-lint": "yarn run js-lint-src && yarn run js-lint-tests",
     "type-check": "tsc --noEmit",
-    "test:unit": "jest"
+    "test:unit": "jest",
+    "types:local": "node scripts/generate-supabase-types.js local",
+    "types:prod": "node scripts/generate-supabase-types.js prod"
   },
   "prettier": {
     "printWidth": 100,

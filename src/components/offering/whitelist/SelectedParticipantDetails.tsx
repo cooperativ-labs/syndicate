@@ -21,15 +21,13 @@ import { shareContractABI } from '@src/web3/generated';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { Form, Formik } from 'formik';
-import { useSession } from 'next-auth/react';
 import React, { Dispatch, FC, useState } from 'react';
-import { useContractReads } from 'wagmi';
-
+import { useReadContracts } from 'wagmi';
 import ForceTransferForm from '../actions/ForceTransferForm';
 import DistributionList from '../distributions/DistributionList';
 import TransferEventList from '../sales/TransferEventList';
-
 import WhitelistTransactionItem from './WhitelistTransactionItem';
+import { useUserContext } from '@contexts/UserContext';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
@@ -62,7 +60,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   triggerInvestorListRefresh,
   refetchContracts
 }) => {
-  const { data: session } = useSession();
+  const { userId } = useUserContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
   const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
@@ -89,7 +87,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
     abi: shareContractABI
   };
 
-  const { data } = useContractReads({
+  const { data } = useReadContracts({
     contracts: [
       { ...sharedContractSpecs, functionName: 'balanceOf', args: [participantWallet as String0x] },
       {
@@ -109,7 +107,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   const updateWhitelistMember = async (type: WhitelistTransactionType) => {
     const baseVariables = {
       offeringId: offeringId,
-      organization: offering.offeringEntity?.organization,
+      organization: userId,
       walletAddress: participantWallet,
       shareContractAddress: shareContractAddress,
       setButtonStep,
@@ -150,10 +148,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   } = participant;
 
   const distributions = offering.distributions;
-  const isEditorOrAdmin = getIsEditorOrAdmin(
-    session?.user.id,
-    offering.offeringEntity?.organization
-  );
+  const isEditorOrAdmin = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
   const investorApplicationText = investorApplication?.applicationDoc.text;
 
   const updateInvestorForm = (itemType: ParticipantSpecItemType) => {

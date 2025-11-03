@@ -1,3 +1,5 @@
+'use client';
+
 import CloseButton from '@src/components/buttons/CloseButton';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import React, { FC, useContext, useEffect } from 'react';

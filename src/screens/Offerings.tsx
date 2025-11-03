@@ -1,35 +1,28 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CloseButton from '@src/components/buttons/CloseButton';
-import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import router from 'next/router';
+
 import React, { FC } from 'react';
 
 const Offerings: FC = () => {
   const { user } = useUserContext();
+  const { chosenOrganization } = useOrganizations();
   const [entityFormOpen, setEntityFormOpen] = React.useState(false);
-  const orgId = router.query.organizationId;
-  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {
-    variables: { id: orgId },
-    skip: !orgId
-  });
-  const organization = organizationData?.getOrganization;
 
-  if (!organization) {
+  if (!chosenOrganization) {
     return <></>;
   }
-  const isAdminOrEditor = getIsEditorOrAdmin(session?.user?.id, organization);
+  const isAdminOrEditor = getIsEditorOrAdmin(user?.id, chosenOrganization);
 
-  const offerings = getOrgOfferingsFromEntity(organization);
+  const offerings = getOrgOfferingsFromEntity(chosenOrganization);
 
   const hasOfferings = offerings && offerings.length > 0;
   return (
@@ -45,7 +38,7 @@ const Offerings: FC = () => {
                     <h2 className="text-2xl font-medium text-cDarkBlue">Add Offering</h2>
                     <CloseButton onClick={() => setEntityFormOpen(false)} className="self-end" />
                   </div>
-                  <CreateOffering organization={organization} refetch={refetch} />
+                  <CreateOffering organization={chosenOrganization} />
                 </DashboardCard>
               ) : (
                 isAdminOrEditor && (
@@ -59,7 +52,7 @@ const Offerings: FC = () => {
             </>
           ) : (
             <LimitedWidthSection center>
-              <CreateOffering organization={organization} refetch={refetch} />
+              <CreateOffering organization={chosenOrganization} />
             </LimitedWidthSection>
           )}
         </section>

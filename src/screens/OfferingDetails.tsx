@@ -1,3 +1,5 @@
+'use client';
+import { useUserContext } from '@contexts/UserContext';
 import { DocumentType, Offering } from '@gql/graphql';
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import AlertBanner from '@src/components/alerts/AlertBanner';
@@ -18,23 +20,43 @@ import OfferingTabContainer from '@src/containers/OfferingTabContainer';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { MatchSupportedChains } from '@src/web3/connectors';
-import { useSession } from 'next-auth/react';
+import { MatchSupportedChains } from '@src/web3/wagmi';
+
 import React, { FC, useState } from 'react';
-import { readContracts, useAccount } from 'wagmi';
+import { useAccount } from 'wagmi';
 
 type OfferingDetailsProps = {
-  offering: Offering;
-  refetchOffering: () => void;
+  offering: Offering & { documents: Document[] };
 };
 
-const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }) => {
+const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
   const { address: userWalletAddress } = useAccount();
-  const { data: session } = useSession();
-  const userId = session?.user?.id;
+  const { user } = useUserContext();
+  const userId = user?.id;
 
-  const { id, name, offeringEntity, details, isPublic, accessCode, documents } = offering;
+  const { id, name, offering_entity_id, is_public, access_code, documents } = offering;
+
   const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
+
+  const details = {
+    investmentCurrency: offering.investment_currency,
+    minUnitsPerInvestor: offering.min_units_per_investor,
+    maxUnitsPerInvestor: offering.max_units_per_investor,
+    priceStart: offering.price_start,
+    maxRaise: offering.max_raise,
+    numUnits: offering.num_units,
+    distributionFrequency: offering.distribution_frequency,
+    distributionPeriod: offering.distribution_period,
+    distributionCurrency: offering.legal_entity?.operating_currency,
+    distributionStartDate: offering.raise_start,
+    distributionEndDate: offering.raise_end,
+    distributionAmount: offering.max_raise,
+    distributionType: offering.distribution_period,
+    distributionStatus: offering.stage,
+    distributionRecipient: offering.legal_entity?.legal_name,
+    distributionNotes: offering.additional_info,
+    distributionAttachments: offering.documents
+  };
 
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
   const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
@@ -85,7 +107,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
   };
 
   const refetchOfferingInfo = () => {
-    refetchOffering();
     refetchTransactionHistory();
     refetchOrders();
   };
@@ -142,10 +163,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
           {/* Slot 1 */}
           <DashboardCard>
             <OfferingDashboardTitle
-              profileVisibility={isPublic}
+              profileVisibility={is_public}
               offeringId={id}
-              organizationId={offeringEntity?.organization.id}
-              accessCode={accessCode}
+              organizationId={offering_entity_id}
+              accessCode={access_code}
               offeringName={name}
               isOfferingManager={isOfferingManager}
               shareContractAddress={shareContractAddress}
@@ -175,7 +196,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
               ) : (
                 <BasicOfferingDetailsForm
                   offeringId={id}
-                  operatingCurrency={offeringEntity?.operatingCurrency}
+                  operatingCurrency={offering.legal_entity?.operating_currency}
                 />
               )
             ) : (
@@ -262,7 +283,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
                 offering={offering}
                 contractManagerMatches={contractManagerMatches}
                 isContractOwner={isContractOwner}
-                offeringEntity={offeringEntity}
+                offeringEntity={offering.legal_entity}
                 isOfferingManager={isOfferingManager}
                 contractSet={contractSet}
                 currentSalePrice={currentSalePrice}
@@ -281,7 +302,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, refetchOffering }
               documents={offeringDocs}
               isOfferingManager={isOfferingManager}
               offeringId={offering.id}
-              entityId={offeringEntity?.id}
+              entityId={offering.offering_entity_id}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
             {legalLinkTexts && legalLinkTexts.length > 0 && smartContractDocuments?.length > 0 && (

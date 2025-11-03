@@ -33,33 +33,27 @@ import React, { FC } from 'react';
 import { useAccount } from 'wagmi';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { useOrganizations } from '@contexts/OrganizationsContext';
 
 const OrganizationOverview: FC = () => {
   const { user } = useUserContext();
+  const { chosenOrganization } = useOrganizations();
   const { address: userWalletAddress } = useAccount();
-  const params = useParams<{ organizationId: string }>();
-  const orgId = params?.organizationId;
+
   const userId = user?.id;
 
-  const {
-    data: organizationData,
-    error,
-    loading,
-    refetch
-  } = useQuery<GetOrganizationQuery>(GET_ORGANIZATION, { variables: { id: orgId } });
-  const organization = organizationData?.organizationCollection?.edges?.[0]?.node as Organization;
-  console.log(organization);
   const { data: participantData } = useQuery<GetOffering_participantQuery>(
     GET_OFFERING_PARTICIPANT,
     {
       variables: { walletAddress: userWalletAddress }
     }
   );
-  const { data: offeringsData } = useQuery<OfferingConnection>(GET_ORG_OFFERINGS, {
-    variables: { organizationId: orgId }
-  });
 
-  if (!organization) {
+  const legalEntities = chosenOrganization?.legal_entities;
+
+  const offerings = legalEntities?.flatMap(entity => entity.offering);
+
+  if (!chosenOrganization) {
     return (
       <div>
         <LoadingModal />
@@ -73,13 +67,10 @@ const OrganizationOverview: FC = () => {
     }
   );
 
-  const offerings = offeringsData?.offeringCollection?.edges?.map((offering: OfferingEdge) => {
-    return offering.node;
-  });
   const hasOfferings = offerings?.length > 0;
   const isParticipant = participantOfferings?.length > 0;
-  const isAdmin = userId && getIsAdmin(userId, organization);
-  const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
+  const isAdmin = userId && getIsAdmin(userId, chosenOrganization);
+  const isEditorOrAdmin = getIsEditorOrAdmin(userId, chosenOrganization);
 
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
@@ -101,21 +92,20 @@ const OrganizationOverview: FC = () => {
         <DashboardCard>
           <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">{`${isAdmin ? 'Manage ' : ''}Team`}</h2>
           <TeamMemberList
-            teamMembers={organization.users}
-            organizationId={organization.id}
-            currentUserId={userId}
+            teamMembers={chosenOrganization.organization_user}
+            organizationId={chosenOrganization.id}
             isAdmin={isAdmin}
           />
           <div className="mt-3 rounded-lg p-1 px-2 ">
             <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
-              <SettingsAddTeamMember organizationId={organization.id} />
+              <SettingsAddTeamMember organizationId={chosenOrganization.id} />
             </SectionBlock>
           </div>
         </DashboardCard>
         {isEditorOrAdmin && (
           <DashboardCard>
             <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
-            <CreateOffering organization={organization} refetch={refetch} />
+            <CreateOffering organization={chosenOrganization} />
           </DashboardCard>
         )}
       </TwoColumnLayout>

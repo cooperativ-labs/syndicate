@@ -5,7 +5,7 @@ import { SmartContract } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/graphQueries/crypto';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { isAlgorand, MatchSupportedChains } from '@src/web3/connectors';
+import { isAlgorand, MatchSupportedChains } from '@src/web3/wagmi';
 import cn from 'classnames';
 import Link from 'next/link';
 import React from 'react';

@@ -28,18 +28,17 @@ import {
   GET_ORGANIZATION,
   UPDATE_ORGANIZATION_INFORMATION
 } from '@src/utils/graphQueries/organization';
-import { getOrganizationUser } from '@src/utils/helpersOrganization';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
-import { useRouter } from 'next/router';
+import { useParams, useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 
 const OrganizationSettings: FC = () => {
   const { user } = useUserContext();
   const userId = user?.id;
   const router = useRouter();
-  const { organizationId: orgId } = router.query;
+  const { organizationId: orgId } = useParams<{ organizationId: string }>();
 
   const {
     data: organizationData,
@@ -79,6 +78,12 @@ const OrganizationSettings: FC = () => {
     shortDescription,
     linkedAccounts
   } = organization;
+
+  const getOrganizationUser = (userId: string | undefined, organization: Organization) => {
+    return (organization as any).organization_userCollection?.edges?.find(
+      (user: any) => user?.user.id === userId
+    );
+  };
 
   const organizationCurrentUser = getOrganizationUser(userId, organization);
   const isAdmin = userId && getIsAdmin(userId, organization);
@@ -254,7 +259,6 @@ const OrganizationSettings: FC = () => {
           <TeamMemberList
             teamMembers={organization.users}
             organizationId={organization.id}
-            currentUserId={userId}
             isAdmin={isAdmin}
           />
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">

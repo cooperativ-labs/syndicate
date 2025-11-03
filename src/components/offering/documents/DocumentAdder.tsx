@@ -5,9 +5,11 @@ import Button from '@src/components/buttons/Button';
 import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
 import SectionBlock from '@src/containers/SectionBlock';
+import { addOfferingDocument } from '@src/utils/actions/documentActions';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import { ADD_OFFERING_DOCUMENT } from '@src/utils/graphQueries/document';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { urlToDatabaseProps } from '@src/utils/helpersDocuments';
 import cn from 'classnames';
 import { Form, Formik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
@@ -20,13 +22,38 @@ type DocumentAdderProps = {
 const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
   const { user } = useUserContext();
   const userId = user?.id;
-  const [addFile, { error: addFileError }] = useMutation(ADD_OFFERING_DOCUMENT, {
-    variables: {
-      offeringId: offeringId,
-      entityId: entityId,
-      currentDate: currentDate
-    }
-  });
+  // const [addFile, { error: addFileError }] = useMutation(ADD_OFFERING_DOCUMENT, {
+  //   variables: {
+  //     offeringId: offeringId,
+  //     entityId: entityId,
+  //     currentDate: currentDate
+  //   }
+  // });
+
+  const addFile = async ({
+    offeringId,
+    entityId,
+    currentDate,
+    title,
+    docUrl,
+    fileId,
+    docType,
+    format,
+    offeringUniqueId
+  }: urlToDatabaseProps) => {
+    const response = await addOfferingDocument({
+      offeringId,
+      entityId,
+      currentDate,
+      title,
+      docUrl,
+      fileId,
+      docType,
+      format,
+      offeringUniqueId
+    });
+    return response;
+  };
   const [alerted, setAlerted] = useState<boolean>(false);
   const [fileFormat, setFileFormat] = useState<DocumentFormat | undefined>();
 
@@ -35,25 +62,17 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
     setAlerted(true);
   }
 
-  const addFileToDB = (
-    url: string,
-    fileId: string,
-    title: string,
-    docType: DocumentType | undefined,
-    format: DocumentFormat | undefined
-  ) => {
+  const addFileToDB = ({ url, fileId, title, docType, format }: urlToDatabaseProps) => {
     addFile({
-      variables: {
-        offeringId: offeringId,
-        entityId: entityId,
-        currentDate: currentDate,
-        title: title,
-        docUrl: url,
-        fileId: fileId,
-        docType: docType,
-        format: format,
-        offeringUniqueId: offeringId + title
-      }
+      offeringId: offeringId,
+      entityId: entityId,
+      currentDate: currentDate,
+      title: title,
+      docUrl: url,
+      fileId: fileId,
+      docType: docType,
+      format: format,
+      offeringUniqueId: offeringId + title
     });
   };
 
@@ -69,8 +88,9 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
           <hr className="mt-1 mb-2" />
           <FileUpload
             uploaderText="Add Offering Document"
-            baseUploadUrl={`/offerings/${offeringId}/docs/${userId}/`}
-            urlToDatabase={() => {}}
+            url={`${offeringId}/docs/${userId}/`}
+            bucket="offering-files"
+            urlToDatabase={addFileToDB}
             docType={DocumentType.OfferingDocument}
             accept={[
               'pdf',
@@ -131,13 +151,13 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
               onSubmit={(values, { setSubmitting }) => {
                 setAlerted(false);
                 setSubmitting(true);
-                addFileToDB(
-                  values.docUrl,
-                  'external',
-                  values.title,
-                  DocumentType.OfferingDocument,
-                  fileFormat
-                );
+                addFileToDB({
+                  url: values.docUrl,
+                  fileId: 'external',
+                  title: values.title,
+                  docType: DocumentType.OfferingDocument,
+                  format: fileFormat
+                });
                 setSubmitting(false);
               }}
             >

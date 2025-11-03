@@ -5,10 +5,10 @@ import cn from 'classnames';
 import React, { FC, useState } from 'react';
 
 import { EditButton } from '../form-components/ListItemButtons';
+import { useUserContext } from '@contexts/UserContext';
 
 export type TeamMemberBaseProps = {
   organizationId: Maybe<string>;
-  currentUserId: Maybe<string> | undefined;
   isAdmin: boolean | '' | undefined;
 };
 
@@ -20,13 +20,14 @@ type TeamMemberListItemProps = TeamMemberBaseProps & {
 const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   teamMember,
   organizationId,
-  currentUserId,
   isAdmin,
   removeMember
 }) => {
+  const { userId: currentUserId } = useUserContext();
   const [editOn, setEditOn] = useState<boolean>(false);
-  const { user, permissions, id } = teamMember as OrganizationUser;
-  const { name, email, id: userId, image } = user;
+  const { user_id: userId, permissions, id } = teamMember as OrganizationUser;
+  const name = 'BLANK';
+  const image = 'BLANK';
 
   const makePermissionsChips = (permissions: Maybe<OrganizationPermissionType[]> | undefined) => {
     return permissions?.map((permission, i) => {
@@ -56,7 +57,7 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
     });
   };
 
-  const canModify = user.id !== currentUserId && isAdmin;
+  const canModify = userId !== currentUserId && isAdmin;
 
   return (
     <div className="md:flex lg:grid grid-cols-8 gap-1 p-3  border-2 rounded-lg items-center ">

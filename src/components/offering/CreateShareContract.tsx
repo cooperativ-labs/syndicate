@@ -2,12 +2,12 @@ import { useMutation } from '@apollo/client/react';
 import { SmartContractType } from '@gql/graphql';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { CREATE_SHARE_CONTRACT } from '@src/utils/graphQueries/crypto';
-import { MatchSupportedChains } from '@src/web3/connectors';
+import { MatchSupportedChains } from '@src/web3/wagmi';
 import { deployShareContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
-import { useAccount, useChainId, useNetwork } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
@@ -23,7 +23,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
   const chainId = useChainId();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
 
   const [addUnestablishedSmartContract, { data, error }] = useMutation(CREATE_SHARE_CONTRACT);
   const [alerted, setAlerted] = useState(false);

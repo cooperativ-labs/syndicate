@@ -34,15 +34,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     data: { user }
   } = await supabase.auth.getUser();
 
-  const config = getWagmiConfig();
+  const config = getWagmiConfig() || { chains: [], connectors: [] };
 
   const initialState = cookieToInitialState(config, (await headers()).get('cookie'));
 
-  const { data: sessionData } = await supabase.auth.getSession();
-
   let userProfile: any = null;
   if (user?.id) {
-    const apollo = createServerApolloClient({ accessToken: sessionData.session?.access_token });
+    const apollo = await createServerApolloClient();
     const { data } = await apollo.query<any>({
       query: GET_USER_PROFILE,
       variables: { id: user.id },

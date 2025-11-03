@@ -11,27 +11,16 @@ import { ApplicationStoreProps, store } from '@/contexts/store';
 
 import ManagerSideBarContents from './ManagerSideBarContents';
 import OrganizationSwitcher from './OrganizationSwitcher';
+import { useOrganizations } from '@contexts/OrganizationsContext';
 
-type ManagerSideBarProps = {
-  organizations: any[];
-};
-
-const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
+const ManagerSideBar: FC = () => {
+  const { organizations, chosenOrganizationId } = useOrganizations();
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch: dispatchSidebar, ManagerSidebarOpen } = applicationStore;
   const windowSize = useWindowSize();
-  const params = useParams<{ organizationId: string }>();
-  const orgId = params?.organizationId as string | undefined;
-  const [OrganizationIdFromSessionStorage, setOrganizationIdFromSessionStorage] = useState<
-    string | null
-  >(null);
-  useEffect(() => {
-    const organizationId = window?.sessionStorage?.getItem('CHOSEN_ORGANIZATION');
-    setOrganizationIdFromSessionStorage(organizationId);
-  }, []);
-  const setOrgId = OrganizationIdFromSessionStorage ?? orgId;
 
-  const currentOrganizationName = orgId && organizations?.find(org => org.id === orgId)?.name;
+  const currentOrganizationName =
+    chosenOrganizationId && organizations?.find(org => org.id === chosenOrganizationId)?.name;
 
   useEffect(() => {
     if (ManagerSidebarOpen && windowSize.width < 768) {
@@ -56,7 +45,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
       <div className="hidden md:flex col-span-5  bg-gray-100 w-48 z-10 min-h-full">
         <div className="h-full bg-opacity-0 p-1 pr-2">
           <div className="mb-5 text-lg font-bold px-2 pr-4 md:mt-4 ">{currentOrganizationName}</div>
-          <ManagerSideBarContents organizationId={setOrgId} />
+          <ManagerSideBarContents organizationId={chosenOrganizationId} />
         </div>
       </div>
     </div>
@@ -92,7 +81,7 @@ const ManagerSideBar: FC<ManagerSideBarProps> = ({ organizations }) => {
               </Button>
             </div>
           </div>
-          <ManagerSideBarContents organizationId={setOrgId} />
+          <ManagerSideBarContents organizationId={chosenOrganizationId} />
         </div>
       </div>
     </div>

@@ -2,30 +2,30 @@
 
 import { DocumentType } from '@gql/graphql';
 import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
-import cn from 'classnames';
 import Compressor from 'compressorjs';
-import { UploadCloud } from 'lucide-react';
-import router from 'next/router';
-import React, { FC, useState } from 'react';
-import { FileUploader } from 'react-drag-drop-files';
+import { FC, useState } from 'react';
+import { createClient } from '@supabase/utils/client';
 
 import DeleteButton from '../buttons/DeleteButton';
+import DragAndDrop from '../ui/drag_and_drop';
 
 type FileUploadProps = {
   uploaderText: string;
-  baseUploadUrl?: string;
+  url: string;
+  bucket: string;
   docType?: DocumentType | undefined;
   accept: string[];
   allowMultiple?: boolean;
   imagePreview?: string;
   className?: string;
   setImagePreview?: (image: string) => void;
-  urlToDatabase: urlToDatabaseProps;
+  urlToDatabase: ({ url, fileId, title, docType, format }: urlToDatabaseProps) => void;
 };
 
 const FileUpload: FC<FileUploadProps> = ({
   uploaderText,
-  baseUploadUrl,
+  url,
+  bucket,
   docType,
   accept,
   allowMultiple,
@@ -37,9 +37,9 @@ const FileUpload: FC<FileUploadProps> = ({
   const [progressAmt, setProgressAmt] = useState<number>(0);
   const [uploading, setUploading] = useState<boolean>(false);
 
-  function handleUploadFile(file: File) {
+  async function handleUploadFile(file: File) {
     const onUploadSuccess = (url: string, fileId: string) => {
-      urlToDatabase(url, fileId, file.name, docType, getFileFormat(file));
+      urlToDatabase({ url, fileId, title: file.name, docType, format: getFileFormat(file) });
       setProgressAmt(0);
       setUploading(false);
     };
@@ -53,19 +53,16 @@ const FileUpload: FC<FileUploadProps> = ({
       formData.append(`file`, file);
 
       try {
-        const response = await fetch('/api/upload', {
-          method: 'POST',
-          body: formData
-        });
+        const supabase = createClient();
+        const { data, error } = await supabase.storage
+          .from(bucket)
+          .upload(`${url}/${file.name}`, file);
 
-        if (!response.ok) {
-          throw new Error(
-            `Failed to upload file. Status: ${response.status}, Status Text: ${response.statusText}`
-          );
+        if (error) {
+          throw new Error(`Failed to upload file. Error: ${error.message}`);
         }
 
-        const data = await response.json();
-        onUploadSuccess?.(data.url, data.fileId);
+        onUploadSuccess?.(data.path, data.id);
       } catch (error: any) {
         throw new Error('Error details:', error);
       }
@@ -77,7 +74,6 @@ const FileUpload: FC<FileUploadProps> = ({
         convertTypes: ['image/png'],
         convertSize: 300000,
         success(result) {
-          // console.log('Compressed file size (in bytes): ', result.size);
           uploadFile(result as File);
         },
         error(err) {
@@ -99,27 +95,36 @@ const FileUpload: FC<FileUploadProps> = ({
           <img className="h-40 object-scale-down" src={imagePreview} />
         </div>
       ) : (
-        <FileUploader
-          multiple={allowMultiple}
-          handleChange={handleUploadFile}
-          name="file"
-          types={accept}
-        >
-          <div
-            className={cn(
-              className
-                ? className
-                : 'flex p-3 mt-1 bg-gray-100  h-24 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40'
-            )}
-          >
-            <UploadCloud className="text-3xl text-gray-600 mr-4" />
-            <div>
-              <div className="text-gray-700 text-bold text-lg uppercase">{uploaderText}</div>
-              <div className="text-sm mt-1 "> Drag and drop or click to upload</div>
-              {uploading && <progress className="mt-1" value={progressAmt} max="100" />}
-            </div>
-          </div>
-        </FileUploader>
+        // <FileUploader
+        //   multiple={allowMultiple}
+        //   handleChange={handleUploadFile}
+        //   name="file"
+        //   types={accept}
+        // >
+        //   <div
+        //     className={cn(
+        //       className
+        //         ? className
+        //         : 'flex p-3 mt-1 bg-gray-100  h-24 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40'
+        //     )}
+        //   >
+        //     <UploadCloud className="text-3xl text-gray-600 mr-4" />
+        //     <div>
+        //       <div className="text-gray-700 text-bold text-lg uppercase">{uploaderText}</div>
+        //       <div className="text-sm mt-1 "> Drag and drop or click to upload</div>
+        //       {uploading && <progress className="mt-1" value={progressAmt} max="100" />}
+        //     </div>
+        //   </div>
+        // </FileUploader>
+        <DragAndDrop
+          onUpload={handleUploadFile}
+          uploadButtonText={uploaderText}
+          acceptedFileTypes={accept.join(', ')}
+          acceptedMimeTypes={accept}
+          title="Drag and drop or click to upload"
+          description={`${accept.join(', ')} files only.`}
+          progressAmt={progressAmt}
+        />
       )}
     </div>
   );

@@ -5,12 +5,7 @@ import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import {
-  useChainId,
-  useContractWrite,
-  usePrepareContractWrite,
-  useWaitForTransaction
-} from 'wagmi';
+import { useChainId, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
 
 import CreateSwapContract from '../CreateSwapContract';
 
@@ -46,43 +41,46 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
 
   const sharedContractInfo = { address: swapContractAddress, abi: swapContractABI };
 
-  const { config: configSwapApproval } = usePrepareContractWrite({
-    ...sharedContractInfo,
-    functionName: 'toggleSwapApprovals'
+  const { writeContract: writeSwapApproval, data: swapApprovalData } = useWriteContract();
+
+  const { writeContract: writeTxnApproval, data: txnApprovalData } = useWriteContract();
+
+  const { data: swapTransactionData } = useWaitForTransactionReceipt({
+    hash: swapApprovalData
   });
-  const { config: configTxnApproval } = usePrepareContractWrite({
-    ...sharedContractInfo,
-    functionName: 'toggleTxnApprovals'
+
+  const { data: txnTransactionData } = useWaitForTransactionReceipt({
+    hash: txnApprovalData
   });
 
-  const { data: swapApprovalData, write: writeSwapApproval } = useContractWrite(configSwapApproval);
-
-  const { data: txnApprovalData, write: writeTxnApproval } = useContractWrite(configTxnApproval);
-
-  const { data: swapTransactionData } = useWaitForTransaction({
-    hash: swapApprovalData?.hash,
-    onSuccess: () => {
+  useEffect(() => {
+    if (swapTransactionData) {
       refetchMainContracts();
       setIsLoading('');
     }
-  });
+  }, [swapTransactionData, refetchMainContracts]);
 
-  const { data: txnTransactionData } = useWaitForTransaction({
-    hash: txnApprovalData?.hash,
-    onSuccess: () => {
+  useEffect(() => {
+    if (txnTransactionData) {
       refetchMainContracts();
       setIsLoading('');
     }
-  });
+  }, [txnTransactionData, refetchMainContracts]);
 
   const handleSwapToggle = async () => {
     setIsLoading('listing');
-    writeSwapApproval && writeSwapApproval();
+    writeSwapApproval({
+      ...sharedContractInfo,
+      functionName: 'toggleSwapApprovals'
+    });
   };
 
   const handleTxnToggle = async () => {
     setIsLoading('txn');
-    writeTxnApproval && writeTxnApproval();
+    writeTxnApproval({
+      ...sharedContractInfo,
+      functionName: 'toggleTxnApprovals'
+    });
   };
 
   const swapApproval = (

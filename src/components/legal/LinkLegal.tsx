@@ -2,11 +2,11 @@ import { Offering, User } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';
-import { MatchSupportedChains } from '@src/web3/connectors';
+import { MatchSupportedChains } from '@src/web3/wagmi';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { useChainId, useNetwork } from 'wagmi';
+import { useChainId, useAccount } from 'wagmi';
 
 import CreateShareContract from '../offering/CreateShareContract';
 import UnestablishedContractCard from '../offering/UnestablishedContractCard';
@@ -29,7 +29,7 @@ type LinkLegalProps = {
 
 const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const chainId = useChainId();
-  const { chain } = useNetwork();
+  const { chain } = useAccount();
 
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
     signature: ''

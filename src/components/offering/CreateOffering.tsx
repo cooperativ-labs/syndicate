@@ -26,8 +26,8 @@ import {
 import { Button } from '../ui/button';
 
 type CreateOfferingType = {
-  organization: Organization & { legal_entities: { edges: { node: LegalEntity }[] } };
-  refetch: () => void;
+  organization: (Organization & { legal_entities: LegalEntity[] }) | null;
+  refetch?: () => void;
 };
 
 const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
@@ -38,16 +38,21 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   >('default');
   const [alerted, setAlerted] = useState<boolean>(false);
   const router = useRouter();
-  const entityOptions = organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[];
+
+  if (!organization) {
+    return <div>Organization not found</div>;
+  }
+  const entityOptions = organization.legal_entity;
+  console.log('organization', organization);
   // organization &&
   // getEntityOptionsList(organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[]);
 
-  const entitiesWithoutOfferings = entityOptions.filter(
-    entity => entity.offeringCollection?.edges.length === 0
-  );
-  console.log(entitiesWithoutOfferings);
+  console.log('entityOptions', entityOptions);
+
+  const entitiesWithoutOfferings = entityOptions.filter(entity => entity.offering.length === 0);
+  console.log('entitiesWithoutOfferings', entitiesWithoutOfferings);
   const entitySubmissionCompletion = () => {
-    refetch();
+    refetch?.();
     setEntityModal(false);
   };
 

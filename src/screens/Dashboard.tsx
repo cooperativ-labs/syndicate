@@ -1,39 +1,16 @@
 'use client';
 import { useUserContext } from '@contexts/UserContext';
-import { Organization } from '@gql/graphql';
 import Card from '@src/components/cards/Card';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import EnsureOrganization from '@src/containers/EnsureOrganization';
-import { getOrgsFromUser, handleOrganizationChange } from '@src/utils/helpersOrganization';
-import React, { FC, useEffect, useState } from 'react';
+import { handleOrganizationChange } from '@src/utils/helpersOrganization';
+import { FC } from 'react';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+
 const Dashboard: FC = () => {
   const { user } = useUserContext();
-  const [organizations, setOrganizations] = useState<Organization[]>([]);
-
-  useEffect(() => {
-    let isMounted = true;
-
-    // const loadOrganizations = async () => {
-    //   if (!user) {
-    //     if (isMounted) {
-    //       setOrganizations([]);
-    //     }
-    //     return;
-    //   }
-
-    //   const orgs = await getOrgsFromUser(user);
-    //   if (isMounted) {
-    //     setOrganizations(orgs as Organization[]);
-    //   }
-    // };
-
-    // loadOrganizations();
-
-    return () => {
-      isMounted = false;
-    };
-  }, [user]);
+  const { organizations } = useOrganizations();
 
   const hasOrganizations = organizations.length > 0;
 
@@ -67,6 +44,7 @@ const Dashboard: FC = () => {
               user={user}
               explainerText="In order to create an offering, we first need some personal information"
             >
+              {/* organizations fetched for manager include legal_entities; cast for component's type */}
               <CreateOffering organization={organizations[0]} refetch={() => {}} />
             </EnsureOrganization>
           </div>
