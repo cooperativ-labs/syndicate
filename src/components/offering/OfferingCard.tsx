@@ -1,8 +1,5 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
-import { Maybe, Offering } from '@gql/graphql';
-import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
 import {
   ContractOrder,
   getLowestOrderPrice,
@@ -20,31 +17,60 @@ import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
 
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
+import { OfferingFull, OfferingSmartContractSet } from '@/types';
+import { useUserContext } from '@contexts/UserContext';
+import { retrieveOrders } from '@src/utils/actions/orderActions';
+import { ShareOrder } from '@/types';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import { getOfferingSmartContractSet } from '@src/utils/actions/cryptoActions';
 
 export type OfferingCardProps = {
-  offering: Maybe<Offering> | undefined;
+  offering: OfferingFull;
 };
 
 const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const { address: userWalletAddress } = useAccount();
+  const { userId } = useUserContext();
   const router = useRouter();
-  const { name, shortDescription, id, details, image, offeringEntity, smartContractSets } =
-    offering as Offering;
-  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
 
-  const contractSet = smartContractSets?.slice(-1)[0];
-  const swapContract = contractSet?.swapContract;
+  const {
+    name,
+    short_description,
+    id,
+    image,
+    legalEntity,
+    projected_irr,
+    projected_irr_max,
+    preferred_return,
+    projected_appreciation,
+    investment_currency
+  } = offering;
+
+  const { operating_currency } = legalEntity;
+
+  const [smartContracts, setSmartContracts] = useState<OfferingSmartContractSet | null>(null);
+  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
+  const [orders, setOrders] = useState<ShareOrder[]>([]);
+  const { organizations } = useOrganizations();
+
+  const organizationId = legalEntity?.organization_id;
+
+  const organizationImg = organizations.find(
+    organization => organization.id.toString() === organizationId.toString()
+  )?.logo;
+
+  const swapContract = smartContracts?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
 
   const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
 
-  const { data: ordersData, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
-    variables: { swapContractAddress: swapContractAddress }
-  });
-
-  const orders = ordersData?.queryShareOrder;
-
   useAsync(async () => {
+    const orders = await retrieveOrders(swapContractAddress);
+    const smartContracts = await getOfferingSmartContractSet(offering.id);
+    setSmartContracts(smartContracts);
+    if (orders && smartContracts) {
+      setOrders(orders);
+    }
     const contractSaleList =
       orders &&
       paymentTokenDecimals &&
@@ -52,14 +78,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
     contractSaleList && setContractSaleList(contractSaleList);
   }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
-  const currentPrice =
-    details && getLowestOrderPrice(contractSaleList, offering?.details?.priceStart);
-  const organizationId = offeringEntity?.organization.id;
-  const organizationImg = offeringEntity?.organization.logo;
+  const currentPrice = getLowestOrderPrice(contractSaleList, offering?.price_start);
 
-  const loggedIn = !!session;
   const toProfile = !userWalletAddress;
-  const pushLink = loggedIn
+  const pushLink = userId
     ? `/${organizationId}/offerings/${id}`
     : toProfile
       ? `/${organizationId}/${id}`
@@ -83,10 +105,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
           />
         </div>
         <div className="p-4">
-          {shortDescription && (
+          {short_description && (
             <>
               <hr className="my-3 bg-slate-400" />
-              <div className=" text-gray-800 mb-4">{shortDescription}</div>
+              <div className=" text-gray-800 mb-4">{short_description}</div>
               <hr className="my-3 bg-slate-400" />
             </>
           )}
@@ -96,32 +118,29 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
                 <MoneyDisplay
                   className="text-center"
                   amount={currentPrice}
-                  currency={details?.investmentCurrency}
+                  currency={operating_currency}
                 />
               </OfferingDetailDashboardItem>
             ) : (
               <></>
             )}
-            {details?.projectedAppreciation ? (
+            {projected_appreciation ? (
               <OfferingDetailDashboardItem title="Projected Appreciation">
-                <PercentageDisplay percent={details?.projectedAppreciation} />
+                <PercentageDisplay percent={projected_appreciation} />
               </OfferingDetailDashboardItem>
             ) : (
               <></>
             )}
-            {details?.projectedIrr ? (
+            {projected_irr ? (
               <OfferingDetailDashboardItem title="Projected IRR">
-                <PercentageDisplay
-                  percent={details?.projectedIrr}
-                  secondPercent={details?.projectedIrrMax}
-                />
+                <PercentageDisplay percent={projected_irr} secondPercent={projected_irr_max} />
               </OfferingDetailDashboardItem>
             ) : (
               <></>
             )}
-            {details?.preferredReturn ? (
+            {preferred_return ? (
               <OfferingDetailDashboardItem title="Preferred Return">
-                <PercentageDisplay percent={details?.preferredReturn} />
+                <PercentageDisplay percent={preferred_return} />
               </OfferingDetailDashboardItem>
             ) : (
               <></>

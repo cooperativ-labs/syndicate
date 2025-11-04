@@ -1,14 +1,12 @@
 'use client';
 
-import { useMutation } from '@apollo/client/react';
 import { CurrencyCode, LegalEntityType, Organization } from '@gql/graphql';
-import { currencyOptionsExcludeCredits, getEntityTypeOptions } from '@src/utils/enumConverters';
-import { ADD_ENTITY } from '@src/utils/graphQueries/entity';
+
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Country, IState, State } from 'country-state-city';
 
 import React, { FC, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { useForm, Controller, Form } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import toast from 'react-hot-toast';
@@ -20,7 +18,10 @@ import { Label } from '../ui/label';
 import { Textarea } from '../ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { useRouter } from 'next/navigation';
-import { useOrganizations, useOrganizationsContext } from '@contexts/OrganizationsContext';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import { OrganizationWithLegalEntities } from '@/types';
+import { addLegalEntity } from '@src/utils/actions/entityActions';
+import { currencyOptionsExcludeCredits, entityTypeOptions } from '@src/utils/enumConverters';
 
 export type CreateEntityType = {
   defaultLogo?: string;
@@ -47,10 +48,11 @@ const schema = z.object({
   addressAutocomplete: z.string()
 });
 
-const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion }) => {
-  const { chosenOrganization } = useOrganizations();
-
-  const [addLegalEntity, { data, error }] = useMutation(ADD_ENTITY);
+const CreateEntity: FC<CreateEntityType & { organization: OrganizationWithLegalEntities }> = ({
+  defaultLogo,
+  actionOnCompletion,
+  organization
+}) => {
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
@@ -77,14 +79,27 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
     ? defaultLogo
     : '/assets/images/logos/company-placeholder.jpeg';
 
-  if (error) {
-    console.error(error);
-    toast.error(`Oops. Looks like something went wrong: ${error.message}`);
-  }
-  if (data) {
-    toast.success('Entity created successfully');
-    actionOnCompletion?.() ?? router.push(`/${chosenOrganization.id}/entities`);
-  }
+  // if (error) {
+  //   console.error(error);
+  //   toast.error(`Oops. Looks like something went wrong: ${error.message}`);
+  // }
+  // if (data) {
+  //   toast.success('Entity created successfully');
+  //   actionOnCompletion?.() ?? router.push(`/${organization.id}/entities`);
+  // }
+
+  const form = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      legalName: '',
+      entityPurpose: '',
+      operatingCurrency: CurrencyCode.Usd,
+      jurCountry: '',
+      jurProvince: '',
+      type: undefined as any,
+      addressAutocomplete: ''
+    }
+  });
 
   const {
     control,
@@ -129,6 +144,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
 
   const onSubmit = async (values: FormData) => {
     // Validate address
+
     if (!firstAddressLine) {
       setError('addressAutocomplete', {
         type: 'manual',
@@ -148,29 +164,26 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
     setButtonState('loading');
     try {
       await addLegalEntity({
-        variables: {
-          organizationId: organization.id,
-          displayName: values.legalName,
-          legalName: values.legalName,
-          entityPurpose: values.entityPurpose,
-          addressLabel: 'Primary Operating Address',
-          addressLine1: firstAddressLine,
-          addressLine2: secondAddressLine,
-          city: city,
-          stateProvince: state,
-          postalCode: postalCode,
-          country: country,
-          lat: lat,
-          lng: lng,
-          operatingCurrency: values.operatingCurrency,
-          jurCountry: values.jurCountry,
-          jurProvince: values.jurProvince,
-          type: values.type,
-          currentDate: currentDate
-        }
+        organizationId: organization.id,
+        displayName: values.legalName,
+        legalName: values.legalName,
+        entityPurpose: values.entityPurpose,
+        addressLabel: 'Primary Operating Address',
+        addressLine1: firstAddressLine,
+        addressLine2: secondAddressLine,
+        city: city,
+        stateProvince: state,
+        postalCode: postalCode,
+        country: country,
+        lat: lat,
+        lng: lng,
+        operatingCurrency: values.operatingCurrency,
+        jurCountry: values.jurCountry,
+        jurProvince: values.jurProvince ?? '',
+        type: values.type
       });
       setButtonState('success');
-      actionOnCompletion();
+      actionOnCompletion?.();
     } catch (error: any) {
       setButtonState('error');
       toast.error(error.message);
@@ -180,167 +193,172 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
   const hasStates = states && states.length > 0;
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap relative">
-      {/* Type of entity */}
-      <div className="pt-3 bg-opacity-0">
-        <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
-          Type of entity *
-        </Label>
-        <Controller
-          control={control}
-          name="type"
-          render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                <SelectValue placeholder="Select entity type" />
-              </SelectTrigger>
-              <SelectContent>
-                {getEntityTypeOptions(true).map((type, i) => (
-                  <SelectItem key={i} value={type.value}>
-                    {type.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.type && <div className="text-sm text-red-500 mt-1">{errors.type.message}</div>}
-      </div>
-
-      {/* Legal name */}
-      <div className="pt-3 bg-opacity-0">
-        <Label htmlFor="legalName" className="text-sm text-blue-900 font-semibold text-opacity-80">
-          Organization's legal name *
-        </Label>
-        <Input
-          id="legalName"
-          {...register('legalName')}
-          type="text"
-          placeholder="Alphabet Inc."
-          className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
-        />
-        {errors.legalName && (
-          <div className="text-sm text-red-500 mt-1">{errors.legalName.message}</div>
-        )}
-      </div>
-
-      {/* Operating currency */}
-      <div className="pt-3 bg-opacity-0">
-        <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
-          Operating currency *
-        </Label>
-        <Controller
-          control={control}
-          name="operatingCurrency"
-          render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                <SelectValue placeholder="Select currency" />
-              </SelectTrigger>
-              <SelectContent>
-                {currencyOptionsExcludeCredits.map((option, i) => (
-                  <SelectItem key={i} value={option.value}>
-                    {option.symbol}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.operatingCurrency && (
-          <div className="text-sm text-red-500 mt-1">{errors.operatingCurrency.message}</div>
-        )}
-      </div>
-
-      {/* Jurisdiction */}
-      <div className="pt-3 bg-opacity-0">
-        <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
-          Jurisdiction *
-        </Label>
-        <Controller
-          control={control}
-          name="jurCountry"
-          render={({ field }) => (
-            <Select value={field.value} onValueChange={field.onChange}>
-              <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                <SelectValue placeholder="Select a country" />
-              </SelectTrigger>
-              <SelectContent>
-                {countries.map((country, i) => (
-                  <SelectItem key={i} value={country.isoCode}>
-                    {country.name}
-                  </SelectItem>
-                ))}
-              </SelectContent>
-            </Select>
-          )}
-        />
-        {errors.jurCountry && (
-          <div className="text-sm text-red-500 mt-1">{errors.jurCountry.message}</div>
-        )}
-        {hasStates && (
+    <Form {...form}>
+      <form className="flex flex-col gap relative">
+        {/* Type of entity */}
+        <div className="pt-3 bg-opacity-0">
+          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+            Type of entity *
+          </Label>
           <Controller
             control={control}
-            name="jurProvince"
+            name="type"
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none mt-2">
-                  <SelectValue placeholder="Select a state" />
+                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                  <SelectValue placeholder="Select entity type" />
                 </SelectTrigger>
                 <SelectContent>
-                  {states.map((state, i) => (
-                    <SelectItem key={i} value={state.isoCode}>
-                      {state.name}
+                  {entityTypeOptions.map((type, i) => (
+                    <SelectItem key={i} value={type.value}>
+                      {type.name}
                     </SelectItem>
                   ))}
                 </SelectContent>
               </Select>
             )}
           />
-        )}
-      </div>
+          {errors.type && <div className="text-sm text-red-500 mt-1">{errors.type.message}</div>}
+        </div>
 
-      {/* Purpose */}
-      <div className="pt-3 bg-opacity-0">
-        <Label
-          htmlFor="entityPurpose"
-          className="text-sm text-blue-900 font-semibold text-opacity-80"
-        >
-          Purpose of this entity
-        </Label>
-        <Textarea
-          id="entityPurpose"
-          {...register('entityPurpose')}
-          placeholder="Short description of the purpose of this entity."
-          className="h-24"
+        {/* Legal name */}
+        <div className="pt-3 bg-opacity-0">
+          <Label
+            htmlFor="legalName"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Organization's legal name *
+          </Label>
+          <Input
+            id="legalName"
+            {...register('legalName')}
+            type="text"
+            placeholder="Alphabet Inc."
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+          {errors.legalName && (
+            <div className="text-sm text-red-500 mt-1">{errors.legalName.message}</div>
+          )}
+        </div>
+
+        {/* Operating currency */}
+        <div className="pt-3 bg-opacity-0">
+          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+            Operating currency *
+          </Label>
+          <Controller
+            control={control}
+            name="operatingCurrency"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                  <SelectValue placeholder="Select currency" />
+                </SelectTrigger>
+                <SelectContent>
+                  {currencyOptionsExcludeCredits.map((option, i) => (
+                    <SelectItem key={i} value={option.value}>
+                      {option.symbol}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.operatingCurrency && (
+            <div className="text-sm text-red-500 mt-1">{errors.operatingCurrency.message}</div>
+          )}
+        </div>
+
+        {/* Jurisdiction */}
+        <div className="pt-3 bg-opacity-0">
+          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+            Jurisdiction *
+          </Label>
+          <Controller
+            control={control}
+            name="jurCountry"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                  <SelectValue placeholder="Select a country" />
+                </SelectTrigger>
+                <SelectContent>
+                  {countries.map((country, i) => (
+                    <SelectItem key={i} value={country.isoCode}>
+                      {country.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.jurCountry && (
+            <div className="text-sm text-red-500 mt-1">{errors.jurCountry.message}</div>
+          )}
+          {hasStates && (
+            <Controller
+              control={control}
+              name="jurProvince"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none mt-2">
+                    <SelectValue placeholder="Select a state" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {states.map((state, i) => (
+                      <SelectItem key={i} value={state.isoCode}>
+                        {state.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+          )}
+        </div>
+
+        {/* Purpose */}
+        <div className="pt-3 bg-opacity-0">
+          <Label
+            htmlFor="entityPurpose"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Purpose of this entity
+          </Label>
+          <Textarea
+            id="entityPurpose"
+            {...register('entityPurpose')}
+            placeholder="Short description of the purpose of this entity."
+            className="h-24"
+          />
+        </div>
+
+        <hr className="my-6" />
+        <div className="text-cLightBlue font-bold text-lg mb-4">Operating address</div>
+        <AddressAutoComplete
+          address={inputAddress}
+          setAddress={setInputAddress}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          dialogTitle="Confirm Address"
         />
-      </div>
+        {errors.addressAutocomplete && (
+          <div className="text-sm text-red-500 mt-1">{errors.addressAutocomplete.message}</div>
+        )}
 
-      <hr className="my-6" />
-      <div className="text-cLightBlue font-bold text-lg mb-4">Operating address</div>
-      <AddressAutoComplete
-        address={inputAddress}
-        setAddress={setInputAddress}
-        searchInput={searchInput}
-        setSearchInput={setSearchInput}
-        dialogTitle="Confirm Address"
-      />
-      {errors.addressAutocomplete && (
-        <div className="text-sm text-red-500 mt-1">{errors.addressAutocomplete.message}</div>
-      )}
-
-      <LoadingButton
-        type="submit"
-        buttonState={buttonState}
-        setButtonState={setButtonState}
-        text={`Create ${watchedLegalName || 'Entity'}`}
-        loadingText="Creating entity..."
-        successText="Entity created!"
-        errorText="Failed to create entity"
-        reset
-        className="mt-8"
-      />
-    </form>
+        <LoadingButton
+          buttonState={buttonState}
+          onClick={handleSubmit(onSubmit)}
+          setButtonState={setButtonState}
+          text={`Create ${watchedLegalName || 'Entity'}`}
+          loadingText="Creating entity..."
+          successText="Entity created!"
+          errorText="Failed to create entity"
+          reset
+          className="mt-8"
+        />
+      </form>
+    </Form>
   );
 };
 

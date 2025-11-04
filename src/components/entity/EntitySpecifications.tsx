@@ -1,8 +1,10 @@
+'use client';
+
 import { CurrencyCode, LegalEntity, Maybe } from '@gql/graphql';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 
@@ -38,6 +40,7 @@ export const changeForm = (
   setEditOn: (editOn: EditEntitySelectionType) => void,
   handleChange: (values: ChangeFormProps) => void
 ) => {
+  console.log('entity', currencyOptionsExcludeCredits);
   const { displayName, legalName, jurisdiction, operatingCurrency, taxId, purpose } = entity;
   return (
     <Formik

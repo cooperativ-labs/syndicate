@@ -3,7 +3,7 @@
 import { Offering, Organization } from '@gql/graphql';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';

@@ -1,9 +1,4 @@
-import { initializeApollo } from '@src/utils/apolloClient';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import type { Metadata } from 'next';
-import { GetOrganizationQuery, Organization } from '@gql/graphql';
-import { cache } from 'react';
-import React from 'react';
 
 import ClientOrganizationPage from './ClientOrganizationPage';
 import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
@@ -21,7 +16,7 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
     return { title: 'Organization not available' };
   }
 
-  const { name, short_description, banner_image, id } = organization as Organization;
+  const { name, short_description, banner_image, id } = organization;
   // const imageUrl = image
   //   ? `/assets/images/sharing-images/${image.url}`
   //   : '/assets/images/share.png';

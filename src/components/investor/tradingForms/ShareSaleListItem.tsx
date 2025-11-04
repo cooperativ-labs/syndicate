@@ -5,7 +5,7 @@ import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering
 import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';

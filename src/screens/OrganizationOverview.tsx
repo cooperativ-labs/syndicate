@@ -1,6 +1,5 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
 import {
   OfferingConnection,
@@ -9,12 +8,7 @@ import {
   OfferingParticipantConnection,
   OfferingParticipantEdge
 } from '@gql/graphql';
-import {
-  GetOrganizationQuery,
-  GetOffering_participantQuery,
-  Organization,
-  OrganizationConnection
-} from '@gql/graphql';
+import { GetOrganizationQuery, Organization, OrganizationConnection } from '@gql/graphql';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import { toastExperiment } from '@src/components/indicators/Notifications';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -29,31 +23,33 @@ import { GET_OFFERING_PARTICIPANT, GET_ORG_OFFERINGS } from '@src/utils/graphQue
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { GET_USER } from '@src/utils/graphQueries/user';
 import { useParams } from 'next/navigation';
-import React, { FC } from 'react';
+import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { useOrganizations } from '@contexts/OrganizationsContext';
+import { getOfferingParticipant } from '@src/utils/actions/offeringActions';
+import { useAsync } from 'react-use';
+import { OrganizationComplete } from '@/types';
 
-const OrganizationOverview: FC = () => {
+const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
   const { user } = useUserContext();
-  const { chosenOrganization } = useOrganizations();
   const { address: userWalletAddress } = useAccount();
-
+  const [participantOfferings, setParticipantOfferings] = useState<OfferingParticipant[]>([]);
   const userId = user?.id;
 
-  const { data: participantData } = useQuery<GetOffering_participantQuery>(
-    GET_OFFERING_PARTICIPANT,
-    {
-      variables: { walletAddress: userWalletAddress }
+  useAsync(async () => {
+    if (userWalletAddress) {
+      const { records } = await getOfferingParticipant({ walletAddress: userWalletAddress });
+      setParticipantOfferings(records);
     }
-  );
+  }, [userWalletAddress]);
 
-  const legalEntities = chosenOrganization?.legal_entities;
+  const legalEntities = organization?.legalEntities;
 
-  const offerings = legalEntities?.flatMap(entity => entity.offering);
+  const offerings = legalEntities?.flatMap(entity => entity.offerings);
 
-  if (!chosenOrganization) {
+  if (!organization) {
     return (
       <div>
         <LoadingModal />
@@ -61,16 +57,18 @@ const OrganizationOverview: FC = () => {
     );
   }
 
-  const participantOfferings = participantData?.participantCollection?.edges?.map(
-    (offeringParticipant: OfferingParticipantEdge) => {
-      return offeringParticipant.node.offering;
-    }
-  );
-
-  const hasOfferings = offerings?.length > 0;
+  const hasOfferings = offerings && offerings.length > 0;
   const isParticipant = participantOfferings?.length > 0;
-  const isAdmin = userId && getIsAdmin(userId, chosenOrganization);
-  const isEditorOrAdmin = getIsEditorOrAdmin(userId, chosenOrganization);
+  const isAdmin =
+    userId &&
+    getIsAdmin(userId, {
+      id: organization.id.toString(),
+      organizationUsers: organization.organizationUsers
+    });
+  const isEditorOrAdmin = getIsEditorOrAdmin(userId, {
+    id: organization.id.toString(),
+    organizationUsers: organization.organizationUsers
+  });
 
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
@@ -92,20 +90,20 @@ const OrganizationOverview: FC = () => {
         <DashboardCard>
           <h2 className="text-cDarkBlue text-xl font-bold mb-8 ">{`${isAdmin ? 'Manage ' : ''}Team`}</h2>
           <TeamMemberList
-            teamMembers={chosenOrganization.organization_user}
-            organizationId={chosenOrganization.id}
+            teamMembers={organization.organizationUsers}
+            organizationId={organization.id.toString()}
             isAdmin={isAdmin}
           />
           <div className="mt-3 rounded-lg p-1 px-2 ">
             <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
-              <SettingsAddTeamMember organizationId={chosenOrganization.id} />
+              <SettingsAddTeamMember organizationId={organization.id.toString()} />
             </SectionBlock>
           </div>
         </DashboardCard>
         {isEditorOrAdmin && (
           <DashboardCard>
             <h2 className="text-xl  text-blue-900 font-semibold mb-4">Create an offering:</h2>
-            <CreateOffering organization={chosenOrganization} />
+            <CreateOffering organization={organization} />
           </DashboardCard>
         )}
       </TwoColumnLayout>

@@ -1,6 +1,6 @@
 import 'react-datepicker/dist/react-datepicker.css';
 
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { ErrorMessage, useField, useFormikContext } from 'formik';
 import React from 'react';
 import DatePicker, { CalendarContainer } from 'react-datepicker';

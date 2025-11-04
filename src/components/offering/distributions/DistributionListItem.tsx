@@ -9,7 +9,7 @@ import { dividendContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
 import { toNormalNumber } from '@src/web3/util';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useEffect } from 'react';
 import { useAccount, useChainId, useContractReads } from 'wagmi';
 

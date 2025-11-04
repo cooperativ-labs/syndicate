@@ -1,7 +1,7 @@
 'use client';
 
 import Button from '@src/components/buttons/Button';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Menu } from 'lucide-react';
 import { useParams } from 'next/navigation';
 import React, { FC, useContext, useEffect, useState } from 'react';

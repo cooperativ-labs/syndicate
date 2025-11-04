@@ -2,7 +2,7 @@ import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/componen
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { cancelAcceptance } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 
 const buttonClass =

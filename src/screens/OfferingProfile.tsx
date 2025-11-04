@@ -23,7 +23,7 @@ import {
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';

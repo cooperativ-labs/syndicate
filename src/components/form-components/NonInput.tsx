@@ -1,4 +1,4 @@
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { ReactNode } from 'react';
 
 import { defaultFieldLabelClass } from './Inputs';

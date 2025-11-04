@@ -1,4 +1,4 @@
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Pencil } from 'lucide-react';
 import React from 'react';
 

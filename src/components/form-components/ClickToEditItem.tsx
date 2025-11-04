@@ -1,5 +1,5 @@
 import { Maybe } from '@gql/graphql';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';

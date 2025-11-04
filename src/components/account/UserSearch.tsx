@@ -1,6 +1,6 @@
 'use client';
 
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { FC, useContext } from 'react';
 import { useForm } from 'react-hook-form';

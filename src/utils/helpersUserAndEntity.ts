@@ -5,9 +5,15 @@ import {
   Maybe,
   Organization,
   OrganizationPermissionType,
+  OrganizationUser,
   OrganizationUserConnection,
 } from "@gql/graphql";
 import { Country, State } from "country-state-city";
+import {
+  LegalEntityWithAddresses,
+  OrganizationWithLegalEntities,
+  OrganizationWithUsers,
+} from "@/types";
 
 // export const getUserPersonalEntity = (user: User) => {
 //   const entityObject = user.legalEntities.find((entity) => entity.legalEntity.type === LegalEntityType.Individual);
@@ -22,7 +28,7 @@ export const entityNotHuman = (entity: LegalEntity) => {
 };
 
 export const getSelectedAddressFromEntity = (
-  entity: LegalEntity,
+  entity: LegalEntityWithAddresses,
   addressId: string,
 ) => {
   return entity.addresses?.find((address) => address?.id === addressId);
@@ -35,23 +41,33 @@ export const getSelectedAddressFromEntity = (
 //   return removeHumans.map((entity) => entity.legalEntity);
 // };
 
-export const getOrgOfferingsFromEntity = (organization: Organization) => {
+export const getOrgOfferingsFromEntity = (
+  organization: OrganizationWithLegalEntities,
+) => {
   return organization.legalEntities?.map((entity) => entity?.offerings).flat();
 };
 
-export const getIsAdmin = (userId: string, organization: Organization) => {
-  return organization.users
-    ?.find((u) => u?.user.id === userId)
+export const getIsAdmin = (
+  userId: string,
+  organization: {
+    id: string;
+    organizationUsers: { id: string; user_id: string; permissions: string }[];
+  },
+) => {
+  return organization.organizationUsers?.find((u) => u?.user_id === userId)
     ?.permissions?.includes(OrganizationPermissionType.Admin);
 };
 
 export const getIsEditorOrAdmin = (
   userId: string | undefined,
   organization:
-    | (Organization & { team: OrganizationUserConnection })
+    | {
+      id: string;
+      organizationUsers: { id: string; user_id: string; permissions: string }[];
+    }
     | undefined,
 ) => {
-  const userPermissions = organization?.organization_user?.find((u) =>
+  const userPermissions = organization?.organizationUsers?.find((u) =>
     u?.user_id === userId
   )?.permissions;
 

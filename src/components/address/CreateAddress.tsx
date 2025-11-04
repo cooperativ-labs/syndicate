@@ -1,3 +1,4 @@
+'use client';
 import { useMutation } from '@apollo/client/react';
 import { LegalEntity } from '@gql/graphql';
 import { GoogleMap, Marker } from '@react-google-maps/api';
@@ -8,9 +9,6 @@ import React, { FC, useEffect, useState } from 'react';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 
 import MajorActionButton from '../buttons/MajorActionButton';
-import CustomAddressAutocomplete, {
-  normalizeGeoAddress
-} from '../form-components/CustomAddressAutocomplete';
 import Input, { addressFieldDiv } from '../form-components/Inputs';
 
 export type CreateAddressType = {

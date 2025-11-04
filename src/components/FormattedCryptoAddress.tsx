@@ -1,7 +1,7 @@
 import useWindowSize from '@hooks/useWindowSize';
 import { addressWithENS, addressWithoutEns, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { CheckIcon, CopyIcon } from 'lucide-react';
 import React, { FC, use, useState } from 'react';
 import { useAsync } from 'react-use';

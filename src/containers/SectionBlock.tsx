@@ -1,4 +1,6 @@
-import cn from 'classnames';
+'use client';
+
+import { cn } from '@src/lib/utils';
 import { Maybe } from 'graphql/jsutils/Maybe';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { useState } from 'react';

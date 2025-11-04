@@ -1,14 +1,13 @@
-import { useMutation, useQuery } from '@apollo/client/react';
+'use client';
+import { useMutation } from '@apollo/client/react';
 import { LegalEntity, Organization } from '@gql/graphql';
 import FormModal from '@src/containers/FormModal';
 import { ADD_ENTITY_OWNER } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { GET_USER } from '@src/utils/graphQueries/user';
 import { Form, Formik } from 'formik';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 
 import Button from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
 import EntitySelector from '../form-components/EntitySelector';
 
 import CreateEntity from './CreateEntity';

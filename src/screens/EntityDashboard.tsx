@@ -1,37 +1,26 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
 import AddItemButton from '@src/components/buttons/AddItemButton';
-import MajorActionButton from '@src/components/buttons/MajorActionButton';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { GET_USER } from '@src/utils/graphQueries/user';
+
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useParams } from 'next/navigation';
-import router, { useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
+import CreateEntity from '@src/components/entity/CreateEntity';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import { LegalEntityWithSubsidiaries, OrganizationWithUsers } from '@/types';
 
-const EntityDashboard: FC = () => {
+const EntityDashboard: FC<{ entities: LegalEntityWithSubsidiaries[] }> = ({ entities }) => {
   const { user } = useUserContext();
-  const params = useParams<{ organizationId: string }>();
+  const { chosenOrganization } = useOrganizations();
   const router = useRouter();
-  const orgId = params?.organizationId;
-  const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {
-    variables: { id: orgId },
-    skip: !orgId
-  });
-  const organization = organizationData?.getOrganization;
-  // const { data: userData } = useQuery(GET_USER, { variables: { id: session.user.id } });
-  // const user = userData?.queryUser[0];
 
-  if (!organization) {
-    return <></>;
-  }
+  const organization = entities[0].organization;
 
-  const isAdminOrEditor = getIsEditorOrAdmin(session?.user?.id, organization);
-  const entities = organization.legalEntities;
+  const isAdminOrEditor = getIsEditorOrAdmin(user?.id, organization);
+
   const hasEntities = entities.length > 0;
 
   return (
@@ -42,7 +31,7 @@ const EntityDashboard: FC = () => {
             <EntitiesList entities={entities} />
             {isAdminOrEditor && (
               <AddItemButton
-                onClick={() => router.push(`/${orgId}/create-entity`)}
+                onClick={() => router.push(`/${organization.id.toString()}/create-entity`)}
                 classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
                 text="Add Entity"
               />
@@ -54,12 +43,17 @@ const EntityDashboard: FC = () => {
               user={user}
               explainerText="In order to create a business, we first need some personal information"
             >
-              <>
-                <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
-                <hr className="my-6" />
-                <CreateEntity organization={organization} actionOnCompletion={() => router.back()} />
-              </>
-            </EnsureProfileCompletion> */}
+              <> */}
+            <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
+            <hr className="my-6" />
+            {chosenOrganization && (
+              <CreateEntity
+                actionOnCompletion={() => router.back()}
+                organization={chosenOrganization}
+              />
+            )}
+            {/* </> */}
+            {/* </EnsureProfileCompletion> */}
           </LimitedWidthSection>
         )}
       </div>

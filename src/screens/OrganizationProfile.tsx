@@ -1,12 +1,12 @@
-import { LinkedAccountType, Organization } from '@gql/graphql';
 import OfferingCard from '@src/components/offering/OfferingCard';
 import BannerImage from '@src/components/organization/BannerImage';
 import SocialLinkItem from '@src/components/SocialLinkItem';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import React, { FC } from 'react';
+import { OrganizationComplete, LinkedAccountType } from '@/types';
 
 type OrganizationProfileProps = {
-  organization: Organization;
+  organization: OrganizationComplete;
 };
 
 const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => {
@@ -15,7 +15,7 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
     emailAddresses,
     phone,
     logo,
-    bannerImage,
+    banner_image,
     linkedAccounts,
     website,
     description,
@@ -38,7 +38,7 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
             <ChooseConnectorButton buttonText={'Connect Wallet'} />
           </div>
         </div>
-        <BannerImage imageUrl={bannerImage as string} />
+        <BannerImage imageUrl={banner_image as string} />
 
         <div className="md:mx-auto " style={{ maxWidth: '1280px' }}>
           <div className="mx-4 ">
@@ -59,7 +59,10 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
                       {linkedAccounts.map((account, i) => {
                         return (
                           <div key={i}>
-                            <SocialLinkItem type={account?.type} url={account?.url} />
+                            <SocialLinkItem
+                              type={account?.type as LinkedAccountType}
+                              url={account?.url}
+                            />
                           </div>
                         );
                       })}

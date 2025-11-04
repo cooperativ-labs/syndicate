@@ -17,7 +17,7 @@ import {
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
 

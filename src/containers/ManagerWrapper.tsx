@@ -1,5 +1,5 @@
 import AlertPopup from '@src/components/alerts/AlertPopup';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 import NewOrganizationModal from './NewOrganizationModal';

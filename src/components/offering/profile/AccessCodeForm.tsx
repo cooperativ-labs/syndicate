@@ -1,5 +1,5 @@
 import Input from '@src/components/form-components/Inputs';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import { ChevronRight } from 'lucide-react';
 import React, { FC } from 'react';

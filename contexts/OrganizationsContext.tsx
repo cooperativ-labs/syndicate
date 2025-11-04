@@ -1,12 +1,12 @@
 'use client';
 
-import { LegalEntity, Organization } from '@gql/graphql';
+import { OrganizationWithLegalEntities } from '@/types';
 import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 type OrganizationsContextValue = {
-  organizations: (Organization & { legal_entities: LegalEntity[] })[];
-  chosenOrganization: (Organization & { legal_entities: LegalEntity[] }) | null;
+  organizations: OrganizationWithLegalEntities[];
+  chosenOrganization: OrganizationWithLegalEntities | null;
   chosenOrganizationId: string | null;
 };
 
@@ -17,7 +17,7 @@ export function OrganizationsProvider({
   children,
   savedOrganizationId
 }: {
-  organizations: (Organization & { legal_entities: LegalEntity[] })[];
+  organizations: OrganizationWithLegalEntities[];
   children: ReactNode;
   savedOrganizationId: string | null;
 }) {

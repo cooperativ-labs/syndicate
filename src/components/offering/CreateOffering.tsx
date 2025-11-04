@@ -24,9 +24,10 @@ import {
   SelectValue
 } from '@src/components/ui/select';
 import { Button } from '../ui/button';
+import { OrganizationWithLegalEntities } from '@/types';
 
 type CreateOfferingType = {
-  organization: (Organization & { legal_entities: LegalEntity[] }) | null;
+  organization: OrganizationWithLegalEntities | null;
   refetch?: () => void;
 };
 
@@ -42,14 +43,14 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   if (!organization) {
     return <div>Organization not found</div>;
   }
-  const entityOptions = organization.legal_entity;
+  const entityOptions = organization.legalEntities;
   console.log('organization', organization);
   // organization &&
   // getEntityOptionsList(organization.legal_entities.edges.map(edge => edge.node) as LegalEntity[]);
 
   console.log('entityOptions', entityOptions);
 
-  const entitiesWithoutOfferings = entityOptions.filter(entity => entity.offering.length === 0);
+  const entitiesWithoutOfferings = entityOptions.filter(entity => entity.offerings.length === 0);
   console.log('entitiesWithoutOfferings', entitiesWithoutOfferings);
   const entitySubmissionCompletion = () => {
     refetch?.();
@@ -128,7 +129,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
                     </SelectTrigger>
                     <SelectContent>
                       {entityOptions.map(entity => (
-                        <SelectItem key={entity.id} value={entity.id}>
+                        <SelectItem key={entity.id} value={entity.id.toString()}>
                           {entity.legal_name}
                         </SelectItem>
                       ))}

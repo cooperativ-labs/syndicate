@@ -1,5 +1,5 @@
 import { Maybe } from '@gql/graphql';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { ErrorMessage, Field } from 'formik';
 import React from 'react';
 import { ReactElement } from 'react-markdown/lib/react-markdown';

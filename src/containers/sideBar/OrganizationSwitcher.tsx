@@ -1,7 +1,7 @@
 import { Organization } from '@gql/graphql';
 import CooperativLogo from '@src/components/CooperativLogo';
 import { handleOrganizationChange } from '@src/utils/helpersOrganization';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Plus } from 'lucide-react';
 import React, { FC, useContext } from 'react';
 

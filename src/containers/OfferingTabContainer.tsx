@@ -10,7 +10,7 @@ import WhitelistAddressList, {
 import OfferingProperties from '@src/components/properties/OfferingProperties';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 

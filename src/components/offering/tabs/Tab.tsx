@@ -1,5 +1,5 @@
 import { OfferingTabSection } from '@gql/graphql';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { Dispatch, FC, SetStateAction } from 'react';
 
 type TabProps = {

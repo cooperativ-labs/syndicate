@@ -1,6 +1,6 @@
 import { LegalEntity } from '@gql/graphql';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 import Button from '../buttons/Button';

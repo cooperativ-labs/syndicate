@@ -1,6 +1,6 @@
 import Button from '@src/components/buttons/Button';
 import CloseButton from '@src/components/buttons/CloseButton';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Menu } from 'lucide-react';
 import React, { FC, ReactNode, useEffect } from 'react';
 

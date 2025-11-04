@@ -1,4 +1,4 @@
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React from 'react';
 import { ReactNode } from 'react-markdown/lib/react-markdown';
 export type ContainerProps = {

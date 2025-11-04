@@ -1,9 +1,10 @@
-import { LegalEntity, Maybe, Offering, RealEstateProperty } from '@gql/graphql';
+'use client';
+import { LegalEntity, Maybe, Offering } from '@gql/graphql';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import Tab from '@src/components/offering/tabs/Tab';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 
 type EntityTabContainerProps = {

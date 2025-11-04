@@ -1,13 +1,3 @@
--- Supabase Migration: Convert Dgraph Schema to PostgreSQL
--- This migration creates all tables, enums, and relationships from the Dgraph schema
-
--- Enable necessary extensions
-CREATE EXTENSION IF NOT EXISTS "uuid-ossp";
-CREATE EXTENSION IF NOT EXISTS "pg_trgm";
-
--- ============================================================================
--- ENUMS
--- ============================================================================
 
 -- Independent Chain Data Enums
 CREATE TYPE share_transfer_event_type AS ENUM (
@@ -88,7 +78,7 @@ CREATE TYPE offering_tab_section AS ENUM (
     'DISCLOSURES'
 );
 
-CREATE TYPE offering_details_type AS ENUM (
+CREATE TYPE offering_type AS ENUM (
     'CRYPTO',
     'PRIVATE_EQUITY',
     'REAL_ESTATE',
@@ -270,7 +260,7 @@ CREATE TABLE organization (
 
 -- Organization Users junction table
 CREATE TABLE organization_user (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     user_id UUID NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
     permissions organization_permission_type[] DEFAULT '{}',
@@ -281,7 +271,7 @@ CREATE TABLE organization_user (
 
 -- Jurisdictions table
 CREATE TABLE jurisdiction (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     country TEXT NOT NULL,
     province TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -290,7 +280,7 @@ CREATE TABLE jurisdiction (
 
 -- Legal Entities table
 CREATE TABLE legal_entity (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     display_name TEXT,
     legal_name TEXT,
@@ -307,9 +297,9 @@ CREATE TABLE legal_entity (
 
 -- Legal Entity relationship (self-referencing)
 CREATE TABLE legal_entity_relationship (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    parent_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
-    child_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    parent_entity_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    child_entity_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     relationship_type TEXT NOT NULL CHECK (relationship_type IN ('owner', 'subsidiary')),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     UNIQUE(parent_entity_id, child_entity_id, relationship_type)
@@ -317,8 +307,8 @@ CREATE TABLE legal_entity_relationship (
 
 -- Addresses table
 CREATE TABLE address (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    legal_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    legal_entity_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     label TEXT,
     line1 TEXT,
     line2 TEXT,
@@ -335,7 +325,7 @@ CREATE TABLE address (
 
 -- Email Addresses table
 CREATE TABLE email_address (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     address TEXT UNIQUE NOT NULL,
     name TEXT,
@@ -347,7 +337,7 @@ CREATE TABLE email_address (
 
 -- Linked Accounts table
 CREATE TABLE linked_account (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     organization_id BIGINT NOT NULL REFERENCES organization(id) ON DELETE CASCADE,
     account_provided_id TEXT,
     username TEXT,
@@ -361,7 +351,7 @@ CREATE TABLE linked_account (
 
 -- Images table
 CREATE TABLE image (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     label TEXT,
     url TEXT NOT NULL,
     file_id TEXT,
@@ -371,7 +361,7 @@ CREATE TABLE image (
 
 -- Documents table
 CREATE TABLE document (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     title TEXT,
     text TEXT,
     date TIMESTAMPTZ,
@@ -380,7 +370,7 @@ CREATE TABLE document (
     url TEXT,
     file_id TEXT,
     thumbnail_image_id UUID REFERENCES image(id),
-    owner_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     smart_contract_id UUID,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
@@ -393,9 +383,9 @@ CREATE TABLE document (
 
 -- Document Signatories table
 CREATE TABLE document_signatory (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     document_id UUID NOT NULL REFERENCES document(id) ON DELETE CASCADE,
-    legal_entity_id UUID REFERENCES legal_entity(id) ON DELETE SET NULL,
+    legal_entity_id BIGINT REFERENCES legal_entity(id) ON DELETE SET NULL,
     signer_address TEXT,
     signature TEXT,
     date TIMESTAMPTZ,
@@ -406,8 +396,8 @@ CREATE TABLE document_signatory (
 
 -- Crypto Addresses table
 CREATE TABLE crypto_address (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    legal_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    legal_entity_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     name TEXT,
     address TEXT UNIQUE NOT NULL,
     description TEXT,
@@ -421,13 +411,13 @@ CREATE TABLE crypto_address (
 
 -- Smart Contracts table
 CREATE TABLE smart_contract (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     crypto_address_id UUID NOT NULL REFERENCES crypto_address(id) ON DELETE CASCADE,
     type smart_contract_type NOT NULL,
     sub_type TEXT,
     num_tokens_authorized BIGINT,
     backing_token currency_code,
-    owner_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     name TEXT,
     document_id UUID REFERENCES document(id),
     established BOOLEAN DEFAULT false,
@@ -438,7 +428,7 @@ CREATE TABLE smart_contract (
 
 -- Offerings table
 CREATE TABLE offering (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
     name TEXT NOT NULL,
@@ -450,20 +440,14 @@ CREATE TABLE offering (
     light_brand BOOLEAN DEFAULT false,
     website TEXT,
     short_description TEXT,
-    offering_entity_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    offering_entity_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     is_public BOOLEAN DEFAULT false,
     waitlist_on BOOLEAN DEFAULT false,
     access_code TEXT,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Offering Details table
-CREATE TABLE offering_detail (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
-    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
+    updated_at TIMESTAMPTZ DEFAULT NOW(),
     custom_onboarding_link TEXT,
-    type offering_details_type,
+    type offering_type,
     stage offering_stage,
     investment_currency currency_code NOT NULL,
     unit_name unit_name,
@@ -490,14 +474,12 @@ CREATE TABLE offering_detail (
     target_equity_multiple_max INTEGER,
     coc_return INTEGER,
     projected_appreciation INTEGER,
-    cap_rate INTEGER,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
+    cap_rate INTEGER
 );
 
 -- Offering Description Text table
 CREATE TABLE offering_description_text (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     section offering_tab_section NOT NULL,
     title TEXT NOT NULL,
     text TEXT NOT NULL,
@@ -511,7 +493,7 @@ CREATE TABLE offering_description_text (
 
 -- Offering Smart Contract Sets table
 CREATE TABLE offering_smart_contract_set (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
     share_contract_id UUID REFERENCES smart_contract(id),
     swap_contract_id UUID REFERENCES smart_contract(id),
@@ -522,7 +504,7 @@ CREATE TABLE offering_smart_contract_set (
 
 -- Offering Participants table
 CREATE TABLE offering_participant (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     address_offering_id TEXT UNIQUE NOT NULL,
     wallet_address TEXT NOT NULL,
     email_address TEXT,
@@ -551,7 +533,7 @@ CREATE TABLE whitelist_transaction (
 
 -- Investor Applications table
 CREATE TABLE investor_application (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     offering_participant_id UUID NOT NULL REFERENCES offering_participant(id) ON DELETE CASCADE,
     application_doc_id UUID NOT NULL REFERENCES document(id) ON DELETE CASCADE,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
@@ -562,7 +544,7 @@ CREATE TABLE investor_application (
 
 -- Real Estate Properties table
 CREATE TABLE real_estate_property (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     property_type real_estate_property_type NOT NULL,
     investment_status asset_status,
     address_id UUID REFERENCES address(id),
@@ -574,7 +556,7 @@ CREATE TABLE real_estate_property (
     asset_value_note TEXT,
     lender_fees INTEGER,
     closing_costs INTEGER,
-    owner_id UUID NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+        owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -583,7 +565,7 @@ CREATE TABLE real_estate_property (
 
 -- Real Estate Property Images junction table
 CREATE TABLE real_estate_property_image (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     property_id UUID NOT NULL REFERENCES real_estate_property(id) ON DELETE CASCADE,
     image_id UUID NOT NULL REFERENCES image(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -592,7 +574,7 @@ CREATE TABLE real_estate_property_image (
 
 -- Notification Configurations table
 CREATE TABLE notification_configuration (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     notification_recipient_type notification_recipient_type NOT NULL,
     notification_method notification_method NOT NULL,
     notification_subject notification_subject NOT NULL,
@@ -603,7 +585,7 @@ CREATE TABLE notification_configuration (
 
 -- Share Transfer Events table (Independent Chain Data)
 CREATE TABLE share_transfer_event (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     share_contract_address TEXT NOT NULL,
     order_index INTEGER,
     recipient_address TEXT NOT NULL,
@@ -621,7 +603,7 @@ CREATE TABLE share_transfer_event (
 
 -- Share Orders table (Independent Chain Data)
 CREATE TABLE share_order (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     min_units INTEGER,
     max_units INTEGER,
     visible BOOLEAN DEFAULT true,
@@ -638,7 +620,7 @@ CREATE TABLE share_order (
 
 -- Offering Distributions table (Independent Chain Data)
 CREATE TABLE offering_distribution (
-    id UUID PRIMARY KEY DEFAULT uuid_generate_v4(),
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     contract_index INTEGER NOT NULL,
     transaction_hash TEXT NOT NULL,
     created_at TIMESTAMPTZ DEFAULT NOW(),
@@ -715,11 +697,8 @@ CREATE INDEX idx_offering_offering_entity_id ON offering(offering_entity_id);
 CREATE INDEX idx_offering_name_gin ON offering USING gin(to_tsvector('english', name));
 CREATE INDEX idx_offering_is_public ON offering(is_public);
 CREATE INDEX idx_offering_creation_date ON offering(creation_date);
-
--- Offering Details indexes
-CREATE INDEX idx_offering_detail_offering_id ON offering_detail(offering_id);
-CREATE INDEX idx_offering_detail_type ON offering_detail(type);
-CREATE INDEX idx_offering_detail_stage ON offering_detail(stage);
+CREATE INDEX idx_offering_type ON offering(type);
+CREATE INDEX idx_offering_stage ON offering(stage);
 
 -- Offering Description Texts indexes
 CREATE INDEX idx_offering_description_text_offering_id ON offering_description_text(offering_id);
@@ -781,7 +760,6 @@ ALTER TABLE document_signatory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE crypto_address ENABLE ROW LEVEL SECURITY;
 ALTER TABLE smart_contract ENABLE ROW LEVEL SECURITY;
 ALTER TABLE offering ENABLE ROW LEVEL SECURITY;
-ALTER TABLE offering_detail ENABLE ROW LEVEL SECURITY;
 ALTER TABLE offering_description_text ENABLE ROW LEVEL SECURITY;
 ALTER TABLE offering_smart_contract_set ENABLE ROW LEVEL SECURITY;
 ALTER TABLE offering_participant ENABLE ROW LEVEL SECURITY;
@@ -903,7 +881,6 @@ CREATE TRIGGER update_document_signatory_updated_at BEFORE UPDATE ON document_si
 CREATE TRIGGER update_crypto_address_updated_at BEFORE UPDATE ON crypto_address FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_smart_contract_updated_at BEFORE UPDATE ON smart_contract FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_offering_updated_at BEFORE UPDATE ON offering FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_offering_details_updated_at BEFORE UPDATE ON offering_detail FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_offering_description_text_updated_at BEFORE UPDATE ON offering_description_text FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_offering_smart_contract_set_updated_at BEFORE UPDATE ON offering_smart_contract_set FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_offering_participant_updated_at BEFORE UPDATE ON offering_participant FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -925,7 +902,6 @@ COMMENT ON TABLE profile IS 'User profiles extending Supabase Auth users with ad
 COMMENT ON TABLE organization IS 'Organizations that manage offerings and legal entities';
 COMMENT ON TABLE legal_entity IS 'Legal entities (individuals, corporations, LLCs) that can own offerings';
 COMMENT ON TABLE offering IS 'Investment offerings managed by legal entities';
-COMMENT ON TABLE offering_detail IS 'Investors participating in offerings';
 COMMENT ON TABLE offering_description_text IS 'Documents associated with offerings and legal entities';
 COMMENT ON TABLE offering_smart_contract_set IS 'Blockchain smart contracts for offerings';
 COMMENT ON TABLE offering_participant IS 'Blockchain events for share transfers (independent chain data)';

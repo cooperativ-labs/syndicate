@@ -1,4 +1,4 @@
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 type ChainBadgeProps = {

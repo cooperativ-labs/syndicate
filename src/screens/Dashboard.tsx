@@ -10,7 +10,7 @@ import { useOrganizations } from '@contexts/OrganizationsContext';
 
 const Dashboard: FC = () => {
   const { user } = useUserContext();
-  const { organizations } = useOrganizations();
+  const { chosenOrganization, organizations } = useOrganizations();
 
   const hasOrganizations = organizations.length > 0;
 
@@ -45,7 +45,7 @@ const Dashboard: FC = () => {
               explainerText="In order to create an offering, we first need some personal information"
             >
               {/* organizations fetched for manager include legal_entities; cast for component's type */}
-              <CreateOffering organization={organizations[0]} refetch={() => {}} />
+              <CreateOffering organization={chosenOrganization} refetch={() => {}} />
             </EnsureOrganization>
           </div>
           <div className="col-span-1">
@@ -59,7 +59,7 @@ const Dashboard: FC = () => {
                     key={organization.id}
                     className="p-4 flex bg-slate-300 rounded-md my-2 items-center cursor-pointer"
                     onClick={() => {
-                      handleOrganizationChange(organization.id);
+                      handleOrganizationChange(organization.id.toString());
                     }}
                   >
                     <img

@@ -1,5 +1,5 @@
 import Card from '@src/components/cards/Card';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { ReactNode } from 'react';
 import { useCallback } from 'react';
 

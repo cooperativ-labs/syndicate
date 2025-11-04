@@ -2,7 +2,7 @@
 
 import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
 

@@ -1,6 +1,6 @@
 import { CurrencyCode, Maybe, Organization } from '@gql/graphql';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Country } from 'country-state-city';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';

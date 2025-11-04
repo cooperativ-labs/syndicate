@@ -1,7 +1,7 @@
 import useWindowSize from '@hooks/useWindowSize';
 import Card from '@src/components/cards/Card';
 import AccessCodeForm from '@src/components/offering/profile/AccessCodeForm';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useContext, useEffect, useState } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';

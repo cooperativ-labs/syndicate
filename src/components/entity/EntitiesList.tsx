@@ -1,10 +1,13 @@
+'use client';
+
 import { LegalEntity, Maybe } from '@gql/graphql';
 import React, { FC } from 'react';
 
 import EntityCard from './EntityCard';
+import { legalEntityWithSubsidiaries } from '@/types';
 
 type EntitiesListProps = {
-  entities: Maybe<Maybe<LegalEntity>[]> | undefined;
+  entities: legalEntityWithSubsidiaries[] | undefined;
 };
 
 const EntitiesList: FC<EntitiesListProps> = ({ entities }) => {

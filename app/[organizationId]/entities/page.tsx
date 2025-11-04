@@ -1,12 +1,19 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import EntityDashboard from '@src/screens/EntityDashboard';
-import React from 'react';
+import { getEntitiesByOrganizationId } from '@src/utils/actions/entityActions';
+import { getOrganization } from '@src/utils/actions/organizationActions';
 
-const EntitiesPage = () => {
+const EntitiesPage = async ({
+  params
+}: {
+  params: Promise<{ organizationId: string }> | { organizationId: string };
+}) => {
+  const { organizationId } = await params;
+  const entities = await getEntitiesByOrganizationId(organizationId);
   return (
     <div data-test="component-landing" className="h-full flex">
       <ManagerWrapper>
-        <EntityDashboard />
+        <EntityDashboard entities={entities} />
       </ManagerWrapper>
     </div>
   );

@@ -1,4 +1,9 @@
+'use client';
+
+import { legalEntityWithSubsidiaries } from '@/types';
 import { useMutation, useQuery } from '@apollo/client/react';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import { useUserContext } from '@contexts/UserContext';
 import { CurrencyCode, LegalEntity, Maybe, Offering } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import CreateAddress from '@src/components/address/CreateAddress';
@@ -20,15 +25,16 @@ import {
 } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useSession } from 'next-auth/react';
+
 import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
 
 type EntityDetailsProps = {
-  entity: LegalEntity;
+  entity: legalEntityWithSubsidiaries;
 };
 
 const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
-  const { data: session, status } = useSession();
+  const { userId } = useUserContext();
+  const organization = entity.organization;
 
   const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
     useMutation(UPDATE_ENTITY_INFORMATION);
@@ -39,10 +45,9 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const [addOwnerModal, setAddOwnerModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditEntitySelectionType>('none');
   const [alerted, setAlerted] = useState<boolean>(false);
-  const organization = entity.organization;
-  const userId = session?.user.id;
+
   const isAdmin = userId && getIsAdmin(userId, organization);
-  const isAdminOrEditor = getIsEditorOrAdmin(session?.user.id, organization);
+  const isAdminOrEditor = getIsEditorOrAdmin(userId, organization);
 
   const error = updateEntityError || deleteError || removeError;
   if (error && !alerted) {
@@ -51,15 +56,15 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   }
 
   const {
-    displayName,
-    legalName,
-    addresses,
-    walletAddresses,
+    display_name,
+    legal_name,
     subsidiaries,
     offerings,
-    jurisdiction,
-    operatingCurrency,
-    owners
+    jurisdiction_id,
+    operating_currency,
+    owners,
+    organization_id,
+    addresses
   } = entity;
 
   const offeringsIncludingSubsidiaries = [
@@ -106,7 +111,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       <FormModal
         formOpen={addOwnerModal}
         onClose={() => setAddOwnerModal(false)}
-        title={`Add an address to ${entity.displayName}`}
+        title={`Add an address to ${entity.display_name}`}
       >
         <CreateAddress
           entity={entity}
@@ -122,7 +127,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
               className="font-ubuntu text-3xl text-cDarkBlue font-semibold hover:cursor-pointer"
               onClick={() => setNameEditOn('displayName')}
             >
-              {displayName}
+              {display_name}
             </div>
           )}
         </div>

@@ -4,7 +4,7 @@ import { useQuery } from '@apollo/client/react';
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { useParams } from 'next/navigation';
 import React, { FC, useContext } from 'react';
 

@@ -4,12 +4,12 @@ import PortalWrapper from '@src/containers/PortalWrapper';
 import Footer from '@src/Footer/Footer';
 import OrganizationProfile from '@src/screens/OrganizationProfile';
 import PortalOrganization from '@src/screens/PortalOrganization';
-import { Organization } from '@gql/graphql';
+import { OrganizationWithLegalEntities } from '@/types';
 import React from 'react';
 import { useAccount } from 'wagmi';
 
 type ClientOrganizationPageProps = {
-  organization: Organization | null;
+  organization: OrganizationWithLegalEntities | null;
 };
 
 const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organization }) => {
@@ -26,7 +26,9 @@ const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organiz
   const orgParticipants = organization.legalEntities
     ?.map(entity =>
       entity?.offerings?.map(offering =>
-        offering?.participants?.map(participant => participant?.walletAddress === userWalletAddress)
+        offering?.offeringParticipants?.map(
+          participant => participant?.walletAddress === userWalletAddress
+        )
       )
     )
     .flat(2);

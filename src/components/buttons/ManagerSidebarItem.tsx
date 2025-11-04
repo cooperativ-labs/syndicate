@@ -1,7 +1,7 @@
 'use client';
 
 import { ManagerSideBarItemSelectionType } from '@src/containers/sideBar/ManagerSideBarContents';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import React, { FC, useContext } from 'react';

@@ -6,7 +6,7 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/graphQueries/crypto';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { isAlgorand, MatchSupportedChains } from '@src/web3/wagmi';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import Link from 'next/link';
 import React from 'react';
 

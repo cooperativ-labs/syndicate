@@ -1,12 +1,12 @@
 import { useMutation } from '@apollo/client/react';
-import { Maybe, OrganizationUser } from '@gql/graphql';
+
 import { REMOVE_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 import React, { FC } from 'react';
 
 import TeamMemberItem, { TeamMemberBaseProps } from './TeamMemberItem';
-
+import { OrganizationUser } from '@/types';
 type TeamMemberListProps = TeamMemberBaseProps & {
-  teamMembers: Maybe<Maybe<OrganizationUser>[]> | undefined;
+  teamMembers: OrganizationUser[] | [];
 };
 
 const TeamMemberList: FC<TeamMemberListProps> = ({ teamMembers, organizationId, isAdmin }) => {

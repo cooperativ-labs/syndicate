@@ -1,6 +1,6 @@
 'use client';
 
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
 

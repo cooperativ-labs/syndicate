@@ -1,5 +1,5 @@
 import { Maybe } from '@gql/graphql';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Country, IState, State } from 'country-state-city';
 import { ErrorMessage, Field } from 'formik';
 import React, { ChangeEvent, FC, use, useState } from 'react';

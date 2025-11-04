@@ -47,9 +47,7 @@ export async function retrieveTransferEvents(
   throw error;
  }
 
- return {
-  edges: (data ?? []).map((node) => ({ node })),
- };
+ return data;
 }
 
 type AddTransferEventParams = {
@@ -299,14 +297,12 @@ type RetrieveOrdersResult = {
 
 export async function retrieveOrders(
  swapContractAddress: string,
-): Promise<RetrieveOrdersResult> {
+): Promise<ShareOrder[]> {
  const supabase = createClient();
 
  const { data, error } = await supabase
   .from("share_order")
-  .select(
-   "id, contract_index, initiator, transaction_hash, swap_contract_address, min_units, max_units, visible, archived",
-  )
+  .select("*")
   .eq("swap_contract_address", swapContractAddress);
 
  if (error) {

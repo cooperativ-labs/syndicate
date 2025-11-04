@@ -1,35 +1,58 @@
-'use server';
+"use server";
 
-import { GetOrganizationQuery, LegalEntity, Organization } from '@gql/graphql';
-import { createClient } from '@supabase/utils/server';
+import {
+  LegalEntity,
+  Organization,
+  OrganizationWithLegalEntities,
+} from "@/types";
+import { createClient } from "@supabase/utils/server";
 
 export const getOrganizations = async (
-  orgIds: string[]
-): Promise<(Organization & { legal_entities: LegalEntity[] })[]> => {
+  orgIds: string[],
+): Promise<OrganizationWithLegalEntities[]> => {
   const supabase = createClient();
 
   const { data: organizationsData, error: organizationsError } = await supabase
-    .from('organization')
-    .select(
-      '*, organization_user(id, user_id, permissions), legal_entity(id, type, jurisdiction_id, legal_name, display_name, offering(id, is_public, access_code, short_description))'
-    )
-    .in('id', orgIds);
+    .from("organization")
+    .select([
+      "*",
+      "organizationUsers:organization_user(id, user_id, permissions)",
+      "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*,))",
+    ].join(", "))
+    .in("id", orgIds);
   if (organizationsError) {
     console.error(organizationsError);
     return [];
   }
-  return organizationsData as unknown as (Organization & { legal_entities: LegalEntity[] })[];
+  return organizationsData;
 };
 
 export const getOrganization = async (
-  id: string
-): Promise<Organization & { legal_entities: LegalEntity[] }> => {
-  const organizations = await getOrganizations([id]);
-  return organizations[0];
+  id: string,
+): Promise<OrganizationWithLegalEntities | null> => {
+  const supabase = createClient();
+  const { data: organizationsData, error: organizationsError } = await supabase
+    .from("organization")
+    .select([
+      "*",
+      "organizationUsers:organization_user(id, user_id, permissions)",
+      "linkedAccounts:linked_account(*)",
+      "emailAddresses:email_address(*)",
+      "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address)))",
+    ].join(", "))
+    .eq("id", id)
+    .single();
+
+  if (organizationsError) {
+    console.error(organizationsError);
+    return null;
+  }
+
+  return organizationsData;
 };
 
 export const getOrgsFromUser = async (
-  userId?: string | null
+  userId?: string | null,
 ): Promise<(Organization & { legal_entities: LegalEntity[] })[]> => {
   const supabase = createClient();
   let id = userId;
@@ -43,9 +66,9 @@ export const getOrgsFromUser = async (
   }
 
   const { data: memberships, error: membershipsErrors } = await supabase
-    .from('organization_user')
-    .select('organization_id')
-    .eq('user_id', id);
+    .from("organization_user")
+    .select("organization_id")
+    .eq("user_id", id);
   if (membershipsErrors) {
     console.error(membershipsErrors);
     return [];
@@ -55,7 +78,9 @@ export const getOrgsFromUser = async (
     return [];
   }
 
-  const organizations = await getOrganizations(memberships.map(org => org.organization_id));
+  const organizations = await getOrganizations(
+    memberships.map((org) => org.organization_id),
+  );
 
   return organizations;
 };

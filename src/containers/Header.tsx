@@ -2,7 +2,7 @@
 
 import { Offering } from '@gql/graphql';
 import useWindowSize from '@hooks/useWindowSize';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/router';
 import React from 'react';
 

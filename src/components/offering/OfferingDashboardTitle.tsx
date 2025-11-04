@@ -4,7 +4,7 @@ import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import { Check, Copy, SquareArrowOutUpRight } from 'lucide-react';
 import React, { FC, useState } from 'react';

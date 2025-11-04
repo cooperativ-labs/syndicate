@@ -1,6 +1,6 @@
-import { LinkedAccountType } from '@gql/graphql';
+import { LinkedAccount, LinkedAccountType } from '@/types';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import {
   Dribbble,
   Facebook,

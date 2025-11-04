@@ -1,6 +1,6 @@
 import useWindowSize from '@hooks/useWindowSize';
 import Card from '@src/components/cards/Card';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useContext, useEffect } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';

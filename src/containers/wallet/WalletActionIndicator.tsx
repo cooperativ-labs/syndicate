@@ -1,5 +1,5 @@
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Check, Waves, X } from 'lucide-react';
 import React, { FC } from 'react';
 

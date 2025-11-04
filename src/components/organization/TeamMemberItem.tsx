@@ -1,19 +1,19 @@
-import { Maybe, OrganizationPermissionType, OrganizationUser } from '@gql/graphql';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 
 import { EditButton } from '../form-components/ListItemButtons';
 import { useUserContext } from '@contexts/UserContext';
+import { OrganizationUser, OrganizationUserPermission } from '@/types';
 
 export type TeamMemberBaseProps = {
-  organizationId: Maybe<string>;
+  organizationId: string;
   isAdmin: boolean | '' | undefined;
 };
 
 type TeamMemberListItemProps = TeamMemberBaseProps & {
-  teamMember: Maybe<OrganizationUser>;
+  teamMember: OrganizationUser;
   removeMember: (variables: any) => void;
 };
 
@@ -29,7 +29,7 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   const name = 'BLANK';
   const image = 'BLANK';
 
-  const makePermissionsChips = (permissions: Maybe<OrganizationPermissionType[]> | undefined) => {
+  const makePermissionsChips = (permissions: OrganizationUserPermission[] | null) => {
     return permissions?.map((permission, i) => {
       const { name, color } = getOrganizationPermissionOption(permission);
 

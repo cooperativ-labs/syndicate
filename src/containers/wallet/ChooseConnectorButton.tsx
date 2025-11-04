@@ -1,5 +1,5 @@
 import Button from '@src/components/buttons/Button';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC, useContext } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';

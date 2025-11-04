@@ -1,19 +1,19 @@
 'use client';
 
-import { LegalEntity, Maybe } from '@gql/graphql';
 import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import router, { useRouter } from 'next/router';
+import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import Card from '../cards/Card';
+import { legalEntityWithSubsidiaries } from '@/types';
 
 export type EntityCardProps = {
-  entity: Maybe<Maybe<LegalEntity>>;
+  entity: legalEntityWithSubsidiaries;
 };
 
 const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
   const router = useRouter();
-  const { displayName, jurisdiction, id, subsidiaries, owners, offerings, organization } =
+  const { display_name, jurisdiction_id, id, subsidiaries, owners, offerings, organizationId } =
     entity ?? {};
 
   const isOfferingEntity = offerings && offerings.length > 0;
@@ -21,13 +21,13 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
   return (
     <div
       onClick={() => {
-        router.push(`/${organization?.id}/entities/${id}`);
+        router.push(`/${organizationId}/entities/${id}`);
       }}
     >
       <Card className="rounded-lg hover:shadow-xl cursor-pointer md:w-96">
         <div className=" p-6 flex items-center">
           <div>
-            <h1 className="text-lg font-bold">{displayName}</h1>
+            <h1 className="text-lg font-bold">{display_name}</h1>
             <div className="text-xs text-gray-600 mb-1">
               {owners?.length} {`owner${owners?.length === 1 ? '' : `s`}`}
             </div>
@@ -44,9 +44,9 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
             )}
           </div>
           <div>
-            {jurisdiction && (
+            {jurisdiction_id && (
               <div className="text-sm font-medium text-gray-500">
-                {renderJurisdiction(jurisdiction)}
+                {renderJurisdiction(jurisdiction_id)}
               </div>
             )}
           </div>

@@ -1,4 +1,4 @@
-import classNames from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 export type DashboardCardProps = {
@@ -15,7 +15,7 @@ const DashboardCard: FC<DashboardCardProps> = ({ children, onClick, ...rest }) =
   return (
     <div
       data-test="component-card"
-      className={classNames(`${className} bg-white shadow-box rounded-xl p-6`)}
+      className={cn(`${className} bg-white shadow-box rounded-xl p-6`)}
       style={style}
       onClick={onClick}
       {...props}

@@ -1,8 +1,13 @@
-import { Maybe, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
-import { swapContractABI } from '@src/web3/generated';
-import { String0x } from '@src/web3/helpersChain';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { readContract } from 'wagmi/actions';
+import {
+  Maybe,
+  ShareTransferEvent,
+  ShareTransferEventType,
+} from "@gql/graphql";
+import { swapContractABI } from "@src/web3/generated";
+import { String0x } from "@src/web3/helpersChain";
+import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
+import { readContract } from "wagmi/actions";
+import { ShareOrder } from "@/types";
 
 export type ContractOrder = {
   orderId: string | undefined;
@@ -26,7 +31,7 @@ export function getOrdersByPrice(contractOrderList: ContractOrder[]) {
 
 export function getLowestOrderPrice(
   contractOrderList: ContractOrder[],
-  priceStart: Maybe<number> | undefined
+  priceStart: Maybe<number> | undefined,
 ) {
   const ordersByPrice = getOrdersByPrice(contractOrderList);
   return ordersByPrice?.length > 0 ? ordersByPrice[0].price : priceStart;
@@ -34,28 +39,30 @@ export function getLowestOrderPrice(
 
 export const getCurrentOrderPrice = (
   contractOrderList: ContractOrder[],
-  startingPrice: Maybe<number> | undefined
+  startingPrice: Maybe<number> | undefined,
 ) => {
   return getLowestOrderPrice(contractOrderList, startingPrice);
 };
 
 export async function getOrderArrayFromContract(
-  orders: Maybe<ShareOrder>[],
+  orders: ShareOrder[],
   swapContractAddress: String0x,
-  paymentTokenDecimals: number
+  paymentTokenDecimals: number,
 ): Promise<ContractOrder[]> {
-  const orderArray = orders?.map(async order => {
-    const data =
-      order &&
+  const orderArray = orders?.map(async (order) => {
+    const data = order &&
       (await readContract({
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: 'orders',
-        args: [BigInt(order.contractIndex)]
+        functionName: "orders",
+        args: [BigInt(order.contractIndex)],
       }));
-    const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
+    const adjustTokenDecimalsForShareContract = paymentTokenDecimals -
+      shareContractDecimals;
     const initiator = data && data[0];
-    const price = data ? toNormalNumber(data[3], adjustTokenDecimalsForShareContract) : 0;
+    const price = data
+      ? toNormalNumber(data[3], adjustTokenDecimalsForShareContract)
+      : 0;
     const amount = data && toNormalNumber(data[2], shareContractDecimals);
     const partition = data && data[1];
     const orderId = order?.id;
@@ -76,19 +83,21 @@ export async function getOrderArrayFromContract(
       isFilled,
       isAccepted,
       isApproved,
-      filler
+      filler,
     };
   });
   return Promise.all(orderArray);
 }
 
 export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]) => {
-  const liveOrders = contractOrderList?.filter(order => !order.isCancelled && !order.isFilled);
+  const liveOrders = contractOrderList?.filter((order) =>
+    !order.isCancelled && !order.isFilled
+  );
   const activeOrders = liveOrders?.find(
-    order =>
+    (order) =>
       order.isAccepted ||
-      order.filler !== '0x0000000000000000000000000000000000000000' ||
-      order.isApproved
+      order.filler !== "0x0000000000000000000000000000000000000000" ||
+      order.isApproved,
   );
   return !activeOrders;
 };
@@ -96,9 +105,9 @@ export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]) => {
 export const getDisapprovedTransferEvents = (
   transferEvents: ShareTransferEvent[] | undefined,
   order: ShareOrder,
-  userWalletAddress: String0x | undefined
+  userWalletAddress: String0x | undefined,
 ) =>
-  transferEvents?.filter(transferEvent => {
+  transferEvents?.filter((transferEvent) => {
     const { orderIndex, recipientAddress, senderAddress, type } = transferEvent;
     if (
       orderIndex === order.contractIndex &&

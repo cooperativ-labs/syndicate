@@ -4,7 +4,7 @@ import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 

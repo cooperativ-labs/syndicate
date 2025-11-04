@@ -12,7 +12,7 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 // import { isMetaMask } from '@src/web3/wagmi';
 import axios from 'axios';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';

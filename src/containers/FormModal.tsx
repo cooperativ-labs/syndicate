@@ -1,7 +1,7 @@
-import useWindowSize from '@hooks/useWindowSize';
+'use client';
 import CloseButton from '@src/components/buttons/CloseButton';
-import Card from '@src/components/cards/Card';
-import cn from 'classnames';
+import { Card } from '@src/components/ui/card';
+import { cn } from '@src/lib/utils';
 import React, { FC, useEffect } from 'react';
 
 type FormModalProps = {
@@ -55,7 +55,7 @@ const FormModal: FC<FormModalProps> = ({
             className="relative mx-4 p-6 mb-10 flex-col md:mx-auto rounded-xl md:rounded-lg shadow-modal bg-white "
             style={{ overflow: 'smooth', maxWidth: '800px', minWidth: '800px' }}
           >
-            <div className="absolute -top-1 right-0">
+            <div className="absolute top-1 right-0">
               <CloseButton onClick={onClose} />
             </div>
             {title && (

@@ -1,5 +1,5 @@
 import { disconnectWallet } from '@src/web3/wagmi';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 import { useDisconnect } from 'wagmi';
 

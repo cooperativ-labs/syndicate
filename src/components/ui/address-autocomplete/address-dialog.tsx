@@ -353,7 +353,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
                   e.stopPropagation();
                 }}
               >
-                Save
+                Confirm
               </Button>
             </DialogFooter>
           </form>

@@ -17,7 +17,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { bytes32FromString, String0x } from '@src/web3/helpersChain';
-import cn from 'classnames';
+import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
