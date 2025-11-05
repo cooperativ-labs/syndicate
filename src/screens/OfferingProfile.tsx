@@ -1,7 +1,6 @@
 'use client';
 
 import { useQuery } from '@apollo/client/react';
-import { DocumentType, Offering } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
@@ -29,11 +28,14 @@ import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
+import { OfferingFull } from '@/types';
+
 type OfferingProfileProps = {
-  offering: Offering;
+  offering: OfferingFull;
 };
 
 const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
+  console.log('offering', offering);
   const router = useRouter();
   const { address: userWalletAddress } = useAccount();
   const {
@@ -43,9 +45,9 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
     offeringEntity,
     id: offeringId,
     name: offeringName,
-    distributions,
-    smartContractSets,
-    documents
+    offering_distributions,
+    offering_smart_contract_sets,
+    offering_documents
   } = offering;
 
   const contractSet = smartContractSets?.slice(-1)[0];

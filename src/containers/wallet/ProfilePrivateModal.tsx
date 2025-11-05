@@ -1,3 +1,5 @@
+'use client';
+
 import useWindowSize from '@hooks/useWindowSize';
 import Card from '@src/components/cards/Card';
 import AccessCodeForm from '@src/components/offering/profile/AccessCodeForm';

@@ -17,11 +17,11 @@ export const getOrganizations = async (
     .select([
       "*",
       "organizationUsers:organization_user(id, user_id, permissions)",
-      "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*,))",
+      "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address)))",
     ].join(", "))
     .in("id", orgIds);
   if (organizationsError) {
-    console.error(organizationsError);
+    console.error("getOrganizations error", organizationsError);
     return [];
   }
   return organizationsData;
@@ -47,7 +47,6 @@ export const getOrganization = async (
     console.error(organizationsError);
     return null;
   }
-
   return organizationsData;
 };
 

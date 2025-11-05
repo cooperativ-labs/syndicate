@@ -1,52 +1,31 @@
-// Types intentionally omitted here to avoid runtime typing issues in RSC
+import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
+import Footer from '@src/Footer/Footer';
+import OfferingProfile from '@src/screens/OfferingProfile';
 
-import type { Metadata } from 'next';
+import { getOfferingWithDocumentsById } from '@src/utils/actions/offeringActions';
 
-import ClientOfferingPage from './ClientOfferingPage';
-import { getOfferingById, getOfferingWithDocumentsById } from '@src/utils/actions/offeringActions';
-
-type Params = {
-  params:
-    | Promise<{ organizationId: string; offeringId: string }>
-    | { organizationId: string; offeringId: string };
-};
-
-export const generateMetadata = async ({ params }: Params): Promise<Metadata> => {
-  const { offeringId } = await params;
-  const offering = await getOfferingById(offeringId);
-
-  if (!offering || !offering.is_public) {
-    return { title: 'Offering not available' };
-  }
-
-  const { name, short_description, sharing_image, legal_entity, id } = offering;
-  const orgId = legal_entity?.organization?.id ?? '';
-  const imageUrl = sharing_image
-    ? `/assets/images/sharing-images/${sharing_image.url}`
-    : '/assets/images/share.png';
-
-  return {
-    title: name,
-    openGraph: {
-      title: name,
-      type: 'website',
-      description: short_description ?? undefined,
-      url: `https://cooperativ.io/${orgId}/offerings/${id}`,
-      images: [imageUrl]
-    },
-    twitter: {
-      title: name,
-      description: short_description ?? undefined,
-      card: 'summary_large_image',
-      images: [imageUrl]
-    }
-  };
-};
-
-const OfferingPage = async ({ params }: Params) => {
+export default async function ClientOfferingPage({
+  params
+}: {
+  params: Promise<{ offeringId: string }>;
+}) {
   const { offeringId } = await params;
   const offering = await getOfferingWithDocumentsById(offeringId);
-  return <ClientOfferingPage offering={offering} />;
-};
+  if (!offering || !offering.is_public) {
+    return (
+      <div className="flex items-center justify-center w-full h-screen">
+        <div>Sorry, this offering does not have a profile. </div>
+      </div>
+    );
+  }
 
-export default OfferingPage;
+  const { id, access_code } = offering;
+
+  return (
+    <div data-test="component-project" className="bg-gray-50">
+      <ProfilePrivateModal offeringId={id} accessCode={access_code} />
+      <OfferingProfile offering={offering} />
+      <Footer color="bg-gray-200" />
+    </div>
+  );
+}

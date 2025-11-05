@@ -359,40 +359,6 @@ CREATE TABLE image (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Documents table
-CREATE TABLE document (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    title TEXT,
-    text TEXT,
-    date TIMESTAMPTZ,
-    format document_format,
-    type document_type,
-    url TEXT,
-    file_id TEXT,
-    thumbnail_image_id UUID REFERENCES image(id),
-    owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
-    smart_contract_id UUID,
-    creation_date TIMESTAMPTZ DEFAULT NOW(),
-    last_update TIMESTAMPTZ DEFAULT NOW(),
-    access document_access_type,
-    offering_id UUID,
-    offering_unique_id TEXT UNIQUE NOT NULL,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Document Signatories table
-CREATE TABLE document_signatory (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    document_id UUID NOT NULL REFERENCES document(id) ON DELETE CASCADE,
-    legal_entity_id BIGINT REFERENCES legal_entity(id) ON DELETE SET NULL,
-    signer_address TEXT,
-    signature TEXT,
-    date TIMESTAMPTZ,
-    archived BOOLEAN DEFAULT false,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
 
 -- Crypto Addresses table
 CREATE TABLE crypto_address (
@@ -409,26 +375,10 @@ CREATE TABLE crypto_address (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Smart Contracts table
-CREATE TABLE smart_contract (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    crypto_address_id UUID NOT NULL REFERENCES crypto_address(id) ON DELETE CASCADE,
-    type smart_contract_type NOT NULL,
-    sub_type TEXT,
-    num_tokens_authorized BIGINT,
-    backing_token currency_code,
-    owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
-    name TEXT,
-    document_id UUID REFERENCES document(id),
-    established BOOLEAN DEFAULT false,
-    partitions TEXT[],
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
 
 -- Offerings table
 CREATE TABLE offering (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
     name TEXT NOT NULL,
@@ -484,20 +434,9 @@ CREATE TABLE offering_description_text (
     title TEXT NOT NULL,
     text TEXT NOT NULL,
     "order" INTEGER NOT NULL,
-    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
+    offering_id BIGINT NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
     last_update TIMESTAMPTZ DEFAULT NOW(),
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
--- Offering Smart Contract Sets table
-CREATE TABLE offering_smart_contract_set (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
-    share_contract_id UUID REFERENCES smart_contract(id),
-    swap_contract_id UUID REFERENCES smart_contract(id),
-    distribution_contract_id UUID REFERENCES smart_contract(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
@@ -510,7 +449,7 @@ CREATE TABLE offering_participant (
     email_address TEXT,
     chain_id INTEGER NOT NULL,
     name TEXT,
-    offering_id UUID NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
+    offering_id BIGINT NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
     min_pledge INTEGER,
     max_pledge INTEGER,
     jurisdiction_id UUID REFERENCES jurisdiction(id),
@@ -518,6 +457,69 @@ CREATE TABLE offering_participant (
     external_id TEXT,
     last_update TIMESTAMPTZ DEFAULT NOW(),
     creation_date TIMESTAMPTZ DEFAULT NOW(),
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Documents table
+CREATE TABLE document (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    title TEXT,
+    text TEXT,
+    date TIMESTAMPTZ,
+    format document_format,
+    type document_type,
+    url TEXT,
+    file_id TEXT,
+    thumbnail_image_id UUID REFERENCES image(id),
+    owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    smart_contract_id UUID,
+    creation_date TIMESTAMPTZ DEFAULT NOW(),
+    last_update TIMESTAMPTZ DEFAULT NOW(),
+    access document_access_type,
+    offering_id BIGINT REFERENCES offering(id) ON DELETE CASCADE,
+    offering_unique_id TEXT UNIQUE NOT NULL,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Document Signatories table
+CREATE TABLE document_signatory (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    document_id UUID NOT NULL REFERENCES document(id) ON DELETE CASCADE,
+    legal_entity_id BIGINT REFERENCES legal_entity(id) ON DELETE SET NULL,
+    signer_address TEXT,
+    signature TEXT,
+    date TIMESTAMPTZ,
+    archived BOOLEAN DEFAULT false,
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Smart Contracts table
+CREATE TABLE smart_contract (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    crypto_address_id UUID NOT NULL REFERENCES crypto_address(id) ON DELETE CASCADE,
+    type smart_contract_type NOT NULL,
+    sub_type TEXT,
+    num_tokens_authorized BIGINT,
+    backing_token currency_code,
+    owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
+    name TEXT,
+    document_id UUID REFERENCES document(id),
+    established BOOLEAN DEFAULT false,
+    partitions TEXT[],
+    created_at TIMESTAMPTZ DEFAULT NOW(),
+    updated_at TIMESTAMPTZ DEFAULT NOW()
+);
+
+-- Offering Smart Contract Sets table
+CREATE TABLE offering_smart_contract_set (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    offering_id BIGINT NOT NULL REFERENCES offering(id) ON DELETE CASCADE,
+    share_contract_id UUID REFERENCES smart_contract(id),
+    swap_contract_id UUID REFERENCES smart_contract(id),
+    distribution_contract_id UUID REFERENCES smart_contract(id),
     created_at TIMESTAMPTZ DEFAULT NOW(),
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
