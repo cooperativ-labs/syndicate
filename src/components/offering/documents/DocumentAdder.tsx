@@ -1,7 +1,7 @@
 'use client';
 import { useMutation } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
-import { DocumentFormat, DocumentType } from '@gql/graphql';
+import { DocumentFormat, DocumentType } from '@/types';
 import Button from '@src/components/buttons/Button';
 import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
@@ -91,7 +91,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
             url={`${offeringId}/docs/${userId}/`}
             bucket="offering-files"
             urlToDatabase={addFileToDB}
-            docType={DocumentType.OfferingDocument}
+            docType={DocumentType.OFFERING_DOCUMENT}
             accept={[
               'pdf',
               'doc',
@@ -105,28 +105,28 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
           <div className="grid grid-cols-3 gap-3 mb-2">
             <div
               className={cn(
-                fileFormat === DocumentFormat.Video && 'bg-gray-600 text-white',
+                fileFormat === DocumentFormat.VIDEO && 'bg-gray-600 text-white',
                 'mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1'
               )}
-              onClick={() => setFileFormat(DocumentFormat.Video)}
+              onClick={() => setFileFormat(DocumentFormat.VIDEO)}
             >
               Video
             </div>
             <div
               className={cn(
-                fileFormat === DocumentFormat.Powerpoint && 'bg-gray-600 text-white',
+                fileFormat === DocumentFormat.POWERPOINT && 'bg-gray-600 text-white',
                 'mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1'
               )}
-              onClick={() => setFileFormat(DocumentFormat.Powerpoint)}
+              onClick={() => setFileFormat(DocumentFormat.POWERPOINT)}
             >
               Presentation
             </div>
             <div
               className={cn(
-                fileFormat === DocumentFormat.Other && 'bg-gray-600 text-white',
+                fileFormat === DocumentFormat.OTHER && 'bg-gray-600 text-white',
                 'mt-4 text-sm font-semibold hover:cursor-pointer flex items-center justify-center border-2  p-1'
               )}
-              onClick={() => setFileFormat(DocumentFormat.Other)}
+              onClick={() => setFileFormat(DocumentFormat.OTHER)}
             >
               Link
             </div>
@@ -155,7 +155,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
                   url: values.docUrl,
                   fileId: 'external',
                   title: values.title,
-                  docType: DocumentType.OfferingDocument,
+                  docType: DocumentType.OFFERING_DOCUMENT,
                   format: fileFormat
                 });
                 setSubmitting(false);

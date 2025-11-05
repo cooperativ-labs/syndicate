@@ -1,4 +1,4 @@
-import { Currency, CurrencyCode } from '@gql/graphql';
+import { CurrencyCode } from '@/types';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
@@ -8,14 +8,14 @@ import React, { FC } from 'react';
 type MoneyDisplayProps = {
   amount: number | undefined | null;
   paymentToken?: String0x;
-  currency?: Currency;
+  currency?: keyof typeof CurrencyCode;
   className?: string;
 };
 
 const MoneyDisplay: FC<MoneyDisplayProps> = ({ amount, paymentToken, currency, className }) => {
   const isUsd =
-    getCurrencyById(paymentToken)?.value === CurrencyCode.Usd ||
-    getCurrencyOption(currency)?.value === CurrencyCode.Usd;
+    getCurrencyById(paymentToken)?.value === CurrencyCode.USD ||
+    getCurrencyOption(currency)?.value === CurrencyCode.USD;
   const normalizedCurrency = paymentToken
     ? getCurrencyById(paymentToken)
     : currency && getCurrencyOption(currency);

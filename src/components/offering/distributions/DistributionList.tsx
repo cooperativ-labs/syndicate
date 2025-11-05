@@ -1,10 +1,10 @@
-import { Maybe, OfferingDistribution } from '@gql/graphql';
+import { OfferingDistribution } from '@/types';
 import React, { FC } from 'react';
 
 import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 
 type DistributionListProps = DistributionListItemProps & {
-  distributions: Maybe<Maybe<OfferingDistribution>[]> | undefined;
+  distributions: OfferingDistribution[] | undefined;
 };
 
 const DistributionList: FC<DistributionListProps> = ({
@@ -31,9 +31,9 @@ const DistributionList: FC<DistributionListProps> = ({
         </div>
       </div>
       {hasDistributions ? (
-        distributions.map((dist, i) => {
+        distributions.map((dist: OfferingDistribution) => {
           return (
-            <div className="mb-3" key={i}>
+            <div className="mb-3" key={dist.id}>
               <DistributionListItem
                 distribution={dist as OfferingDistribution}
                 hideTransactionId={hideTransactionId}

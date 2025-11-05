@@ -1,8 +1,8 @@
-import { Address, Maybe } from '@gql/graphql';
+import { Address } from '@/types';
 import React, { FC } from 'react';
 
 type AddressProps = {
-  address: Maybe<Address> | undefined;
+  address: Address | undefined;
   className?: string;
   withLabel?: boolean;
   withCountry?: boolean;
@@ -13,8 +13,8 @@ export const AddressDisplay: FC<AddressProps> = ({
   withCountry,
   className
 }) => {
-  const { label, line1, line2, city, postalCode, stateProvince, country } = address as Address;
   if (address) {
+    const { label, line1, line2, city, postal_code, state_province, country } = address;
     return (
       <div className={className}>
         {withLabel && label && <div className="font-bold">{label}:</div>}
@@ -25,7 +25,7 @@ export const AddressDisplay: FC<AddressProps> = ({
         <div></div>
         <div>
           {city}
-          {stateProvince && `, ${stateProvince}`} {postalCode && postalCode}
+          {state_province && `, ${state_province}`} {postal_code && postal_code}
         </div>
 
         {withCountry && <div>{country}</div>}

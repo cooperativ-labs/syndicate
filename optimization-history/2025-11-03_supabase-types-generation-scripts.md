@@ -15,3 +15,4 @@ Reference:
 - Supabase JS TypeScript support and CLI generation: [supabase.com/docs/reference/javascript/typescript-support](https://supabase.com/docs/reference/javascript/typescript-support)
 
 
+

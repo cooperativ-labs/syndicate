@@ -1,6 +1,6 @@
 'use client';
 
-import { Offering } from '@gql/graphql';
+import { Offering, OfferingFull, RealEstatePropertyWithAddresses } from '@/types';
 import useWindowSize from '@hooks/useWindowSize';
 import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/router';
@@ -11,18 +11,23 @@ import { getBaseUrl } from '../utils/helpersURL';
 import Container from './Layouts/Container';
 
 type HeaderProps = {
-  offering: Offering;
+  offering: OfferingFull;
   small?: boolean;
+  realEstateProperties: RealEstatePropertyWithAddresses[] | undefined;
 };
 
-const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
+const Header: React.FunctionComponent<HeaderProps> = ({
+  offering,
+  small,
+  realEstateProperties
+}) => {
   const windowSize = useWindowSize();
-  const { id, name, bannerImage, brandColor, lightBrand } = offering;
+  const { id, name, offering_entity_id, banner_image, legalEntity } = offering;
 
   const shareURL = `${getBaseUrl()}/${id}`;
 
-  const offeringImages = offering.offeringEntity?.realEstateProperties
-    ?.map(property => property?.images)
+  const offeringImages = realEstateProperties
+    ?.map((property: RealEstatePropertyWithAddresses) => property?.addresses)
     .flat();
 
   const desktopHeight = small ? 'h-64' : 'h-96';
@@ -33,9 +38,9 @@ const Header: React.FunctionComponent<HeaderProps> = ({ offering, small }) => {
   return (
     <header data-test="molecule-header" className={cn('w-full relative overflow-hidden')}>
       <Container fullWidth className="bg-slate-500 object-cover w-full absolute ">
-        {bannerImage ? (
+        {banner_image ? (
           <div className={cn(imageBannerHeight, 'flex overflow-hidden w-full')}>
-            <img className={'object-cover object-center w-full'} src={bannerImage} />
+            <img className={'object-cover object-center w-full'} src={banner_image} />
           </div>
         ) : offeringImages && offeringImages.length > 0 ? (
           <div

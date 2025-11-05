@@ -1,35 +1,28 @@
+import { String0x } from "@src/web3/helpersChain";
 import {
-  AssetStatus,
-  CryptoAddressProtocol,
   CurrencyCode,
   DistributionPeriodType,
   DocumentFormat,
-  LegalEntityType,
-  LinkedAccount,
-  Maybe,
+  LinkedAccountType,
   NotificationSubject,
-  OfferingDetailsType,
-  OfferingStage,
   OfferingTabSection,
+  OfferingType,
   OrganizationPermissionType,
+  OrganizationUserPermission,
   RealEstatePropertyType,
-  ShareTransferEventType,
-} from "@gql/graphql";
-import { String0x } from "@src/web3/helpersChain";
-import { LinkedAccountType, OrganizationUserPermission } from "@/types";
+} from "@/types";
 
 // ===== PROFILE ======
-
 export const tabSectionOptions = [
-  { value: OfferingTabSection.Details, name: "Details" },
-  { value: OfferingTabSection.Financials, name: "Financials" },
-  { value: OfferingTabSection.Terms, name: "Terms" },
-  { value: OfferingTabSection.OfferorInfo, name: "The Offeror" },
-  { value: OfferingTabSection.Disclosures, name: "Disclosures" },
+  { value: OfferingTabSection.DETAILS, name: "Details" },
+  { value: OfferingTabSection.FINANCIALS, name: "Financials" },
+  { value: OfferingTabSection.TERMS, name: "Terms" },
+  { value: OfferingTabSection.OFFEROR_INFO, name: "The Offeror" },
+  { value: OfferingTabSection.DISCLOSURES, name: "Disclosures" },
 ];
 
 export const getTabSectionOption = (
-  desiredSectionValue: OfferingTabSection,
+  desiredSectionValue: keyof typeof OfferingTabSection,
 ) => {
   return tabSectionOptions.find(
     (option) => (option.value === desiredSectionValue ? option : null),
@@ -37,30 +30,30 @@ export const getTabSectionOption = (
 };
 
 export const socialAccountOptions = [
-  { value: LinkedAccountType.LinkedIn, name: "LinkedIn", icon: "linkedin" },
-  { value: LinkedAccountType.Github, name: "Github", icon: "github" },
-  { value: LinkedAccountType.Dribbble, name: "Dribbble", icon: "dribbble" },
-  { value: LinkedAccountType.Discord, name: "Discord", icon: "discord" },
-  { value: LinkedAccountType.Youtube, name: "Youtube", icon: "youtube" },
+  { value: LinkedAccountType.LINKEDIN, name: "LinkedIn", icon: "linkedin" },
+  { value: LinkedAccountType.GITHUB, name: "Github", icon: "github" },
+  { value: LinkedAccountType.DRIBBBLE, name: "Dribbble", icon: "dribbble" },
+  { value: LinkedAccountType.DISCORD, name: "Discord", icon: "discord" },
+  { value: LinkedAccountType.YOUTUBE, name: "Youtube", icon: "youtube" },
   {
-    value: LinkedAccountType.Soundcloud,
+    value: LinkedAccountType.SOUNDCLOUD,
     name: "SoundCloud",
     icon: "soundcloud",
   },
-  { value: LinkedAccountType.Twitter, name: "Twitter", icon: "twitter" },
-  { value: LinkedAccountType.Facebook, name: "Facebook", icon: "facebook" },
-  { value: LinkedAccountType.Instagram, name: "Instagram", icon: "instagram" },
-  { value: LinkedAccountType.Medium, name: "Medium", icon: "medium" },
-  { value: LinkedAccountType.Substack, name: "Substack", icon: "" },
-  { value: LinkedAccountType.Mirror, name: "Mirror", icon: "" },
-  { value: LinkedAccountType.Telegram, name: "Telegram", icon: "telegram" },
-  { value: LinkedAccountType.Email, name: "Email", icon: "envelope" },
-  { value: LinkedAccountType.Phone, name: "Phone", icon: "phone" },
-  { value: LinkedAccountType.Website, name: "Website", icon: "link" },
-  { value: LinkedAccountType.Other, name: "Other", icon: "" },
+  { value: LinkedAccountType.TWITTER, name: "Twitter", icon: "twitter" },
+  { value: LinkedAccountType.FACEBOOK, name: "Facebook", icon: "facebook" },
+  { value: LinkedAccountType.INSTAGRAM, name: "Instagram", icon: "instagram" },
+  { value: LinkedAccountType.MEDIUM, name: "Medium", icon: "medium" },
+  { value: LinkedAccountType.SUBSTACK, name: "Substack", icon: "" },
+  { value: LinkedAccountType.MIRROR, name: "Mirror", icon: "" },
+  { value: LinkedAccountType.TELEGRAM, name: "Telegram", icon: "telegram" },
+  { value: LinkedAccountType.EMAIL, name: "Email", icon: "envelope" },
+  { value: LinkedAccountType.PHONE, name: "Phone", icon: "phone" },
+  { value: LinkedAccountType.WEBSITE, name: "Website", icon: "link" },
+  { value: LinkedAccountType.OTHER, name: "Other", icon: "" },
 ];
 export const getSocialAccountOption = (
-  type: LinkedAccountType | null | undefined,
+  type: keyof typeof LinkedAccountType | null | undefined,
 ) => {
   const option = socialAccountOptions.find(
     (account) => (account.value === type ? type : null),
@@ -69,19 +62,19 @@ export const getSocialAccountOption = (
 };
 
 export const organizationPermissionOptions = [
-  { value: OrganizationPermissionType.Admin, name: "Admin", color: "blue-500" },
+  { value: OrganizationPermissionType.ADMIN, name: "Admin", color: "blue-500" },
   {
-    value: OrganizationPermissionType.Editor,
+    value: OrganizationPermissionType.EDITOR,
     name: "Editor",
     color: "emerald-600",
   },
   {
-    value: OrganizationPermissionType.Viewer,
+    value: OrganizationPermissionType.VIEWER,
     name: "Viewer",
     color: "orange-600",
   },
   {
-    value: OrganizationPermissionType.Auditor,
+    value: OrganizationPermissionType.AUDITOR,
     name: "Auditor",
     color: "gray-500",
   },
@@ -91,7 +84,7 @@ export const getOrganizationPermissionOption = (
   permission: OrganizationUserPermission,
 ): { value: OrganizationUserPermission; name: string; color: string } => {
   const defaultOption = {
-    value: OrganizationPermissionType.Viewer, // Set the default value as needed
+    value: OrganizationPermissionType.VIEWER, // Set the default value as needed
     name: "Not Found",
     color: "#000000",
   };
@@ -104,20 +97,20 @@ export const getOrganizationPermissionOption = (
 
 export const notificationSubjectOptions = [
   {
-    value: NotificationSubject.OfferingDistribution,
+    value: NotificationSubject.OFFERING_DISTRIBUTION,
     name: "Distribution Submitted",
   },
-  { value: NotificationSubject.ProceedsClaim, name: "Proceeds Claimed" },
+  { value: NotificationSubject.PROCEEDS_CLAIM, name: "Proceeds Claimed" },
   {
-    value: NotificationSubject.TransactionRequest,
+    value: NotificationSubject.TRANSACTION_REQUEST,
     name: "Transaction Approval Requested",
   },
-  { value: NotificationSubject.TradeExecution, name: "Trade Executed" },
-  { value: NotificationSubject.WhitelistApproval, name: "Investor Added" },
+  { value: NotificationSubject.TRADE_EXECUTION, name: "Trade Executed" },
+  { value: NotificationSubject.WHITELIST_APPROVAL, name: "Investor Added" },
 ];
 
 export const getNotificationSubjectOption = (
-  notificationSubject: NotificationSubject,
+  notificationSubject: keyof typeof NotificationSubject,
 ) => {
   const option = notificationSubjectOptions.find((option) => {
     return option.value === notificationSubject ? option : null;
@@ -127,6 +120,11 @@ export const getNotificationSubjectOption = (
 
 // ===== ENTITY ======
 
+export enum LegalEntityType {
+  Individual = "INDIVIDUAL",
+  Llc = "LLC",
+  Corporation = "CORPORATION",
+}
 export const entityTypeOptions = [
   { value: LegalEntityType.Individual, name: "Individual" },
   { value: LegalEntityType.Llc, name: "LLC" },
@@ -143,96 +141,97 @@ export const getEntityTypeOptions = (nonHuman: boolean) => {
 };
 
 export const docFormatOptions = [
-  { value: DocumentFormat.GoogleDoc, name: "Google Doc" },
+  { value: DocumentFormat.GOOGLE_DOC, name: "Google Doc" },
   {
-    value: DocumentFormat.GoogleDrive,
+    value: DocumentFormat.GOOGLE_DRIVE,
     name: "Google Drive",
     icon: "google-drive",
     subtitle: "Google Drive",
   },
   {
-    value: DocumentFormat.GoogleSheet,
+    value: DocumentFormat.GOOGLE_SHEET,
     name: "Google Sheet",
     icon: "google-drive",
     subtitle: "Google Drive",
   },
   {
-    value: DocumentFormat.GoogleSlide,
+    value: DocumentFormat.GOOGLE_SLIDE,
     name: "Google Slide",
     icon: "google-drive",
     subtitle: "Google Drive",
   },
   {
-    value: DocumentFormat.Notion,
+    value: DocumentFormat.NOTION,
     name: "Notion Page",
     icon: "file-alt",
     subtitle: "Notion Page",
   },
-  { value: DocumentFormat.Pdf, name: "PDF", icon: "file-pdf", subtitle: "PDF" },
+  { value: DocumentFormat.PDF, name: "PDF", icon: "file-pdf", subtitle: "PDF" },
   {
-    value: DocumentFormat.Github,
+    value: DocumentFormat.GITHUB,
     name: "Github",
     icon: "github",
     subtitle: "Github",
   },
   {
-    value: DocumentFormat.Excel,
+    value: DocumentFormat.EXCEL,
     name: "Excel",
     icon: "file-excel",
     subtitle: "Excel",
     ending: "xlsx",
   },
   {
-    value: DocumentFormat.Powerpoint,
+    value: DocumentFormat.POWERPOINT,
     name: "Powerpoint",
     icon: "file-powerpoint",
     subtitle: "Powerpoint",
   },
   {
-    value: DocumentFormat.WordDoc,
+    value: DocumentFormat.WORD_DOC,
     name: "Word",
     icon: "file-word",
     subtitle: "Word",
   },
   {
-    value: DocumentFormat.Video,
+    value: DocumentFormat.VIDEO,
     name: "Video",
     icon: "play",
     subtitle: "Video",
   },
   {
-    value: DocumentFormat.Other,
+    value: DocumentFormat.OTHER,
     name: "Other",
     icon: "file-alt",
     subtitle: "Document",
   },
   {
-    value: DocumentFormat.Markdown,
+    value: DocumentFormat.MARKDOWN,
     name: "Markdown",
     icon: "file-alt",
     subtitle: "Markdown",
   },
 ];
 
-export const getDocFormatOption = (type: Maybe<DocumentFormat> | undefined) => {
-  console.log("type", type);
+export const getDocFormatOption = (
+  type: keyof typeof DocumentFormat | undefined,
+) => {
   return docFormatOptions.find((option) => option.value === type);
 };
-
 // ===== OFFERING ======
-
 export const distributionPeriodOptions = [
-  { value: DistributionPeriodType.Day, name: "Day" },
-  { value: DistributionPeriodType.Week, name: "Week" },
-  { value: DistributionPeriodType.Month, name: "Month" },
-  { value: DistributionPeriodType.Quarter, name: "Quarter" },
-  { value: DistributionPeriodType.Year, name: "Year" },
+  { value: DistributionPeriodType.DAY, name: "Day" },
+  { value: DistributionPeriodType.WEEK, name: "Week" },
+  { value: DistributionPeriodType.MONTH, name: "Month" },
+  { value: DistributionPeriodType.QUARTER, name: "Quarter" },
+  { value: DistributionPeriodType.YEAR, name: "Year" },
   // { value: DistributionPeriodType.Described, name: 'Described' },
   // { value: DistributionPeriodType.Unspecified, name: 'Unspecified' },
   // { value: DistributionPeriodType.None, name: 'None' },
 ];
 
-export const getDistributionPeriod = (period: DistributionPeriodType) => {
+export const getDistributionPeriod = (
+  period: keyof typeof DistributionPeriodType,
+) => {
   const option = distributionPeriodOptions.find(
     (per) => (per.value === period ? per : null),
   );
@@ -243,24 +242,51 @@ export const getDistributionPeriod = (period: DistributionPeriodType) => {
 
 export const investmentOfferingTypeOptions = [
   {
-    value: OfferingDetailsType.RealEstate,
+    value: OfferingType.REAL_ESTATE,
     name: "Real Estate",
+  },
+  {
+    value: OfferingType.CRYPTO,
+    name: "Crypto",
+  },
+  {
+    value: OfferingType.PRIVATE_EQUITY,
+    name: "Private Equity",
+  },
+  {
+    value: OfferingType.VENTURE_CAPITAL,
+    name: "Venture Capital",
+  },
+  {
+    value: OfferingType.OTHER,
+    name: "Other",
   },
 ];
 
 export const propertyTypeOptions = [
-  { value: RealEstatePropertyType.SingleFamily, name: "Single-family" },
-  { value: RealEstatePropertyType.MultiFamily, name: "Multi-family" },
-  { value: RealEstatePropertyType.Commercial, name: "Commercial" },
-  { value: RealEstatePropertyType.LandOnly, name: "Vacant land" },
-  { value: RealEstatePropertyType.SelfStorage, name: "Self-storage" },
+  { value: RealEstatePropertyType.SINGLE_FAMILY, name: "Single-family" },
+  { value: RealEstatePropertyType.MULTI_FAMILY, name: "Multi-family" },
+  { value: RealEstatePropertyType.COMMERCIAL, name: "Commercial" },
+  { value: RealEstatePropertyType.LAND_ONLY, name: "Vacant land" },
+  { value: RealEstatePropertyType.SELF_STORAGE, name: "Self-storage" },
 ];
 
-export const getPropertyTypeOption = (inputValue: RealEstatePropertyType) => {
+export const getPropertyTypeOption = (
+  inputValue: keyof typeof RealEstatePropertyType,
+) => {
   return propertyTypeOptions.find(
     (option) => (option.value === inputValue ? option : null),
   );
 };
+
+export enum AssetStatus {
+  Identified = "IDENTIFIED",
+  InNegotiation = "IN_NEGOTIATION",
+  DueDiligence = "DUE_DILIGENCE",
+  UnderContract = "UNDER_CONTRACT",
+  Closed = "CLOSED",
+  ForSale = "FOR_SALE",
+}
 
 export const assetStatusOptions = [
   { value: AssetStatus.Identified, name: "Identified", width: "20%" },
@@ -271,8 +297,16 @@ export const assetStatusOptions = [
   { value: AssetStatus.ForSale, name: "For sale", width: "20%" },
 ];
 
+export enum OfferingStage {
+  Identified = "IDENTIFIED",
+  InNegotiation = "IN_NEGOTIATION",
+  DueDiligence = "DUE_DILIGENCE",
+  Sale = "SALE",
+  Locked = "LOCKED",
+  Closed = "CLOSED",
+}
 export const getAssetStatusOption = (
-  inputValue: OfferingStage | Maybe<AssetStatus> | undefined,
+  inputValue: OfferingStage | AssetStatus | undefined,
 ) => {
   return assetStatusOptions.find(
     (option) => (option.value === inputValue ? option : null),
@@ -301,7 +335,7 @@ type SwapStatusOptionProps = {
   isFiller: boolean | undefined;
   txnApprovalsEnabled: boolean | undefined;
   swapApprovalsEnabled: boolean | undefined;
-  isVisible: Maybe<boolean> | undefined;
+  isVisible: boolean | undefined;
 };
 
 export const getSwapStatusOption = ({
@@ -368,6 +402,14 @@ export const getSwapStatusOption = ({
 };
 
 // ===== Trades =====
+export enum ShareTransferEventType {
+  Trade = "TRADE",
+  Issuance = "ISSUANCE",
+  Forced = "FORCED",
+  Transfer = "TRANSFER",
+  Disapproval = "DISAPPROVAL",
+  Approval = "APPROVAL",
+}
 
 export const TransferEventOptions = [
   { value: ShareTransferEventType.Trade, name: "Trade", color: "Purple-600" },
@@ -398,64 +440,72 @@ export const getTransferEventOption = (tradeType: ShareTransferEventType) => {
 
 // ===== CURRENCY =====
 
-export enum currencyType {
-  FIAT,
-  CRYP,
-  COOP,
+export enum CurrencyType {
+  COOP = "COOP",
+  FIAT = "FIAT",
+  CRYP = "CRYP",
 }
+
+export enum CryptoAddressProtocol {
+  Btc = "BTC",
+  Eth = "ETH",
+  Ada = "ADA",
+  Matic = "MATIC",
+}
+
 export const currencyOptions = [
   {
-    type: currencyType.COOP,
-    value: CurrencyCode.Cc,
+    type: CurrencyType.COOP,
+    value: CurrencyCode.CC,
     symbol: "Contributor Credits",
   },
   {
-    type: currencyType.FIAT,
-    value: CurrencyCode.Usd,
+    type: CurrencyType.FIAT,
+    value: CurrencyCode.USD,
     symbol: "USD",
     decimals: 2,
   },
   {
-    type: currencyType.FIAT,
-    value: CurrencyCode.Eur,
+    type: CurrencyType.FIAT,
+    value: CurrencyCode.EUR,
     symbol: "EUR",
     decimals: 2,
   },
   {
-    type: currencyType.FIAT,
-    value: CurrencyCode.Gbp,
+    type: CurrencyType.FIAT,
+    value: CurrencyCode.GBP,
     symbol: "GBP",
     decimals: 2,
   },
   {
-    type: currencyType.FIAT,
-    value: CurrencyCode.Cad,
+    type: CurrencyType.FIAT,
+    value: CurrencyCode.CAD,
     symbol: "CAD",
     decimals: 2,
   },
   {
-    type: currencyType.FIAT,
-    value: CurrencyCode.Aud,
+    type: CurrencyType.FIAT,
+    value: CurrencyCode.AUD,
     symbol: "AUD",
     decimals: 2,
   },
   {
-    type: currencyType.FIAT,
-    value: CurrencyCode.Kyd,
+    type: CurrencyType.FIAT,
+    value: CurrencyCode.KYD,
     symbol: "KYD",
     decimals: 2,
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.Btc,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.BTC,
     symbol: "BTC",
     protocol: CryptoAddressProtocol.Btc,
     chainId: 1,
     decimals: 8,
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.Eth,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.ETH,
     symbol: "ETH",
     protocol: CryptoAddressProtocol.Eth,
     chainId: 1,
@@ -463,8 +513,8 @@ export const currencyOptions = [
     logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/1027.png",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.Ada,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.ADA,
     symbol: "ADA",
     protocol: CryptoAddressProtocol.Ada,
     chainId: 1,
@@ -472,8 +522,8 @@ export const currencyOptions = [
     logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/2010.png",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.Matic,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.MATIC,
     symbol: "MATIC",
     protocol: CryptoAddressProtocol.Eth,
     chainId: 137,
@@ -481,8 +531,8 @@ export const currencyOptions = [
     logo: "https://s2.coinmarketcap.com/static/img/coins/64x64/3890.png",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.Usdc,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.USDC,
     symbol: "USDC",
     address: "0xa0b86991c6218b36c1d19d4a2e9eb0ce3606eb48",
     website: "https://www.centre.io/",
@@ -493,8 +543,8 @@ export const currencyOptions = [
       "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.Dai,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.DAI,
     symbol: "DAI",
     address: "0x6b175474e89094c44da98b954eedeac495271d0f",
     website: "https://makerdao.com/",
@@ -505,8 +555,8 @@ export const currencyOptions = [
       "https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.PoSUsdc,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.PoS_USDC,
     symbol: "Matic USDC",
     address: "0x2791Bca1f2de4661ED88A30C99A7a9449Aa84174",
     website: "https://www.centre.io/",
@@ -517,8 +567,8 @@ export const currencyOptions = [
       "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.PoSDai,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.PoS_DAI,
     symbol: "Matic DAI",
     address: "0x8f3Cf7ad23Cd3CaDbD9735AFf958023239c6A063",
     website: "https://makerdao.com/",
@@ -527,8 +577,8 @@ export const currencyOptions = [
     decimals: 18,
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.UsdcTest,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.USDC_TEST_,
     symbol: "USDC*",
     address: "0x66458Bb9BF8e09eA40cf916BCb370727455F6040",
     website: "https://www.centre.io/",
@@ -539,8 +589,8 @@ export const currencyOptions = [
       "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.DaiTest,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.DAI_TEST_,
     symbol: "DAI*",
     address: "0x3aa3DAd8008288CB5F9dc2F6e1e6213035ddBE88",
     website: "https://makerdao.com/",
@@ -551,8 +601,8 @@ export const currencyOptions = [
       "https://assets.coingecko.com/coins/images/9956/large/dai-multi-collateral-mcd.png?1574218774",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.UsdcMaticTest,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.USDC_MATIC_TEST_,
     symbol: "Matic USDC*",
     address: "NEED ADDRESS",
     website: "https://www.centre.io/",
@@ -563,8 +613,8 @@ export const currencyOptions = [
       "https://assets.coingecko.com/coins/images/6319/large/USD_Coin_icon.png?1547042389",
   },
   {
-    type: currencyType.CRYP,
-    value: CurrencyCode.DaiMaticTest,
+    type: CurrencyType.CRYP,
+    value: CurrencyCode.DAI_MATIC_TEST_,
     symbol: "Matic DAI*",
     address: "NEED ADDRESS",
     website: "https://makerdao.com/",
@@ -578,26 +628,26 @@ export const currencyOptions = [
 
 export const bacOptions = currencyOptions.filter(
   (option) =>
-    (option.type === currencyType.CRYP &&
+    (option.type === CurrencyType.CRYP &&
       option.protocol === CryptoAddressProtocol.Eth) ||
-    option.protocol === CryptoAddressProtocol.Algo,
+    option.protocol === CryptoAddressProtocol.Matic,
 );
 
 export const fiatOptions = currencyOptions.filter((option) =>
-  option.type === currencyType.FIAT
+  option.type === CurrencyType.FIAT
 );
 
 export const currencyOptionsExcludeCredits = currencyOptions.filter(
-  (option) => option.type !== currencyType.COOP && option.chainId !== 3,
+  (option) => option.type !== CurrencyType.COOP && option.chainId !== 3,
 );
 
 export const getCurrencyOption = (
-  currency: Maybe<CurrencyCode> | undefined,
+  currency: keyof typeof CurrencyCode | undefined,
 ) => {
   return currencyOptions.find((cur) => (cur.value === currency ? cur : null));
 };
 export const getCurrencyByCode = (
-  currencyCode: Maybe<CurrencyCode> | undefined,
+  currencyCode: keyof typeof CurrencyCode | undefined,
 ) => {
   return currencyOptions.find(
     (cur) => (cur.value === currencyCode ? cur : null),

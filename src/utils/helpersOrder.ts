@@ -1,13 +1,10 @@
-import {
-  Maybe,
-  ShareTransferEvent,
-  ShareTransferEventType,
-} from "@gql/graphql";
 import { swapContractABI } from "@src/web3/generated";
 import { String0x } from "@src/web3/helpersChain";
 import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
 import { readContract } from "wagmi/actions";
-import { ShareOrder } from "@/types";
+import { Address, ShareOrder } from "@/types";
+import { getWagmiConfig } from "@src/web3/wagmi";
+import { ShareTransferEventType, TransferEventOptions } from "./enumConverters";
 
 export type ContractOrder = {
   orderId: string | undefined;
@@ -31,16 +28,22 @@ export function getOrdersByPrice(contractOrderList: ContractOrder[]) {
 
 export function getLowestOrderPrice(
   contractOrderList: ContractOrder[],
-  priceStart: Maybe<number> | undefined,
+  priceStart: number | null,
 ) {
+  if (!priceStart) {
+    return NaN;
+  }
   const ordersByPrice = getOrdersByPrice(contractOrderList);
   return ordersByPrice?.length > 0 ? ordersByPrice[0].price : priceStart;
 }
 
 export const getCurrentOrderPrice = (
   contractOrderList: ContractOrder[],
-  startingPrice: Maybe<number> | undefined,
+  startingPrice: number | null,
 ) => {
+  if (!startingPrice) {
+    return NaN;
+  }
   return getLowestOrderPrice(contractOrderList, startingPrice);
 };
 
@@ -51,11 +54,11 @@ export async function getOrderArrayFromContract(
 ): Promise<ContractOrder[]> {
   const orderArray = orders?.map(async (order) => {
     const data = order &&
-      (await readContract({
-        address: swapContractAddress,
+      (await readContract(getWagmiConfig(), {
+        address: swapContractAddress as String0x,
         abi: swapContractABI,
         functionName: "orders",
-        args: [BigInt(order.contractIndex)],
+        args: [BigInt(order.contract_index)],
       }));
     const adjustTokenDecimalsForShareContract = paymentTokenDecimals -
       shareContractDecimals;
@@ -103,16 +106,17 @@ export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]) => {
 };
 
 export const getDisapprovedTransferEvents = (
-  transferEvents: ShareTransferEvent[] | undefined,
-  order: ShareOrder,
+  transferEvents: TransferEvent[] | undefined,
+  order: ContractOrder,
   userWalletAddress: String0x | undefined,
 ) =>
   transferEvents?.filter((transferEvent) => {
-    const { orderIndex, recipientAddress, senderAddress, type } = transferEvent;
+    const { contract_index, recipient_address, sender_address, type } =
+      transferEvent;
     if (
-      orderIndex === order.contractIndex &&
-      recipientAddress === userWalletAddress &&
-      type === ShareTransferEventType.Disapproval
+      contract_index === order.contract_index &&
+      recipient_address === userWalletAddress &&
+      type === TransferEventOptions.DISAPPROVAL
     ) {
       return transferEvent;
     }

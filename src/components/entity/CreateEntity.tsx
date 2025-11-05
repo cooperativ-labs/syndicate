@@ -1,8 +1,6 @@
 'use client';
 
-import { CurrencyCode, LegalEntityType, Organization } from '@gql/graphql';
-
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { CurrencyCode, LegalEntity, Organization } from '@/types';
 import { Country, IState, State } from 'country-state-city';
 
 import React, { FC, useState } from 'react';
@@ -21,7 +19,11 @@ import { useRouter } from 'next/navigation';
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import { OrganizationWithLegalEntities } from '@/types';
 import { addLegalEntity } from '@src/utils/actions/entityActions';
-import { currencyOptionsExcludeCredits, entityTypeOptions } from '@src/utils/enumConverters';
+import {
+  currencyOptionsExcludeCredits,
+  entityTypeOptions,
+  LegalEntityType
+} from '@src/utils/enumConverters';
 
 export type CreateEntityType = {
   defaultLogo?: string;
@@ -31,7 +33,7 @@ export type CreateEntityType = {
 type FormData = {
   legalName: string;
   entityPurpose?: string;
-  operatingCurrency: CurrencyCode;
+  operatingCurrency: keyof typeof CurrencyCode;
   jurCountry: string;
   jurProvince?: string;
   type: LegalEntityType;
@@ -56,8 +58,6 @@ const CreateEntity: FC<CreateEntityType & { organization: OrganizationWithLegalE
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
-
-  const router = useRouter();
 
   const [inputAddress, setInputAddress] = useState<AddressType>({
     address1: '',
@@ -93,10 +93,10 @@ const CreateEntity: FC<CreateEntityType & { organization: OrganizationWithLegalE
     defaultValues: {
       legalName: '',
       entityPurpose: '',
-      operatingCurrency: CurrencyCode.Usd,
+      operatingCurrency: CurrencyCode.USD as keyof typeof CurrencyCode,
       jurCountry: '',
       jurProvince: '',
-      type: undefined as any,
+      type: undefined as LegalEntityType | undefined,
       addressAutocomplete: ''
     }
   });
@@ -109,18 +109,7 @@ const CreateEntity: FC<CreateEntityType & { organization: OrganizationWithLegalE
     watch,
     setError,
     clearErrors
-  } = useForm<FormData>({
-    resolver: zodResolver(schema),
-    defaultValues: {
-      legalName: '',
-      entityPurpose: '',
-      operatingCurrency: CurrencyCode.Usd,
-      jurCountry: '',
-      jurProvince: '',
-      type: undefined as any,
-      addressAutocomplete: ''
-    }
-  });
+  } = form;
 
   const watchedJurCountry = watch('jurCountry');
 

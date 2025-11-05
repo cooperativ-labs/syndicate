@@ -1,12 +1,5 @@
-import {
-  Currency,
-  Maybe,
-  Offering,
-  OfferingDescriptionText,
-  OfferingDetails,
-  OfferingTabSection,
-  RealEstateProperty
-} from '@gql/graphql';
+import { Offering, OfferingTabSection, offeringTabSectionTypes } from '@/types';
+
 import MapPanel from '@src/components/MapPanel';
 import SourcesAndUsesDisplay from '@src/components/offering/tabs/financialDisplay/SourcesAndUses';
 import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
@@ -22,8 +15,8 @@ type ProfileTabContainerProps = {
 };
 
 const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
-  const [activeTab, setActiveTab] = useState<OfferingTabSection | string>(
-    OfferingTabSection.Details
+  const [activeTab, setActiveTab] = useState<offeringTabSectionTypes | string>(
+    offeringTabSectionTypes.Details
   );
   const isMobile = useWindowSize().width < 768;
   function sortByOrder(descriptions: OfferingDescriptionText[]) {
@@ -32,22 +25,22 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
 
   const detailsDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      description => description?.section === OfferingTabSection.Details
+      description => description?.section === OfferingTabSection.DETAILS
     ) as OfferingDescriptionText[]
   );
   const termsDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      description => description?.section === OfferingTabSection.Terms
+      description => description?.section === OfferingTabSection.TERMS
     ) as OfferingDescriptionText[]
   );
   const offerorInfoDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      description => description?.section === OfferingTabSection.OfferorInfo
+      description => description?.section === OfferingTabSection.OFFEROR_INFO
     ) as OfferingDescriptionText[]
   );
   const disclosuresDescriptions = sortByOrder(
     offering.profileDescriptions?.filter(
-      description => description?.section === OfferingTabSection.Disclosures
+      description => description?.section === OfferingTabSection.DISCLOSURES
     ) as OfferingDescriptionText[]
   );
 

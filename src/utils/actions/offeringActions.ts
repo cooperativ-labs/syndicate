@@ -1,8 +1,9 @@
 "use server";
 
-import { Document, Offering } from "@gql/graphql";
 import { createClient } from "@supabase/utils/server";
 import { revalidatePath } from "next/cache";
+import { Document, OfferingFull, OfferingParticipant } from "@/types";
+import { getOfferingSmartContractSet } from "./cryptoActions";
 
 type AddOfferingParams = {
   offeringEntityId: string;
@@ -45,29 +46,40 @@ export async function addOffering({
   };
 }
 
-export async function getOfferingById(offeringId: string): Promise<Offering> {
+export async function getOfferingById(
+  offeringId: string,
+): Promise<OfferingFull> {
   const supabase = createClient();
-  const { data, error } = await supabase
-    .from("offering")
-    .select(
-      "*, image(id, url, label, file_id), offering_smart_contract_set(id, share_contract_id)",
-    )
-    .eq("id", offeringId);
-  if (error) throw error;
-  return data[0];
+  const [offeringRes, smartContracts] = await Promise.all([
+    supabase
+      .from("offering")
+      .select([
+        "*",
+        "legalEntity:legal_entity(*, addresses:address(*))",
+        "image(id, url, label, file_id)",
+        "participants:offering_participant(*)",
+      ].join(", "))
+      .eq("id", offeringId),
+    getOfferingSmartContractSet(offeringId),
+  ]);
+
+  const { data, error } = offeringRes;
+  if (error) throw `getOfferingById: ${error.message}`;
+  const rows = (data ?? []) as any[];
+  const participants = rows[0].participants as OfferingParticipant[];
+  return { ...rows[0], participants, offeringSmartContracts: smartContracts };
 }
 
-export async function getOfferingWithDocumentsById(
+export async function getOfferingDocumentsById(
   offeringId: string,
-): Promise<Offering & { documents: Document[] }> {
+): Promise<Document[]> {
   const supabase = createClient();
-  const offering = await getOfferingById(offeringId);
   const { data: documents, error } = await supabase
     .from("document")
     .select("*")
     .eq("offering_id", offeringId);
   if (error) throw error;
-  return { ...offering, documents: documents ?? [] };
+  return documents;
 }
 
 // Update offering profile fields

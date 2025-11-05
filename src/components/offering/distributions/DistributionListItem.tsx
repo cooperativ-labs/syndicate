@@ -1,4 +1,4 @@
-import { Currency, CurrencyCode, Maybe, OfferingDistribution } from '@gql/graphql';
+import { OfferingDistribution } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
@@ -11,7 +11,7 @@ import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
 import { toNormalNumber } from '@src/web3/util';
 import { cn } from '@src/lib/utils';
 import React, { FC, useEffect } from 'react';
-import { useAccount, useChainId, useContractReads } from 'wagmi';
+import { useAccount, useChainId, useReadContract, useReadContracts } from 'wagmi';
 
 export type DistributionListItemProps = {
   distributionContractAddress: String0x;
@@ -33,7 +33,7 @@ const DistributionListItem: FC<
   const { address: userWalletAddress } = useAccount();
   const isMyDistribution = userWalletAddress === walletAddress;
 
-  const { transactionHash, contractIndex } = distribution;
+  const { transaction_hash, contract_index } = distribution;
 
   const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
 
@@ -47,23 +47,13 @@ const DistributionListItem: FC<
     payoutTokenAddress,
     isErc20Payout,
     amountRemaining
-  } = useDistributionDetails(distributionContractAddress, contractIndex);
+  } = useDistributionDetails(distributionContractAddress, contract_index);
 
-  const { data, refetch } = useContractReads({
-    contracts: [
-      {
-        address: distributionContractAddress,
-        abi: dividendContractABI,
-        functionName: 'getClaimableAmount',
-        args: [walletAddress as String0x, BigInt(contractIndex)]
-      },
-      {
-        address: distributionContractAddress,
-        abi: dividendContractABI,
-        functionName: 'claimedAmount',
-        args: [walletAddress as String0x, BigInt(contractIndex)]
-      }
-    ]
+  const { data, refetch } = useReadContract({
+    address: distributionContractAddress,
+    abi: dividendContractABI,
+    functionName: 'getClaimableAmount',
+    args: [walletAddress as String0x, BigInt(contract_index)]
   });
 
   const now = new Date();
@@ -78,17 +68,17 @@ const DistributionListItem: FC<
   }, [isBeforePayoutDate, refetch]);
 
   const amountToClaim = data
-    ? toNormalNumber(data[0].result as bigint, getCurrencyById(payoutTokenAddress)?.decimals)
+    ? toNormalNumber(data, getCurrencyById(payoutTokenAddress)?.decimals)
     : undefined;
 
   const claimedAmount = data
-    ? toNormalNumber(data[1].result as bigint, getCurrencyById(payoutTokenAddress)?.decimals)
+    ? toNormalNumber(data, getCurrencyById(payoutTokenAddress)?.decimals)
     : undefined;
 
   const handleClaim = async () => {
     claimDistribution({
       distributionContractAddress,
-      distributionContractIndex: contractIndex,
+      distributionContractIndex: contract_index,
       setButtonStep
     });
   };
@@ -125,7 +115,7 @@ const DistributionListItem: FC<
       {!hideTransactionId && (
         <div className="col-span-2 mt-3 md:mt-0">
           <div className="md:w-auto font-medium ">
-            <FormattedCryptoAddress chainId={chainId} address={transactionHash} lookupType="tx" />
+            <FormattedCryptoAddress chainId={chainId} address={transaction_hash} lookupType="tx" />
           </div>
         </div>
       )}

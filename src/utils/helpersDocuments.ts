@@ -1,11 +1,12 @@
-import { Document, DocumentFormat, DocumentType, Maybe } from "@gql/graphql";
+import { Document, DocumentFormat, DocumentType } from "@/types";
+import { Database } from "@/types/database.types";
 
 export type urlToDatabaseProps = {
   url: string;
   fileId: string;
   title: string;
   docType: DocumentType | undefined;
-  format: DocumentFormat | undefined;
+  format: keyof typeof DocumentFormat | undefined;
 };
 
 // export type UrlToDatabase = (args: UrlToDatabaseArgs) => void;
@@ -14,23 +15,23 @@ export const getFileFormat = (file: File) => {
   const fileType = file.type;
   switch (fileType) {
     case "application/pdf":
-      return DocumentFormat.Pdf;
+      return DocumentFormat.PDF;
     case "application/msword":
     case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
-      return DocumentFormat.WordDoc;
+      return DocumentFormat.WORD_DOC;
     case "text/markdown":
-      return DocumentFormat.Markdown;
+      return DocumentFormat.MARKDOWN;
     case "xls":
     case "xlsx":
-      return DocumentFormat.Excel;
+      return DocumentFormat.EXCEL;
     default:
-      return DocumentFormat.Other;
+      return DocumentFormat.OTHER;
   }
 };
 
 export const getDocumentsOfType = (
   documents: Document[] | undefined,
-  type: DocumentType,
+  type: Database["public"]["Enums"]["document_type"] | null,
 ) => {
-  return documents?.filter((document) => document?.type?.includes(type));
+  return documents?.filter((document) => document?.type === type);
 };

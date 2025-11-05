@@ -120,6 +120,17 @@ export async function addTransferEvent(
 
 // =========== DISTRIBUTIONS ================
 
+export const getDistributions = async (
+ distributionContractAddress: string,
+): Promise<OfferingDistribution[]> => {
+ const supabase = createClient();
+ const { data, error } = await supabase
+  .from("offering_distribution")
+  .select("*")
+  .eq("contract_index", distributionContractAddress);
+ return data;
+};
+
 type AddDistributionParams = {
  transactionHash: string;
  contractIndex: number;

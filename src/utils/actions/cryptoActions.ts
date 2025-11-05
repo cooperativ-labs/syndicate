@@ -254,25 +254,57 @@ export async function getOfferingSmartContractSet(
   offeringId: string,
 ): Promise<OfferingSmartContractSet | null> {
   const supabase = createClient();
+  try {
+    const { data, error } = await supabase
+      .from("offering_smart_contract_set")
+      .select(
+        [
+          "*",
+          "swapContract:smart_contract!offering_smart_contract_set_swap_contract_id_fkey(*, crypto_address(*))",
+          "distributionContract:smart_contract!offering_smart_contract_set_distribution_contract_id_fkey(*, crypto_address(*))",
+          "shareContract:smart_contract!offering_smart_contract_set_share_contract_id_fkey(*, crypto_address(*))",
+        ].join(", "),
+      )
+      .eq("offering_id", offeringId)
+      .maybeSingle();
 
-  const { data, error } = await supabase
-    .from("offering_smart_contract_set")
-    .select(
-      [
-        "*",
-        "swapContract:smart_contract!smart_contract_swap_contract_id_fkey(id, cryptoAddress:crypto_address(address))",
-        "distributionContract:smart_contract!smart_contract_distribution_contract_id_fkey(id, cryptoAddress:crypto_address(address))",
-        "shareContract:smart_contract!smart_contract_share_contract_id_fkey(id, cryptoAddress:crypto_address(address))",
-      ].join(", "),
-    )
-    .eq("offering_id", offeringId)
-    .single();
+    if (error) {
+      throw error;
+    }
 
-  if (error) {
-    throw error;
+    if (!data) {
+      return null;
+    }
+
+    // Transform the data to match the expected type structure
+    // Supabase returns crypto_address as the nested object, we need to map it to cryptoAddress
+    const transformContract = (
+      contract: any,
+    ): (SmartContract & { cryptoAddress: CryptoAddress }) | null => {
+      if (!contract) return null;
+      const cryptoAddress = contract.crypto_address;
+      if (!cryptoAddress) return null;
+
+      // Remove crypto_address from contract and add cryptoAddress
+      const { crypto_address, ...contractWithoutCrypto } = contract;
+      return {
+        ...contractWithoutCrypto,
+        cryptoAddress: cryptoAddress,
+      } as SmartContract & { cryptoAddress: CryptoAddress };
+    };
+
+    const result = {
+      swapContract: transformContract((data as any).swapContract),
+      distributionContract: transformContract(
+        (data as any).distributionContract,
+      ),
+      shareContract: transformContract((data as any).shareContract),
+    };
+
+    return result as OfferingSmartContractSet;
+  } catch (error: any) {
+    throw `getOfferingSmartContractSet: ${error.message}`;
   }
-
-  return data;
 }
 
 type CreateSwapContractParams = {

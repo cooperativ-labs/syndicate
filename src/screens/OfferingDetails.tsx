@@ -1,6 +1,5 @@
 'use client';
 import { useUserContext } from '@contexts/UserContext';
-import { DocumentType, Offering } from '@gql/graphql';
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import AlertBanner from '@src/components/alerts/AlertBanner';
 import Button from '@src/components/buttons/Button';
@@ -21,12 +20,14 @@ import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { MatchSupportedChains } from '@src/web3/wagmi';
+import { Document, DocumentType } from '@/types';
 
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
+import { OfferingFull } from '@/types';
 
 type OfferingDetailsProps = {
-  offering: Offering & { documents: Document[] };
+  offering: OfferingFull;
 };
 
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
@@ -36,7 +37,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
 
   const { id, name, offering_entity_id, is_public, access_code, documents } = offering;
 
-  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
+  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT);
 
   const details = {
     investmentCurrency: offering.investment_currency,

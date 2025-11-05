@@ -1,6 +1,6 @@
 'use client';
 
-import { LegalEntity, Maybe } from '@gql/graphql';
+import { LegalEntity, RealEstatePropertyWithAddresses } from '@/types';
 import Button from '@src/components/buttons/Button';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -9,12 +9,14 @@ import React, { FC } from 'react';
 import RealEstatePropertyCard from './RealEstatePropertyCard';
 
 type OfferingPropertiesProps = {
-  offeringEntity: Maybe<LegalEntity> | undefined;
+  properties: RealEstatePropertyWithAddresses[] | undefined;
+  offeringEntity: LegalEntity;
   isOfferingManager: boolean;
   offeringId: string;
 };
 
 const OfferingProperties: FC<OfferingPropertiesProps> = ({
+  properties,
   offeringEntity,
   isOfferingManager,
   offeringId
@@ -22,12 +24,12 @@ const OfferingProperties: FC<OfferingPropertiesProps> = ({
   const router = useRouter();
   return (
     <div className="flex flex-col md:flex-row md:flex-wrap justify center gap-5">
-      {offeringEntity?.realEstateProperties?.map((property: any, i: number) => (
+      {properties?.map((property: RealEstatePropertyWithAddresses, i: number) => (
         <RealEstatePropertyCard
           key={i}
           property={property}
-          currency={offeringEntity?.operatingCurrency}
-          offeringEntityId={offeringEntity.id}
+          currency={offeringEntity.operating_currency}
+          offeringEntityId={offeringEntity.id.toString()}
         />
       ))}
       {isOfferingManager && (

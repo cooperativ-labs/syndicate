@@ -1,6 +1,6 @@
 'use client';
 
-import { Offering, Organization } from '@gql/graphql';
+import { OfferingFull, Organization } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { cn } from '@src/lib/utils';

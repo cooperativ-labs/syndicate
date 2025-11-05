@@ -2,12 +2,8 @@ import {
   Jurisdiction,
   LegalEntity,
   LegalEntityType,
-  Maybe,
-  Organization,
   OrganizationPermissionType,
-  OrganizationUser,
-  OrganizationUserConnection,
-} from "@gql/graphql";
+} from "@/types";
 import { Country, State } from "country-state-city";
 import {
   LegalEntityWithAddresses,
@@ -24,7 +20,7 @@ import {
 // };
 
 export const entityNotHuman = (entity: LegalEntity) => {
-  return entity?.type !== LegalEntityType.Individual;
+  return entity?.type !== LegalEntityType.INDIVIDUAL;
 };
 
 export const getSelectedAddressFromEntity = (
@@ -55,7 +51,7 @@ export const getIsAdmin = (
   },
 ) => {
   return organization.organizationUsers?.find((u) => u?.user_id === userId)
-    ?.permissions?.includes(OrganizationPermissionType.Admin);
+    ?.permissions?.includes(OrganizationPermissionType.ADMIN);
 };
 
 export const getIsEditorOrAdmin = (
@@ -72,14 +68,14 @@ export const getIsEditorOrAdmin = (
   )?.permissions;
 
   return (
-    userPermissions?.includes(OrganizationPermissionType.Admin) ||
-    userPermissions?.includes(OrganizationPermissionType.Editor)
+    userPermissions?.includes(OrganizationPermissionType.ADMIN) ||
+    userPermissions?.includes(OrganizationPermissionType.EDITOR)
   );
 };
 
 export const renderJurisdiction = (
-  jurisdiction: Maybe<Jurisdiction> | undefined,
-): Maybe<string> | undefined => {
+  jurisdiction: Jurisdiction | undefined,
+): string | undefined => {
   const jurCountry = jurisdiction?.country;
   const jurProvince = jurisdiction?.province;
   const country = jurCountry && Country.getCountryByCode(jurCountry)?.name;

@@ -1,6 +1,5 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
@@ -12,7 +11,6 @@ import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import { RETRIEVE_ORDERS } from '@src/utils/graphQueries/orders';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import {
   ContractOrder,
@@ -27,63 +25,82 @@ import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
-
-import { OfferingFull } from '@/types';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
+import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
+import {
+  Document,
+  DocumentType,
+  OfferingFull,
+  OrganizationComplete,
+  OfferingDistribution,
+  RealEstatePropertyWithAddresses
+} from '@/types';
+import { getDistributions, retrieveOrders } from '@src/utils/actions/orderActions';
 
 type OfferingProfileProps = {
   offering: OfferingFull;
+  organization: OrganizationComplete;
 };
 
-const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
-  console.log('offering', offering);
+const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) => {
   const router = useRouter();
+
   const { address: userWalletAddress } = useAccount();
   const {
-    details,
-    brandColor,
-    website,
-    offeringEntity,
     id: offeringId,
     name: offeringName,
-    offering_distributions,
-    offering_smart_contract_sets,
-    offering_documents
+    website,
+    offeringSmartContracts,
+    legalEntity,
+    price_start
   } = offering;
 
-  const contractSet = smartContractSets?.slice(-1)[0];
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
-
-  const shareContract = contractSet?.shareContract;
-  const swapContract = contractSet?.swapContract;
+  const [realEstateProperties, setRealEstateProperties] = useState<
+    RealEstatePropertyWithAddresses[]
+  >([]);
+  const [documents, setDocuments] = useState<Document[]>([]);
+  const [distributions, setDistributions] = useState<OfferingDistribution[]>([]);
+  const shareContract = offeringSmartContracts?.shareContract;
+  const swapContract = offeringSmartContracts?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
-  const distributionContract = contractSet?.distributionContract;
+  const distributionContract = offeringSmartContracts?.distributionContract;
   const distributionContractAddress = distributionContract?.cryptoAddress.address as String0x;
 
   const partitions = shareContract?.partitions as String0x[];
-  const type = details && details.type;
-  const stage = details && details.stage;
-  const organization = offeringEntity?.organization;
+
   const shareURL = `${getBaseUrl()}/${offeringId}`;
 
   const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
 
-  const { data: ordersData, refetch: refetchOrders } = useQuery(RETRIEVE_ORDERS, {
-    variables: { swapContractAddress: swapContractAddress }
-  });
-
-  const orders = ordersData?.queryShareOrder;
+  useAsync(async () => {
+    const orders = await retrieveOrders(swapContractAddress);
+    if (orders) {
+      const contractSaleList =
+        paymentTokenDecimals &&
+        (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
+      contractSaleList && setContractSaleList(contractSaleList);
+    }
+  }, [swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
   useAsync(async () => {
-    const contractSaleList =
-      orders &&
-      paymentTokenDecimals &&
-      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
-    contractSaleList && setContractSaleList(contractSaleList);
-  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
+    const realEstateProperties = await getRealEstateProperties(legalEntity.id.toString());
+    setRealEstateProperties(realEstateProperties);
+  }, [legalEntity.id]);
 
-  const currentSalePrice = getCurrentOrderPrice(contractSaleList, details?.priceStart);
-  const OfferingReProperties = offering.offeringEntity?.realEstateProperties;
-  const operatingCurrency = offering.offeringEntity?.operatingCurrency;
+  useAsync(async () => {
+    const distributions = await getDistributions(distributionContractAddress);
+    setDistributions(distributions);
+  }, [distributionContractAddress]);
+
+  useAsync(async () => {
+    const documents = await getOfferingDocumentsById(offering.id.toString());
+    setDocuments(documents);
+  }, [offering.id]);
+
+  const currentSalePrice = getCurrentOrderPrice(contractSaleList, price_start);
+  // const OfferingReProperties = legalEntity?.real_estate_propertyCollection;
+  // const operatingCurrency = legalEntity?.operating_currency;
 
   const { id: orgId, name: orgName, logo } = organization || { id: '', name: '', logo: '' };
 
@@ -91,7 +108,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
 
   return (
     <div data-test="layout-project" className="w-full h-full pb-10 md:pb-20">
-      <Header offering={offering} />
+      <Header offering={offering} realEstateProperties={realEstateProperties} />
       {/* <div className="w-full bg-white border-gray-200 border-b-2 ">
         <section className="w-full flex py-4 mx-8 md:px-8 lg:px-16">
           {stage && <Progress brandColor={brandColor ?? '#275A8F'} lightBrand={false} stage={stage} className="flex" />}
@@ -133,7 +150,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
               />{' '}
               <span className="pl-2 pr-4 font-semibold">{orgName}</span>
             </div>
-            {offeringEntity?.addresses?.map((address, i) => (
+            {legalEntity?.addresses?.map((address, i) => (
               <AddressDisplay address={address} key={i} className="text-sm" />
             ))}
             {website && (
@@ -148,14 +165,12 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
             </section> */}
           {/* Slot 2 */}
           <div className="">
-            {details && (
-              <ShareOfferPanel
-                offering={offering}
-                currentUser={userWalletAddress}
-                currentSalePrice={currentSalePrice}
-                organization={organization}
-              />
-            )}
+            <ShareOfferPanel
+              offering={offering}
+              currentUser={userWalletAddress}
+              currentSalePrice={currentSalePrice}
+              organization={organization}
+            />
           </div>
           {/* Slot 1 */}
           <div className="mt-4 ">
@@ -167,9 +182,9 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
           <>
             <h2 className="text-gray-800 font-bold mb-3">Offering Documents</h2>
             <DocumentList
-              documents={getDocumentsOfType(documents, DocumentType.OfferingDocument)}
+              documents={getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT)}
               isOfferingManager={false}
-              offeringId={offering.id}
+              offeringId={offering.id.toString()}
             />
           </>
           {/* Slot 3 */}
@@ -178,23 +193,23 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering }) => {
           <div>
             <div>
               <h2 className="text-gray-800 font-bold mb-3">Distribution History</h2>
-              {details && (
-                <DistributionList
-                  distributionContractAddress={distributionContractAddress}
-                  distributions={distributions}
-                  hideTransactionId
-                  walletAddress={userWalletAddress}
-                />
-              )}
+
+              <DistributionList
+                distributionContractAddress={distributionContractAddress}
+                distributions={distributions}
+                hideTransactionId
+                walletAddress={userWalletAddress}
+              />
             </div>
           </div>
         </TwoColumnLayout>
         <div className="w-full">
           <h1 className={contentSectionHeader}>Properties</h1>
           <OfferingProperties
-            offeringEntity={offeringEntity}
+            properties={realEstateProperties}
+            offeringEntity={legalEntity}
             isOfferingManager={false}
-            offeringId={offering.id}
+            offeringId={offering.id.toString()}
           />
         </div>
       </Container>

@@ -1,6 +1,6 @@
 import { useApolloClient } from '@apollo/client/react';
 import { useMutation } from '@apollo/client/react';
-import { OrganizationPermissionType } from '@gql/graphql';
+import { OrganizationPermissionType } from '@/types';
 import {
   getOrganizationPermissionOption,
   organizationPermissionOptions
@@ -27,7 +27,7 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
 
   const handleAddTeamMemberAddress = async (
     emailAddress: string,
-    permission: OrganizationPermissionType
+    permission: keyof typeof OrganizationPermissionType
   ) => {
     setUserDoesNotExist(false);
     // client
@@ -58,7 +58,7 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
     <Formik
       initialValues={{
         emailAddress: '',
-        permission: OrganizationPermissionType.Editor
+        permission: OrganizationPermissionType.EDITOR
       }}
       validate={async values => {
         const errors: any = {}; /** @TODO : Shape */

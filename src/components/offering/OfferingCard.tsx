@@ -66,7 +66,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
 
   useAsync(async () => {
     const orders = await retrieveOrders(swapContractAddress);
-    const smartContracts = await getOfferingSmartContractSet(offering.id);
+    const smartContracts = await getOfferingSmartContractSet(offering.id.toString());
     setSmartContracts(smartContracts);
     if (orders && smartContracts) {
       setOrders(orders);
@@ -89,7 +89,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   return (
     <div
       onClick={() => {
-        window.sessionStorage.setItem('CHOSEN_OFFERING', id);
+        window.sessionStorage.setItem('CHOSEN_OFFERING', id.toString());
         router.push(pushLink);
       }}
     >

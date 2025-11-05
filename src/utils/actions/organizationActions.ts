@@ -3,6 +3,7 @@
 import {
   LegalEntity,
   Organization,
+  OrganizationComplete,
   OrganizationWithLegalEntities,
 } from "@/types";
 import { createClient } from "@supabase/utils/server";
@@ -29,7 +30,7 @@ export const getOrganizations = async (
 
 export const getOrganization = async (
   id: string,
-): Promise<OrganizationWithLegalEntities | null> => {
+): Promise<OrganizationComplete | null> => {
   const supabase = createClient();
   const { data: organizationsData, error: organizationsError } = await supabase
     .from("organization")
