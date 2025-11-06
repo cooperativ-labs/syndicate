@@ -1,4 +1,4 @@
-import { Offering, OfferingFull, OrganizationWithLegalEntities } from '@/types';
+import { OfferingFull } from '@/types';
 import React, { FC } from 'react';
 
 import OfferingCard from './OfferingCard';

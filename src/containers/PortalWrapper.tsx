@@ -1,41 +1,30 @@
 'use client';
-
-import { useQuery } from '@apollo/client/react';
 import AlertPopup from '@src/components/alerts/AlertPopup';
-import LoadingModal from '@src/components/loading/ModalLoading';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
 import { cn } from '@src/lib/utils';
-import { useParams } from 'next/navigation';
-import React, { FC, useContext } from 'react';
-
-import { ApplicationStoreProps, store } from '@/contexts/store';
-
+import React, { FC } from 'react';
 // import PortalSideBar from './sideBar/PortalSideBar';
 import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 import NavBar from './NavigationBar';
+import { getOrganization } from '@src/utils/actions/organizationActions';
+import { OrganizationComplete } from '@/types';
+import { useAccount } from 'wagmi';
 
 const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 // const BackgroundGradient = 'bg-white';
 
 type PortalWrapperProps = {
   children: React.ReactNode;
+  organization: OrganizationComplete;
 };
 
-const Portal: FC<PortalWrapperProps> = ({ children }) => {
-  const params = useParams<{ organizationId: string }>();
-  const orgId = params?.organizationId;
-  const { data, loading, error } = useQuery(GET_ORGANIZATION, {
-    variables: { id: orgId }
-  });
-  const organization = data?.getOrganization;
-
+const Portal: FC<PortalWrapperProps> = ({ children, organization }) => {
   return (
     <div className="flex">
       <div className="flex z-30 md:z-10 min-h-screen">
         {/* <PortalSideBar organizations={_organizations} />{' '} */}
       </div>
       <div className="w-full">
-        <NavBar orgLogo={organization?.logo} orgName={organization?.name} />
+        <NavBar orgLogo={organization?.logo} orgName={organization.name} />
 
         <div className="grow z-10">
           <div className="mx-auto ">{children}</div>
@@ -45,18 +34,15 @@ const Portal: FC<PortalWrapperProps> = ({ children }) => {
   );
 };
 
-const PortalWrapper: FC<PortalWrapperProps> = ({ children }) => {
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { PageIsLoading } = applicationStore;
-
+const PortalWrapper: FC<PortalWrapperProps> = async ({ children, organization }) => {
   return (
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
         {/* <WalletChooserModal /> */}
-        {PageIsLoading && <LoadingModal />}
+        {/* {PageIsLoading && <LoadingModal />} */}
         <AlertPopup text="This is an alpha version. Please use with caution." />
         <EnsureCompatibleNetwork>
-          <Portal>{children}</Portal>
+          <Portal organization={organization}>{children}</Portal>
         </EnsureCompatibleNetwork>
       </div>
     </div>

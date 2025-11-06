@@ -18,7 +18,7 @@ import {
 import React, { FC } from 'react';
 
 type SocialLinkItemProps = {
-  type: LinkedAccountType | null | undefined;
+  type: keyof typeof LinkedAccountType | null | undefined;
   url: string | null | undefined;
   className?: string;
 };

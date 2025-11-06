@@ -39,7 +39,7 @@ export const getOrganization = async (
       "organizationUsers:organization_user(id, user_id, permissions)",
       "linkedAccounts:linked_account(*)",
       "emailAddresses:email_address(*)",
-      "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address)))",
+      "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address), legalEntity:legal_entity(*)))",
     ].join(", "))
     .eq("id", id)
     .single();
@@ -48,6 +48,7 @@ export const getOrganization = async (
     console.error(organizationsError);
     return null;
   }
+
   return organizationsData;
 };
 

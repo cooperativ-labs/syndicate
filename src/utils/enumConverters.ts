@@ -4,6 +4,7 @@ import {
   DistributionPeriodType,
   DocumentFormat,
   LinkedAccountType,
+  LinkedAccountTypes,
   NotificationSubject,
   OfferingTabSection,
   OfferingType,
@@ -20,6 +21,11 @@ export const tabSectionOptions = [
   { value: OfferingTabSection.OFFEROR_INFO, name: "The Offeror" },
   { value: OfferingTabSection.DISCLOSURES, name: "Disclosures" },
 ];
+
+export type OfferingTabSectionType = {
+  value: typeof OfferingTabSection;
+  name: string;
+};
 
 export const getTabSectionOption = (
   desiredSectionValue: keyof typeof OfferingTabSection,
@@ -54,11 +60,12 @@ export const socialAccountOptions = [
 ];
 export const getSocialAccountOption = (
   type: keyof typeof LinkedAccountType | null | undefined,
-) => {
-  const option = socialAccountOptions.find(
-    (account) => (account.value === type ? type : null),
-  );
-  return option;
+):
+  | { value: LinkedAccountTypes; name: string; icon: string }
+  | undefined => {
+  return socialAccountOptions.find((
+    option,
+  ) => (option.value === type ? option : null));
 };
 
 export const organizationPermissionOptions = [

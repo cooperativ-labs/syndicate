@@ -1,12 +1,12 @@
-import { Currency } from '@gql/graphql';
+import { CurrencyCode } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React, { FC } from 'react';
 
 type FinancialFactItemProps = {
   label: string;
-  currency?: Currency;
-  amount?: number;
+  currency?: keyof typeof CurrencyCode | undefined;
+  amount?: number | null;
   percent?: number;
   secondPercent?: number;
   multiple?: number;

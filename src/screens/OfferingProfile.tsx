@@ -175,7 +175,10 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
           {/* Slot 1 */}
           <div className="mt-4 ">
             <div className="flex">
-              <ProfileTabContainer offering={offering} />
+              <ProfileTabContainer
+                offering={offering}
+                realEstateProperties={realEstateProperties}
+              />
             </div>
           </div>
           {/* Slot 2 */}

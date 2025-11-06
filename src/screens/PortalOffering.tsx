@@ -245,7 +245,10 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
             />
 
             <div className="mt-20 flex">
-              <ProfileTabContainer offering={offering} />
+              <ProfileTabContainer
+                offering={offering}
+                realEstateProperties={realEstateProperties}
+              />
             </div>
           </div>
           <div>

@@ -7,22 +7,22 @@ import DashboardCard from '@src/components/cards/DashboardCard';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import { useOrganizations } from '@contexts/OrganizationsContext';
+
 import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
 
 import React, { FC } from 'react';
+import { OrganizationComplete } from '@/types';
 
-const Offerings: FC = () => {
+const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
   const { user } = useUserContext();
-  const { chosenOrganization } = useOrganizations();
   const [entityFormOpen, setEntityFormOpen] = React.useState(false);
 
-  if (!chosenOrganization) {
+  if (!organization) {
     return <></>;
   }
-  const isAdminOrEditor = getIsEditorOrAdmin(user?.id, chosenOrganization);
+  const isAdminOrEditor = getIsEditorOrAdmin(user?.id, organization);
 
-  const offerings = getOrgOfferingsFromEntity(chosenOrganization);
+  const offerings = getOrgOfferingsFromEntity(organization);
 
   const hasOfferings = offerings && offerings.length > 0;
   return (
@@ -38,7 +38,7 @@ const Offerings: FC = () => {
                     <h2 className="text-2xl font-medium text-cDarkBlue">Add Offering</h2>
                     <CloseButton onClick={() => setEntityFormOpen(false)} className="self-end" />
                   </div>
-                  <CreateOffering organization={chosenOrganization} />
+                  <CreateOffering organization={organization} />
                 </DashboardCard>
               ) : (
                 isAdminOrEditor && (
@@ -52,7 +52,7 @@ const Offerings: FC = () => {
             </>
           ) : (
             <LimitedWidthSection center>
-              <CreateOffering organization={chosenOrganization} />
+              <CreateOffering organization={organization} />
             </LimitedWidthSection>
           )}
         </section>

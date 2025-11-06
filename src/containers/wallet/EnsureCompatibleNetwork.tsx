@@ -1,3 +1,4 @@
+'use client';
 import Card from '@src/components/cards/Card';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC } from 'react';

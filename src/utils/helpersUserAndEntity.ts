@@ -2,14 +2,11 @@ import {
   Jurisdiction,
   LegalEntity,
   LegalEntityType,
+  OrganizationComplete,
   OrganizationPermissionType,
 } from "@/types";
 import { Country, State } from "country-state-city";
-import {
-  LegalEntityWithAddresses,
-  OrganizationWithLegalEntities,
-  OrganizationWithUsers,
-} from "@/types";
+import { LegalEntityWithAddresses, OfferingFull } from "@/types";
 
 // export const getUserPersonalEntity = (user: User) => {
 //   const entityObject = user.legalEntities.find((entity) => entity.legalEntity.type === LegalEntityType.Individual);
@@ -38,15 +35,14 @@ export const getSelectedAddressFromEntity = (
 // };
 
 export const getOrgOfferingsFromEntity = (
-  organization: OrganizationWithLegalEntities,
-) => {
+  organization: OrganizationComplete,
+): OfferingFull[] => {
   return organization.legalEntities?.map((entity) => entity?.offerings).flat();
 };
 
 export const getIsAdmin = (
   userId: string,
   organization: {
-    id: string;
     organizationUsers: { id: string; user_id: string; permissions: string }[];
   },
 ) => {
@@ -58,10 +54,10 @@ export const getIsEditorOrAdmin = (
   userId: string | undefined,
   organization:
     | {
-      id: string;
       organizationUsers: { id: string; user_id: string; permissions: string }[];
     }
-    | undefined,
+    | undefined
+    | null,
 ) => {
   const userPermissions = organization?.organizationUsers?.find((u) =>
     u?.user_id === userId

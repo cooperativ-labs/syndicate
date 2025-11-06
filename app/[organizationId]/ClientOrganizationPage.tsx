@@ -4,12 +4,13 @@ import PortalWrapper from '@src/containers/PortalWrapper';
 import Footer from '@src/Footer/Footer';
 import OrganizationProfile from '@src/screens/OrganizationProfile';
 import PortalOrganization from '@src/screens/PortalOrganization';
-import { OrganizationWithLegalEntities } from '@/types';
+import { OrganizationComplete } from '@/types';
 import React from 'react';
 import { useAccount } from 'wagmi';
+import { OrganizationsProvider } from '@contexts/OrganizationsContext';
 
 type ClientOrganizationPageProps = {
-  organization: OrganizationWithLegalEntities | null;
+  organization: OrganizationComplete | null;
 };
 
 const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organization }) => {
@@ -37,14 +38,19 @@ const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organiz
 
   return (
     <div data-test="component-project" className="bg-gray-50">
-      {isParticipant ? (
-        <PortalWrapper>
-          <PortalOrganization />
-        </PortalWrapper>
-      ) : (
-        <OrganizationProfile organization={organization} />
-      )}
-      <Footer color="bg-gray-200" />
+      <OrganizationsProvider
+        organizations={[organization]}
+        savedOrganizationId={organization?.id.toString()}
+      >
+        {isParticipant ? (
+          <PortalWrapper organization={organization}>
+            <PortalOrganization />
+          </PortalWrapper>
+        ) : (
+          <OrganizationProfile organization={organization} />
+        )}
+        <Footer color="bg-gray-200" />
+      </OrganizationsProvider>
     </div>
   );
 };

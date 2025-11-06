@@ -1,55 +1,60 @@
-import { OfferingDetails } from '@gql/graphql';
+import { OfferingFull } from '@/types';
 import React, { FC } from 'react';
 
 import FinancialFactItem from './FinancialFactItem';
 
 type TotalReturnsProps = {
-  offeringDetails: OfferingDetails;
+  offering: OfferingFull;
 };
 
-const TotalReturns: FC<TotalReturnsProps> = ({ offeringDetails }) => {
+const TotalReturns: FC<TotalReturnsProps> = ({ offering }) => {
   const {
-    projectedIrr,
-    projectedIrrMax,
-    preferredReturn,
-    targetEquityMultiple,
-    targetEquityMultipleMax,
-    cocReturn,
-    projectedAppreciation,
-    capRate
-  } = offeringDetails;
+    projected_irr,
+    projected_irr_max,
+    preferred_return,
+    target_equity_multiple,
+    target_equity_multiple_max,
+    coc_return,
+    projected_appreciation,
+    cap_rate
+  } = offering;
 
   return (
     <div className="bg-white rounded-xl shadow-xl py-6 mb-8">
       <h1 className="font-bold text-xl px-4 lg:px-8 mb-8">Total Returns</h1>
       <div>
-        {projectedIrr ? (
+        {projected_irr ? (
           <FinancialFactItem
             label="Projected IRR"
-            percent={projectedIrr / 100}
-            secondPercent={projectedIrrMax ? projectedIrrMax / 100 : undefined}
+            percent={projected_irr / 100}
+            secondPercent={projected_irr_max ? projected_irr_max / 100 : undefined}
           />
         ) : (
           <></>
         )}
-        {preferredReturn ? (
-          <FinancialFactItem label="Preferred Return" percent={preferredReturn / 100} />
+        {preferred_return ? (
+          <FinancialFactItem label="Preferred Return" percent={preferred_return / 100} />
         ) : (
           <></>
         )}
-        {targetEquityMultiple ? (
+        {target_equity_multiple ? (
           <FinancialFactItem
             label="Target Equity Multiple"
-            multiple={targetEquityMultiple / 100}
-            secondMultiple={targetEquityMultipleMax ? targetEquityMultipleMax / 100 : undefined}
+            multiple={target_equity_multiple / 100}
+            secondMultiple={
+              target_equity_multiple_max ? target_equity_multiple_max / 100 : undefined
+            }
           />
         ) : (
           <></>
         )}
-        {cocReturn ? <FinancialFactItem label="CoC return" percent={cocReturn / 100} /> : <></>}
-        {capRate ? <FinancialFactItem label="Cap rate" percent={capRate / 100} /> : <></>}
-        {projectedAppreciation ? (
-          <FinancialFactItem label="Projected appreciation" percent={projectedAppreciation / 100} />
+        {coc_return ? <FinancialFactItem label="CoC return" percent={coc_return / 100} /> : <></>}
+        {cap_rate ? <FinancialFactItem label="Cap rate" percent={cap_rate / 100} /> : <></>}
+        {projected_appreciation ? (
+          <FinancialFactItem
+            label="Projected appreciation"
+            percent={projected_appreciation / 100}
+          />
         ) : (
           <></>
         )}

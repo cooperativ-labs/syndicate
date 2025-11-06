@@ -1,18 +1,15 @@
-import { Currency, OfferingDetails } from '@gql/graphql';
 import React, { FC } from 'react';
 
 import FinancialFactItem from './FinancialFactItem';
+import { CurrencyCode, OfferingFull } from '@/types';
 
 type SourcesAndUsesDisplayProps = {
-  offeringDetails: OfferingDetails;
-  operatingCurrency: Currency;
+  offering: OfferingFull;
+  operatingCurrency: keyof typeof CurrencyCode | undefined;
 };
 
-const SourcesAndUsesDisplay: FC<SourcesAndUsesDisplayProps> = ({
-  offeringDetails,
-  operatingCurrency
-}) => {
-  const { maxRaise, minRaise, adminExpense } = offeringDetails;
+const SourcesAndUsesDisplay: FC<SourcesAndUsesDisplayProps> = ({ offering, operatingCurrency }) => {
+  const { max_raise, min_raise, admin_expense } = offering;
 
   return (
     <div className="bg-white rounded-xl shadow-xl py-6 mb-8">
@@ -20,30 +17,30 @@ const SourcesAndUsesDisplay: FC<SourcesAndUsesDisplayProps> = ({
       <div>
         <FinancialFactItem
           label="Gross offering proceeds (max)"
-          amount={maxRaise}
+          amount={max_raise}
           currency={operatingCurrency}
         />
         <FinancialFactItem
           label="Gross offering proceeds (min)"
-          amount={minRaise}
+          amount={min_raise}
           currency={operatingCurrency}
         />
-        {!!adminExpense && (
+        {!!admin_expense && (
           <>
             <FinancialFactItem
               label="Legal/organizational expense"
-              amount={adminExpense}
-              percent={parseFloat((100 * (adminExpense / maxRaise)).toFixed(1))}
+              amount={admin_expense}
+              percent={parseFloat((100 * (admin_expense / (max_raise || 0))).toFixed(1))}
               currency={operatingCurrency}
             />
             <FinancialFactItem
               label="Proceeds invested (max)"
-              amount={maxRaise - adminExpense}
+              amount={max_raise ? max_raise - admin_expense : undefined}
               currency={operatingCurrency}
             />
             <FinancialFactItem
               label="Proceeds invested (min)"
-              amount={minRaise - adminExpense}
+              amount={min_raise ? min_raise - admin_expense : undefined}
               currency={operatingCurrency}
             />
           </>

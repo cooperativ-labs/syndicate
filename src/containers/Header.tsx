@@ -22,12 +22,12 @@ const Header: React.FunctionComponent<HeaderProps> = ({
   realEstateProperties
 }) => {
   const windowSize = useWindowSize();
-  const { id, name, offering_entity_id, banner_image, legalEntity } = offering;
+  const { id, name, offering_entity_id, legalEntity, banner_image } = offering;
 
   const shareURL = `${getBaseUrl()}/${id}`;
 
-  const offeringImages = realEstateProperties
-    ?.map((property: RealEstatePropertyWithAddresses) => property?.addresses)
+  const offeringPropertyImages = realEstateProperties
+    ?.map((property: RealEstatePropertyWithAddresses) => property?.images)
     .flat();
 
   const desktopHeight = small ? 'h-64' : 'h-96';
@@ -42,15 +42,15 @@ const Header: React.FunctionComponent<HeaderProps> = ({
           <div className={cn(imageBannerHeight, 'flex overflow-hidden w-full')}>
             <img className={'object-cover object-center w-full'} src={banner_image} />
           </div>
-        ) : offeringImages && offeringImages.length > 0 ? (
+        ) : offeringPropertyImages && offeringPropertyImages.length > 0 ? (
           <div
             className={cn(
               'grid w-full',
-              `grid-cols-${offeringImages.slice(-4).length}`,
+              `grid-cols-${offeringPropertyImages.slice(-4).length}`,
               imageBannerHeight
             )}
           >
-            {offeringImages.slice(-4).map((image, i) => {
+            {offeringPropertyImages.slice(-4).map((image, i) => {
               return (
                 <div key={i} className={cn(imageBannerHeight, 'flex overflow-hidden col-span-1')}>
                   {image && <img className={'object-cover object-center w-full'} src={image.url} />}

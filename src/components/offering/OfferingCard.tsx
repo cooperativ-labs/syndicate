@@ -17,10 +17,10 @@ import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
 
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
-import { OfferingFull, OfferingSmartContractSet } from '@/types';
+import { LegalEntityWithAddresses, OfferingFull, OfferingSmartContractSet } from '@/types';
 import { useUserContext } from '@contexts/UserContext';
 import { retrieveOrders } from '@src/utils/actions/orderActions';
-import { ShareOrder } from '@/types';
+import { CurrencyCodeType, ShareOrder } from '@/types';
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import { getOfferingSmartContractSet } from '@src/utils/actions/cryptoActions';
 
@@ -38,7 +38,6 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
     short_description,
     id,
     image,
-    legalEntity,
     projected_irr,
     projected_irr_max,
     preferred_return,
@@ -46,14 +45,14 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
     investment_currency
   } = offering;
 
-  const { operating_currency } = legalEntity;
+  const { operating_currency } = offering.legalEntity;
 
   const [smartContracts, setSmartContracts] = useState<OfferingSmartContractSet | null>(null);
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
   const [orders, setOrders] = useState<ShareOrder[]>([]);
   const { organizations } = useOrganizations();
 
-  const organizationId = legalEntity?.organization_id;
+  const organizationId = offering.legalEntity?.organization_id;
 
   const organizationImg = organizations.find(
     organization => organization.id.toString() === organizationId.toString()
@@ -118,7 +117,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
                 <MoneyDisplay
                   className="text-center"
                   amount={currentPrice}
-                  currency={operating_currency}
+                  currency={operating_currency as CurrencyCodeType}
                 />
               </OfferingDetailDashboardItem>
             ) : (

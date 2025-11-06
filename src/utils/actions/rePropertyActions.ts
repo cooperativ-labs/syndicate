@@ -104,12 +104,13 @@ export async function getRealEstateProperties(
     .select([
       "*",
       "addresses:address(*)",
+      "images:real_estate_property_image(*, image:image(*))",
     ].join(", "))
     .eq("owner_id", entityId);
   if (error) {
     throw error;
   }
-  return properties as RealEstatePropertyWithAddresses[];
+  return properties ?? [];
 }
 
 type AddRePropertyInfoParams = {

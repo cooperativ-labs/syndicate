@@ -1,6 +1,10 @@
-import { Offering, OfferingTabSection, offeringTabSectionTypes } from '@/types';
+import {
+  OfferingFull,
+  OfferingTabSection,
+  OfferingDescriptionText,
+  RealEstatePropertyWithAddresses
+} from '@/types';
 
-import MapPanel from '@src/components/MapPanel';
 import SourcesAndUsesDisplay from '@src/components/offering/tabs/financialDisplay/SourcesAndUses';
 import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
 import TotalReturns from '@src/components/offering/tabs/financialDisplay/TotalReturns';
@@ -11,12 +15,13 @@ import React, { FC, useState } from 'react';
 import { useWindowSize } from 'react-use';
 
 type ProfileTabContainerProps = {
-  offering: Offering;
+  offering: OfferingFull;
+  realEstateProperties: RealEstatePropertyWithAddresses[];
 };
 
-const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
-  const [activeTab, setActiveTab] = useState<offeringTabSectionTypes | string>(
-    offeringTabSectionTypes.Details
+const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering, realEstateProperties }) => {
+  const [activeTab, setActiveTab] = useState<typeof OfferingTabSection | string>(
+    OfferingTabSection.DETAILS
   );
   const isMobile = useWindowSize().width < 768;
   function sortByOrder(descriptions: OfferingDescriptionText[]) {
@@ -24,28 +29,27 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
   }
 
   const detailsDescriptions = sortByOrder(
-    offering.profileDescriptions?.filter(
+    offering.offeringProfileDescriptions?.filter(
       description => description?.section === OfferingTabSection.DETAILS
     ) as OfferingDescriptionText[]
   );
   const termsDescriptions = sortByOrder(
-    offering.profileDescriptions?.filter(
+    offering.offeringProfileDescriptions?.filter(
       description => description?.section === OfferingTabSection.TERMS
     ) as OfferingDescriptionText[]
   );
   const offerorInfoDescriptions = sortByOrder(
-    offering.profileDescriptions?.filter(
+    offering.offeringProfileDescriptions?.filter(
       description => description?.section === OfferingTabSection.OFFEROR_INFO
     ) as OfferingDescriptionText[]
   );
   const disclosuresDescriptions = sortByOrder(
-    offering.profileDescriptions?.filter(
+    offering.offeringProfileDescriptions?.filter(
       description => description?.section === OfferingTabSection.DISCLOSURES
     ) as OfferingDescriptionText[]
   );
 
-  const OfferingReProperties = offering.offeringEntity?.realEstateProperties;
-  const operatingCurrency = offering.offeringEntity?.operatingCurrency;
+  const operatingCurrency = offering.legalEntity?.operating_currency;
 
   return (
     <div>
@@ -67,15 +71,15 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
         </div>
       </div>
       <div className="p-2 mt-10">
-        {activeTab === OfferingTabSection.Details && (
+        {activeTab === OfferingTabSection.DETAILS && (
           <div>
-            {!!offering.primaryVideo && (
+            {!!offering.primary_video && (
               <div className="mb-10">
                 <h1 className={contentSectionHeader}>Featured video</h1>
                 <iframe
                   width={isMobile ? '350' : '560'}
                   height={isMobile ? '200' : '315'}
-                  src={offering.primaryVideo}
+                  src={offering.primary_video}
                   frameBorder="0"
                   allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -87,34 +91,31 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering }) => {
             ))}
           </div>
         )}
-        {activeTab === OfferingTabSection.Financials && (
+        {activeTab === OfferingTabSection.FINANCIALS && operatingCurrency && (
           <div>
-            <TotalReturns offeringDetails={offering.details as OfferingDetails} />
-            <SourcesAndUsesDisplay
-              operatingCurrency={operatingCurrency as Currency}
-              offeringDetails={offering.details as OfferingDetails}
-            />
+            <TotalReturns offering={offering} />
+            <SourcesAndUsesDisplay operatingCurrency={operatingCurrency} offering={offering} />
             <TotalInvestmentValue
-              OfferingReProperties={OfferingReProperties as RealEstateProperty[]}
-              operatingCurrency={operatingCurrency as Currency}
+              OfferingReProperties={realEstateProperties}
+              operatingCurrency={operatingCurrency}
             />
           </div>
         )}
-        {activeTab === OfferingTabSection.Terms && (
+        {activeTab === OfferingTabSection.TERMS && (
           <div>
             {termsDescriptions.map((description, i) => (
               <TextSection key={i} title={description.title} text={description.text} />
             ))}
           </div>
         )}
-        {activeTab === OfferingTabSection.OfferorInfo && (
+        {activeTab === OfferingTabSection.OFFEROR_INFO && (
           <div>
             {offerorInfoDescriptions.map((description, i) => (
               <TextSection key={i} title={description.title} text={description.text} />
             ))}
           </div>
         )}
-        {activeTab === OfferingTabSection.Disclosures && (
+        {activeTab === OfferingTabSection.DISCLOSURES && (
           <div>
             {disclosuresDescriptions.map((description, i) => (
               <TextSection key={i} title={description.title} text={description.text} />

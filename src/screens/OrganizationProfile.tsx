@@ -59,21 +59,18 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
                       {linkedAccounts.map((account, i) => {
                         return (
                           <div key={i}>
-                            <SocialLinkItem
-                              type={account?.type as LinkedAccountType}
-                              url={account?.url}
-                            />
+                            <SocialLinkItem type={account?.type} url={account?.url} />
                           </div>
                         );
                       })}
                       {emailAddresses && emailAddresses.length > 0 && (
                         <SocialLinkItem
-                          type={LinkedAccountType.Email}
+                          type={LinkedAccountType.EMAIL}
                           url={`mailto:${emailAddresses[0]?.address}`}
                         />
                       )}
-                      <SocialLinkItem type={LinkedAccountType.Phone} url={phone} />
-                      <SocialLinkItem type={LinkedAccountType.Website} url={website} />
+                      <SocialLinkItem type={LinkedAccountType.PHONE} url={phone} />
+                      <SocialLinkItem type={LinkedAccountType.WEBSITE} url={website} />
                     </div>
                     <hr className="my-2 mb-6" />
                   </div>

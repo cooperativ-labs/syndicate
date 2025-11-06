@@ -58,6 +58,7 @@ export async function getOfferingById(
         "legalEntity:legal_entity(*, addresses:address(*))",
         "image(id, url, label, file_id)",
         "participants:offering_participant(*)",
+        "offeringProfileDescriptions:offering_description_text(*)",
       ].join(", "))
       .eq("id", offeringId),
     getOfferingSmartContractSet(offeringId),

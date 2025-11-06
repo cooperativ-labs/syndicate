@@ -15,8 +15,8 @@ import UserMenu from './UserMenu';
 
 type NavBarProps = {
   transparent?: boolean;
-  orgLogo?: string;
-  orgName?: string;
+  orgLogo?: string | null;
+  orgName?: string | null;
 };
 
 export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
