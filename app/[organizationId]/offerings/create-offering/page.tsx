@@ -1,12 +1,12 @@
 import { useQuery } from '@apollo/client/react';
+import type { GetOrganizationQuery, Organization } from '@gql/graphql';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import { createServerApolloClient } from '@src/lib/apolloServer';
 import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+import { getOrganization } from '@src/utils/helpersOrganization';
 import { useParams } from 'next/navigation';
 import React from 'react';
-import type { GetOrganizationQuery, Organization } from '@gql/graphql';
-import { getOrganization } from '@src/utils/helpersOrganization';
 
 const CreateOfferingPage = async () => {
   const params = useParams<{ organizationId: string }>();

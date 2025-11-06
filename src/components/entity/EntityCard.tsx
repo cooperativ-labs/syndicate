@@ -4,8 +4,9 @@ import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import Card from '../cards/Card';
 import { legalEntityWithSubsidiaries } from '@/types';
+
+import Card from '../cards/Card';
 
 export type EntityCardProps = {
   entity: legalEntityWithSubsidiaries;

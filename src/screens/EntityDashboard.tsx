@@ -1,15 +1,15 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
 import AddItemButton from '@src/components/buttons/AddItemButton';
+import CreateEntity from '@src/components/entity/CreateEntity';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
-import CreateEntity from '@src/components/entity/CreateEntity';
-import { useOrganizations } from '@contexts/OrganizationsContext';
+
 import { LegalEntityWithSubsidiaries, OrganizationWithUsers } from '@/types';
 
 const EntityDashboard: FC<{ entities: LegalEntityWithSubsidiaries[] }> = ({ entities }) => {

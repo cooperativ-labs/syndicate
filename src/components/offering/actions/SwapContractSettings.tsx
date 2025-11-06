@@ -5,7 +5,7 @@ import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
-import { useChainId, useWriteContract, useWaitForTransactionReceipt } from 'wagmi';
+import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 import CreateSwapContract from '../CreateSwapContract';
 

@@ -1,34 +1,28 @@
-"use server";
+'use server';
 
-import { createClient } from "@supabase/utils/server";
-import { Database } from "@/types/database.types";
-import { revalidatePath } from "next/cache";
-import {
-  CryptoAddress,
-  LegalEntity,
-  OfferingSmartContractSet,
-  SmartContract,
-} from "@/types";
+import { createClient } from '@supabase/utils/server';
+import { revalidatePath } from 'next/cache';
+
+import { CryptoAddress, LegalEntity, OfferingSmartContractSet, SmartContract } from '@/types';
+import { Database } from '@/types/database.types';
 
 // =========== CRYPTO ADDRESS ================
 
 type GetCryptoAddressResult = {
   edges: {
-    node: Pick<CryptoAddress, "id" | "address"> & {
-      legal_entity?: Pick<LegalEntity, "id" | "legal_name"> | null;
+    node: Pick<CryptoAddress, 'id' | 'address'> & {
+      legal_entity?: Pick<LegalEntity, 'id' | 'legal_name'> | null;
     };
   }[];
 };
 
-export async function getCryptoAddress(
-  walletAddress: string,
-): Promise<GetCryptoAddressResult> {
+export async function getCryptoAddress(walletAddress: string): Promise<GetCryptoAddressResult> {
   const supabase = createClient();
 
   const { data: cryptoAddresses, error } = await supabase
-    .from("crypto_address")
-    .select("id, address, legal_entity_id")
-    .eq("address", walletAddress);
+    .from('crypto_address')
+    .select('id, address, legal_entity_id')
+    .eq('address', walletAddress);
 
   if (error) {
     throw error;
@@ -40,16 +34,15 @@ export async function getCryptoAddress(
 
   // Fetch legal entities for all crypto addresses
   const legalEntityIds = [
-    ...new Set(cryptoAddresses.map((ca) => ca.legal_entity_id).filter(Boolean)),
+    ...new Set(cryptoAddresses.map(ca => ca.legal_entity_id).filter(Boolean))
   ];
 
-  let legalEntities: Record<string, Pick<LegalEntity, "id" | "legal_name">> =
-    {};
+  let legalEntities: Record<string, Pick<LegalEntity, 'id' | 'legal_name'>> = {};
   if (legalEntityIds.length > 0) {
     const { data: entities, error: entitiesError } = await supabase
-      .from("legal_entity")
-      .select("id, legal_name")
-      .in("id", legalEntityIds);
+      .from('legal_entity')
+      .select('id, legal_name')
+      .in('id', legalEntityIds);
 
     if (!entitiesError && entities) {
       legalEntities = entities.reduce(
@@ -57,22 +50,20 @@ export async function getCryptoAddress(
           acc[entity.id] = entity;
           return acc;
         },
-        {} as Record<string, Pick<LegalEntity, "id" | "legal_name">>,
+        {} as Record<string, Pick<LegalEntity, 'id' | 'legal_name'>>
       );
     }
   }
 
   // Transform the data to match GraphQL structure
   return {
-    edges: cryptoAddresses.map((item) => ({
+    edges: cryptoAddresses.map(item => ({
       node: {
         id: item.id,
         address: item.address,
-        legal_entity: item.legal_entity_id
-          ? legalEntities[item.legal_entity_id] || null
-          : null,
-      },
-    })),
+        legal_entity: item.legal_entity_id ? legalEntities[item.legal_entity_id] || null : null
+      }
+    }))
   };
 }
 
@@ -86,12 +77,12 @@ type UpdateCryptoAddressResult = {
   affectedCount: number;
   records: Pick<
     CryptoAddress,
-    "id" | "name" | "address" | "is_public" | "description" | "legal_entity_id"
+    'id' | 'name' | 'address' | 'is_public' | 'description' | 'legal_entity_id'
   >[];
 };
 
 export async function updateCryptoAddress(
-  params: UpdateCryptoAddressParams,
+  params: UpdateCryptoAddressParams
 ): Promise<UpdateCryptoAddressResult> {
   const supabase = createClient();
 
@@ -108,18 +99,18 @@ export async function updateCryptoAddress(
   }
 
   const { data, error, count } = await supabase
-    .from("crypto_address")
+    .from('crypto_address')
     .update(updateData)
-    .eq("id", params.id)
-    .select("id, name, address, is_public, description, legal_entity_id");
+    .eq('id', params.id)
+    .select('id, name, address, is_public, description, legal_entity_id');
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === "number" ? count : data?.length ?? 0,
-    records: (data ?? []) as UpdateCryptoAddressResult["records"],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as UpdateCryptoAddressResult['records']
   };
 }
 
@@ -132,23 +123,23 @@ type AddContractPartitionParams = {
 
 type AddContractPartitionResult = {
   affectedCount: number;
-  records: Pick<SmartContract, "id" | "partitions" | "owner_id">[];
+  records: Pick<SmartContract, 'id' | 'partitions' | 'owner_id'>[];
 };
 
 export async function addContractPartition(
-  params: AddContractPartitionParams,
+  params: AddContractPartitionParams
 ): Promise<AddContractPartitionResult> {
   const supabase = createClient();
 
   // First, fetch the current partitions
   const { data: contract, error: fetchError } = await supabase
-    .from("smart_contract")
-    .select("partitions")
-    .eq("id", params.id)
+    .from('smart_contract')
+    .select('partitions')
+    .eq('id', params.id)
     .single();
 
   if (fetchError || !contract) {
-    throw fetchError || new Error("Smart contract not found");
+    throw fetchError || new Error('Smart contract not found');
   }
 
   // Append the new partition to the existing array
@@ -156,60 +147,57 @@ export async function addContractPartition(
   const updatedPartitions = [...currentPartitions, params.partition];
 
   const { data, error, count } = await supabase
-    .from("smart_contract")
+    .from('smart_contract')
     .update({ partitions: updatedPartitions })
-    .eq("id", params.id)
-    .select("id, partitions, owner_id");
+    .eq('id', params.id)
+    .select('id, partitions, owner_id');
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === "number" ? count : data?.length ?? 0,
-    records: (data ?? []) as AddContractPartitionResult["records"],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as AddContractPartitionResult['records']
   };
 }
 
 type CreateShareContractParams = {
   cryptoAddressId: string;
   ownerId: string;
-  type: Database["public"]["Enums"]["smart_contract_type"];
+  type: Database['public']['Enums']['smart_contract_type'];
 };
 
 type CreateShareContractResult = {
   affectedCount: number;
-  records: Pick<
-    SmartContract,
-    "id" | "owner_id" | "crypto_address_id" | "type" | "established"
-  >[];
+  records: Pick<SmartContract, 'id' | 'owner_id' | 'crypto_address_id' | 'type' | 'established'>[];
 };
 
 export async function createShareContract(
-  params: CreateShareContractParams,
+  params: CreateShareContractParams
 ): Promise<CreateShareContractResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("smart_contract")
+    .from('smart_contract')
     .insert(
       {
         crypto_address_id: params.cryptoAddressId,
         owner_id: params.ownerId,
         type: params.type,
-        established: false,
+        established: false
       },
-      { count: "exact" },
+      { count: 'exact' }
     )
-    .select("id, owner_id, crypto_address_id, type, established");
+    .select('id, owner_id, crypto_address_id, type, established');
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === "number" ? count : data?.length ?? 0,
-    records: (data ?? []) as CreateShareContractResult["records"],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as CreateShareContractResult['records']
   };
 }
 
@@ -220,27 +208,27 @@ type UpdateUnestablishedSmartContractParams = {
 
 type UpdateUnestablishedSmartContractResult = {
   affectedCount: number;
-  records: Pick<SmartContract, "id" | "owner_id">[];
+  records: Pick<SmartContract, 'id' | 'owner_id'>[];
 };
 
 export async function updateUnestablishedSmartContract(
-  params: UpdateUnestablishedSmartContractParams,
+  params: UpdateUnestablishedSmartContractParams
 ): Promise<UpdateUnestablishedSmartContractResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("smart_contract")
+    .from('smart_contract')
     .update({ established: params.established ?? null })
-    .eq("id", params.id)
-    .select("id, owner_id");
+    .eq('id', params.id)
+    .select('id, owner_id');
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === "number" ? count : data?.length ?? 0,
-    records: (data ?? []) as UpdateUnestablishedSmartContractResult["records"],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as UpdateUnestablishedSmartContractResult['records']
   };
 }
 
@@ -251,21 +239,21 @@ type GetSwapContractParams = {
 };
 
 export async function getOfferingSmartContractSet(
-  offeringId: string,
+  offeringId: string
 ): Promise<OfferingSmartContractSet | null> {
   const supabase = createClient();
   try {
     const { data, error } = await supabase
-      .from("offering_smart_contract_set")
+      .from('offering_smart_contract_set')
       .select(
         [
-          "*",
-          "swapContract:smart_contract!offering_smart_contract_set_swap_contract_id_fkey(*, crypto_address(*))",
-          "distributionContract:smart_contract!offering_smart_contract_set_distribution_contract_id_fkey(*, crypto_address(*))",
-          "shareContract:smart_contract!offering_smart_contract_set_share_contract_id_fkey(*, crypto_address(*))",
-        ].join(", "),
+          '*',
+          'swapContract:smart_contract!offering_smart_contract_set_swap_contract_id_fkey(*, crypto_address(*))',
+          'distributionContract:smart_contract!offering_smart_contract_set_distribution_contract_id_fkey(*, crypto_address(*))',
+          'shareContract:smart_contract!offering_smart_contract_set_share_contract_id_fkey(*, crypto_address(*))'
+        ].join(', ')
       )
-      .eq("offering_id", offeringId)
+      .eq('offering_id', offeringId)
       .maybeSingle();
 
     if (error) {
@@ -279,7 +267,7 @@ export async function getOfferingSmartContractSet(
     // Transform the data to match the expected type structure
     // Supabase returns crypto_address as the nested object, we need to map it to cryptoAddress
     const transformContract = (
-      contract: any,
+      contract: any
     ): (SmartContract & { cryptoAddress: CryptoAddress }) | null => {
       if (!contract) return null;
       const cryptoAddress = contract.crypto_address;
@@ -289,16 +277,14 @@ export async function getOfferingSmartContractSet(
       const { crypto_address, ...contractWithoutCrypto } = contract;
       return {
         ...contractWithoutCrypto,
-        cryptoAddress: cryptoAddress,
+        cryptoAddress: cryptoAddress
       } as SmartContract & { cryptoAddress: CryptoAddress };
     };
 
     const result = {
       swapContract: transformContract((data as any).swapContract),
-      distributionContract: transformContract(
-        (data as any).distributionContract,
-      ),
-      shareContract: transformContract((data as any).shareContract),
+      distributionContract: transformContract((data as any).distributionContract),
+      shareContract: transformContract((data as any).shareContract)
     };
 
     return result as OfferingSmartContractSet;
@@ -314,30 +300,27 @@ type CreateSwapContractParams = {
 
 type CreateSwapContractResult = {
   affectedCount: number;
-  records: Pick<
-    OfferingSmartContractSet,
-    "id" | "swap_contract_id" | "offering_id"
-  >[];
+  records: Pick<OfferingSmartContractSet, 'id' | 'swap_contract_id' | 'offering_id'>[];
 };
 
 export async function createSwapContract(
-  params: CreateSwapContractParams,
+  params: CreateSwapContractParams
 ): Promise<CreateSwapContractResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("offering_smart_contract_set")
+    .from('offering_smart_contract_set')
     .update({ swap_contract_id: params.swapContractId })
-    .eq("id", params.contractSetId)
-    .select("id, swap_contract_id, offering_id");
+    .eq('id', params.contractSetId)
+    .select('id, swap_contract_id, offering_id');
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === "number" ? count : data?.length ?? 0,
-    records: (data ?? []) as CreateSwapContractResult["records"],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as CreateSwapContractResult['records']
   };
 }
 
@@ -348,29 +331,26 @@ type CreateDistributionContractParams = {
 
 type CreateDistributionContractResult = {
   affectedCount: number;
-  records: Pick<
-    OfferingSmartContractSet,
-    "id" | "distribution_contract_id" | "offering_id"
-  >[];
+  records: Pick<OfferingSmartContractSet, 'id' | 'distribution_contract_id' | 'offering_id'>[];
 };
 
 export async function createDistributionContract(
-  params: CreateDistributionContractParams,
+  params: CreateDistributionContractParams
 ): Promise<CreateDistributionContractResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("offering_smart_contract_set")
+    .from('offering_smart_contract_set')
     .update({ distribution_contract_id: params.distributionContractId })
-    .eq("id", params.contractSetId)
-    .select("id, distribution_contract_id, offering_id");
+    .eq('id', params.contractSetId)
+    .select('id, distribution_contract_id, offering_id');
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === "number" ? count : data?.length ?? 0,
-    records: (data ?? []) as CreateDistributionContractResult["records"],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as CreateDistributionContractResult['records']
   };
 }

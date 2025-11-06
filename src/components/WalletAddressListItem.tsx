@@ -1,9 +1,9 @@
 import { useMutation } from '@apollo/client/react';
 import { CryptoAddress, CryptoAddressType, Maybe } from '@gql/graphql';
+import { cn } from '@src/lib/utils';
 import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
 import { REMOVE_ENTITY_WALLET } from '@src/utils/graphQueries/entity';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import { Pencil, X } from 'lucide-react';
 import React, { FC, useState } from 'react';

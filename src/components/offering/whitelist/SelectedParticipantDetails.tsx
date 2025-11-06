@@ -1,4 +1,5 @@
 import { useMutation } from '@apollo/client/react';
+import { useUserContext } from '@contexts/UserContext';
 import {
   Maybe,
   OfferingParticipant,
@@ -23,11 +24,12 @@ import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, useState } from 'react';
 import { useReadContracts } from 'wagmi';
+
 import ForceTransferForm from '../actions/ForceTransferForm';
 import DistributionList from '../distributions/DistributionList';
 import TransferEventList from '../sales/TransferEventList';
+
 import WhitelistTransactionItem from './WhitelistTransactionItem';
-import { useUserContext } from '@contexts/UserContext';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 

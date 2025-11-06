@@ -1,8 +1,7 @@
-import React from 'react';
-import Link from 'next/link';
-
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@src/components/ui/card';
 import { Button } from '@src/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@src/components/ui/card';
+import Link from 'next/link';
+import React from 'react';
 
 type OrganizationNotFoundProps = {
   backHref?: string;

@@ -1,7 +1,6 @@
 import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import EntityDetails from '@src/screens/EntityDetails';
-
 import { getLegalEntityById } from '@src/utils/actions/entityActions';
 
 const EntityPage = async ({ params }: { params: { entityId: string } }) => {

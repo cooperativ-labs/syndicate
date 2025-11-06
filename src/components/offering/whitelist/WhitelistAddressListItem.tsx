@@ -1,9 +1,9 @@
 import { Maybe, OfferingParticipant } from '@gql/graphql';
+import { cn } from '@src/lib/utils';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { cn } from '@src/lib/utils';
 import React, { FC, useEffect } from 'react';
 import { useAccount, useContractReads } from 'wagmi';
 

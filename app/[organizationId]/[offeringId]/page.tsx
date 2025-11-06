@@ -1,7 +1,6 @@
 import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
 import Footer from '@src/Footer/Footer';
 import OfferingProfile from '@src/screens/OfferingProfile';
-
 import { getOfferingById } from '@src/utils/actions/offeringActions';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 

@@ -20,10 +20,10 @@ import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import { Document, DocumentType } from '@/types';
-
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
+
+import { Document, DocumentType } from '@/types';
 import { OfferingFull } from '@/types';
 
 type OfferingDetailsProps = {

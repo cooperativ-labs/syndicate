@@ -1,14 +1,13 @@
 'use client';
 
+import { Button } from '@src/components/ui/button';
+import { Input } from '@src/components/ui/input';
 import { cn } from '@src/lib/utils';
 import { usePathname, useRouter } from 'next/navigation';
 import React, { FC, useContext } from 'react';
 import { useForm } from 'react-hook-form';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
-
-import { Input } from '@src/components/ui/input';
-import { Button } from '@src/components/ui/button';
 
 type UserSearchProps = {
   fieldClass?: string;

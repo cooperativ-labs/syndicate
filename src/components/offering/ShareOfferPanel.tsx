@@ -1,13 +1,14 @@
 'use client';
 
-import { OfferingFull, Organization } from '@/types';
+import { cn } from '@src/lib/utils';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { cn } from '@src/lib/utils';
 import { Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { Maybe } from 'yup';
+
+import { OfferingFull, Organization } from '@/types';
 
 type ShareOfferPanelItemProps = { children: React.ReactNode; title: string; note?: string };
 

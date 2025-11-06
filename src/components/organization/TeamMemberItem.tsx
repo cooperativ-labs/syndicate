@@ -1,11 +1,12 @@
+import { useUserContext } from '@contexts/UserContext';
+import { cn } from '@src/lib/utils';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 
-import { EditButton } from '../form-components/ListItemButtons';
-import { useUserContext } from '@contexts/UserContext';
 import { OrganizationUser, OrganizationUserPermission } from '@/types';
+
+import { EditButton } from '../form-components/ListItemButtons';
 
 export type TeamMemberBaseProps = {
   organizationId: string;

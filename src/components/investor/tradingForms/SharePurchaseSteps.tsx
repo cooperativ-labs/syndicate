@@ -7,8 +7,8 @@ import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { useAccount, useBalance, useReadContract } from 'wagmi';
 import { erc20Abi } from 'viem';
+import { useAccount, useBalance, useReadContract } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
 import ShareCompleteSwap from './ShareCompleteSwap';

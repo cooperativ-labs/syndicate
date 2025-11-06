@@ -10,6 +10,7 @@ import Input, {
 } from '@src/components/form-components/Inputs';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
+import { cn } from '@src/lib/utils';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
 import { DownloadFile } from '@src/utils/helpersAgreement';
@@ -17,7 +18,6 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { bytes32FromString, String0x } from '@src/web3/helpersChain';
-import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';

@@ -1,5 +1,6 @@
-import { OfferingFull } from '@/types';
 import React, { FC } from 'react';
+
+import { OfferingFull } from '@/types';
 
 import OfferingCard from './OfferingCard';
 

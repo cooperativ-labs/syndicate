@@ -1,18 +1,19 @@
 'use client';
 import { useMutation } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
-import { DocumentFormat, DocumentType } from '@/types';
 import Button from '@src/components/buttons/Button';
 import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
 import SectionBlock from '@src/containers/SectionBlock';
+import { cn } from '@src/lib/utils';
 import { addOfferingDocument } from '@src/utils/actions/documentActions';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { urlToDatabaseProps } from '@src/utils/helpersDocuments';
-import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import React, { FC, useContext, useState } from 'react';
+
+import { DocumentFormat, DocumentType } from '@/types';
 
 type DocumentAdderProps = {
   offeringId?: string;

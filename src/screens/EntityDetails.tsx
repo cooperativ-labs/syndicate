@@ -1,6 +1,5 @@
 'use client';
 
-import { legalEntityWithSubsidiaries } from '@/types';
 import { useMutation, useQuery } from '@apollo/client/react';
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
@@ -25,8 +24,9 @@ import {
 } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-
 import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
+
+import { legalEntityWithSubsidiaries } from '@/types';
 
 type EntityDetailsProps = {
   entity: legalEntityWithSubsidiaries;

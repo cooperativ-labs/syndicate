@@ -8,9 +8,9 @@ import WhitelistAddressList, {
   WhitelistAddressListProps
 } from '@src/components/offering/whitelist/WhitelistAddressList';
 import OfferingProperties from '@src/components/properties/OfferingProperties';
+import { cn } from '@src/lib/utils';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
-import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 

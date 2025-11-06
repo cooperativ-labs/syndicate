@@ -1,10 +1,11 @@
 'use client';
 
-import { LegalEntity, RealEstatePropertyWithAddresses } from '@/types';
 import Button from '@src/components/buttons/Button';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
+
+import { LegalEntity, RealEstatePropertyWithAddresses } from '@/types';
 
 import RealEstatePropertyCard from './RealEstatePropertyCard';
 

@@ -2,41 +2,32 @@ import {
   ApolloCache,
   DefaultContext,
   MutationFunctionOptions,
-  OperationVariables,
-} from "@apollo/client";
-import {
-  Currency,
-  CurrencyCode,
-  Organization,
-  ShareTransferEventType,
-} from "@gql/graphql";
-import { LoadingButtonStateType } from "@src/components/buttons/Button";
+  OperationVariables
+} from '@apollo/client';
+import { Currency, CurrencyCode, Organization, ShareTransferEventType } from '@gql/graphql';
+import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import {
   handleOfferingRequestNotification,
-  handleTradeExecutionNotification,
-} from "@src/components/notifications/notificationFunctions";
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
-import { numberWithCommas } from "@src/utils/helpersMoney";
-import { getBaseUrl } from "@src/utils/helpersURL";
-import { getWagmiConfig } from "@src/web3/wagmi";
-import { Dispatch, SetStateAction } from "react";
-import toast from "react-hot-toast";
-import { erc20Abi } from "viem";
+  handleTradeExecutionNotification
+} from '@src/components/notifications/notificationFunctions';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { numberWithCommas } from '@src/utils/helpersMoney';
+import { getBaseUrl } from '@src/utils/helpersURL';
+import { getWagmiConfig } from '@src/web3/wagmi';
+import { Dispatch, SetStateAction } from 'react';
+import toast from 'react-hot-toast';
+import { erc20Abi } from 'viem';
 import {
   getAccount,
   simulateContract,
   waitForTransactionReceipt,
-  writeContract,
-} from "wagmi/actions";
+  writeContract
+} from 'wagmi/actions';
 
-import { swapContractABI } from "./generated";
-import {
-  bytes32FromString,
-  StandardChainErrorHandling,
-  String0x,
-} from "./helpersChain";
-import { shareContractDecimals, toContractNumber } from "./util";
+import { swapContractABI } from './generated';
+import { bytes32FromString, StandardChainErrorHandling, String0x } from './helpersChain';
+import { shareContractDecimals, toContractNumber } from './util';
 
 type SubmitSwapProps = {
   numShares: number;
@@ -58,21 +49,11 @@ type SubmitSwapProps = {
   myShareQty?: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   createOrder: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   addPartition?: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   refetchAllContracts: () => void;
   refetchOfferingInfo: () => void;
@@ -101,35 +82,34 @@ export const submitSwap = async ({
   createOrder,
   addPartition,
   refetchAllContracts,
-  refetchOfferingInfo,
+  refetchOfferingInfo
 }: SubmitSwapProps) => {
-  setButtonStep("step1");
+  setButtonStep('step1');
   const config = getWagmiConfig();
   const call = async () => {
-    const setPartition = partition === "0xNew"
-      ? bytes32FromString(newPartition)
-      : (partition as String0x);
+    const setPartition =
+      partition === '0xNew' ? bytes32FromString(newPartition) : (partition as String0x);
     try {
       if (!isContractOwner && numShares > myShareQty!) {
-        toast.error("You do not have enough shares to sell.");
+        toast.error('You do not have enough shares to sell.');
       }
 
       const { request, result } = await simulateContract(config, {
         address: swapContractAddress as String0x,
         abi: swapContractABI,
-        functionName: "initiateOrder",
+        functionName: 'initiateOrder',
         args: [
           setPartition,
           toContractNumber(numShares, shareContractDecimals),
           toContractNumber(price, paymentTokenDecimals - shareContractDecimals), //must account for share contract decimals
           isAsk,
           isIssuance,
-          isErc20Payment,
-        ],
+          isErc20Payment
+        ]
       });
       const hash = await writeContract(config, request);
       const transactionReceipt = await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
       const { address: userWalletAddress } = getAccount();
       const contractIndex = Number(result);
@@ -137,8 +117,8 @@ export const submitSwap = async ({
         (await addPartition({
           variables: {
             smartContractId: shareContractId,
-            partition: setPartition as string,
-          },
+            partition: setPartition as string
+          }
         }));
       await createOrder({
         variables: {
@@ -149,15 +129,13 @@ export const submitSwap = async ({
           maxUnits: maxUnits,
           initiator: userWalletAddress,
           visible: visible,
-          transactionHash: transactionReceipt.transactionHash,
-        },
+          transactionHash: transactionReceipt.transactionHash
+        }
       });
       refetchAllContracts();
       refetchOfferingInfo();
-      setButtonStep("confirmed");
-      toast.success(
-        `You have offered ${!isAsk ? "to purchase " : ""}${numShares} shares.`,
-      );
+      setButtonStep('confirmed');
+      toast.success(`You have offered ${!isAsk ? 'to purchase ' : ''}${numShares} shares.`);
       setModal && setModal(false);
       return transactionReceipt;
     } catch (e) {
@@ -192,41 +170,35 @@ export const acceptOrder = async ({
   isAskOrder,
   setButtonStep,
   refetchAllContracts,
-  setModal,
+  setModal
 }: AcceptOrderProps) => {
   const config = getWagmiConfig();
   if (!swapContractAddress) {
-    throw new Error("No swap contract address");
+    throw new Error('No swap contract address');
   }
   if (!swapContractAddress) {
-    throw new Error("No swap contract address");
+    throw new Error('No swap contract address');
   }
   const call = async () => {
     try {
       const { request } = await simulateContract(config, {
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: "acceptOrder",
-        args: [
-          BigInt(contractIndex),
-          toContractNumber(amount, shareContractDecimals),
-        ],
+        functionName: 'acceptOrder',
+        args: [BigInt(contractIndex), toContractNumber(amount, shareContractDecimals)]
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
       await handleOfferingRequestNotification({
         organization,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText:
-          "Someone has applied to purchase shares in your offering.",
+        notificationText: 'Someone has applied to purchase shares in your offering.'
       });
       refetchAllContracts();
-      setButtonStep("confirmed");
-      toast.success(
-        `You have applied to ${isAskOrder ? "purchase" : "sell"} shares.`,
-      );
+      setButtonStep('confirmed');
+      toast.success(`You have applied to ${isAskOrder ? 'purchase' : 'sell'} shares.`);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -249,7 +221,7 @@ export const setAllowance = async ({
   spenderAddress,
   amount,
   setButtonStep,
-  setModal,
+  setModal
 }: SetAllowanceProps) => {
   const config = getWagmiConfig();
   const call = async () => {
@@ -257,15 +229,15 @@ export const setAllowance = async ({
       const { request } = await simulateContract(config, {
         address: paymentTokenAddress as String0x,
         abi: erc20Abi,
-        functionName: "approve",
+        functionName: 'approve',
         args: [
           spenderAddress as String0x,
-          toContractNumber(amount as number, paymentTokenDecimals as number),
-        ],
+          toContractNumber(amount as number, paymentTokenDecimals as number)
+        ]
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
       setModal && setModal(false);
     } catch (e) {
@@ -279,22 +251,22 @@ type ApproveRejectSwapProps = {
   transferEventArgs?: {
     shareContractAddress: String0x | undefined;
 
-    recipientAddress: "" | `0x${string}` | undefined;
-    senderAddress: String0x | undefined | "";
+    recipientAddress: '' | `0x${string}` | undefined;
+    senderAddress: String0x | undefined | '';
     numShares: number | undefined;
     price: number | undefined;
     currencyCode: CurrencyCode | undefined;
-    partition: String0x | undefined | "";
+    partition: String0x | undefined | '';
     addApprovalRecord: (arg0: {
       variables: {
         shareContractAddress: String0x | undefined;
         orderIndex: number;
-        recipientAddress: "" | `0x${string}` | undefined;
-        senderAddress: String0x | undefined | "";
+        recipientAddress: '' | `0x${string}` | undefined;
+        senderAddress: String0x | undefined | '';
         amount: number | undefined;
         price: string | undefined;
         currencyCode: CurrencyCode | undefined;
-        partition: String0x | undefined | "";
+        partition: String0x | undefined | '';
         transactionHash: String0x;
         type: ShareTransferEventType;
       };
@@ -316,27 +288,25 @@ export const approveRejectSwap = async ({
   isDisapprove,
   setButtonStep,
   refetchAllContracts,
-  setModal,
+  setModal
 }: ApproveRejectSwapProps) => {
-  setButtonStep("step1");
+  setButtonStep('step1');
   const config = getWagmiConfig();
-  const contractFunctionName = isDisapprove
-    ? "managerResetOrder"
-    : "approveOrder";
+  const contractFunctionName = isDisapprove ? 'managerResetOrder' : 'approveOrder';
   const call = async () => {
     if (!swapContractAddress) {
-      throw new Error("No swap contract address");
+      throw new Error('No swap contract address');
     }
     try {
       const { request } = await simulateContract(config, {
         address: swapContractAddress,
         abi: swapContractABI,
         functionName: contractFunctionName,
-        args: [BigInt(contractIndex)],
+        args: [BigInt(contractIndex)]
       });
       const hash = await writeContract(config, request);
       const transactionDetails = await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
       if (transferEventArgs) {
         const {
@@ -347,7 +317,7 @@ export const approveRejectSwap = async ({
           price,
           currencyCode,
           partition,
-          addApprovalRecord,
+          addApprovalRecord
         } = transferEventArgs;
 
         await addApprovalRecord({
@@ -357,23 +327,18 @@ export const approveRejectSwap = async ({
             recipientAddress: recipientAddress,
             senderAddress: senderAddress,
             amount: numShares,
-            price: toContractNumber(
-              price as number,
-              paymentTokenDecimals as number,
-            ).toString(),
+            price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
             currencyCode: currencyCode,
             transactionHash: transactionDetails.transactionHash,
             partition: partition,
             type: isDisapprove
               ? ShareTransferEventType.Disapproval
-              : ShareTransferEventType.Approval,
-          },
+              : ShareTransferEventType.Approval
+          }
         });
       }
-      setButtonStep("confirmed");
-      toast.success(
-        `You have ${isDisapprove ? "disapproved" : "approved"} the swap.`,
-      );
+      setButtonStep('confirmed');
+      toast.success(`You have ${isDisapprove ? 'disapproved' : 'approved'} the swap.`);
       refetchAllContracts();
       setModal && setModal(false);
     } catch (e) {
@@ -398,27 +363,27 @@ export const cancelSwap = async ({
   setButtonStep,
   handleArchive,
   setModal,
-  refetchAllContracts,
+  refetchAllContracts
 }: CancelOrderProps) => {
-  setButtonStep("step1");
+  setButtonStep('step1');
   const config = getWagmiConfig();
   const call = async () => {
     if (!swapContractAddress) {
-      throw new Error("No swap contract address");
+      throw new Error('No swap contract address');
     }
     try {
       const { request } = await simulateContract(config, {
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: "cancelOrder",
-        args: [BigInt(contractIndex)],
+        functionName: 'cancelOrder',
+        args: [BigInt(contractIndex)]
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
       handleArchive && handleArchive(true);
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
       toast.success(`You have cancelled your sale.`);
       setModal && setModal(false);
       refetchAllContracts();
@@ -442,26 +407,26 @@ export const cancelAcceptance = async ({
   contractIndex,
   setButtonStep,
   setModal,
-  refetchAllContracts,
+  refetchAllContracts
 }: CancelAcceptanceProps) => {
-  setButtonStep("step1");
+  setButtonStep('step1');
   const config = getWagmiConfig();
   const call = async () => {
     if (!swapContractAddress) {
-      throw new Error("No swap contract address");
+      throw new Error('No swap contract address');
     }
     try {
       const { request } = await simulateContract(config, {
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: "cancelAcceptance",
-        args: [BigInt(contractIndex)],
+        functionName: 'cancelAcceptance',
+        args: [BigInt(contractIndex)]
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
       toast.success(`You have cancelled your offer.`);
       setModal && setModal(false);
       refetchAllContracts();
@@ -481,25 +446,25 @@ type ClaimProceedsProps = {
 export const claimProceeds = async ({
   swapContractAddress,
   setButtonStep,
-  refetchAllContracts,
+  refetchAllContracts
 }: ClaimProceedsProps) => {
   const config = getWagmiConfig();
   const call = async () => {
-    setButtonStep("step1");
+    setButtonStep('step1');
     if (!swapContractAddress) {
-      throw new Error("No swap contract address");
+      throw new Error('No swap contract address');
     }
     try {
       const { request } = await simulateContract(config, {
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: "claimProceeds",
+        functionName: 'claimProceeds'
       });
       const hash = await writeContract(config, request);
       await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
       refetchAllContracts && refetchAllContracts();
       toast.success(`You have claimed your proceeds.`);
     } catch (e) {
@@ -523,12 +488,7 @@ type FillOrderProps = {
   offeringId: string;
   organization: Organization;
   addTrade: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
+    options?: MutationFunctionOptions<any, OperationVariables, DefaultContext, ApolloCache<any>>
   ) => Promise<any>;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
@@ -551,27 +511,27 @@ export const fillOrder = async ({
   addTrade,
   setButtonStep,
   refetchAllContracts,
-  setModal,
+  setModal
 }: FillOrderProps) => {
   const contractAmount = toContractNumber(amount, shareContractDecimals);
   const contractPrice = toContractNumber(price, paymentTokenDecimals);
   const config = getWagmiConfig();
   const call = async () => {
     if (!swapContractAddress || !shareContractAddress) {
-      throw new Error("No swap or share contract address");
+      throw new Error('No swap or share contract address');
     }
 
     try {
       const { request } = await simulateContract(config, {
         address: swapContractAddress,
         abi: swapContractABI,
-        functionName: "fillOrder",
+        functionName: 'fillOrder',
         args: [BigInt(contractIndex), contractAmount],
-        value: BigInt(0),
+        value: BigInt(0)
       });
       const hash = await writeContract(config, request);
       const transactionDetails = await waitForTransactionReceipt(config, {
-        hash,
+        hash
       });
       await addTrade({
         variables: {
@@ -583,24 +543,21 @@ export const fillOrder = async ({
           currencyCode: getCurrencyById(paymentTokenAddress)?.value,
           transactionHash: transactionDetails.transactionHash,
           partition: partition,
-          type: ShareTransferEventType.Trade,
-        },
+          type: ShareTransferEventType.Trade
+        }
       });
       await handleTradeExecutionNotification({
         organization,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText:
-          `${sender} has sold ${amount} shares to ${recipient} at ${
-            numberWithCommas(
-              price,
-              2,
-            )
-          } per share. The transaction hash is ${transactionDetails.transactionHash}.`,
+        notificationText: `${sender} has sold ${amount} shares to ${recipient} at ${numberWithCommas(
+          price,
+          2
+        )} per share. The transaction hash is ${transactionDetails.transactionHash}.`
       });
 
       toast.success(`You have completed the swap.`);
       refetchAllContracts();
-      setButtonStep("confirmed");
+      setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }

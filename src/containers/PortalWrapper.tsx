@@ -1,13 +1,15 @@
 'use client';
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import { cn } from '@src/lib/utils';
+import { getOrganization } from '@src/utils/actions/organizationActions';
 import React, { FC } from 'react';
+import { useAccount } from 'wagmi';
+
+import { OrganizationComplete } from '@/types';
+
 // import PortalSideBar from './sideBar/PortalSideBar';
 import EnsureCompatibleNetwork from './wallet/EnsureCompatibleNetwork';
 import NavBar from './NavigationBar';
-import { getOrganization } from '@src/utils/actions/organizationActions';
-import { OrganizationComplete } from '@/types';
-import { useAccount } from 'wagmi';
 
 const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 // const BackgroundGradient = 'bg-white';

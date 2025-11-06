@@ -79,7 +79,9 @@ export const GET_OFFERING = gql`
 export const GET_ORG_OFFERINGS = gql`
   ${CORE_OFFERING_FIELDS}
   query GetOrgOfferings($organizationId: BigInt!) {
-    offeringCollection(filter: { offering_entity_id: { legal_entity: { organization_id: { eq: $organizationId } } } }) {
+    offeringCollection(
+      filter: { offering_entity_id: { legal_entity: { organization_id: { eq: $organizationId } } } }
+    ) {
       edges {
         node {
           ...OfferingFields
@@ -270,9 +272,7 @@ export const UPDATE_INVESTMENT_CURRENCY = gql`
   ) {
     updateoffering_detailCollection(
       filter: { id: { eq: $offeringDetailsId } }
-      set: {
-        investment_currency: $investmentCurrencyCode
-      }
+      set: { investment_currency: $investmentCurrencyCode }
     ) {
       affectedCount
       records {
@@ -295,24 +295,14 @@ export const ADD_LEGAL_SHARE_LINK = gql`
     $agreementTitle: String!
     $signature: String!
   ) {
-    updateofferingCollection(
-      filter: { id: { eq: $offeringId } }
-      set: {
-        waitlist_on: false
-      }
-    ) {
+    updateofferingCollection(filter: { id: { eq: $offeringId } }, set: { waitlist_on: false }) {
       affectedCount
       records {
         id
       }
     }
     insertIntooffering_smart_contract_setCollection(
-      objects: [
-        {
-          offering_id: $offeringId
-          share_contract_id: $smartContractId
-        }
-      ]
+      objects: [{ offering_id: $offeringId, share_contract_id: $smartContractId }]
     ) {
       affectedCount
       records {
@@ -506,11 +496,7 @@ export const ADD_WHITELIST_MEMBER = gql`
     }
     insertIntowhitelist_transactionCollection(
       objects: [
-        {
-          offering_participant_id: $offering
-          transaction_hash: $transactionHash
-          type: $type
-        }
+        { offering_participant_id: $offering, transaction_hash: $transactionHash, type: $type }
       ]
     ) {
       affectedCount
@@ -529,10 +515,7 @@ export const UPDATE_WHITELIST = gql`
   ) {
     updatewhitelist_transactionCollection(
       filter: { offering_participant_id: { eq: $participantId } }
-      set: {
-        transaction_hash: $transactionHash
-        type: $type
-      }
+      set: { transaction_hash: $transactionHash, type: $type }
     ) {
       affectedCount
       records {
@@ -554,11 +537,7 @@ export const UPDATE_OFFERING_PARTICIPANT = gql`
   ) {
     updateoffering_participantCollection(
       filter: { id: { eq: $id } }
-      set: {
-        name: $name
-        external_id: $externalId
-        jurisdiction_id: $jurCountry
-      }
+      set: { name: $name, external_id: $externalId, jurisdiction_id: $jurCountry }
     ) {
       affectedCount
       records {
@@ -608,13 +587,7 @@ export const CREATE_DESCRIPTION_TEXT = gql`
   ) {
     insertIntooffering_description_textCollection(
       objects: [
-        {
-          offering_id: $offeringId
-          title: $title
-          text: $text
-          section: $section
-          order: $order
-        }
+        { offering_id: $offeringId, title: $title, text: $text, section: $section, order: $order }
       ]
     ) {
       affectedCount
@@ -640,12 +613,7 @@ export const UPDATE_DESCRIPTION_TEXT = gql`
   ) {
     updateoffering_description_textCollection(
       filter: { id: { eq: $descriptionId } }
-      set: {
-        title: $title
-        text: $text
-        section: $section
-        order: $order
-      }
+      set: { title: $title, text: $text, section: $section, order: $order }
     ) {
       affectedCount
       records {

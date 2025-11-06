@@ -1,10 +1,10 @@
 import { useMutation } from '@apollo/client/react';
-
 import { REMOVE_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 import React, { FC } from 'react';
 
-import TeamMemberItem, { TeamMemberBaseProps } from './TeamMemberItem';
 import { OrganizationUser } from '@/types';
+
+import TeamMemberItem, { TeamMemberBaseProps } from './TeamMemberItem';
 type TeamMemberListProps = TeamMemberBaseProps & {
   teamMembers: OrganizationUser[] | [];
 };

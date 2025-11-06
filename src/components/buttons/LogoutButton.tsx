@@ -1,7 +1,7 @@
 'use client';
 
-import { signOut } from '@src/utils/actions/userActions';
 import { cn } from '@src/lib/utils';
+import { signOut } from '@src/utils/actions/userActions';
 import React, { FC, useContext } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';

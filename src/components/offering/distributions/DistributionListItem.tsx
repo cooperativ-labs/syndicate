@@ -1,6 +1,6 @@
-import { OfferingDistribution } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { cn } from '@src/lib/utils';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { getHumanDate, getHumanDateTime } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -9,9 +9,10 @@ import { dividendContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
 import { toNormalNumber } from '@src/web3/util';
-import { cn } from '@src/lib/utils';
 import React, { FC, useEffect } from 'react';
 import { useAccount, useChainId, useReadContract, useReadContracts } from 'wagmi';
+
+import { OfferingDistribution } from '@/types';
 
 export type DistributionListItemProps = {
   distributionContractAddress: String0x;

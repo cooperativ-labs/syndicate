@@ -1,6 +1,5 @@
 import { useApolloClient } from '@apollo/client/react';
 import { useMutation } from '@apollo/client/react';
-import { OrganizationPermissionType } from '@/types';
 import {
   getOrganizationPermissionOption,
   organizationPermissionOptions
@@ -10,6 +9,8 @@ import { ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 // import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
 import { Form, Formik } from 'formik';
 import React, { FC, useContext } from 'react';
+
+import { OrganizationPermissionType } from '@/types';
 
 import Input from '../form-components/Inputs';
 import Select from '../form-components/Select';

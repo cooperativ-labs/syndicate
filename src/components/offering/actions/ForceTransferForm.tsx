@@ -1,8 +1,9 @@
 import { useMutation } from '@apollo/client/react';
 import { Maybe, OfferingParticipant } from '@gql/graphql';
-import { LoadingButton } from '@src/components/ui/loading-button';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
+import { LoadingButton } from '@src/components/ui/loading-button';
 import {
   Select,
   SelectContent,
@@ -15,13 +16,12 @@ import { forceTransfer } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { Controller, useForm } from 'react-hook-form';
 import React from 'react';
+import { Controller, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
 import { useAccount, useContractRead } from 'wagmi';
 import { readContract } from 'wagmi/actions';
 import { z } from 'zod';
-import { zodResolver } from '@hookform/resolvers/zod';
 
 import SetOperatorButton from './SetOperatorButton';
 

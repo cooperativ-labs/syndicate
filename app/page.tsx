@@ -1,6 +1,5 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import Dashboard from '@src/screens/Dashboard';
-
 import { NextPage } from 'next';
 
 const DashboardPage: NextPage = async () => {

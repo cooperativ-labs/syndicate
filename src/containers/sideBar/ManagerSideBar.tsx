@@ -1,5 +1,6 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import Button from '@src/components/buttons/Button';
 import { cn } from '@src/lib/utils';
 import { Menu } from 'lucide-react';
@@ -11,7 +12,6 @@ import { ApplicationStoreProps, store } from '@/contexts/store';
 
 import ManagerSideBarContents from './ManagerSideBarContents';
 import OrganizationSwitcher from './OrganizationSwitcher';
-import { useOrganizations } from '@contexts/OrganizationsContext';
 
 const ManagerSideBar: FC = () => {
   const { organizations, chosenOrganizationId } = useOrganizations();

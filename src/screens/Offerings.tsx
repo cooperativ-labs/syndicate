@@ -7,10 +7,9 @@ import DashboardCard from '@src/components/cards/DashboardCard';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-
 import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-
 import React, { FC } from 'react';
+
 import { OrganizationComplete } from '@/types';
 
 const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization }) => {

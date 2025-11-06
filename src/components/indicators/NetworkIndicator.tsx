@@ -1,7 +1,7 @@
+import { cn } from '@src/lib/utils';
 import { GET_USER } from '@src/utils/graphQueries/user';
 import { String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import { cn } from '@src/lib/utils';
 import React, { FC, useContext } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 

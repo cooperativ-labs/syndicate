@@ -1,6 +1,6 @@
 import Button from '@src/components/buttons/Button';
-import { WalletErrorCodes } from '@src/web3/helpersChain';
 import { cn } from '@src/lib/utils';
+import { WalletErrorCodes } from '@src/web3/helpersChain';
 import React, { FC, useContext } from 'react';
 import { Connector, useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
 

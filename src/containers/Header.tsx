@@ -1,10 +1,11 @@
 'use client';
 
-import { Offering, OfferingFull, RealEstatePropertyWithAddresses } from '@/types';
 import useWindowSize from '@hooks/useWindowSize';
 import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/router';
 import React from 'react';
+
+import { Offering, OfferingFull, RealEstatePropertyWithAddresses } from '@/types';
 
 import { getBaseUrl } from '../utils/helpersURL';
 

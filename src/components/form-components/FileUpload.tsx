@@ -2,9 +2,9 @@
 
 import { DocumentType } from '@gql/graphql';
 import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
+import { createClient } from '@supabase/utils/client';
 import Compressor from 'compressorjs';
 import { FC, useState } from 'react';
-import { createClient } from '@supabase/utils/client';
 
 import DeleteButton from '../buttons/DeleteButton';
 import DragAndDrop from '../ui/drag_and_drop';

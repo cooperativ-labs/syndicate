@@ -3,7 +3,6 @@
 import React, { FC } from 'react';
 
 // End of Selectio
-
 import ManagerSideBar from './sideBar/ManagerSideBar';
 import NavBar from './NavigationBar';
 

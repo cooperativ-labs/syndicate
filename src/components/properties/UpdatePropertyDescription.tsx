@@ -8,9 +8,9 @@ import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 
-import { LoadingButton } from '../ui/loading-button';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
+import { LoadingButton } from '../ui/loading-button';
 
 export type UpdatePropertyDescriptionType = {
   property: RealEstateProperty;

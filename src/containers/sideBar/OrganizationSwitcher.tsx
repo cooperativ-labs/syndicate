@@ -1,12 +1,12 @@
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { Organization } from '@gql/graphql';
 import CooperativLogo from '@src/components/CooperativLogo';
-import { handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { cn } from '@src/lib/utils';
+import { handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { Plus } from 'lucide-react';
 import React, { FC, useContext } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
-import { useOrganizations } from '@contexts/OrganizationsContext';
 
 type OrganizationSwitcherProps = {
   organizations: Organization[];

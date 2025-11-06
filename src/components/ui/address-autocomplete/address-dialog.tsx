@@ -1,5 +1,6 @@
 'use client';
 
+import { FormMessages } from '@src/components/form-messages';
 import { Button } from '@src/components/ui/button';
 import {
   Dialog,
@@ -11,12 +12,12 @@ import {
 } from '@src/components/ui/dialog';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
+import { Loader2 } from 'lucide-react';
 import type React from 'react';
 import { type FormEvent, useEffect, useState } from 'react';
-import { type ZodError, z } from 'zod';
+import { z, type ZodError } from 'zod';
+
 import type { AddressType } from '.';
-import { FormMessages } from '@src/components/form-messages';
-import { Loader2 } from 'lucide-react';
 
 interface AddressDialogProps {
   open: boolean;

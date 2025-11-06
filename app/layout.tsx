@@ -1,6 +1,7 @@
 import '../styles/tailwind.css';
 import '../styles/main.css';
 
+import { Toaster } from '@src/components/ui/sonner';
 import { createServerApolloClient } from '@src/lib/apolloServer';
 import { GET_USER_PROFILE } from '@src/utils/graphQueries/user';
 import { getWagmiConfig } from '@src/web3/wagmi';
@@ -10,7 +11,6 @@ import { headers } from 'next/headers';
 import Script from 'next/script';
 import React from 'react';
 import { cookieToInitialState } from 'wagmi';
-import { Toaster } from '@src/components/ui/sonner';
 
 import { UserProvider } from '@/contexts/UserContext';
 

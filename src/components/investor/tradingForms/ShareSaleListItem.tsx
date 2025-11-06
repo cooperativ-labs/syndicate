@@ -1,11 +1,11 @@
 import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
-import { cn } from '@src/lib/utils';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';

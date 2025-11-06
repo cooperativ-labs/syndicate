@@ -1,8 +1,8 @@
+import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
+import { getOrganization } from '@src/utils/actions/organizationActions';
 import type { Metadata } from 'next';
 
 import ClientOrganizationPage from './ClientOrganizationPage';
-import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
-import { getOrganization } from '@src/utils/actions/organizationActions';
 
 type Params = {
   params: Promise<{ organizationId: string }> | { organizationId: string };

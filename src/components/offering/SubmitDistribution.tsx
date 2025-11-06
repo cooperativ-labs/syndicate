@@ -9,8 +9,8 @@ import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
-import { useAccount, useReadContract } from 'wagmi';
 import { erc20Abi } from 'viem';
+import { useAccount, useReadContract } from 'wagmi';
 
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import FormButton from '../buttons/FormButton';

@@ -1,14 +1,14 @@
+import { OrganizationsProvider } from '@contexts/OrganizationsContext';
 import AlertPopup from '@src/components/alerts/AlertPopup';
+import ChainCompatibilityAlert from '@src/components/alerts/ChainCompatibilityAlert';
 import { cn } from '@src/lib/utils';
+import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
+import { cookies } from 'next/headers';
 import React, { FC } from 'react';
 
+import Manager from './Manager';
 import NewOrganizationModal from './NewOrganizationModal';
 import WithAuthentication from './WithAuthentication';
-import ChainCompatibilityAlert from '@src/components/alerts/ChainCompatibilityAlert';
-import Manager from './Manager';
-import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
-import { OrganizationsProvider } from '@contexts/OrganizationsContext';
-import { cookies } from 'next/headers';
 
 // const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';

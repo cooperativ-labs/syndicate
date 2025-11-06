@@ -1,5 +1,6 @@
-import { Address } from '@/types';
 import React, { FC } from 'react';
+
+import { Address } from '@/types';
 
 type AddressProps = {
   address: Address | undefined;

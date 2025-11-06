@@ -1,6 +1,6 @@
-import { gql } from "@apollo/client";
+import { gql } from '@apollo/client';
 
-import { CORE_DOCUMENT_FIELDS } from "./fragments";
+import { CORE_DOCUMENT_FIELDS } from './fragments';
 
 export const GET_DOCUMENT_EDITORS = gql`
   query GetDocumentEditors($fileId: String!) {

@@ -1,8 +1,9 @@
 'use client';
 
-import { OrganizationWithLegalEntities } from '@/types';
 import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+
+import { OrganizationWithLegalEntities } from '@/types';
 
 type OrganizationsContextValue = {
   organizations: OrganizationWithLegalEntities[];

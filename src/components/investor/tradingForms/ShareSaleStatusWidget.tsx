@@ -1,10 +1,10 @@
 import { Maybe, ShareOrder } from '@gql/graphql';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
-import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 

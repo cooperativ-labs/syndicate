@@ -1,13 +1,14 @@
 'use client';
 
+import { OrganizationsProvider } from '@contexts/OrganizationsContext';
 import PortalWrapper from '@src/containers/PortalWrapper';
 import Footer from '@src/Footer/Footer';
 import OrganizationProfile from '@src/screens/OrganizationProfile';
 import PortalOrganization from '@src/screens/PortalOrganization';
-import { OrganizationComplete } from '@/types';
 import React from 'react';
 import { useAccount } from 'wagmi';
-import { OrganizationsProvider } from '@contexts/OrganizationsContext';
+
+import { OrganizationComplete } from '@/types';
 
 type ClientOrganizationPageProps = {
   organization: OrganizationComplete | null;

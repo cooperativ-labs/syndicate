@@ -1,9 +1,9 @@
 // Types intentionally omitted here to avoid runtime typing issues in RSC
 
+import { getOfferingWithDocumentsById } from '@src/utils/actions/offeringActions';
 import type { Metadata } from 'next';
 
 import ClientOfferingPage from './page';
-import { getOfferingWithDocumentsById } from '@src/utils/actions/offeringActions';
 
 type Params = {
   params:

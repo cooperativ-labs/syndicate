@@ -1,8 +1,8 @@
 import { useMutation } from '@apollo/client/react';
 import { EmailAddress, Maybe } from '@gql/graphql';
+import { cn } from '@src/lib/utils';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/graphQueries/organization';
-import { cn } from '@src/lib/utils';
 import { Form, Formik } from 'formik';
 import { Trash } from 'lucide-react';
 import React, { FC, useState } from 'react';

@@ -1,5 +1,6 @@
-import { OfferingDistribution } from '@/types';
 import React, { FC } from 'react';
+
+import { OfferingDistribution } from '@/types';
 
 import DistributionListItem, { DistributionListItemProps } from './DistributionListItem';
 

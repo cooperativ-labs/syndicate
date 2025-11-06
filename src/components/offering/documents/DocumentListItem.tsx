@@ -1,6 +1,6 @@
 import { Document, Maybe } from '@gql/graphql';
-import { getDocFormatOption } from '@src/utils/enumConverters';
 import { removeOfferingDocument } from '@src/utils/actions/documentActions';
+import { getDocFormatOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from 'lucide-react';
 import React, { FC } from 'react';

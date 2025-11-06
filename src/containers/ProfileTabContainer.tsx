@@ -1,10 +1,3 @@
-import {
-  OfferingFull,
-  OfferingTabSection,
-  OfferingDescriptionText,
-  RealEstatePropertyWithAddresses
-} from '@/types';
-
 import SourcesAndUsesDisplay from '@src/components/offering/tabs/financialDisplay/SourcesAndUses';
 import TotalInvestmentValue from '@src/components/offering/tabs/financialDisplay/TotalInvestmentValue';
 import TotalReturns from '@src/components/offering/tabs/financialDisplay/TotalReturns';
@@ -13,6 +6,13 @@ import TextSection, { contentSectionHeader } from '@src/components/offering/tabs
 import { tabSectionOptions } from '@src/utils/enumConverters';
 import React, { FC, useState } from 'react';
 import { useWindowSize } from 'react-use';
+
+import {
+  OfferingDescriptionText,
+  OfferingFull,
+  OfferingTabSection,
+  RealEstatePropertyWithAddresses
+} from '@/types';
 
 type ProfileTabContainerProps = {
   offering: OfferingFull;

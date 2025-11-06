@@ -1,7 +1,7 @@
 import { useMutation } from '@apollo/client/react';
+import { cn } from '@src/lib/utils';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { UPDATE_ORDER } from '@src/utils/graphQueries/orders';
-import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 type OrderVisibilityToggleProps = {

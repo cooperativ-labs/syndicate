@@ -1,8 +1,6 @@
 import { useQuery } from '@apollo/client/react';
 import { Maybe, ShareOrder, ShareTransferEvent } from '@gql/graphql';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
-import { Button } from '@src/components/ui/button';
-import { LoadingButton } from '@src/components/ui/loading-button';
 import CloseButton from '@src/components/buttons/CloseButton';
 import PostBidAskForm, {
   PostBidAskFormProps
@@ -15,6 +13,8 @@ import ShareSaleList, {
 } from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import Loading from '@src/components/loading/Loading';
+import { Button } from '@src/components/ui/button';
+import { LoadingButton } from '@src/components/ui/loading-button';
 import FormModal from '@src/containers/FormModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { GET_USER } from '@src/utils/graphQueries/user';

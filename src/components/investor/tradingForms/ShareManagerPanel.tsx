@@ -3,6 +3,7 @@ import { ShareOrder } from '@gql/graphql';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
+import { cn } from '@src/lib/utils';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/graphQueries/orders';
@@ -17,7 +18,6 @@ import {
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
-import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId, useContractRead } from 'wagmi';
 

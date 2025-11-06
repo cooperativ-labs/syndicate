@@ -1,6 +1,5 @@
-import { LinkedAccount, LinkedAccountType } from '@/types';
-import { getSocialAccountOption } from '@src/utils/enumConverters';
 import { cn } from '@src/lib/utils';
+import { getSocialAccountOption } from '@src/utils/enumConverters';
 import {
   Dribbble,
   Facebook,
@@ -16,6 +15,8 @@ import {
   Youtube
 } from 'lucide-react';
 import React, { FC } from 'react';
+
+import { LinkedAccount, LinkedAccountType } from '@/types';
 
 type SocialLinkItemProps = {
   type: keyof typeof LinkedAccountType | null | undefined;

@@ -3,7 +3,8 @@ import BannerImage from '@src/components/organization/BannerImage';
 import SocialLinkItem from '@src/components/SocialLinkItem';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import React, { FC } from 'react';
-import { OrganizationComplete, LinkedAccountType } from '@/types';
+
+import { LinkedAccountType, OrganizationComplete } from '@/types';
 
 type OrganizationProfileProps = {
   organization: OrganizationComplete;

@@ -1,9 +1,10 @@
-import { CurrencyCode } from '@/types';
+import { cn } from '@src/lib/utils';
 import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
-import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
+
+import { CurrencyCode } from '@/types';
 
 type MoneyDisplayProps = {
   amount: number | undefined | null;

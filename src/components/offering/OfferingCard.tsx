@@ -1,5 +1,9 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import { useUserContext } from '@contexts/UserContext';
+import { getOfferingSmartContractSet } from '@src/utils/actions/cryptoActions';
+import { retrieveOrders } from '@src/utils/actions/orderActions';
 import {
   ContractOrder,
   getLowestOrderPrice,
@@ -12,17 +16,14 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
+import { LegalEntityWithAddresses, OfferingFull, OfferingSmartContractSet } from '@/types';
+import { CurrencyCodeType, ShareOrder } from '@/types';
+
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
 
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
-import { LegalEntityWithAddresses, OfferingFull, OfferingSmartContractSet } from '@/types';
-import { useUserContext } from '@contexts/UserContext';
-import { retrieveOrders } from '@src/utils/actions/orderActions';
-import { CurrencyCodeType, ShareOrder } from '@/types';
-import { useOrganizations } from '@contexts/OrganizationsContext';
-import { getOfferingSmartContractSet } from '@src/utils/actions/cryptoActions';
 
 export type OfferingCardProps = {
   offering: OfferingFull;

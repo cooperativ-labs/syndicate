@@ -11,6 +11,10 @@ import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { cn } from '@src/lib/utils';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
+import { getDistributions, retrieveOrders } from '@src/utils/actions/orderActions';
+import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import {
   ContractOrder,
@@ -20,22 +24,19 @@ import {
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
-import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
-import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
-import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
+
 import {
   Document,
   DocumentType,
+  OfferingDistribution,
   OfferingFull,
   OrganizationComplete,
-  OfferingDistribution,
   RealEstatePropertyWithAddresses
 } from '@/types';
-import { getDistributions, retrieveOrders } from '@src/utils/actions/orderActions';
 
 type OfferingProfileProps = {
   offering: OfferingFull;

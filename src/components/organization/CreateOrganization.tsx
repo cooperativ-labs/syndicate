@@ -2,6 +2,7 @@
 
 import { useMutation } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
+import { formatSlug } from '@src/utils/graphQueries/gqlUtils';
 import { createOrganizationWithAdmin } from '@src/utils/graphQueries/organizationServer';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
@@ -10,11 +11,10 @@ import { toast } from 'sonner';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
-import { LoadingButton } from '../ui/loading-button';
 import CountrySelect from '../form-components/CountrySelect';
 import FileUpload from '../form-components/FileUpload';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import { formatSlug } from '@src/utils/graphQueries/gqlUtils';
+import { LoadingButton } from '../ui/loading-button';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
