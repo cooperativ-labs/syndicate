@@ -1,7 +1,6 @@
 'use client';
 
-import { useMutation } from '@apollo/client/react';
-import { Maybe, Offering } from '@gql/graphql';
+import { Maybe, Offering } from '@/types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';

@@ -1,6 +1,5 @@
 'use client';
 
-import { useOrganizations } from '@contexts/OrganizationsContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addLegalEntity } from '@src/utils/actions/entityActions';
 import {
@@ -9,14 +8,12 @@ import {
   LegalEntityType
 } from '@src/utils/enumConverters';
 import { Country, IState, State } from 'country-state-city';
-import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { Controller, Form, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 import { z } from 'zod';
 
-import { CurrencyCode, LegalEntity, Organization } from '@/types';
-import { OrganizationWithLegalEntities } from '@/types';
+import { CurrencyCode } from '@/types';
 
 import AddressAutoComplete, { AddressType } from '../ui/address-autocomplete';
 import { Input } from '../ui/input';
@@ -24,6 +21,7 @@ import { Label } from '../ui/label';
 import { LoadingButton } from '../ui/loading-button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
+import { useOrganizations } from '@contexts/OrganizationsContext';
 
 export type CreateEntityType = {
   defaultLogo?: string;
@@ -50,11 +48,8 @@ const schema = z.object({
   addressAutocomplete: z.string()
 });
 
-const CreateEntity: FC<CreateEntityType & { organization: OrganizationWithLegalEntities }> = ({
-  defaultLogo,
-  actionOnCompletion,
-  organization
-}) => {
+const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion }) => {
+  const { chosenOrganizationId } = useOrganizations();
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
@@ -153,7 +148,7 @@ const CreateEntity: FC<CreateEntityType & { organization: OrganizationWithLegalE
     setButtonState('loading');
     try {
       await addLegalEntity({
-        organizationId: organization.id,
+        organizationId: chosenOrganizationId ?? '',
         displayName: values.legalName,
         legalName: values.legalName,
         entityPurpose: values.entityPurpose,

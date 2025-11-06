@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Maybe, Offering, OfferingParticipant } from '@gql/graphql';
+import { Maybe, Offering, OfferingParticipant } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import StandardButton from '@src/components/buttons/StandardButton';

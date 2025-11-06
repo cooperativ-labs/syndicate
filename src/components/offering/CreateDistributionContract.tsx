@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@gql/graphql';
+import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { CREATE_DISTRIBUTION_CONTRACT, CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';

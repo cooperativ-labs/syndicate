@@ -1,4 +1,4 @@
-import { Document, Maybe } from '@gql/graphql';
+import { Document, Maybe } from '@/types';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Check, Copy } from 'lucide-react';
 import React, { FC, useState } from 'react';

@@ -1,7 +1,6 @@
 'use client';
 
-import { useMutation } from '@apollo/client/react';
-import { CurrencyCode } from '@gql/graphql';
+import { CurrencyCode } from '@/types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import {
   assetStatusOptions,

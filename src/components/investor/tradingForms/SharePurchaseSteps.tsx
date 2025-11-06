@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client/react';
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
 import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';

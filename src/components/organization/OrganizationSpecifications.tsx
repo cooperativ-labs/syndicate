@@ -1,4 +1,4 @@
-import { CurrencyCode, Maybe, Organization } from '@gql/graphql';
+import { CurrencyCode, Maybe, Organization } from '@/types';
 import { cn } from '@src/lib/utils';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Country } from 'country-state-city';

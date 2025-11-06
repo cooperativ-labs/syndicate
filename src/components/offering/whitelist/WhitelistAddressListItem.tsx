@@ -1,4 +1,4 @@
-import { Maybe, OfferingParticipant } from '@gql/graphql';
+import { Maybe, OfferingParticipant } from '@/types';
 import { cn } from '@src/lib/utils';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { shareContractABI } from '@src/web3/generated';

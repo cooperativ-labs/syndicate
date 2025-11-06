@@ -1,22 +1,12 @@
-import { useQuery } from '@apollo/client/react';
-import type { GetOrganizationQuery, Organization } from '@gql/graphql';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
-import { createServerApolloClient } from '@src/lib/apolloServer';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { getOrganization } from '@src/utils/helpersOrganization';
-import { useParams } from 'next/navigation';
+import { getOrganization } from '@src/utils/actions/organizationActions';
 import React from 'react';
 
-const CreateOfferingPage = async () => {
-  const params = useParams<{ organizationId: string }>();
-  const orgId = params?.organizationId;
-  // const { data: organizationData, refetch } = useQuery(GET_ORGANIZATION, {
-  //   variables: { id: orgId },
-  //   skip: !orgId
-  // });
+const CreateOfferingPage = async ({ params }: { params: Promise<{ organizationId: string }> }) => {
+  const { organizationId } = await params;
 
-  const organization = await getOrganization(orgId);
+  const organization = await getOrganization(organizationId);
   return (
     <div data-test="component-create-project-page" className="h-full flex">
       <ManagerWrapper>

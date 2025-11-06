@@ -1,6 +1,6 @@
 'use client';
 
-import { LegalEntity, Maybe } from '@gql/graphql';
+import { LegalEntity, Maybe } from '@/types';
 import React, { FC } from 'react';
 
 import { legalEntityWithSubsidiaries } from '@/types';

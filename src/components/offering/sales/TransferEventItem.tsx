@@ -1,4 +1,4 @@
-import { ShareTransferEvent } from '@gql/graphql';
+import { ShareTransferEvent } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getCurrencyByCode, getTransferEventOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';

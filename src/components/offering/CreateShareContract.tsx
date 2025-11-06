@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { SmartContractType } from '@gql/graphql';
+import { SmartContractType } from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { CREATE_SHARE_CONTRACT } from '@src/utils/graphQueries/crypto';
 import { deployShareContract } from '@src/web3/contractFactory';

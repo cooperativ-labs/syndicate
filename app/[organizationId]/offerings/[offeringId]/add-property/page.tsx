@@ -1,6 +1,6 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
+i;
 import FormCard from '@src/components/cards/FormCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import AddPropertyInfo from '@src/components/offering/AddPropertyInfo';

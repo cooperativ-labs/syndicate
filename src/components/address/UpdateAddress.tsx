@@ -1,4 +1,4 @@
-import { Address, Maybe } from '@gql/graphql';
+import { Address, Maybe } from '@/types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';

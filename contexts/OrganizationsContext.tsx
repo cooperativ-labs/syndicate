@@ -3,12 +3,14 @@
 import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
-import { OrganizationWithLegalEntities } from '@/types';
+import { Organization } from '@/types';
 
 type OrganizationsContextValue = {
-  organizations: OrganizationWithLegalEntities[];
-  chosenOrganization: OrganizationWithLegalEntities | null;
+  organizations: Organization[];
+  // chosenOrganization: OrganizationWithLegalEntities | null;
   chosenOrganizationId: string | null;
+  createOrganizationModalOpen: boolean;
+  setCreateOrganizationModalOpen: (open: boolean) => void;
 };
 
 const OrganizationsContext = createContext<OrganizationsContextValue | undefined>(undefined);
@@ -18,28 +20,28 @@ export function OrganizationsProvider({
   children,
   savedOrganizationId
 }: {
-  organizations: OrganizationWithLegalEntities[];
+  organizations: Organization[];
   children: ReactNode;
   savedOrganizationId: string | null;
 }) {
   const params = useParams<{ organizationId: string }>();
   const foundOrganizationId = params?.organizationId as string | undefined;
   const [chosenOrganizationId, setChosenOrganizationId] = useState<string | null>(null);
+  const [createOrganizationModalOpen, setCreateOrganizationModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const setOrgId = foundOrganizationId ?? savedOrganizationId ?? null;
     setChosenOrganizationId(setOrgId);
   }, []);
 
-  const chosenOrganization =
-    organizations.find(organization => organization.id.toString() === chosenOrganizationId) || null;
-
   return (
     <OrganizationsContext.Provider
       value={{
         organizations,
-        chosenOrganization,
-        chosenOrganizationId
+        // chosenOrganization,
+        chosenOrganizationId,
+        createOrganizationModalOpen,
+        setCreateOrganizationModalOpen
       }}
     >
       {children}

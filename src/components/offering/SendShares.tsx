@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Currency, CurrencyCode, Maybe, OfferingParticipant } from '@gql/graphql';
+import { Currency, CurrencyCode, Maybe, OfferingParticipant } from '@/types';
 import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
 import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
 import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';

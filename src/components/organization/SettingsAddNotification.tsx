@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { NotificationMethod, NotificationRecipientType, NotificationSubject } from '@gql/graphql';
+import { NotificationMethod, NotificationRecipientType, NotificationSubject } from '@/types';
 import { notificationSubjectOptions } from '@src/utils/enumConverters';
 import { ADD_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
 import { Form, Formik } from 'formik';

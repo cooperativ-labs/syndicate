@@ -1,5 +1,3 @@
-import { useMutation } from '@apollo/client/react';
-import { LinkedAccount, Maybe } from '@gql/graphql';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/graphQueries/organization';

@@ -9,8 +9,7 @@ import { handleOrganizationChange } from '@src/utils/helpersOrganization';
 import { FC } from 'react';
 
 const Dashboard: FC = () => {
-  const { user } = useUserContext();
-  const { chosenOrganization, organizations } = useOrganizations();
+  const { organizations } = useOrganizations();
 
   const hasOrganizations = organizations.length > 0;
 
@@ -40,13 +39,13 @@ const Dashboard: FC = () => {
         <div className="grid grid-cols-3 gap-12">
           <div className="col-span-2 p-6 border-2 rounded-md">
             <h2 className="text-xl  text-blue-900 font-semibold">Create an offering:</h2>
-            <EnsureOrganization
+            {/* <EnsureOrganization
               user={user}
               explainerText="In order to create an offering, we first need some personal information"
-            >
-              {/* organizations fetched for manager include legal_entities; cast for component's type */}
-              <CreateOffering organization={chosenOrganization} refetch={() => {}} />
-            </EnsureOrganization>
+            > */}
+            {/* organizations fetched for manager include legal_entities; cast for component's type */}
+            {/* <CreateOffering refetch={() => {}} /> */}
+            {/* </EnsureOrganization> */}
           </div>
           <div className="col-span-1">
             <div>

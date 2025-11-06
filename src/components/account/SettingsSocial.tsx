@@ -1,26 +1,18 @@
-import { useMutation } from '@apollo/client/react';
-import { LegalEntity, Organization } from '@gql/graphql';
 import { socialAccountOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_ORGANIZATION_SOCIAL_ACCOUNTS } from '@src/utils/graphQueries/organization';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 
 import Input from '../form-components/Inputs';
 import Select from '../form-components/Select';
+import { OrganizationComplete } from '@/types';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 type SettingsSocialProps = {
-  organization: Organization;
+  organization: OrganizationComplete;
 };
 const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
-  const [addSocials, { error }] = useMutation(ADD_ORGANIZATION_SOCIAL_ACCOUNTS);
-
-  if (error) {
-    alert(`Oops. Looks like something went wrong: ${error.message}`);
-  }
-
   return (
     <Formik
       initialValues={{

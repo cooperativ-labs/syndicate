@@ -1,7 +1,7 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
-import { DocumentType, Offering } from '@gql/graphql';
+import { Organization, Offering, OfferingParticipant } from '@/types';
+
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
@@ -27,21 +27,19 @@ import { useAccount, useBalance, useReadContracts } from 'wagmi';
 
 type PortalOfferingProps = {
   offering: Offering;
-  refetchOffering: () => void;
+  organization: Organization;
 };
 
-const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) => {
+const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => {
   const { address: userWalletAddress } = useAccount();
-  const params = useParams<{ organizationId: string }>();
-  const orgId = params?.organizationId;
-  const { data: organizationData } = useQuery(GET_ORGANIZATION, {
-    variables: { id: orgId },
-    skip: !orgId
-  });
 
-  const { details, name: offeringName, id: offeringId, participants } = offering;
+  const {
+    min_units_per_investor,
+    name: offeringName,
+    id: offeringId,
+    offering_participants
+  } = offering;
 
-  const minUnitsPerInvestor = details?.minUnitsPerInvestor;
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
   const {
@@ -105,14 +103,13 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, refetchOffering }) 
   };
 
   const refetchOfferingInfo = () => {
-    refetchOffering();
     refetchTransactionHistory();
     refetchOrders();
   };
 
   const documents = offering?.documents;
 
-  const offeringParticipant = participants?.find(participant => {
+  const offeringParticipant = participants?.find((participant: OfferingParticipant) => {
     return participant?.addressOfferingId === userWalletAddress + offeringId;
   });
 

@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Maybe } from '@gql/graphql';
+import { Maybe } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';

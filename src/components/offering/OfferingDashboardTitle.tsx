@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Maybe } from '@gql/graphql';
+import { Maybe } from '@/types';
 import { cn } from '@src/lib/utils';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';

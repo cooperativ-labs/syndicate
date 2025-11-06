@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Organization } from '@gql/graphql';
+import { Organization } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';

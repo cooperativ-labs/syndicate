@@ -1,4 +1,4 @@
-import { Offering, User } from '@gql/graphql';
+import { Offering, User } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';

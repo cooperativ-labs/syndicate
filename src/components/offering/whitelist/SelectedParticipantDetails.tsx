@@ -1,11 +1,10 @@
-import { useMutation } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
 import {
   Maybe,
   OfferingParticipant,
   OfferingSmartContractSet,
   WhitelistTransactionType
-} from '@gql/graphql';
+} from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import Input from '@src/components/form-components/Inputs';

@@ -1,6 +1,4 @@
-import { gql } from '@apollo/client';
-
-import { CORE_ENTITY_FIELDS } from './fragments';
+import { CORE_ENTITY_FIELDS } from "./fragments";
 
 export const GET_ENTITY = gql`
   ${CORE_ENTITY_FIELDS}

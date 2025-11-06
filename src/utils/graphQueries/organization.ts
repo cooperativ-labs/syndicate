@@ -1,6 +1,4 @@
-import { gql } from '@apollo/client';
-
-import { CORE_ORGANIZATION_FIELDS } from './fragments';
+import { CORE_ORGANIZATION_FIELDS } from "./fragments";
 
 export const GET_ORGANIZATION = gql`
   ${CORE_ORGANIZATION_FIELDS}

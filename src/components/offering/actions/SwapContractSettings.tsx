@@ -1,4 +1,4 @@
-import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from '@gql/graphql';
+import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from '@/types';
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import SectionBlock from '@src/containers/SectionBlock';

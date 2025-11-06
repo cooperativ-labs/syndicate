@@ -85,7 +85,7 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
               {offerings?.map((offering, i) => {
                 return (
                   <div key={i}>
-                    <OfferingCard offering={offering} />
+                    <OfferingCard offering={offering} organization={organization} />
                   </div>
                 );
               })}

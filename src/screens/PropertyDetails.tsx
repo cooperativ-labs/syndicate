@@ -1,7 +1,5 @@
 'use client';
 
-import { useMutation } from '@apollo/client/react';
-import { RealEstateProperty } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import UpdateAddress from '@src/components/address/UpdateAddress';
 import Button from '@src/components/buttons/Button';
@@ -23,17 +21,19 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import { useSession } from 'next-auth/react';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
+import { RealEstatePropertyWithAddresses } from '@/types';
+import { useUserContext } from '@contexts/UserContext';
+import { useEntity } from '@contexts/EntityContext';
 
 type PropertyDetailsProps = {
-  property: RealEstateProperty;
+  property: RealEstatePropertyWithAddresses;
 };
 
 const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
   const router = useRouter();
-  const { data: session, status } = useSession();
-  const userId = session?.user?.id;
+  const { userId } = useUserContext();
+  const { entity } = useEntity();
   const [addImage, { error: imageError }] = useMutation(ADD_PROPERTY_IMAGE);
   const [updateAddress, { error: addressError }] = useMutation(UPDATE_ADDRESS);
   const [updateProperty, { error: propertyError }] = useMutation(UPDATE_RE_PROPERTY_INFO);
@@ -46,22 +46,21 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
 
   const {
     id,
-    address,
-    amenitiesDescription,
+    addresses,
+    amenities_description,
     description,
     images,
-    investmentStatus,
-    owner,
-    propertyType,
-    assetValue,
-    assetValueNote,
-    closingCosts,
-    downPayment,
-    lenderFees,
+    investment_status,
+    property_type,
+    asset_value,
+    asset_value_note,
+    closing_costs,
+    down_payment,
+    lender_fees,
     loan
   } = property;
 
-  const organization = owner?.organization;
+  const organization = entity?.organization;
 
   const isEntityManager = getIsEditorOrAdmin(userId, organization);
 
@@ -95,9 +94,9 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
         title={'Edit Address'}
       >
         <UpdateAddress
-          address={address}
-          addressId={address?.id}
-          addressLine1={address?.line1}
+          address={addresses[0]}
+          addressId={addresses[0]?.id}
+          addressLine1={addresses[0]?.line1}
           updateAddress={updateAddress}
           setModal={() => setAddressModal(false)}
         />
@@ -125,17 +124,17 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
         />
       </FormModal>
       <div className=" z-10 md:z-10 min-h-screen w-full">
-        <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{address?.line1}</h1>
+        <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{addresses[0]?.line1}</h1>
         <Progress
           brandColor={'#275A8F'}
           lightBrand={false}
-          propertyInvestmentStage={investmentStatus}
+          propertyInvestmentStage={investment_status}
           className="flex mb-4"
         />
 
         <div>
           <span className="font-semibold">Property type: </span>
-          {getPropertyTypeOption(propertyType)?.name}
+          {getPropertyTypeOption(property_type)?.name}
         </div>
         <div>
           <span className="font-semibold">Description: </span>
@@ -177,7 +176,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
         <hr className="my-4" />
         <div className="flex justify-between">
           <div>
-            <h2 className="font-bold text-gray-700">Amenities</h2> {amenitiesDescription}
+            <h2 className="font-bold text-gray-700">Amenities</h2> {amenities_description}
           </div>
           {isEntityManager && (
             <Button onClick={() => setDetailsModal(true)}>
@@ -192,12 +191,13 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           <div>
             <h2 className="font-bold text-gray-700">Financials</h2>{' '}
             <div>
-              Asset value: {numberWithCommas(assetValue)} {assetValueNote && `(${assetValueNote})`}
+              Asset value: {numberWithCommas(asset_value)}{' '}
+              {asset_value_note && `(${asset_value_note})`}
             </div>
             <div>Loan amount: {numberWithCommas(loan)}</div>
-            <div>Closing costs: {numberWithCommas(closingCosts)}</div>
-            <div>Down payment: {numberWithCommas(downPayment)}</div>
-            <div>Lender fees: {numberWithCommas(lenderFees)}</div>
+            <div>Closing costs: {numberWithCommas(closing_costs)}</div>
+            <div>Down payment: {numberWithCommas(down_payment)}</div>
+            <div>Lender fees: {numberWithCommas(lender_fees)}</div>
           </div>
           {isEntityManager && (
             <Button onClick={() => setFinancialsModal(true)}>
@@ -217,7 +217,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
                   deleteProperty({
                     variables: {
                       currentDate: currentDate,
-                      ownerId: property.owner?.id,
+                      legalEntityId: entity?.id,
                       propertyId: property.id
                     }
                   })

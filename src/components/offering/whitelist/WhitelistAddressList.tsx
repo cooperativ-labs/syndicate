@@ -1,4 +1,4 @@
-import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from '@gql/graphql';
+import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from '@/types';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';

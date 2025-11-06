@@ -1,5 +1,5 @@
 'use client';
-import { Organization } from '@gql/graphql';
+import { Organization } from '@/types';
 import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 import type { User } from '@supabase/supabase-js';
 import React, { FC, useEffect, useState } from 'react';

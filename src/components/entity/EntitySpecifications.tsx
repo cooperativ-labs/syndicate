@@ -1,6 +1,6 @@
 'use client';
 
-import { CurrencyCode, LegalEntity, Maybe } from '@gql/graphql';
+import { CurrencyCode, LegalEntity, Maybe } from '@/types';
 import { cn } from '@src/lib/utils';
 import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';

@@ -1,4 +1,4 @@
-import { Currency, RealEstateProperty } from '@gql/graphql';
+import { Currency, RealEstateProperty } from '@/types';
 import React, { FC } from 'react';
 
 import FinancialFactItem from './FinancialFactItem';

@@ -1,7 +1,5 @@
-import { useMutation } from '@apollo/client/react';
-import { LegalEntity, User } from '@gql/graphql';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_USER } from '@src/utils/graphQueries/user';
+
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 
@@ -15,8 +13,6 @@ type SettingUserPersonalInfoProps = {
 };
 
 const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ user }) => {
-  const [updateUser, { data, error }] = useMutation(UPDATE_USER);
-
   const [alerted, setAlerted] = useState<boolean>(false);
 
   if (error) {

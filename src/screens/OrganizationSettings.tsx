@@ -1,8 +1,7 @@
 'use client';
 
-import { useMutation, useQuery } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
-import { Maybe, Organization } from '@gql/graphql';
+import { OrganizationComplete } from '@/types';
 import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import DashboardCard from '@src/components/cards/DashboardCard';
@@ -23,45 +22,24 @@ import RoundedImage from '@src/components/RoundedImage';
 import FormModal from '@src/containers/FormModal';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import {
-  GET_ORGANIZATION,
-  UPDATE_ORGANIZATION_INFORMATION
-} from '@src/utils/graphQueries/organization';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 
-const OrganizationSettings: FC = () => {
+interface OrganizationSettingsProps {
+  organization: OrganizationComplete;
+}
+const OrganizationSettings: FC<OrganizationSettingsProps> = ({ organization }) => {
   const { user } = useUserContext();
   const userId = user?.id;
-  const router = useRouter();
-  const { organizationId: orgId } = useParams<{ organizationId: string }>();
-
-  const {
-    data: organizationData,
-    error: getOrgError,
-    loading
-  } = useQuery(GET_ORGANIZATION, { variables: { id: orgId }, skip: !orgId });
-  const organization: Organization = organizationData?.getOrganization;
-
-  const [updateOrganization, { data: updateOrgData, error: updateOrgError }] = useMutation(
-    UPDATE_ORGANIZATION_INFORMATION
-  );
 
   const [imageModal, setImageModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
   const [alerted, setAlerted] = useState<boolean>(false);
 
-  const error = updateOrgError || getOrgError;
-  if (error && !alerted) {
-    alert(`Oops. Looks like something went wrong. ${error}`);
-    setAlerted(true);
-  }
-
-  if (!organization || loading) {
+  if (!organization) {
     return <ModalLoading />;
   }
 

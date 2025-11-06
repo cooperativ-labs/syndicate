@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client/react';
 import { REMOVE_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
 import React, { FC } from 'react';
 

@@ -1,11 +1,10 @@
 'use client';
 
-import { useMutation } from '@apollo/client';
-import { ADD_ORGANIZATION_EMAIL } from '@src/utils/dGraphQueries/organization';
 import { sha256 } from 'js-sha256';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react';
-
+import { addOrganizationEmail } from '@src/utils/actions/organizationActions';
+import { useAsync } from 'react-use';
 const ConfirmEmail = () => {
   const params = useParams<{ organizationId: string }>();
   const searchParams = useSearchParams();
@@ -15,9 +14,7 @@ const ConfirmEmail = () => {
   const storedEmail = typeof window !== 'undefined' ? window.localStorage.getItem('email') : null;
   const hashStoredEmail = storedEmail && sha256(storedEmail);
 
-  const [addOrganizationEmail, { error: errorEmail }] = useMutation(ADD_ORGANIZATION_EMAIL);
-
-  useEffect(() => {
+  useAsync(async () => {
     if (!storedEmail || !hashStoredEmail || !orgId) {
       return;
     }
@@ -28,31 +25,21 @@ const ConfirmEmail = () => {
       router.push(`/${orgId}/settings`);
       return;
     }
-
-    addOrganizationEmail({
-      variables: {
+    try {
+      await addOrganizationEmail({
         organizationId: orgId,
         address: storedEmail,
         isPublic: true
-      }
-    })
-      .then(() => {
-        window.localStorage.removeItem('email');
-        alert('Email confirmed successfully!');
-        router.push(`/${orgId}/settings`);
-      })
-      .catch(() => {
-        window.localStorage.removeItem('email');
-        alert('Oops. Looks like there was a problem confirming your email address.');
-        router.push(`/${orgId}/settings`);
       });
-  }, [storedEmail, hashStoredEmail, token, orgId, addOrganizationEmail, router]);
-
-  useEffect(() => {
-    if (errorEmail) {
-      alert(`Oops. Looks like there was a problem adding your email address. ${errorEmail}`);
+      window.localStorage.removeItem('email');
+      alert('Email confirmed successfully!');
+      router.push(`/${orgId}/settings`);
+    } catch (error) {
+      console.error(error);
+      alert('Oops. Looks like there was a problem confirming your email address.');
+      router.push(`/${orgId}/settings`);
     }
-  }, [errorEmail]);
+  }, [storedEmail, hashStoredEmail, token, orgId]);
 
   return (
     <div className="p-4 mx-auto max-w-xl bg-white rounded-xl shadow-lg">

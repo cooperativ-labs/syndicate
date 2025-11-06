@@ -1,4 +1,4 @@
-import { WhitelistTransaction, WhitelistTransactionType } from '@gql/graphql';
+import { WhitelistTransaction, WhitelistTransactionType } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { String0x } from '@src/web3/helpersChain';

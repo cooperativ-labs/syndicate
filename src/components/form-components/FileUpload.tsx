@@ -1,6 +1,6 @@
 'use client';
 
-import { DocumentType } from '@gql/graphql';
+import { DocumentType } from '@/types';
 import { getFileFormat, urlToDatabaseProps } from '@src/utils/helpersDocuments';
 import { createClient } from '@supabase/utils/client';
 import Compressor from 'compressorjs';

@@ -1,7 +1,6 @@
 'use client';
 
-import { useMutation } from '@apollo/client/react';
-import { CurrencyCode, Maybe, SmartContract } from '@gql/graphql';
+import { CurrencyCode, Maybe, SmartContract } from '@/types';
 import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { setDocument } from '@src/web3/contractShareCalls';

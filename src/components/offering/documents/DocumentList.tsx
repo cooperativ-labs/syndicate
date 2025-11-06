@@ -1,4 +1,4 @@
-import { Document, Maybe } from '@gql/graphql';
+import { Document, Maybe } from '@/types';
 import React, { FC } from 'react';
 
 import DocumentAdder from './DocumentAdder';

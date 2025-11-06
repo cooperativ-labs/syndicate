@@ -1,4 +1,4 @@
-import { Maybe } from '@gql/graphql';
+import { Maybe } from '@/types';
 import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 

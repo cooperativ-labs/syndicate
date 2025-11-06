@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from '@gql/graphql';
+import { Currency, CurrencyCode, Maybe, OfferingDetailsType } from '@/types';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';

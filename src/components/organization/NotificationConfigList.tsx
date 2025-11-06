@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Maybe, NotificationConfiguration, OrganizationUser } from '@gql/graphql';
+import { Maybe, NotificationConfiguration, OrganizationUser } from '@/types';
 import { REMOVE_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
 import React, { FC } from 'react';
 

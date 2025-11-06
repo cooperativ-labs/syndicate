@@ -1,29 +1,31 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
 import InvestorApplicationForm from '@src/components/investor/applicationForm/InvestorApplicationForm';
-import LoadingModal from '@src/components/loading/ModalLoading';
+
 import Header from '@src/containers/Header';
 import PortalWrapper from '@src/containers/PortalWrapper';
-import { GET_OFFERING } from '@src/utils/graphQueries/offering';
-import { useParams } from 'next/navigation';
-import React from 'react';
+import { getOfferingById } from '@src/utils/actions/offeringActions';
+import { getOrganization } from '@src/utils/actions/organizationActions';
 
-const InvestorApplicationPage = () => {
-  const params = useParams<{ offeringId: string }>();
-  const offeringId = params?.offeringId;
-  const { data } = useQuery(GET_OFFERING, { variables: { id: offeringId }, skip: !offeringId });
+type Params = {
+  params: Promise<{ organizationId: string; offeringId: string }>;
+};
 
-  if (!data) {
-    return <LoadingModal />;
+export default async function InvestorApplicationPage({ params }: Params) {
+  const { organizationId, offeringId } = await params;
+  const [offering, organization] = await Promise.all([
+    getOfferingById(offeringId),
+    getOrganization(organizationId)
+  ]);
+
+  if (!organization) {
+    return <div>Organization not found</div>;
   }
-
-  const offering = data?.getOffering;
 
   return (
     <div data-test="investor-application" className="w-screen h-full pb-10 md:pb-20">
-      <PortalWrapper>
-        <Header offering={offering} small />
+      <PortalWrapper organization={organization}>
+        <Header offering={offering} small realEstateProperties={[]} />
         <div className="flex z-30 md:z-10 min-h-full min-h-screen">
           <div className="md:mx-6 w-full">
             <div className="grow h-full z-10">
@@ -38,6 +40,4 @@ const InvestorApplicationPage = () => {
       </PortalWrapper>
     </div>
   );
-};
-
-export default InvestorApplicationPage;
+}

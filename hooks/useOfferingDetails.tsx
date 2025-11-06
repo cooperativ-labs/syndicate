@@ -1,5 +1,5 @@
-import { useQuery } from '@apollo/client/react';
-import { DocumentType, Offering, ShareOrder } from '@gql/graphql';
+i;
+import { DocumentType, Offering, ShareOrder } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';

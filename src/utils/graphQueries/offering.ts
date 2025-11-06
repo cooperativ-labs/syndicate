@@ -1,13 +1,11 @@
-import { gql } from '@apollo/client';
-
 import {
   CORE_APPLICATION_FIELDS,
   CORE_ENTITY_FIELDS,
   CORE_INVESTMENT_OFFERING_FIELDS,
   CORE_INVESTMENT_PARTICIPANT_FIELDS,
   CORE_OFFERING_FIELDS,
-  SMART_CONTRACT_SET_FIELDS
-} from './fragments';
+  SMART_CONTRACT_SET_FIELDS,
+} from "./fragments";
 
 export const ADD_OFFERING = gql`
   ${CORE_OFFERING_FIELDS}

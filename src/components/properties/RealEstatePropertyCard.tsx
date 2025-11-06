@@ -1,6 +1,6 @@
 'use client';
 
-import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@gql/graphql';
+import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@/types';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/navigation';

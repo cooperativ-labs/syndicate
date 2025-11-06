@@ -1,4 +1,4 @@
-import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@/types';
 import Button from '@src/components/buttons/Button';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import SubmitDistribution from '@src/components/offering/SubmitDistribution';

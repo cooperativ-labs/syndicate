@@ -1,5 +1,5 @@
 'use client';
-import { LegalEntity, Maybe, Offering } from '@gql/graphql';
+import { LegalEntity, Maybe, Offering } from '@/types';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingsList from '@src/components/offering/OfferingsList';

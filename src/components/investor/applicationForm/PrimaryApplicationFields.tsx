@@ -1,4 +1,4 @@
-import { LegalEntity } from '@gql/graphql';
+import { LegalEntity } from '@/types';
 import CreateAddress from '@src/components/address/CreateAddress';
 import Checkbox from '@src/components/form-components/Checkbox';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';

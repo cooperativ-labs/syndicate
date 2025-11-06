@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { ShareOrder } from '@gql/graphql';
+import { ShareOrder } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';

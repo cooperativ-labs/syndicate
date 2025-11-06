@@ -21,7 +21,6 @@ const ManagerWrapper: FC<ManagerWrapperProps> = async ({ children }) => {
   const organizations = await getOrgsFromUser();
   const cookieStore = await cookies();
   const savedOrganizationId = cookieStore.get('CHOSEN_ORGANIZATION')?.value;
-
   return (
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>

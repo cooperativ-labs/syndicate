@@ -2,8 +2,9 @@ import LoadingModal from '@src/components/loading/ModalLoading';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import EntityDetails from '@src/screens/EntityDetails';
 import { getLegalEntityById } from '@src/utils/actions/entityActions';
+import { EntityProvider } from '@contexts/EntityContext';
 
-const EntityPage = async ({ params }: { params: { entityId: string } }) => {
+export default async function EntityLayout({ params }: { params: Promise<{ entityId: string }> }) {
   const { entityId } = await params;
   const entity = await getLegalEntityById(entityId);
 
@@ -14,10 +15,10 @@ const EntityPage = async ({ params }: { params: { entityId: string } }) => {
   return (
     <div data-test="component-landing" className="h-full flex">
       <ManagerWrapper>
-        <EntityDetails entity={entity} />
+        <EntityProvider entity={entity}>
+          <EntityDetails entity={entity} />
+        </EntityProvider>
       </ManagerWrapper>
     </div>
   );
-};
-
-export default EntityPage;
+}

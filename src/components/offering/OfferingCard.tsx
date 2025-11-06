@@ -1,6 +1,5 @@
 'use client';
 
-import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
 import { getOfferingSmartContractSet } from '@src/utils/actions/cryptoActions';
 import { retrieveOrders } from '@src/utils/actions/orderActions';
@@ -16,7 +15,12 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { LegalEntityWithAddresses, OfferingFull, OfferingSmartContractSet } from '@/types';
+import {
+  LegalEntityWithAddresses,
+  OfferingFull,
+  OfferingSmartContractSet,
+  Organization
+} from '@/types';
 import { CurrencyCodeType, ShareOrder } from '@/types';
 
 import Card from '../cards/Card';
@@ -27,9 +31,10 @@ import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 
 export type OfferingCardProps = {
   offering: OfferingFull;
+  organization: Organization;
 };
 
-const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
+const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) => {
   const { address: userWalletAddress } = useAccount();
   const { userId } = useUserContext();
   const router = useRouter();
@@ -51,14 +56,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering }) => {
   const [smartContracts, setSmartContracts] = useState<OfferingSmartContractSet | null>(null);
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
   const [orders, setOrders] = useState<ShareOrder[]>([]);
-  const { organizations } = useOrganizations();
 
   const organizationId = offering.legalEntity?.organization_id;
 
-  const organizationImg = organizations.find(
-    organization => organization.id.toString() === organizationId.toString()
-  )?.logo;
-
+  const organizationImg = organization.logo as string;
   const swapContract = smartContracts?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
 

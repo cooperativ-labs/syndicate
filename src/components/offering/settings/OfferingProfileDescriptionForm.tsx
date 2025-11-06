@@ -1,4 +1,4 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Input from '@src/components/form-components/Inputs';

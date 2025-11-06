@@ -1,4 +1,4 @@
-import { Currency, Maybe, Offering, OfferingSmartContractSet } from '@gql/graphql';
+import { Currency, Maybe, Offering, OfferingSmartContractSet } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';

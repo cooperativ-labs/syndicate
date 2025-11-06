@@ -9,7 +9,8 @@ import { State, WagmiProvider } from 'wagmi';
 
 import { StateProvider } from '@/contexts/store';
 
-import { ApolloWrapper } from './ApolloWrapper';
+import WalletContextProvider from '@contexts/WalletContext';
+import { WalletChooserModal } from '@src/containers/wallet/WalletChooserModel';
 
 type ProvidersProps = {
   children: React.ReactNode;
@@ -20,6 +21,7 @@ const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
   const [cookiesApproved, setCookiesApproved] = useState<string | null>(null);
   const [config] = useState(() => getWagmiConfig());
   const [queryClient] = useState(() => new QueryClient()); // This is required for Wagmi
+
   useEffect(() => {
     const result = window.localStorage?.getItem('COOKIE_APPROVED');
     setCookiesApproved(result);
@@ -43,15 +45,16 @@ const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
   );
 
   return (
-    <ApolloWrapper>
-      <WagmiProvider config={config} initialState={initialState}>
-        <QueryClientProvider client={queryClient}>
+    <WagmiProvider config={config} initialState={initialState}>
+      <QueryClientProvider client={queryClient}>
+        <WalletContextProvider>
           <StateProvider>
             {cookiesApproved === 'approved' ? withCookies : withoutCookies}
+            <WalletChooserModal />
           </StateProvider>
-        </QueryClientProvider>
-      </WagmiProvider>
-    </ApolloWrapper>
+        </WalletContextProvider>
+      </QueryClientProvider>
+    </WagmiProvider>
   );
 };
 

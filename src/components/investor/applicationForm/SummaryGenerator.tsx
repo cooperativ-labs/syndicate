@@ -1,4 +1,4 @@
-import { Address, CurrencyCode, LegalEntity, Offering } from '@gql/graphql';
+import { Address, CurrencyCode, LegalEntity, Offering } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import {
   GenerateInvestorApplicationSummary,

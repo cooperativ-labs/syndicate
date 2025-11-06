@@ -1,8 +1,7 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import UserSettings from '@src/screens/UserSettings';
-import React from 'react';
 
-const UserSettingsPage = () => {
+export default async function UserSettingsPage() {
   return (
     <div
       data-test="component-landing"
@@ -13,6 +12,4 @@ const UserSettingsPage = () => {
       </ManagerWrapper>
     </div>
   );
-};
-
-export default UserSettingsPage;
+}

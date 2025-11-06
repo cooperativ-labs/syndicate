@@ -1,4 +1,4 @@
-import { OfferingDetails } from '@gql/graphql';
+import { OfferingDetails } from '@/types';
 import { getCurrencyOption, getDistributionPeriod } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';

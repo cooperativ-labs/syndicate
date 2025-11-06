@@ -1,7 +1,6 @@
 'use client';
 
-import { useMutation } from '@apollo/client/react';
-import { SmartContract } from '@gql/graphql';
+import { SmartContract } from '@/types';
 import { cn } from '@src/lib/utils';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/graphQueries/crypto';

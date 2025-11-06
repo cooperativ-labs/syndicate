@@ -1,4 +1,4 @@
-import { Maybe, Offering } from '@gql/graphql';
+import { Maybe, Offering } from '@/types';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import { getCurrencyOption } from '@src/utils/enumConverters';

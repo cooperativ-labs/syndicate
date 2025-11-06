@@ -1,4 +1,4 @@
-import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@gql/graphql';
+import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';

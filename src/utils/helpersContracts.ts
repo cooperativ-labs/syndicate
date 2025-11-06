@@ -1,13 +1,16 @@
-import { Maybe, SmartContract, SmartContractType } from '@gql/graphql';
+import { Maybe, SmartContract, SmartContractType } from "@/types";
 
-const contractIsSameChain = (contract: Maybe<SmartContract>, chainId: number): boolean => {
+const contractIsSameChain = (
+  contract: Maybe<SmartContract>,
+  chainId: number,
+): boolean => {
   return contract?.cryptoAddress.chainId === chainId;
 };
 export const getAvailableContracts = (
   unestablishedSmartContracts: Maybe<SmartContract>[],
-  chainId: number
+  chainId: number,
 ) => {
-  return unestablishedSmartContracts.find(contract => {
+  return unestablishedSmartContracts.find((contract) => {
     if (
       contractIsSameChain(contract, chainId) &&
       !contract?.established &&

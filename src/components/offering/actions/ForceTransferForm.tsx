@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Maybe, OfferingParticipant } from '@gql/graphql';
+import { Maybe, OfferingParticipant } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';

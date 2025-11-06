@@ -1,4 +1,4 @@
-import { LegalEntity } from '@gql/graphql';
+import { LegalEntity } from '@/types';
 import { cn } from '@src/lib/utils';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import React, { FC } from 'react';

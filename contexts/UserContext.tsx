@@ -1,6 +1,6 @@
 'use client';
 
-import { Profile } from '@gql/graphql';
+import { Profile } from '@/types';
 import { User } from '@supabase/supabase-js';
 import { createContext, ReactNode, useContext, useState } from 'react';
 // Define the context type

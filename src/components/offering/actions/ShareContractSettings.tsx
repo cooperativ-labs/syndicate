@@ -1,4 +1,4 @@
-import { Maybe, Offering, SmartContract, User } from '@gql/graphql';
+import { Maybe, Offering, SmartContract, User } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import SectionBlock from '@src/containers/SectionBlock';

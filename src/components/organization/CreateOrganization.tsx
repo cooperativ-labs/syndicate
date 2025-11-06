@@ -1,9 +1,8 @@
 'use client';
 
-import { useMutation } from '@apollo/client/react';
 import { useUserContext } from '@contexts/UserContext';
 import { formatSlug } from '@src/utils/graphQueries/gqlUtils';
-import { createOrganizationWithAdmin } from '@src/utils/graphQueries/organizationServer';
+import { createOrganizationWithAdmin } from '@src/utils/actions/organizationActions';
 import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { FC, useContext, useEffect, useState } from 'react';

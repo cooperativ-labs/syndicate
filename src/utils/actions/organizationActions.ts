@@ -1,50 +1,92 @@
-'use server';
+"use server";
 
-import { createClient } from '@supabase/utils/server';
+import { createClient } from "@supabase/utils/server";
 
 import {
   LegalEntity,
   Organization,
   OrganizationComplete,
-  OrganizationWithLegalEntities
-} from '@/types';
+  OrganizationWithLegalEntities,
+} from "@/types";
+import { revalidatePath } from "next/cache";
 
-export const getOrganizations = async (
-  orgIds: string[]
-): Promise<OrganizationWithLegalEntities[]> => {
+export const createOrganizationWithAdmin = async ({
+  userId,
+  name,
+  logo,
+  shortDescription,
+  website,
+  country,
+  slug,
+}: {
+  userId: string;
+  name: string;
+  logo: string;
+  shortDescription: string;
+  website: string;
+  country: string;
+  slug: string;
+}): Promise<
+  { organization_id: string; organization_user_id: string; slug: string }
+> => {
+  const supabase = createClient();
+  const { data, error } = await supabase.rpc("create_organization_with_admin", {
+    p_user_id: userId,
+    p_name: name,
+    p_logo: logo,
+    p_short_description: shortDescription,
+    p_website: website,
+    p_country: country,
+    p_slug: slug,
+  });
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return {
+    organization_id: data[0].organization_id,
+    organization_user_id: data[0].organization_user_id,
+    slug: data[0].slug,
+  };
+};
+
+const getOrganizations = async (
+  orgIds: string[],
+): Promise<Organization[]> => {
   const supabase = createClient();
 
   const { data: organizationsData, error: organizationsError } = await supabase
-    .from('organization')
+    .from("organization")
     .select(
       [
-        '*',
-        'organizationUsers:organization_user(id, user_id, permissions)',
-        'legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address)))'
-      ].join(', ')
+        "*",
+        "organizationUsers:organization_user(id, user_id, permissions)",
+      ].join(", "),
     )
-    .in('id', orgIds);
+    .in("id", orgIds);
   if (organizationsError) {
-    console.error('getOrganizations error', organizationsError);
+    console.error("getOrganizations error", organizationsError);
     return [];
   }
   return organizationsData;
 };
 
-export const getOrganization = async (id: string): Promise<OrganizationComplete | null> => {
+export const getOrganization = async (
+  id: string,
+): Promise<OrganizationComplete | null> => {
   const supabase = createClient();
   const { data: organizationsData, error: organizationsError } = await supabase
-    .from('organization')
+    .from("organization")
     .select(
       [
-        '*',
-        'organizationUsers:organization_user(id, user_id, permissions)',
-        'linkedAccounts:linked_account(*)',
-        'emailAddresses:email_address(*)',
-        'legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address), legalEntity:legal_entity(*)))'
-      ].join(', ')
+        "*",
+        "organizationUsers:organization_user(id, user_id, permissions)",
+        "linkedAccounts:linked_account(*)",
+        "emailAddresses:email_address(*)",
+        "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address), legalEntity:legal_entity(*)))",
+      ].join(", "),
     )
-    .eq('id', id)
+    .eq("id", id)
     .single();
 
   if (organizationsError) {
@@ -55,34 +97,46 @@ export const getOrganization = async (id: string): Promise<OrganizationComplete 
   return organizationsData;
 };
 
-export const getOrgsFromUser = async (
-  userId?: string | null
-): Promise<(Organization & { legal_entities: LegalEntity[] })[]> => {
+export const getOrgsFromUser = async (): Promise<Organization[] | []> => {
   const supabase = createClient();
-  let id = userId;
-  if (!userId) {
-    const { data: userData } = await supabase.auth.getUser();
-    id = userData.user?.id;
-  }
+  const { data: { user } } = await supabase.auth.getUser();
 
-  if (!id) {
+  const { data: organizationsData, error: organizationsErrors } = await supabase
+    .from("organization_user")
+    .select("org:organization(*)")
+    .eq("user_id", user?.id);
+  if (organizationsErrors) {
+    console.error(organizationsErrors);
     return [];
   }
 
-  const { data: memberships, error: membershipsErrors } = await supabase
-    .from('organization_user')
-    .select('organization_id')
-    .eq('user_id', id);
-  if (membershipsErrors) {
-    console.error(membershipsErrors);
+  const organizations = organizationsData.map((organization) =>
+    organization.org as unknown as Organization
+  );
+  if (!organizations) {
     return [];
   }
-
-  if (!memberships || memberships.length === 0) {
-    return [];
-  }
-
-  const organizations = await getOrganizations(memberships.map(org => org.organization_id));
-
   return organizations;
+};
+
+export const addOrganizationEmail = async ({
+  organizationId,
+  address,
+  isPublic,
+}: {
+  organizationId: string;
+  address: string;
+  isPublic: boolean;
+}): Promise<void> => {
+  const supabase = createClient();
+  const { error } = await supabase.from("email_address").insert({
+    organization_id: organizationId,
+    address: address,
+    is_public: isPublic,
+  });
+  if (error) {
+    throw new Error(error.message);
+  }
+  revalidatePath(`/${organizationId}/settings`, "page");
+  return true;
 };

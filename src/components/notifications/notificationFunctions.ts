@@ -1,41 +1,49 @@
-import { NotificationSubject, Organization } from '@gql/graphql';
-import { emailConfirmationContent, emailNotificationContent } from '@src/services/postmark';
-import axios from 'axios';
-import { sha256 } from 'js-sha256';
+import { NotificationSubject, Organization } from "@/types";
+import {
+  emailConfirmationContent,
+  emailNotificationContent,
+} from "@src/services/postmark";
+import axios from "axios";
+import { sha256 } from "js-sha256";
 
 const getRecipientEmails = (
   organization: Organization,
-  notificationSubject: NotificationSubject
+  notificationSubject: NotificationSubject,
 ): string[] => {
-  const recipients = organization.users?.filter(user => {
+  const recipients = organization.users?.filter((user) => {
     return user?.notificationConfigurations?.find(
-      config => config?.notificationSubject === notificationSubject
+      (config) => config?.notificationSubject === notificationSubject,
     );
   });
   if (!recipients) {
     return [];
   }
-  const recipientEmails = recipients.map(orgUser => orgUser.user.email);
+  const recipientEmails = recipients.map((orgUser) => orgUser.user.email);
   return recipientEmails as string[];
 };
 
-export const handleAddEmailAddress = async (address: string, completionUrl: string) => {
-  window.localStorage.setItem('email', address);
+export const handleAddEmailAddress = async (
+  address: string,
+  completionUrl: string,
+) => {
+  window.localStorage.setItem("email", address);
   const secret = sha256(address);
-  const confirmationLink = `${completionUrl}?token=${encodeURIComponent(secret)}`;
+  const confirmationLink = `${completionUrl}?token=${
+    encodeURIComponent(secret)
+  }`;
   const to = address;
-  const subject = 'Welcome to Cooperativ.io';
+  const subject = "Welcome to Cooperativ.io";
   const { html, text } = emailConfirmationContent(confirmationLink);
   const htmlBody = html;
   const textBody = text;
-  const messageStream = 'outbound';
+  const messageStream = "outbound";
   try {
-    await axios.post('/api/send-email', {
+    await axios.post("/api/send-email", {
       to,
       subject,
       htmlBody,
       textBody,
-      messageStream
+      messageStream,
     });
   } catch (error) {
     console.error(error);
@@ -52,7 +60,7 @@ export const handleContractNotification = async ({
   completionUrl,
   notificationText,
   notificationSubject,
-  emailSubject
+  emailSubject,
 }: EmailNotificationBaseProps & {
   notificationSubject: NotificationSubject;
   emailSubject: string;
@@ -60,17 +68,20 @@ export const handleContractNotification = async ({
   const call = async (email: string) => {
     const to = email;
     const subject = emailSubject;
-    const { html, text } = emailNotificationContent(notificationText, completionUrl);
+    const { html, text } = emailNotificationContent(
+      notificationText,
+      completionUrl,
+    );
     const htmlBody = html;
     const textBody = text;
-    const messageStream = 'notifications';
+    const messageStream = "notifications";
     try {
-      await axios.post('/api/send-email', {
+      await axios.post("/api/send-email", {
         to,
         subject,
         htmlBody,
         textBody,
-        messageStream
+        messageStream,
       });
     } catch (error) {
       console.error(error);
@@ -86,47 +97,47 @@ export const handleContractNotification = async ({
 export const handleWhitelistUpdateNotification = async ({
   organization,
   completionUrl,
-  notificationText
+  notificationText,
 }: EmailNotificationBaseProps) => {
-  const emailSubject = 'Notification: New whitelist member added';
+  const emailSubject = "Notification: New whitelist member added";
   const notificationSubject = NotificationSubject.WhitelistApproval;
   await handleContractNotification({
     organization,
     completionUrl,
     notificationText,
     notificationSubject,
-    emailSubject
+    emailSubject,
   });
 };
 
 export const handleOfferingRequestNotification = async ({
   organization,
   completionUrl,
-  notificationText
+  notificationText,
 }: EmailNotificationBaseProps) => {
-  const emailSubject = 'Notification: Cooperativ.io trade approval requested';
+  const emailSubject = "Notification: Cooperativ.io trade approval requested";
   const notificationSubject = NotificationSubject.TransactionRequest;
   handleContractNotification({
     organization,
     completionUrl,
     notificationText,
     notificationSubject,
-    emailSubject
+    emailSubject,
   });
 };
 
 export const handleTradeExecutionNotification = async ({
   organization,
   completionUrl,
-  notificationText
+  notificationText,
 }: EmailNotificationBaseProps) => {
-  const emailSubject = 'Notification: Cooperativ.io trade executed';
+  const emailSubject = "Notification: Cooperativ.io trade executed";
   const notificationSubject = NotificationSubject.TradeExecution;
   handleContractNotification({
     organization,
     completionUrl,
     notificationText,
     notificationSubject,
-    emailSubject
+    emailSubject,
   });
 };

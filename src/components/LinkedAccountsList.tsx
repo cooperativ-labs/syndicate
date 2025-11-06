@@ -1,4 +1,4 @@
-import { LinkedAccount, Maybe } from '@gql/graphql';
+import { LinkedAccount, Maybe } from '@/types';
 import React, { FC } from 'react';
 
 import LinkedAccountListItem from './LinkedAccountListItem';

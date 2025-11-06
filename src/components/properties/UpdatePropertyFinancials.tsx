@@ -1,4 +1,4 @@
-import { RealEstateProperty } from '@gql/graphql';
+import { RealEstateProperty } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';

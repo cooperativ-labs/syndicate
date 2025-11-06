@@ -1,4 +1,4 @@
-import { Maybe, OfferingDetails, ShareOrder } from '@gql/graphql';
+import { Maybe, OfferingDetails, ShareOrder } from '@/types';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 

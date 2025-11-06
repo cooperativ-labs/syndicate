@@ -1,4 +1,4 @@
-import { EmailAddress, Maybe } from '@gql/graphql';
+import { EmailAddress, Maybe } from '@/types';
 import React, { FC } from 'react';
 
 import EmailAddressListItem from './EmailAddressListItem';

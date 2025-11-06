@@ -1,6 +1,6 @@
 'use client';
 import Card from '@src/components/cards/Card';
-import { MatchSupportedChains } from '@src/web3/wagmi';
+import { MatchSupportedChains, SupportedChains } from '@src/web3/wagmi';
 import React, { FC } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 
@@ -11,6 +11,7 @@ type EnsureCompatibleNetworkProps = { children: React.ReactNode };
 const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children }) => {
   const { isConnected } = useAccount();
   const { chain } = useAccount();
+  const compatibleChain = SupportedChains.some(c => c.id === chain?.id);
   if (!isConnected) {
     return (
       <div className="flex flex-col h-full w-screen items-center justify-center">
@@ -20,7 +21,7 @@ const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children })
         </Card>
       </div>
     );
-  } else if (!chain) {
+  } else if (!compatibleChain) {
     return (
       <div className="flex flex-col h-full w-screen items-center justify-center">
         <Card className="md:w-96 rounded-lg mx-4 md:mx-auto mt-4  p-4 ">

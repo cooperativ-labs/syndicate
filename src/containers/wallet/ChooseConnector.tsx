@@ -1,8 +1,17 @@
-import Button from '@src/components/buttons/Button';
+import {
+  Item,
+  ItemActions,
+  ItemContent,
+  ItemDescription,
+  ItemMedia,
+  ItemTitle
+} from '@src/components/ui/item';
+import { Button } from '@src/components/ui/button';
 import { cn } from '@src/lib/utils';
 import { WalletErrorCodes } from '@src/web3/helpersChain';
 import React, { FC, useContext } from 'react';
 import { Connector, useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
+import { ChevronRightIcon } from 'lucide-react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
@@ -35,6 +44,7 @@ export function WalletOptions() {
 
 function WalletOption({ connector, onClick }: { connector: Connector; onClick: () => void }) {
   const [ready, setReady] = React.useState(false);
+  console.log(connector, ready);
 
   React.useEffect(() => {
     (async () => {
@@ -44,9 +54,15 @@ function WalletOption({ connector, onClick }: { connector: Connector; onClick: (
   }, [connector]);
 
   return (
-    <button disabled={!ready} onClick={onClick}>
-      {connector.name}
-    </button>
+    <Item onClick={onClick} variant="outline" className="cursor-pointer hover:shadow-md">
+      <ItemContent>
+        <ItemTitle>{connector.name}</ItemTitle>
+        {/* <ItemDescription>{connector.description}</ItemDescription> */}
+      </ItemContent>
+      <ItemActions>
+        <ChevronRightIcon />
+      </ItemActions>
+    </Item>
   );
 }
 

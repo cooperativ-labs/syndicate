@@ -1,5 +1,5 @@
-import { useQuery } from '@apollo/client/react';
-import { Maybe, ShareOrder, ShareTransferEvent } from '@gql/graphql';
+i;
+import { Maybe, ShareOrder, ShareTransferEvent } from '@/types';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import CloseButton from '@src/components/buttons/CloseButton';
 import PostBidAskForm, {

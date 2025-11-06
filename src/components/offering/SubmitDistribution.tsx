@@ -1,4 +1,3 @@
-import { useMutation } from '@apollo/client/react';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { ADD_DISTRIBUTION } from '@src/utils/graphQueries/orders';

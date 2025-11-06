@@ -1,4 +1,4 @@
-import { AssetStatus, Maybe, OfferingStage } from '@gql/graphql';
+import { AssetStatus, Maybe, OfferingStage } from '@/types';
 import { cn } from '@src/lib/utils';
 import { getAssetStatusOption } from '@src/utils/enumConverters';
 import useBrandColor from 'hooks/useBrandColor';

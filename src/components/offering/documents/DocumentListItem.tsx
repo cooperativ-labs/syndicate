@@ -1,4 +1,4 @@
-import { Document, Maybe } from '@gql/graphql';
+import { Document, Maybe } from '@/types';
 import { removeOfferingDocument } from '@src/utils/actions/documentActions';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';

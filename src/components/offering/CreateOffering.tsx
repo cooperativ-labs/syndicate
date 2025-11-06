@@ -17,30 +17,32 @@ import React, { FC, useState } from 'react';
 import { Controller, Form, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { OrganizationWithLegalEntities } from '@/types';
+import { OrganizationComplete } from '@/types';
 
 import CreateEntity from '../entity/CreateEntity';
 import { Button } from '../ui/button';
 import { LoadingButton } from '../ui/loading-button';
+import { useOrganizations } from '@contexts/OrganizationsContext';
 
 type CreateOfferingType = {
-  organization: OrganizationWithLegalEntities | null;
+  organization: OrganizationComplete | null;
   refetch?: () => void;
 };
 
 const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   const router = useRouter();
+  const { chosenOrganizationId } = useOrganizations();
   const [entityModal, setEntityModal] = useState<boolean>(false);
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
 
-  if (!organization) {
+  if (!chosenOrganizationId) {
     return <div>Organization not found</div>;
   }
-  const entityOptions = organization.legalEntities;
+  const entities = organization?.legalEntities;
 
-  const entitiesWithoutOfferings = entityOptions.filter(entity => entity.offerings.length === 0);
+  const entitiesWithoutOfferings = entities?.filter(entity => entity.offerings.length === 0) ?? [];
   const entitySubmissionCompletion = () => {
     refetch?.();
     setEntityModal(false);
@@ -52,11 +54,11 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
       const result = await addOffering({
         offeringEntityId: data.offeringEntityId,
         name: data.name,
-        organizationId: organization.id.toString()
+        organizationId: chosenOrganizationId ?? ''
       });
       const offeringId = result.records[0].id;
       if (offeringId) {
-        router.push(`/${organization.id}/offerings/${offeringId}`);
+        router.push(`/${chosenOrganizationId}/offerings/${offeringId}`);
       }
       setButtonState('success');
     } catch (e: any) {
@@ -98,7 +100,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
         onClose={() => setEntityModal(false)}
         title={`Link a legal entity to your offering.`}
       >
-        <CreateEntity organization={organization} actionOnCompletion={entitySubmissionCompletion} />
+        <CreateEntity actionOnCompletion={entitySubmissionCompletion} />
       </FormModal>
       <Form {...form}>
         <form>

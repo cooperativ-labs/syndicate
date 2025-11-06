@@ -1,4 +1,4 @@
-import { Address, RealEstateProperty } from '@gql/graphql';
+import { Address, RealEstateProperty } from '@/types';
 import {
   assetStatusOptions,
   getCurrencyOption,

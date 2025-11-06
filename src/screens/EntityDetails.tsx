@@ -1,9 +1,6 @@
 'use client';
 
-import { useMutation, useQuery } from '@apollo/client/react';
-import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
-import { CurrencyCode, LegalEntity, Maybe, Offering } from '@gql/graphql';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import CreateAddress from '@src/components/address/CreateAddress';
 import Button from '@src/components/buttons/Button';
@@ -17,30 +14,20 @@ import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
-import {
-  REMOVE_ENTITY_ADDRESS,
-  REMOVE_ENTITY_OWNER,
-  UPDATE_ENTITY_INFORMATION
-} from '@src/utils/graphQueries/entity';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import React, { Dispatch, FC, SetStateAction, useContext, useEffect, useState } from 'react';
 
-import { legalEntityWithSubsidiaries } from '@/types';
+import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+
+import { LegalEntityWithSubsidiaries } from '@/types';
+import { deleteAddress, removeOwner, updateLegalEntity } from '@src/utils/actions/entityActions';
 
 type EntityDetailsProps = {
-  entity: legalEntityWithSubsidiaries;
+  entity: LegalEntityWithSubsidiaries;
 };
 
 const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const { userId } = useUserContext();
   const organization = entity.organization;
-
-  const [updateLegalEntity, { data: updateEntityData, error: updateEntityError }] =
-    useMutation(UPDATE_ENTITY_INFORMATION);
-
-  const [deleteAddress, { error: deleteError }] = useMutation(REMOVE_ENTITY_ADDRESS);
-  const [removeOwner, { data, error: removeError }] = useMutation(REMOVE_ENTITY_OWNER);
 
   const [addOwnerModal, setAddOwnerModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditEntitySelectionType>('none');
@@ -48,12 +35,6 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
 
   const isAdmin = userId && getIsAdmin(userId, organization);
   const isAdminOrEditor = getIsEditorOrAdmin(userId, organization);
-
-  const error = updateEntityError || deleteError || removeError;
-  if (error && !alerted) {
-    alert(`Oops. Looks like something went wrong. ${error}`);
-    setAlerted(true);
-  }
 
   const {
     display_name,
@@ -74,32 +55,29 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     offerings
   ].flat();
 
-  const handleDisplayNameChange = (values: { displayName: Maybe<string> | undefined }) => {
-    updateLegalEntity({
-      variables: {
-        currentDate: currentDate,
+  const handleDisplayNameChange = async (values: { displayName: string | undefined }) => {
+    try {
+      await updateLegalEntity({
         entityId: entity.id,
         displayName: values.displayName,
-        legalName: legalName,
-        jurCountry: jurisdiction?.country,
-        operatingCurrencyCode: operatingCurrency?.code
-      }
-    }).then(res => {
+        legalName: entity.legal_name,
+        // jurCountry: jurisdiction?.country,
+        operatingCurrency: entity.operating_currency,
+        organizationId: organization.id
+      });
       setNameEditOn('none');
-    });
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   const handleDeleteAddress = (addressId: string) => {
-    deleteAddress({
-      variables: { currentDate: currentDate, geoAddressId: addressId, entityId: entity.id }
-    });
+    deleteAddress({ geoAddressId: addressId, entityId: entity.id });
   };
 
   // should only be admin
   const handleRemoveOwner = (owner: string) => {
-    removeOwner({
-      variables: { currentDate: currentDate, removeEntityOwner: owner, ownedEntityId: entity.id }
-    });
+    removeOwner({ ownerId: owner, entityId: entity.id });
   };
 
   const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {

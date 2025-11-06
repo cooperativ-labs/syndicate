@@ -1,5 +1,3 @@
-import { gql } from '@apollo/client';
-
 export const RETRIEVE_TRANSFER_EVENT = gql`
   query RetrieveTransferEvents($shareContractAddress: String!) {
     share_transfer_eventCollection(

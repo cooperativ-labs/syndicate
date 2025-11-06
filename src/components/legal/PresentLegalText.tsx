@@ -1,4 +1,4 @@
-import { Maybe } from '@gql/graphql';
+import { Maybe } from '@/types';
 import React, { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
 interface PresentLegalTextProps {

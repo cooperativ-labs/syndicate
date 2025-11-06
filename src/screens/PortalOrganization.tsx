@@ -1,7 +1,7 @@
 'use client';
 
-import { useQuery } from '@apollo/client/react';
-import { OfferingParticipant } from '@gql/graphql';
+i;
+import { OfferingParticipant } from '@/types';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import OfferingsList from '@src/components/offering/OfferingsList';

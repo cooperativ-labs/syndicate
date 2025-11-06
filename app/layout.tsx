@@ -2,19 +2,18 @@ import '../styles/tailwind.css';
 import '../styles/main.css';
 
 import { Toaster } from '@src/components/ui/sonner';
-import { createServerApolloClient } from '@src/lib/apolloServer';
-import { GET_USER_PROFILE } from '@src/utils/graphQueries/user';
 import { getWagmiConfig } from '@src/web3/wagmi';
 import { createClient } from '@supabase/utils/server';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
-import Script from 'next/script';
 import React from 'react';
 import { cookieToInitialState } from 'wagmi';
 
 import { UserProvider } from '@/contexts/UserContext';
 
 import Providers from './providers';
+import { getUserProfile } from '@src/utils/actions/userActions';
+import WalletContext from '@contexts/WalletContext';
 export const metadata: Metadata = {
   title: 'Cooperativ',
   icons: {
@@ -34,20 +33,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     data: { user }
   } = await supabase.auth.getUser();
 
+  const headersObj = await headers();
+  const cookies = headersObj.get('cookie');
+
+  const userProfile = user ? await getUserProfile(user.id) : null;
+
   const config = getWagmiConfig() || { chains: [], connectors: [] };
-
-  const initialState = cookieToInitialState(config, (await headers()).get('cookie'));
-
-  let userProfile: any = null;
-  if (user?.id) {
-    const apollo = await createServerApolloClient();
-    const { data } = await apollo.query<any>({
-      query: GET_USER_PROFILE,
-      variables: { id: user.id },
-      fetchPolicy: 'no-cache'
-    });
-    userProfile = data?.profileCollection?.edges?.[0]?.node ?? null;
-  }
+  const initialState = cookieToInitialState(config, cookies);
 
   return (
     <html lang="en">

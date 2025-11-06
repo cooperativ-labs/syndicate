@@ -1,8 +1,5 @@
-import { useMutation } from '@apollo/client/react';
-import { CryptoAddress, CryptoAddressType, Maybe } from '@gql/graphql';
 import { cn } from '@src/lib/utils';
-import { UPDATE_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
-import { REMOVE_ENTITY_WALLET } from '@src/utils/graphQueries/entity';
+
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import { Form, Formik } from 'formik';
 import { Pencil, X } from 'lucide-react';
@@ -24,13 +21,7 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
   const [editOn, setEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
   const { address: userWalletAddress } = useAccount();
-  const [updateCryptoAddress, { error }] = useMutation(UPDATE_CRYPTO_ADDRESS);
-  const [deleteWallet, { data, error: deleteError }] = useMutation(REMOVE_ENTITY_WALLET);
 
-  if ((error || deleteError) && !alerted) {
-    setAlerted(true);
-    alert(`Oops, looks like something went wrong. ${error?.message}`);
-  }
   const getChainLogo = (chainId: Maybe<number> | undefined) => {
     return (
       <div className="flex">

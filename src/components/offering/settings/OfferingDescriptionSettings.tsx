@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Offering, OfferingTabSection } from '@gql/graphql';
+import { Offering, OfferingTabSection } from '@/types';
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CloseButton from '@src/components/buttons/CloseButton';
 import Card from '@src/components/cards/Card';

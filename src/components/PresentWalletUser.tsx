@@ -1,4 +1,4 @@
-import { useQuery } from '@apollo/client/react';
+i;
 import { GET_CRYPTO_ADDRESS } from '@src/utils/graphQueries/crypto';
 import { Check } from 'lucide-react';
 import React, { FC, useState } from 'react';

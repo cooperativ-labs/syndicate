@@ -2,31 +2,18 @@
 
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
-import {
-  OfferingConnection,
-  OfferingEdge,
-  OfferingParticipant,
-  OfferingParticipantConnection,
-  OfferingParticipantEdge
-} from '@gql/graphql';
-import { GetOrganizationQuery, Organization, OrganizationConnection } from '@gql/graphql';
+import { OfferingParticipant } from '@/types';
 import DashboardCard from '@src/components/cards/DashboardCard';
-import { toastExperiment } from '@src/components/indicators/Notifications';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import CreateOffering from '@src/components/offering/CreateOffering';
-import OfferingFinder from '@src/components/offering/OfferingFinder';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamMember';
 import TeamMemberList from '@src/components/organization/TeamMemberList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
 import { getOfferingParticipant } from '@src/utils/actions/offeringActions';
-import { GET_OFFERING_PARTICIPANT, GET_ORG_OFFERINGS } from '@src/utils/graphQueries/offering';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { GET_USER } from '@src/utils/graphQueries/user';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import { useParams } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
@@ -63,11 +50,9 @@ const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ orga
   const isAdmin =
     userId &&
     getIsAdmin(userId, {
-      id: organization.id.toString(),
       organizationUsers: organization.organizationUsers
     });
   const isEditorOrAdmin = getIsEditorOrAdmin(userId, {
-    id: organization.id.toString(),
     organizationUsers: organization.organizationUsers
   });
 

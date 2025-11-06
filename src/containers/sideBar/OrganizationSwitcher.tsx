@@ -1,5 +1,5 @@
 import { useOrganizations } from '@contexts/OrganizationsContext';
-import { Organization } from '@gql/graphql';
+import { Organization } from '@/types';
 import CooperativLogo from '@src/components/CooperativLogo';
 import { cn } from '@src/lib/utils';
 import { handleOrganizationChange } from '@src/utils/helpersOrganization';
@@ -17,10 +17,7 @@ type OrganizationSwitcherProps = {
 const backgroundColor = ' bg-gray-200';
 
 const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) => {
-  const { chosenOrganizationId } = useOrganizations();
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch } = applicationStore;
-
+  const { chosenOrganizationId, setCreateOrganizationModalOpen } = useOrganizations();
   return (
     <div className={cn('relative min-h-full', backgroundColor)}>
       <div className="z-10 flex flex-col min-w-max pt-2 rounded-md focus:outline-none">
@@ -31,9 +28,9 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
             className={cn(
               'flex items-center overflow-hidden m-2 rounded-lg hover:border-white  border-4 focus:outline-none',
 
-              chosenOrganizationId === org.id ? 'border-4 border-slate-600' : ''
+              chosenOrganizationId === org.id.toString() ? 'border-4 border-slate-600' : ''
             )}
-            onClick={() => handleOrganizationChange(org.id)}
+            onClick={() => handleOrganizationChange(org.id.toString())}
           >
             <img
               className="w-14 h-14"
@@ -46,7 +43,7 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
         ))}
         <button
           className="flex  mx-2 rounded-lg border-4 text-gray-800 hover:text-gray-800 text-xl  focus:outline-none"
-          onClick={() => dispatch({ type: 'TOGGLE_CREATE_ORG_MODAL' })}
+          onClick={() => setCreateOrganizationModalOpen(true)}
         >
           <div className=" flex items-center justify-center w-14 h-14">
             <Plus />

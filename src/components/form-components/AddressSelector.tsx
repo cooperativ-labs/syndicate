@@ -1,4 +1,4 @@
-import { Address, LegalEntity } from '@gql/graphql';
+import { Address, LegalEntity } from '@/types';
 import React, { FC } from 'react';
 
 import Button from '../buttons/Button';

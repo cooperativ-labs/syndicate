@@ -1,21 +1,18 @@
-import { useQuery } from '@apollo/client/react';
-import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
-import SettingsSocial from '@src/components/account/SettingsSocial';
+'use client';
+import { useUserContext } from '@contexts/UserContext';
 import SettingsUserPersonalInfo from '@src/components/account/SettingsUserPersonalInfo';
-import EmailAddressList from '@src/components/EmailAddressList';
-import LinkedAccountsList from '@src/components/LinkedAccountsList';
 import Loading from '@src/components/loading/Loading';
-import WalletAddressList from '@src/components/WalletAddressList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import { GET_USER } from '@src/utils/graphQueries/user';
-import React, { FC, useContext, useEffect, useState } from 'react';
+import React, { FC, useState } from 'react';
 
 const UserSettings: FC = () => {
-  const { data: session, status } = useSession();
-  const { data: userData } = useQuery(GET_USER, { variables: { id: session?.user.id } });
-  const user = userData?.queryUser[0];
-
   const [alerted, setAlerted] = useState<boolean>(false);
+
+  const { user } = useUserContext();
+
+  if (!user) {
+    return <Loading />;
+  }
 
   // const [addEntityEmail, { data, error }] = useMutation(ADD_ENTITY_EMAIL);
 

@@ -1,16 +1,10 @@
-import { useApolloClient } from '@apollo/client/react';
-import { useMutation } from '@apollo/client/react';
 import {
   getOrganizationPermissionOption,
   organizationPermissionOptions
 } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_ORGANIZATION_USER } from '@src/utils/graphQueries/organization';
-// import { GET_USER_FROM_EMAIL } from '@src/utils/graphQueries/user';
 import { Form, Formik } from 'formik';
-import React, { FC, useContext } from 'react';
-
-import { OrganizationPermissionType } from '@/types';
+import React, { FC } from 'react';
+import { OrganizationUserPermission } from '@/types';
 
 import Input from '../form-components/Inputs';
 import Select from '../form-components/Select';
@@ -22,13 +16,11 @@ type SettingsAddTeamMemberProps = {
 };
 
 const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId }) => {
-  const [addTeamMember, { data, error }] = useMutation(ADD_ORGANIZATION_USER);
   const [userDoesNotExist, setUserDoesNotExist] = React.useState(false);
-  const client = useApolloClient();
 
   const handleAddTeamMemberAddress = async (
     emailAddress: string,
-    permission: keyof typeof OrganizationPermissionType
+    permission: keyof typeof OrganizationUserPermission
   ) => {
     setUserDoesNotExist(false);
     // client

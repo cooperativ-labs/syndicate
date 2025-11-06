@@ -1,12 +1,10 @@
 'use client';
-import { useMutation } from '@apollo/client/react';
-import { LegalEntity } from '@gql/graphql';
+
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { ADD_ENTITY_ADDRESS } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { FC, useEffect, useState } from 'react';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 
 import MajorActionButton from '../buttons/MajorActionButton';
 import Input, { addressFieldDiv } from '../form-components/Inputs';
@@ -17,37 +15,7 @@ export type CreateAddressType = {
 };
 
 const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) => {
-  const [addAddress, { data, error }] = useMutation(ADD_ENTITY_ADDRESS);
-  // const [map, setMap] = useState(null);
-  const [latLang, setLatLang] = useState<{ lat: number; lng: number }>({ lat: 0, lng: 0 });
-  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
-  const [inputAddress, setInputAddress] = useState<{ value: any }>();
-
-  if (error) {
-    alert(`Oops. Looks like something went wrong: ${error.message}`);
-  }
-
-  if (data) {
-    actionOnCompletion();
-  }
-
-  const placeId = inputAddress && inputAddress.value.place_id;
-  useEffect(() => {
-    geocodeByPlaceId(placeId)
-      .then(results => {
-        setAutocompleteResults(results);
-        const lat = results[0]?.geometry.location.lat();
-        const lng = results[0]?.geometry.location.lng();
-        setLatLang({ lat: lat, lng: lng });
-      })
-      .catch(error => {
-        return error;
-      });
-  }, [placeId]);
-
-  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
-    normalizeGeoAddress(autocompleteResults);
-
+  return <></>;
   const onSubmit = (label: string) => {
     addAddress({
       variables: {

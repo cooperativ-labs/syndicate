@@ -1,8 +1,8 @@
 import Button from '@src/components/buttons/Button';
 import { cn } from '@src/lib/utils';
-import React, { FC, useContext } from 'react';
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
+import { useWalletContext } from '@contexts/WalletContext';
+import { FC } from 'react';
 
 const outlinedClass = `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white`;
 
@@ -12,9 +12,7 @@ type ChooseConnectorButtonProps = {
 };
 
 const ChooseConnectorButton: FC<ChooseConnectorButtonProps> = ({ buttonText, large }) => {
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: dispatchWalletModal } = applicationStore;
-
+  const { setModalOpen } = useWalletContext();
   return (
     <Button
       className={cn(
@@ -24,7 +22,7 @@ const ChooseConnectorButton: FC<ChooseConnectorButtonProps> = ({ buttonText, lar
       )}
       onClick={e => {
         e.preventDefault();
-        dispatchWalletModal({ type: 'TOGGLE_WALLET_MODAL' });
+        setModalOpen(true);
       }}
     >
       {buttonText}

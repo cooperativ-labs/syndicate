@@ -1,6 +1,5 @@
 'use client';
 
-import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CreateEntity from '@src/components/entity/CreateEntity';
@@ -14,7 +13,6 @@ import { LegalEntityWithSubsidiaries, OrganizationWithUsers } from '@/types';
 
 const EntityDashboard: FC<{ entities: LegalEntityWithSubsidiaries[] }> = ({ entities }) => {
   const { user } = useUserContext();
-  const { chosenOrganization } = useOrganizations();
   const router = useRouter();
 
   const organization = entities[0].organization;
@@ -46,12 +44,7 @@ const EntityDashboard: FC<{ entities: LegalEntityWithSubsidiaries[] }> = ({ enti
               <> */}
             <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
             <hr className="my-6" />
-            {chosenOrganization && (
-              <CreateEntity
-                actionOnCompletion={() => router.back()}
-                organization={chosenOrganization}
-              />
-            )}
+            <CreateEntity actionOnCompletion={() => router.back()} />
             {/* </> */}
             {/* </EnsureProfileCompletion> */}
           </LimitedWidthSection>

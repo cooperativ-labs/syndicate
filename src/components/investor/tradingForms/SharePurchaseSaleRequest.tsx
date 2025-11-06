@@ -1,4 +1,4 @@
-import { Offering, ShareOrder } from '@gql/graphql';
+import { Offering, ShareOrder } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import StandardButton from '@src/components/buttons/StandardButton';

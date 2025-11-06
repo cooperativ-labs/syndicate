@@ -1,4 +1,4 @@
-import { Currency, User } from '@gql/graphql';
+import { Currency, User } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';

@@ -1,5 +1,3 @@
-import { gql } from '@apollo/client';
-
 // export const CHECK_WALLET_EXIST = () => {
 //   return gql`
 //     query ($address: String!) {

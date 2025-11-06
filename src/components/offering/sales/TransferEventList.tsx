@@ -1,4 +1,4 @@
-import { ShareTransferEvent } from '@gql/graphql';
+import { ShareTransferEvent } from '@/types';
 import React, { FC } from 'react';
 
 import TransferEventItem from './TransferEventItem';

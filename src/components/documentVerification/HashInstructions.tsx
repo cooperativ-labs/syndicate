@@ -1,4 +1,4 @@
-import { Document, Maybe } from '@gql/graphql';
+import { Document, Maybe } from '@/types';
 import { shareContractABI } from '@src/web3/generated';
 import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';

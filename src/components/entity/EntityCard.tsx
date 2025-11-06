@@ -4,12 +4,12 @@ import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { legalEntityWithSubsidiaries } from '@/types';
+import { LegalEntityWithSubsidiaries } from '@/types';
 
 import Card from '../cards/Card';
 
 export type EntityCardProps = {
-  entity: legalEntityWithSubsidiaries;
+  entity: LegalEntityWithSubsidiaries;
 };
 
 const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {

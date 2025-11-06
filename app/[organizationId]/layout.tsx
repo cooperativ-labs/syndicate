@@ -22,12 +22,13 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
   //   : '/assets/images/share.png';
 
   return {
+    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://cooperativ.io'),
     title: name ?? undefined,
     openGraph: {
       title: name ?? '',
       type: 'website',
       description: short_description ?? undefined,
-      url: `https://cooperativ.io/${id}/portal/`,
+      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${id}/portal/`,
       images: [banner_image ?? '/assets/images/share.png']
     },
     twitter: {

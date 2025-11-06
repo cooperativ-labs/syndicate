@@ -1,8 +1,5 @@
-import { useMutation } from '@apollo/client/react';
-import { EmailAddress, Maybe } from '@gql/graphql';
 import { cn } from '@src/lib/utils';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { REMOVE_ORGANIZATION_EMAIL, UPDATE_EMAIL } from '@src/utils/graphQueries/organization';
+
 import { Form, Formik } from 'formik';
 import { Trash } from 'lucide-react';
 import React, { FC, useState } from 'react';
@@ -12,16 +9,14 @@ import Input from './form-components/Inputs';
 import { EditButton, MarkPublic } from './form-components/ListItemButtons';
 
 type EmailAddressListItemProps = {
-  email: Maybe<Maybe<EmailAddress>> | undefined;
+  email: EmailAddressFull | undefined;
   withEdit?: boolean;
 };
 
 const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }) => {
-  const { organization, name, address, description, isPublic } = email as EmailAddress;
+  const { organization, name, address, description, isPublic } = email as EmailAddressFull;
   const [editOn, setEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
-  const [updateEmailAddress, { error: updateError }] = useMutation(UPDATE_EMAIL);
-  const [deleteEmail, { error: deleteError }] = useMutation(REMOVE_ORGANIZATION_EMAIL);
 
   if ((updateError && !alerted) || (deleteError && !alerted)) {
     alert(`Oops, looks like something went wrong. ${updateError?.message || deleteError?.message}`);

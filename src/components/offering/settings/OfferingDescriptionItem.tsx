@@ -1,5 +1,4 @@
-import { useMutation } from '@apollo/client/react';
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@gql/graphql';
+import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@/types';
 import Button from '@src/components/buttons/Button';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';

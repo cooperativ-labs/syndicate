@@ -1,4 +1,4 @@
-import { Maybe, ShareOrder } from '@gql/graphql';
+import { Maybe, ShareOrder } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';

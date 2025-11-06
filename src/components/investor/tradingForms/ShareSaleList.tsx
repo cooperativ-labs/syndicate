@@ -1,4 +1,4 @@
-import { Maybe, ShareOrder } from '@gql/graphql';
+import { Maybe, ShareOrder } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import SectionBlock from '@src/containers/SectionBlock';
 import { getCurrencyById } from '@src/utils/enumConverters';

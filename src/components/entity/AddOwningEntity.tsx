@@ -1,6 +1,6 @@
 'use client';
-import { useMutation } from '@apollo/client/react';
-import { LegalEntity, Organization } from '@gql/graphql';
+
+import { LegalEntity, Organization } from '@/types';
 import FormModal from '@src/containers/FormModal';
 import { ADD_ENTITY_OWNER } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
@@ -23,7 +23,6 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({
   organization,
   refetchOuter
 }) => {
-  const [addOwner, { data, error }] = useMutation(ADD_ENTITY_OWNER);
   const [entityModal, setEntityModal] = useState<boolean>(false);
 
   const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {
