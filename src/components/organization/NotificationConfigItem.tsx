@@ -1,7 +1,8 @@
-import { Maybe, NotificationConfiguration } from '@/types';
 import { getNotificationSubjectOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useState } from 'react';
+
+import { Maybe, NotificationConfiguration } from '@/types';
 
 import { EditButton } from '../form-components/ListItemButtons';
 

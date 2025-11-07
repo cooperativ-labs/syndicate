@@ -1,6 +1,6 @@
 import { cn } from '@src/lib/utils';
+import { updateOfferingBasic } from '@src/utils/actions/offeringActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
@@ -14,7 +14,6 @@ import FormattedCryptoAddress from '../FormattedCryptoAddress';
 
 import AccessCodeForm from './profile/AccessCodeForm';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
-import { updateOfferingBasic } from '@src/utils/actions/offeringActions';
 
 type OfferingDashboardTitleProps = {
   profileVisibility: boolean | undefined;

@@ -1,6 +1,7 @@
-import { Maybe } from '@/types';
 import React, { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
+
+import { Maybe } from '@/types';
 interface PresentLegalTextProps {
   text: Maybe<string> | undefined;
 }

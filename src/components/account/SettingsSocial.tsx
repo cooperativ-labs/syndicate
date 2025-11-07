@@ -3,9 +3,10 @@ import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
 
+import { OrganizationComplete } from '@/types';
+
 import Input from '../form-components/Inputs';
 import Select from '../form-components/Select';
-import { OrganizationComplete } from '@/types';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 

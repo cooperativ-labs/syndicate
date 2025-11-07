@@ -1,4 +1,4 @@
-import { Document, DocumentFormat, DocumentType } from "@/types";
+import { Document, DocumentFormat, DocumentType } from '@/types';
 
 export type urlToDatabaseProps = {
   url: string;
@@ -13,25 +13,22 @@ export type urlToDatabaseProps = {
 export const getFileFormat = (file: File) => {
   const fileType = file.type;
   switch (fileType) {
-    case "application/pdf":
+    case 'application/pdf':
       return DocumentFormat.PDF;
-    case "application/msword":
-    case "application/vnd.openxmlformats-officedocument.wordprocessingml.document":
+    case 'application/msword':
+    case 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
       return DocumentFormat.WORD_DOC;
-    case "text/markdown":
+    case 'text/markdown':
       return DocumentFormat.MARKDOWN;
-    case "xls":
-    case "xlsx":
+    case 'xls':
+    case 'xlsx':
       return DocumentFormat.EXCEL;
     default:
       return DocumentFormat.OTHER;
   }
 };
 
-export const getDocumentsOfType = (
-  documents: Document[] | undefined,
-  type: string | null,
-) => {
+export const getDocumentsOfType = (documents: Document[] | undefined, type: string | null) => {
   if (!documents) return [];
-  return documents.filter((document) => document?.type === type);
+  return documents.filter(document => document?.type === type);
 };

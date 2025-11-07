@@ -1,8 +1,9 @@
 'use client';
 
-import { Profile } from '@/types';
 import { User } from '@supabase/supabase-js';
 import { createContext, ReactNode, useContext, useState } from 'react';
+
+import { Profile } from '@/types';
 // Define the context type
 interface UserContextType {
   userId: string | undefined;

@@ -2,15 +2,17 @@ import '../styles/tailwind.css';
 import '../styles/main.css';
 
 import { Toaster } from '@src/components/ui/sonner';
+import { getUserProfile } from '@src/utils/actions/userActions';
 import { getWagmiConfig } from '@src/web3/wagmi';
 import { createClient } from '@supabase/utils/server';
 import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import React from 'react';
 import { cookieToInitialState } from 'wagmi';
+
 import { UserProvider } from '@/contexts/UserContext';
+
 import Providers from './providers';
-import { getUserProfile } from '@src/utils/actions/userActions';
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,

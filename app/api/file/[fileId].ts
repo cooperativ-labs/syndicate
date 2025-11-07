@@ -1,25 +1,19 @@
-import { Storage } from "@google-cloud/storage";
-import { initializeApollo } from "@src/utils/apolloClient";
+import { Storage } from '@google-cloud/storage';
+import { initializeApollo } from '@src/utils/apolloClient';
+import { createClient } from '@supabase/utils/server';
+import { NextApiRequest, NextApiResponse } from 'next';
+import path from 'path';
 
-import { NextApiRequest, NextApiResponse } from "next";
+import { OrganizationUser } from '@/types';
 
-import { OrganizationUser } from "@/types";
-import { createClient } from "@supabase/utils/server";
-import path from "path";
-
-const keyFilePath = path.join(
-  process.cwd(),
-  "/syndicate-cloud-key-staging.json",
-);
+const keyFilePath = path.join(process.cwd(), '/syndicate-cloud-key-staging.json');
 
 const storage = new Storage({
   projectId: process.env.NEXT_PRIVATE_GOOGLE_CLOUD_PROJECT_ID,
-  keyFilename: keyFilePath,
+  keyFilename: keyFilePath
 });
 
-const bucket = storage.bucket(
-  process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET as string,
-);
+const bucket = storage.bucket(process.env.NEXT_PUBLIC_GOOGLE_CLOUD_BUCKET as string);
 
 const handler = nextConnect<NextApiRequest, NextApiResponse>();
 
@@ -50,21 +44,18 @@ handler.delete(async (req, res) => {
   const apolloClient = initializeApollo();
 
   if (!session) {
-    return res.status(401).send("Unauthorized");
+    return res.status(401).send('Unauthorized');
   }
 
   try {
-    const { data } = await supabase.from("document").select("owner_id").eq(
-      "file_id",
-      fileId,
-    );
+    const { data } = await supabase.from('document').select('owner_id').eq('file_id', fileId);
     const isDocEditor = data?.length > 0;
 
     if (!isDocEditor) {
-      return res.status(403).send("Forbidden");
+      return res.status(403).send('Forbidden');
     }
   } catch (error) {
-    return res.status(500).send({ error: "Error fetching user permissions" });
+    return res.status(500).send({ error: 'Error fetching user permissions' });
   }
 
   const file = bucket.file(fileId);
@@ -74,7 +65,7 @@ handler.delete(async (req, res) => {
 
     // TODO: Update your database to remove the relationship between the user and the file
 
-    res.status(200).send({ message: "File deleted successfully" });
+    res.status(200).send({ message: 'File deleted successfully' });
   } catch (error) {
     res.status(500).send({ error: error });
   }

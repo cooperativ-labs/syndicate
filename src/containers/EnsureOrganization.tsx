@@ -1,8 +1,9 @@
 'use client';
-import { Organization } from '@/types';
 import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 import type { User } from '@supabase/supabase-js';
 import React, { FC, useEffect, useState } from 'react';
+
+import { Organization } from '@/types';
 
 type EnsureProfileCompletionProps = {
   children: React.ReactNode;

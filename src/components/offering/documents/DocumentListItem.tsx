@@ -1,9 +1,10 @@
-import { Document, Maybe } from '@/types';
 import { removeOfferingDocument } from '@src/utils/actions/documentActions';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from 'lucide-react';
 import React, { FC } from 'react';
+
+import { Document, Maybe } from '@/types';
 
 const DocumentListItem: FC<{
   document: Maybe<Document>;

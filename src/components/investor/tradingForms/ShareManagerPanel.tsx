@@ -1,8 +1,8 @@
-import { ShareOrder } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
 import { cn } from '@src/lib/utils';
+import { updateOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { approveRejectSwap, cancelSwap } from '@src/web3/contractSwapCalls';
@@ -11,7 +11,8 @@ import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
-import { updateOrder } from '@src/utils/actions/orderActions';
+
+import { ShareOrder } from '@/types';
 
 export type SaleMangerPanelProps = {
   swapContractAddress: String0x | undefined;

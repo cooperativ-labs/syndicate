@@ -1,15 +1,16 @@
 // upload.ts
 //@ts-ignore
-import { Multer } from "multer";
-import { NextApiRequest, NextApiResponse } from "next";
+import { Multer } from 'multer';
+import { NextApiRequest, NextApiResponse } from 'next';
 
-import { upload } from "./file/upload";
+import { upload } from './file/upload';
 
 type NextApiRequestWithFile = NextApiRequest & {
   file: Multer.GoogleCloudStorage.File;
 };
 
-const handler = upload.single("file")
+const handler = upload
+  .single('file')
   .post(async (req: NextApiRequestWithFile, res: NextApiResponse) => {
     try {
       res.status(200).json({ url: req.file.path, fileId: req.file.filename });
@@ -22,6 +23,6 @@ export default handler;
 
 export const config = {
   api: {
-    bodyParser: false,
-  },
+    bodyParser: false
+  }
 };

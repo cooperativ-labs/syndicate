@@ -1,7 +1,8 @@
-import { LegalEntity } from '@/types';
 import { cn } from '@src/lib/utils';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import React, { FC } from 'react';
+
+import { LegalEntity } from '@/types';
 
 import Button from '../buttons/Button';
 

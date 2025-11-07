@@ -1,3 +1,4 @@
+import { Button } from '@src/components/ui/button';
 import {
   Item,
   ItemActions,
@@ -6,12 +7,11 @@ import {
   ItemMedia,
   ItemTitle
 } from '@src/components/ui/item';
-import { Button } from '@src/components/ui/button';
 import { cn } from '@src/lib/utils';
 import { WalletErrorCodes } from '@src/web3/helpersChain';
+import { ChevronRightIcon } from 'lucide-react';
 import React, { FC, useContext } from 'react';
 import { Connector, useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
-import { ChevronRightIcon } from 'lucide-react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 

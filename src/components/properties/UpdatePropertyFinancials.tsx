@@ -1,8 +1,9 @@
-import { RealEstateProperty } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+
+import { RealEstateProperty } from '@/types';
 
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import { LoadingButton } from '../ui/loading-button';

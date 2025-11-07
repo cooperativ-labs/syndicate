@@ -2,7 +2,6 @@
 
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
-import { OfferingParticipant } from '@/types';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import CreateOffering from '@src/components/offering/CreateOffering';
@@ -18,6 +17,7 @@ import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
+import { OfferingParticipant } from '@/types';
 import { OrganizationComplete } from '@/types';
 
 const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ organization }) => {

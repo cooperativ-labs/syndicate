@@ -1,7 +1,8 @@
-import { Image, Maybe } from '@/types';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { REMOVE_PROPERTY_IMAGE } from '@src/utils/graphQueries/reProperty';
 import React, { FC } from 'react';
+
+import { Image, Maybe } from '@/types';
 
 import DeleteButton from '../buttons/DeleteButton';
 

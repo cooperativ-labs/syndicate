@@ -1,5 +1,6 @@
-import { Currency, RealEstateProperty } from '@/types';
 import React, { FC } from 'react';
+
+import { Currency, RealEstateProperty } from '@/types';
 
 import FinancialFactItem from './FinancialFactItem';
 

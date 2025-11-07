@@ -1,6 +1,7 @@
-import { OfferingTabSection } from '@/types';
 import { cn } from '@src/lib/utils';
 import React, { Dispatch, FC, SetStateAction } from 'react';
+
+import { OfferingTabSection } from '@/types';
 
 type TabProps = {
   label: string;

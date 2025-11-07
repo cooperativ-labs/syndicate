@@ -1,5 +1,6 @@
-import { ShareTransferEvent } from '@/types';
 import React, { FC } from 'react';
+
+import { ShareTransferEvent } from '@/types';
 
 import TransferEventItem from './TransferEventItem';
 

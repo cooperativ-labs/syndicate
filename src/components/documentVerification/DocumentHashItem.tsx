@@ -1,7 +1,8 @@
-import { Document, Maybe } from '@/types';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Check, Copy } from 'lucide-react';
 import React, { FC, useState } from 'react';
+
+import { Document, Maybe } from '@/types';
 
 import StandardButton from '../buttons/StandardButton';
 

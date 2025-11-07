@@ -1,4 +1,3 @@
-import { Address, CurrencyCode, LegalEntity, Offering } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import {
   GenerateInvestorApplicationSummary,
@@ -10,6 +9,8 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import axios from 'axios';
 import { useAsync } from 'react-use';
+
+import { Address, CurrencyCode, LegalEntity, Offering } from '@/types';
 type AgreementText = {
   custom: string;
   standard: string;

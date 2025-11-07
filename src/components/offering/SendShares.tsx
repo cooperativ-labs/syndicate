@@ -1,6 +1,6 @@
-import { CurrencyCodeType, OfferingParticipant } from '@/types';
+import { addContractPartition } from '@src/utils/actions/cryptoActions';
+import { addTransferEvent } from '@src/utils/actions/orderActions';
 import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
-
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { sendShares } from '@src/web3/contractShareCalls';
@@ -12,6 +12,8 @@ import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 
+import { CurrencyCodeType, OfferingParticipant } from '@/types';
+
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
@@ -19,8 +21,6 @@ import NewClassInputs from '../form-components/NewClassInputs';
 import Select from '../form-components/Select';
 
 import SetOperatorButton from './actions/SetOperatorButton';
-import { addContractPartition } from '@src/utils/actions/cryptoActions';
-import { addTransferEvent } from '@src/utils/actions/orderActions';
 
 export type SendSharesProps = {
   sharesIssued: number | undefined;

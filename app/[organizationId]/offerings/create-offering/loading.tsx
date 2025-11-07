@@ -1,5 +1,5 @@
-import ManagerWrapper from '@src/containers/ManagerWrapper';
 import { Skeleton } from '@src/components/ui/skeleton';
+import ManagerWrapper from '@src/containers/ManagerWrapper';
 
 export default function Loading() {
   return (
@@ -21,5 +21,3 @@ export default function Loading() {
     </div>
   );
 }
-
-

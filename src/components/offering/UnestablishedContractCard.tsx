@@ -1,15 +1,14 @@
 'use client';
 
-import { SmartContractWithCryptoAddress } from '@/types';
 import { cn } from '@src/lib/utils';
+import { updateUnestablishedSmartContract } from '@src/utils/actions/cryptoActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-
 import { MatchSupportedChains } from '@src/web3/wagmi';
-
 import React from 'react';
 
+import { SmartContractWithCryptoAddress } from '@/types';
+
 import FormattedCryptoAddress from '../FormattedCryptoAddress';
-import { updateUnestablishedSmartContract } from '@src/utils/actions/cryptoActions';
 
 interface UnestablishedContractCardProps {
   unestablishedContract: SmartContractWithCryptoAddress;

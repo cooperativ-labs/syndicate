@@ -1,10 +1,11 @@
+import 'react-datepicker/dist/react-datepicker.css';
+
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CurrencyCodeType, OfferingFull } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
+import NonInput from '@src/components/form-components/NonInput';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
-import { Textarea } from '@src/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -12,20 +13,21 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
-import NonInput from '@src/components/form-components/NonInput';
+import { Textarea } from '@src/components/ui/textarea';
+import { updateOfferingFinancial } from '@src/utils/actions/offeringActions';
 import {
   distributionPeriodOptions,
   getCurrencyOption,
   OfferingStage,
   StageOptions
 } from '@src/utils/enumConverters';
-import { updateOfferingFinancial } from '@src/utils/actions/offeringActions';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React, { FC, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
 import DatePicker, { CalendarContainer } from 'react-datepicker';
-import 'react-datepicker/dist/react-datepicker.css';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import { CurrencyCodeType, OfferingFull } from '@/types';
 
 const defaultFieldDiv = 'pt-3 bg-opacity-0';
 

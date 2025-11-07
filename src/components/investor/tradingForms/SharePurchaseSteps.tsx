@@ -1,4 +1,5 @@
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { addTransferEvent, AddTransferEventParams } from '@src/utils/actions/orderActions';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
 import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
@@ -13,7 +14,6 @@ import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseSaleRequest, {
   SharePurchaseSaleRequestProps
 } from './SharePurchaseSaleRequest';
-import { addTransferEvent, AddTransferEventParams } from '@src/utils/actions/orderActions';
 
 type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   isApproved: boolean;

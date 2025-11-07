@@ -1,7 +1,6 @@
 'use client';
 
 import InvestorApplicationForm from '@src/components/investor/applicationForm/InvestorApplicationForm';
-
 import Header from '@src/containers/Header';
 import PortalWrapper from '@src/containers/PortalWrapper';
 import { getOfferingById } from '@src/utils/actions/offeringActions';

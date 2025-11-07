@@ -1,5 +1,6 @@
-import { LinkedAccount, Maybe } from '@/types';
 import React, { FC } from 'react';
+
+import { LinkedAccount, Maybe } from '@/types';
 
 import LinkedAccountListItem from './LinkedAccountListItem';
 

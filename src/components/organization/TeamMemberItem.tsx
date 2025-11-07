@@ -1,5 +1,6 @@
 import { useUserContext } from '@contexts/UserContext';
 import { cn } from '@src/lib/utils';
+import { removeTeamMember } from '@src/utils/actions/organizationActions';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useState } from 'react';
@@ -7,7 +8,6 @@ import React, { FC, useState } from 'react';
 import { OrganizationUser, OrganizationUserPermission } from '@/types';
 
 import { EditButton } from '../form-components/ListItemButtons';
-import { removeTeamMember } from '@src/utils/actions/organizationActions';
 
 export type TeamMemberBaseProps = {
   organizationId: string;

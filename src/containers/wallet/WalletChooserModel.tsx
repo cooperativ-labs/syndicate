@@ -1,5 +1,6 @@
 'use client';
 
+import { useWalletContext } from '@contexts/WalletContext';
 import {
   Dialog,
   DialogContent,
@@ -7,10 +8,10 @@ import {
   DialogHeader,
   DialogTitle
 } from '@src/components/ui/dialog';
-import { WalletOptions } from './ChooseConnector';
-import { useWalletContext } from '@contexts/WalletContext';
-import { useAccount } from 'wagmi';
 import { useEffect } from 'react';
+import { useAccount } from 'wagmi';
+
+import { WalletOptions } from './ChooseConnector';
 
 export function WalletChooserModal() {
   const { modalOpen, setModalOpen } = useWalletContext();

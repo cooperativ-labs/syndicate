@@ -1,4 +1,3 @@
-import { Offering, OfferingFull } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';
@@ -7,6 +6,8 @@ import axios from 'axios';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
+
+import { Offering, OfferingFull } from '@/types';
 
 import CreateShareContract from '../offering/CreateShareContract';
 import UnestablishedContractCard from '../offering/UnestablishedContractCard';

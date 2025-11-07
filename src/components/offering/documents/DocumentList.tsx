@@ -1,5 +1,6 @@
-import { Document, Maybe } from '@/types';
 import React, { FC } from 'react';
+
+import { Document, Maybe } from '@/types';
 
 import DocumentAdder from './DocumentAdder';
 import DocumentListItem from './DocumentListItem';

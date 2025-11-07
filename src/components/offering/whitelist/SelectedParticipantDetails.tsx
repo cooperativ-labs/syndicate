@@ -1,13 +1,12 @@
 import { useUserContext } from '@contexts/UserContext';
-import { OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import Input from '@src/components/form-components/Inputs';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import SectionBlock from '@src/containers/SectionBlock';
+import { updateOfferingParticipant, updateWhitelist } from '@src/utils/actions/offeringActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { updateWhitelist, updateOfferingParticipant } from '@src/utils/actions/offeringActions';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
@@ -18,6 +17,8 @@ import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, useState } from 'react';
 import { useReadContracts } from 'wagmi';
+
+import { OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from '@/types';
 
 import ForceTransferForm from '../actions/ForceTransferForm';
 import DistributionList from '../distributions/DistributionList';

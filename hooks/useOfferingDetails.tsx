@@ -1,7 +1,5 @@
-import { DocumentType, OfferingFull, ShareOrder, Document, ShareTransferEvent } from '@/types';
 import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import {
   confirmNoLiveOrders,
@@ -18,6 +16,8 @@ import { toNormalNumber } from '@src/web3/util';
 import { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
+
+import { Document, DocumentType, OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 
 const useOfferingDetails = (
   offering: OfferingFull,

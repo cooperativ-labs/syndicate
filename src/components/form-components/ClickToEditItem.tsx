@@ -1,6 +1,7 @@
-import { Maybe } from '@/types';
 import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
+
+import { Maybe } from '@/types';
 
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';

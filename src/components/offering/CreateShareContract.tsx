@@ -1,4 +1,3 @@
-import { SmartContractType } from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { createShareContract } from '@src/utils/actions/cryptoActions';
 import { deployShareContract } from '@src/web3/contractFactory';
@@ -8,8 +7,10 @@ import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
-import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { useWalletContext } from '@/contexts/WalletContext';
+import { SmartContractType } from '@/types';
+
+import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 type CreateShareContractProps = {
   contractCreatorId: string;

@@ -1,11 +1,12 @@
 'use client';
 
-import { LegalEntity, Organization } from '@/types';
 import FormModal from '@src/containers/FormModal';
 import { ADD_ENTITY_OWNER } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+
+import { LegalEntity, Organization } from '@/types';
 
 import Button from '../buttons/Button';
 import EntitySelector from '../form-components/EntitySelector';

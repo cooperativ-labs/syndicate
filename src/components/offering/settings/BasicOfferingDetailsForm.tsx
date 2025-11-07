@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { CurrencyCode, CurrencyCodeType, OfferingType } from '@/types';
 import FormButton from '@src/components/buttons/FormButton';
+import NonInput from '@src/components/form-components/NonInput';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
 import {
@@ -10,14 +10,15 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
-import NonInput from '@src/components/form-components/NonInput';
-import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
 import { updateOfferingDetails } from '@src/utils/actions/offeringActions';
+import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useChainId } from 'wagmi';
 import { z } from 'zod';
+
+import { CurrencyCode, CurrencyCodeType, OfferingType } from '@/types';
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;

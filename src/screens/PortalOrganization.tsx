@@ -1,12 +1,12 @@
 'use client';
 
-import { OrganizationComplete } from '@/types';
-
 import LoadingModal from '@src/components/loading/ModalLoading';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import React, { FC } from 'react';
 import { useAccount } from 'wagmi';
+
+import { OrganizationComplete } from '@/types';
 
 const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
   const { address: userWalletAddress } = useAccount();

@@ -1,6 +1,5 @@
 'use client';
 
-import { Maybe, Offering } from '@/types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
@@ -24,6 +23,8 @@ import { useRouter } from 'next/navigation';
 import React, { FC, useEffect, useState } from 'react';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 import { useAccount, useChainId } from 'wagmi';
+
+import { Maybe, Offering } from '@/types';
 
 import FormCard from '../../cards/FormCard';
 

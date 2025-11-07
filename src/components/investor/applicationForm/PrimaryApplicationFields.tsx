@@ -1,8 +1,9 @@
-import { LegalEntity } from '@/types';
 import CreateAddress from '@src/components/address/CreateAddress';
 import Checkbox from '@src/components/form-components/Checkbox';
 import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import React, { FC } from 'react';
+
+import { LegalEntity } from '@/types';
 
 import AddressSelector from '../../form-components/AddressSelector';
 import Input, { defaultFieldDiv } from '../../form-components/Inputs';

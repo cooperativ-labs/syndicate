@@ -1,10 +1,11 @@
-import { WhitelistTransaction, WhitelistTransactionType } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { String0x } from '@src/web3/helpersChain';
 import { get } from 'http';
 import React, { FC, useEffect } from 'react';
 import { usePublicClient, useTransaction } from 'wagmi';
+
+import { WhitelistTransaction, WhitelistTransactionType } from '@/types';
 
 type WhitelistTransactionItemProps = {
   transaction: WhitelistTransaction | null;

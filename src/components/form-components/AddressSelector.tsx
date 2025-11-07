@@ -1,5 +1,6 @@
-import { Address, LegalEntity } from '@/types';
 import React, { FC } from 'react';
+
+import { Address, LegalEntity } from '@/types';
 
 import Button from '../buttons/Button';
 

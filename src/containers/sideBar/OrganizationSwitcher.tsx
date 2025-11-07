@@ -1,5 +1,4 @@
 import { useOrganizations } from '@contexts/OrganizationsContext';
-import { Organization } from '@/types';
 import CooperativLogo from '@src/components/CooperativLogo';
 import { cn } from '@src/lib/utils';
 import { handleOrganizationChange } from '@src/utils/helpersOrganization';
@@ -7,6 +6,7 @@ import { Plus } from 'lucide-react';
 import React, { FC, useContext } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
+import { Organization } from '@/types';
 
 type OrganizationSwitcherProps = {
   organizations: Organization[];

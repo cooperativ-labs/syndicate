@@ -1,12 +1,12 @@
+import { Button } from '@src/components/ui/button';
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@src/components/ui/card';
 import ProfilePrivateModal from '@src/containers/wallet/ProfilePrivateModal';
 import Footer from '@src/Footer/Footer';
 import OfferingProfile from '@src/screens/OfferingProfile';
 import { getOfferingById } from '@src/utils/actions/offeringActions';
 import { getOrganization } from '@src/utils/actions/organizationActions';
-import { Button } from '@src/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@src/components/ui/card';
-import Link from 'next/link';
 import { Metadata } from 'next';
+import Link from 'next/link';
 
 type Params = {
   params: Promise<{ offeringId: string; organizationId: string }>;

@@ -1,9 +1,10 @@
-import { Maybe, Offering } from '@/types';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NonInput from '@src/components/form-components/NonInput';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React from 'react';
+
+import { Maybe, Offering } from '@/types';
 
 type InvestorApplicationPledgeFieldsProps = {
   offering: Offering;

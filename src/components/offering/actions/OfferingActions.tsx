@@ -1,4 +1,3 @@
-import { CurrencyCodeType, ShareOrder, Document, TransferEvent } from '@/types';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import CloseButton from '@src/components/buttons/CloseButton';
 import PostBidAskForm, {
@@ -16,6 +15,7 @@ import { Button } from '@src/components/ui/button';
 import { LoadingButton } from '@src/components/ui/loading-button';
 import FormModal from '@src/containers/FormModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
+import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { claimProceeds } from '@src/web3/contractSwapCalls';
@@ -25,10 +25,11 @@ import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 
+import { CurrencyCodeType, Document, ShareOrder, TransferEvent } from '@/types';
+
 import SendShares from '../SendShares';
 
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
-import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';

@@ -1,4 +1,4 @@
-import { OfferingFull, Profile, SmartContract } from '@/types';
+import { useUserContext } from '@contexts/UserContext';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import SectionBlock from '@src/containers/SectionBlock';
@@ -6,8 +6,9 @@ import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helper
 import React, { FC } from 'react';
 import { useChainId } from 'wagmi';
 
+import { OfferingFull, Profile, SmartContract } from '@/types';
+
 import NewClassForm from './NewClassForm';
-import { useUserContext } from '@contexts/UserContext';
 
 export type ShareContractSettingsProps = {
   partitions: String0x[];

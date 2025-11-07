@@ -1,4 +1,3 @@
-import { ShareTransferEvent } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { getCurrencyByCode, getTransferEventOption } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
@@ -8,6 +7,8 @@ import { toNormalNumber } from '@src/web3/util';
 import React, { FC } from 'react';
 import { useAsync } from 'react-use';
 import { useChainId, usePublicClient, useTransaction } from 'wagmi';
+
+import { ShareTransferEvent } from '@/types';
 
 const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEvent }) => {
   const chainId = useChainId();

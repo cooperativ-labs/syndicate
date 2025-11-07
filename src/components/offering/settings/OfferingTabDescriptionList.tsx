@@ -1,14 +1,14 @@
-import { Offering, OfferingDescriptionText, offeringTabSectionTypes } from '@/types';
+import { updateDescriptionText } from '@src/utils/actions/offeringActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import React, { FC, useEffect, useState } from 'react';
 // @ts-expect-error - react-beautiful-dnd types can mismatch our generics here
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import toast from 'react-hot-toast';
 
+import { Offering, OfferingDescriptionText, offeringTabSectionTypes } from '@/types';
+
 import OfferingDescriptionItem from './OfferingDescriptionItem';
-import { updateDescriptionText } from '@src/utils/actions/offeringActions';
 
 type TabDescriptionListProps = {
   offering: Offering;

@@ -1,11 +1,12 @@
 'use client';
-import { LegalEntity, Maybe, Offering } from '@/types';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import Tab from '@src/components/offering/tabs/Tab';
 import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
+
+import { LegalEntity, Maybe, Offering } from '@/types';
 
 type EntityTabContainerProps = {
   properties?: RealEstateProperty[];

@@ -1,7 +1,6 @@
+import { useWalletContext } from '@contexts/WalletContext';
 import Button from '@src/components/buttons/Button';
 import { cn } from '@src/lib/utils';
-
-import { useWalletContext } from '@contexts/WalletContext';
 import { FC } from 'react';
 
 const outlinedClass = `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white`;

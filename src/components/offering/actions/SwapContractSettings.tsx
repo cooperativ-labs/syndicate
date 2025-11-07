@@ -1,4 +1,3 @@
-import { CurrencyCodeType, OfferingFull, OfferingSmartContractSet } from '@/types';
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import SectionBlock from '@src/containers/SectionBlock';
@@ -6,6 +5,8 @@ import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
+
+import { CurrencyCodeType, OfferingFull, OfferingSmartContractSet } from '@/types';
 
 import CreateSwapContract from '../CreateSwapContract';
 

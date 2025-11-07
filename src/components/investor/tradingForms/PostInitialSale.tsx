@@ -5,6 +5,8 @@ import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import NonInput from '@src/components/form-components/NonInput';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { addContractPartition, AddContractPartitionParams } from '@src/utils/actions/cryptoActions';
+import { createOrder, CreateOrderParams, CreateOrderResult } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
@@ -13,9 +15,6 @@ import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useAccount } from 'wagmi';
-
-import { createOrder, CreateOrderParams, CreateOrderResult } from '@src/utils/actions/orderActions';
-import { addContractPartition, AddContractPartitionParams } from '@src/utils/actions/cryptoActions';
 
 export type PostInitialSaleProps = {
   sharesOutstanding: number | null;
@@ -133,12 +132,13 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         const isAsk = true;
         const isIssuance = true;
         const isErc20Payment = true;
-        if (!values.numShares || !values.price) {
+        if (!values.numShares || !values.price || !userWalletAddress) {
           setSubmitting(false);
           return;
         }
         try {
           await submitSwap({
+            userWalletAddress,
             numShares: parseInt(values.numShares, 10),
             price: values.price,
             partition: values.partition,

@@ -1,10 +1,8 @@
-import {
-  CurrencyCode,
-  CurrencyCodeType,
-  OfferingSmartContractSet,
-  SmartContractType
-} from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import {
+  createDistributionContract,
+  CreateDistributionContractParams
+} from '@src/utils/actions/cryptoActions';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { deployDividendContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
@@ -15,13 +13,15 @@ import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
+import { useWalletContext } from '@/contexts/WalletContext';
+import {
+  CurrencyCode,
+  CurrencyCodeType,
+  OfferingSmartContractSet,
+  SmartContractType
+} from '@/types';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import {
-  createDistributionContract,
-  CreateDistributionContractParams
-} from '@src/utils/actions/cryptoActions';
-import { useWalletContext } from '@/contexts/WalletContext';
 
 type CreateDistributionContractProps = {
   contractSet: OfferingSmartContractSet;

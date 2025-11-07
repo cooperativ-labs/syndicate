@@ -1,4 +1,3 @@
-import { CurrencyCodeType, Offering, OfferingFull, ShareOrder } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import StandardButton from '@src/components/buttons/StandardButton';
@@ -18,6 +17,8 @@ import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
+
+import { CurrencyCodeType, Offering, OfferingFull, ShareOrder } from '@/types';
 
 import NonInput from '../../form-components/NonInput';
 

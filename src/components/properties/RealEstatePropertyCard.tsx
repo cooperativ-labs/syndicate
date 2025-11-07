@@ -1,10 +1,11 @@
 'use client';
 
-import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@/types';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
+
+import { Address, CurrencyCode, Maybe, RealEstateProperty } from '@/types';
 
 import MapPanel from '../MapPanel';
 

@@ -1,6 +1,8 @@
 'use client';
 
 import SetCookieContext from '@contexts/SetCookieContext';
+import WalletContextProvider from '@contexts/WalletContext';
+import { WalletChooserModal } from '@src/containers/wallet/WalletChooserModel';
 import CookieBanner from '@src/CookieBanner';
 import { getWagmiConfig } from '@src/web3/wagmi';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -8,9 +10,6 @@ import React, { useEffect, useState } from 'react';
 import { State, WagmiProvider } from 'wagmi';
 
 import { StateProvider } from '@/contexts/store';
-
-import WalletContextProvider from '@contexts/WalletContext';
-import { WalletChooserModal } from '@src/containers/wallet/WalletChooserModel';
 
 type ProvidersProps = {
   children: React.ReactNode;

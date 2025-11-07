@@ -18,14 +18,14 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
+import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { OfferingFull, DocumentType, OrganizationComplete, Document } from '@/types';
-import { useAsync } from 'react-use';
-import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
+import { Document, DocumentType, OfferingFull, OrganizationComplete } from '@/types';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;

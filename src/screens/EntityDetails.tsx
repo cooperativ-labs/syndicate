@@ -14,12 +14,11 @@ import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
-
+import { deleteAddress, removeOwner, updateLegalEntity } from '@src/utils/actions/entityActions';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 
 import { LegalEntityWithSubsidiaries } from '@/types';
-import { deleteAddress, removeOwner, updateLegalEntity } from '@src/utils/actions/entityActions';
 
 type EntityDetailsProps = {
   entity: LegalEntityWithSubsidiaries;

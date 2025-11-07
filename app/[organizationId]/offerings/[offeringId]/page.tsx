@@ -1,5 +1,5 @@
-import OfferingProfile from '@src/screens/OfferingProfile';
 import OfferingDetails from '@src/screens/OfferingDetails';
+import OfferingProfile from '@src/screens/OfferingProfile';
 import { getOfferingById, getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 

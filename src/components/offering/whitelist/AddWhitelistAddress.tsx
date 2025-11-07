@@ -1,15 +1,15 @@
-import { Organization } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-
-import { addWhitelistMember } from '@src/web3/contractShareCalls';
 import { addWhitelistMember as addWhitelistMemberToDb } from '@src/utils/actions/offeringActions';
+import { addWhitelistMember } from '@src/web3/contractShareCalls';
 import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 import { isAddress } from 'viem';
 import { useChainId } from 'wagmi';
+
+import { Organization } from '@/types';
 
 export type AddWhitelistAddressProps = {
   organization: Organization;

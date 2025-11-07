@@ -1,9 +1,9 @@
+import { removeTeamMember } from '@src/utils/actions/organizationActions';
 import React, { FC } from 'react';
 
 import { OrganizationUser } from '@/types';
 
 import TeamMemberItem, { TeamMemberBaseProps } from './TeamMemberItem';
-import { removeTeamMember } from '@src/utils/actions/organizationActions';
 type TeamMemberListProps = TeamMemberBaseProps & {
   teamMembers: OrganizationUser[] | [];
 };

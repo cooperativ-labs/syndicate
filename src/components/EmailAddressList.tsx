@@ -1,5 +1,6 @@
-import { EmailAddress, Maybe } from '@/types';
 import React, { FC } from 'react';
+
+import { EmailAddress, Maybe } from '@/types';
 
 import EmailAddressListItem from './EmailAddressListItem';
 

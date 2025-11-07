@@ -1,9 +1,9 @@
 'use client';
 
+import { addOrganizationEmail } from '@src/utils/actions/organizationActions';
 import { sha256 } from 'js-sha256';
 import { useParams, useRouter, useSearchParams } from 'next/navigation';
 import React, { useEffect } from 'react';
-import { addOrganizationEmail } from '@src/utils/actions/organizationActions';
 import { useAsync } from 'react-use';
 const ConfirmEmail = () => {
   const params = useParams<{ organizationId: string }>();

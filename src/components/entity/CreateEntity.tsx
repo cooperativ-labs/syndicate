@@ -1,5 +1,6 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { addLegalEntity } from '@src/utils/actions/entityActions';
 import {
@@ -21,7 +22,6 @@ import { Label } from '../ui/label';
 import { LoadingButton } from '../ui/loading-button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import { useOrganizations } from '@contexts/OrganizationsContext';
 
 export type CreateEntityType = {
   defaultLogo?: string;

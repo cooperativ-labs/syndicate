@@ -1,4 +1,3 @@
-import { ShareOrder } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import SectionBlock from '@src/containers/SectionBlock';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -11,6 +10,8 @@ import { toNormalNumber } from '@src/web3/util';
 import { RefreshCw } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
+
+import { ShareOrder } from '@/types';
 
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
 

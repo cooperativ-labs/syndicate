@@ -1,11 +1,11 @@
-import { Offering, OfferingDescriptionText, offeringTabSectionTypes } from '@/types';
 import Button from '@src/components/buttons/Button';
-
+import { deleteDescriptionText } from '@src/utils/actions/offeringActions';
 import { Menu, Pencil, X } from 'lucide-react';
 import React, { FC, useState } from 'react';
 
+import { Offering, OfferingDescriptionText, offeringTabSectionTypes } from '@/types';
+
 import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
-import { deleteDescriptionText } from '@src/utils/actions/offeringActions';
 
 type OfferingDescriptionItemProps = {
   offering: Offering;

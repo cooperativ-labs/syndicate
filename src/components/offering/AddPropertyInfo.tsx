@@ -1,6 +1,5 @@
 'use client';
 
-import { CurrencyCode } from '@/types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import {
   assetStatusOptions,
@@ -13,6 +12,8 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import React, { FC, useEffect, useState } from 'react';
 import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+
+import { CurrencyCode } from '@/types';
 
 import CustomAddressAutocomplete, {
   normalizeGeoAddress

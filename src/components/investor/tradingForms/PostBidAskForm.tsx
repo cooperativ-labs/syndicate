@@ -1,4 +1,3 @@
-import { OfferingFull, Document } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import StandardButton from '@src/components/buttons/StandardButton';
@@ -10,8 +9,9 @@ import Input, {
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import { cn } from '@src/lib/utils';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
+import { createOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
@@ -20,12 +20,12 @@ import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { useChainId } from 'wagmi';
+import { useAsync } from 'react-use';
+import { useAccount, useChainId } from 'wagmi';
+
+import { Document, OfferingFull } from '@/types';
 
 import NonInput from '../../form-components/NonInput';
-import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
-import { useAsync } from 'react-use';
-import { createOrder } from '@src/utils/actions/orderActions';
 
 export type PostBidAskFormProps = {
   offering: OfferingFull;
@@ -64,6 +64,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   refetchAllContracts,
   refetchOfferingInfo
 }) => {
+  const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -141,11 +142,12 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
           setSubmitting(true);
           const isIssuance = false;
           const isErc20Payment = true;
-          if (!values.numUnits || !values.price) {
+          if (!values.numUnits || !values.price || !userWalletAddress) {
             setSubmitting(false);
             return;
           }
           await submitSwap({
+            userWalletAddress,
             shareContractId: shareContract.id.toString(),
             numShares: values.numUnits,
             price: values.price,

@@ -1,8 +1,9 @@
-import { OfferingDetails } from '@/types';
 import { getCurrencyOption, getDistributionPeriod } from '@src/utils/enumConverters';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React, { FC } from 'react';
+
+import { OfferingDetails } from '@/types';
 
 import OfferingDetailItem from '../OfferingDetailItem';
 

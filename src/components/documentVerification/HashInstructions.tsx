@@ -1,8 +1,9 @@
-import { Document, Maybe } from '@/types';
 import { shareContractABI } from '@src/web3/generated';
 import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 import { useContractReads } from 'wagmi';
+
+import { Document, Maybe } from '@/types';
 
 import DocumentHashItem from './DocumentHashItem';
 

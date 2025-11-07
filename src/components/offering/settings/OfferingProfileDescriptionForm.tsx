@@ -1,15 +1,8 @@
-import {
-  Offering,
-  OfferingDescriptionText,
-  OfferingTabSection,
-  offeringTabSectionTypes
-} from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
-import { Textarea } from '@src/components/ui/textarea';
 import {
   Select,
   SelectContent,
@@ -17,12 +10,20 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
+import { Textarea } from '@src/components/ui/textarea';
 import { createDescriptionText, updateDescriptionText } from '@src/utils/actions/offeringActions';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+
+import {
+  Offering,
+  OfferingDescriptionText,
+  OfferingTabSection,
+  offeringTabSectionTypes
+} from '@/types';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
@@ -65,7 +66,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   const nextOrder = descriptionsByTab.length ? descriptionsByTab.length + 1 : 0;
 
   function handleSubmission(values: { title: string; text: string; tab: offeringTabSectionTypes }) {
-    !!description
+    description
       ? updateDescriptionText({
           descriptionId: description.id,
           title: values.title,

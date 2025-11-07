@@ -1,7 +1,6 @@
 'use client';
 
-import { CurrencyCode, CurrencyCodeType, SmartContract } from '@/types';
-
+import { addLegalShareLink, addOfferingParticipant } from '@src/utils/actions/offeringActions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { setDocument } from '@src/web3/contractShareCalls';
 import {
@@ -13,15 +12,16 @@ import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import router from 'next/router';
 import React, { FC, useState } from 'react';
+import { toast } from 'react-hot-toast';
 import { useAccount, useChainId } from 'wagmi';
+
+import { CurrencyCode, CurrencyCodeType, SmartContract } from '@/types';
 
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 
 import PresentLegalText from './PresentLegalText';
-import { addLegalShareLink, addOfferingParticipant } from '@src/utils/actions/offeringActions';
-import { toast } from 'react-hot-toast';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;

@@ -1,7 +1,6 @@
 'use client';
 
 import { useUserContext } from '@contexts/UserContext';
-import { OrganizationComplete } from '@/types';
 import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import DashboardCard from '@src/components/cards/DashboardCard';
@@ -27,6 +26,8 @@ import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity'
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
 import { useParams, useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
+
+import { OrganizationComplete } from '@/types';
 
 interface OrganizationSettingsProps {
   organization: OrganizationComplete;

@@ -1,8 +1,9 @@
-import { NotificationMethod, NotificationRecipientType, NotificationSubject } from '@/types';
 import { notificationSubjectOptions } from '@src/utils/enumConverters';
 import { ADD_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
 import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
+
+import { NotificationMethod, NotificationRecipientType, NotificationSubject } from '@/types';
 
 import Input from '../form-components/Inputs';
 import Select from '../form-components/Select';

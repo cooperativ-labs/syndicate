@@ -1,8 +1,9 @@
-import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from '@/types';
 import RightSideBar from '@src/containers/sideBar/RightSidebar';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
+
+import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from '@/types';
 
 import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';

@@ -1,4 +1,3 @@
-import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@/types';
 import Button from '@src/components/buttons/Button';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import SubmitDistribution from '@src/components/offering/SubmitDistribution';
@@ -13,6 +12,8 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
+
+import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@/types';
 
 import FormModal from './FormModal';
 

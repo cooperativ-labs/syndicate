@@ -1,4 +1,3 @@
-import { OfferingParticipant } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
@@ -12,15 +11,17 @@ import {
 } from '@src/components/ui/select';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
-import { getWagmiConfig } from '@src/web3/wagmi';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { getWagmiConfig } from '@src/web3/wagmi';
 import React from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
 import { useAccount, useContractRead } from 'wagmi';
 import { readContract } from 'wagmi/actions';
 import { z } from 'zod';
+
+import { OfferingParticipant } from '@/types';
 
 import SetOperatorButton from './SetOperatorButton';
 

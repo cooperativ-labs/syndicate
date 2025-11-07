@@ -1,4 +1,3 @@
-import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
@@ -9,6 +8,8 @@ import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import { useAccount, useChainId } from 'wagmi';
+
+import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 
 import OfferingSummaryPanel from './OfferingSummaryPanel';
 import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';

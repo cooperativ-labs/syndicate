@@ -1,6 +1,7 @@
-import { Maybe, NotificationConfiguration, OrganizationUser } from '@/types';
 import { REMOVE_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
 import React, { FC } from 'react';
+
+import { Maybe, NotificationConfiguration, OrganizationUser } from '@/types';
 
 import NotificationConfigItem, { NotificationConfigItemBaseProps } from './NotificationConfigItem';
 

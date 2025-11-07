@@ -1,5 +1,6 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
@@ -22,7 +23,6 @@ import { OrganizationComplete } from '@/types';
 import CreateEntity from '../entity/CreateEntity';
 import { Button } from '../ui/button';
 import { LoadingButton } from '../ui/loading-button';
-import { useOrganizations } from '@contexts/OrganizationsContext';
 
 type CreateOfferingType = {
   organization: OrganizationComplete | null;

@@ -1,4 +1,3 @@
-import { ShareOrder } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
@@ -7,6 +6,8 @@ import { String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import React, { FC } from 'react';
 import { useAccount, useChainId } from 'wagmi';
+
+import { ShareOrder } from '@/types';
 
 import SaleManagerPanel from './ShareManagerPanel';
 

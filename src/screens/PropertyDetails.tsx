@@ -1,5 +1,7 @@
 'use client';
 
+import { useEntity } from '@contexts/EntityContext';
+import { useUserContext } from '@contexts/UserContext';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import UpdateAddress from '@src/components/address/UpdateAddress';
 import Button from '@src/components/buttons/Button';
@@ -22,9 +24,8 @@ import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
+
 import { RealEstatePropertyWithAddresses } from '@/types';
-import { useUserContext } from '@contexts/UserContext';
-import { useEntity } from '@contexts/EntityContext';
 
 type PropertyDetailsProps = {
   property: RealEstatePropertyWithAddresses;

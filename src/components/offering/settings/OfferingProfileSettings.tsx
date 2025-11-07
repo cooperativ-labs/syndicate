@@ -1,4 +1,3 @@
-import { Offering } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
@@ -6,9 +5,10 @@ import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
 import { updateOfferingProfile } from '@src/utils/actions/offeringActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+
+import { Offering } from '@/types';
 
 const fieldDiv = 'my-2 bg-opacity-0';
 

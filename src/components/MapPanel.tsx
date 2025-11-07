@@ -1,6 +1,7 @@
-import { Address, Maybe } from '@/types';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import React, { FC, useState } from 'react';
+
+import { Address, Maybe } from '@/types';
 
 type MapPanelProps = {
   address?: Maybe<Address> | undefined;

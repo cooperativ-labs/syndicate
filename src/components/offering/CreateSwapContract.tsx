@@ -1,9 +1,9 @@
-import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { createSwapContract } from '@src/utils/actions/cryptoActions';
+import { updateInvestmentCurrency } from '@src/utils/actions/offeringActions';
+import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
@@ -13,11 +13,12 @@ import React, { FC, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
+import { useWalletContext } from '@/contexts/WalletContext';
+import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
+
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
-import { updateInvestmentCurrency } from '@src/utils/actions/offeringActions';
-import { useWalletContext } from '@/contexts/WalletContext';
 
 type CreateSwapContractProps = {
   contractSet: OfferingSmartContractSet;

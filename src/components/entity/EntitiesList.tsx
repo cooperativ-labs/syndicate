@@ -1,8 +1,8 @@
 'use client';
 
-import { LegalEntity, Maybe } from '@/types';
 import React, { FC } from 'react';
 
+import { LegalEntity, Maybe } from '@/types';
 import { legalEntityWithSubsidiaries } from '@/types';
 
 import EntityCard from './EntityCard';
