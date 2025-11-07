@@ -1,46 +1,29 @@
-'use server';
+"use server";
 
-import { createClient } from '@supabase/utils/server';
+import { createClient } from "@supabase/utils/server";
 
-import { Database } from '@/types/database.types';
+import { Database } from "@/types/database.types";
 
-type ShareTransferEvent = Database['public']['Tables']['share_transfer_event']['Row'];
-type ShareOrder = Database['public']['Tables']['share_order']['Row'];
-type OfferingDistribution = Database['public']['Tables']['offering_distribution']['Row'];
-type SmartContract = Database['public']['Tables']['smart_contract']['Row'];
+type ShareTransferEvent =
+  Database["public"]["Tables"]["share_transfer_event"]["Row"];
+type ShareOrder = Database["public"]["Tables"]["share_order"]["Row"];
+type OfferingDistribution =
+  Database["public"]["Tables"]["offering_distribution"]["Row"];
+type SmartContract = Database["public"]["Tables"]["smart_contract"]["Row"];
 
 // =========== TRANSFER EVENTS ================
 
-type RetrieveTransferEventsResult = {
-  edges: {
-    node: Pick<
-      ShareTransferEvent,
-      | 'id'
-      | 'share_contract_address'
-      | 'order_index'
-      | 'recipient_address'
-      | 'sender_address'
-      | 'amount'
-      | 'price'
-      | 'currency_code'
-      | 'transaction_hash'
-      | 'partition'
-      | 'type'
-    >;
-  }[];
-};
-
 export async function retrieveTransferEvents(
-  shareContractAddress: string
-): Promise<RetrieveTransferEventsResult> {
+  shareContractAddress: string,
+): Promise<ShareTransferEvent[]> {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('share_transfer_event')
+    .from("share_transfer_event")
     .select(
-      'id, share_contract_address, order_index, recipient_address, sender_address, amount, price, currency_code, transaction_hash, partition, type'
+      "id, share_contract_address, order_index, recipient_address, sender_address, amount, price, currency_code, transaction_hash, partition, type",
     )
-    .eq('share_contract_address', shareContractAddress);
+    .eq("share_contract_address", shareContractAddress);
 
   if (error) {
     throw error;
@@ -49,44 +32,44 @@ export async function retrieveTransferEvents(
   return data;
 }
 
-type AddTransferEventParams = {
+export type AddTransferEventParams = {
   shareContractAddress: string;
   orderIndex?: number | null;
   recipientAddress: string;
   senderAddress: string;
   amount: number;
   price?: string | null;
-  currencyCode?: Database['public']['Enums']['currency_code'] | null;
+  currencyCode?: Database["public"]["Enums"]["currency_code"] | null;
   transactionHash: string;
   partition: string;
-  type: Database['public']['Enums']['share_transfer_event_type'];
+  type: Database["public"]["Enums"]["share_transfer_event_type"];
 };
 
-type AddTransferEventResult = {
+export type AddTransferEventResult = {
   affectedCount: number;
   records: Pick<
     ShareTransferEvent,
-    | 'id'
-    | 'share_contract_address'
-    | 'order_index'
-    | 'recipient_address'
-    | 'sender_address'
-    | 'amount'
-    | 'price'
-    | 'currency_code'
-    | 'transaction_hash'
-    | 'partition'
-    | 'type'
+    | "id"
+    | "share_contract_address"
+    | "order_index"
+    | "recipient_address"
+    | "sender_address"
+    | "amount"
+    | "price"
+    | "currency_code"
+    | "transaction_hash"
+    | "partition"
+    | "type"
   >[];
 };
 
 export async function addTransferEvent(
-  params: AddTransferEventParams
+  params: AddTransferEventParams,
 ): Promise<AddTransferEventResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('share_transfer_event')
+    .from("share_transfer_event")
     .insert(
       {
         share_contract_address: params.shareContractAddress,
@@ -99,12 +82,12 @@ export async function addTransferEvent(
         transaction_hash: params.transactionHash,
         partition: params.partition,
         type: params.type,
-        archived: false
+        archived: false,
       },
-      { count: 'exact' }
+      { count: "exact" },
     )
     .select(
-      'id, share_contract_address, order_index, recipient_address, sender_address, amount, price, currency_code, transaction_hash, partition, type'
+      "id, share_contract_address, order_index, recipient_address, sender_address, amount, price, currency_code, transaction_hash, partition, type",
     );
 
   if (error) {
@@ -112,21 +95,21 @@ export async function addTransferEvent(
   }
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as AddTransferEventResult['records']
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as AddTransferEventResult["records"],
   };
 }
 
 // =========== DISTRIBUTIONS ================
 
 export const getDistributions = async (
-  distributionContractAddress: string
+  distributionContractAddress: string,
 ): Promise<OfferingDistribution[]> => {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('offering_distribution')
-    .select('*')
-    .eq('contract_index', distributionContractAddress);
+    .from("offering_distribution")
+    .select("*")
+    .eq("contract_index", distributionContractAddress);
   return data;
 };
 
@@ -137,32 +120,35 @@ type AddDistributionParams = {
 
 type AddDistributionResult = {
   affectedCount: number;
-  records: Pick<OfferingDistribution, 'id' | 'transaction_hash' | 'contract_index'>[];
+  records: Pick<
+    OfferingDistribution,
+    "id" | "transaction_hash" | "contract_index"
+  >[];
 };
 
 export async function addDistribution(
-  params: AddDistributionParams
+  params: AddDistributionParams,
 ): Promise<AddDistributionResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('offering_distribution')
+    .from("offering_distribution")
     .insert(
       {
         transaction_hash: params.transactionHash,
-        contract_index: params.contractIndex
+        contract_index: params.contractIndex,
       },
-      { count: 'exact' }
+      { count: "exact" },
     )
-    .select('id, transaction_hash, contract_index');
+    .select("id, transaction_hash, contract_index");
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as AddDistributionResult['records']
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as AddDistributionResult["records"],
   };
 }
 
@@ -173,27 +159,30 @@ type UpdateContractIndexParams = {
 
 type UpdateContractIndexResult = {
   affectedCount: number;
-  records: Pick<OfferingDistribution, 'id' | 'transaction_hash' | 'contract_index'>[];
+  records: Pick<
+    OfferingDistribution,
+    "id" | "transaction_hash" | "contract_index"
+  >[];
 };
 
 export async function updateContractIndex(
-  params: UpdateContractIndexParams
+  params: UpdateContractIndexParams,
 ): Promise<UpdateContractIndexResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('offering_distribution')
+    .from("offering_distribution")
     .update({ contract_index: params.contractIndex })
-    .eq('id', params.distributionId)
-    .select('id, transaction_hash, contract_index');
+    .eq("id", params.distributionId)
+    .select("id, transaction_hash, contract_index");
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as UpdateContractIndexResult['records']
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as UpdateContractIndexResult["records"],
   };
 }
 
@@ -206,33 +195,33 @@ type UpdateContractStatusParams = {
 
 type UpdateContractStatusResult = {
   affectedCount: number;
-  records: Pick<SmartContract, 'id' | 'established'>[];
+  records: Pick<SmartContract, "id" | "established">[];
 };
 
 export async function updateContractStatus(
-  params: UpdateContractStatusParams
+  params: UpdateContractStatusParams,
 ): Promise<UpdateContractStatusResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('smart_contract')
+    .from("smart_contract")
     .update({ established: params.established ?? null })
-    .eq('id', params.smartshareContractId)
-    .select('id, established');
+    .eq("id", params.smartshareContractId)
+    .select("id, established");
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as UpdateContractStatusResult['records']
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as UpdateContractStatusResult["records"],
   };
 }
 
 // =========== ORDER ================
 
-type CreateOrderParams = {
+export type CreateOrderParams = {
   contractIndex: number;
   swapContractAddress: string;
   minUnits?: number | null;
@@ -242,16 +231,21 @@ type CreateOrderParams = {
   transactionHash: string;
 };
 
-type CreateOrderResult = {
+export type CreateOrderResult = {
   affectedCount: number;
-  records: Pick<ShareOrder, 'id' | 'contract_index' | 'initiator' | 'transaction_hash'>[];
+  records: Pick<
+    ShareOrder,
+    "id" | "contract_index" | "initiator" | "transaction_hash"
+  >[];
 };
 
-export async function createOrder(params: CreateOrderParams): Promise<CreateOrderResult> {
+export async function createOrder(
+  params: CreateOrderParams,
+): Promise<CreateOrderResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('share_order')
+    .from("share_order")
     .insert(
       {
         contract_index: params.contractIndex,
@@ -261,19 +255,19 @@ export async function createOrder(params: CreateOrderParams): Promise<CreateOrde
         visible: params.visible,
         initiator: params.initiator,
         transaction_hash: params.transactionHash,
-        archived: false
+        archived: false,
       },
-      { count: 'exact' }
+      { count: "exact" },
     )
-    .select('id, contract_index, initiator, transaction_hash');
+    .select("id, contract_index, initiator, transaction_hash");
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as CreateOrderResult['records']
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as CreateOrderResult["records"],
   };
 }
 
@@ -281,34 +275,34 @@ type RetrieveOrdersResult = {
   edges: {
     node: Pick<
       ShareOrder,
-      | 'id'
-      | 'contract_index'
-      | 'initiator'
-      | 'transaction_hash'
-      | 'swap_contract_address'
-      | 'min_units'
-      | 'max_units'
-      | 'visible'
-      | 'archived'
+      | "id"
+      | "contract_index"
+      | "initiator"
+      | "transaction_hash"
+      | "swap_contract_address"
+      | "min_units"
+      | "max_units"
+      | "visible"
+      | "archived"
     >;
   }[];
 };
 
-export async function retrieveOrders(swapContractAddress: string): Promise<ShareOrder[]> {
+export async function retrieveOrders(
+  swapContractAddress: string,
+): Promise<ShareOrder[]> {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from('share_order')
-    .select('*')
-    .eq('swap_contract_address', swapContractAddress);
+    .from("share_order")
+    .select("*")
+    .eq("swap_contract_address", swapContractAddress);
 
   if (error) {
     throw error;
   }
 
-  return {
-    edges: (data ?? []).map(node => ({ node }))
-  };
+  return data;
 }
 
 type UpdateOrderParams = {
@@ -319,51 +313,53 @@ type UpdateOrderParams = {
 
 type UpdateOrderResult = {
   affectedCount: number;
-  records: Pick<ShareOrder, 'id' | 'visible' | 'archived'>[];
+  records: Pick<ShareOrder, "id" | "visible" | "archived">[];
 };
 
-export async function updateOrder(params: UpdateOrderParams): Promise<UpdateOrderResult> {
+export async function updateOrder(
+  params: UpdateOrderParams,
+): Promise<UpdateOrderResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('share_order')
+    .from("share_order")
     .update({
       archived: params.archived,
-      visible: params.visible
+      visible: params.visible,
     })
-    .eq('id', params.orderId)
-    .select('id, visible, archived');
+    .eq("id", params.orderId)
+    .select("id, visible, archived");
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as UpdateOrderResult['records']
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as UpdateOrderResult["records"],
   };
 }
 
 type DeleteOrderResult = {
   affectedCount: number;
-  records: Pick<ShareOrder, 'id'>[];
+  records: Pick<ShareOrder, "id">[];
 };
 
 export async function deleteOrder(orderId: string): Promise<DeleteOrderResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('share_order')
-    .delete({ count: 'exact' })
-    .eq('id', orderId)
-    .select('id');
+    .from("share_order")
+    .delete({ count: "exact" })
+    .eq("id", orderId)
+    .select("id");
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as DeleteOrderResult['records']
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as DeleteOrderResult["records"],
   };
 }

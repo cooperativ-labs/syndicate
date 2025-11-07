@@ -1,7 +1,11 @@
-import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@/types';
+import {
+  CurrencyCode,
+  CurrencyCodeType,
+  OfferingSmartContractSet,
+  SmartContractType
+} from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { CREATE_DISTRIBUTION_CONTRACT, CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';
 import { deployDividendContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
@@ -13,11 +17,16 @@ import { useAccount, useChainId } from 'wagmi';
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import {
+  createDistributionContract,
+  CreateDistributionContractParams
+} from '@src/utils/actions/cryptoActions';
+import { useWalletContext } from '@/contexts/WalletContext';
 
 type CreateDistributionContractProps = {
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  investmentCurrency: Currency | null | undefined;
-  contractOwnerEntityId: string | undefined;
+  contractSet: OfferingSmartContractSet;
+  investmentCurrency: CurrencyCodeType;
+  contractOwnerEntityId: string;
 };
 
 const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
@@ -26,13 +35,16 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
   contractOwnerEntityId
 }) => {
   const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
+  const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
-  const [addDistributionContract, { data, error }] = useMutation(CREATE_DISTRIBUTION_CONTRACT);
+
+  const handleAddDistributionContract = async (params: CreateDistributionContractParams) => {
+    const result = await createDistributionContract(params);
+    return result;
+  };
   const chainId = useChainId();
   const { chain } = useAccount();
-  const [alerted, setAlerted] = useState(false);
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const chainBacs = bacOptions.filter(bac => bac.chainId === chainId);
@@ -42,7 +54,10 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
     async paymentTokenAddress => {
       setButtonStep('step1');
       const protocol = MatchSupportedChains(chainId)?.protocol;
-      dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
+      if (!protocol) {
+        throw new Error('No protocol found');
+      }
+      setWalletActionLockModalOpen(true);
       try {
         const contract = await deployDividendContract(
           userWalletAddress,
@@ -50,30 +65,23 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
           shareContractAddress
         );
 
-        await addDistributionContract({
-          variables: {
-            cryptoAddress: contract.contractAddress,
-            chainId: chainId,
-            type: SmartContractType.Distribution,
-            protocol: protocol,
-            ownerId: contractOwnerEntityId,
-            contractSetId: contractSet?.id
-          }
+        await handleAddDistributionContract({
+          cryptoAddress: contract.contractAddress,
+          type: SmartContractType.DISTRIBUTION,
+          ownerId: contractOwnerEntityId,
+          contractSetId: contractSet.id,
+          protocol: protocol,
+          chainId: chainId
         });
 
         setButtonStep('confirmed');
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
       }
-      dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
+      setWalletActionLockModalOpen(false);
     },
     [userWalletAddress, shareContractAddress, chainId]
   );
-
-  if (error && !alerted) {
-    alert('Oops. Looks like something went wrong');
-    setAlerted(true);
-  }
 
   return (
     <div>
@@ -97,7 +105,6 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
               return errors;
             }}
             onSubmit={async (values, { setSubmitting }) => {
-              setAlerted(false);
               setSubmitting(true);
               deploy(values.investmentCurrencyAddress);
               setSubmitting(false);

@@ -1,6 +1,6 @@
 import { SmartContractType } from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import { CREATE_SHARE_CONTRACT } from '@src/utils/graphQueries/crypto';
+import { createShareContract } from '@src/utils/actions/cryptoActions';
 import { deployShareContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
@@ -8,52 +8,44 @@ import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
-
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import { useWalletContext } from '@/contexts/WalletContext';
 
 type CreateShareContractProps = {
-  contractCreatorId: string | undefined;
+  contractCreatorId: string;
 };
 
 const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }) => {
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
+  const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
   const chainId = useChainId();
   const { chain } = useAccount();
 
-  const [addUnestablishedSmartContract, { data, error }] = useMutation(CREATE_SHARE_CONTRACT);
-  const [alerted, setAlerted] = useState(false);
   const chainName = MatchSupportedChains(chainId)?.name;
 
   const [, deploy] = useAsyncFn(async () => {
     setButtonStep('step1');
     const protocol = MatchSupportedChains(chainId)?.protocol;
-    dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
+    if (!protocol) {
+      throw new Error('No protocol found');
+    }
+    setWalletActionLockModalOpen(true);
     try {
       const contract = await deployShareContract(userWalletAddress, chain);
-      await addUnestablishedSmartContract({
-        variables: {
-          cryptoAddress: contract.contractAddress,
-          chainId: chainId,
-          type: SmartContractType.Erc1410,
-          protocol: protocol,
-          ownerId: contractCreatorId
-        }
+      await createShareContract({
+        cryptoAddress: contract.contractAddress,
+        type: SmartContractType.ERC1410,
+        ownerId: contractCreatorId,
+        chainId: chainId,
+        protocol: protocol
       });
       setButtonStep('confirmed');
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
-    dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
+    setWalletActionLockModalOpen(false);
   }, [userWalletAddress, chainId]);
-
-  if (error && !alerted) {
-    alert('Oops. Looks like something went wrong');
-    setAlerted(true);
-  }
 
   return (
     <div>

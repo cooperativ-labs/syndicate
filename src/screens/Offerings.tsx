@@ -30,7 +30,7 @@ const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization })
         <section>
           {hasOfferings ? (
             <>
-              <OfferingsList offerings={offerings} />
+              <OfferingsList offerings={offerings} organization={organization} />
               {entityFormOpen ? (
                 <DashboardCard className="mt-5">
                   <div className="flex justify-between">

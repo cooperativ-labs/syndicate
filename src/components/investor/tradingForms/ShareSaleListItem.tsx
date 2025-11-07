@@ -1,4 +1,4 @@
-import { Offering, ShareOrder, ShareTransferEvent, ShareTransferEventType } from '@/types';
+import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
@@ -22,7 +22,7 @@ export type OrderStatusType = {
 };
 
 export type ShareSaleListItemProps = SaleMangerPanelProps & {
-  offering: Offering;
+  offering: OfferingFull;
   shareContractAddress: String0x | undefined;
   myShareQty: number | undefined;
   transferEvents: ShareTransferEvent[] | undefined;
@@ -73,7 +73,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     isLoading,
 
     refetchOrderDetails
-  } = useOrderDetails(swapContractAddress, order.contractIndex, paymentTokenDecimals);
+  } = useOrderDetails(swapContractAddress, order.contract_index, paymentTokenDecimals);
 
   function refetchAllContracts() {
     refetchMainContracts();
@@ -97,7 +97,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
       isAccepted,
       txnApprovalsEnabled,
       swapApprovalsEnabled,
-      isVisible: order.visible
+      isVisible: order?.visible ?? false
     });
 
   const disapprovedTransferEvents = getDisapprovedTransferEvents(
@@ -172,7 +172,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                     />
                   </div>
                   <div className={` p-1 px-2 items-center text-xs`}>
-                    offer Id: {order.contractIndex}
+                    offer Id: {order?.contract_index}
                   </div>
                 </div>
               </div>
@@ -183,7 +183,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                     currentUserFiller={currentUserFiller}
                     currentUserInitiator={currentUserInitiator}
                     isContractOwner={isContractOwner}
-                    offeringId={offering.id}
+                    offeringId={offering.id.toString()}
                     isApproved={isApproved}
                     isAccepted={isAccepted}
                     isCancelled={isCancelled}

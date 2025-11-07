@@ -44,7 +44,7 @@ export const generateMetadata = async ({ params }: Params): Promise<Metadata> =>
 
 export default async function ClientOfferingPage({ params }: Params) {
   const { offeringId, organizationId } = await params;
-  const organization = await getOrganization(organizationId);
+  const organization = await getOrganization(organizationId, '/[offeringId]');
   const offering = await getOfferingById(offeringId);
 
   if (!organization || !offering.is_public) {

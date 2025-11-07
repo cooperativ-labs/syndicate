@@ -1,4 +1,4 @@
-import { Offering, ShareOrder } from '@/types';
+import { CurrencyCodeType, Offering, OfferingFull, ShareOrder } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import StandardButton from '@src/components/buttons/StandardButton';
@@ -22,7 +22,7 @@ import { useAccount } from 'wagmi';
 import NonInput from '../../form-components/NonInput';
 
 export type SharePurchaseSaleRequestProps = {
-  offering: Offering;
+  offering: OfferingFull;
   order: ShareOrder;
   isAskOrder: boolean;
   price: number;
@@ -50,12 +50,10 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   myShareQty,
   callFillOrder
 }) => {
-  const { connector } = useAccount();
-
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
-
+  const investmentCurrency = offering.investment_currency as CurrencyCodeType;
   const standardSaleDisclosures = `/assets/order/disclosures.md`;
   const getStandardSaleDisclosuresText = async (): Promise<string> =>
     axios.get(standardSaleDisclosures).then(resp => resp.data);
@@ -86,7 +84,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
 
     return `${mainText} ${numUnitsPurchase ?? ''} shares ${
       numUnitsPurchase
-        ? `for ${purchaseString(numUnitsPurchase)} ${getCurrencyOption(offering.details?.investmentCurrency)?.symbol} `
+        ? `for ${purchaseString(numUnitsPurchase)} ${getCurrencyOption(investmentCurrency)?.symbol} `
         : ''
     }`;
   };
@@ -129,11 +127,11 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           if (numUnitsPurchase && numUnitsPurchase > shareQtyRemaining) {
             errors.numUnitsPurchase = `There are only ${shareQtyRemaining} for sale.`;
           }
-          if (order.minUnits) {
-            if (numUnitsPurchase && numUnitsPurchase < order.minUnits) {
-              errors.numUnitsPurchase = `You must purchase at least ${order.minUnits} shares.`;
-            } else if (numUnitsPurchase && order.maxUnits && numUnitsPurchase > order.maxUnits) {
-              errors.numUnitsPurchase = `You cannot purchase more than ${order.maxUnits} shares`;
+          if (order.min_units) {
+            if (numUnitsPurchase && numUnitsPurchase < order.min_units) {
+              errors.numUnitsPurchase = `You must purchase at least ${order.min_units} shares.`;
+            } else if (numUnitsPurchase && order.max_units && numUnitsPurchase > order.max_units) {
+              errors.numUnitsPurchase = `You cannot purchase more than ${order.max_units} shares`;
             }
           }
           if (!values.disclosures) {
@@ -171,8 +169,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                 <>
                   {values.numUnitsPurchase &&
                     `${purchaseString(values.numUnitsPurchase)} ${
-                      offering.details?.investmentCurrency &&
-                      getCurrencyOption(offering.details?.investmentCurrency)?.symbol
+                      investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
                     }`}
                 </>
               </NonInput>
@@ -264,9 +261,9 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                 }
               />
             </div>
-            {tocOpen && !!offering.documents && (
+            {tocOpen && !!documents && (
               <div className="my-2 p-4 rounded-md bg-slate-100">
-                <PresentLegalText text={offering.documents[0]?.text} />
+                <PresentLegalText text={documents[0]?.text} />
                 <div className="flex">
                   <StandardButton
                     className="mt-5"
@@ -275,7 +272,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                       e.preventDefault();
                       //@ts-ignore
                       DownloadFile(
-                        offering.documents[0]?.text as string,
+                        documents[0]?.text as string,
                         `${offering.name} - Terms & Conditions.md`
                       );
                     }}

@@ -1,7 +1,7 @@
 'use client';
 
-import { CurrencyCode, Maybe, SmartContract } from '@/types';
-import { ADD_LEGAL_SHARE_LINK, ADD_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
+import { CurrencyCode, CurrencyCodeType, SmartContract } from '@/types';
+
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { setDocument } from '@src/web3/contractShareCalls';
 import {
@@ -20,18 +20,19 @@ import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 
 import PresentLegalText from './PresentLegalText';
+import { addLegalShareLink, addOfferingParticipant } from '@src/utils/actions/offeringActions';
+import { toast } from 'react-hot-toast';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
   availableContract: SmartContract;
-  bacValue: CurrencyCode | undefined;
+  bacValue: CurrencyCodeType | undefined;
   bacName: string | undefined;
   bacId: string | undefined;
   agreement: string;
-  spvEntityName: Maybe<string> | undefined;
+  spvEntityName: string | undefined;
   offeringId: string;
   entityId: string;
-  organizationId: string;
 };
 
 const LinkLegalForm: FC<LinkLegalFormProps> = ({
@@ -40,54 +41,47 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   agreement,
   spvEntityName,
   offeringId,
-  entityId,
-  organizationId
+  entityId
 }) => {
   const router = useRouter();
-  const [alerted, setAlerted] = useState<boolean>(false);
-  const [loadingModal, setLoadingModal] = useState<boolean>(false);
+
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const [addLegalLink, { data: agreementData, error: agreementError }] =
-    useMutation(ADD_LEGAL_SHARE_LINK);
-  const [addOfferingParticipant, { data: participantData, error: participantError }] =
-    useMutation(ADD_OFFERING_PARTICIPANT);
+  // const [addLegalLink, { data: agreementData, error: agreementError }] =
+  //   useMutation(ADD_LEGAL_SHARE_LINK);
+  // const [addOfferingParticipant, { data: participantData, error: participantError }] =
+  //   useMutation(ADD_OFFERING_PARTICIPANT);
 
   const agreementHash = hashBytes32FromString(agreement);
-
-  if (agreementError && !alerted) {
-    alert(`Oops. Looks like something went wrong: ${agreementError.message}`);
-    setAlerted(true);
-  }
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const createDocHash = async (signature: string) => {
+    if (!userWalletAddress) {
+      toast.error('Please connect your wallet');
+      return;
+    }
     setButtonStep('step1');
     const handleEstablish = async () => {
       try {
-        await addLegalLink({
-          variables: {
-            documentOfferingUniqueId: offeringId + docTitle,
-            offeringId: offeringId,
-            entityId: entityId,
-            agreementText: agreement,
-            smartContractId: availableContract.id,
-            // minUnits: values.minUnits,
-            // priceStart: parseInt(values.initialPrice, 10),
-            // maxRaise: values.numUnits * parseInt(values.initialPrice, 10),
-            agreementTitle: docTitle,
-            signature: signature
-          }
+        await addLegalShareLink({
+          documentOfferingUniqueId: offeringId + docTitle,
+          offeringId: offeringId,
+          entityId: entityId,
+          agreementText: agreement,
+          smartContractId: availableContract.id,
+          // minUnits: values.minUnits,
+          // priceStart: parseInt(values.initialPrice, 10),
+          // maxRaise: values.numUnits * parseInt(values.initialPrice, 10),
+          agreementTitle: docTitle
+          // signature: signature
         });
         await addOfferingParticipant({
-          variables: {
-            addressOfferingId: userWalletAddress + offeringId,
-            offeringId: offeringId,
-            name: spvEntityName,
-            walletAddress: userWalletAddress,
-            chainId: chainId
-          }
+          addressOfferingId: userWalletAddress + offeringId,
+          offeringId: offeringId,
+          name: spvEntityName,
+          walletAddress: userWalletAddress,
+          chainId: chainId
         });
 
         setButtonStep('confirmed');
@@ -102,7 +96,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
     await setDocument({
       docName: docTitle,
       text: agreement,
-      shareContractAddress: availableContract.cryptoAddress.address as String0x,
+      shareContractAddress: availableContract.crypto_address_id as String0x,
       setButtonStep,
       callback: handleEstablish,
       uri
@@ -123,7 +117,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
           return errors;
         }}
         onSubmit={async (values, { setSubmitting }) => {
-          setAlerted(false);
           setSubmitting(true);
           await createDocHash(values.signature);
           setSubmitting(false);

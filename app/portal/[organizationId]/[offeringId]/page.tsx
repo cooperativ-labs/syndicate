@@ -10,7 +10,7 @@ const PortalOfferingRoute = async ({
   params: Promise<{ organizationId: string; offeringId: string }>;
 }) => {
   const { organizationId, offeringId } = await params;
-  const organization = await getOrganization(organizationId);
+  const organization = await getOrganization(organizationId, '/portal/[offeringId]');
   const offering = await getOfferingById(offeringId);
 
   if (!organization || !offering) {

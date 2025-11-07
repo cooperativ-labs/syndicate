@@ -15,7 +15,7 @@ export default async function InvestorApplicationPage({ params }: Params) {
   const { organizationId, offeringId } = await params;
   const [offering, organization] = await Promise.all([
     getOfferingById(offeringId),
-    getOrganization(organizationId)
+    getOrganization(organizationId, '/portal/[offeringId]/investor-application')
   ]);
 
   if (!organization) {

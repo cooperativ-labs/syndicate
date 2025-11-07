@@ -1,7 +1,3 @@
-import { Currency, User } from '@/types';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import LinkLegal from '@src/components/legal/LinkLegal';
-import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
 import DistributionContractSettings from './DistributionContractSettings';
@@ -13,11 +9,9 @@ import SwapContractSettings, {
 
 export type SmartContractsSettingsProps = SwapContractSettingsProps & ShareContractSettingsProps;
 
-type SmartContractsSettingsLocal = SmartContractsSettingsProps &
-  SwapContractsSettingsAdditional & { user: User };
+type SmartContractsSettingsLocal = SmartContractsSettingsProps & SwapContractsSettingsAdditional;
 
 const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
-  user,
   offering,
   contractSet,
   swapApprovalsEnabled,
@@ -32,7 +26,6 @@ const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
   return (
     <>
       <ShareContractSettings
-        user={user}
         offering={offering}
         shareContract={shareContract}
         partitions={partitions}

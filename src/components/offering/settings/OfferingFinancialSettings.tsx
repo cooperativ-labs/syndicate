@@ -1,335 +1,582 @@
-import { Offering, OfferingDetails } from '@/types';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { CurrencyCodeType, OfferingFull } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
-import Checkbox from '@src/components/form-components/Checkbox';
-import Datepicker from '@src/components/form-components/Datepicker';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import { Input } from '@src/components/ui/input';
+import { Label } from '@src/components/ui/label';
+import { Textarea } from '@src/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@src/components/ui/select';
 import NonInput from '@src/components/form-components/NonInput';
-import Select from '@src/components/form-components/Select';
 import {
   distributionPeriodOptions,
   getCurrencyOption,
+  OfferingStage,
   StageOptions
 } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_OFFERING_FINANCIAL } from '@src/utils/graphQueries/offering';
+import { updateOfferingFinancial } from '@src/utils/actions/offeringActions';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import DatePicker, { CalendarContainer } from 'react-datepicker';
+import 'react-datepicker/dist/react-datepicker.css';
+import { z } from 'zod';
+
+const defaultFieldDiv = 'pt-3 bg-opacity-0';
 
 type OfferingFinancialSettingsProps = {
-  offering: Offering;
+  offering: OfferingFull;
 };
 
+const schema = z
+  .object({
+    stage: z.string().optional(),
+    minRaise: z.number().nullable().optional(),
+    minUnitsPerInvestor: z.number().nullable().optional(),
+    maxUnitsPerInvestor: z.number().nullable().optional(),
+    maxInvestors: z.number().nullable().optional(),
+    minInvestors: z.number().nullable().optional(),
+    raiseStart: z.date().nullable().optional(),
+    raisePeriod: z.number().nullable().optional(),
+    additionalInfo: z.string().optional(),
+    distributionPeriod: z.string().optional(),
+    distributionFrequency: z.number().nullable().optional(),
+    distributionCurrency: z.string().optional(),
+    distributionDescription: z.string().optional(),
+    adminExpense: z.number().nullable().optional(),
+    projectedIrr: z.number().nullable().optional(),
+    projectedIrrMax: z.number().nullable().optional(),
+    preferredReturn: z.number().nullable().optional(),
+    cocReturn: z.number().nullable().optional(),
+    projectedAppreciation: z.number().nullable().optional(),
+    capRate: z.number().nullable().optional(),
+    targetEquityMultiple: z.number().nullable().optional(),
+    targetEquityMultipleMax: z.number().nullable().optional()
+  })
+  .refine(
+    data => {
+      if (data.minRaise && data.minRaise > 0) {
+        // maxRaise will be calculated from price_start * num_units
+        return true; // We'll validate this in the component
+      }
+      return true;
+    },
+    {
+      message: 'Minimum raise must be less than maximum raise.',
+      path: ['minRaise']
+    }
+  );
+
+type FormData = z.infer<typeof schema>;
+
 const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offering }) => {
-  const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_FINANCIAL);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [alerted, setAlerted] = useState<boolean>(false);
 
-  const { details } = offering;
   const {
     id,
     stage,
-    investmentCurrency,
-    priceStart,
-    numUnits,
-    minRaise,
-    minUnitsPerInvestor,
-    maxUnitsPerInvestor,
-    maxInvestors,
-    minInvestors,
-    raiseStart,
-    raisePeriod,
-    additionalInfo,
-    distributionPeriod,
-    distributionFrequency,
-    distributionCurrency,
-    distributionDescription,
-    adminExpense,
-    projectedIrr,
-    projectedIrrMax,
-    preferredReturn,
-    cocReturn,
-    projectedAppreciation,
-    capRate,
-    targetEquityMultiple,
-    targetEquityMultipleMax
-  } = details as OfferingDetails;
+    investment_currency,
+    price_start,
+    num_units,
+    min_raise,
+    min_units_per_investor,
+    max_units_per_investor,
+    max_investors,
+    min_investors,
+    raise_start,
+    raise_period,
+    additional_info,
+    distribution_period,
+    distribution_frequency,
+    distribution_description,
+    admin_expense,
+    projected_irr,
+    projected_irr_max,
+    preferred_return,
+    coc_return,
+    projected_appreciation,
+    cap_rate,
+    target_equity_multiple,
+    target_equity_multiple_max,
+    legalEntity
+  } = offering;
 
-  const operatingCurrency = offering.offeringEntity?.operatingCurrency;
+  const operatingCurrency = legalEntity?.operating_currency;
 
-  if (error) {
-    alert('Oops. Looks like something went wrong');
-  }
-  if (data && !alerted) {
-    setAlerted(true);
-  }
+  const maxRaise = price_start && num_units ? price_start * num_units : 0;
 
-  const maxRaise = priceStart && numUnits ? priceStart * numUnits : 0;
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+    watch
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      stage: stage ?? '',
+      minRaise: min_raise ?? null,
+      minUnitsPerInvestor: min_units_per_investor ?? null,
+      maxUnitsPerInvestor: max_units_per_investor ?? null,
+      maxInvestors: max_investors ?? null,
+      minInvestors: min_investors ?? null,
+      raiseStart: raise_start ? new Date(raise_start) : null,
+      raisePeriod: raise_period ?? null,
+      additionalInfo: additional_info ?? '',
+      distributionPeriod: distribution_period ?? '',
+      distributionFrequency: distribution_frequency ?? null,
+      distributionCurrency: investment_currency ?? '',
+      distributionDescription: distribution_description ?? '',
+      adminExpense: admin_expense ?? null,
+      projectedIrr: projected_irr ? projected_irr / 100 : null,
+      projectedIrrMax: projected_irr_max ? projected_irr_max / 100 : null,
+      preferredReturn: preferred_return ? preferred_return / 100 : null,
+      cocReturn: coc_return ? coc_return / 100 : null,
+      projectedAppreciation: projected_appreciation ? projected_appreciation / 100 : null,
+      capRate: cap_rate ? cap_rate / 100 : null,
+      targetEquityMultiple: target_equity_multiple ? target_equity_multiple / 100 : null,
+      targetEquityMultipleMax: target_equity_multiple_max ? target_equity_multiple_max / 100 : null
+    }
+  });
+
+  const watchedMinRaise = watch('minRaise');
+
+  const onSubmit = async (data: FormData) => {
+    setButtonStep('step1');
+    setAlerted(false);
+
+    // Validate minRaise
+    if (data.minRaise && data.minRaise > maxRaise) {
+      return;
+    }
+
+    try {
+      await updateOfferingFinancial({
+        offeringId: offering.id.toString(),
+        stage: data.stage as OfferingStage | undefined,
+        minRaise: data.minRaise ?? undefined,
+        minUnitsPerInvestor: data.minUnitsPerInvestor ?? undefined,
+        maxUnitsPerInvestor: data.maxUnitsPerInvestor ?? undefined,
+        maxInvestors: data.maxInvestors ?? undefined,
+        minInvestors: data.minInvestors ?? undefined,
+        raiseStart: data.raiseStart ? data.raiseStart.toISOString() : undefined,
+        raisePeriod: data.raisePeriod ?? undefined,
+        additionalInfo: data.additionalInfo ?? undefined,
+        distributionPeriod: data.distributionPeriod as string | undefined,
+        distributionFrequency: data.distributionFrequency ?? undefined,
+        distributionCurrency: data.distributionCurrency as CurrencyCodeType | undefined,
+        distributionDescription: data.distributionDescription ?? undefined,
+        adminExpense: data.adminExpense ?? undefined,
+        projectedIrr: data.projectedIrr ? data.projectedIrr * 100 : undefined,
+        projectedIrrMax: data.projectedIrrMax ? data.projectedIrrMax * 100 : undefined,
+        preferredReturn: data.preferredReturn ? data.preferredReturn * 100 : undefined,
+        targetEquityMultiple: data.targetEquityMultiple
+          ? data.targetEquityMultiple * 100
+          : undefined,
+        targetEquityMultipleMax: data.targetEquityMultipleMax
+          ? data.targetEquityMultipleMax * 100
+          : undefined,
+        cocReturn: data.cocReturn ? data.cocReturn * 100 : undefined,
+        projectedAppreciation: data.projectedAppreciation
+          ? data.projectedAppreciation * 100
+          : undefined,
+        capRate: data.capRate ? data.capRate * 100 : undefined
+      });
+      setButtonStep('confirmed');
+    } catch (e) {
+      setButtonStep('failed');
+      alert(e);
+    }
+  };
+
+  const MyContainer = ({
+    className,
+    children
+  }: {
+    className: string;
+    children: React.ReactNode[];
+  }) => {
+    return (
+      <div style={{ color: '#fff' }}>
+        <CalendarContainer className={className}>
+          <div style={{ position: 'relative' }}>{children}</div>
+        </CalendarContainer>
+      </div>
+    );
+  };
+
   return (
-    <Formik
-      initialValues={{
-        stage: stage,
-        minRaise: minRaise,
-        minUnitsPerInvestor: minUnitsPerInvestor,
-        maxUnitsPerInvestor: maxUnitsPerInvestor,
-        maxInvestors: maxInvestors,
-        minInvestors: minInvestors,
-        raiseStart: raiseStart,
-        raisePeriod: raisePeriod,
-        additionalInfo: additionalInfo,
-        distributionPeriod: distributionPeriod,
-        distributionFrequency: distributionFrequency,
-        distributionCurrency: distributionCurrency,
-        distributionDescription: distributionDescription,
-        adminExpense: adminExpense,
-        projectedIrr: projectedIrr && projectedIrr / 100,
-        projectedIrrMax: projectedIrrMax && projectedIrrMax / 100,
-        preferredReturn: preferredReturn && preferredReturn / 100,
-        cocReturn: cocReturn && cocReturn / 100,
-        projectedAppreciation: projectedAppreciation && projectedAppreciation / 100,
-        capRate: capRate && capRate / 100,
-        targetEquityMultiple: targetEquityMultiple && targetEquityMultiple / 100,
-        targetEquityMultipleMax: targetEquityMultipleMax && targetEquityMultipleMax / 100
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (values.minRaise > maxRaise) {
-          errors.minRaise = 'Minimum raise must be less than maximum raise.';
-        }
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting }) => {
-        setButtonStep('step1');
-        setAlerted(false);
-        setSubmitting(true);
-        try {
-          updateOffering({
-            variables: {
-              offeringDetailsId: id,
-              stage: values.stage,
-              minRaise: values.minRaise,
-              minUnitsPerInvestor: values.minUnitsPerInvestor,
-              maxUnitsPerInvestor: values.maxUnitsPerInvestor,
-              maxInvestors: values.maxInvestors,
-              minInvestors: values.minInvestors,
-              raiseStart: values.raiseStart,
-              raisePeriod: values.raisePeriod,
-              additionalInfo: values.additionalInfo,
-              distributionPeriod: values.distributionPeriod,
-              distributionFrequency: values.distributionFrequency,
-              distributionCurrency: values.distributionCurrency,
-              distributionDescription: values.distributionDescription,
-              adminExpense: values.adminExpense,
-              projectedIrr: values.projectedIrr && values.projectedIrr * 100,
-              projectedIrrMax: values.projectedIrrMax && values.projectedIrrMax * 100,
-              preferredReturn: values.preferredReturn && values.preferredReturn * 100,
-              targetEquityMultiple:
-                values.targetEquityMultiple && values.targetEquityMultiple * 100,
-              targetEquityMultipleMax:
-                values.targetEquityMultipleMax && values.targetEquityMultipleMax * 100,
-              cocReturn: values.cocReturn && values.cocReturn * 100,
-              projectedAppreciation:
-                values.projectedAppreciation && values.projectedAppreciation * 100,
-              capRate: values.capRate && values.capRate * 100
-            }
-          });
-          setButtonStep('confirmed');
-        } catch (e) {
-          setButtonStep('failed');
-          alert(e);
-        }
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting, values }) => (
-        <Form className="flex flex-col relative">
-          <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">Offering Financials</h2>
-          <Select className={defaultFieldDiv} name="stage" labelText="Offering stage">
-            <option value="">Select stage</option>;
-            {StageOptions.map((option, i) => {
-              return (
-                <option key={i} value={option.value}>
-                  {option.name}
-                </option>
-              );
-            })}
-          </Select>
-          <div className="md:grid grid-cols-2 gap-3">
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Minimum raise (${investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol})`}
-              name="minRaise"
-              type="number"
-              placeholder="e.g. 2000000"
-            />
-
-            <NonInput
-              className={`${defaultFieldDiv} col-span-1 pl-1`}
-              labelText={`Maximum raise (${investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol})`}
-            >
-              <>
-                {priceStart &&
-                  numUnits &&
-                  `${numberWithCommas(maxRaise)} ${
-                    investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
-                  }`}
-              </>
-            </NonInput>
-          </div>
-          <div className="md:grid grid-cols-2 gap-3">
-            <Input
-              className={`${defaultFieldDiv} col-span-1`}
-              labelText="Minimum shares per investor"
-              name="minUnitsPerInvestor"
-              type="number"
-              placeholder="e.g. 10"
-            />
-            <Input
-              className={`${defaultFieldDiv} col-span-1`}
-              labelText="Maximum shares per investor"
-              name="maxUnitsPerInvestor"
-              type="number"
-              placeholder="e.g. 99"
-            />
-          </div>
-
-          <div className="md:grid grid-cols-2 gap-3">
-            <Input
-              className={`${defaultFieldDiv} col-span-1`}
-              labelText="Minimum number of investors"
-              name="minInvestors"
-              type="number"
-              placeholder="e.g. 120"
-            />
-            <Input
-              className={`${defaultFieldDiv} col-span-1`}
-              labelText="Maximum number of investors"
-              name="maxInvestors"
-              type="number"
-              placeholder="e.g. 99"
-            />
-          </div>
-
-          <div className="md:grid grid-cols-2">
-            <Datepicker
-              name="raiseStart"
-              labelText="Fundraising start date"
-              className={`${defaultFieldDiv} col-span-1`}
-            />
-            <Input
-              className={`${defaultFieldDiv} col-span-1`}
-              labelText="Fundraising period in days"
-              name="raisePeriod"
-              type="number"
-              placeholder="e.g. 120"
-            />
-          </div>
-
-          <div className="md:grid grid-cols-2 gap-3">
-            <Input
-              className={defaultFieldDiv}
-              labelText="Distributions every"
-              name="distributionFrequency"
-              type="number"
-            />
-
-            <Select
-              required
-              className={defaultFieldDiv}
-              labelText="Period"
-              name="distributionPeriod"
-            >
-              {distributionPeriodOptions.map((type, i) => {
-                return (
-                  <option key={i} value={type.value}>
-                    {`${type.name}s`}
-                  </option>
-                );
-              })}
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col relative">
+      <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">Offering Financials</h2>
+      <div className={defaultFieldDiv}>
+        <Label htmlFor="stage" className="text-sm text-blue-900 font-semibold text-opacity-80">
+          Offering stage
+        </Label>
+        <Controller
+          control={control}
+          name="stage"
+          render={({ field }) => (
+            <Select value={field.value ?? ''} onValueChange={field.onChange}>
+              <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                <SelectValue placeholder="Select stage" />
+              </SelectTrigger>
+              <SelectContent>
+                {StageOptions.map((option, i) => (
+                  <SelectItem key={i} value={option.value}>
+                    {option.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
             </Select>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Projected IRR (%)`}
-              name="projectedIrr"
-              type="number"
-            />
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Max Projected IRR (% - Optional)`}
-              name="projectedIrrMax"
-              type="number"
-            />
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Target equity multiple (x)`}
-              name="targetEquityMultiple"
-              type="number"
-            />
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Target equity multiple Max (x - Optional)`}
-              name="targetEquityMultipleMax"
-              type="number"
-            />{' '}
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Preferred Return (%)`}
-              name="preferredReturn"
-              type="number"
-            />
-            <Input
-              className={defaultFieldDiv}
-              labelText={`CoC return (%)`}
-              name="cocReturn"
-              type="number"
-            />
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Projected appreciation (%)`}
-              name="projectedAppreciation"
-              type="number"
-            />
-            <Input
-              className={defaultFieldDiv}
-              labelText={`Cap rate (%)`}
-              name="capRate"
-              type="number"
-            />
-          </div>
+          )}
+        />
+      </div>
+      <div className="md:grid grid-cols-2 gap-3">
+        <div className={defaultFieldDiv}>
+          <Label htmlFor="minRaise" className="text-sm text-blue-900 font-semibold text-opacity-80">
+            {`Minimum raise (${investment_currency && getCurrencyOption(investment_currency)?.symbol})`}
+          </Label>
           <Input
-            className={defaultFieldDiv}
-            labelText={`Administrative Expenses (${getCurrencyOption(operatingCurrency)?.symbol})`}
-            name="adminExpense"
+            id="minRaise"
             type="number"
+            placeholder="e.g. 2000000"
+            {...register('minRaise', {
+              valueAsNumber: true,
+              validate: value => {
+                if (value && value > maxRaise) {
+                  return 'Minimum raise must be less than maximum raise.';
+                }
+                return true;
+              }
+            })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
           />
+          {errors.minRaise && (
+            <div className="text-sm text-red-500 mt-1">{errors.minRaise.message}</div>
+          )}
+        </div>
 
-          <Input
-            className={defaultFieldDiv}
-            labelText="Additional Information"
-            name="additionalInfo"
-            placeholder="e.g. Resale Horizon: 4-10 years."
-            textArea
-          />
-
-          <FormButton
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
+        <NonInput
+          className={`${defaultFieldDiv} col-span-1 pl-1`}
+          labelText={`Maximum raise (${investment_currency && getCurrencyOption(investment_currency)?.symbol})`}
+        >
+          <>
+            {price_start &&
+              num_units &&
+              `${numberWithCommas(maxRaise)} ${
+                investment_currency && getCurrencyOption(investment_currency)?.symbol
+              }`}
+          </>
+        </NonInput>
+      </div>
+      <div className="md:grid grid-cols-2 gap-3">
+        <div className={`${defaultFieldDiv} col-span-1`}>
+          <Label
+            htmlFor="minUnitsPerInvestor"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
           >
-            <LoadingButtonText
-              state={buttonStep}
-              idleText={`Update ${offering.name}`}
-              step1Text="Saving"
-              confirmedText={`${offering.name} updated!`}
-              failedText="Oops. Something went wrong"
-            />
-          </FormButton>
-        </Form>
-      )}
-    </Formik>
+            Minimum shares per investor
+          </Label>
+          <Input
+            id="minUnitsPerInvestor"
+            type="number"
+            placeholder="e.g. 10"
+            {...register('minUnitsPerInvestor', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={`${defaultFieldDiv} col-span-1`}>
+          <Label
+            htmlFor="maxUnitsPerInvestor"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Maximum shares per investor
+          </Label>
+          <Input
+            id="maxUnitsPerInvestor"
+            type="number"
+            placeholder="e.g. 99"
+            {...register('maxUnitsPerInvestor', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="md:grid grid-cols-2 gap-3">
+        <div className={`${defaultFieldDiv} col-span-1`}>
+          <Label
+            htmlFor="minInvestors"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Minimum number of investors
+          </Label>
+          <Input
+            id="minInvestors"
+            type="number"
+            placeholder="e.g. 120"
+            {...register('minInvestors', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={`${defaultFieldDiv} col-span-1`}>
+          <Label
+            htmlFor="maxInvestors"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Maximum number of investors
+          </Label>
+          <Input
+            id="maxInvestors"
+            type="number"
+            placeholder="e.g. 99"
+            {...register('maxInvestors', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="md:grid grid-cols-2">
+        <div className={`${defaultFieldDiv} col-span-1`}>
+          <Label
+            htmlFor="raiseStart"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Fundraising start date
+          </Label>
+          <Controller
+            control={control}
+            name="raiseStart"
+            render={({ field }) => (
+              <DatePicker
+                selected={field.value ?? null}
+                onChange={(date: Date | null) => field.onChange(date)}
+                calendarContainer={MyContainer}
+                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none w-full"
+              />
+            )}
+          />
+        </div>
+        <div className={`${defaultFieldDiv} col-span-1`}>
+          <Label
+            htmlFor="raisePeriod"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Fundraising period in days
+          </Label>
+          <Input
+            id="raisePeriod"
+            type="number"
+            placeholder="e.g. 120"
+            {...register('raisePeriod', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+      </div>
+
+      <div className="md:grid grid-cols-2 gap-3">
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="distributionFrequency"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Distributions every
+          </Label>
+          <Input
+            id="distributionFrequency"
+            type="number"
+            {...register('distributionFrequency', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="distributionPeriod"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Period *
+          </Label>
+          <Controller
+            control={control}
+            name="distributionPeriod"
+            render={({ field }) => (
+              <Select value={field.value ?? ''} onValueChange={field.onChange}>
+                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                  <SelectValue placeholder="Select period" />
+                </SelectTrigger>
+                <SelectContent>
+                  {distributionPeriodOptions.map((type, i) => (
+                    <SelectItem key={i} value={type.value}>
+                      {`${type.name}s`}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </div>
+      </div>
+      <div className="grid grid-cols-2 gap-3">
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="projectedIrr"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Projected IRR (%)
+          </Label>
+          <Input
+            id="projectedIrr"
+            type="number"
+            {...register('projectedIrr', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="projectedIrrMax"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Max Projected IRR (% - Optional)
+          </Label>
+          <Input
+            id="projectedIrrMax"
+            type="number"
+            {...register('projectedIrrMax', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="targetEquityMultiple"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Target equity multiple (x)
+          </Label>
+          <Input
+            id="targetEquityMultiple"
+            type="number"
+            {...register('targetEquityMultiple', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="targetEquityMultipleMax"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Target equity multiple Max (x - Optional)
+          </Label>
+          <Input
+            id="targetEquityMultipleMax"
+            type="number"
+            {...register('targetEquityMultipleMax', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="preferredReturn"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Preferred Return (%)
+          </Label>
+          <Input
+            id="preferredReturn"
+            type="number"
+            {...register('preferredReturn', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="cocReturn"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            CoC return (%)
+          </Label>
+          <Input
+            id="cocReturn"
+            type="number"
+            {...register('cocReturn', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={defaultFieldDiv}>
+          <Label
+            htmlFor="projectedAppreciation"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
+            Projected appreciation (%)
+          </Label>
+          <Input
+            id="projectedAppreciation"
+            type="number"
+            {...register('projectedAppreciation', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+        <div className={defaultFieldDiv}>
+          <Label htmlFor="capRate" className="text-sm text-blue-900 font-semibold text-opacity-80">
+            Cap rate (%)
+          </Label>
+          <Input
+            id="capRate"
+            type="number"
+            {...register('capRate', { valueAsNumber: true })}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+          />
+        </div>
+      </div>
+      <div className={defaultFieldDiv}>
+        <Label
+          htmlFor="adminExpense"
+          className="text-sm text-blue-900 font-semibold text-opacity-80"
+        >
+          {`Administrative Expenses (${getCurrencyOption(operatingCurrency)?.symbol})`}
+        </Label>
+        <Input
+          id="adminExpense"
+          type="number"
+          {...register('adminExpense', { valueAsNumber: true })}
+          className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+        />
+      </div>
+
+      <div className={defaultFieldDiv}>
+        <Label
+          htmlFor="additionalInfo"
+          className="text-sm text-blue-900 font-semibold text-opacity-80"
+        >
+          Additional Information
+        </Label>
+        <Textarea
+          id="additionalInfo"
+          placeholder="e.g. Resale Horizon: 4-10 years."
+          {...register('additionalInfo')}
+          className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+        />
+      </div>
+
+      <FormButton
+        type="submit"
+        disabled={isSubmitting || buttonStep === 'step1'}
+        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
+      >
+        <LoadingButtonText
+          state={buttonStep}
+          idleText={`Update ${offering.name}`}
+          step1Text="Saving"
+          confirmedText={`${offering.name} updated!`}
+          failedText="Oops. Something went wrong"
+        />
+      </FormButton>
+    </form>
   );
 };
 

@@ -28,8 +28,10 @@ const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ orga
 
   useAsync(async () => {
     if (userWalletAddress) {
-      const { records } = await getOfferingParticipant({ walletAddress: userWalletAddress });
-      setParticipantOfferings(records);
+      const offeringParticipants = await getOfferingParticipant({
+        walletAddress: userWalletAddress
+      });
+      setParticipantOfferings(offeringParticipants);
     }
   }, [userWalletAddress]);
 
@@ -70,7 +72,7 @@ const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ orga
             <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">
               Your current offerings:{' '}
             </h2>
-            <OfferingsList offerings={offerings} />
+            <OfferingsList offerings={offerings} organization={organization} />
           </div>
         )}
         <DashboardCard>

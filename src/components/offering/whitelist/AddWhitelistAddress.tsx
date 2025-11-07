@@ -2,8 +2,9 @@ import { Organization } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import { ADD_WHITELIST_MEMBER } from '@src/utils/graphQueries/offering';
+
 import { addWhitelistMember } from '@src/web3/contractShareCalls';
+import { addWhitelistMember as addWhitelistMemberToDb } from '@src/utils/actions/offeringActions';
 import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
@@ -22,7 +23,6 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [addWhitelistObject, { data, error }] = useMutation(ADD_WHITELIST_MEMBER);
 
   return (
     <Formik
@@ -54,7 +54,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
           externalId: values.externalId,
           organization,
           setButtonStep,
-          updateWhitelist: addWhitelistObject
+          updateWhitelist: addWhitelistMemberToDb
         });
 
         setSubmitting(false);

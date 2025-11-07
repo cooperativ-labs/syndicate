@@ -1,49 +1,45 @@
-import { Currency, Maybe, OfferingSmartContractSet, SmartContractType } from '@/types';
+import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import WalletActionIndicator, {
-  WalletActionStepType
-} from '@src/containers/wallet/WalletActionIndicator';
+import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { CREATE_SWAP_CONTRACT } from '@src/utils/graphQueries/crypto';
-import { UPDATE_INVESTMENT_CURRENCY } from '@src/utils/graphQueries/offering';
+import { createSwapContract } from '@src/utils/actions/cryptoActions';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import { Form, Formik } from 'formik';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
-
-import { ApplicationStoreProps, store } from '@/contexts/store';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
+import { updateInvestmentCurrency } from '@src/utils/actions/offeringActions';
+import { useWalletContext } from '@/contexts/WalletContext';
 
 type CreateSwapContractProps = {
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  investmentCurrency: Currency | null | undefined;
-  contractOwnerEntityId: string | undefined;
-  offeringDetailsId: string | undefined;
+  contractSet: OfferingSmartContractSet;
+  investmentCurrency: CurrencyCodeType;
+  contractOwnerEntityId: string;
+  offeringId: string;
+  organizationId: string;
 };
 
 const CreateSwapContract: FC<CreateSwapContractProps> = ({
   contractSet,
   investmentCurrency,
   contractOwnerEntityId,
-  offeringDetailsId
+  offeringId,
+  organizationId
 }) => {
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: dispatchWalletActionLockModalOpen } = applicationStore;
+  const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress } = useAccount();
-  const [addSwapContract, { data, error }] = useMutation(CREATE_SWAP_CONTRACT);
-  const [updateInvestmentCurrency] = useMutation(UPDATE_INVESTMENT_CURRENCY);
+
   const chainId = useChainId();
   const { chain } = useAccount();
-  const [alerted, setAlerted] = useState(false);
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const chainBacs = bacOptions.filter(bac => bac.chainId === chainId);
@@ -53,7 +49,11 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
     async paymentTokenAddress => {
       setButtonStep('step1');
       const protocol = MatchSupportedChains(chainId)?.protocol;
-      dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
+      const backingToken = getCurrencyById(paymentTokenAddress)?.value;
+      if (!protocol || !backingToken) {
+        throw new Error('No protocol or backing token found');
+      }
+      setWalletActionLockModalOpen(true);
       try {
         const contract = await deploySwapContract(
           userWalletAddress,
@@ -72,40 +72,33 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
           refetch: () => {}
         });
         // Make this update the offering instead so that we can add the smart contract to the offering and update the investment currency
-        await addSwapContract({
-          variables: {
-            offeringId: contractSet?.offering?.id,
-            cryptoAddress: contract.contractAddress,
-            chainId: chainId,
-            backingToken: getCurrencyById(paymentTokenAddress)?.value,
-            type: SmartContractType.Swap,
-            protocol: protocol,
-            ownerId: contractOwnerEntityId,
-            contractSetId: contractSet?.id
-          }
+        await createSwapContract({
+          offeringId: offeringId,
+          cryptoAddress: contract.contractAddress,
+          chainId: chainId,
+          backingToken: backingToken,
+          type: SmartContractType.SWAP,
+          protocol: protocol,
+          ownerId: contractOwnerEntityId,
+          contractSetId: contractSet.id
         });
-        const newCurrencyCode = getCurrencyById(paymentTokenAddress)?.value;
-        if (newCurrencyCode !== investmentCurrency?.code) {
+        const newCurrencyCode = backingToken;
+        if (newCurrencyCode !== investmentCurrency) {
           await updateInvestmentCurrency({
-            variables: {
-              offeringDetailsId: offeringDetailsId,
-              investmentCurrencyCode: newCurrencyCode
-            }
+            organizationId: organizationId,
+            offeringId: offeringId,
+            investmentCurrencyCode: newCurrencyCode
           });
         }
         setButtonStep('confirmed');
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
+        console.error(`Error creating swap contract: ${e}`);
       }
-      dispatchWalletActionLockModalOpen({ type: 'TOGGLE_WALLET_ACTION_LOCK' });
+      setWalletActionLockModalOpen(false);
     },
     [userWalletAddress, shareContractAddress, chainId]
   );
-
-  if (error && !alerted) {
-    alert('Oops. Looks like something went wrong');
-    setAlerted(true);
-  }
 
   return (
     <>
@@ -150,7 +143,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
                     `Note that changing the currency here will also change it on the offering's profile.`
                   );
                 }
-                setAlerted(false);
+
                 setSubmitting(true);
                 deploy(values.investmentCurrencyAddress);
                 setSubmitting(false);

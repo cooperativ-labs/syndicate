@@ -29,7 +29,15 @@ export const metadata: Metadata = {
 const configCookies = (cookies: string) => {
   const allCookies = cookies.split(';');
   const wagmiStore = allCookies.find(cookie => cookie.includes('wagmi.store')) ?? '';
-  return JSON.parse(wagmiStore?.split('=')[1]) ? wagmiStore : null;
+  try {
+    const cookieValue = wagmiStore?.split('=')[1];
+    if (!cookieValue) return null;
+    JSON.parse(cookieValue);
+    return wagmiStore;
+  } catch (error) {
+    console.error('Error parsing wagmi store', error);
+    return null;
+  }
 };
 
 export default async function RootLayout({ children }: { children: React.ReactNode }) {

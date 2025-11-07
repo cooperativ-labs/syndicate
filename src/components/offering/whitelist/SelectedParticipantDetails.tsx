@@ -1,10 +1,5 @@
 import { useUserContext } from '@contexts/UserContext';
-import {
-  Maybe,
-  OfferingParticipant,
-  OfferingSmartContractSet,
-  WhitelistTransactionType
-} from '@/types';
+import { OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import Input from '@src/components/form-components/Inputs';
@@ -12,7 +7,7 @@ import JurisdictionSelect from '@src/components/form-components/JurisdictionSele
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import SectionBlock from '@src/containers/SectionBlock';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_OFFERING_PARTICIPANT, UPDATE_WHITELIST } from '@src/utils/graphQueries/offering';
+import { updateWhitelist, updateOfferingParticipant } from '@src/utils/actions/offeringActions';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
@@ -33,10 +28,11 @@ import WhitelistTransactionItem from './WhitelistTransactionItem';
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
 export type SelectedParticipantProps = {
-  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  currentSalePrice: Maybe<number> | undefined;
+  offeringParticipants: OfferingParticipant[] | undefined;
+  contractSet: OfferingSmartContractSet | undefined;
+  currentSalePrice: number | undefined;
   offeringId: string;
+  organizationId: string;
   transferEventList: any[];
   refetchContracts: () => void;
   triggerInvestorListRefresh: () => void;
@@ -54,7 +50,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   offeringParticipants,
   contractSet,
   paymentTokenDecimals,
-
+  organizationId,
   offeringId,
   partitions,
   transferEventList,
@@ -64,8 +60,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   const { userId } = useUserContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
-  const [updateOfferingParticipant] = useMutation(UPDATE_OFFERING_PARTICIPANT);
-  const [updateWhitelist] = useMutation(UPDATE_WHITELIST);
+
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
   const participant = offeringParticipants?.find(p => p?.id === selection);
@@ -105,10 +100,12 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
 
   // -----------------Approve Whitelist Participant---------------------
 
-  const updateWhitelistMember = async (type: WhitelistTransactionType) => {
+  const updateWhitelistMember = async (
+    type: typeof WhitelistTransactionType.ADD | typeof WhitelistTransactionType.REMOVE
+  ) => {
     const baseVariables = {
-      offeringId: offeringId,
-      organization: userId,
+      offeringId,
+      organizationId,
       walletAddress: participantWallet,
       shareContractAddress: shareContractAddress,
       setButtonStep,
@@ -116,7 +113,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       triggerInvestorListRefresh
     };
     try {
-      if (type === WhitelistTransactionType.Add) {
+      if (type === WhitelistTransactionType.ADD) {
         addWhitelistMember({
           ...baseVariables
         });
@@ -275,7 +272,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
           <button
             className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
             aria-label="remove wallet from whitelist"
-            onClick={() => updateWhitelistMember(WhitelistTransactionType.Remove)}
+            onClick={() => updateWhitelistMember(WhitelistTransactionType.REMOVE)}
           >
             <LoadingButtonText
               state={buttonStep}
@@ -288,7 +285,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
           </button>
         ) : (
           <button
-            onClick={() => updateWhitelistMember(WhitelistTransactionType.Add)}
+            onClick={() => updateWhitelistMember(WhitelistTransactionType.ADD)}
             className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
             // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
           >

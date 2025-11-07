@@ -1,5 +1,4 @@
-i;
-import { Maybe, ShareOrder, ShareTransferEvent } from '@/types';
+import { CurrencyCodeType, ShareOrder, Document, TransferEvent } from '@/types';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import CloseButton from '@src/components/buttons/CloseButton';
 import PostBidAskForm, {
@@ -17,7 +16,6 @@ import { Button } from '@src/components/ui/button';
 import { LoadingButton } from '@src/components/ui/loading-button';
 import FormModal from '@src/containers/FormModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
-import { GET_USER } from '@src/utils/graphQueries/user';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { claimProceeds } from '@src/web3/contractSwapCalls';
@@ -25,11 +23,12 @@ import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 
 import SendShares from '../SendShares';
 
 import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
+import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
@@ -37,14 +36,15 @@ export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 type OfferingActionsProps = SmartContractsSettingsProps &
   PostBidAskFormProps &
   PostInitialSaleProps & {
-    orders: Maybe<ShareOrder>[] | undefined;
+    orders: ShareOrder[] | undefined;
     hasContract: boolean;
     loading: boolean | undefined;
     isOfferingManager: boolean;
     retrievalIssue: boolean;
     issueReachingContract: { share: boolean; swap: boolean };
-    userId: string | undefined;
-    transferEvents: ShareTransferEvent[] | undefined;
+    userId: string;
+    transferEvents: TransferEvent[] | undefined;
+    documents: Document[];
   };
 
 const OfferingActions: FC<OfferingActionsProps> = ({
@@ -69,11 +69,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   refetchOfferingInfo,
   currentSalePrice,
   myShareQty,
-  userId
+  documents
 }) => {
-  const { data: userData } = useQuery(GET_USER, { variables: { id: userId } });
-  const user = userData?.queryUser[0];
-
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
   const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
@@ -84,20 +81,23 @@ const OfferingActions: FC<OfferingActionsProps> = ({
 
   // const [updateDistribution, { data: updateDistributionData }] = useMutation(UPDATE_DISTRIBUTION);
 
-  const { id, participants, details } = offering;
+  const {
+    name: offeringName,
+    offeringParticipants,
+    price_start: priceStart,
+    min_units_per_investor: offeringMin,
+    num_units: sharesIssued,
+    investment_currency: investmentCurrency
+  } = offering;
 
   const { address: userWalletAddress } = useAccount();
   const shareContractId = contractSet?.shareContract?.id as string;
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
 
-  const offeringName = offering.name;
-  const offeringMin = offering.details?.minUnitsPerInvestor;
-  const investmentCurrency = offering.details?.investmentCurrency;
-  const sharesIssued = offering.details?.numUnits;
   const hasOrders = orders && orders.length > 0;
 
-  const { data: contractData } = useContractRead({
+  const { data: contractData } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'unclaimedProceeds',
@@ -155,12 +155,11 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         title={`Smart contract settings`}
       >
         <SmartContractsSettings
-          user={user}
           offering={offering}
           partitions={partitions}
           contractSet={contractSet}
           noLiveOrders={noLiveOrders}
-          investmentCurrency={investmentCurrency}
+          investmentCurrency={investmentCurrency as CurrencyCodeType}
           swapApprovalsEnabled={swapApprovalsEnabled}
           txnApprovalsEnabled={txnApprovalsEnabled}
           refetchMainContracts={refetchMainContracts}
@@ -183,6 +182,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         {isExistingShares ? (
           <PostBidAskForm
             offering={offering}
+            documents={documents}
             offeringMin={offeringMin}
             sharesOutstanding={sharesOutstanding}
             walletAddress={userWalletAddress as String0x}
@@ -201,8 +201,8 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           <PostInitialSale
             sharesIssued={sharesIssued}
             sharesOutstanding={sharesOutstanding}
-            offeringId={offering.id}
-            priceStart={offering.details?.priceStart}
+            offeringId={offering.id.toString()}
+            priceStart={priceStart}
             swapContractAddress={swapContractAddress}
             shareContractId={shareContractId}
             partitions={partitions}
@@ -241,11 +241,11 @@ const OfferingActions: FC<OfferingActionsProps> = ({
         <SendShares
           investmentCurrency={investmentCurrency}
           currentSalePrice={currentSalePrice}
-          sharesIssued={details?.numUnits}
+          sharesIssued={sharesIssued}
           sharesOutstanding={sharesOutstanding}
           shareContractAddress={shareContractAddress}
           shareContractId={shareContractId}
-          offeringParticipants={participants}
+          offeringParticipants={offeringParticipants}
           partitions={partitions}
           myShareQty={myShareQty}
           refetchMainContracts={refetchMainContracts}
@@ -344,7 +344,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
           <div className="">
             {!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}
           </div>
-          {hasOrders && (
+          {hasOrders && paymentTokenAddress && (
             <ShareSaleStatusWidget
               orders={orders}
               swapContractAddress={swapContractAddress}

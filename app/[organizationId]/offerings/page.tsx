@@ -5,7 +5,10 @@ import React from 'react';
 
 const OfferingsPage = async ({ params }: { params: Promise<{ organizationId: string }> }) => {
   const { organizationId } = await params;
-  const organization = await getOrganization(organizationId);
+  const organization = await getOrganization(organizationId, '/offerings');
+  if (!organization) {
+    return <div>Organization not found</div>;
+  }
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
       <ManagerWrapper>

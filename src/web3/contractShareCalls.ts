@@ -1,6 +1,5 @@
 import {
-  Currency,
-  CurrencyCode,
+  CurrencyCodeType,
   Organization,
   ShareTransferEventType,
   WhitelistTransactionType,
@@ -30,6 +29,19 @@ import {
   String0x,
 } from "./helpersChain";
 import { shareContractDecimals, toContractNumber } from "./util";
+import { AddTransferEventResult } from "@src/utils/actions/orderActions";
+import {
+  AddContractPartitionParams,
+  AddContractPartitionResult,
+} from "@src/utils/actions/cryptoActions";
+import {
+  addTransferEvent,
+  AddTransferEventParams,
+} from "@src/utils/actions/orderActions";
+import {
+  AddWhitelistMemberParams,
+  UpdateWhitelistParams,
+} from "@src/utils/actions/offeringActions";
 
 type AddWhitelistMemberProps = {
   shareContractAddress: String0x;
@@ -38,9 +50,11 @@ type AddWhitelistMemberProps = {
   chainId?: number;
   name?: string;
   externalId?: string;
-  organization: Organization;
+  organizationId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-
+  updateWhitelist: (
+    params: UpdateWhitelistParams,
+  ) => Promise<void>;
   refetchMainContracts?: () => void;
   triggerInvestorListRefresh?: () => void;
 };
@@ -49,10 +63,7 @@ export const addWhitelistMember = async ({
   shareContractAddress,
   offeringId,
   walletAddress,
-  chainId,
-  name,
-  externalId,
-  organization,
+  organizationId,
   setButtonStep,
   updateWhitelist,
   refetchMainContracts,
@@ -62,17 +73,11 @@ export const addWhitelistMember = async ({
   const addToDb = async (transactionHash: string) => {
     try {
       updateWhitelist({
-        variables: {
-          currentDate: currentDate,
-          addressOfferingId: walletAddress + offeringId,
-          walletAddress: walletAddress,
-          chainId: chainId,
-          name: name,
-          offering: offeringId,
-          externalId: externalId,
-          transactionHash: transactionHash,
-          type: WhitelistTransactionType.Add,
-        },
+        organizationId: organizationId,
+        offeringId: offeringId,
+        offeringParticipantId: walletAddress + offeringId,
+        transactionHash: transactionHash,
+        type: WhitelistTransactionType.ADD,
       });
     } catch (error: any) {
       throw new Error(error);
@@ -93,7 +98,7 @@ export const addWhitelistMember = async ({
       });
       await addToDb(hash);
       await handleWhitelistUpdateNotification({
-        organization,
+        organizationId: organizationId,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
         notificationText:
           `${walletAddress} was added to your offering's whitelist.`,
@@ -120,16 +125,11 @@ type RemoveWhitelistMemberProps = {
   shareContractAddress: String0x;
   offeringId: string;
   walletAddress: String0x;
-  organization: Organization;
+  organizationId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   updateWhitelist: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
-  ) => Promise<any>;
+    params: UpdateWhitelistParams,
+  ) => Promise<void>;
   refetchMainContracts?: () => void;
   triggerInvestorListRefresh?: () => void;
 };
@@ -138,7 +138,7 @@ export const removeWhitelistMember = async ({
   shareContractAddress,
   offeringId,
   walletAddress,
-  organization,
+  organizationId,
   setButtonStep,
   updateWhitelist,
   refetchMainContracts,
@@ -159,15 +159,14 @@ export const removeWhitelistMember = async ({
         hash,
       });
       await updateWhitelist({
-        variables: {
-          currentDate: currentDate,
-          addressOfferingId: walletAddress + offeringId,
-          transactionHash: hash,
-          type: WhitelistTransactionType.Remove,
-        },
+        organizationId: organizationId,
+        offeringId: offeringId,
+        offeringParticipantId: walletAddress + offeringId,
+        transactionHash: hash,
+        type: WhitelistTransactionType.REMOVE,
       });
       await handleWhitelistUpdateNotification({
-        organization,
+        organizationId: organizationId,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
         notificationText:
           `${walletAddress} was removed from your offering's whitelist.`,
@@ -231,7 +230,7 @@ type SendSharesProps = {
   shareContractId: string;
   numShares: number;
   price: number;
-  currencyCode: CurrencyCode;
+  currencyCode: CurrencyCodeType;
   recipient: String0x;
   sender: String0x;
   partition: string;
@@ -239,21 +238,11 @@ type SendSharesProps = {
   isIssuance: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   addPartition: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
-  ) => Promise<any>;
+    params: AddContractPartitionParams,
+  ) => Promise<AddContractPartitionResult>;
   addIssuance: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
-  ) => Promise<any>;
+    params: AddTransferEventParams,
+  ) => Promise<AddTransferEventResult>;
   refetchMainContracts: () => void;
 };
 
@@ -305,8 +294,8 @@ export const sendShares = async ({
       ? issueByPartitionArgs
       : operatorTransferByPartitionArgs;
     const setType = isIssuance
-      ? ShareTransferEventType.Issuance
-      : ShareTransferEventType.Transfer;
+      ? ShareTransferEventType.ISSUANCE
+      : ShareTransferEventType.TRANSFER;
     try {
       const { request } = await simulateContract(config, {
         address: shareContractAddress,
@@ -321,27 +310,23 @@ export const sendShares = async ({
       });
       transactionDetails = details;
       await addIssuance({
-        variables: {
-          shareContractAddress,
-          recipientAddress: recipient,
-          senderAddress: sender,
-          amount: numShares,
-          currencyCode,
-          price: toContractNumber(
-            price as number,
-            paymentTokenDecimals as number,
-          ).toString(),
-          transactionHash: transactionDetails.transactionHash,
-          partition: setPartition,
-          type: setType,
-        },
+        shareContractAddress: shareContractAddress,
+        recipientAddress: recipient,
+        senderAddress: sender,
+        amount: numShares,
+        currencyCode,
+        price: toContractNumber(
+          price as number,
+          paymentTokenDecimals as number,
+        ).toString(),
+        transactionHash: transactionDetails.transactionHash,
+        partition: setPartition,
+        type: setType,
       });
       if (partition === "0xNew") {
         await addPartition({
-          variables: {
-            smartContractId: shareContractId,
-            partition: setPartition,
-          },
+          smartContractId: shareContractId,
+          partition: setPartition,
         });
       }
       refetchMainContracts();
@@ -402,14 +387,7 @@ type ForceTransferProps = {
   target: String0x;
   recipient: String0x;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  addIssuance: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
-  ) => Promise<any>;
+
   refetchContracts: () => void;
 };
 
@@ -420,7 +398,7 @@ export const forceTransfer = async ({
   target,
   recipient,
   setButtonStep,
-  addIssuance,
+
   refetchContracts,
 }: ForceTransferProps) => {
   const config = getWagmiConfig();
@@ -437,16 +415,14 @@ export const forceTransfer = async ({
     const details = await waitForTransactionReceipt(config, {
       hash,
     });
-    await addIssuance({
-      variables: {
-        shareContractAddress,
-        recipientAddress: recipient,
-        senderAddress: target,
-        amount: amount,
-        transactionHash: details.transactionHash,
-        partition: partition,
-        type: ShareTransferEventType.Forced,
-      },
+    await addTransferEvent({
+      shareContractAddress: shareContractAddress,
+      recipientAddress: recipient,
+      senderAddress: target,
+      amount: amount,
+      transactionHash: details.transactionHash,
+      partition: partition,
+      type: ShareTransferEventType.FORCED,
     });
     refetchContracts();
     setButtonStep("confirmed");

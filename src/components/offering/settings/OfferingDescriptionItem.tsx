@@ -1,17 +1,17 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@/types';
+import { Offering, OfferingDescriptionText, offeringTabSectionTypes } from '@/types';
 import Button from '@src/components/buttons/Button';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { DELETE_DESCRIPTION_TEXT, UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
+
 import { Menu, Pencil, X } from 'lucide-react';
 import React, { FC, useState } from 'react';
 
 import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
+import { deleteDescriptionText } from '@src/utils/actions/offeringActions';
 
 type OfferingDescriptionItemProps = {
   offering: Offering;
-  description: Maybe<OfferingDescriptionText> | undefined;
+  description: OfferingDescriptionText;
   order: number | undefined;
-  tab: OfferingTabSection | undefined;
+  tab: offeringTabSectionTypes | undefined;
 };
 const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({
   offering,
@@ -20,21 +20,6 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({
   tab
 }) => {
   const [open, setOpen] = useState<boolean>(false);
-  const [updateDescription, { data: dataUpdate, error: errorUpdate }] =
-    useMutation(UPDATE_DESCRIPTION_TEXT);
-  const [deleteDescription, { data: dataDelete, error: errorDelete }] =
-    useMutation(DELETE_DESCRIPTION_TEXT);
-
-  const [alerted, setAlerted] = useState<boolean>(false);
-
-  if (errorUpdate || errorDelete) {
-    alert(
-      `Oops. Looks like something went wrong: ${errorUpdate ? errorUpdate.message : errorDelete?.message}`
-    );
-  }
-  if ((dataUpdate && !alerted) || (dataDelete && !alerted)) {
-    setAlerted(true);
-  }
 
   return (
     <div className=" my-2 first:mt-0 p-4 border-2 bg-white border-gray-200 rounded-lg shadow-sm ">
@@ -68,8 +53,6 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({
           <OfferingProfileDescriptionForm
             offering={offering}
             description={description}
-            setAlerted={setAlerted}
-            updateDescription={updateDescription}
             tab={tab}
             onSubmit={() => {
               setOpen(false);
@@ -77,12 +60,8 @@ const OfferingDescriptionItem: FC<OfferingDescriptionItemProps> = ({
           />
           <button
             onClick={() =>
-              deleteDescription({
-                variables: {
-                  offeringId: offering.id,
-                  descriptionId: description?.id,
-                  currentDate: currentDate
-                }
+              deleteDescriptionText({
+                descriptionId: description?.id
               })
             }
             className="p-3 border-2 border-red-800 rounded-md w-full text-red-800 font-bold uppercase -mt-10"

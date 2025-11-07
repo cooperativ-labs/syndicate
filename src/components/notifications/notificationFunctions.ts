@@ -3,22 +3,23 @@ import {
   emailConfirmationContent,
   emailNotificationContent,
 } from "@src/services/postmark";
+import {
+  getOrganization,
+  getOrganizationUsers,
+} from "@src/utils/actions/organizationActions";
 import axios from "axios";
 import { sha256 } from "js-sha256";
 
-const getRecipientEmails = (
-  organization: Organization,
-  notificationSubject: NotificationSubject,
-): string[] => {
-  const recipients = organization.users?.filter((user) => {
-    return user?.notificationConfigurations?.find(
-      (config) => config?.notificationSubject === notificationSubject,
-    );
-  });
+const getRecipientEmails = async (
+  organizationId: string,
+  notificationSubject:
+    typeof NotificationSubject[keyof typeof NotificationSubject],
+): Promise<string[]> => {
+  const recipients = await getOrganizationUsers({ organizationId });
   if (!recipients) {
     return [];
   }
-  const recipientEmails = recipients.map((orgUser) => orgUser.user.email);
+  const recipientEmails = recipients.map((orgUser) => orgUser.account_email);
   return recipientEmails as string[];
 };
 
@@ -51,18 +52,19 @@ export const handleAddEmailAddress = async (
 };
 
 type EmailNotificationBaseProps = {
-  organization: Organization;
+  organizationId: string;
   completionUrl: string;
   notificationText: string;
 };
 export const handleContractNotification = async ({
-  organization,
+  organizationId,
   completionUrl,
   notificationText,
   notificationSubject,
   emailSubject,
 }: EmailNotificationBaseProps & {
-  notificationSubject: NotificationSubject;
+  notificationSubject:
+    typeof NotificationSubject[keyof typeof NotificationSubject];
   emailSubject: string;
 }) => {
   const call = async (email: string) => {
@@ -88,21 +90,24 @@ export const handleContractNotification = async ({
     }
   };
 
-  const recipients = getRecipientEmails(organization, notificationSubject);
+  const recipients = await getRecipientEmails(
+    organizationId,
+    notificationSubject,
+  );
   recipients?.map(async (email: string) => {
     call(email);
   });
 };
 
 export const handleWhitelistUpdateNotification = async ({
-  organization,
+  organizationId,
   completionUrl,
   notificationText,
 }: EmailNotificationBaseProps) => {
   const emailSubject = "Notification: New whitelist member added";
-  const notificationSubject = NotificationSubject.WhitelistApproval;
+  const notificationSubject = NotificationSubject.WHITELIST_APPROVAL;
   await handleContractNotification({
-    organization,
+    organizationId,
     completionUrl,
     notificationText,
     notificationSubject,
@@ -111,14 +116,14 @@ export const handleWhitelistUpdateNotification = async ({
 };
 
 export const handleOfferingRequestNotification = async ({
-  organization,
+  organizationId,
   completionUrl,
   notificationText,
 }: EmailNotificationBaseProps) => {
   const emailSubject = "Notification: Cooperativ.io trade approval requested";
-  const notificationSubject = NotificationSubject.TransactionRequest;
+  const notificationSubject = NotificationSubject.TRANSACTION_REQUEST;
   handleContractNotification({
-    organization,
+    organizationId,
     completionUrl,
     notificationText,
     notificationSubject,
@@ -127,14 +132,14 @@ export const handleOfferingRequestNotification = async ({
 };
 
 export const handleTradeExecutionNotification = async ({
-  organization,
+  organizationId,
   completionUrl,
   notificationText,
 }: EmailNotificationBaseProps) => {
   const emailSubject = "Notification: Cooperativ.io trade executed";
-  const notificationSubject = NotificationSubject.TradeExecution;
+  const notificationSubject = NotificationSubject.TRADE_EXECUTION;
   handleContractNotification({
-    organization,
+    organizationId,
     completionUrl,
     notificationText,
     notificationSubject,

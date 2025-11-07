@@ -6,7 +6,7 @@ import React from 'react';
 
 const OrganizationPage = async ({ params }: { params: Promise<{ organizationId: string }> }) => {
   const { organizationId } = await params;
-  const organization = await getOrganization(organizationId);
+  const organization = await getOrganization(organizationId, '/overview');
   if (!organization) {
     return <OrganizationNotFound backHref={`/${organizationId}/portal`} />;
   }

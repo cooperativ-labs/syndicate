@@ -1,4 +1,4 @@
-import { Maybe, Offering, SmartContract, User } from '@/types';
+import { OfferingFull, Profile, SmartContract } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import SectionBlock from '@src/containers/SectionBlock';
@@ -7,30 +7,30 @@ import React, { FC } from 'react';
 import { useChainId } from 'wagmi';
 
 import NewClassForm from './NewClassForm';
+import { useUserContext } from '@contexts/UserContext';
 
 export type ShareContractSettingsProps = {
   partitions: String0x[];
 };
 
 type ShareContractSettingsLocal = ShareContractSettingsProps & {
-  shareContract: Maybe<SmartContract> | undefined;
-  offering: Offering;
-  user: User;
+  shareContract: SmartContract | undefined;
+  offering: OfferingFull;
 };
 
 const ShareContractSettings: FC<ShareContractSettingsLocal> = ({
-  user,
   offering,
   shareContract,
   partitions
 }) => {
   const chainId = useChainId();
+  const { user } = useUserContext();
 
   if (!shareContract) {
     return <LinkLegal user={user} offering={offering} />;
   }
 
-  const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
+  const shareContractAddress = shareContract?.crypto_address_id as String0x;
   return (
     <div className="flex-col ">
       <div className="flex items-center">

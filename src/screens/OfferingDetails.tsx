@@ -23,21 +23,40 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { Document, DocumentType } from '@/types';
-import { OfferingFull } from '@/types';
+import { OfferingFull, DocumentType, OrganizationComplete, Document } from '@/types';
+import { useAsync } from 'react-use';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;
+  documents?: Document[];
 };
 
-const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
+const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
   const { address: userWalletAddress } = useAccount();
   const { user } = useUserContext();
   const userId = user?.id;
+  const {
+    id,
+    name,
+    offering_entity_id,
+    is_public,
+    access_code,
+    legalEntity,
+    raise_start,
+    raise_period,
+    max_raise,
+    distribution_period,
+    stage,
+    additional_info
+  } = offering;
 
-  const { id, name, offering_entity_id, is_public, access_code, documents } = offering;
+  const offeringDocs = getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT);
 
-  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT);
+  const distributionEndDate =
+    raise_start && raise_period
+      ? new Date(new Date(raise_start).getTime() + raise_period * 24 * 60 * 60 * 1000).toISOString()
+      : undefined;
 
   const details = {
     investmentCurrency: offering.investment_currency,
@@ -48,15 +67,15 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
     numUnits: offering.num_units,
     distributionFrequency: offering.distribution_frequency,
     distributionPeriod: offering.distribution_period,
-    distributionCurrency: offering.legal_entity?.operating_currency,
-    distributionStartDate: offering.raise_start,
-    distributionEndDate: offering.raise_end,
-    distributionAmount: offering.max_raise,
-    distributionType: offering.distribution_period,
-    distributionStatus: offering.stage,
-    distributionRecipient: offering.legal_entity?.legal_name,
-    distributionNotes: offering.additional_info,
-    distributionAttachments: offering.documents
+    distributionCurrency: legalEntity?.operating_currency,
+    distributionStartDate: raise_start,
+    distributionEndDate: distributionEndDate,
+    distributionAmount: max_raise,
+    distributionType: distribution_period,
+    distributionStatus: stage,
+    distributionRecipient: legalEntity?.legal_name,
+    distributionNotes: additional_info,
+    distributionAttachments: documents
   };
 
   const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
@@ -165,8 +184,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
           <DashboardCard>
             <OfferingDashboardTitle
               profileVisibility={is_public}
-              offeringId={id}
-              organizationId={offering_entity_id}
+              offeringId={id.toString()}
+              organizationId={legalEntity.organization_id.toString()}
               accessCode={access_code}
               offeringName={name}
               isOfferingManager={isOfferingManager}
@@ -196,8 +215,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
                 </div>
               ) : (
                 <BasicOfferingDetailsForm
-                  offeringId={id}
-                  operatingCurrency={offering.legal_entity?.operating_currency}
+                  offeringId={id.toString()}
+                  operatingCurrency={legalEntity?.operating_currency}
                 />
               )
             ) : (
@@ -244,7 +263,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
                       <ChooseConnectorButton buttonText={'Connect Wallet'} />
                     ) : (
                       <OfferingActions
-                        userId={userId}
                         retrievalIssue={false}
                         hasContract={hasContract}
                         loading={isLoading}
@@ -266,6 +284,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
                         currentSalePrice={currentSalePrice}
                         myShareQty={myShareQty}
                         transferEvents={transferEvents}
+                        documents={offeringDocs}
                       />
                     )}
                   </div>
@@ -284,7 +303,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
                 offering={offering}
                 contractManagerMatches={contractManagerMatches}
                 isContractOwner={isContractOwner}
-                offeringEntity={offering.legal_entity}
+                offeringEntity={legalEntity}
                 isOfferingManager={isOfferingManager}
                 contractSet={contractSet}
                 currentSalePrice={currentSalePrice}
@@ -302,8 +321,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering }) => {
             <DocumentList
               documents={offeringDocs}
               isOfferingManager={isOfferingManager}
-              offeringId={offering.id}
-              entityId={offering.offering_entity_id}
+              offeringId={id.toString()}
+              entityId={offering_entity_id.toString()}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
             {legalLinkTexts && legalLinkTexts.length > 0 && smartContractDocuments?.length > 0 && (

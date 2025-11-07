@@ -3,7 +3,14 @@
 import { createClient } from "@supabase/utils/server";
 import { revalidatePath } from "next/cache";
 
-import { Document, OfferingFull, OfferingParticipant } from "@/types";
+import {
+  CurrencyCodeType,
+  Document,
+  OfferingFull,
+  OfferingParticipant,
+  OfferingType,
+  offeringTypes,
+} from "@/types";
 
 import { getOfferingSmartContractSet } from "./cryptoActions";
 
@@ -86,6 +93,33 @@ export async function getOfferingDocumentsById(
   return documents;
 }
 
+export async function updateOfferingBasic({
+  offeringId,
+  isPublic,
+  name,
+  organizationId,
+  accessCode,
+}: {
+  offeringId: string;
+  isPublic: boolean;
+  name: string;
+  organizationId: string;
+  accessCode: string | null;
+}): Promise<void> {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("offering")
+    .update({
+      is_public: isPublic,
+      name: name,
+      access_code: accessCode ?? null,
+    })
+    .eq("id", offeringId)
+    .select("id, name, is_public, access_code");
+  if (error) throw error;
+  revalidatePath(`/${organizationId}`, "layout");
+}
+
 // Update offering profile fields
 export async function updateOfferingProfile({
   offeringId,
@@ -98,7 +132,6 @@ export async function updateOfferingProfile({
   website,
   shortDescription,
   isPublic,
-  accessCode,
 }: {
   offeringId: string;
   name: string;
@@ -110,7 +143,6 @@ export async function updateOfferingProfile({
   website?: string | null;
   shortDescription?: string | null;
   isPublic?: boolean | null;
-  accessCode?: string | null;
 }): Promise<{
   affectedCount: number;
   records: {
@@ -122,7 +154,6 @@ export async function updateOfferingProfile({
     image: string | null;
     banner_image: string | null;
     primary_video: string | null;
-    access_code: string | null;
   }[];
 }> {
   const supabase = createClient();
@@ -139,7 +170,6 @@ export async function updateOfferingProfile({
       website: website ?? null,
       short_description: shortDescription ?? null,
       is_public: isPublic ?? null,
-      access_code: accessCode ?? null,
     })
     .eq("id", offeringId)
     .select(
@@ -170,6 +200,7 @@ export async function updateOfferingFinancial({
   additionalInfo,
   distributionPeriod,
   distributionFrequency,
+  distributionCurrency,
   distributionDescription,
   adminExpense,
   projectedIrr,
@@ -194,6 +225,7 @@ export async function updateOfferingFinancial({
   additionalInfo?: string | null;
   distributionPeriod?: string | null;
   distributionFrequency?: number | null;
+  distributionCurrency?: CurrencyCodeType | null;
   distributionDescription?: string | null;
   adminExpense?: number | null;
   projectedIrr?: number | null;
@@ -235,7 +267,7 @@ export async function updateOfferingFinancial({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from("offering_detail")
+    .from("offering")
     .update({
       stage: stage ?? null,
       max_raise: maxRaise ?? null,
@@ -249,6 +281,7 @@ export async function updateOfferingFinancial({
       additional_info: additionalInfo ?? null,
       distribution_period: distributionPeriod ?? null,
       distribution_frequency: distributionFrequency ?? null,
+      distribution_currency: distributionCurrency ?? null,
       distribution_description: distributionDescription ?? null,
       admin_expense: adminExpense ?? null,
       projected_irr: projectedIrr ?? null,
@@ -276,6 +309,7 @@ export async function updateOfferingFinancial({
         "additional_info",
         "distribution_period",
         "distribution_frequency",
+        "distribution_currency",
         "distribution_description",
         "admin_expense",
         "projected_irr",
@@ -299,9 +333,9 @@ export async function updateOfferingFinancial({
 }
 
 // Add offering_detail row
-export async function addOfferingDetails({
+export async function updateOfferingDetails({
   offeringId,
-  offeringDetailsType,
+  offeringType,
   investmentCurrencyCode,
   distributionCurrencyCode,
   numUnits,
@@ -311,10 +345,10 @@ export async function addOfferingDetails({
   maxRaise,
 }: {
   offeringId: string;
-  offeringDetailsType: string;
-  investmentCurrencyCode: string;
-  distributionCurrencyCode: string;
-  numUnits: number;
+  offeringType: offeringTypes;
+  investmentCurrencyCode: CurrencyCodeType;
+  distributionCurrencyCode: CurrencyCodeType;
+  numUnits: number | null;
   minUnitsPerInvestor?: number | null;
   maxUnitsPerInvestor?: number | null;
   priceStart?: number | null;
@@ -322,21 +356,20 @@ export async function addOfferingDetails({
 }): Promise<{ affectedCount: number; records: any[] }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from("offering_detail")
-    .insert(
+    .from("offering")
+    .update(
       {
-        offering_id: offeringId,
-        type: offeringDetailsType,
         investment_currency: investmentCurrencyCode,
         distribution_currency: distributionCurrencyCode,
-        num_units: numUnits,
+        num_units: numUnits ?? null,
         min_units_per_investor: minUnitsPerInvestor ?? null,
         max_units_per_investor: maxUnitsPerInvestor ?? null,
         price_start: priceStart ?? null,
         max_raise: maxRaise ?? null,
+        type: offeringType,
       },
-      { count: "exact" },
     )
+    .eq("id", offeringId)
     .select(
       "id, offering_id, num_units, min_units_per_investor, max_units_per_investor, price_start, max_raise",
     );
@@ -350,10 +383,12 @@ export async function addOfferingDetails({
 
 // Update investment currency on offering_detail
 export async function updateInvestmentCurrency({
-  offeringDetailsId,
+  organizationId,
+  offeringId,
   investmentCurrencyCode,
 }: {
-  offeringDetailsId: string;
+  organizationId: string;
+  offeringId: string;
   investmentCurrencyCode: string;
 }): Promise<{
   affectedCount: number;
@@ -361,12 +396,12 @@ export async function updateInvestmentCurrency({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from("offering_detail")
+    .from("offering")
     .update({ investment_currency: investmentCurrencyCode })
-    .eq("id", offeringDetailsId)
+    .eq("id", offeringId)
     .select("id, investment_currency, offering_id");
   if (error) throw error;
-  revalidatePath("/", "page");
+  revalidatePath(`/${organizationId}/offerings/${offeringId}`, "page");
   return {
     affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
     records: (data ?? []) as any,
@@ -375,23 +410,20 @@ export async function updateInvestmentCurrency({
 
 // Add legal share link (multiple operations)
 export async function addLegalShareLink({
-  currentDate,
   documentOfferingUniqueId,
   offeringId,
   entityId,
   agreementText,
   smartContractId,
   agreementTitle,
-  signature,
 }: {
-  currentDate: string;
   documentOfferingUniqueId: string;
   offeringId: string;
   entityId: string;
   agreementText: string;
   smartContractId: string;
   agreementTitle: string;
-  signature: string;
+  // signature: string;
 }): Promise<void> {
   const supabase = createClient();
 
@@ -412,7 +444,6 @@ export async function addLegalShareLink({
   const { error: docError } = await supabase.from("document").insert({
     title: agreementTitle,
     text: agreementText,
-    date: currentDate,
     type: "SHARE_LINK",
     format: "MARKDOWN",
     owner_id: entityId,
@@ -559,16 +590,9 @@ export async function addOfferingParticipantWithApplication({
   revalidatePath("/", "page");
 }
 
-export async function addWhitelistMember({
-  addressOfferingId,
-  walletAddress,
-  chainId,
-  name,
-  offering,
-  externalId,
-  transactionHash,
-  type,
-}: {
+export type AddWhitelistMemberParams = {
+  organizationId: string;
+  offeringId: string;
   addressOfferingId: string;
   walletAddress: string;
   chainId: number;
@@ -577,7 +601,20 @@ export async function addWhitelistMember({
   externalId?: string | null;
   transactionHash?: string | null;
   type: string;
-}): Promise<void> {
+};
+
+export async function addWhitelistMember({
+  organizationId,
+  offeringId,
+  addressOfferingId,
+  walletAddress,
+  chainId,
+  name,
+  offering,
+  externalId,
+  transactionHash,
+  type,
+}: AddWhitelistMemberParams): Promise<void> {
   const supabase = createClient();
 
   const { data: participant, error: pErr } = await supabase
@@ -601,33 +638,29 @@ export async function addWhitelistMember({
   });
   if (wErr) throw wErr;
 
-  revalidatePath("/", "page");
+  revalidatePath(`/${organizationId}/offerings/${offeringId}`, "page");
 }
 
-export async function updateWhitelist({
-  participantId,
-  transactionHash,
-  type,
-}: {
-  participantId: string;
+export type UpdateWhitelistParams = {
+  organizationId: string;
+  offeringId: string;
+  offeringParticipantId: string;
   transactionHash: string;
   type: string;
-}): Promise<{
-  affectedCount: number;
-  records: { id: string; transaction_hash: string; type: string }[];
-}> {
+};
+
+export async function updateWhitelist(
+  { organizationId, offeringId, offeringParticipantId, transactionHash, type }:
+    UpdateWhitelistParams,
+): Promise<void> {
   const supabase = createClient();
   const { data, error, count } = await supabase
     .from("whitelist_transaction")
     .update({ transaction_hash: transactionHash, type })
-    .eq("offering_participant_id", participantId)
+    .eq("offering_participant_id", offeringParticipantId)
     .select("id, transaction_hash, type");
   if (error) throw error;
-  revalidatePath("/", "page");
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as any,
-  };
+  revalidatePath(`/${organizationId}/offerings/${offeringId}`, "page");
 }
 
 export async function updateOfferingParticipant({

@@ -5,7 +5,7 @@ import { getOrganization } from '@src/utils/actions/organizationActions';
 
 const CreateEntityPage = async ({ params }: { params: { organizationId: string } }) => {
   const { organizationId } = await params;
-  const organization = await getOrganization(organizationId);
+  const organization = await getOrganization(organizationId, '/create-entity');
   if (!organization) {
     return <div>Organization not found</div>;
   }

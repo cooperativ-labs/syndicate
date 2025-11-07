@@ -1,7 +1,6 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import EntityDashboard from '@src/screens/EntityDashboard';
 import { getEntitiesByOrganizationId } from '@src/utils/actions/entityActions';
-import { getOrganization } from '@src/utils/actions/organizationActions';
 
 const EntitiesPage = async ({
   params

@@ -1,7 +1,6 @@
-import { Currency, CurrencyCode, Maybe, OfferingParticipant } from '@/types';
+import { CurrencyCodeType, OfferingParticipant } from '@/types';
 import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
-import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
-import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
+
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { sendShares } from '@src/web3/contractShareCalls';
@@ -11,7 +10,7 @@ import { adjustUserEnteredDecimalsToMatchCurrency } from '@src/web3/util';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
-import { useAccount, useChainId, useContractRead } from 'wagmi';
+import { useAccount, useChainId, useReadContract } from 'wagmi';
 
 import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import FormButton from '../buttons/FormButton';
@@ -20,17 +19,19 @@ import NewClassInputs from '../form-components/NewClassInputs';
 import Select from '../form-components/Select';
 
 import SetOperatorButton from './actions/SetOperatorButton';
+import { addContractPartition } from '@src/utils/actions/cryptoActions';
+import { addTransferEvent } from '@src/utils/actions/orderActions';
 
 export type SendSharesProps = {
-  sharesIssued: Maybe<number> | undefined;
+  sharesIssued: number | undefined;
   sharesOutstanding: number | undefined;
   shareContractId: string;
   shareContractAddress: String0x;
-  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
+  offeringParticipants: OfferingParticipant[] | undefined;
   partitions: String0x[];
   myShareQty: number | undefined;
-  investmentCurrency: Currency | undefined;
-  currentSalePrice: Maybe<number> | undefined;
+  investmentCurrency: CurrencyCodeType | undefined;
+  currentSalePrice: number | undefined;
   refetchMainContracts: () => void;
 };
 
@@ -49,10 +50,10 @@ const SendShares: FC<SendSharesProps> = ({
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
-  const [addIssuance, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
+  // const [addPartition, { error: partitionError }] = useMutation(ADD_CONTRACT_PARTITION);
+  // const [addIssuance, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
 
-  const { data: isOperator, refetch } = useContractRead({
+  const { data: isOperator, refetch } = useReadContract({
     address: shareContractAddress,
     abi: shareContractABI,
     functionName: 'isOperator',
@@ -84,7 +85,7 @@ const SendShares: FC<SendSharesProps> = ({
         isIssuance: 'yes',
         numShares: '',
         price: currentSalePrice,
-        currencyCode: investmentCurrency?.code as CurrencyCode,
+        currencyCode: investmentCurrency?.code as CurrencyCodeType,
         recipient: '' as String0x,
         partition: partitions[0],
         newPartition: ''
@@ -133,9 +134,9 @@ const SendShares: FC<SendSharesProps> = ({
             partition: values.partition,
             newPartition: values.newPartition,
             isIssuance,
-            addIssuance,
+            addIssuance: addTransferEvent,
             setButtonStep,
-            addPartition,
+            addPartition: addContractPartition,
             refetchMainContracts
           });
         } catch (e: any) {
@@ -161,11 +162,11 @@ const SendShares: FC<SendSharesProps> = ({
               const presentableAddress =
                 participant &&
                 addressWithoutEns({
-                  address: participant.walletAddress,
+                  address: participant.wallet_address,
                   userName: participant.name
                 });
               return (
-                <option key={i} value={participant?.walletAddress}>
+                <option key={i} value={participant?.wallet_address}>
                   {presentableAddress}
                 </option>
               );

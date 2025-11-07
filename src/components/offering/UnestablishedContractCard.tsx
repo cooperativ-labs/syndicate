@@ -1,31 +1,33 @@
 'use client';
 
-import { SmartContract } from '@/types';
+import { SmartContractWithCryptoAddress } from '@/types';
 import { cn } from '@src/lib/utils';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { UPDATE_UNESTABLISHED_SMART_CONTRACT } from '@src/utils/graphQueries/crypto';
-import { numberWithCommas } from '@src/utils/helpersMoney';
-import { isAlgorand, MatchSupportedChains } from '@src/web3/wagmi';
-import Link from 'next/link';
+
+import { MatchSupportedChains } from '@src/web3/wagmi';
+
 import React from 'react';
 
 import FormattedCryptoAddress from '../FormattedCryptoAddress';
+import { updateUnestablishedSmartContract } from '@src/utils/actions/cryptoActions';
 
 interface UnestablishedContractCardProps {
-  unestablishedContract: SmartContract;
+  unestablishedContract: SmartContractWithCryptoAddress;
 }
 
 const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
   unestablishedContract
 }) => {
-  const { cryptoAddress, id, backingToken } = unestablishedContract;
-  const [updateSmartContract, { data, error }] = useMutation(UPDATE_UNESTABLISHED_SMART_CONTRACT);
+  const { cryptoAddress, id, backing_token } = unestablishedContract;
 
-  const chain = MatchSupportedChains(cryptoAddress.chainId);
+  if (!cryptoAddress) {
+    return null;
+  }
+  const chain = cryptoAddress.chain_id ? MatchSupportedChains(cryptoAddress.chain_id) : undefined;
 
   const markUsed = async () => {
     if (window.confirm('Are you sure you want to mark this contract as used?')) {
-      await updateSmartContract({ variables: { id: id, established: true } });
+      await updateUnestablishedSmartContract({ id: id, established: true });
       window.location.reload();
     }
   };
@@ -48,15 +50,15 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
         <div>
           <FormattedCryptoAddress
             address={cryptoAddress.address}
-            chainId={cryptoAddress.chainId}
+            chainId={cryptoAddress.chain_id}
             withCopy
             showFull
             label={'Address: '}
           />
           <div className="text-sm text-gray-700">
             {/* Shares authorized: {numberWithCommas(numTokensAuthorized)} */}
-            {backingToken && (
-              <div> Distribution currency: {getCurrencyOption(backingToken)?.symbol} </div>
+            {backing_token && (
+              <div> Distribution currency: {getCurrencyOption(backing_token)?.symbol} </div>
             )}
           </div>
         </div>

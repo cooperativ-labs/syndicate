@@ -7,6 +7,7 @@ import React, { FC, useState } from 'react';
 import { OrganizationUser, OrganizationUserPermission } from '@/types';
 
 import { EditButton } from '../form-components/ListItemButtons';
+import { removeTeamMember } from '@src/utils/actions/organizationActions';
 
 export type TeamMemberBaseProps = {
   organizationId: string;
@@ -15,20 +16,22 @@ export type TeamMemberBaseProps = {
 
 type TeamMemberListItemProps = TeamMemberBaseProps & {
   teamMember: OrganizationUser;
-  removeMember: (variables: any) => void;
 };
 
 const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   teamMember,
   organizationId,
-  isAdmin,
-  removeMember
+  isAdmin
 }) => {
   const { userId: currentUserId } = useUserContext();
   const [editOn, setEditOn] = useState<boolean>(false);
   const { user_id: userId, permissions, id } = teamMember as OrganizationUser;
   const name = 'BLANK';
   const image = 'BLANK';
+
+  const removeMember = async () => {
+    await removeTeamMember({ organizationId, organizationUserId: id });
+  };
 
   const makePermissionsChips = (permissions: OrganizationUserPermission[] | null) => {
     return permissions?.map((permission, i) => {
@@ -89,15 +92,7 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
             <button
               className="border-2 border-red-900 hover:bg-red-800 text-red-900 hover:text-white font-bold text-xs  uppercase mt-2 md:mt-0 md:ml-2 p-1 px-2 rounded-lg w-full whitespace-nowrap "
               aria-label="remove wallet from whitelist"
-              onClick={() =>
-                removeMember({
-                  variables: {
-                    organizationId: organizationId,
-                    organizationUserId: id,
-                    currentDate: currentDate
-                  }
-                })
-              }
+              onClick={() => removeMember()}
             >
               Remove team member
             </button>

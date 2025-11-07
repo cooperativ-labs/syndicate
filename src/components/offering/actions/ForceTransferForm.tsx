@@ -1,4 +1,4 @@
-import { Maybe, OfferingParticipant } from '@/types';
+import { OfferingParticipant } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
@@ -10,9 +10,9 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
-import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { forceTransfer } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
+import { getWagmiConfig } from '@src/web3/wagmi';
 import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React from 'react';
@@ -27,7 +27,7 @@ import SetOperatorButton from './SetOperatorButton';
 type ForceTransferFormProps = {
   shareContractAddress: String0x;
   partitions: String0x[];
-  offeringParticipants: Maybe<Maybe<OfferingParticipant>[]> | undefined;
+  offeringParticipants: OfferingParticipant[] | undefined;
   target: String0x;
   refetchContracts: () => void;
 };
@@ -45,10 +45,9 @@ const ForceTransferForm = ({
   >('default');
   const [partition, setPartition] = React.useState<String0x>(partitions[0]);
   const [targetBalance, setTargetBalance] = React.useState<number>(0);
-  const [addIssuance] = useMutation(ADD_TRANSFER_EVENT);
 
-  const recipientOptions = offeringParticipants?.filter(participant => {
-    return participant?.walletAddress !== target;
+  const recipientOptions = offeringParticipants?.filter((participant: OfferingParticipant) => {
+    return participant?.wallet_address !== target;
   });
 
   const { data: isOperator, refetch } = useContractRead({
@@ -59,7 +58,7 @@ const ForceTransferForm = ({
   });
 
   useAsync(async () => {
-    const data = await readContract({
+    const data = await readContract(getWagmiConfig(), {
       address: shareContractAddress,
       abi: shareContractABI,
       functionName: 'balanceOfByPartition',
@@ -72,10 +71,10 @@ const ForceTransferForm = ({
   const schema = z.object({
     partition: z.string().min(1, 'Required'),
     amount: z.coerce
-      .number({ invalid_type_error: 'Invalid amount' })
-      .positive('Amount must be positive')
-      .max(targetBalance, 'Amount cannot exceed target balance'),
-    recipient: z.string().min(1, 'Required')
+      .number({ message: 'Invalid amount' })
+      .positive({ message: 'Amount must be positive' })
+      .max(targetBalance, { message: 'Amount cannot exceed target balance' }),
+    recipient: z.string().min(1, { message: 'Required' })
   });
 
   const { control, register, handleSubmit, formState, watch } = useForm<{
@@ -119,7 +118,7 @@ const ForceTransferForm = ({
               setButtonState('loading');
             }
           },
-          addIssuance,
+
           refetchContracts
         });
       })}
@@ -170,11 +169,11 @@ const ForceTransferForm = ({
               <SelectContent>
                 {recipientOptions?.map((participant, i) => {
                   const presentableAddress = addressWithoutEns({
-                    address: participant?.walletAddress,
+                    address: participant?.wallet_address,
                     userName: participant?.name
                   });
                   return (
-                    <SelectItem key={i} value={participant?.walletAddress as String0x}>
+                    <SelectItem key={i} value={participant?.wallet_address as String0x}>
                       {presentableAddress}
                     </SelectItem>
                   );

@@ -3,13 +3,24 @@
 import { createContext, ReactNode, useContext, useState } from 'react';
 
 const WalletContext = createContext<
-  { modalOpen: boolean; setModalOpen: (modalOpen: boolean) => void } | undefined
+  | {
+      modalOpen: boolean;
+      setModalOpen: (modalOpen: boolean) => void;
+      walletActionLockModalOpen: boolean;
+      setWalletActionLockModalOpen: (walletActionLockModalOpen: boolean) => void;
+    }
+  | undefined
 >(undefined);
 
 function WalletContextProvider({ children }: { children: ReactNode }) {
   const [modalOpen, setModalOpen] = useState<boolean>(false);
+  const [walletActionLockModalOpen, setWalletActionLockModalOpen] = useState<boolean>(false);
   return (
-    <WalletContext.Provider value={{ modalOpen, setModalOpen }}>{children}</WalletContext.Provider>
+    <WalletContext.Provider
+      value={{ modalOpen, setModalOpen, walletActionLockModalOpen, setWalletActionLockModalOpen }}
+    >
+      {children}
+    </WalletContext.Provider>
   );
 }
 

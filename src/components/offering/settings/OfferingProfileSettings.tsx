@@ -4,8 +4,9 @@ import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
 import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
+import { updateOfferingProfile } from '@src/utils/actions/offeringActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
+
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 
@@ -17,39 +18,36 @@ type OfferingProfileSettingsProps = {
 };
 
 const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, userId }) => {
-  const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
+  const {
+    id,
+    name,
+    brand_color,
+    light_brand,
+    image,
+    banner_image,
+    primary_video,
+    website,
+    short_description,
+    is_public
+  } = offering;
+
   const addLogoToDb = (url: string) => {
-    updateOffering({
-      variables: {
-        offeringId: offering.id,
-        currentDate: currentDate,
-        name: offering.name,
-        image: url
-      }
-    });
+    // updateOfferingProfile({
+    //   offeringId: offering.id.toString(),
+    //   name: offering.name,
+    //   image: url
+    // });
   };
 
   const addBannerImageToDb = (url: string) => {
-    updateOffering({
-      variables: {
-        offeringId: offering.id,
-        currentDate: currentDate,
-        name: offering.name,
-        bannerImage: url
-      }
-    });
+    // updateOfferingProfile({
+    //   offeringId: offering.id.toString(),
+    //   name: offering.name,
+    //   bannerImage: url
+    // });
   };
-
-  const [alerted, setAlerted] = useState<boolean>(false);
-
-  if (error) {
-    alert('Oops. Looks like something went wrong');
-  }
-  if (data && !alerted) {
-    setAlerted(true);
-  }
 
   return (
     <>
@@ -58,13 +56,15 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
         <div className="flex w-full">
           <Formik
             initialValues={{
-              name: offering.name,
-              shortDescription: offering.shortDescription,
-              brandColor: offering.brandColor,
-              lightBrand: offering.lightBrand,
-              isPublic: offering.isPublic,
-              primaryVideo: offering.primaryVideo,
-              website: offering.website
+              name: name,
+              shortDescription: short_description,
+              brandColor: brand_color,
+              lightBrand: light_brand,
+              isPublic: is_public,
+              primaryVideo: primary_video,
+              website: website,
+              image: image,
+              bannerImage: banner_image
             }}
             validate={values => {
               const errors: any = {}; /** @TODO : Shape */
@@ -75,19 +75,19 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             }}
             onSubmit={(values, { setSubmitting }) => {
               setButtonStep('step1');
-              setAlerted(false);
+
               setSubmitting(true);
               try {
-                updateOffering({
-                  variables: {
-                    currentDate: currentDate,
-                    name: values.name,
-                    brandColor: values.brandColor,
-                    lightBrand: values.lightBrand,
-                    shortDescription: values.shortDescription,
-                    primaryVideo: values.primaryVideo,
-                    website: values.website
-                  }
+                updateOfferingProfile({
+                  offeringId: offering.id.toString(),
+                  name: values.name,
+                  brandColor: values.brandColor,
+                  lightBrand: values.lightBrand,
+                  shortDescription: values.shortDescription,
+                  primaryVideo: values.primaryVideo,
+                  website: values.website,
+                  image: values.image,
+                  bannerImage: values.bannerImage
                 });
                 setButtonStep('confirmed');
               } catch (e) {

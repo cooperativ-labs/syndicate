@@ -1,7 +1,7 @@
-i;
-import { DocumentType, Offering, ShareOrder } from '@/types';
+import { DocumentType, OfferingFull, ShareOrder, Document, ShareTransferEvent } from '@/types';
+import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { RETRIEVE_ORDERS, RETRIEVE_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
+
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import {
   confirmNoLiveOrders,
@@ -15,51 +15,55 @@ import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 import { toNormalNumber } from '@src/web3/util';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 
-const useOfferingDetails = (offering: Offering, userId?: string | undefined) => {
+const useOfferingDetails = (
+  offering: OfferingFull,
+  userId?: string | undefined,
+  documents?: Document[]
+) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const { details, smartContractSets } = offering;
-  const [contractOrderList, setContractOrderList] = useState<ContractOrder[]>([]);
+  const { price_start, offeringSmartContracts, investment_currency, legalEntity } = offering;
+  const [contractOrderList, setContractOrderList] = useState<ShareOrder[]>([]);
+  const [transferEvents, setTransferEvents] = useState<ShareTransferEvent[]>([]);
+  const [orders, setOrders] = useState<ShareOrder[]>([]);
 
-  const contractSet = smartContractSets?.slice(-1)[0];
+  const contractSet = offeringSmartContracts;
   const shareContract = contractSet?.shareContract;
   const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
   const swapContract = contractSet?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
     .address as String0x;
-  const distributionPaymentToken = getCurrencyOption(details?.investmentCurrency);
+  const distributionPaymentToken = getCurrencyOption(investment_currency);
   const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
   const distributionPaymentTokenDecimals = distributionPaymentToken
     ? distributionPaymentToken?.decimals
     : 18;
 
-  const {
-    data: ordersData,
-    error,
-    refetch: refetchOrders
-  } = useQuery(RETRIEVE_ORDERS, {
-    variables: { swapContractAddress: swapContractAddress }
-  });
+  useAsync(async () => {
+    await Promise.all([
+      retrieveOrders(swapContractAddress),
+      retrieveTransferEvents(shareContractAddress)
+    ]);
+    setOrders(orders as ShareOrder[]);
+    setTransferEvents(transferEvents as ShareTransferEvent[]);
+  }, [swapContractAddress, shareContractAddress]);
 
-  const orders = ordersData?.queryShareOrder;
+  const refetchOrders = useCallback(() => {
+    retrieveOrders(swapContractAddress).then(setOrders);
+  }, [swapContractAddress]);
 
-  const { data: transferEventData, refetch: refetchTransactionHistory } = useQuery(
-    RETRIEVE_TRANSFER_EVENT,
-    {
-      variables: { shareContractAddress: shareContractAddress }
-    }
-  );
-
-  const transferEvents = transferEventData?.queryShareTransferEvent;
+  const refetchTransactionHistory = useCallback(() => {
+    retrieveTransferEvents(shareContractAddress).then(setTransferEvents);
+  }, [shareContractAddress]);
 
   const partitions = shareContract?.partitions as String0x[];
-  const documents = offering?.documents;
-  const legalLinkTexts = documents && getDocumentsOfType(documents, DocumentType.ShareLink);
+
+  const legalLinkTexts = getDocumentsOfType(documents, DocumentType.SHARE_LINK);
 
   const {
     contractOwner,
@@ -105,13 +109,12 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
   const noLiveOrders = confirmNoLiveOrders(contractOrderList);
 
   const contractOrders = orders?.filter((order: ShareOrder) => {
-    return order?.swapContractAddress === swapContractAddress;
+    return order?.swap_contract_address === swapContractAddress;
   });
 
   const hasContract = !!contractOwner;
   const isContractOwner = contractOwner === userWalletAddress;
-  const isOfferingManager =
-    getIsEditorOrAdmin(userId, offering.offeringEntity?.organization) ?? false;
+  const isOfferingManager = getIsEditorOrAdmin(userId, legalEntity.organization_id) ?? false;
   const contractManagerMatches =
     isContractOwner === !!isOfferingManager || isManager === !!isOfferingManager;
 
@@ -121,7 +124,7 @@ const useOfferingDetails = (offering: Offering, userId?: string | undefined) => 
 
   const contractMatchesCurrentChain = !shareContract
     ? true
-    : shareContract.cryptoAddress.chainId === chainId;
+    : shareContract.cryptoAddress.chain_id === chainId;
 
   const isLoading = shareIsLoading || swapIsLoading;
 

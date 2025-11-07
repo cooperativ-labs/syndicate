@@ -1,10 +1,10 @@
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { ADD_DISTRIBUTION } from '@src/utils/graphQueries/orders';
 // import { isMetaMask } from '@src/web3/wagmi';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { setAllowance } from '@src/web3/contractSwapCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import { addDistribution } from '@src/utils/actions/orderActions';
 import { toNormalNumber } from '@src/web3/util';
 import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
@@ -35,7 +35,6 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
   const { address: userWalletAddress, connector } = useAccount();
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [addDistribution, { error }] = useMutation(ADD_DISTRIBUTION);
 
   const { data: rawAllowance } = useReadContract({
     address: distributionTokenAddress,

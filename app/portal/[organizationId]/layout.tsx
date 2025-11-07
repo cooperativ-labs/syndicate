@@ -2,11 +2,13 @@ import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 import type { Metadata } from 'next';
 
-export const generateMetadata = async ({
-  params
-}: {
-  params: Promise<{ organizationId: string }>;
-}): Promise<Metadata> => {
+import ClientOrganizationPage from './ClientOrganizationPage';
+
+type Params = {
+  params: Promise<{ organizationId: string }> | { organizationId: string };
+};
+
+export const generateMetadata = async ({ params }: Params): Promise<Metadata> => {
   const { organizationId } = await params;
   if (organizationId === 'dist') return { title: 'Organization not available' };
   const organization = await getOrganization(
@@ -42,20 +44,14 @@ export const generateMetadata = async ({
   };
 };
 
-const OrganizationPage = async ({
-  params,
-  children
-}: {
-  params: Promise<{ organizationId: string }>;
-  children: React.ReactNode;
-}) => {
+const OrganizationPage = async ({ params }: Params) => {
   const { organizationId } = await params;
   const organization = await getOrganization(organizationId, '[organizationId]/layout');
 
   if (!organization) {
     return <OrganizationNotFound backHref={`/${organizationId}/portal`} />;
   }
-  return children;
+  return <ClientOrganizationPage organization={organization} />;
 };
 
 export default OrganizationPage;

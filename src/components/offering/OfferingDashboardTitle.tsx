@@ -1,7 +1,6 @@
-import { Maybe } from '@/types';
 import { cn } from '@src/lib/utils';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_OFFERING_PROFILE } from '@src/utils/graphQueries/offering';
+
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
@@ -15,16 +14,17 @@ import FormattedCryptoAddress from '../FormattedCryptoAddress';
 
 import AccessCodeForm from './profile/AccessCodeForm';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
+import { updateOfferingBasic } from '@src/utils/actions/offeringActions';
 
 type OfferingDashboardTitleProps = {
-  profileVisibility: Maybe<boolean> | undefined;
-  isOfferingManager: Maybe<boolean> | undefined;
+  profileVisibility: boolean | undefined;
+  isOfferingManager: boolean | undefined;
   offeringId: string;
-  organizationId: string | undefined;
-  accessCode: Maybe<string> | undefined;
+  organizationId: string;
+  accessCode: string | undefined;
   offeringName: string;
   shareContractAddress: String0x;
-  chainId: Maybe<number> | undefined;
+  chainId: number | undefined;
 };
 
 const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
@@ -37,56 +37,51 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   shareContractAddress,
   chainId
 }) => {
-  const [updateOffering, { data, error }] = useMutation(UPDATE_OFFERING_PROFILE);
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
-  const [alerted, setAlerted] = useState<boolean>(false);
+
   const [copied, setCopied] = useState<boolean>(false);
 
-  if (error && !alerted) {
-    alert(`Oops. Looks like something went wrong: ${error.message}`);
-    setAlerted(true);
-  }
-
-  const handleToggle = (profileVisibility: boolean) => {
-    updateOffering({
-      variables: {
-        currentDate: currentDate,
-        name: offeringName,
+  const handleToggle = async (profileVisibility: boolean) => {
+    try {
+      await updateOfferingBasic({
         offeringId: offeringId,
-        isPublic: profileVisibility
-      }
-    });
+        isPublic: profileVisibility,
+        name: offeringName,
+        organizationId: organizationId,
+        accessCode: accessCode ?? null
+      });
+    } catch (error: any) {
+      toast.error(`Oops. Looks like something went wrong: ${error.message}`);
+    }
   };
 
   const handleNameChange = async (name: string) => {
     try {
-      await updateOffering({
-        variables: {
-          currentDate: currentDate,
-          name: name,
-          offeringId: offeringId
-        }
+      await updateOfferingBasic({
+        offeringId: offeringId,
+        isPublic: profileVisibility ?? false,
+        name: name,
+        organizationId: organizationId,
+        accessCode: accessCode ?? null
       });
+
       setNameEditOn(false);
     } catch (error: any) {
       toast.error(`Oops. Looks like something went wrong: ${error.message}`);
-      setAlerted(true);
     }
   };
 
   const handleAccessCodeChange = async (accessCode: string) => {
     try {
-      await updateOffering({
-        variables: {
-          currentDate: currentDate,
-          name: offeringName,
-          accessCode: accessCode,
-          offeringId: offeringId
-        }
+      await updateOfferingBasic({
+        offeringId: offeringId,
+        isPublic: profileVisibility ?? false,
+        name: offeringName,
+        organizationId: organizationId,
+        accessCode: accessCode ?? null
       });
     } catch (error: any) {
       toast.error(`Oops. Looks like something went wrong: ${error.message}`);
-      setAlerted(true);
     }
   };
 
@@ -103,7 +98,6 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         return errors;
       }}
       onSubmit={(values, { setSubmitting }) => {
-        setAlerted(false);
         setSubmitting(true);
         handleNameChange(values.name);
 

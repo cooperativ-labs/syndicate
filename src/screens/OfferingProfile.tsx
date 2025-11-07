@@ -60,7 +60,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
   const [realEstateProperties, setRealEstateProperties] = useState<
     RealEstatePropertyWithAddresses[]
   >([]);
-  const [documents, setDocuments] = useState<Document[]>([]);
+
   const [distributions, setDistributions] = useState<OfferingDistribution[]>([]);
   const shareContract = offeringSmartContracts?.shareContract;
   const swapContract = offeringSmartContracts?.swapContract;
@@ -94,10 +94,12 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
     setDistributions(distributions);
   }, [distributionContractAddress]);
 
-  useAsync(async () => {
+  const { value: documentsData } = useAsync(async () => {
     const documents = await getOfferingDocumentsById(offering.id.toString());
-    setDocuments(documents);
+    return documents;
   }, [offering.id]);
+
+  const documents = documentsData ?? [];
 
   const currentSalePrice = getCurrentOrderPrice(contractSaleList, price_start);
   // const OfferingReProperties = legalEntity?.real_estate_propertyCollection;

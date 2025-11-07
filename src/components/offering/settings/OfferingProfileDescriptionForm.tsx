@@ -1,31 +1,54 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@/types';
+import {
+  Offering,
+  OfferingDescriptionText,
+  OfferingTabSection,
+  offeringTabSectionTypes
+} from '@/types';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
-import Input from '@src/components/form-components/Inputs';
-import Select from '@src/components/form-components/Select';
+import { Input } from '@src/components/ui/input';
+import { Label } from '@src/components/ui/label';
+import { Textarea } from '@src/components/ui/textarea';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@src/components/ui/select';
+import { createDescriptionText, updateDescriptionText } from '@src/utils/actions/offeringActions';
 import { tabSectionOptions } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
-import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 export type OfferingProfileDescriptionFormProps = {
   offering: Offering;
-  description?: Maybe<OfferingDescriptionText>;
-  addDescription?: any;
-  updateDescription?: any;
-  setAlerted: any;
-  tab: OfferingTabSection | undefined;
+  description: OfferingDescriptionText;
+  tab: offeringTabSectionTypes | undefined;
   onSubmit?: () => void;
 };
+
+const schema = z.object({
+  title: z.string().min(1, 'Please give this a title.'),
+  text: z.string().min(1, 'Please include text.'),
+  tab: z
+    .string()
+    .min(1, 'Please indicate the tab where you want this text to appear.')
+    .refine(val => Object.values(OfferingTabSection).includes(val as offeringTabSectionTypes), {
+      message: 'Please select a valid tab'
+    })
+});
+
+type FormData = z.infer<typeof schema>;
+
 const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = ({
   offering,
   description,
-  addDescription,
-  updateDescription,
-  setAlerted,
   tab,
   onSubmit
 }) => {
@@ -34,137 +57,141 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   const isUpdate = !!description;
 
   const tabSectionOptionsOhneFinancials = tabSectionOptions.filter(
-    option => option.value !== OfferingTabSection.Financials
+    option => option.value !== OfferingTabSection.FINANCIALS
   );
 
   const descriptionsByTab = getDescriptionsByTab(offering, tab);
 
   const nextOrder = descriptionsByTab.length ? descriptionsByTab.length + 1 : 0;
 
-  function handleSubmission(values: {
-    title: string;
-    text: string;
-    tab: OfferingTabSection | undefined;
-  }) {
-    description
-      ? updateDescription({
-          variables: {
-            currentDate: currentDate,
-            descriptionId: description.id,
-            title: values.title,
-            text: values.text,
-            section: values.tab,
-            order: description.order
-          }
+  function handleSubmission(values: { title: string; text: string; tab: offeringTabSectionTypes }) {
+    !!description
+      ? updateDescriptionText({
+          descriptionId: description.id,
+          title: values.title,
+          text: values.text,
+          section: values.tab,
+          order: description.order
         })
-      : addDescription({
-          variables: {
-            currentDate: currentDate,
-            offeringId: offering.id,
-            title: values.title,
-            text: values.text,
-            section: values.tab,
-            order: nextOrder
-          }
+      : createDescriptionText({
+          offeringId: offering.id.toString(),
+          title: values.title,
+          text: values.text,
+          section: values.tab,
+          order: nextOrder
         });
   }
 
-  // offering.profileDescriptions?.sort((a, b) => a.order - b.order);
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting }
+  } = useForm<FormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      title: description?.title ?? '',
+      text: description?.text ?? '',
+      tab: (description?.section ?? tab ?? '') as offeringTabSectionTypes | string
+    }
+  });
+
+  const onFormSubmit = async (data: FormData) => {
+    setButtonStep('step1');
+
+    try {
+      handleSubmission({
+        ...data,
+        tab: data.tab as offeringTabSectionTypes
+      });
+      setButtonStep('confirmed');
+      onSubmit && onSubmit();
+    } catch (e) {
+      setButtonStep('failed');
+      alert(e);
+    }
+  };
 
   return (
-    <Formik
-      initialValues={{
-        title: description?.title ?? '',
-        text: description?.text ?? '',
-        tab: description?.section ?? tab
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.title) {
-          errors.title = 'Please give this a title.';
-        }
-        if (!values.text) {
-          errors.text = 'Please include text.';
-        }
-        if (!values.tab) {
-          errors.tab = 'Please indicate the tab where you want this text to appear.';
-        }
-
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
-        setButtonStep('step1');
-        setAlerted(false);
-        setSubmitting(true);
-        try {
-          handleSubmission(values);
-          setButtonStep('confirmed');
-          onSubmit && onSubmit();
-        } catch (e) {
-          setButtonStep('failed');
-          alert(e);
-        }
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting, values }) => (
-        <Form className="flex flex-col relative  pr-7">
-          <div className="grid grid-cols-2 gap-6">
-            <Input
-              className={fieldDiv}
-              required
-              labelText="Section title"
-              name="title"
-              placeholder="e.g. About this offering"
-            />
-            <Select className={fieldDiv} labelText="Move to a different tab" required name="tab">
-              {tabSectionOptionsOhneFinancials.map((section, i) => {
-                return (
-                  <option key={i} value={section.value}>
-                    {section.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </div>
+    <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col relative pr-7">
+      <div className="grid grid-cols-2 gap-6">
+        <div className={fieldDiv}>
+          <Label htmlFor="title" className="text-sm text-blue-900 font-semibold text-opacity-80">
+            Section title *
+          </Label>
           <Input
-            className={fieldDiv}
-            textArea
-            fieldHeight={'h-96'}
-            required
-            labelText="Content"
-            name="text"
-            placeholder=""
+            id="title"
+            type="text"
+            placeholder="e.g. About this offering"
+            {...register('title')}
+            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
           />
-          <div className="text-sm ">
-            You can add styling to this text using{' '}
-            <span className="underline">
-              <a
-                href="https://rawgit.com/fletcher/human-markdown-reference/master/index.html"
-                target="_blank"
-                rel="noreferrer"
-              >
-                Markdown
-              </a>
-            </span>
-            .
-          </div>
-          <FormButton
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
+          {errors.title && <div className="text-sm text-red-500 mt-1">{errors.title.message}</div>}
+        </div>
+        <div className={fieldDiv}>
+          <Label htmlFor="tab" className="text-sm text-blue-900 font-semibold text-opacity-80">
+            Move to a different tab *
+          </Label>
+          <Controller
+            control={control}
+            name="tab"
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                  <SelectValue placeholder="Select a tab" />
+                </SelectTrigger>
+                <SelectContent>
+                  {tabSectionOptionsOhneFinancials.map((section, i) => (
+                    <SelectItem key={i} value={section.value}>
+                      {section.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+          {errors.tab && <div className="text-sm text-red-500 mt-1">{errors.tab.message}</div>}
+        </div>
+      </div>
+      <div className={fieldDiv}>
+        <Label htmlFor="text" className="text-sm text-blue-900 font-semibold text-opacity-80">
+          Content *
+        </Label>
+        <Textarea
+          id="text"
+          placeholder=""
+          {...register('text')}
+          className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none h-96"
+        />
+        {errors.text && <div className="text-sm text-red-500 mt-1">{errors.text.message}</div>}
+      </div>
+      <div className="text-sm ">
+        You can add styling to this text using{' '}
+        <span className="underline">
+          <a
+            href="https://rawgit.com/fletcher/human-markdown-reference/master/index.html"
+            target="_blank"
+            rel="noreferrer"
           >
-            <LoadingButtonText
-              state={buttonStep}
-              idleText={`Update ${isUpdate ? 'Description' : offering.name}`}
-              step1Text="Saving"
-              confirmedText={`${isUpdate ? 'Description' : offering.name} updated!`}
-              failedText="Oops. Something went wrong"
-            />
-          </FormButton>
-        </Form>
-      )}
-    </Formik>
+            Markdown
+          </a>
+        </span>
+        .
+      </div>
+      <FormButton
+        type="submit"
+        disabled={isSubmitting || buttonStep === 'step1'}
+        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
+      >
+        <LoadingButtonText
+          state={buttonStep}
+          idleText={`Update ${isUpdate ? 'Description' : offering.name}`}
+          step1Text="Saving"
+          confirmedText={`${isUpdate ? 'Description' : offering.name} updated!`}
+          failedText="Oops. Something went wrong"
+        />
+      </FormButton>
+    </form>
   );
 };
 

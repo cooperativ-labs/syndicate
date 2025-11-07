@@ -14,7 +14,7 @@ import FormModal from '@src/containers/FormModal';
 import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
+
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { floatWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
@@ -37,7 +37,11 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
     min_units_per_investor,
     name: offeringName,
     id: offeringId,
-    offering_participants
+    offeringParticipants
+    min_units_per_investor,
+    name: offeringName,
+    id: offeringId,
+    offeringParticipants
   } = offering;
 
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
@@ -170,7 +174,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
       >
         <PostBidAskForm
           offering={offering}
-          offeringMin={minUnitsPerInvestor}
+          offeringMin={min_units_per_investor}
           sharesOutstanding={sharesOutstanding}
           walletAddress={userWalletAddress as String0x}
           myShareQty={myShareQty}

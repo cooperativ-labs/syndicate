@@ -1,4 +1,4 @@
-import { Maybe, Offering, OfferingParticipant } from '@/types';
+import { OfferingFull, Document } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import StandardButton from '@src/components/buttons/StandardButton';
@@ -10,36 +10,40 @@ import Input, {
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import { cn } from '@src/lib/utils';
-import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
+import { getCurrencyOption } from '@src/utils/enumConverters';
+
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
-import { bytes32FromString, String0x } from '@src/web3/helpersChain';
+import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import React, { Dispatch, FC, SetStateAction, useContext, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import { useChainId } from 'wagmi';
 
 import NonInput from '../../form-components/NonInput';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
+import { useAsync } from 'react-use';
+import { createOrder } from '@src/utils/actions/orderActions';
 
 export type PostBidAskFormProps = {
-  offering: Offering;
-  swapApprovalsEnabled: Maybe<boolean> | undefined;
+  offering: OfferingFull;
+  swapApprovalsEnabled: boolean;
   partitions: String0x[];
-  paymentTokenDecimals: Maybe<number> | undefined;
+  paymentTokenDecimals: number | null;
   myShareQty: number | undefined;
   isContractOwner: boolean;
   sharesOutstanding: number | undefined;
-  currentSalePrice: Maybe<number> | undefined;
+  currentSalePrice: number | undefined;
   refetchOfferingInfo: () => void;
 };
 
 type WithAdditionalProps = PostBidAskFormProps & {
   walletAddress: string;
   swapContractAddress: String0x;
-  offeringMin: Maybe<number> | undefined;
+  offeringMin: number | null;
+  documents: Document[] | undefined;
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
   refetchAllContracts: () => void;
 };
@@ -53,9 +57,9 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   paymentTokenDecimals,
   myShareQty,
   isContractOwner,
-  offeringMin,
   sharesOutstanding,
   currentSalePrice,
+  documents,
   setModal,
   refetchAllContracts,
   refetchOfferingInfo
@@ -64,16 +68,19 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const [isAsk, setIsAsk] = useState<boolean>(true);
-  const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
-  const { name, details, documents, offeringEntity } = offering;
-  const sharesIssued = details?.numUnits;
+  const {
+    name,
+    num_units: sharesIssued,
+    investment_currency: investmentCurrency,
+    offeringSmartContracts: { shareContract }
+  } = offering;
 
   const sharesUnissued = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
   const offerCalculator = (numUnits: number, price: number) => {
     return numUnits * price;
   };
 
-  const saleAmountString = (numUnits: string, price: Maybe<number> | undefined) => {
+  const saleAmountString = (numUnits: string, price: number | undefined) => {
     if (!price) return '0';
     return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price), 2);
   };
@@ -139,6 +146,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             return;
           }
           await submitSwap({
+            shareContractId: shareContract.id.toString(),
             numShares: values.numUnits,
             price: values.price,
             partition: values.partition,
@@ -148,7 +156,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             visible: !swapApprovalsEnabled,
             toc: values.toc,
             paymentTokenDecimals: paymentTokenDecimals as number,
-            offeringId: offering.id,
+            offeringId: offering.id.toString(),
             isContractOwner: isContractOwner,
             isAsk: isAsk,
             isIssuance: isIssuance,
@@ -201,8 +209,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     <Input
                       className={cn(defaultFieldDiv, 'col-span-2')}
                       labelText={`At what price per share? (${
-                        details?.investmentCurrency &&
-                        getCurrencyOption(details?.investmentCurrency)?.symbol
+                        investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
                       })`}
                       name="price"
                       type="number"
@@ -216,8 +223,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                       <>
                         {values.numUnits &&
                           `${saleAmountString(values.numUnits, values.price)} ${
-                            details?.investmentCurrency &&
-                            getCurrencyOption(details?.investmentCurrency)?.symbol
+                            investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
                           }`}
                       </>
                     </NonInput>
@@ -309,7 +315,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                           checked={values.approvalRequired}
                           sideLabel
                           labelText={`I understand that this ${isAsk ? 'sale' : 'purchase'} requires approval from ${
-                            offeringEntity?.legalName
+                            offering.legalEntity.legal_name
                           }.`}
                         />
                       </div>
@@ -325,7 +331,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                       } ${values.numUnits ?? ''} shares ${
                         values.numUnits
                           ? `for ${saleAmountString(values.numUnits, values.price)} ${
-                              getCurrencyOption(details?.investmentCurrency)?.symbol
+                              investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
                             } `
                           : ''
                       }`}

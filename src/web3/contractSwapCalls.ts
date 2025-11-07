@@ -1,22 +1,11 @@
-import {
-  ApolloCache,
-  DefaultContext,
-  MutationFunctionOptions,
-  OperationVariables,
-} from "@apollo/client";
-import {
-  Currency,
-  CurrencyCode,
-  Organization,
-  ShareTransferEventType,
-} from "@/types";
+import { ShareTransferEventType } from "@src/utils/enumConverters";
+import { CurrencyCodeType, Organization } from "@/types";
 import { LoadingButtonStateType } from "@src/components/buttons/Button";
 import {
   handleOfferingRequestNotification,
   handleTradeExecutionNotification,
 } from "@src/components/notifications/notificationFunctions";
 import { getCurrencyById } from "@src/utils/enumConverters";
-import { currentDate } from "@src/utils/graphQueries/gqlUtils";
 import { numberWithCommas } from "@src/utils/helpersMoney";
 import { getBaseUrl } from "@src/utils/helpersURL";
 import { getWagmiConfig } from "@src/web3/wagmi";
@@ -24,12 +13,11 @@ import { Dispatch, SetStateAction } from "react";
 import toast from "react-hot-toast";
 import { erc20Abi } from "viem";
 import {
-  getAccount,
   simulateContract,
   waitForTransactionReceipt,
   writeContract,
 } from "wagmi/actions";
-
+import { useAccount } from "wagmi";
 import { swapContractABI } from "./generated";
 import {
   bytes32FromString,
@@ -37,6 +25,16 @@ import {
   String0x,
 } from "./helpersChain";
 import { shareContractDecimals, toContractNumber } from "./util";
+import {
+  AddContractPartitionParams,
+  AddContractPartitionResult,
+} from "@src/utils/actions/cryptoActions";
+import {
+  AddTransferEventParams,
+  AddTransferEventResult,
+  CreateOrderParams,
+  CreateOrderResult,
+} from "@src/utils/actions/orderActions";
 
 type SubmitSwapProps = {
   numShares: number;
@@ -47,8 +45,8 @@ type SubmitSwapProps = {
   maxUnits?: number;
   visible: boolean;
   toc?: boolean;
-  swapContractAddress: String0x | undefined;
-  shareContractId?: string;
+  swapContractAddress: String0x;
+  shareContractId: string;
   paymentTokenDecimals: number;
   offeringId: string;
   isContractOwner: boolean;
@@ -58,22 +56,12 @@ type SubmitSwapProps = {
   myShareQty?: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   createOrder: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
-  ) => Promise<any>;
+    params: CreateOrderParams,
+  ) => Promise<CreateOrderResult>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   addPartition?: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
-  ) => Promise<any>;
+    params: AddContractPartitionParams,
+  ) => Promise<AddContractPartitionResult>;
   refetchAllContracts: () => void;
   refetchOfferingInfo: () => void;
 };
@@ -131,26 +119,21 @@ export const submitSwap = async ({
       const transactionReceipt = await waitForTransactionReceipt(config, {
         hash,
       });
-      const { address: userWalletAddress } = getAccount();
+      const { address: userWalletAddress } = useAccount();
       const contractIndex = Number(result);
-      addPartition &&
+      addPartition && shareContractId &&
         (await addPartition({
-          variables: {
-            smartContractId: shareContractId,
-            partition: setPartition as string,
-          },
+          smartContractId: shareContractId,
+          partition: setPartition as string,
         }));
       await createOrder({
-        variables: {
-          currentDate: currentDate,
-          contractIndex: contractIndex,
-          swapContractAddress: swapContractAddress,
-          minUnits: minUnits,
-          maxUnits: maxUnits,
-          initiator: userWalletAddress,
-          visible: visible,
-          transactionHash: transactionReceipt.transactionHash,
-        },
+        contractIndex: contractIndex,
+        swapContractAddress: swapContractAddress,
+        minUnits: minUnits,
+        maxUnits: maxUnits,
+        initiator: userWalletAddress as string,
+        visible: visible,
+        transactionHash: transactionReceipt.transactionHash,
       });
       refetchAllContracts();
       refetchOfferingInfo();
@@ -176,7 +159,7 @@ type AcceptOrderProps = {
   amount: number;
   contractIndex: number;
   offeringId: string;
-  organization: Organization;
+  organizationId: string;
   isAskOrder: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
@@ -188,7 +171,7 @@ export const acceptOrder = async ({
   amount,
   contractIndex,
   offeringId,
-  organization,
+  organizationId,
   isAskOrder,
   setButtonStep,
   refetchAllContracts,
@@ -217,7 +200,7 @@ export const acceptOrder = async ({
         hash,
       });
       await handleOfferingRequestNotification({
-        organization,
+        organizationId,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
         notificationText:
           "Someone has applied to purchase shares in your offering.",
@@ -278,30 +261,18 @@ export const setAllowance = async ({
 type ApproveRejectSwapProps = {
   transferEventArgs?: {
     shareContractAddress: String0x | undefined;
-
     recipientAddress: "" | `0x${string}` | undefined;
     senderAddress: String0x | undefined | "";
     numShares: number | undefined;
     price: number | undefined;
-    currencyCode: CurrencyCode | undefined;
+    currencyCode: CurrencyCodeType | undefined | null;
     partition: String0x | undefined | "";
-    addApprovalRecord: (arg0: {
-      variables: {
-        shareContractAddress: String0x | undefined;
-        orderIndex: number;
-        recipientAddress: "" | `0x${string}` | undefined;
-        senderAddress: String0x | undefined | "";
-        amount: number | undefined;
-        price: string | undefined;
-        currencyCode: CurrencyCode | undefined;
-        partition: String0x | undefined | "";
-        transactionHash: String0x;
-        type: ShareTransferEventType;
-      };
-    }) => Promise<any> | undefined;
+    addApprovalRecord: (
+      params: AddTransferEventParams,
+    ) => Promise<AddTransferEventResult>;
   };
   swapContractAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
+  paymentTokenDecimals: number | null;
   contractIndex: number;
   isDisapprove: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
@@ -351,23 +322,21 @@ export const approveRejectSwap = async ({
         } = transferEventArgs;
 
         await addApprovalRecord({
-          variables: {
-            shareContractAddress: shareContractAddress,
-            orderIndex: contractIndex,
-            recipientAddress: recipientAddress,
-            senderAddress: senderAddress,
-            amount: numShares,
-            price: toContractNumber(
-              price as number,
-              paymentTokenDecimals as number,
-            ).toString(),
-            currencyCode: currencyCode,
-            transactionHash: transactionDetails.transactionHash,
-            partition: partition,
-            type: isDisapprove
-              ? ShareTransferEventType.Disapproval
-              : ShareTransferEventType.Approval,
-          },
+          shareContractAddress: shareContractAddress as string,
+          orderIndex: contractIndex,
+          recipientAddress: recipientAddress as string,
+          senderAddress: senderAddress as string,
+          amount: numShares as number,
+          price: toContractNumber(
+            price as number,
+            paymentTokenDecimals as number,
+          ).toString(),
+          currencyCode: currencyCode,
+          transactionHash: transactionDetails.transactionHash,
+          partition: partition as string,
+          type: isDisapprove
+            ? ShareTransferEventType.Disapproval
+            : ShareTransferEventType.Approval,
         });
       }
       setButtonStep("confirmed");
@@ -521,15 +490,8 @@ type FillOrderProps = {
   recipient: String0x;
   sender: String0x;
   offeringId: string;
-  organization: Organization;
-  addTrade: (
-    options?: MutationFunctionOptions<
-      any,
-      OperationVariables,
-      DefaultContext,
-      ApolloCache<any>
-    >,
-  ) => Promise<any>;
+  organizationId: string;
+  addTrade: (params: AddTransferEventParams) => Promise<AddTransferEventResult>;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   refetchAllContracts: () => void;
@@ -547,7 +509,7 @@ export const fillOrder = async ({
   sender,
   shareContractAddress,
   offeringId,
-  organization,
+  organizationId,
   addTrade,
   setButtonStep,
   refetchAllContracts,
@@ -574,20 +536,18 @@ export const fillOrder = async ({
         hash,
       });
       await addTrade({
-        variables: {
-          shareContractAddress,
-          recipientAddress: recipient,
-          senderAddress: sender,
-          amount: amount,
-          price: contractPrice.toString(),
-          currencyCode: getCurrencyById(paymentTokenAddress)?.value,
-          transactionHash: transactionDetails.transactionHash,
-          partition: partition,
-          type: ShareTransferEventType.Trade,
-        },
+        shareContractAddress: shareContractAddress as string,
+        recipientAddress: recipient as string,
+        senderAddress: sender as string,
+        amount: amount as number,
+        price: contractPrice.toString(),
+        currencyCode: getCurrencyById(paymentTokenAddress)?.value,
+        transactionHash: transactionDetails.transactionHash,
+        partition: partition as string,
+        type: ShareTransferEventType.Trade,
       });
       await handleTradeExecutionNotification({
-        organization,
+        organizationId,
         completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
         notificationText:
           `${sender} has sold ${amount} shares to ${recipient} at ${

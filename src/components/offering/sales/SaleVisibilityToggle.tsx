@@ -1,6 +1,5 @@
 import { cn } from '@src/lib/utils';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_ORDER } from '@src/utils/graphQueries/orders';
+import { updateOrder } from '@src/utils/actions/orderActions';
 import React, { FC } from 'react';
 
 type OrderVisibilityToggleProps = {
@@ -13,16 +12,11 @@ const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({
   orderArchived,
   orderId
 }) => {
-  const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
-
   const handleToggle = () => {
-    updateOrderObject({
-      variables: {
-        currentDate: currentDate,
-        orderId: orderId,
-        visible: !orderVisibility,
-        archived: orderArchived
-      }
+    updateOrder({
+      orderId: orderId,
+      visible: !orderVisibility,
+      archived: orderArchived ?? false
     });
   };
 

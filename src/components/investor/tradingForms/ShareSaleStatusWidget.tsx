@@ -1,4 +1,4 @@
-import { Maybe, ShareOrder } from '@/types';
+import { ShareOrder } from '@/types';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
@@ -11,9 +11,9 @@ import { useAccount, useChainId } from 'wagmi';
 import SaleManagerPanel from './ShareManagerPanel';
 
 type ShareOrderStatusItemProps = {
-  order: Maybe<ShareOrder>;
+  order: ShareOrder | undefined;
   swapContractAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
+  paymentTokenDecimals: number | null;
   txnApprovalsEnabled: boolean | undefined;
   swapApprovalsEnabled: boolean | undefined;
 };
@@ -25,7 +25,7 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   txnApprovalsEnabled,
   swapApprovalsEnabled
 }) => {
-  const contractIndex = order ? order?.contractIndex : 0;
+  const contractIndex = order ? order?.contract_index : 0;
   const { initiator, amount, filledAmount, isApproved, isCancelled, isAccepted, isFilled, filler } =
     useOrderDetails(swapContractAddress, contractIndex, paymentTokenDecimals);
   const chainId = useChainId();
@@ -42,7 +42,7 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
       isAccepted,
       txnApprovalsEnabled,
       swapApprovalsEnabled,
-      isVisible: order.visible
+      isVisible: order?.visible ?? false
     });
 
   const statusColor = status?.color;
@@ -66,10 +66,10 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
 };
 
 type ShareSaleStatusWidgetProps = {
-  orders: Maybe<ShareOrder>[];
+  orders: ShareOrder[] | undefined;
   swapContractAddress: String0x | undefined;
   paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
+  paymentTokenDecimals: number | null;
   txnApprovalsEnabled: boolean | undefined;
   swapApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;
@@ -91,7 +91,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
     <>
       {myOrders?.map(order => (
         <ShareOrderStatusItem
-          key={order?.contractIndex}
+          key={order?.contract_index}
           order={order}
           swapContractAddress={swapContractAddress}
           paymentTokenDecimals={paymentTokenDecimals}

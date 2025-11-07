@@ -1,4 +1,4 @@
-import { Currency, Maybe, Offering, OfferingSmartContractSet, User } from '@/types';
+import { CurrencyCodeType, OfferingFull, OfferingSmartContractSet } from '@/types';
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import SectionBlock from '@src/containers/SectionBlock';
@@ -12,14 +12,14 @@ import CreateSwapContract from '../CreateSwapContract';
 export type SwapContractSettingsProps = {
   swapApprovalsEnabled: boolean | undefined;
   txnApprovalsEnabled: boolean | undefined;
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  offering: Offering;
+  contractSet: OfferingSmartContractSet;
+  offering: OfferingFull;
   noLiveOrders: boolean;
   refetchMainContracts: () => void;
 };
 
 export type SwapContractsSettingsAdditional = SwapContractSettingsProps & {
-  investmentCurrency: Currency | undefined | null;
+  investmentCurrency: CurrencyCodeType;
 };
 
 const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
@@ -36,7 +36,8 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
 
-  const { offeringEntity, details } = offering;
+  const { legalEntity } = offering;
+  const organizationId = legalEntity?.organization_id;
   const toggleClass = 'flex align-middle justify-between items-center ';
 
   const sharedContractInfo = { address: swapContractAddress, abi: swapContractABI };
@@ -113,8 +114,9 @@ const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
         <CreateSwapContract
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
-          contractOwnerEntityId={offeringEntity?.id}
-          offeringDetailsId={details?.id}
+          contractOwnerEntityId={legalEntity?.id.toString()}
+          offeringId={offering.id.toString()}
+          organizationId={organizationId.toString()}
         />
       )}
       {swapContractAddress && (

@@ -1,4 +1,3 @@
-import { Maybe } from '@/types';
 import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
@@ -7,8 +6,6 @@ import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import NonInput from '@src/components/form-components/NonInput';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { getCurrencyById } from '@src/utils/enumConverters';
-import { ADD_CONTRACT_PARTITION } from '@src/utils/graphQueries/crypto';
-import { CREATE_ORDER } from '@src/utils/graphQueries/orders';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
@@ -17,20 +14,23 @@ import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useAccount } from 'wagmi';
 
+import { createOrder, CreateOrderParams, CreateOrderResult } from '@src/utils/actions/orderActions';
+import { addContractPartition, AddContractPartitionParams } from '@src/utils/actions/cryptoActions';
+
 export type PostInitialSaleProps = {
-  sharesOutstanding: number | undefined;
-  paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
+  sharesOutstanding: number | null;
+  paymentTokenAddress: String0x;
+  paymentTokenDecimals: number | null;
   partitions: String0x[];
   refetchOfferingInfo: () => void;
 };
 
 type WithAdditionalProps = PostInitialSaleProps & {
-  sharesIssued: Maybe<number> | undefined;
-  priceStart: Maybe<number> | undefined;
+  sharesIssued: number | null;
+  priceStart: number | null;
   offeringId: string;
   shareContractId: string;
-  swapContractAddress: String0x | undefined;
+  swapContractAddress: String0x;
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
   refetchAllContracts: () => void;
 };
@@ -51,9 +51,16 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [createOrder, { data, error }] = useMutation(CREATE_ORDER);
-  const [addPartition, { data: partitionData, error: partitionError }] =
-    useMutation(ADD_CONTRACT_PARTITION);
+
+  const handleCreateOrder = async (params: CreateOrderParams): Promise<CreateOrderResult> => {
+    const result = await createOrder(params);
+    return result;
+  };
+
+  const handleAddPartition = async (params: AddContractPartitionParams) => {
+    const result = await addContractPartition(params);
+    return result;
+  };
 
   const sharesRemaining = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
 
@@ -73,7 +80,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
     return numUnits * price;
   };
 
-  const saleAmountString = (numUnits: string, price: Maybe<number> | undefined) => {
+  const saleAmountString = (numUnits: string, price: number | undefined) => {
     if (!price) return '0';
     return numberWithCommas(offerCalculator(parseInt(numUnits, 10), price));
   };
@@ -148,8 +155,8 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
             isIssuance: isIssuance,
             isErc20Payment: isErc20Payment,
             setButtonStep: setButtonStep,
-            createOrder: createOrder,
-            addPartition: addPartition,
+            createOrder: handleCreateOrder,
+            addPartition: handleAddPartition,
             refetchAllContracts,
             refetchOfferingInfo
           });
@@ -183,6 +190,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
             <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText="Total sale:">
               <>
                 {values.numShares &&
+                  values.price &&
                   `${saleAmountString(values.numShares, values.price)} ${
                     paymentTokenAddress && getCurrencyById(paymentTokenAddress)?.symbol
                   }`}

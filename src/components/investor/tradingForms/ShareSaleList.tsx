@@ -1,4 +1,4 @@
-import { Maybe, ShareOrder } from '@/types';
+import { ShareOrder } from '@/types';
 import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import SectionBlock from '@src/containers/SectionBlock';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -10,12 +10,12 @@ import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { RefreshCw } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 
 import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
 
 export type ShareSaleListProps = ShareSaleListItemProps & {
-  orders: Maybe<ShareOrder>[] | undefined;
+  orders: ShareOrder[] | undefined;
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
 };
 
@@ -37,7 +37,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
-  const { data: contractData } = useContractRead({
+  const { data: contractData } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'unclaimedProceeds',

@@ -1,12 +1,11 @@
 import { LoadingButtonStateType } from '@src/components/buttons/Button';
-import { ADD_TRANSFER_EVENT } from '@src/utils/graphQueries/orders';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
 import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { Dispatch, FC, SetStateAction } from 'react';
-import { erc20Abi } from 'viem';
+import { erc20Abi, formatUnits } from 'viem';
 import { useAccount, useBalance, useReadContract } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
@@ -14,6 +13,7 @@ import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseSaleRequest, {
   SharePurchaseSaleRequestProps
 } from './SharePurchaseSaleRequest';
+import { addTransferEvent, AddTransferEventParams } from '@src/utils/actions/orderActions';
 
 type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   isApproved: boolean;
@@ -55,14 +55,14 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   refetchAllContracts
 }) => {
   const { address: userWalletAddress } = useAccount();
-  const [addTrade] = useMutation(ADD_TRANSFER_EVENT);
+
   const isEnded = isCancelled || isFilled;
 
   const { data: orderQtyData, refetch } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'acceptedOrderQty',
-    args: [filler as String0x, BigInt(order.contractIndex)]
+    args: [filler as String0x, BigInt(order.contract_index)]
   });
 
   const { data: bacBalanceData } = useBalance({
@@ -75,10 +75,12 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     refetch();
   };
 
-  const myBacBalance = bacBalanceData?.formatted;
+  const myBacBalance = bacBalanceData
+    ? formatUnits(bacBalanceData.value, bacBalanceData.decimals)
+    : undefined;
   const acceptedOrderQty = toNormalNumber(orderQtyData, shareContractDecimals);
   const isFiller = filler !== '0x0000000000000000000000000000000000000000';
-  const organization = offering.offeringEntity.organization;
+  const organizationId = offering.legalEntity.organization_id.toString();
   const recipient = (isAskOrder ? filler : initiator) as String0x;
   const sender = (isAskOrder ? initiator : filler) as String0x;
 
@@ -115,10 +117,10 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
       setButtonStep('step1');
       await acceptOrder({
         swapContractAddress: swapContractAddress,
-        contractIndex: order.contractIndex,
+        contractIndex: order.contract_index,
         amount: amount,
-        offeringId: offering.id,
-        organization: offering.offeringEntity?.organization,
+        offeringId: offering.id.toString(),
+        organizationId: organizationId,
         isAskOrder,
         refetchAllContracts: refetchAllPlusAccepted,
         setButtonStep: setButtonStep
@@ -136,16 +138,16 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           swapContractAddress,
           shareContractAddress,
           paymentTokenAddress,
-          contractIndex: order.contractIndex,
+          contractIndex: order.contract_index,
           amount: amount,
           price,
           paymentTokenDecimals,
           recipient,
           sender,
           partition,
-          offeringId: offering.id,
-          organization,
-          addTrade: addTrade,
+          offeringId: offering.id.toString(),
+          organizationId,
+          addTrade: addTransferEvent,
           setButtonStep: setButtonStep,
           refetchAllContracts: refetchAllPlusAccepted
         });
@@ -163,16 +165,16 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
           swapContractAddress,
           shareContractAddress,
           paymentTokenAddress,
-          contractIndex: order.contractIndex,
+          contractIndex: order.contract_index,
           amount: amount,
           price,
           paymentTokenDecimals,
           recipient,
           sender,
           partition,
-          offeringId: offering.id,
-          organization,
-          addTrade: addTrade,
+          offeringId: offering.id.toString(),
+          organizationId,
+          addTrade: addTransferEvent,
           setButtonStep: setButtonStep,
           refetchAllContracts: refetchAllPlusAccepted
         });
@@ -203,7 +205,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         currentUserInitiator={currentUserInitiator}
         isAskOrder={isAskOrder}
         swapContractAddress={swapContractAddress}
-        contractIndex={order.contractIndex}
+        contractIndex={order.contract_index}
         refetchAllContracts={refetchAllContracts}
       />
 

@@ -6,6 +6,7 @@ import {
   LegalEntity,
   Organization,
   OrganizationComplete,
+  OrganizationUser,
   OrganizationWithLegalEntities,
 } from "@/types";
 import { revalidatePath } from "next/cache";
@@ -73,11 +74,13 @@ export const createOrganizationWithAdmin = async ({
 
 export const getOrganization = async (
   id: string,
+  source?: string,
 ): Promise<OrganizationComplete | null> => {
   const supabase = createClient();
   if (!id) {
     return null;
   }
+  console.log("getOrganization id", { id, source });
   const { data: organizationsData, error: organizationsError } = await supabase
     .from("organization")
     .select(
@@ -139,6 +142,22 @@ export const getOrgsFromUser = async (): Promise<Organization[] | []> => {
   }
 };
 
+export const getOrganizationUsers = async (
+  { organizationId }: { organizationId: string },
+): Promise<OrganizationUser[] | []> => {
+  const supabase = createClient();
+  const { data: organizationUsersData, error: organizationUsersError } =
+    await supabase.from("organization_user").select("*").eq(
+      "organization_id",
+      organizationId,
+    );
+  if (organizationUsersError) {
+    console.error("getOrganizationUsers Error", organizationUsersError);
+    return [];
+  }
+  return organizationUsersData;
+};
+
 export const addOrganizationEmail = async ({
   organizationId,
   address,
@@ -156,6 +175,23 @@ export const addOrganizationEmail = async ({
   });
   if (error) {
     console.error("addOrganizationEmail Error", error);
+  }
+  revalidatePath(`/${organizationId}/settings`, "page");
+};
+
+export const removeTeamMember = async (
+  { organizationId, organizationUserId }: {
+    organizationId: string;
+    organizationUserId: string;
+  },
+) => {
+  const supabase = createClient();
+  const { error } = await supabase.from("organization_user").delete().eq(
+    "id",
+    organizationUserId,
+  );
+  if (error) {
+    throw new Error(error.message);
   }
   revalidatePath(`/${organizationId}/settings`, "page");
 };

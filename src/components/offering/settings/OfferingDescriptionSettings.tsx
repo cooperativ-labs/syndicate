@@ -1,9 +1,9 @@
-import { Offering, OfferingTabSection } from '@/types';
+import { OfferingFull, OfferingTabSection, offeringTabSectionTypes } from '@/types';
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CloseButton from '@src/components/buttons/CloseButton';
 import Card from '@src/components/cards/Card';
 import { tabSectionOptions } from '@src/utils/enumConverters';
-import { CREATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
+
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
 
@@ -12,23 +12,18 @@ import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
 import TabDescriptionList from './OfferingTabDescriptionList';
 
 type OfferingDescriptionSettingsProps = {
-  offering: Offering;
+  offering: OfferingFull;
 };
 const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ offering }) => {
-  const [addDescription, { data: dataAdd, error: errorAdd }] = useMutation(CREATE_DESCRIPTION_TEXT);
-  const [alerted, setAlerted] = useState<boolean>(false);
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [selectedTab, setSelectedTab] = useState<OfferingTabSection>(OfferingTabSection.Details);
+  const [selectedTab, setSelectedTab] = useState<offeringTabSectionTypes>(
+    OfferingTabSection.DETAILS
+  );
 
-  if (errorAdd) {
-    toast.error('Oops. Looks like something went wrong');
-  }
-  if (dataAdd && !alerted) {
-    setAlerted(true);
-  }
+  const offeringProfileDescriptions = offering.offeringProfileDescriptions;
 
   const tabSectionOptionsOhneFinancials = tabSectionOptions.filter(
-    option => option.value !== OfferingTabSection.Financials
+    option => option.value !== OfferingTabSection.FINANCIALS
   );
 
   const addNewDescription = (
@@ -47,8 +42,7 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
             <div>
               <OfferingProfileDescriptionForm
                 offering={offering}
-                setAlerted={setAlerted}
-                addDescription={addDescription}
+                description={offeringProfileDescriptions[0]}
                 tab={selectedTab}
                 onSubmit={() => {
                   setShowForm(false);
@@ -76,7 +70,7 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
           required
           name="section"
           onChange={e => {
-            setSelectedTab(e.target.value as OfferingTabSection);
+            setSelectedTab(e.target.value as offeringTabSectionTypes);
           }}
         >
           {tabSectionOptionsOhneFinancials.map((section, i) => {

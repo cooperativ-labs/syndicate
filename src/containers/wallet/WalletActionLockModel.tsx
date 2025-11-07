@@ -1,17 +1,17 @@
+'use client';
 import useWindowSize from '@hooks/useWindowSize';
 import Card from '@src/components/cards/Card';
 import { cn } from '@src/lib/utils';
-import React, { FC, useContext, useEffect } from 'react';
+import React, { FC } from 'react';
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
+import { useWalletContext } from '@/contexts/WalletContext';
 
 type WalletActionLockModelProps = {
   noModal?: boolean;
 };
 
 const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { WalletActionLockModalOpen } = applicationStore;
+  const { walletActionLockModalOpen } = useWalletContext();
   const windowSize = useWindowSize();
   const windowWidth = windowSize && windowSize.width;
   const isDesktop = windowWidth && windowWidth > 768 ? true : false;
@@ -29,7 +29,7 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
   //   }
   // }, [WalletActionLockModalOpen, isDesktop]);
 
-  if (WalletActionLockModalOpen) {
+  if (walletActionLockModalOpen) {
     return (
       <div data-test="component-payment-send">
         <div

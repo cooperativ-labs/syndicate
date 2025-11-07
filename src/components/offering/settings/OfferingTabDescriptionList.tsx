@@ -1,6 +1,6 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@/types';
+import { Offering, OfferingDescriptionText, offeringTabSectionTypes } from '@/types';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { UPDATE_DESCRIPTION_TEXT } from '@src/utils/graphQueries/offering';
+
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import React, { FC, useEffect, useState } from 'react';
 // @ts-expect-error - react-beautiful-dnd types can mismatch our generics here
@@ -8,15 +8,15 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import toast from 'react-hot-toast';
 
 import OfferingDescriptionItem from './OfferingDescriptionItem';
+import { updateDescriptionText } from '@src/utils/actions/offeringActions';
 
 type TabDescriptionListProps = {
   offering: Offering;
-  tab: OfferingTabSection;
+  tab: offeringTabSectionTypes;
 };
 
 const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
-  const [list, setList] = useState<ArrayLike<Maybe<OfferingDescriptionText>>>([]);
-  const [updateDescription] = useMutation(UPDATE_DESCRIPTION_TEXT);
+  const [list, setList] = useState<ArrayLike<OfferingDescriptionText | undefined>>([]);
 
   useEffect(() => {
     const descriptions = getDescriptionsByTab(offering, tab);
@@ -24,7 +24,7 @@ const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
   }, [offering, tab]);
 
   const reorder = (
-    list: ArrayLike<Maybe<OfferingDescriptionText>>,
+    list: ArrayLike<OfferingDescriptionText | undefined>,
     startIndex: number,
     endIndex: number
   ) => {
@@ -34,17 +34,14 @@ const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
     return result;
   };
 
-  const handleChange = async (description: Maybe<OfferingDescriptionText>, i: number) => {
+  const handleChange = async (description: OfferingDescriptionText, i: number) => {
     try {
-      await updateDescription({
-        variables: {
-          currentDate: currentDate,
-          descriptionId: description?.id,
-          title: description?.title,
-          text: description?.text,
-          section: tab,
-          order: i
-        }
+      await updateDescriptionText({
+        descriptionId: description.id,
+        title: description.title,
+        text: description.text,
+        section: tab,
+        order: i
       });
     } catch (error: any) {
       toast.error(`${error.message}`);
@@ -70,9 +67,9 @@ const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
         <Droppable droppableId="droppable">
           {(provided: any) => (
             <div ref={provided.innerRef} {...provided.droppableProps}>
-              {orderedList.map((description: Maybe<OfferingDescriptionText>, i: number) => {
+              {orderedList.map((description: OfferingDescriptionText, i: number) => {
                 return (
-                  <Draggable key={description?.id} index={i} draggableId={description?.id}>
+                  <Draggable key={description.id} index={i} draggableId={description.id}>
                     {(provided: any) => (
                       <div
                         ref={provided.innerRef}
@@ -80,10 +77,10 @@ const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
                         {...provided.dragHandleProps}
                       >
                         <OfferingDescriptionItem
-                          order={description?.order}
+                          order={description.order}
                           offering={offering}
                           description={description}
-                          tab={description?.section}
+                          tab={description.section as offeringTabSectionTypes}
                         />
                       </div>
                     )}

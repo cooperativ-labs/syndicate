@@ -1,4 +1,4 @@
-import { Offering, User } from '@/types';
+import { Offering, OfferingFull } from '@/types';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';
@@ -23,14 +23,13 @@ type AgreementText = {
 };
 
 type LinkLegalProps = {
-  offering: Offering;
-  user: User;
+  offering: OfferingFull;
 };
 
-const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
+const LinkLegal: React.FC<LinkLegalProps> = ({ offering }) => {
   const chainId = useChainId();
   const { chain } = useAccount();
-
+  const legalEntity = offering.legalEntity;
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
     signature: ''
   });
@@ -41,12 +40,12 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
   const { value: standardAgreementText } = useAsync(getStandardAgreementText, []);
 
   const { signature } = agreementContent;
-  const offeringEntity = offering.offeringEntity;
-  const orgLegalName = offeringEntity?.legalName;
-  const offerEntityGP = offeringEntity?.owners ? offeringEntity.owners[0]?.legalName : orgLegalName;
+
+  const orgLegalName = legalEntity?.legal_name;
+  const offerEntityGP = legalEntity?.owners ? legalEntity.owners[0]?.legal_name : orgLegalName;
 
   const availableContract =
-    offeringEntity?.smartContracts && getAvailableContracts(offeringEntity.smartContracts, chainId);
+    legalEntity?.smart_contracts && getAvailableContracts(legalEntity.smart_contracts, chainId);
 
   const backingToken = availableContract?.backingToken;
   const bacToken = getCurrencyOption(backingToken);
@@ -78,7 +77,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
       <h1 className="font-semibold text-lg">Create shares of {orgLegalName}</h1>
       {!availableContract ? (
         <div className="mt-5">
-          <CreateShareContract contractCreatorId={offeringEntity?.id} />
+          <CreateShareContract contractCreatorId={legalEntity?.id} />
         </div>
       ) : (
         <div className="my-3">
@@ -91,10 +90,9 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, user }) => {
               bacValue={bacValue}
               bacName={bacName}
               bacId={bacId}
-              entityId={offeringEntity.id}
-              spvEntityName={offeringEntity.legalName}
-              offeringId={offering.id}
-              organizationId={offeringEntity.organization.id}
+              entityId={legalEntity.id}
+              spvEntityName={legalEntity.legalName}
+              offeringId={offering.id.toString()}
             />
             {/* <FormChainWarning /> */}
           </div>

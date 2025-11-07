@@ -4,26 +4,19 @@ import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
 import { cn } from '@src/lib/utils';
 import { getCurrencyById } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_TRANSFER_EVENT, UPDATE_ORDER } from '@src/utils/graphQueries/orders';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
-import {
-  approveRejectSwap,
-  cancelAcceptance,
-  cancelSwap,
-  claimProceeds
-} from '@src/web3/contractSwapCalls';
+import { approveRejectSwap, cancelSwap } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
-import { shareContractDecimals, toContractNumber, toNormalNumber } from '@src/web3/util';
+import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
-import { useAccount, useChainId, useContractRead } from 'wagmi';
+import { useAccount, useChainId, useReadContract } from 'wagmi';
+import { updateOrder } from '@src/utils/actions/orderActions';
 
 export type SaleMangerPanelProps = {
   swapContractAddress: String0x | undefined;
   paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
+  paymentTokenDecimals: number | null;
   txnApprovalsEnabled: boolean | undefined;
   swapApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;
@@ -77,33 +70,32 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const [updateOrderObject, { data, error }] = useMutation(UPDATE_ORDER);
-  const [addApprovalRecord, { error: issuanceError }] = useMutation(ADD_TRANSFER_EVENT);
+
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
 
-  const { data: contractData } = useContractRead({
+  const { data: contractData } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'unclaimedProceeds',
     args: [userWalletAddress as String0x]
   });
 
-  const { data: acceptedQty } = useContractRead({
+  const { data: acceptedQty } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
     functionName: 'acceptedOrderQty',
-    args: [filler as String0x, BigInt(order.contractIndex)]
+    args: [filler as String0x, BigInt(order.contract_index)]
   });
 
   const acceptedOrderQty = acceptedQty && toNormalNumber(acceptedQty, shareContractDecimals);
   const rawProceeds = contractData && contractData[1]; // Note: contractData[0] is eth, contractData[1] is erc20
   const proceeds =
     paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
-  const minPurchase = order.minUnits;
-  const maxPurchase = order.maxUnits;
+  const minPurchase = order.min_units;
+  const maxPurchase = order.max_units;
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
   const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
   const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
@@ -126,13 +118,10 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const allowContractApproveDisapprove = !isFilled || !isCancelled;
 
   const updateListingVisibility = async (isDisapprove: boolean) => {
-    await updateOrderObject({
-      variables: {
-        currentDate: currentDate,
-        orderId: order.id,
-        visible: !isDisapprove,
-        archived: order.archived
-      }
+    await updateOrder({
+      orderId: order.id,
+      visible: !isDisapprove,
+      archived: order.archived ?? false
     });
   };
 
@@ -142,7 +131,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         transferEventArgs: transferEventArgs,
         swapContractAddress,
         paymentTokenDecimals,
-        contractIndex: order.contractIndex,
+        contractIndex: order.contract_index,
         isDisapprove: isDisapprove,
         setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
         refetchAllContracts
@@ -154,13 +143,10 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   };
 
   const handleArchive = async (archive: boolean) => {
-    updateOrderObject({
-      variables: {
-        currentDate: currentDate,
-        orderId: order.id,
-        visible: order.visible,
-        archived: archive
-      }
+    await updateOrder({
+      orderId: order.id,
+      visible: order.visible ?? false,
+      archived: archive
     });
     refetchOfferingInfo();
   };
@@ -168,7 +154,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const handleCancel = async () => {
     await cancelSwap({
       swapContractAddress,
-      contractIndex: order.contractIndex,
+      contractIndex: order.contract_index ?? 0,
       setButtonStep: setCancelButtonStep,
       handleArchive,
       refetchAllContracts
