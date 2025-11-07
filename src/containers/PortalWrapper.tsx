@@ -23,7 +23,7 @@ const Portal: FC<PortalWrapperProps> = ({ children, organization }) => {
   return (
     <div className="flex">
       <div className="flex z-30 md:z-10 min-h-screen">
-        {/* <PortalSideBar organizations={_organizations} />{' '} */}
+        {/* <PortalSideBar organizations={[organization]} />{' '} */}
       </div>
       <div className="w-full">
         <NavBar orgLogo={organization?.logo} orgName={organization.name} />

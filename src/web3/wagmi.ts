@@ -1,12 +1,5 @@
 import { CryptoAddressProtocol } from "@src/utils/enumConverters";
-import {
-  Connector,
-  cookieStorage,
-  createConfig,
-  createStorage,
-  http,
-  useConnect,
-} from "wagmi";
+import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import {
   base,
   Chain,

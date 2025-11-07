@@ -1,6 +1,7 @@
 import { OrganizationsProvider } from '@contexts/OrganizationsContext';
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import ChainCompatibilityAlert from '@src/components/alerts/ChainCompatibilityAlert';
+import ErrorBoundary from '@src/components/ErrorBoundary';
 import { cn } from '@src/lib/utils';
 import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 import { cookies } from 'next/headers';
@@ -24,19 +25,21 @@ const ManagerWrapper: FC<ManagerWrapperProps> = async ({ children }) => {
   return (
     <div className="h-full">
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
-        <WithAuthentication>
-          <NewOrganizationModal />
-          {/* <WalletActionLockModel /> */}
-          {/* {PageIsLoading && <LoadingModal />} */}
-          <ChainCompatibilityAlert />
-          <AlertPopup text="This is an alpha version. Please use with caution." />
-          <OrganizationsProvider
-            organizations={organizations}
-            savedOrganizationId={savedOrganizationId || null}
-          >
-            <Manager>{children}</Manager>
-          </OrganizationsProvider>
-        </WithAuthentication>
+        <ErrorBoundary>
+          <WithAuthentication>
+            <NewOrganizationModal />
+            {/* <WalletActionLockModel /> */}
+            {/* {PageIsLoading && <LoadingModal />} */}
+            <ChainCompatibilityAlert />
+            <AlertPopup text="This is an alpha version. Please use with caution." />
+            <OrganizationsProvider
+              organizations={organizations}
+              savedOrganizationId={savedOrganizationId || null}
+            >
+              <Manager>{children}</Manager>
+            </OrganizationsProvider>
+          </WithAuthentication>
+        </ErrorBoundary>
       </div>
     </div>
   );

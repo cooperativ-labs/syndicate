@@ -435,16 +435,14 @@ export async function getOfferingParticipant({
   walletAddress,
 }: {
   walletAddress: string;
-}): Promise<{
-  records: any[];
-}> {
+}): Promise<OfferingParticipant[]> {
   const supabase = createClient();
   const { data, error } = await supabase
     .from("offering_participant")
     .select("id, name, offering(*)")
-    .ilike("wallet_address", walletAddress);
+    .eq("wallet_address", walletAddress);
   if (error) throw error;
-  return { records: data ?? [] };
+  return data ?? [];
 }
 
 export async function addOfferingParticipant({

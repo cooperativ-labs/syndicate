@@ -50,31 +50,34 @@ export const createOrganizationWithAdmin = async ({
   };
 };
 
-const getOrganizations = async (
-  orgIds: string[],
-): Promise<Organization[]> => {
-  const supabase = createClient();
+// const getOrganizations = async (
+//   orgIds: string[],
+// ): Promise<Organization[]> => {
+//   const supabase = createClient();
 
-  const { data: organizationsData, error: organizationsError } = await supabase
-    .from("organization")
-    .select(
-      [
-        "*",
-        "organizationUsers:organization_user(id, user_id, permissions)",
-      ].join(", "),
-    )
-    .in("id", orgIds);
-  if (organizationsError) {
-    console.error("getOrganizations error", organizationsError);
-    return [];
-  }
-  return organizationsData;
-};
+//   const { data: organizationsData, error: organizationsError } = await supabase
+//     .from("organization")
+//     .select(
+//       [
+//         "*",
+//         "organizationUsers:organization_user(id, user_id, permissions)",
+//       ].join(", "),
+//     )
+//     .in("id", orgIds);
+//   if (organizationsError) {
+//     console.error("getOrganizations error", organizationsError);
+//     return [];
+//   }
+//   return organizationsData;
+// };
 
 export const getOrganization = async (
   id: string,
 ): Promise<OrganizationComplete | null> => {
   const supabase = createClient();
+  if (!id) {
+    return null;
+  }
   const { data: organizationsData, error: organizationsError } = await supabase
     .from("organization")
     .select(
@@ -90,7 +93,10 @@ export const getOrganization = async (
     .single();
 
   if (organizationsError) {
-    console.error(organizationsError);
+    if (organizationsError.code === "PGRST116") {
+      return null;
+    }
+    console.error("getOrganization Error", organizationsError);
     return null;
   }
 
@@ -101,22 +107,36 @@ export const getOrgsFromUser = async (): Promise<Organization[] | []> => {
   const supabase = createClient();
   const { data: { user } } = await supabase.auth.getUser();
 
-  const { data: organizationsData, error: organizationsErrors } = await supabase
-    .from("organization_user")
-    .select("org:organization(*)")
-    .eq("user_id", user?.id);
-  if (organizationsErrors) {
-    console.error(organizationsErrors);
+  if (!user?.id) {
     return [];
   }
 
-  const organizations = organizationsData.map((organization) =>
-    organization.org as unknown as Organization
-  );
-  if (!organizations) {
+  try {
+    const { data: organizationsData, error: organizationsErrors } =
+      await supabase
+        .from("organization_user")
+        .select("org:organization(*)")
+        .eq("user_id", user.id);
+
+    if (organizationsErrors) {
+      if (organizationsErrors.code === "PGRST116") {
+        return [];
+      }
+      console.error("getOrgsFromUser Error", organizationsErrors);
+      return [];
+    }
+
+    const organizations = organizationsData.map((organization) =>
+      organization.org as unknown as Organization
+    );
+    if (!organizations) {
+      return [];
+    }
+    return organizations;
+  } catch (error) {
+    console.error(error);
     return [];
   }
-  return organizations;
 };
 
 export const addOrganizationEmail = async ({
@@ -135,8 +155,7 @@ export const addOrganizationEmail = async ({
     is_public: isPublic,
   });
   if (error) {
-    throw new Error(error.message);
+    console.error("addOrganizationEmail Error", error);
   }
   revalidatePath(`/${organizationId}/settings`, "page");
-  return true;
 };

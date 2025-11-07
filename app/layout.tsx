@@ -8,14 +8,12 @@ import type { Metadata } from 'next';
 import { headers } from 'next/headers';
 import React from 'react';
 import { cookieToInitialState } from 'wagmi';
-
 import { UserProvider } from '@/contexts/UserContext';
-
 import Providers from './providers';
 import { getUserProfile } from '@src/utils/actions/userActions';
-import WalletContext from '@contexts/WalletContext';
+
 export const metadata: Metadata = {
-  title: 'Cooperativ',
+  title: process.env.NEXT_PUBLIC_APP_NAME,
   icons: {
     icon: [
       { url: '/favicon-32x32.png', sizes: '32x32', type: 'image/png' },
@@ -27,6 +25,13 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest'
 };
 
+//Doing this to avoid error where cookiesToInitialState is called with non-json string
+const configCookies = (cookies: string) => {
+  const allCookies = cookies.split(';');
+  const wagmiStore = allCookies.find(cookie => cookie.includes('wagmi.store')) ?? '';
+  return JSON.parse(wagmiStore?.split('=')[1]) ? wagmiStore : null;
+};
+
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
   const {
@@ -34,12 +39,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   } = await supabase.auth.getUser();
 
   const headersObj = await headers();
-  const cookies = headersObj.get('cookie');
+  const wagmiCookie = configCookies(headersObj.get('cookie') || '');
 
   const userProfile = user ? await getUserProfile(user.id) : null;
 
-  const config = getWagmiConfig() || { chains: [], connectors: [] };
-  const initialState = cookieToInitialState(config, cookies);
+  const config = getWagmiConfig();
+
+  const initialState = config ? cookieToInitialState(config, wagmiCookie) : undefined;
 
   return (
     <html lang="en">

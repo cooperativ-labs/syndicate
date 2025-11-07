@@ -1,0 +1,30 @@
+import { Skeleton } from '@src/components/ui/skeleton';
+import Footer from '@src/Footer/Footer';
+
+export default function Loading() {
+  return (
+    <div data-test="component-project" className="bg-gray-50">
+      <div className="w-full space-y-6 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <Skeleton className="h-96 w-full" />
+          <div className="space-y-4">
+            <Skeleton className="h-10 w-full" />
+            <Skeleton className="h-32 w-full" />
+            <Skeleton className="h-12 w-full" />
+            <Skeleton className="h-12 w-full" />
+          </div>
+        </div>
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-48 w-full" />
+        </div>
+        <div className="space-y-4">
+          <Skeleton className="h-6 w-32" />
+          <Skeleton className="h-32 w-full" />
+        </div>
+      </div>
+      <Footer color="bg-gray-200" />
+    </div>
+  );
+}
+

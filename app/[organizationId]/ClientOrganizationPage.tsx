@@ -45,7 +45,7 @@ const ClientOrganizationPage: React.FC<ClientOrganizationPageProps> = ({ organiz
       >
         {isParticipant ? (
           <PortalWrapper organization={organization}>
-            <PortalOrganization />
+            <PortalOrganization organization={organization} />
           </PortalWrapper>
         ) : (
           <OrganizationProfile organization={organization} />

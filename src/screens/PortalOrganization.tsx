@@ -1,30 +1,16 @@
 'use client';
 
-i;
-import { OfferingParticipant } from '@/types';
-import DashboardCard from '@src/components/cards/DashboardCard';
+import { OrganizationComplete } from '@/types';
+
 import LoadingModal from '@src/components/loading/ModalLoading';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
-import { GET_OFFERING_PARTICIPANT } from '@src/utils/graphQueries/offering';
-import { GET_ORGANIZATION } from '@src/utils/graphQueries/organization';
-import { getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
-import { useParams } from 'next/navigation';
 import React, { FC } from 'react';
 import { useAccount } from 'wagmi';
 
-const PortalOrganization: FC = () => {
+const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
   const { address: userWalletAddress } = useAccount();
-  const params = useParams<{ organizationId: string }>();
-  const orgId = params?.organizationId;
-  const { data: organizationData } = useQuery(GET_ORGANIZATION, {
-    variables: { id: orgId },
-    skip: !orgId
-  });
-  const organization = organizationData?.getOrganization;
-  const { data: participantData } = useQuery(GET_OFFERING_PARTICIPANT, {
-    variables: { walletAddress: userWalletAddress }
-  });
+
   if (!organization) {
     return (
       <div>
@@ -33,15 +19,13 @@ const PortalOrganization: FC = () => {
     );
   }
 
-  const participantOfferings = participantData?.queryOfferingParticipant.map(
-    (offeringParticipant: OfferingParticipant) => {
-      return offeringParticipant.offering;
-    }
-  );
-
-  const offerings = organization && getOrgOfferingsFromEntity(organization);
-  const hasOfferings = offerings?.length > 0;
-  const isParticipant = participantOfferings?.length > 0;
+  const participantOfferings = organization.legalEntities
+    .flatMap(entity => entity.offerings)
+    .filter(offering =>
+      offering.offeringParticipants.some(
+        participant => participant.walletAddress === userWalletAddress
+      )
+    );
 
   return (
     <div
@@ -49,10 +33,10 @@ const PortalOrganization: FC = () => {
       className="flex flex-col w-full h-full mx-auto px-4"
     >
       <TwoColumnLayout twoThirdsLayout>
-        {hasOfferings && (
+        {participantOfferings && (
           <div>
             <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your investments: </h2>
-            <OfferingsList offerings={offerings} />
+            <OfferingsList offerings={participantOfferings} />
           </div>
         )}
         <></>
