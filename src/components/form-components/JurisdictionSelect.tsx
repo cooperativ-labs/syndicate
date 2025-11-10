@@ -3,8 +3,6 @@ import { Country, IState, State } from 'country-state-city';
 import { ErrorMessage, Field } from 'formik';
 import React, { ChangeEvent, FC, use, useState } from 'react';
 
-import { Maybe } from '@/types';
-
 type JurisdictionSelectProps = {
   id?: any;
   required?: boolean;

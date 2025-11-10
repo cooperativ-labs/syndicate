@@ -1,12 +1,15 @@
+import { addNotificationRule } from '@src/utils/actions/userActions';
 import { notificationSubjectOptions } from '@src/utils/enumConverters';
-import { ADD_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
-import { Form, Formik } from 'formik';
+import { useParams } from 'next/navigation';
 import React, { FC } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { NotificationMethod, NotificationRecipientType, NotificationSubject } from '@/types';
-
-import Input from '../form-components/Inputs';
-import Select from '../form-components/Select';
+import {
+  NotificationMethod,
+  NotificationRecipientType,
+  NotificationSubject,
+  NotificationSubjectTypes
+} from '@/types';
 
 const fieldDiv = 'md:my-2 bg-opacity-0';
 
@@ -15,69 +18,71 @@ type SettingsAddNotificationProps = {
 };
 
 const SettingsAddNotification: FC<SettingsAddNotificationProps> = ({ organizationUserId }) => {
-  const [addNotification, { data, error }] = useMutation(ADD_NOTIFICATION_RULE);
+  const params = useParams<{ organizationId: string }>();
+  const organization_id = params?.organizationId;
 
-  const handleAddNotificationRule = async (notificationSubject: NotificationSubject) => {
+  if (!organization_id) {
+    throw new Error('Organization not found');
+  }
+  const handleAddNotificationRule = async (notificationSubject: NotificationSubjectTypes) => {
     try {
-      await addNotification({
-        variables: {
-          organizationUserId: organizationUserId,
-          NotificationMethod: NotificationMethod.Email,
-          notificationRecipientType: NotificationRecipientType.Manager,
-          notificationSubject: notificationSubject
-        }
-      }).catch(error => {
-        throw new Error(error);
+      await addNotificationRule({
+        organizationId: organization_id,
+        organizationUserId: organizationUserId ?? '',
+        notificationMethod: NotificationMethod.EMAIL,
+        notificationRecipientType: NotificationRecipientType.MANAGER,
+        notificationSubject: notificationSubject
       });
     } catch (error: any) {
-      throw new Error(error);
+      throw new Error(`Error adding notification rule: ${error}`);
     }
   };
 
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<{ notificationSubject: NotificationSubjectTypes }>({
+    defaultValues: {
+      notificationSubject: '' as NotificationSubjectTypes
+    }
+  });
+
+  const onSubmit = async (values: { notificationSubject: NotificationSubjectTypes }) => {
+    await handleAddNotificationRule(values.notificationSubject);
+  };
+
   return (
-    <Formik
-      initialValues={{
-        notificationSubject: '' as NotificationSubject
-      }}
-      validate={async values => {
-        const errors: any = {}; /** @TODO : Shape */
+    <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+      <div className="flex flex-col">
+        <select
+          {...register('notificationSubject', {
+            required: 'Please include a notification subject.'
+          })}
+          className={`${fieldDiv} col-span-2 text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none`}
+        >
+          <option value="">--Subject--</option>
+          {notificationSubjectOptions.map(option => {
+            return (
+              <option key={option.value} value={option.value}>
+                {option.name}
+              </option>
+            );
+          })}
+        </select>
+        {errors.notificationSubject && (
+          <div className="text-sm text-red-500">{errors.notificationSubject.message}</div>
+        )}
+      </div>
 
-        if (!values.notificationSubject) {
-          errors.notificationSubject = 'Please include a notification subject.';
-        }
-        return errors;
-      }}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
-        await handleAddNotificationRule(values.notificationSubject);
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting }) => (
-        <Form className="flex flex-col ">
-          <div className="flex">
-            <Select className={`${fieldDiv} col-span-2`} name="notificationSubject">
-              <option value="">--Subject--</option>
-              {notificationSubjectOptions.map(option => {
-                return (
-                  <option key={option.value} value={option.value}>
-                    {option.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </div>
-
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="text-blue-900 hover:bg-blue-800 hover:text-white border-2 border-blue-900 text-sm font-bold uppercase my-0 rounded p-2"
-          >
-            Set Notification
-          </button>
-        </Form>
-      )}
-    </Formik>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="text-blue-900 hover:bg-blue-800 hover:text-white border-2 border-blue-900 text-sm font-bold uppercase my-0 rounded p-2"
+      >
+        Set Notification
+      </button>
+    </form>
   );
 };
 

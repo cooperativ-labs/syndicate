@@ -6946,6 +6946,15 @@ __metadata:
   languageName: node
   linkType: hard
 
+"browser-image-compression@npm:^2.0.2":
+  version: 2.0.2
+  resolution: "browser-image-compression@npm:2.0.2"
+  dependencies:
+    uzip: "npm:0.20201231.0"
+  checksum: 10c0/32be07f8849f2de501a71f6dd07e691c085fc7a2055456eb120fe5d765e3fcf7de00696915a8d614527d4df10f34c31526304b7d18aae036bb1c58d801e3fcbd
+  languageName: node
+  linkType: hard
+
 "browserslist@npm:^4.21.4, browserslist@npm:^4.24.0, browserslist@npm:^4.24.4, browserslist@npm:^4.26.2":
   version: 4.27.0
   resolution: "browserslist@npm:4.27.0"
@@ -15156,6 +15165,7 @@ __metadata:
     babel-loader: "npm:^8.2.2"
     babel-plugin-module-resolver: "npm:^4.0.0"
     babel-plugin-react-remove-properties: "npm:^0.3.0"
+    browser-image-compression: "npm:^2.0.2"
     bufferutil: "npm:^4.0.9"
     check-prop-types: "npm:^1.1.2"
     class-variance-authority: "npm:^0.7.1"
@@ -19607,6 +19617,13 @@ __metadata:
   bin:
     uvu: bin.js
   checksum: 10c0/ad32eb5f7d94bdeb71f80d073003f0138e24f61ed68cecc8e15d2f30838f44c9670577bb1775c8fac894bf93d1bc1583d470a9195e49bfa6efa14cc6f4942bff
+  languageName: node
+  linkType: hard
+
+"uzip@npm:0.20201231.0":
+  version: 0.20201231.0
+  resolution: "uzip@npm:0.20201231.0"
+  checksum: 10c0/44b261b20ac7e4d71e7099d7a7c4885626044be61cd246e76cf548fa444a4a37c301d1a683679168bc29c91d2ec81d62b8c1c75217a26b37f6ce35223866c2d2
   languageName: node
   linkType: hard
 

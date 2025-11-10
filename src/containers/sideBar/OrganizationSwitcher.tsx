@@ -1,11 +1,10 @@
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import CooperativLogo from '@src/components/CooperativLogo';
 import { cn } from '@src/lib/utils';
-import { handleOrganizationChange } from '@src/utils/helpersOrganization';
+import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
 import { Plus } from 'lucide-react';
-import React, { FC, useContext } from 'react';
+import React, { FC } from 'react';
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
 import { Organization } from '@/types';
 
 type OrganizationSwitcherProps = {
@@ -18,6 +17,10 @@ const backgroundColor = ' bg-gray-200';
 
 const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) => {
   const { chosenOrganizationId, setCreateOrganizationModalOpen } = useOrganizations();
+
+  const handleOrganizationChange = (id: string) => {
+    organizationChangeServer(id);
+  };
   return (
     <div className={cn('relative min-h-full', backgroundColor)}>
       <div className="z-10 flex flex-col min-w-max pt-2 rounded-md focus:outline-none">

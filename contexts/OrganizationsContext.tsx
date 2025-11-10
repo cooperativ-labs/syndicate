@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 import { Organization } from '@/types';
+import { useUserContext } from './UserContext';
 
 type OrganizationsContextValue = {
   organizations: Organization[];
@@ -25,14 +26,19 @@ export function OrganizationsProvider({
   savedOrganizationId: string | null;
 }) {
   const params = useParams<{ organizationId: string }>();
+  const { setOrganizationUserId } = useUserContext();
+
   const foundOrganizationId = params?.organizationId as string | undefined;
   const [chosenOrganizationId, setChosenOrganizationId] = useState<string | null>(null);
   const [createOrganizationModalOpen, setCreateOrganizationModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const setOrgId = foundOrganizationId ?? savedOrganizationId ?? null;
-    setChosenOrganizationId(setOrgId);
-  }, []);
+    if (setOrgId) {
+      setChosenOrganizationId(setOrgId);
+      setOrganizationUserId(setOrgId);
+    }
+  }, [foundOrganizationId, savedOrganizationId]);
 
   return (
     <OrganizationsContext.Provider

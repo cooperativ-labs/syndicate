@@ -39,8 +39,7 @@ const StateProvider = ({ children }: { children: ReactNode }) => {
         return { ...state, WalletModalOpen: !state.WalletModalOpen };
       case 'TOGGLE_WALLET_ACTION_LOCK':
         return { ...state, WalletActionLockModalOpen: !state.WalletActionLockModalOpen };
-      case 'TOGGLE_CREATE_ORG_MODAL':
-        return { ...state, CreateOrgModalOpen: !state.CreateOrgModalOpen };
+
       case 'TOGGLE_LOADING_PAGE_OFF':
         return { ...state, PageIsLoading: false };
       case 'TOGGLE_LOADING_PAGE_ON':

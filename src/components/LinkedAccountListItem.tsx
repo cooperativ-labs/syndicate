@@ -1,23 +1,29 @@
+import { removeLinkedAccount } from '@src/utils/actions/organizationActions';
 import { getSocialAccountOption } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { REMOVE_ORGANIZATION_SOCIAL_ACCOUNT } from '@src/utils/graphQueries/organization';
 import { X } from 'lucide-react';
 import React, { FC, useState } from 'react';
 
+import { LinkedAccount } from '@/types';
+
 type LinkedAccountListProps = {
-  account: Maybe<LinkedAccount>;
+  account: LinkedAccount;
   isOrganizationManager?: boolean | undefined;
 };
 
 const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganizationManager }) => {
-  const { organization, id, url, type, hidden, verified } = account as LinkedAccount;
-  const [alerted, setAlerted] = useState<boolean>(false);
-  const [deleteSocial, { error }] = useMutation(REMOVE_ORGANIZATION_SOCIAL_ACCOUNT);
+  const { organization_id, id, url, type, hidden, verified } = account as LinkedAccount;
 
-  if (error && !alerted) {
-    alert('Oops. Looks like something went wrong');
-    setAlerted(true);
-  }
+  const handleDelete = async () => {
+    try {
+      const response = await removeLinkedAccount({
+        organizationId: organization_id,
+        linkedAccountId: id
+      });
+      return response;
+    } catch (error: any) {
+      throw new Error('Error deleting linked account:', error);
+    }
+  };
 
   return (
     <div className="grid grid-cols-3">
@@ -26,14 +32,7 @@ const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganiza
       {isOrganizationManager && (
         <button
           onClick={() => {
-            deleteSocial({
-              variables: {
-                currentDate: currentDate,
-                organizationId: organization.id,
-                id: id,
-                socialId: id
-              }
-            });
+            handleDelete();
           }}
         >
           <X size={16} />

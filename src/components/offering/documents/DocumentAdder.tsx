@@ -1,80 +1,66 @@
 'use client';
 
-import { useUserContext } from '@contexts/UserContext';
 import Button from '@src/components/buttons/Button';
 import FileUpload from '@src/components/form-components/FileUpload';
-import Input from '@src/components/form-components/Inputs';
+import { Input } from '@src/components/ui/input';
 import SectionBlock from '@src/containers/SectionBlock';
 import { cn } from '@src/lib/utils';
-import { addOfferingDocument } from '@src/utils/actions/documentActions';
+import { uploadOfferingDocument } from '@src/utils/actions/documentActions';
 import { getDocFormatOption } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { urlToDatabaseProps } from '@src/utils/helpersDocuments';
-import { Form, Formik } from 'formik';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { DocumentFormat, DocumentType } from '@/types';
+import { DocumentFormat, DocumentFormatType } from '@/types';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
+import { toast } from 'sonner';
+import { linkOfferingDocument } from '@src/utils/actions/documentActions';
 
 type DocumentAdderProps = {
-  offeringId?: string;
-  entityId?: string;
+  offeringId: string;
+  entityId: string;
 };
 
 const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
-  const { user } = useUserContext();
-  const userId = user?.id;
-  // const [addFile, { error: addFileError }] = useMutation(ADD_OFFERING_DOCUMENT, {
-  //   variables: {
-  //     offeringId: offeringId,
-  //     entityId: entityId,
-  //     currentDate: currentDate
-  //   }
-  // });
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
+  const [fileFormat, setFileFormat] = useState<DocumentFormatType | undefined>();
 
-  const addFile = async ({
-    offeringId,
-    entityId,
-    currentDate,
-    title,
-    docUrl,
-    fileId,
-    docType,
-    format,
-    offeringUniqueId
-  }: urlToDatabaseProps) => {
-    const response = await addOfferingDocument({
+  const handleUploadSubmit = async (file: File) => {
+    setButtonState('loading');
+    await uploadOfferingDocument({
+      file,
       offeringId,
       entityId,
-      currentDate,
-      title,
-      docUrl,
-      fileId,
-      docType,
-      format,
-      offeringUniqueId
+      title: ''
     });
-    return response;
+    setButtonState('success');
   };
-  const [alerted, setAlerted] = useState<boolean>(false);
-  const [fileFormat, setFileFormat] = useState<DocumentFormat | undefined>();
 
-  if (addFileError && !alerted) {
-    alert(addFileError.message);
-    setAlerted(true);
-  }
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<{ title: string; docUrl: string }>({
+    defaultValues: {
+      title: '',
+      docUrl: ''
+    }
+  });
 
-  const addFileToDB = ({ url, fileId, title, docType, format }: urlToDatabaseProps) => {
-    addFile({
-      offeringId: offeringId,
-      entityId: entityId,
-      currentDate: currentDate,
-      title: title,
-      docUrl: url,
-      fileId: fileId,
-      docType: docType,
-      format: format,
-      offeringUniqueId: offeringId + title
-    });
+  const onSubmit = async (data: { title: string; docUrl: string }) => {
+    setButtonState('loading');
+    try {
+      await linkOfferingDocument({
+        offeringId,
+        entityId,
+        title: data.title,
+        format: fileFormat as DocumentFormatType,
+        docUrl: data.docUrl
+      });
+      setButtonState('success');
+    } catch (err: any) {
+      toast.error(err.message);
+      setButtonState('error');
+    }
   };
 
   return (
@@ -89,10 +75,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
           <hr className="mt-1 mb-2" />
           <FileUpload
             uploaderText="Add Offering Document"
-            url={`${offeringId}/docs/${userId}/`}
-            bucket="offering-files"
-            urlToDatabase={addFileToDB}
-            docType={DocumentType.OFFERING_DOCUMENT}
+            onSubmit={handleUploadSubmit}
             accept={[
               'pdf',
               'doc',
@@ -132,51 +115,39 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
               Link
             </div>
           </div>
-          {fileFormat !== null && (
-            <Formik
-              initialValues={{
-                title: '',
-                docUrl: '',
-                format: fileFormat
-              }}
-              validate={values => {
-                const errors: any = {}; /** @TODO : Shape */
-                if (!values.title) {
-                  errors.title = 'Please title this document.';
-                }
-                if (!values.docUrl) {
-                  errors.docUrl = 'URL is required.';
-                }
-                return errors;
-              }}
-              onSubmit={(values, { setSubmitting }) => {
-                setAlerted(false);
-                setSubmitting(true);
-                addFileToDB({
-                  url: values.docUrl,
-                  fileId: 'external',
-                  title: values.title,
-                  docType: DocumentType.OFFERING_DOCUMENT,
-                  format: fileFormat
-                });
-                setSubmitting(false);
-              }}
-            >
-              {({ isSubmitting }) => (
-                <Form className="flex flex-col items-center">
-                  <Input className={' bg-opacity-0'} required name="title" placeholder="Title" />
-                  <Input className={' bg-opacity-0'} required name="docUrl" placeholder="URL" />
+          {fileFormat !== undefined && (
+            <form className="flex flex-col items-center">
+              <div className="w-full mb-2">
+                <Input
+                  {...register('title', { required: 'Please title this document.' })}
+                  className="bg-opacity-0"
+                  placeholder="Title"
+                />
+                {errors.title && (
+                  <div className="text-sm text-red-500 mt-1">{errors.title.message}</div>
+                )}
+              </div>
+              <div className="w-full mb-2">
+                <Input
+                  {...register('docUrl', { required: 'URL is required.' })}
+                  className="bg-opacity-0"
+                  placeholder="URL"
+                />
+                {errors.docUrl && (
+                  <div className="text-sm text-red-500 mt-1">{errors.docUrl.message}</div>
+                )}
+              </div>
 
-                  <Button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="mb-2 bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase px-2 h-11 rounded w-full"
-                  >
-                    {`Link ${getDocFormatOption(fileFormat)?.name}`}
-                  </Button>
-                </Form>
-              )}
-            </Formik>
+              <LoadingButton
+                onClick={handleSubmit(onSubmit)}
+                disabled={isSubmitting}
+                className="mb-2 bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase px-2 h-11 rounded w-full"
+                text={`Link ${getDocFormatOption(fileFormat)?.name}`}
+                loadingText={`Linking ...`}
+                buttonState={buttonState}
+                setButtonState={setButtonState}
+              />
+            </form>
           )}
         </SectionBlock>
       </div>

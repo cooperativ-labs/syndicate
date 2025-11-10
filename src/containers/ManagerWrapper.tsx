@@ -7,13 +7,14 @@ import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 import { cookies } from 'next/headers';
 import React, { FC } from 'react';
 
-import Manager from './Manager';
 import NewOrganizationModal from './NewOrganizationModal';
 import WithAuthentication from './WithAuthentication';
 
 // const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
 
+import ManagerSideBar from './sideBar/ManagerSideBar';
+import Manager from './Manager';
 type ManagerWrapperProps = {
   children: React.ReactNode;
 };
@@ -27,7 +28,6 @@ const ManagerWrapper: FC<ManagerWrapperProps> = async ({ children }) => {
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
         <ErrorBoundary>
           <WithAuthentication>
-            <NewOrganizationModal />
             {/* <WalletActionLockModel /> */}
             {/* {PageIsLoading && <LoadingModal />} */}
             <ChainCompatibilityAlert />
@@ -36,7 +36,14 @@ const ManagerWrapper: FC<ManagerWrapperProps> = async ({ children }) => {
               organizations={organizations}
               savedOrganizationId={savedOrganizationId || null}
             >
-              <Manager>{children}</Manager>
+              {' '}
+              <NewOrganizationModal />
+              <div className="flex">
+                <div className="flex z-30 md:z-10 min-h-screen">
+                  <ManagerSideBar />{' '}
+                </div>
+                <Manager>{children}</Manager>
+              </div>
             </OrganizationsProvider>
           </WithAuthentication>
         </ErrorBoundary>

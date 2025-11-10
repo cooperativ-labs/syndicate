@@ -1,36 +1,25 @@
-import { REMOVE_NOTIFICATION_RULE } from '@src/utils/graphQueries/organization';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
-import { Maybe, NotificationConfiguration, OrganizationUser } from '@/types';
+import { NotificationConfiguration, OrganizationUser } from '@/types';
 
-import NotificationConfigItem, { NotificationConfigItemBaseProps } from './NotificationConfigItem';
+import NotificationConfigItem from './NotificationConfigItem';
 
 type NotificationConfigListProps = {
-  organizationUser: Maybe<OrganizationUser> | undefined;
+  organizationUser:
+    | (OrganizationUser & { notificationConfigurations: NotificationConfiguration[] })
+    | null;
 };
 
 const NotificationConfigList: FC<NotificationConfigListProps> = ({ organizationUser }) => {
-  const [removeNotification, { data: dataRemove, error: deleteError }] =
-    useMutation(REMOVE_NOTIFICATION_RULE);
-
-  if (deleteError) {
-    throw new Error(deleteError.message);
-  }
-
-  const { notificationConfigurations, id } = organizationUser as OrganizationUser;
+  if (!organizationUser) return null;
   return (
     <div className="w-full">
-      {notificationConfigurations?.map((config, i) => {
-        return (
-          <div className="mb-3 gap-2" key={i}>
-            <NotificationConfigItem
-              notificationConfig={config}
-              removeNotification={removeNotification}
-              organizationUserId={id}
-            />
-          </div>
-        );
-      })}
+      {organizationUser.notificationConfigurations.map(notificationConfig => (
+        <NotificationConfigItem
+          key={notificationConfig.id}
+          notificationConfig={notificationConfig}
+        />
+      ))}
     </div>
   );
 };

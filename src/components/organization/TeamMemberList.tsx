@@ -1,4 +1,3 @@
-import { removeTeamMember } from '@src/utils/actions/organizationActions';
 import React, { FC } from 'react';
 
 import { OrganizationUser } from '@/types';
@@ -9,6 +8,7 @@ type TeamMemberListProps = TeamMemberBaseProps & {
 };
 
 const TeamMemberList: FC<TeamMemberListProps> = ({ teamMembers, organizationId, isAdmin }) => {
+  if (!teamMembers) return null;
   return (
     <div className="w-full">
       {teamMembers?.map((member, i) => {

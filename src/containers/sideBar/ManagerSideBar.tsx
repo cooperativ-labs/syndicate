@@ -20,7 +20,8 @@ const ManagerSideBar: FC = () => {
   const windowSize = useWindowSize();
 
   const currentOrganizationName =
-    chosenOrganizationId && organizations?.find(org => org.id === chosenOrganizationId)?.name;
+    chosenOrganizationId &&
+    organizations?.find(org => org.id.toString() === chosenOrganizationId.toString())?.name;
 
   useEffect(() => {
     if (ManagerSidebarOpen && windowSize.width < 768) {

@@ -1,8 +1,8 @@
 'use server';
-import { LegalEntity } from '@gql/graphql';
 import { createClient } from '@supabase/utils/server';
 import { revalidatePath } from 'next/cache';
 
+import { LegalEntity } from '@/types';
 import { LegalEntityWithSubsidiaries } from '@/types';
 
 type AddLegalEntityParams = {

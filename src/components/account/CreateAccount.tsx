@@ -1,11 +1,16 @@
 import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
-import { ErrorMessage, Field, Form, Formik } from 'formik';
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
+import { cn } from '@src/lib/utils';
 import React, { FC, ReactNode, useState } from 'react';
-import * as Yup from 'yup';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import CooperativLogo from '../CooperativLogo';
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
+import { Input } from '../ui/input';
+import { Button } from '../ui/button';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
@@ -46,7 +51,7 @@ const CreateAccount: FC = () => {
     setLoading(true);
     await signInWithEmail({ email, shouldCreateUser: true });
     setLoading(false);
-    router.push('/confirm-your-email?email=' + email);
+    router.push('/check-your-email?email=' + email);
   };
 
   const handlePasswordLogin = (email: string, password: string) => {
@@ -59,28 +64,41 @@ const CreateAccount: FC = () => {
     signIn({ email, password });
   };
 
-  const MagicLinkLoginSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email address').required('Email is required')
+  const magicLinkSchema = z.object({
+    email: z.email('Invalid email address').min(1, 'Email is required')
   });
+
+  type MagicLinkFormData = z.infer<typeof magicLinkSchema>;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting }
+  } = useForm<MagicLinkFormData>({
+    resolver: zodResolver(magicLinkSchema),
+    defaultValues: {
+      email: ''
+    }
+  });
+
+  const onSubmit = async (data: MagicLinkFormData) => {
+    await handleMagicLink(data.email);
+  };
+
   const magicLinkForm = (
-    <Formik
-      initialValues={{ email: '', password: '' }}
-      validationSchema={MagicLinkLoginSchema}
-      onSubmit={values => handleMagicLink(values.email)}
-    >
-      {({ errors, touched, isSubmitting }) => (
-        <Form>
-          <div>
-            <Field
+    <form onSubmit={handleSubmit(onSubmit)}>
+      <FieldGroup>
+        <Field orientation="horizontal">
+          <FieldContent>
+            <Input
               type="email"
-              name="email"
-              aria-label="login-email"
-              placeholder="you@example.com"
-              className={`w-full rounded-sm h-14 border-2 ${
-                touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
-              } focus:no-outline focus:ring-2 focus:ring-blue-400`}
+              {...register('email')}
+              className={cn([errors.email ? 'border-red-400' : 'border-cLightBlue', 'h-12'])}
             />
-            {/* <Field
+            <FieldError errors={errors.email ? [errors.email] : undefined} />
+          </FieldContent>
+        </Field>
+        {/* <Field
               type="password"
               name="password"
               aria-label="password"
@@ -89,22 +107,11 @@ const CreateAccount: FC = () => {
                 touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
               } focus:no-outline focus:ring-2 focus:ring-blue-400`}
             /> */}
-            <ErrorMessage
-              name="email"
-              component="div"
-              className="mt-1 text-sm font-semibold text-red-700"
-            />
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="flex my-5 items-center rounded-sm bg-blue-600 justify-center p-3 text-slate-50 font-medium w-full"
-          >
-            Continue with email
-          </button>
-        </Form>
-      )}
-    </Formik>
+        <Button type="submit" disabled={isSubmitting} size="lg" className=" w-full">
+          Continue with email
+        </Button>{' '}
+      </FieldGroup>
+    </form>
   );
 
   // const TestLoginSchema = Yup.object().shape({

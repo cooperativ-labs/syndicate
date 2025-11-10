@@ -23,11 +23,11 @@ import Select from '../form-components/Select';
 import SetOperatorButton from './actions/SetOperatorButton';
 
 export type SendSharesProps = {
-  sharesIssued: number | undefined;
-  sharesOutstanding: number | undefined;
+  sharesIssued: number | undefined | null;
+  sharesOutstanding: number | undefined | null;
   shareContractId: string;
   shareContractAddress: String0x;
-  offeringParticipants: OfferingParticipant[] | undefined;
+  offeringParticipants: OfferingParticipant[] | undefined | null;
   partitions: String0x[];
   myShareQty: number | undefined;
   investmentCurrency: CurrencyCodeType | undefined;

@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 
-import { LinkedAccount, Maybe } from '@/types';
+import { LinkedAccount } from '@/types';
 
 import LinkedAccountListItem from './LinkedAccountListItem';
 
 type LinkedAccountsListProps = {
-  linkedAccounts: Maybe<Maybe<LinkedAccount>[]> | undefined;
+  linkedAccounts: LinkedAccount[] | undefined;
   isOrganizationManager?: boolean | undefined;
 };
 

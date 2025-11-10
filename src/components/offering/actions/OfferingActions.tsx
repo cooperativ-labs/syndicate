@@ -25,7 +25,7 @@ import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 
-import { CurrencyCodeType, Document, ShareOrder, TransferEvent } from '@/types';
+import { CurrencyCodeType, Document, ShareOrder, ShareTransferEvent } from '@/types';
 
 import SendShares from '../SendShares';
 
@@ -44,7 +44,7 @@ type OfferingActionsProps = SmartContractsSettingsProps &
     retrievalIssue: boolean;
     issueReachingContract: { share: boolean; swap: boolean };
     userId: string;
-    transferEvents: TransferEvent[] | undefined;
+    transferEvents: ShareTransferEvent[] | undefined;
     documents: Document[];
   };
 
@@ -240,7 +240,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
       </div>
       {showActionPanel === 'send' && (
         <SendShares
-          investmentCurrency={investmentCurrency}
+          investmentCurrency={investmentCurrency as CurrencyCodeType}
           currentSalePrice={currentSalePrice}
           sharesIssued={sharesIssued}
           sharesOutstanding={sharesOutstanding}

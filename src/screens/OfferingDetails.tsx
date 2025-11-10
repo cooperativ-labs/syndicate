@@ -25,14 +25,15 @@ import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { Document, DocumentType, OfferingFull, OrganizationComplete } from '@/types';
+import { CurrencyCodeType, Document, DocumentType, OfferingFull, OrganizationUser } from '@/types';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;
   documents?: Document[];
+  organizationUsers: OrganizationUser[];
 };
 
-const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
+const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organizationUsers }) => {
   const { address: userWalletAddress } = useAccount();
   const { user } = useUserContext();
   const userId = user?.id;
@@ -113,7 +114,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     refetchSwapContract,
     refetchOrders,
     refetchTransactionHistory
-  } = useOfferingDetails(offering, userId);
+  } = useOfferingDetails(offering, organizationUsers, userId);
 
   const triggerInvestorListRefresh = () => {
     setInvestorListRefreshTrigger(investorListRefreshTrigger + 1);
@@ -174,7 +175,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
           show={!contractMatchesCurrentChain}
           color="orange-600"
           text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
-            MatchSupportedChains(shareContract?.cryptoAddress.chainId)?.name
+            MatchSupportedChains(shareContract?.cryptoAddress.chain_id)?.name
           }.`}
         />
         {/* MAIN CONTENT  */}
@@ -183,14 +184,14 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
           {/* Slot 1 */}
           <DashboardCard>
             <OfferingDashboardTitle
-              profileVisibility={is_public}
+              profileVisibility={is_public || false}
               offeringId={id.toString()}
               organizationId={legalEntity.organization_id.toString()}
-              accessCode={access_code}
+              accessCode={access_code || ''}
               offeringName={name}
               isOfferingManager={isOfferingManager}
               shareContractAddress={shareContractAddress}
-              chainId={shareContract?.cryptoAddress.chainId}
+              chainId={shareContract?.cryptoAddress.chain_id || undefined}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
@@ -216,7 +217,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
               ) : (
                 <BasicOfferingDetailsForm
                   offeringId={id.toString()}
-                  operatingCurrency={legalEntity?.operating_currency}
+                  operatingCurrency={legalEntity?.operating_currency as CurrencyCodeType}
                 />
               )
             ) : (

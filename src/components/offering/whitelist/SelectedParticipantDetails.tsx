@@ -147,7 +147,10 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   } = participant;
 
   const distributions = offering.distributions;
-  const isEditorOrAdmin = getIsEditorOrAdmin(userId, offering.offeringEntity?.organization);
+  const isEditorOrAdmin = getIsEditorOrAdmin({
+    userId,
+    organizationUsers: offering.offeringEntity?.organization?.organizationUsers ?? []
+  });
   const investorApplicationText = investorApplication?.applicationDoc.text;
 
   const updateInvestorForm = (itemType: ParticipantSpecItemType) => {

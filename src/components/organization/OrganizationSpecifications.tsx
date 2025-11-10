@@ -1,15 +1,19 @@
 import { cn } from '@src/lib/utils';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Country } from 'country-state-city';
-import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
 
-import { CurrencyCode, Maybe, Organization } from '@/types';
+import { Organization } from '@/types';
 
 import Button from '../buttons/Button';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import ClickToEditItem from '../form-components/ClickToEditItem';
-import Input from '../form-components/Inputs';
+import { Input } from '../ui/input';
+import { Textarea } from '../ui/textarea';
+import { LoadingButton, ButtonLoadingState } from '../ui/loading-button';
+import { updateOrganization } from '@src/utils/actions/organizationActions';
+import { toast } from 'sonner';
 
 export type EditOrganizationSelectionType =
   | 'name'
@@ -25,109 +29,181 @@ export const changeForm = (
 
   setEditOn: (editOn: EditOrganizationSelectionType) => void,
   handleChange: (values: {
-    country: Maybe<string> | undefined;
-    name: Maybe<string> | undefined;
-    description: Maybe<string> | undefined;
-    shortDescription: Maybe<string> | undefined;
+    country: string;
+    name: string;
+    description: string;
+    shortDescription: string;
   }) => void
 ) => {
-  const { name, shortDescription, description, country } = organization;
   return (
-    <Formik
-      initialValues={{
-        country: country,
-        name: name,
-        description: description,
-        shortDescription: shortDescription
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.name) {
-          errors.name = 'Please include the name of this organization.';
-        }
+    <OrganizationChangeForm
+      itemType={itemType}
+      organization={organization}
+      setEditOn={setEditOn}
+      handleChange={handleChange}
+    />
+  );
+};
 
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting }) => {
-        setSubmitting(true);
-        handleChange(values);
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting }) => (
-        <Form
-          className={cn(
-            itemType !== 'shortDescription' && 'md:grid',
-            'flex flex-col  grid-cols-5 w-full items-center gap-2 my-4'
-          )}
-        >
-          <div className="w-full md:col-span-3">
-            {itemType === 'country' && (
-              <Input className={' bg-opacity-0'} required name="country" />
-            )}
-            {itemType === 'name' && <Input className={' bg-opacity-0'} required name="name" />}
-            {itemType === 'description' && (
-              <Input className={' bg-opacity-0'} required textArea name="description" />
-            )}
-            {itemType === 'shortDescription' && (
-              <Input className={' bg-opacity-0 w-full'} required name="shortDescription" textArea />
-            )}
-          </div>
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className=" bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
-          >
-            Save
-          </Button>
-          <Button
-            className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
-            onClick={e => {
-              e.preventDefault();
-              setEditOn('none');
-            }}
-          >
-            Cancel
-          </Button>
-        </Form>
+type OrganizationChangeFormValues = {
+  country: string;
+  name: string;
+  description: string;
+  shortDescription: string;
+};
+
+type OrganizationChangeFormProps = {
+  itemType: EditOrganizationSelectionType;
+  organization: Organization;
+  setEditOn: (editOn: EditOrganizationSelectionType) => void;
+  handleChange: (values: {
+    country: string;
+    name: string;
+    description: string;
+    shortDescription: string;
+  }) => void | Promise<void>;
+};
+
+const OrganizationChangeForm: FC<OrganizationChangeFormProps> = ({
+  itemType,
+  organization,
+  setEditOn,
+  handleChange
+}) => {
+  const { name, short_description, description, country } = organization;
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
+
+  const {
+    register,
+    handleSubmit,
+    formState: { isSubmitting, errors }
+  } = useForm<OrganizationChangeFormValues>({
+    defaultValues: {
+      country: country ?? '',
+      name: name ?? '',
+      description: description ?? '',
+      shortDescription: short_description ?? ''
+    }
+  });
+
+  const onSubmit = async (values: OrganizationChangeFormValues) => {
+    try {
+      setButtonState('loading');
+      await handleChange({
+        country: values.country.trim(),
+        name: values.name.trim(),
+        description: values.description.trim(),
+        shortDescription: values.shortDescription.trim()
+      });
+    } catch (error) {
+      console.error(error);
+      setButtonState('error');
+      toast.error('Oops. Looks like something went wrong.');
+    } finally {
+      setButtonState('default');
+    }
+  };
+
+  return (
+    <form
+      className={cn(
+        itemType !== 'shortDescription' && 'md:grid',
+        'flex flex-col  grid-cols-5 w-full items-center gap-2 my-4'
       )}
-    </Formik>
+    >
+      <div className="w-full md:col-span-3">
+        {itemType === 'country' && (
+          <Input
+            className=" bg-opacity-0"
+            required
+            aria-invalid={errors.country ? 'true' : 'false'}
+            {...register('country', { required: true })}
+          />
+        )}
+        {itemType === 'name' && (
+          <>
+            <Input
+              className=" bg-opacity-0"
+              required
+              aria-invalid={errors.name ? 'true' : 'false'}
+              {...register('name', {
+                required: 'Please include the name of this organization.'
+              })}
+            />
+            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
+          </>
+        )}
+        {itemType === 'description' && (
+          <Textarea
+            className=" bg-opacity-0"
+            required
+            aria-invalid={errors.description ? 'true' : 'false'}
+            {...register('description', { required: true })}
+          />
+        )}
+        {itemType === 'shortDescription' && (
+          <Textarea
+            className=" bg-opacity-0 w-full"
+            required
+            aria-invalid={errors.shortDescription ? 'true' : 'false'}
+            {...register('shortDescription', { required: true })}
+          />
+        )}
+      </div>
+      <LoadingButton
+        type="submit"
+        disabled={isSubmitting}
+        className=" bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
+        onClick={handleSubmit(onSubmit)}
+        buttonState={buttonState}
+        text="Save changes"
+      />
+
+      <Button
+        className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
+        onClick={e => {
+          e.preventDefault();
+          setEditOn('none');
+        }}
+      >
+        Cancel
+      </Button>
+    </form>
   );
 };
 
 type OrganizationSpecificationsProps = {
   organization: Organization;
   isOrganizationManager: boolean | undefined;
-  updateOrganization: (x: any) => void;
 };
 
 const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
   organization,
-  isOrganizationManager,
-  updateOrganization
+  isOrganizationManager
 }) => {
   const [editOn, setEditOn] = useState<
     EditOrganizationSelectionType | EditEntitySelectionType | string
   >('none');
-  const { id, name, country, description, shortDescription } = organization;
+  const { id, name, country, description, short_description, is_public, logo, banner_image } =
+    organization;
 
   const handleChange = async (values: {
-    name: Maybe<string> | undefined;
-    country: Maybe<string> | undefined;
-    description: Maybe<string> | undefined;
-    shortDescription: Maybe<string> | undefined;
+    name: string;
+    country: string;
+    description: string;
+    shortDescription: string;
   }) => {
     const { name, country, description, shortDescription } = values;
     try {
       updateOrganization({
-        variables: {
-          currentDate: currentDate,
-          organizationId: id,
-          country: country,
-          name: name,
-          description: description,
-          shortDescription: shortDescription
-        }
+        organizationId: id.toString(),
+        country: country ?? '',
+        name: name,
+        description: description,
+        shortDescription: shortDescription,
+        isPublic: is_public ?? false,
+        logo: logo ?? '',
+        bannerImage: banner_image ?? ''
       });
       setEditOn('none');
     } catch (e: any) {
@@ -167,7 +243,7 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
 
       <ClickToEditItem
         label="Short Description (160 characters max)"
-        currentValue={shortDescription}
+        currentValue={short_description}
         form={changeForm('shortDescription', organization, setEditOn, handleChange)}
         editOn={editOn}
         itemType="shortDescription"

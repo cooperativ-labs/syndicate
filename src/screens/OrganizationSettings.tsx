@@ -24,103 +24,116 @@ import SectionBlock from '@src/containers/SectionBlock';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
-import { useParams, useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 
-import { OrganizationComplete } from '@/types';
-
+import {
+  NotificationConfiguration,
+  OrganizationComplete,
+  OrganizationPermissionTypes,
+  OrganizationUser
+} from '@/types';
+import { updateOrganization } from '@src/utils/actions/organizationActions';
+import ImageUpload from '@src/components/form-components/ImageUpload';
 interface OrganizationSettingsProps {
-  organization: OrganizationComplete;
+  organization: OrganizationComplete | null;
+  organizationUser:
+    | (OrganizationUser & { notificationConfigurations: NotificationConfiguration[] })
+    | null;
 }
-const OrganizationSettings: FC<OrganizationSettingsProps> = ({ organization }) => {
+const OrganizationSettings: FC<OrganizationSettingsProps> = ({
+  organization,
+  organizationUser
+}) => {
   const { user } = useUserContext();
   const userId = user?.id;
-
+  const [logoUpload, setLogoUpload] = useState<File | null>(null);
+  const [bannerImageUpload, setBannerImageUpload] = useState<File | null>(null);
   const [imageModal, setImageModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
-  const [alerted, setAlerted] = useState<boolean>(false);
 
   if (!organization) {
     return <ModalLoading />;
   }
+
+  const handleLogoUpload = async (file: File) => {
+    setLogoUpload(file);
+  };
+  const handleBannerImageUpload = async (file: File) => {
+    setBannerImageUpload(file);
+  };
 
   const {
     id,
     name,
     emailAddresses,
     logo,
-    bannerImage,
+    banner_image,
     legalEntities,
     country,
-    isPublic,
-    description,
-    shortDescription,
-    linkedAccounts
+    linkedAccounts,
+    is_public,
+    short_description,
+    description
   } = organization;
 
-  const getOrganizationUser = (userId: string | undefined, organization: Organization) => {
-    return (organization as any).organization_userCollection?.edges?.find(
-      (user: any) => user?.user.id === userId
-    );
+  const isAdmin =
+    organizationUser && userId && getIsAdmin({ userId, organizationUsers: [organizationUser] });
+  const isEditorOrAdmin = getIsEditorOrAdmin({
+    userId: userId ?? '',
+    organizationUsers: [
+      organizationUser ?? {
+        id: '',
+        user_id: '',
+        permissions: []
+      }
+    ]
+  });
+
+  const baseItems = {
+    organizationId: organization.id.toString(),
+    country: country ?? '',
+    shortDescription: short_description ?? '',
+    description: description ?? ''
   };
 
-  const organizationCurrentUser = getOrganizationUser(userId, organization);
-  const isAdmin = userId && getIsAdmin(userId, organization);
-  const isEditorOrAdmin = getIsEditorOrAdmin(userId, organization);
-
-  const handleNameChange = (values: { name: Maybe<string> | undefined }) => {
-    updateOrganization({
-      variables: {
-        currentDate: currentDate,
-        organizationId: organization.id,
-        name: values.name,
-        logo: logo,
-        bannerImage: bannerImage,
-        country: country
-      }
-    }).then(res => {
-      setNameEditOn('none');
-      window.location.reload();
+  const handleNameChange = async (values: { name: string }) => {
+    await updateOrganization({
+      name: values.name,
+      ...baseItems,
+      logo: logo ?? '',
+      bannerImage: banner_image ?? '',
+      isPublic: is_public ?? false
     });
+    setNameEditOn('none');
+    window.location.reload();
   };
-  const handleToggle = (profileVisibility: boolean) => {
-    updateOrganization({
-      variables: {
-        currentDate: currentDate,
-        organizationId: organization.id,
-        name: name,
-        country: country,
-        isPublic: profileVisibility,
-        logo: logo,
-        bannerImage: bannerImage
-      }
-    });
-  };
-
-  const addLogoToDB = (url: string) => {
-    updateOrganization({
-      variables: {
-        organizationId: organization.id,
-        currentDate: currentDate,
-        name: name,
-        country: country,
-        bannerImage: bannerImage,
-
-        logo: url
-      }
+  const handleToggle = async (profileVisibility: boolean) => {
+    await updateOrganization({
+      isPublic: profileVisibility ?? false,
+      ...baseItems,
+      logo: logo ?? '',
+      bannerImage: banner_image ?? '',
+      name: name ?? ''
     });
   };
 
-  const addBannerImageToDb = (url: string) => {
-    updateOrganization({
-      variables: {
-        organizationId: organization.id,
-        currentDate: currentDate,
-        name: name,
-        country: country,
+  const addLogoToDB = async (url: string) => {
+    await updateOrganization({
+      logo: url,
+      ...baseItems,
+      name: name ?? '',
+      bannerImage: banner_image ?? '',
+      isPublic: is_public ?? false
+    });
+  };
 
-        bannerImage: url
-      }
+  const addBannerImageToDb = async (url: string) => {
+    await updateOrganization({
+      ...baseItems,
+      logo: logo ?? '',
+      name: name ?? '',
+      isPublic: is_public ?? false,
+      bannerImage: url
     });
   };
 
@@ -130,27 +143,25 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({ organization }) =
         <div className=" grid grid-cols-3 gap-4">
           <div className="flex flex-col col-span-1 justify-center">
             <img className="h-32 object-scale-down" src={logo as string} />
-            <FileUpload
+            <ImageUpload
               uploaderText="Add logo"
-              urlToDatabase={addLogoToDB}
-              accept={['jpg', 'jpeg', 'png', 'svg']}
-              baseUploadUrl={`/${organization.id}/`}
+              onSubmit={handleLogoUpload}
+              accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
             />
           </div>
           <div className="col-span-2">
-            <img className="h-32 w-full object-cover" src={bannerImage as string} />
-            <FileUpload
+            <img className="h-32 w-full object-cover" src={banner_image as string} />
+            <ImageUpload
               uploaderText="Add banner image"
-              urlToDatabase={addBannerImageToDb}
-              accept={['jpg', 'jpeg', 'png', 'svg']}
-              baseUploadUrl={`/${organization.id}/`}
+              onSubmit={handleBannerImageUpload}
+              accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
             />
           </div>
         </div>
       </FormModal>
 
       <div className="flex items-center relative">
-        <img src={bannerImage as string} className="object-cover h-64 w-full absolute" />
+        <img src={banner_image as string} className="object-cover h-64 w-full absolute" />
         <div className="flex backdrop-opacity-10 backdrop-invert w-full h-64 bg-gray-800/50 items-center">
           <div className="ml-4 flex items-center ">
             <RoundedImage
@@ -191,7 +202,7 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({ organization }) =
               <div className="flex items-center">
                 {isEditorOrAdmin && (
                   <ProfileVisibilityToggle
-                    profileVisibility={isPublic}
+                    profileVisibility={is_public}
                     handleToggle={handleToggle}
                   />
                 )}
@@ -204,7 +215,6 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({ organization }) =
             <OrganizationSpecifications
               organization={organization}
               isOrganizationManager={isEditorOrAdmin}
-              updateOrganization={updateOrganization}
             />
 
             <div>
@@ -236,20 +246,20 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({ organization }) =
         <>
           <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Team</h2>
           <TeamMemberList
-            teamMembers={organization.users}
-            organizationId={organization.id}
-            isAdmin={isAdmin}
+            teamMembers={organization.organizationUsers}
+            organizationId={organization.id.toString()}
+            isAdmin={isAdmin ?? false}
           />
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
             <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
-              <SettingsAddTeamMember organizationId={organization.id} />
+              <SettingsAddTeamMember organizationId={organization.id.toString()} />
             </SectionBlock>
           </div>
         </>
         <></>
         <>
           <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Email Notifications</h2>
-          <NotificationConfigList organizationUser={organizationCurrentUser} />
+          <NotificationConfigList organizationUser={organizationUser} />
           <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
             <SectionBlock
               className="font-bold "
@@ -257,7 +267,7 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({ organization }) =
               mini
               asAccordion
             >
-              <SettingsAddNotification organizationUserId={organizationCurrentUser?.id} />
+              <SettingsAddNotification organizationUserId={organizationUser?.id} />
             </SectionBlock>
           </div>
         </>

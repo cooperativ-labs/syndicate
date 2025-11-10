@@ -34,10 +34,9 @@ const configCookies = (cookies: string) => {
   try {
     const cookieValue = wagmiStore?.split('=')[1];
     if (!cookieValue) return null;
-    JSON.parse(cookieValue);
     return wagmiStore;
   } catch (error) {
-    console.error('Error parsing wagmi store', error);
+    // console.error('Error parsing wagmi store', error);
     return null;
   }
 };

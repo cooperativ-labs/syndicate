@@ -5,13 +5,16 @@ import Card from '@src/components/cards/Card';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import EnsureOrganization from '@src/containers/EnsureOrganization';
-import { handleOrganizationChange } from '@src/utils/helpersOrganization';
+import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
 import { FC } from 'react';
 
 const Dashboard: FC = () => {
   const { organizations } = useOrganizations();
-
   const hasOrganizations = organizations.length > 0;
+
+  const handleOrganizationChange = (id: string) => {
+    organizationChangeServer(id);
+  };
 
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">

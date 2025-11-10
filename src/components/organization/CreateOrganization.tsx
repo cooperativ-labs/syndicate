@@ -4,6 +4,7 @@ import { useUserContext } from '@contexts/UserContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createOrganizationWithAdmin } from '@src/utils/actions/organizationActions';
 import { formatSlug } from '@src/utils/graphQueries/gqlUtils';
+import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
 import { Country } from 'country-state-city';
 import { useRouter } from 'next/navigation';
 import React, { FC, useContext, useState } from 'react';
@@ -11,21 +12,18 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
-
-import FileUpload from '../form-components/FileUpload';
-import { defaultFieldDiv } from '../form-components/Inputs';
+import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
 import { LoadingButton } from '../ui/loading-button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
-import { Textarea } from '../ui/textarea';
-import { handleOrganizationChange } from '@src/utils/helpersOrganization';
-import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/field';
 import { Separator } from '../ui/separator';
+import { Textarea } from '../ui/textarea';
+import ImageUpload from '../form-components/ImageUpload';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
   actionOnCompletion?: () => void;
+  noTitle?: boolean;
 };
 
 type CreateOrganizationFormData = {
@@ -42,16 +40,22 @@ const schema = z.object({
   country: z.string()
 });
 
-const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnCompletion }) => {
+const CreateOrganization: FC<CreateOrganizationType> = ({
+  defaultLogo,
+  actionOnCompletion,
+  noTitle = false
+}) => {
   const { user } = useUserContext();
   const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? '');
+  const [logoFile, setLogoFile] = useState<File | null>(null);
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
-  const applicationStore: ApplicationStoreProps = useContext(store);
-  const { dispatch: dispatchPageIsLoading } = applicationStore;
-  const router = useRouter();
 
+  const router = useRouter();
+  const handleOrganizationChange = (id: string) => {
+    organizationChangeServer(id);
+  };
   const countries = Country.getAllCountries();
 
   const form = useForm<CreateOrganizationFormData>({
@@ -65,7 +69,6 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   });
 
   const {
-    register,
     handleSubmit,
     control,
     watch,
@@ -80,16 +83,9 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
 
   const userId = user.id;
 
-  const handleLogoUpload = ({
-    url
-  }: {
-    url: string;
-    fileId: string;
-    title: string;
-    docType?: any;
-    format?: any;
-  }) => {
-    setLogoUrl(url);
+  const handleLogoUpload = async (file: File) => {
+    setLogoFile(file);
+    setLogoUrl(URL.createObjectURL(file));
   };
 
   const onSubmit = async (data: CreateOrganizationFormData) => {
@@ -98,7 +94,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
       const orgData = await createOrganizationWithAdmin({
         userId,
         name: data.name,
-        logo: logoUrl ? logoUrl : '/assets/images/logos/company-placeholder.jpeg',
+        logoFile: logoFile,
         shortDescription: data.shortDescription,
         website: data.website,
         country: data.country,
@@ -117,7 +113,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
   return (
     <form className="flex flex-col gap-4">
       <FieldSet>
-        <FieldLegend>Create Organization</FieldLegend>
+        {!noTitle && <FieldLegend>Create Organization</FieldLegend>}
         <div className="grid md:grid-cols-2 gap-4">
           <FieldGroup className="col-span-1 flex flex-col gap-4">
             <Controller
@@ -137,7 +133,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
               render={({ field }) => (
                 <Field>
                   <FieldLabel>Country of operation</FieldLabel>
-                  <Select {...field}>
+                  <Select {...field} onValueChange={field.onChange}>
                     <SelectTrigger>
                       <SelectValue placeholder="Select a country" />
                     </SelectTrigger>
@@ -154,18 +150,15 @@ const CreateOrganization: FC<CreateOrganizationType> = ({ defaultLogo, actionOnC
               )}
             />
           </FieldGroup>
-          <FieldGroup>
-            <FileUpload
-              uploaderText="Add logo"
-              urlToDatabase={handleLogoUpload}
-              url="organizations/logos"
-              bucket="organization-assets"
-              accept={['jpg', 'jpeg', 'png', 'svg']}
-              imagePreview={logoUrl}
-              setImagePreview={setLogoUrl}
-              className="flex p-3 bg-gray-100  h-40 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40"
-            />
-          </FieldGroup>
+
+          <ImageUpload
+            uploaderText="Add logo"
+            onSubmit={handleLogoUpload}
+            accept={['image/jpeg', 'image/png', 'image/svg+xml']}
+            imagePreview={logoUrl}
+            setImagePreview={setLogoUrl}
+            className="flex p-3 bg-gray-100  h-40 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40"
+          />
         </div>
         <FieldGroup>
           <Controller

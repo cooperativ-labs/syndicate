@@ -17,11 +17,19 @@ import { useCallback, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 
-import { Document, DocumentType, OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
+import {
+  Document,
+  DocumentType,
+  OfferingFull,
+  OrganizationUser,
+  ShareOrder,
+  ShareTransferEvent
+} from '@/types';
 
 const useOfferingDetails = (
   offering: OfferingFull,
-  userId?: string | undefined,
+  organizationUsers?: OrganizationUser[] | undefined | null,
+  userId?: string | number | undefined,
   documents?: Document[]
 ) => {
   const { address: userWalletAddress } = useAccount();
@@ -114,7 +122,8 @@ const useOfferingDetails = (
 
   const hasContract = !!contractOwner;
   const isContractOwner = contractOwner === userWalletAddress;
-  const isOfferingManager = getIsEditorOrAdmin(userId, legalEntity.organization_id) ?? false;
+  const isOfferingManager =
+    getIsEditorOrAdmin({ userId, organizationUsers: organizationUsers ?? [] }) ?? false;
   const contractManagerMatches =
     isContractOwner === !!isOfferingManager || isManager === !!isOfferingManager;
 

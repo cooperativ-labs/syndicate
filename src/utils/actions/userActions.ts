@@ -1,15 +1,23 @@
-'use server';
-import { createClient } from '@supabase/utils/server';
-import { redirect } from 'next/navigation';
+"use server";
+import { createClient } from "@supabase/utils/server";
+import { revalidatePath } from "next/cache";
+import { redirect } from "next/navigation";
 
-import { Profile } from '@/types';
+import {
+  NotificationMethodTypes,
+  NotificationRecipientTypes,
+  NotificationSubjectTypes,
+  Profile,
+} from "@/types";
 
-export const signIn = async ({ email, password }: { email: string; password: string }) => {
+export const signIn = async (
+  { email, password }: { email: string; password: string },
+) => {
   const supabase = createClient();
 
   const { error } = await supabase.auth.signInWithPassword({
     email,
-    password
+    password,
   });
 
   if (error) {
@@ -18,7 +26,7 @@ export const signIn = async ({ email, password }: { email: string; password: str
     return redirect(`/login?form=password&message=${error.message}`);
   }
 
-  return redirect('/');
+  return redirect("/");
 };
 
 export const signUp = async ({
@@ -26,7 +34,7 @@ export const signUp = async ({
   password,
   name,
   token,
-  inviteEmail
+  inviteEmail,
 }: {
   email: string;
   password: string;
@@ -37,20 +45,22 @@ export const signUp = async ({
   const supabase = createClient();
 
   if (!inviteEmail && !email) {
-    return redirect('/login?message=Missing required fields');
+    return redirect("/login?message=Missing required fields");
   }
 
   const { error, data } = await supabase.auth.signUp({
     email: inviteEmail ?? (email as string),
-    password
+    password,
   });
 
   if (error) {
     // Sentry.captureException(error);
-    return redirect(`/login?message=Could not create user${token ? '&code=' + token : ''}`);
+    return redirect(
+      `/login?message=Could not create user${token ? "&code=" + token : ""}`,
+    );
   }
 
-  return redirect('/confirm-your-email?email=' + email);
+  return redirect("/confirm-your-email?email=" + email);
 };
 
 export const signOut = async () => {
@@ -58,17 +68,17 @@ export const signOut = async () => {
   const { error } = await supabase.auth.signOut();
   if (error) {
     return redirect(
-      `/login?message=There may have been an error logging out. Please confirm. ${error}`
+      `/login?message=There may have been an error logging out. Please confirm. ${error}`,
     );
   }
-  return redirect('/');
+  return redirect("/");
 };
 
 export async function signInWithEmail({
   email,
   shouldCreateUser,
   token,
-  noRedirect = false
+  noRedirect = false,
 }: {
   email: string;
 
@@ -79,21 +89,11 @@ export async function signInWithEmail({
   const supabase = createClient();
 
   if (shouldCreateUser) {
-    let invitation;
-
-    // if (token) {
-    //  invitation = await db
-    //   .selectFrom("userInvitation")
-    //   .selectAll()
-    //   .where("id", "=", token)
-    //   .executeTakeFirstOrThrow();
-    // }
-
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}`,
-        shouldCreateUser
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
+        shouldCreateUser,
         // data: {
         //  // name,
         //  // orgRoles: invitation && [
@@ -103,7 +103,7 @@ export async function signInWithEmail({
         //  //  },
         //  // ],
         // },
-      }
+      },
     });
 
     if (error) {
@@ -113,18 +113,19 @@ export async function signInWithEmail({
     if (noRedirect) {
       return;
     } else {
-      return redirect('/check-your-email?email=' + email);
+      return redirect("/check-your-email?email=" + email);
     }
     //https://supabase.com/docs/guides/auth/auth-email-templates#editing-email-templates (issue with some clients burning the confirmation link)
   } else {
     const { data, error } = await supabase.auth.signInWithOtp({
       email,
       options: {
+        emailRedirectTo: `${process.env.NEXT_PUBLIC_SITE_URL}/auth/callback`,
         shouldCreateUser: false,
         data: {
-          email
-        }
-      }
+          email,
+        },
+      },
     });
     if (error) {
       // Sentry.captureException(error);
@@ -133,16 +134,63 @@ export async function signInWithEmail({
     if (noRedirect) {
       return;
     } else {
-      return redirect('/check-your-email?email=' + email);
+      return redirect("/check-your-email?email=" + email);
     }
   }
 }
 
 export async function getUserProfile(userId: string) {
   const supabase = createClient();
-  const { data, error } = await supabase.from('profile').select('*').eq('id', userId).single();
+  const { data, error } = await supabase.from("profile").select("*").eq(
+    "id",
+    userId,
+  ).single();
   if (error) {
     throw error;
   }
   return data;
 }
+
+export const addNotificationRule = async ({
+  organizationId,
+  organizationUserId,
+  notificationRecipientType,
+  notificationMethod,
+  notificationSubject,
+}: {
+  organizationId: string;
+  organizationUserId: string;
+  notificationRecipientType: NotificationRecipientTypes;
+  notificationMethod: NotificationMethodTypes;
+  notificationSubject: NotificationSubjectTypes;
+}) => {
+  const supabase = createClient();
+  const { error } = await supabase.from("notification_configuration").insert({
+    organization_user_id: organizationUserId,
+    notification_method: notificationMethod,
+    notification_recipient_type: notificationRecipientType,
+    notification_subject: notificationSubject,
+  });
+  if (error) {
+    throw new Error(error.message);
+  }
+  revalidatePath(`/${organizationId}/settings`, "page");
+};
+
+export const removeNotificationRule = async ({
+  organizationId,
+  notificationRuleId,
+}: {
+  organizationId: string | number;
+  notificationRuleId: string;
+}) => {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("notification_configuration")
+    .delete()
+    .eq("id", notificationRuleId);
+  if (error) {
+    throw new Error(error.message);
+  }
+  revalidatePath(`/${organizationId}/settings`, "page");
+};

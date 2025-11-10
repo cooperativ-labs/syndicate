@@ -1,6 +1,5 @@
 'use client';
 
-import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -17,7 +16,7 @@ import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { OfferingParticipant } from '@/types';
+import { OfferingParticipant, OrganizationPermissionTypes, OrganizationUser } from '@/types';
 import { OrganizationComplete } from '@/types';
 
 const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
@@ -49,15 +48,17 @@ const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ orga
 
   const hasOfferings = offerings && offerings.length > 0;
   const isParticipant = participantOfferings?.length > 0;
-  const isAdmin =
-    userId &&
-    getIsAdmin(userId, {
-      organizationUsers: organization.organizationUsers
-    });
-  const isEditorOrAdmin = getIsEditorOrAdmin(userId, {
-    organizationUsers: organization.organizationUsers
-  });
+  const organizationUsers = organization.organizationUsers as {
+    id: string;
+    user_id: string;
+    permissions: OrganizationPermissionTypes[];
+  }[];
 
+  const isAdmin = userId && getIsAdmin({ userId, organizationUsers });
+  const isEditorOrAdmin = getIsEditorOrAdmin({
+    userId,
+    organizationUsers: organization.organizationUsers as OrganizationUser[]
+  });
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
       {/* <button
