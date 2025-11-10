@@ -1,11 +1,6 @@
 import { Country } from 'country-state-city';
 import React, { FC } from 'react';
 
-import { Address, LegalEntity } from '@/types';
-
-import Button from '../buttons/Button';
-
-import { defaultFieldDiv } from './Inputs';
 import Select from './Select';
 
 type CountrySelectProps = {

@@ -36,18 +36,8 @@ const Dashboard: FC = () => {
           </Card>
         </div>
       ) : (
-        <div className="grid grid-cols-3 gap-12">
-          <div className="col-span-2 p-6 border-2 rounded-md">
-            <h2 className="text-xl  text-blue-900 font-semibold">Create an offering:</h2>
-            {/* <EnsureOrganization
-              user={user}
-              explainerText="In order to create an offering, we first need some personal information"
-            > */}
-            {/* organizations fetched for manager include legal_entities; cast for component's type */}
-            {/* <CreateOffering refetch={() => {}} /> */}
-            {/* </EnsureOrganization> */}
-          </div>
-          <div className="col-span-1">
+        <div className="grid grid-cols-5 gap-12">
+          <div className="col-span-3">
             <div>
               <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">
                 Your Organizations{' '}
@@ -71,6 +61,7 @@ const Dashboard: FC = () => {
                 );
               })}
             </div>
+
             {/* {isParticipant ? (
               <div>
                 <h2 className="text-xl md:mt-8 mb-5  text-blue-900 font-semibold">Your Investments: </h2>
@@ -82,6 +73,10 @@ const Dashboard: FC = () => {
               </div>
             )} */}
           </div>
+
+          <Card className="rounded-lg shadow-box p-4 col-span-2">
+            <CreateOrganization />
+          </Card>
         </div>
       )}
     </div>
