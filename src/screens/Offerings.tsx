@@ -19,7 +19,10 @@ const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization })
   if (!organization) {
     return <></>;
   }
-  const isAdminOrEditor = getIsEditorOrAdmin(user?.id, organization);
+  const isAdminOrEditor = getIsEditorOrAdmin({
+    userId: user?.id,
+    organizationUsers: organization.organizationUsers
+  });
 
   const offerings = getOrgOfferingsFromEntity(organization);
 
@@ -50,9 +53,7 @@ const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization })
               )}
             </>
           ) : (
-            <LimitedWidthSection center>
-              <CreateOffering organization={organization} />
-            </LimitedWidthSection>
+            <CreateOffering organization={organization} />
           )}
         </section>
       </div>

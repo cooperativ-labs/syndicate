@@ -7,8 +7,8 @@ import { Form, Formik } from 'formik';
 import { Check, Copy, SquareArrowOutUpRight } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
+import { Button } from '../ui/button';
 
-import Button from '../buttons/Button';
 import Input from '../form-components/Inputs';
 import FormattedCryptoAddress from '../FormattedCryptoAddress';
 
@@ -190,20 +190,24 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             {offeringName}
           </h1>
         )}
-
-        <button
-          className="text-sm text-gray-700 "
-          onClick={e => {
-            e.stopPropagation();
-            navigator.clipboard.writeText(`${getBaseUrl()}/portal/${offeringId}`);
-            setCopied(true);
-            setTimeout(() => {
-              setCopied(false);
-            }, 1000);
-          }}
-        >
-          Copy investor portal link {copied ? <Check /> : <Copy />}
-        </button>
+        <div className="flex items-center text-sm text-gray-700">
+          Copy investor portal link
+          <Button
+            className="text-sm text-gray-700 border-0 shadow-none"
+            variant="outline"
+            size="sm"
+            onClick={e => {
+              e.stopPropagation();
+              navigator.clipboard.writeText(`${getBaseUrl()}/portal/${offeringId}`);
+              setCopied(true);
+              setTimeout(() => {
+                setCopied(false);
+              }, 1000);
+            }}
+          >
+            {copied ? <Check /> : <Copy />}
+          </Button>
+        </div>
       </div>
       <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">
         {visibilitySettings}

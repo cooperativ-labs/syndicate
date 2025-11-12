@@ -1,5 +1,5 @@
 import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
-import ManagerWrapper from '@src/containers/ManagerWrapper';
+
 import OrganizationOverview from '@src/screens/OrganizationOverview';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 
@@ -10,13 +10,8 @@ const OrganizationPage = async ({ params }: { params: Promise<{ organizationId: 
     return <OrganizationNotFound backHref={`/${organizationId}/portal`} />;
   }
   return (
-    <div
-      data-test="component-landing"
-      className="bg-linear-to-b from-gray-100 to-blue-50 flex flex-col w-full h-full"
-    >
-      <ManagerWrapper>
-        <OrganizationOverview organization={organization} />
-      </ManagerWrapper>
+    <div data-test="page-overview">
+      <OrganizationOverview organization={organization} />
     </div>
   );
 };

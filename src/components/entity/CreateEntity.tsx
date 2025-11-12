@@ -238,7 +238,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
                 <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
                   <SelectValue placeholder="Select currency" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="item-aligned">
                   {currencyOptionsExcludeCredits.map((option, i) => (
                     <SelectItem key={i} value={option.value}>
                       {option.symbol}
@@ -266,7 +266,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
                 <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
                   <SelectValue placeholder="Select a country" />
                 </SelectTrigger>
-                <SelectContent>
+                <SelectContent position="item-aligned">
                   {countries.map((country, i) => (
                     <SelectItem key={i} value={country.isoCode}>
                       {country.name}

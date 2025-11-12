@@ -151,6 +151,24 @@ export async function getUserProfile(userId: string) {
   return data;
 }
 
+export const updateProfile = async ({
+  userId,
+  name,
+  image,
+}: {
+  userId: string;
+  name: string;
+  image: string | null;
+}) => {
+  const supabase = createClient();
+  const { data, error } = await supabase.from("profile").update({ name, image })
+    .eq("id", userId).select().single();
+  if (error) {
+    throw new Error(error.message);
+  }
+  return data;
+};
+
 export const addNotificationRule = async ({
   organizationId,
   organizationUserId,

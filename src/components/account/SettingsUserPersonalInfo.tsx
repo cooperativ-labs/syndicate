@@ -1,107 +1,105 @@
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { z } from 'zod';
 
-import Checkbox from '../form-components/Checkbox';
-import Input from '../form-components/Inputs';
+import { Profile } from '@/types';
+import { updateProfile } from '@src/utils/actions/userActions';
 
-const fieldDiv = 'pt-3 my-2 bg-opacity-0';
+import { Input } from '@src/components/ui/input';
+import {
+  Field,
+  FieldError,
+  FieldGroup,
+  FieldLabel,
+  FieldLegend,
+  FieldSet
+} from '@src/components/ui/field';
+import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
+
+const profileSchema = z.object({
+  name: z
+    .string()
+    .min(1, 'Please include your full name.')
+    .regex(/^[a-z ,.'-]+$/i, 'Please only use valid characters'),
+  image: z.string().nullable().optional()
+});
+
+type ProfileFormData = z.infer<typeof profileSchema>;
 
 type SettingUserPersonalInfoProps = {
-  user: User;
+  profile: Profile;
 };
 
-const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ user }) => {
-  const [alerted, setAlerted] = useState<boolean>(false);
+const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ profile }) => {
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
+  const form = useForm<ProfileFormData>({
+    resolver: zodResolver(profileSchema),
+    defaultValues: {
+      name: profile.name || '',
+      image: profile.image || ''
+    }
+  });
 
-  if (error) {
-    alert('Oops. Looks like something went wrong');
-  }
-  if (data && !alerted) {
-    alert(`${data.updateUser.user[0].name} was successfully updated!`);
-
-    setAlerted(true);
-  }
+  const onSubmit = async (values: ProfileFormData) => {
+    await updateProfile({
+      userId: profile.id,
+      name: values.name,
+      image: values.image || null
+    });
+  };
 
   return (
-    <Formik
-      initialValues={{
-        name: user.name,
-        image: user.image,
-        email: user.email
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.name) {
-          errors.name = 'Please include your full name.';
-        } else if (!/^[a-z ,.'-]+$/i.test(values.name)) {
-          errors.name = 'Please only use valid characters';
-        }
-        if (!values.email) {
-          errors.email = 'Please include an email address.';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.email)) {
-          errors.email = 'Invalid email address';
-        }
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting }) => {
-        setAlerted(false);
-        setSubmitting(true);
-        updateUser({
-          variables: {
-            currentDate: currentDate,
-            userId: user.id,
-            name: values.name,
-            email: values.email,
-            image: values.image
-          }
-        });
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting, values }) => (
-        <Form className="flex flex-col relative">
-          <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">Personal Information</h2>
-          <Input
-            className={fieldDiv}
-            labelText="Display name"
+    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+      <FieldGroup>
+        <FieldLegend variant="label">Personal Information</FieldLegend>
+        <FieldSet>
+          <Controller
+            control={form.control}
             name="name"
-            type="text"
-            placeholder="Moritz"
+            render={({ field }) => (
+              <Field>
+                <FieldLabel>Full name *</FieldLabel>
+                <Input type="text" placeholder="e.g. Moritz Zimmermann" {...field} />
+                <FieldError
+                  errors={form.formState.errors.name ? [form.formState.errors.name] : undefined}
+                />
+              </Field>
+            )}
           />
-          <Input
-            className={fieldDiv}
-            required
-            labelText="Full name"
-            name="name"
-            type="text"
-            placeholder="e.g. Moritz Zimmermann"
-          />
-          <Input
-            className={fieldDiv}
-            labelText="Profile image"
+          <Controller
+            control={form.control}
             name="image"
-            type="text"
-            placeholder="e.g. https://source.com/your-picture"
+            render={({ field }) => (
+              <Field>
+                <FieldLabel>Profile image</FieldLabel>
+                <Input
+                  type="text"
+                  placeholder="e.g. https://source.com/your-picture"
+                  {...field}
+                  value={field.value || ''}
+                />
+                <FieldError
+                  errors={form.formState.errors.image ? [form.formState.errors.image] : undefined}
+                />
+              </Field>
+            )}
           />
-          <Input
-            className={fieldDiv}
-            required
-            labelText="Email address"
-            name="email"
-            type="text"
-            placeholder="e.g moritz@bonuslife.com"
-          />
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
-          >
-            Save
-          </button>
-        </Form>
-      )}
-    </Formik>
+        </FieldSet>
+        <LoadingButton
+          type="submit"
+          disabled={form.formState.isSubmitting}
+          className="w-full"
+          buttonState={buttonState}
+          setButtonState={setButtonState}
+          text="Save"
+          loadingText="Saving"
+          successText="Saved"
+          errorText="Failed to save"
+          reset
+        />{' '}
+      </FieldGroup>
+    </form>
   );
 };
 

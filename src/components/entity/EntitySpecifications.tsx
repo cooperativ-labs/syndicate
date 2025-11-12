@@ -42,16 +42,16 @@ export const changeForm = (
   handleChange: (values: ChangeFormProps) => void
 ) => {
   console.log('entity', currencyOptionsExcludeCredits);
-  const { displayName, legalName, jurisdiction, operatingCurrency, taxId, purpose } = entity;
+  const { display_name, legal_name, jurisdiction_id, operating_currency, tax_id, purpose } = entity;
   return (
     <Formik
       initialValues={{
-        displayName: displayName,
-        legalName: legalName,
+        displayName: display_name,
+        legalName: legal_name,
         jurCountry: jurisdiction?.country,
         jurProvince: jurisdiction?.province,
         operatingCurrencyCode: operatingCurrency?.code,
-        taxId: taxId,
+        taxId: tax_id,
         purpose: purpose
       }}
       validate={values => {

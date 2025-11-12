@@ -4,19 +4,14 @@ import SettingsUserPersonalInfo from '@src/components/account/SettingsUserPerson
 import Loading from '@src/components/loading/Loading';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import React, { FC, useState } from 'react';
+import { Profile } from '@/types';
 
-const UserSettings: FC = () => {
+const UserSettings: FC<{ profile: Profile }> = ({ profile }) => {
   const [alerted, setAlerted] = useState<boolean>(false);
-
-  const { user } = useUserContext();
-
-  if (!user) {
-    return <Loading />;
-  }
 
   // const [addEntityEmail, { data, error }] = useMutation(ADD_ENTITY_EMAIL);
 
-  if (!user) {
+  if (!profile) {
     return <Loading />;
   }
 
@@ -46,15 +41,11 @@ const UserSettings: FC = () => {
   //   addEmailToDatabase(emailForSignIn);
   // }
 
-  if (!user) {
-    return <Loading />;
-  }
-
   return (
     <div data-test="component-landing" className="flex flex-col w-full h-full mt-4">
       <div>
         <LimitedWidthSection center>
-          <SettingsUserPersonalInfo user={user} />
+          <SettingsUserPersonalInfo profile={profile} />
         </LimitedWidthSection>
         {/* <LimitedWidthSection center>
           <h2 className="text-xl text-blue-900 font-semibold mb-4">Wallet Addresses</h2>

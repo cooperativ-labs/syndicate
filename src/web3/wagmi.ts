@@ -1,4 +1,4 @@
-import { CryptoAddressProtocol } from "@src/utils/enumConverters";
+import { CryptoAddressProtocol } from "@/types";
 import { cookieStorage, createConfig, createStorage, http } from "wagmi";
 import {
   base,
@@ -61,7 +61,7 @@ export const SupportedChainsAddendum = [
     id: mainnet.id,
     name: mainnet.name,
     blockExplorer: mainnet.blockExplorers.default.url,
-    protocol: CryptoAddressProtocol.Eth,
+    protocol: CryptoAddressProtocol.ETH,
     icon: "/assets/images/chain-icons/ethereum-eth-logo.svg",
     contractsSupported: true,
     color: "emerald-600",
@@ -70,7 +70,7 @@ export const SupportedChainsAddendum = [
     id: sepolia.id,
     name: sepolia.name,
     blockExplorer: sepolia.blockExplorers.default.url,
-    protocol: CryptoAddressProtocol.Eth,
+    protocol: CryptoAddressProtocol.ETH,
     icon: "/assets/images/chain-logos/sepolia-logo.png",
     contractsSupported: true,
     color: "blue-300",
@@ -89,7 +89,7 @@ export const SupportedChainsAddendum = [
     id: polygon.id,
     name: polygon.name,
     blockExplorer: polygon.blockExplorers.default.url,
-    protocol: CryptoAddressProtocol.Eth,
+    protocol: CryptoAddressProtocol.ETH,
     icon: "/assets/images/chain-icons/polygon-matic-logo.svg",
     contractsSupported: true,
     color: "purple-600",
@@ -99,7 +99,7 @@ export const SupportedChainsAddendum = [
     name: polygonMumbai.name,
     blockExplorer: polygonMumbai.blockExplorers.default.url,
     faucet: "https://faucet.matic.network/",
-    protocol: CryptoAddressProtocol.Eth,
+    protocol: CryptoAddressProtocol.ETH,
     contractsSupported: true,
     color: "purple-300",
   },
@@ -107,7 +107,7 @@ export const SupportedChainsAddendum = [
     id: base.id,
     name: base.name,
     blockExplorer: base.blockExplorers.default.url,
-    protocol: CryptoAddressProtocol.Eth,
+    protocol: CryptoAddressProtocol.ETH,
     icon: "/assets/images/chain-icons/base-logo.svg",
     contractsSupported: true,
     color: "purple-600",

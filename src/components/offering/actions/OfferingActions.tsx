@@ -15,7 +15,6 @@ import { Button } from '@src/components/ui/button';
 import { LoadingButton } from '@src/components/ui/loading-button';
 import FormModal from '@src/containers/FormModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
-import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { claimProceeds } from '@src/web3/contractSwapCalls';
@@ -34,7 +33,7 @@ import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartCont
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
-type OfferingActionsProps = SmartContractsSettingsProps &
+export type OfferingActionsProps = SmartContractsSettingsProps &
   PostBidAskFormProps &
   PostInitialSaleProps & {
     orders: ShareOrder[] | undefined;
@@ -43,7 +42,6 @@ type OfferingActionsProps = SmartContractsSettingsProps &
     isOfferingManager: boolean;
     retrievalIssue: boolean;
     issueReachingContract: { share: boolean; swap: boolean };
-    userId: string;
     transferEvents: ShareTransferEvent[] | undefined;
     documents: Document[];
   };

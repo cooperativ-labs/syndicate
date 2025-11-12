@@ -5,12 +5,14 @@ import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
-import { useAccount, useChainId } from 'wagmi';
+import { useAccount, useDeployContract } from 'wagmi';
 
 import { useWalletContext } from '@/contexts/WalletContext';
 import { SmartContractType } from '@/types';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
+import { shareContractABI } from '@src/web3/generated';
+import { shareBytecode } from '@src/web3/bytecode';
 
 type CreateShareContractProps = {
   contractCreatorId: string;
@@ -20,10 +22,13 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
   const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
-  const chainId = useChainId();
-  const { chain } = useAccount();
+  const { deployContract } = useDeployContract();
+  const { chain, chainId } = useAccount();
+  if (!chain || !chainId) {
+    throw new Error('No chain id found');
+  }
 
-  const chainName = MatchSupportedChains(chainId)?.name;
+  const chainName = chain.name;
 
   const [, deploy] = useAsyncFn(async () => {
     setButtonStep('step1');
@@ -33,7 +38,16 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
     }
     setWalletActionLockModalOpen(true);
     try {
-      const contract = await deployShareContract(userWalletAddress, chain);
+      // const contract = await deployShareContract(userWalletAddress, chain);
+      const contract = deployContract({
+        account: userWalletAddress,
+        abi: shareContractABI,
+        bytecode: shareBytecode,
+        args: []
+      });
+      if (!contract.contractAddress) {
+        throw new Error('No contract address found');
+      }
       await createShareContract({
         cryptoAddress: contract.contractAddress,
         type: SmartContractType.ERC1410,

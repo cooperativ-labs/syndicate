@@ -2,7 +2,7 @@
 
 import { createClient } from "@supabase/utils/server";
 import { revalidatePath } from "next/cache";
-
+import { nanoid } from "nanoid";
 import {
   LegalEntity,
   Organization,
@@ -16,6 +16,7 @@ export const createOrganizationWithAdmin = async ({
   userId,
   name,
   logoFile,
+  logoFileName,
   shortDescription,
   website,
   country,
@@ -24,6 +25,7 @@ export const createOrganizationWithAdmin = async ({
   userId: string;
   name: string;
   logoFile: File | null;
+  logoFileName: string;
   shortDescription: string;
   website: string;
   country: string;
@@ -32,6 +34,8 @@ export const createOrganizationWithAdmin = async ({
   { organization_id: string; organization_user_id: string; slug: string }
 > => {
   const supabase = createClient();
+  const saltySlug = slug.toLowerCase().trim().replace(/ /g, "-") + "-" +
+    nanoid().slice(0, 4);
 
   const { data, error } = await supabase.rpc("create_organization_with_admin", {
     p_user_id: userId,
@@ -40,19 +44,23 @@ export const createOrganizationWithAdmin = async ({
     p_short_description: shortDescription,
     p_website: website,
     p_country: country,
-    p_slug: slug,
+    p_slug: saltySlug,
   });
   if (error) {
     throw new Error(error.message);
   }
-  if (logoFile) {
+  if (logoFile && logoFileName) {
     const { data: logoData, error: logoError } = await supabase.storage.from(
       "organization-assets",
-    ).upload(`${data[0].organization_id}/logo/${logoFile.name}`, logoFile);
+    ).upload(`${data[0].organization_id}/logo/${logoFileName}`, logoFile);
     if (logoError) {
-      throw new Error(logoError.message);
+      console.error("createOrganizationWithAdmin Error", {
+        logoError,
+        logoFile,
+      });
     }
-    const logoUrl = logoData.fullPath;
+    const logoUrl = logoData?.fullPath ||
+      "/assets/images/logos/company-placeholder.jpeg";
     await supabase.from("organization").update({
       logo: logoUrl,
     }).eq("id", data[0].organization_id);

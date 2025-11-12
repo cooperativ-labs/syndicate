@@ -24,6 +24,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
+import OfferingActionsContainer from '@src/components/offering/actions/OfferingActionsContainer';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull, OrganizationUser } from '@/types';
 
@@ -49,7 +50,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
     max_raise,
     distribution_period,
     stage,
-    additional_info
+    additional_info,
+    investment_currency
   } = offering;
 
   const offeringDocs = getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT);
@@ -254,45 +256,33 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
             )}
           </DashboardCard>
           {/* Slot 2 */}
-          <div className="">
-            {details?.investmentCurrency && (
-              <DashboardCard>
-                <div className="">
-                  <div className="font-xl font-semibold">Smart contract actions</div>
-                  <div className="mt-4">
-                    {!userWalletAddress ? (
-                      <ChooseConnectorButton buttonText={'Connect Wallet'} />
-                    ) : (
-                      <OfferingActions
-                        retrievalIssue={false}
-                        hasContract={hasContract}
-                        loading={isLoading}
-                        isOfferingManager={isOfferingManager}
-                        orders={contractOrders}
-                        offering={offering}
-                        contractSet={contractSet}
-                        issueReachingContract={issueReachingContract}
-                        paymentTokenAddress={paymentTokenAddress}
-                        paymentTokenDecimals={paymentTokenDecimals}
-                        swapApprovalsEnabled={swapApprovalsEnabled}
-                        txnApprovalsEnabled={txnApprovalsEnabled}
-                        sharesOutstanding={sharesOutstanding}
-                        isContractOwner={isContractOwner}
-                        noLiveOrders={noLiveOrders}
-                        partitions={partitions}
-                        refetchMainContracts={refetchMainContracts}
-                        refetchOfferingInfo={refetchOfferingInfo}
-                        currentSalePrice={currentSalePrice}
-                        myShareQty={myShareQty}
-                        transferEvents={transferEvents}
-                        documents={offeringDocs}
-                      />
-                    )}
-                  </div>
-                </div>
-              </DashboardCard>
-            )}
-          </div>
+
+          <OfferingActionsContainer
+            retrievalIssue={false}
+            hasContract={hasContract}
+            loading={isLoading}
+            isOfferingManager={isOfferingManager}
+            orders={contractOrders}
+            offering={offering}
+            contractSet={contractSet}
+            issueReachingContract={issueReachingContract}
+            paymentTokenAddress={paymentTokenAddress}
+            paymentTokenDecimals={paymentTokenDecimals}
+            swapApprovalsEnabled={swapApprovalsEnabled}
+            txnApprovalsEnabled={txnApprovalsEnabled}
+            sharesOutstanding={sharesOutstanding}
+            isContractOwner={isContractOwner}
+            noLiveOrders={noLiveOrders}
+            partitions={partitions}
+            refetchMainContracts={refetchMainContracts}
+            refetchOfferingInfo={refetchOfferingInfo}
+            currentSalePrice={currentSalePrice}
+            myShareQty={myShareQty}
+            transferEvents={transferEvents}
+            documents={offeringDocs}
+            userWalletAddress={userWalletAddress}
+            investment_currency={investment_currency}
+          />
         </TwoColumnLayout>
         <hr className="border-t-2 border-gray-100 mb-12" />
 

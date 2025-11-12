@@ -17,12 +17,13 @@ import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { OrganizationComplete } from '@/types';
+import { CurrencyCode, CurrencyCodeType, OrganizationComplete } from '@/types';
 
 import CreateEntity from '../entity/CreateEntity';
 import { Button } from '../ui/button';
 import { LoadingButton } from '../ui/loading-button';
 import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/field';
+import { currencyOptionsExcludeCredits } from '@src/utils/enumConverters';
 
 type CreateOfferingType = {
   organization: OrganizationComplete | null;
@@ -42,10 +43,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
     name: z.string().min(1, 'Please set a name')
   });
 
-  const form = useForm<{
-    offeringEntityId: string;
-    name: string;
-  }>({
+  const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: {
       offeringEntityId: '',
@@ -97,7 +95,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
         <CreateEntity actionOnCompletion={entitySubmissionCompletion} />
       </FormModal>
       <form>
-        <FieldGroup>
+        <FieldGroup className="w-full">
           <FieldSet>
             <FieldLegend variant="label">In which entity are you offering shares?</FieldLegend>
             <div className="md:flex flex-col gap-4">
@@ -152,18 +150,19 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
               )}
             </Field>
           </FieldSet>
-
-          <LoadingButton
-            onClick={handleSubmit(onSubmit)}
-            buttonState={buttonState}
-            setButtonState={setButtonState}
-            text={`Create ${watchedName}`}
-            loadingText={`Creating ${watchedName}`}
-            successText="Created!"
-            errorText="Oops. Something went wrong"
-            reset
-            className=" w-full"
-          />
+          <FieldSet>
+            <LoadingButton
+              onClick={handleSubmit(onSubmit)}
+              buttonState={buttonState}
+              setButtonState={setButtonState}
+              text={`Create ${watchedName}`}
+              loadingText={`Creating ${watchedName}`}
+              successText="Created!"
+              errorText="Oops. Something went wrong"
+              reset
+              className="w-full"
+            />
+          </FieldSet>
         </FieldGroup>
       </form>
     </>

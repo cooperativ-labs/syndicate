@@ -3,7 +3,12 @@ import {
   createDistributionContract,
   CreateDistributionContractParams
 } from '@src/utils/actions/cryptoActions';
-import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
+import {
+  bacOptions,
+  CryptoAddressProtocol,
+  getCurrencyById,
+  getCurrencyOption
+} from '@src/utils/enumConverters';
 import { deployDividendContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
@@ -18,6 +23,7 @@ import {
   CurrencyCode,
   CurrencyCodeType,
   OfferingSmartContractSet,
+  Protocol,
   SmartContractType
 } from '@/types';
 
@@ -34,7 +40,6 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
   investmentCurrency,
   contractOwnerEntityId
 }) => {
-  const applicationStore: ApplicationStoreProps = useContext(store);
   const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
@@ -70,7 +75,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
           type: SmartContractType.DISTRIBUTION,
           ownerId: contractOwnerEntityId,
           contractSetId: contractSet.id,
-          protocol: protocol,
+          protocol: protocol as Protocol,
           chainId: chainId
         });
 

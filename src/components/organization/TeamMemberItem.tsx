@@ -73,19 +73,21 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
       variant="outline"
       className="md:flex  gap-1 p-3  border-2 rounded-lg items-center justify-between "
     >
-      <Image
-        objectFit="cover"
-        src={image || '/assets/images/user-images/placeholder.png'}
-        referrerPolicy="no-referrer"
-        className="w-8 h-8 border-2 border-white rounded-full"
-        width={32}
-        height={32}
-        alt={name || 'User Profile Image'}
-        unoptimized={process.env.NODE_ENV === 'development'}
-      />
+      <div className="flex items-center gap-2">
+        <Image
+          objectFit="cover"
+          src={image || '/assets/images/user-images/placeholder.png'}
+          referrerPolicy="no-referrer"
+          className="w-8 h-8 border-2 border-white rounded-full"
+          width={32}
+          height={32}
+          alt={name || 'User Profile Image'}
+          unoptimized={process.env.NODE_ENV === 'development'}
+        />
 
-      <div className="mt-3 md:mt-0">
-        <div className="md:w-auto text-sm font-medium ">{name}</div>
+        <div className="mt-3 md:mt-0">
+          <div className="md:w-auto text-sm font-medium ">{name}</div>
+        </div>
       </div>
       <div className="flex items-center justify-end gap-1">
         <div className="flex col-span-1 mt-3 md:mt-0 items-center justify-end">

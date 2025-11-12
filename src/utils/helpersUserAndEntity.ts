@@ -66,6 +66,7 @@ export const getIsEditorOrAdmin = (
     }[];
   },
 ): boolean => {
+  console.log(userId, organizationUsers);
   const user = organizationUsers?.find((u) =>
     u?.user_id.toString() === userId?.toString()
   );

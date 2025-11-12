@@ -1,10 +1,10 @@
 'use client';
-import useWindowSize from '@hooks/useWindowSize';
-import Card from '@src/components/cards/Card';
+import { Dialog, DialogContent } from '@src/components/ui/dialog';
 import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 import { useWalletContext } from '@/contexts/WalletContext';
+import WalletActionLock from './WalletActionLock';
 
 type WalletActionLockModelProps = {
   noModal?: boolean;
@@ -12,65 +12,23 @@ type WalletActionLockModelProps = {
 
 const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
   const { walletActionLockModalOpen } = useWalletContext();
-  const windowSize = useWindowSize();
-  const windowWidth = windowSize && windowSize.width;
-  const isDesktop = windowWidth && windowWidth > 768 ? true : false;
 
-  // useEffect(() => {
-  //   if (WalletActionLockModalOpen && isDesktop) {
-  //     // setScrollY(window.scrollY);
-  //     document.body.style.position = 'fixed';
-  //     document.body.style.top = `-${window.scrollY}px`;
-  //   } else {
-  //     // const scrollY = document.body.style.top;
-  //     document.body.style.position = '';
-  //     document.body.style.top = '';
-  //     // window.scrollTo(0, parseInt(scrollY));
-  //   }
-  // }, [WalletActionLockModalOpen, isDesktop]);
-
-  if (walletActionLockModalOpen) {
-    return (
-      <div data-test="component-payment-send">
-        <div
-          id="dialog-curtain"
-          className={cn(
-            noModal
-              ? 'absolute top-0 bottom-0 right-0 left-0 md:relative'
-              : 'w-screen md:h-screen absolute top-0 bottom-0 right-0 left-0 md:flex justify-center items-center z-50 bg-gray-500 bg-opacity-20 md:bg-opacity-80'
-          )}
-        >
-          <Card
-            className="mx-4 p-6 absolute right-0 left-0 top-32 md:top-0 md:relative flex-col  rounded-xl md:rounded-lg shadow-modal bg-white"
-            style={{ overflow: 'smooth', maxWidth: '500px' }}
-          >
-            <div>
-              <div className="animate-pulse">
-                <div className="flex flex-col md:flex-row items-center">
-                  <div className="flex h-20 w-24 mb-5 md:mr-3 md:mb-0 items-center">
-                    <img src="/favicon.ico" />
-                  </div>
-                  <div>
-                    <div className="ml-1 font-bold text-cDarkBlue md:text-xl">
-                      Communicating with the blockchain network...
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="text-orange-700 font-semibold mt-5">
-                Confirm this transaction in your wallet.
-              </div>
-              <div className="text-gray-700 mt-5">
-                Please do not refresh. This can take a few minutes. You can check the status of the
-                transaction in your wallet.
-              </div>
-            </div>
-          </Card>
-        </div>
-      </div>
-    );
-  }
-  return <></>;
+  return (
+    <Dialog open={walletActionLockModalOpen}>
+      <DialogContent
+        data-test="component-payment-send"
+        showCloseButton={false}
+        className={cn(
+          'mx-4 p-6 max-w-[500px] rounded-xl md:rounded-lg shadow-modal bg-white',
+          noModal &&
+            'fixed! top-32! md:top-0! md:relative! md:translate-x-0! md:translate-y-0! md:left-0!'
+        )}
+        style={{ overflow: 'smooth' }}
+      >
+        <WalletActionLock />
+      </DialogContent>
+    </Dialog>
+  );
 };
 
 export default WalletActionLockModel;

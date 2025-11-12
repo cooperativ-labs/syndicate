@@ -37,7 +37,7 @@ const EntityDashboard: FC<{ entities: LegalEntityWithSubsidiaries[] }> = ({ enti
   const organizationUsers = organization.organizationUsers;
 
   const isAdminOrEditor = getIsEditorOrAdmin({ userId: user?.id, organizationUsers });
-
+  console.log('isAdminOrEditor', isAdminOrEditor);
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
       <div className=" ">

@@ -19,6 +19,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '.
 import { Separator } from '../ui/separator';
 import { Textarea } from '../ui/textarea';
 import ImageUpload from '../form-components/ImageUpload';
+import { fileToImageUrl } from '@src/utils/helpersDocuments';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;
@@ -46,7 +47,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
   noTitle = false
 }) => {
   const { user } = useUserContext();
-  const [logoUrl, setLogoUrl] = useState<string>(defaultLogo ?? '');
+  const [logoUrl, setLogoUrl] = useState<string | null>(defaultLogo ?? null);
   const [logoFile, setLogoFile] = useState<File | null>(null);
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
@@ -85,7 +86,12 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
 
   const handleLogoUpload = async (file: File) => {
     setLogoFile(file);
-    setLogoUrl(URL.createObjectURL(file));
+    setLogoUrl(await fileToImageUrl(file));
+  };
+
+  const handleLogoDelete = async () => {
+    setLogoUrl(null);
+    setLogoFile(null);
   };
 
   const onSubmit = async (data: CreateOrganizationFormData) => {
@@ -98,7 +104,8 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
         shortDescription: data.shortDescription,
         website: data.website,
         country: data.country,
-        slug: formatSlug(data.name)
+        slug: formatSlug(data.name),
+        logoFileName: logoFile?.name || ''
       });
       setButtonState('success');
       handleOrganizationChange(orgData.organization_id);
@@ -152,12 +159,12 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
           </FieldGroup>
 
           <ImageUpload
-            uploaderText="Add logo"
+            title="Add logo"
             onSubmit={handleLogoUpload}
             accept={['image/jpeg', 'image/png', 'image/svg+xml']}
-            imagePreview={logoUrl}
-            setImagePreview={setLogoUrl}
-            className="flex p-3 bg-gray-100  h-40 items-center justify-center rounded-md border-2 border-dashed border-cLightBlue border-opacity-40"
+            selectedImageUrl={logoUrl}
+            setSelectedImageUrl={setLogoUrl}
+            onDelete={handleLogoDelete}
           />
         </div>
         <FieldGroup>

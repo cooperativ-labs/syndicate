@@ -32,7 +32,7 @@ export const getTabSectionOption = (
   desiredSectionValue: keyof typeof OfferingTabSection,
 ) => {
   return tabSectionOptions.find(
-    (option) => (option.value === desiredSectionValue ? option : null)
+    (option) => (option.value === desiredSectionValue ? option : null),
   );
 };
 
@@ -63,7 +63,7 @@ export const getSocialAccountOption = (
   type: keyof typeof LinkedAccountType | null | undefined,
 ): { value: LinkedAccountTypes; name: string; icon: string } | undefined => {
   return socialAccountOptions.find(
-    (option) => (option.value === type ? option : null)
+    (option) => (option.value === type ? option : null),
   );
 };
 
@@ -239,7 +239,7 @@ export const getDistributionPeriod = (
   period: keyof typeof DistributionPeriodType,
 ) => {
   const option = distributionPeriodOptions.find(
-    (per) => (per.value === period ? per : null)
+    (per) => (per.value === period ? per : null),
   );
   return option?.name;
 };
@@ -281,7 +281,7 @@ export const getPropertyTypeOption = (
   inputValue: keyof typeof RealEstatePropertyType,
 ) => {
   return propertyTypeOptions.find(
-    (option) => (option.value === inputValue ? option : null)
+    (option) => (option.value === inputValue ? option : null),
   );
 };
 
@@ -315,7 +315,7 @@ export const getAssetStatusOption = (
   inputValue: OfferingStage | AssetStatus | undefined,
 ) => {
   return assetStatusOptions.find(
-    (option) => (option.value === inputValue ? option : null)
+    (option) => (option.value === inputValue ? option : null),
   );
 };
 
@@ -440,7 +440,7 @@ export const TransferEventOptions = [
 
 export const getTransferEventOption = (tradeType: ShareTransferEventType) => {
   return TransferEventOptions.find(
-    (option) => (option.value === tradeType ? option : null)
+    (option) => (option.value === tradeType ? option : null),
   );
 };
 
@@ -632,10 +632,25 @@ export const currencyOptions = [
   },
 ];
 
-export const bacOptions = currencyOptions.filter(
+const testChainIds = [11155111, 80001];
+
+export const cryptoOptions = currencyOptions.filter((option) =>
+  option.type === CurrencyType.CRYP
+);
+
+export const cryptoOptionsByChainId = (chainId: number) => {
+  return cryptoOptions.filter((option) => option.chainId === chainId);
+};
+export const testCurrencyOptions = cryptoOptions.filter((option) =>
+  testChainIds.includes(option.chainId as number)
+);
+export const liveCurrencyOptions = cryptoOptions.filter((option) =>
+  !testChainIds.includes(option.chainId as number)
+);
+
+export const bacOptions = cryptoOptions.filter(
   (option) =>
-    (option.type === CurrencyType.CRYP &&
-      option.protocol === CryptoAddressProtocol.Eth) ||
+    option.protocol === CryptoAddressProtocol.Eth ||
     option.protocol === CryptoAddressProtocol.Matic,
 );
 
@@ -656,7 +671,7 @@ export const getCurrencyByCode = (
   currencyCode: keyof typeof CurrencyCode | undefined,
 ) => {
   return currencyOptions.find(
-    (cur) => (cur.value === currencyCode ? cur : null)
+    (cur) => (cur.value === currencyCode ? cur : null),
   );
 };
 
