@@ -1,6 +1,8 @@
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { createShareContract } from '@src/utils/actions/cryptoActions';
+import { shareBytecode } from '@src/web3/bytecode';
 import { deployShareContract } from '@src/web3/contractFactory';
+import { shareContractABI } from '@src/web3/generated';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useContext, useState } from 'react';
@@ -11,8 +13,6 @@ import { useWalletContext } from '@/contexts/WalletContext';
 import { SmartContractType } from '@/types';
 
 import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import { shareContractABI } from '@src/web3/generated';
-import { shareBytecode } from '@src/web3/bytecode';
 
 type CreateShareContractProps = {
   contractCreatorId: string;

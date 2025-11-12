@@ -3,7 +3,6 @@
 import { Button } from '@src/components/ui/button';
 import { Input } from '@src/components/ui/input';
 import { cn } from '@src/lib/utils';
-
 import { FileText, Upload, X } from 'lucide-react';
 import { useRef, useState } from 'react';
 import { toast } from 'sonner';

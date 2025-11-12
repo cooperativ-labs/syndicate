@@ -1,12 +1,12 @@
+import { removeNotificationRule } from '@src/utils/actions/userActions';
 import { getNotificationSubjectOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { useParams } from 'next/navigation';
 import React, { FC, useState } from 'react';
 
 import { NotificationConfiguration } from '@/types';
 
 import { EditButton } from '../form-components/ListItemButtons';
-import { removeNotificationRule } from '@src/utils/actions/userActions';
-import { useParams } from 'next/navigation';
 
 type NotificationConfigItemProps = {
   notificationConfig: NotificationConfiguration;

@@ -6,6 +6,7 @@ import Button from '@src/components/buttons/Button';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import OfferingActions from '@src/components/offering/actions/OfferingActions';
+import OfferingActionsContainer from '@src/components/offering/actions/OfferingActionsContainer';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
@@ -24,7 +25,6 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
-import OfferingActionsContainer from '@src/components/offering/actions/OfferingActionsContainer';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull, OrganizationUser } from '@/types';
 

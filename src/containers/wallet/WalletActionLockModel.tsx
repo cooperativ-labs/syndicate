@@ -4,6 +4,7 @@ import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 import { useWalletContext } from '@/contexts/WalletContext';
+
 import WalletActionLock from './WalletActionLock';
 
 type WalletActionLockModelProps = {

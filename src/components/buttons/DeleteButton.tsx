@@ -1,6 +1,7 @@
 import { cn } from '@src/lib/utils';
 import { Trash } from 'lucide-react';
 import React, { FC } from 'react';
+
 import { Button } from '../ui/button';
 
 type DeleteButtonProps = {

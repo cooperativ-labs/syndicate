@@ -7,10 +7,10 @@ import { Form, Formik } from 'formik';
 import { Check, Copy, SquareArrowOutUpRight } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
-import { Button } from '../ui/button';
 
 import Input from '../form-components/Inputs';
 import FormattedCryptoAddress from '../FormattedCryptoAddress';
+import { Button } from '../ui/button';
 
 import AccessCodeForm from './profile/AccessCodeForm';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';

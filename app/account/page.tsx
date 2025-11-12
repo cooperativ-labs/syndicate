@@ -1,7 +1,7 @@
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import UserSettings from '@src/screens/UserSettings';
-import { createClient } from '@supabase/utils/server';
 import { getUserProfile } from '@src/utils/actions/userActions';
+import { createClient } from '@supabase/utils/server';
 
 export default async function UserSettingsPage() {
   const supabase = createClient();

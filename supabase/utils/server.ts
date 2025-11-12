@@ -1,6 +1,7 @@
-import { type CookieOptions, createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { Database } from "@/types/database.types";
+import { type CookieOptions, createServerClient } from '@supabase/ssr';
+import { cookies } from 'next/headers';
+
+import { Database } from '@/types/database.types';
 
 export function createClient() {
   const cookieStore = cookies();
@@ -22,8 +23,8 @@ export function createClient() {
             // This can be ignored if you have middleware refreshing
             // user sessions.
           }
-        },
-      },
-    },
+        }
+      }
+    }
   );
 }

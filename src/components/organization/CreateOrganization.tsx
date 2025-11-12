@@ -4,6 +4,7 @@ import { useUserContext } from '@contexts/UserContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { createOrganizationWithAdmin } from '@src/utils/actions/organizationActions';
 import { formatSlug } from '@src/utils/graphQueries/gqlUtils';
+import { fileToImageUrl } from '@src/utils/helpersDocuments';
 import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
 import { Country } from 'country-state-city';
 import { useRouter } from 'next/navigation';
@@ -12,14 +13,13 @@ import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
 
+import ImageUpload from '../form-components/ImageUpload';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
 import { LoadingButton } from '../ui/loading-button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Separator } from '../ui/separator';
 import { Textarea } from '../ui/textarea';
-import ImageUpload from '../form-components/ImageUpload';
-import { fileToImageUrl } from '@src/utils/helpersDocuments';
 
 export type CreateOrganizationType = {
   defaultLogo?: string;

@@ -3,8 +3,8 @@ import CooperativLogo from '@src/components/CooperativLogo';
 import { cn } from '@src/lib/utils';
 import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
 import { Plus } from 'lucide-react';
-import React, { FC } from 'react';
 import Image from 'next/image';
+import React, { FC } from 'react';
 
 import { Organization } from '@/types';
 

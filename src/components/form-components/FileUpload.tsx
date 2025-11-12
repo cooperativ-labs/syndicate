@@ -1,11 +1,11 @@
 'use client';
 
+import { Upload } from 'lucide-react';
 import { FC, useState } from 'react';
+import { toast } from 'sonner';
 
 import DeleteButton from '../buttons/DeleteButton';
 import DragAndDrop from '../ui/drag_and_drop';
-import { toast } from 'sonner';
-import { Upload } from 'lucide-react';
 import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
 
 type FileUploadProps = {

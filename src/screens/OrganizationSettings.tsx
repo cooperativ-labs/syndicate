@@ -5,6 +5,7 @@ import SettingsAddEmail from '@src/components/account/SettingsAddEmail';
 import SettingsSocial from '@src/components/account/SettingsSocial';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import EmailAddressList from '@src/components/EmailAddressList';
+import ImageUpload from '@src/components/form-components/ImageUpload';
 import LinkedAccountsList from '@src/components/LinkedAccountsList';
 import ModalLoading from '@src/components/loading/ModalLoading';
 import ProfileVisibilityToggle from '@src/components/offering/settings/ProfileVisibilityToggle';
@@ -17,21 +18,21 @@ import SettingsAddNotification from '@src/components/organization/SettingsAddNot
 import SettingsAddTeamMember from '@src/components/organization/SettingsAddTeamMember';
 import TeamMemberList from '@src/components/organization/TeamMemberList';
 import RoundedImage from '@src/components/RoundedImage';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@src/components/ui/dialog';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
+import {
+  deleteOrganizationAsset,
+  updateOrganization,
+  uploadOrganizationAsset
+} from '@src/utils/actions/organizationActions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
-import React, { FC, useState } from 'react';
 import Image from 'next/image';
+import React, { FC, useState } from 'react';
+
 import { NotificationConfiguration, OrganizationComplete, OrganizationUser } from '@/types';
-import {
-  updateOrganization,
-  uploadOrganizationAsset,
-  deleteOrganizationAsset
-} from '@src/utils/actions/organizationActions';
-import ImageUpload from '@src/components/form-components/ImageUpload';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@src/components/ui/dialog';
 interface OrganizationSettingsProps {
   organization: OrganizationComplete | null;
   organizationUser:

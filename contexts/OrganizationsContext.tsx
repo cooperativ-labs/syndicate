@@ -4,6 +4,7 @@ import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 
 import { Organization } from '@/types';
+
 import { useUserContext } from './UserContext';
 
 type OrganizationsContextValue = {

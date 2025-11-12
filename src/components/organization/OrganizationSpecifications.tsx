@@ -1,8 +1,10 @@
 import { cn } from '@src/lib/utils';
+import { updateOrganization } from '@src/utils/actions/organizationActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Country } from 'country-state-city';
 import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { Organization } from '@/types';
 
@@ -10,10 +12,8 @@ import Button from '../buttons/Button';
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import ClickToEditItem from '../form-components/ClickToEditItem';
 import { Input } from '../ui/input';
+import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
 import { Textarea } from '../ui/textarea';
-import { LoadingButton, ButtonLoadingState } from '../ui/loading-button';
-import { updateOrganization } from '@src/utils/actions/organizationActions';
-import { toast } from 'sonner';
 
 export type EditOrganizationSelectionType =
   | 'name'

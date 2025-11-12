@@ -2,6 +2,7 @@ import { useUserContext } from '@contexts/UserContext';
 import { cn } from '@src/lib/utils';
 import { removeTeamMember } from '@src/utils/actions/organizationActions';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
+import Image from 'next/image';
 import React, { FC, useState } from 'react';
 
 import { OrganizationUserPermissionTypes, OrganizationUserWithProfile } from '@/types';
@@ -9,7 +10,6 @@ import { OrganizationUserPermissionTypes, OrganizationUserWithProfile } from '@/
 import { EditButton } from '../form-components/ListItemButtons';
 import { Badge } from '../ui/badge';
 import { Item } from '../ui/item';
-import Image from 'next/image';
 
 export type TeamMemberBaseProps = {
   organizationId: string;

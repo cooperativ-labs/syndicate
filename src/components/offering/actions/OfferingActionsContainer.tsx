@@ -1,25 +1,26 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import DashboardCard from '@src/components/cards/DashboardCard';
-import { OfferingActionsProps } from './OfferingActions';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import OfferingActions from './OfferingActions';
-import { Controller } from 'react-hook-form';
 import { Field, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import { Select } from '@src/components/ui/select';
 import { SelectTrigger } from '@src/components/ui/select';
 import { SelectValue } from '@src/components/ui/select';
 import { SelectContent } from '@src/components/ui/select';
 import { SelectItem } from '@src/components/ui/select';
-import { cryptoOptionsByChainId } from '@src/utils/enumConverters';
-import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-import { useForm } from 'react-hook-form';
-import { FC, useState } from 'react';
-import { CurrencyCode } from '@/types';
-import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
+import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { updateInvestmentCurrency } from '@src/utils/actions/offeringActions';
-
+import { cryptoOptionsByChainId } from '@src/utils/enumConverters';
 import { useParams } from 'next/navigation';
+import { FC, useState } from 'react';
+import { Controller } from 'react-hook-form';
+import { useForm } from 'react-hook-form';
 import { useAccount } from 'wagmi';
+import { z } from 'zod';
+
+import { CurrencyCode } from '@/types';
+
+import { OfferingActionsProps } from './OfferingActions';
+import OfferingActions from './OfferingActions';
 
 type InvestmentCurrencyFormProps = {
   offeringId: number;

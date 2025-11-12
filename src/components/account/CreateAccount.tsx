@@ -1,16 +1,16 @@
-import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { cn } from '@src/lib/utils';
+import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { cn } from '@src/lib/utils';
 import React, { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import CooperativLogo from '../CooperativLogo';
+import { Button } from '../ui/button';
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
-import { Button } from '../ui/button';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';

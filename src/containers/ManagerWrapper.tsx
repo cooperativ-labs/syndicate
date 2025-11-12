@@ -7,15 +7,16 @@ import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 import { cookies } from 'next/headers';
 import React, { FC } from 'react';
 
+import WalletActionLockModel from './wallet/WalletActionLockModel';
 import NewOrganizationModal from './NewOrganizationModal';
 import WithAuthentication from './WithAuthentication';
-import WalletActionLockModel from './wallet/WalletActionLockModel';
 // const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
 
+import { getPublicUrl } from '@src/utils/actions/storageActions';
+
 import ManagerSideBar from './sideBar/ManagerSideBar';
 import Manager from './Manager';
-import { getPublicUrl } from '@src/utils/actions/storageActions';
 type ManagerWrapperProps = {
   children: React.ReactNode;
 };

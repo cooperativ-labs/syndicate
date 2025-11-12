@@ -3,17 +3,17 @@
 import Button from '@src/components/buttons/Button';
 import FileUpload from '@src/components/form-components/FileUpload';
 import { Input } from '@src/components/ui/input';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import SectionBlock from '@src/containers/SectionBlock';
 import { cn } from '@src/lib/utils';
 import { uploadOfferingDocument } from '@src/utils/actions/documentActions';
+import { linkOfferingDocument } from '@src/utils/actions/documentActions';
 import { getDocFormatOption } from '@src/utils/enumConverters';
 import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 
 import { DocumentFormat, DocumentFormatType } from '@/types';
-import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
-import { toast } from 'sonner';
-import { linkOfferingDocument } from '@src/utils/actions/documentActions';
 
 type DocumentAdderProps = {
   offeringId: string;

@@ -1,5 +1,4 @@
 import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
-
 import OrganizationOverview from '@src/screens/OrganizationOverview';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 

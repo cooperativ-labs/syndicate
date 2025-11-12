@@ -1,7 +1,7 @@
 import { cn } from '@src/lib/utils';
 import { Pencil } from 'lucide-react';
-import React from 'react';
 import Image from 'next/image';
+import React from 'react';
 
 export interface RoundedImageProps {
   src: string;

@@ -4,6 +4,7 @@ import SettingsUserPersonalInfo from '@src/components/account/SettingsUserPerson
 import Loading from '@src/components/loading/Loading';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import React, { FC, useState } from 'react';
+
 import { Profile } from '@/types';
 
 const UserSettings: FC<{ profile: Profile }> = ({ profile }) => {

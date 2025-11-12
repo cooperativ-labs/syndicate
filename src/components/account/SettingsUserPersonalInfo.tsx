@@ -1,12 +1,4 @@
-import React, { FC, useState } from 'react';
-import { Controller, useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
-
-import { Profile } from '@/types';
-import { updateProfile } from '@src/utils/actions/userActions';
-
-import { Input } from '@src/components/ui/input';
 import {
   Field,
   FieldError,
@@ -15,6 +7,14 @@ import {
   FieldLegend,
   FieldSet
 } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
+import { updateProfile } from '@src/utils/actions/userActions';
+import React, { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+
+import { Profile } from '@/types';
+
 import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
 
 const profileSchema = z.object({

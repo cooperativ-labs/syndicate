@@ -1,14 +1,16 @@
-import { organizationPermissionOptions } from '@src/utils/enumConverters';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { addTeamMember } from '@src/utils/actions/organizationActions';
+import { organizationPermissionOptions } from '@src/utils/enumConverters';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
+
 import { OrganizationPermissionType, OrganizationPermissionTypes } from '@/types';
-import { Input } from '../ui/input';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+
 import { Field, FieldContent, FieldError, FieldGroup } from '../ui/field';
+import { Input } from '../ui/input';
 import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
-import { addTeamMember } from '@src/utils/actions/organizationActions';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type SettingsAddTeamMemberProps = {
   organizationId: string;
