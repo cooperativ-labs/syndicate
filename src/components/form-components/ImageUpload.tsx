@@ -1,58 +1,104 @@
 'use client';
 
-import { FC, useEffect, useState } from 'react';
+import { FC, useState } from 'react';
 
 import DeleteButton from '../buttons/DeleteButton';
 import DragAndDrop from '../ui/drag_and_drop';
 import { toast } from 'sonner';
-import { Upload } from 'lucide-react';
-import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
-import Image from 'next/image';
-import { fileToImageUrl } from '@src/utils/helpersDocuments';
+import {
+  fileToImageUrl,
+  handleImageCompression,
+  validateFileSize
+} from '@src/utils/helpersDocuments';
+import { Loader2 } from 'lucide-react';
 
 type ImageUploadProps = {
-  uploaderText: string;
   accept: string[];
+  title?: string;
+  description?: string;
   allowMultiple?: boolean;
-  className?: string;
   selectedImageUrl: string | null;
   setSelectedImageUrl: (imageUrl: string | null) => void;
   onSubmit: (file: File) => Promise<void>;
+  onDelete: () => Promise<void>;
 };
 
 const ImageUpload: FC<ImageUploadProps> = ({
-  uploaderText,
   accept,
-  className,
+  title = 'Drag and drop or click',
+  description = 'Chose a file to upload.',
   allowMultiple,
   selectedImageUrl,
   setSelectedImageUrl,
-  onSubmit
+  onSubmit,
+  onDelete
 }) => {
   const [progressAmt, setProgressAmt] = useState<number>(0);
-  const [uploadButtonState, setUploadButtonState] = useState<ButtonLoadingState>('default');
+  const [isProcessing, setIsProcessing] = useState<boolean>(false);
+
+  const handleImageProcessing = async (file: File) => {
+    setIsProcessing(true);
+    try {
+      const compressedFile = await handleImageCompression(file);
+      if (!compressedFile) {
+        toast.error('Failed to compress file');
+        return;
+      }
+      const sizeValidation = validateFileSize(compressedFile, false);
+      if (!sizeValidation.isValid) {
+        toast.error(sizeValidation.errorMessage || 'File too large');
+        return;
+      }
+
+      setSelectedImageUrl(await fileToImageUrl(compressedFile));
+
+      return compressedFile;
+    } catch (error) {
+      console.error('Error compressing image:', error);
+      toast.error(
+        `${error instanceof Error ? error.message : 'Failed to upload file. Please try again.'}`
+      );
+    } finally {
+      setIsProcessing(false);
+    }
+  };
 
   async function handleUploadFile(file: File | null) {
     if (!file) {
       return;
     }
-    await onSubmit(file);
+    const compressedFile = await handleImageProcessing(file);
+    if (compressedFile) {
+      await onSubmit(compressedFile);
+    }
   }
 
   return (
     <div className="flex flex-col">
-      <DragAndDrop
-        onSelect={handleUploadFile}
-        selectedImageUrl={selectedImageUrl}
-        setSelectedImageUrl={setSelectedImageUrl}
-        multiple={allowMultiple}
-        uploadButtonText={uploaderText}
-        acceptedFileTypes={accept.join(', ')}
-        acceptedMimeTypes={accept}
-        title="Drag and drop or click"
-        description="Chose a file to upload."
-        progressAmt={progressAmt}
-      />
+      {isProcessing ? (
+        <div className="flex items-center justify-center h-40">
+          <Loader2 className="size-6 animate-spin" />
+        </div>
+      ) : selectedImageUrl ? (
+        <div className="relative">
+          <div className="absolute -right-2 -top-2">
+            <DeleteButton onDelete={onDelete} />
+          </div>
+          <img className="h-40 object-scale-down" src={selectedImageUrl} />
+        </div>
+      ) : (
+        <DragAndDrop
+          onSelect={handleUploadFile}
+          setSelectedImageUrl={setSelectedImageUrl}
+          multiple={allowMultiple}
+          isImage={true}
+          acceptedFileTypes={accept.join(', ')}
+          acceptedMimeTypes={accept}
+          title={title}
+          description={description}
+          progressAmt={progressAmt}
+        />
+      )}
     </div>
   );
 };

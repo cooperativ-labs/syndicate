@@ -25,7 +25,7 @@ import { getBaseUrl } from '@src/utils/helpersURL';
 import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil, SquareArrowOutUpRight } from 'lucide-react';
 import React, { FC, useState } from 'react';
-
+import Image from 'next/image';
 import {
   NotificationConfiguration,
   OrganizationComplete,
@@ -34,9 +34,11 @@ import {
 } from '@/types';
 import {
   updateOrganization,
-  uploadOrganizationAsset
+  uploadOrganizationAsset,
+  deleteOrganizationAsset
 } from '@src/utils/actions/organizationActions';
 import ImageUpload from '@src/components/form-components/ImageUpload';
+import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@src/components/ui/dialog';
 interface OrganizationSettingsProps {
   organization: OrganizationComplete | null;
   organizationUser:
@@ -49,8 +51,10 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
 }) => {
   const { user } = useUserContext();
   const userId = user?.id;
-  const [logoImageUrl, setLogoImageUrl] = useState<string | null>(null);
-  const [bannerImageUrl, setBannerImageUrl] = useState<string | null>(null);
+  const [logoImageUrl, setLogoImageUrl] = useState<string | null>(organization?.logo || null);
+  const [bannerImageUrl, setBannerImageUrl] = useState<string | null>(
+    organization?.banner_image || null
+  );
   const [imageModal, setImageModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
 
@@ -121,7 +125,6 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
   };
 
   const addLogoToDB = async (file: File) => {
-    console.log('addLogoToDB', file);
     await uploadOrganizationAsset({
       assetFile: file,
       assetName: file.name,
@@ -139,35 +142,67 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
     });
   };
 
+  const deleteLogoFromDb = async () => {
+    await deleteOrganizationAsset({
+      assetUrl: logo as string,
+      assetType: 'logo',
+      organizationId: organization.id
+    });
+    setLogoImageUrl(null);
+  };
+
+  const deleteBannerImageFromDb = async () => {
+    await deleteOrganizationAsset({
+      assetUrl: banner_image as string,
+      assetType: 'banner_image',
+      organizationId: organization.id
+    });
+    setBannerImageUrl(null);
+  };
+
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
-      <FormModal formOpen={imageModal} onClose={() => setImageModal(false)}>
-        <div className=" grid grid-cols-3 gap-4">
-          <div className="flex flex-col col-span-1 justify-center">
-            <img className="h-32 object-scale-down" src={`${getBaseUrl()}/${logo}` as string} />
-            <ImageUpload
-              uploaderText="Add logo"
-              onSubmit={addLogoToDB}
-              accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
-              selectedImageUrl={logoImageUrl}
-              setSelectedImageUrl={setLogoImageUrl}
-            />
+      <Dialog open={imageModal} onOpenChange={setImageModal}>
+        <DialogContent className="md:max-w-[800px] max-h-[90vh] ">
+          <DialogHeader>
+            <DialogTitle>Edit your organization's logo and banner image</DialogTitle>
+          </DialogHeader>
+          <div className=" grid grid-cols-3 gap-4">
+            <div className="flex flex-col col-span-1 justify-center">
+              <ImageUpload
+                onSubmit={addLogoToDB}
+                accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
+                selectedImageUrl={logoImageUrl}
+                setSelectedImageUrl={setLogoImageUrl}
+                onDelete={deleteLogoFromDb}
+                title="Logo"
+                description="Choose file."
+              />
+            </div>
+            <div className="col-span-2">
+              <ImageUpload
+                onSubmit={addBannerImageToDb}
+                accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
+                selectedImageUrl={bannerImageUrl}
+                setSelectedImageUrl={setBannerImageUrl}
+                onDelete={deleteBannerImageFromDb}
+                title="Banner Image"
+              />
+            </div>
           </div>
-          <div className="col-span-2">
-            <img className="h-32 w-full object-cover" src={banner_image as string} />
-            <ImageUpload
-              uploaderText="Add banner image"
-              onSubmit={addBannerImageToDb}
-              accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
-              selectedImageUrl={bannerImageUrl}
-              setSelectedImageUrl={setBannerImageUrl}
-            />
-          </div>
-        </div>
-      </FormModal>
+        </DialogContent>
+      </Dialog>
 
       <div className="flex items-center relative">
-        <img src={banner_image as string} className="object-cover h-64 w-full absolute" />
+        {banner_image && (
+          <Image
+            src={banner_image as string}
+            className="object-cover h-64 w-full absolute"
+            fill
+            alt="Organization banner image"
+            unoptimized={process.env.NODE_ENV === 'development'}
+          />
+        )}
         <div className="flex backdrop-opacity-10 backdrop-invert w-full h-64 bg-gray-800/50 items-center">
           <div className="ml-4 flex items-center ">
             <RoundedImage

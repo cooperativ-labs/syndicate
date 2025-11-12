@@ -241,15 +241,42 @@ export const uploadOrganizationAsset = async ({
   assetType: "logo" | "banner_image";
 }): Promise<void> => {
   const supabase = createClient();
+  let assetPath = `${organizationId}/${assetType}/${assetName}`;
   const { data: assetData, error: assetError } = await supabase.storage.from(
     "organization-assets",
-  ).upload(`${organizationId}/${assetType}/${assetName}`, assetFile);
+  ).upload(assetPath, assetFile, {
+    upsert: true,
+  });
+
   if (assetError) {
     throw new Error(assetError.message);
   }
-  const assetUrl = assetData.path;
+  assetPath = assetData?.path || assetPath;
   await supabase.from("organization").update({
-    [assetType]: assetUrl,
+    [assetType]: assetPath,
+  }).eq("id", Number(organizationId));
+  revalidatePath(`/${organizationId}`, "layout");
+};
+
+export const deleteOrganizationAsset = async ({
+  organizationId,
+  assetUrl,
+  assetType,
+}: {
+  organizationId: string | number;
+  assetUrl: string;
+  assetType: "logo" | "banner_image";
+}): Promise<void> => {
+  const supabase = createClient();
+
+  const { error } = await supabase.storage.from(
+    "organization-assets",
+  ).remove([assetUrl]);
+  if (error) {
+    throw new Error(error.message);
+  }
+  await supabase.from("organization").update({
+    [assetType]: null,
   }).eq("id", Number(organizationId));
   revalidatePath(`/${organizationId}`, "layout");
 };

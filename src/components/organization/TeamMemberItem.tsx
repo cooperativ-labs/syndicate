@@ -2,10 +2,9 @@ import { useUserContext } from '@contexts/UserContext';
 import { cn } from '@src/lib/utils';
 import { removeTeamMember } from '@src/utils/actions/organizationActions';
 import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useState } from 'react';
 
-import { OrganizationUser, OrganizationUserPermission, OrganizationUserWithProfile } from '@/types';
+import { OrganizationUserPermissionTypes, OrganizationUserWithProfile } from '@/types';
 
 import { EditButton } from '../form-components/ListItemButtons';
 import { Badge } from '../ui/badge';
@@ -39,7 +38,7 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
     await removeTeamMember({ organizationId, organizationUserId: id });
   };
 
-  const makePermissionsChips = (permissions: OrganizationUserPermission[] | null) => {
+  const makePermissionsChips = (permissions: OrganizationUserPermissionTypes[] | null) => {
     return permissions?.map((permission, i) => {
       const { name, color } = getOrganizationPermissionOption(permission);
 

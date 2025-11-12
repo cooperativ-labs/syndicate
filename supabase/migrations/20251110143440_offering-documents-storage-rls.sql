@@ -74,6 +74,34 @@ CREATE POLICY "Editors and admins can upload organization assets" ON storage.obj
     )
   );
 
+CREATE POLICY "Editors and admins can update organization assets" ON storage.objects
+  FOR UPDATE
+  USING (
+    bucket_id = 'organization-assets'
+    AND EXISTS (
+      SELECT 1
+      FROM organization o
+      JOIN organization_user ou ON ou.organization_id = o.id
+      WHERE ou.user_id = auth.uid()
+        AND (
+          'EDITOR' = ANY(ou.permissions)
+          OR 'ADMIN' = ANY(ou.permissions)
+        )
+    )
+  )
+  WITH CHECK (
+    bucket_id = 'organization-assets'
+    AND EXISTS (
+      SELECT 1
+      FROM organization o
+      JOIN organization_user ou ON ou.organization_id = o.id
+      WHERE ou.user_id = auth.uid()
+        AND (
+          'EDITOR' = ANY(ou.permissions)
+          OR 'ADMIN' = ANY(ou.permissions)
+        )
+    )
+  );
 
 CREATE POLICY "Editors and admins can delete organization assets" ON storage.objects
   FOR DELETE
