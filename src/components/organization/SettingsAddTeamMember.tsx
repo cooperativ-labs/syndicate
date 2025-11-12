@@ -1,111 +1,123 @@
-import {
-  getOrganizationPermissionOption,
-  organizationPermissionOptions
-} from '@src/utils/enumConverters';
-import { Form, Formik } from 'formik';
-import React, { FC } from 'react';
-
-import { OrganizationUserPermission } from '@/types';
-
-import Input from '../form-components/Inputs';
-import Select from '../form-components/Select';
-
-const fieldDiv = 'md:my-2 bg-opacity-0';
+import { organizationPermissionOptions } from '@src/utils/enumConverters';
+import { zodResolver } from '@hookform/resolvers/zod';
+import React, { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { OrganizationPermissionType, OrganizationPermissionTypes } from '@/types';
+import { Input } from '../ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { Field, FieldContent, FieldError, FieldGroup } from '../ui/field';
+import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
+import { addTeamMember } from '@src/utils/actions/organizationActions';
 
 type SettingsAddTeamMemberProps = {
   organizationId: string;
 };
 
+const formSchema = z.object({
+  emailAddress: z.email('Invalid email address'),
+  permission: z.nativeEnum(OrganizationPermissionType)
+});
+
+type FormData = z.infer<typeof formSchema>;
+
 const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId }) => {
   const [userDoesNotExist, setUserDoesNotExist] = React.useState(false);
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
+  const {
+    control,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    setError
+  } = useForm<FormData>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      emailAddress: '',
+      permission: OrganizationPermissionType.EDITOR
+    }
+  });
 
   const handleAddTeamMemberAddress = async (
     emailAddress: string,
-    permission: keyof typeof OrganizationUserPermission
+    permission: OrganizationPermissionTypes
   ) => {
     setUserDoesNotExist(false);
-    // client
-    //   .query({
-    //     query: GET_USER_FROM_EMAIL,
-    //     variables: { emailAddress: emailAddress }
-    //   })
-    //   .then(result => {
-    //     if (result.data.queryUser.length === 0) {
-    //       setUserDoesNotExist(true);
-    //       return;
-    //     }
-    //     addTeamMember({
-    //       variables: {
-    //         userId: result.data.queryUser[0].id,
-    //         currentDate: currentDate,
-    //         organizationId: organizationId,
-    //         emailAddress: emailAddress,
-    //         permission: permission
-    //       }
-    //     }).catch(error => {
-    //       throw new Error(error);
-    //     });
-    //   });
+    try {
+      await addTeamMember({
+        organizationId,
+        emailAddress,
+        permission
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const onSubmit = async (data: FormData) => {
+    if (userDoesNotExist) {
+      setError('emailAddress', { message: 'User does not exist' });
+      return;
+    }
+    await handleAddTeamMemberAddress(data.emailAddress, data.permission);
   };
 
   return (
-    <Formik
-      initialValues={{
-        emailAddress: '',
-        permission: OrganizationPermissionType.EDITOR
-      }}
-      validate={async values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.emailAddress) {
-          errors.emailAddress = 'Please include an email address.';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.emailAddress)) {
-          errors.emailAddress = 'Invalid email address';
-        }
-        if (!values.permission) {
-          errors.permission = 'Please choose a role';
-        }
-        if (userDoesNotExist) {
-          errors.emailAddress = 'User does not exist';
-        }
-        return errors;
-      }}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
-        await handleAddTeamMemberAddress(values.emailAddress, values.permission);
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting }) => (
-        <Form className="flex flex-col ">
-          <div className="grid md:grid-cols-5 gap-2">
-            <Input
-              className={`${fieldDiv} w-full md:col-span-3`}
-              name="emailAddress"
-              required
-              placeholder="e.g moritz@bonuslife.com"
-            />
-            <Select className={`${fieldDiv} col-span-2`} name="permission">
-              <option value="">--Role--</option>
-              {organizationPermissionOptions.map(option => {
-                return (
-                  <option key={option.value} value={option.value}>
-                    {option.name}
-                  </option>
-                );
-              })}
-            </Select>
-          </div>
+    <form className="flex flex-col">
+      <FieldGroup>
+        <div className="flex gap-2">
+          <Field>
+            <FieldContent>
+              <Controller
+                control={control}
+                name="emailAddress"
+                render={({ field }) => (
+                  <Input
+                    {...field}
+                    placeholder="e.g moritz@bonuslife.com"
+                    aria-invalid={!!errors.emailAddress}
+                  />
+                )}
+              />
+              <FieldError errors={errors.emailAddress ? [errors.emailAddress] : undefined} />
+            </FieldContent>
+          </Field>
+          <Field className="flex-1">
+            <FieldContent>
+              <Controller
+                control={control}
+                name="permission"
+                render={({ field }) => (
+                  <Select value={field.value} onValueChange={field.onChange}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="--Role--" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {organizationPermissionOptions.map(option => (
+                        <SelectItem key={option.value} value={option.value}>
+                          {option.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+              <FieldError errors={errors.permission ? [errors.permission] : undefined} />
+            </FieldContent>
+          </Field>
+        </div>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="text-blue-900 hover:bg-blue-800 hover:text-white border-2 border-blue-900 text-sm font-bold uppercase my-0 rounded p-2"
-          >
-            Add member
-          </button>
-        </Form>
-      )}
-    </Formik>
+        <LoadingButton
+          onClick={handleSubmit(onSubmit)}
+          buttonState={buttonState}
+          setButtonState={setButtonState}
+          text="Add member"
+          loadingText="Adding member..."
+          successText="Member added!"
+          errorText="Failed to add member"
+          reset
+        />
+      </FieldGroup>
+    </form>
   );
 };
 

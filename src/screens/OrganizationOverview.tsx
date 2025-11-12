@@ -61,13 +61,7 @@ const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ orga
   });
   return (
     <div data-test="component-OrganizationOverview" className="flex flex-col w-full h-full">
-      {/* <button
-        className="bg-blue-500 text-white p-3"
-        onClick={() => toastExperiment({ title: 'hi', message: 'whhhattt' })}
-      >
-        Make me a toast
-      </button> */}
-      <TwoColumnLayout twoThirdsLayout>
+      <TwoColumnLayout>
         {hasOfferings && (
           <div>
             <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">

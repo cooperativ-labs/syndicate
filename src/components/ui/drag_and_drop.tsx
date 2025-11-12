@@ -18,8 +18,9 @@ interface DragAndDropProps {
   className?: string;
   progressAmt?: number;
   multiple?: boolean;
-  setSelectedFile: (file: File | null) => void;
-  selectedFile: File | null;
+  onSelect: (file: File | null) => Promise<void>;
+  selectedImageUrl: string | null;
+  setSelectedImageUrl: (imageUrl: string | null) => void;
 }
 
 export default function DragAndDrop({
@@ -31,14 +32,15 @@ export default function DragAndDrop({
   className,
   progressAmt = 0,
   multiple = false,
-  setSelectedFile,
-  selectedFile
+  onSelect
+  // selectedImageUrl,
+  // setSelectedImageUrl
 }: DragAndDropProps) {
   const [isDragOver, setIsDragOver] = useState(false);
-  const [imagePreview, setImagePreview] = useState<string | null>(null);
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
+  const [selectedImageUrl, setSelectedImageUrl] = useState<string | null>(null);
   const handleFileButtonClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (fileInputRef.current !== null) {
@@ -52,11 +54,11 @@ export default function DragAndDrop({
 
   const createImagePreview = async (file: File) => {
     if (!getIsImage(file)) {
-      setImagePreview(null);
+      setSelectedImageUrl(null);
       return;
     }
     const imageUrl = await fileToImageUrl(file);
-    setImagePreview(imageUrl);
+    setSelectedImageUrl(imageUrl);
   };
 
   const handleImageProcessing = async (file: File) => {
@@ -89,14 +91,14 @@ export default function DragAndDrop({
     const file = event.target.files?.[0];
     if (file && validateFile(file)) {
       try {
-        // if (getIsImage(file)) {
-        //   const compressedFile = await handleImageProcessing(file);
-        //   if (compressedFile) {
-        //     setSelectedFile(compressedFile);
-        //   }
-        // } else {
-        setSelectedFile(file);
-        // }
+        if (getIsImage(file)) {
+          const compressedFile = await handleImageProcessing(file);
+          if (compressedFile) {
+            onSelect(compressedFile);
+          }
+        } else {
+          onSelect(file);
+        }
       } catch (error) {
         console.error('Error uploading file:', error);
         toast.error(
@@ -125,34 +127,34 @@ export default function DragAndDrop({
     const files = e.dataTransfer.files;
     const file = files[0];
     if (file && validateFile(file)) {
-      // if (getIsImage(file)) {
-      //   const compressedFile = await handleImageProcessing(file);
-      //   if (compressedFile) {
-      //     setSelectedFile(compressedFile);
-      //   }
-      // } else {
-      setSelectedFile(file);
-      // }
+      if (getIsImage(file)) {
+        const compressedFile = await handleImageProcessing(file);
+        if (compressedFile) {
+          onSelect(compressedFile);
+        }
+      } else {
+        onSelect(file);
+      }
     } else {
       toast.error(`Please drop a valid file type: ${acceptedMimeTypes.join(', ')}`);
     }
   };
 
   const clearSelectedFile = () => {
-    setSelectedFile(null);
-    setImagePreview(null);
+    onSelect(null);
+    setSelectedImageUrl(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
   };
 
   const imageUploadDisplay = (selectedFile: File) => {
-    if (imagePreview) {
+    if (selectedImageUrl) {
       return (
         <div className="relative flex flex-col items-center justify-center gap-3">
           <img
             className="h-40 w-auto max-w-full object-contain rounded"
-            src={imagePreview}
+            src={selectedImageUrl}
             alt={selectedFile.name}
           />
           <div className="flex items-center justify-center gap-3 w-full">
@@ -179,13 +181,13 @@ export default function DragAndDrop({
     return null;
   };
 
-  const fileUploadDisplay = (selectedFile: File) => {
+  const fileUploadDisplay = ({ fileName, fileSize }: { fileName: string; fileSize: number }) => {
     return (
       <div className="flex items-center justify-center gap-3">
         <FileText className="h-8 w-8 text-green-600" />
         <div className="flex flex-col items-start text-left">
-          <span className="font-medium text-green-800">{selectedFile.name}</span>
-          <span className="text-sm text-green-600">{(selectedFile.size / 1024).toFixed(1)} KB</span>
+          <span className="font-medium text-green-800">{fileName}</span>
+          <span className="text-sm text-green-600">{fileSize} KB</span>
         </div>
         <Button
           variant="ghost"
@@ -224,12 +226,12 @@ export default function DragAndDrop({
         onClick={e => handleFileButtonClick(e)}
       >
         {selectedFile ? (
-          // getIsImage(selectedFile) && imagePreview ? (
-          //   imageUploadDisplay(selectedFile)
-          // ) : (
-          fileUploadDisplay(selectedFile)
+          getIsImage(selectedFile) && selectedImageUrl ? (
+            imageUploadDisplay(selectedFile)
+          ) : (
+            fileUploadDisplay({ fileName: selectedFile.name, fileSize: selectedFile.size / 1024 })
+          )
         ) : (
-          // )
           <div className="flex flex-col items-center justify-center gap-4">
             <div className="space-y-2 flex items-center gap-4 ">
               <Upload className="h-10 w-10 mx-auto pt-1 text-muted-foreground" />

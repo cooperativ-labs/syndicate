@@ -3,7 +3,6 @@
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@src/components/ui/input';
-import { Label } from '@src/components/ui/label';
 import {
   Select,
   SelectContent,
@@ -15,7 +14,7 @@ import FormModal from '@src/containers/FormModal';
 import { addOffering } from '@src/utils/actions/offeringActions';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
-import { Controller, Form, useForm } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { OrganizationComplete } from '@/types';
@@ -23,6 +22,7 @@ import { OrganizationComplete } from '@/types';
 import CreateEntity from '../entity/CreateEntity';
 import { Button } from '../ui/button';
 import { LoadingButton } from '../ui/loading-button';
+import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/field';
 
 type CreateOfferingType = {
   organization: OrganizationComplete | null;
@@ -97,71 +97,74 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
         <CreateEntity actionOnCompletion={entitySubmissionCompletion} />
       </FormModal>
       <form>
-        <div className="md:grid grid-cols-5 gap-4">
-          <div className="col-span-3 align-end ">
-            <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
-              In which entity are you offering shares?
-            </Label>
-            <div className="flex items-center gap-3 mt-1">
-              <Controller
-                control={control}
-                name="offeringEntityId"
-                render={({ field }) => (
-                  <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger>
-                      <SelectValue placeholder="Select an entity" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {entitiesWithoutOfferings.map(entity => (
-                        <SelectItem key={entity.id} value={entity.id.toString()}>
-                          {entity.legal_name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={e => {
-                  e.preventDefault();
-                  setEntityModal(true);
-                }}
-                type="button"
-              >
-                Add New Entity
-              </Button>
-            </div>
-            {formState.errors.offeringEntityId && (
-              <div className="text-sm text-red-500 mt-1">
-                {formState.errors.offeringEntityId.message}
+        <FieldGroup>
+          <FieldSet>
+            <FieldLegend variant="label">In which entity are you offering shares?</FieldLegend>
+            <div className="md:flex flex-col gap-4">
+              <div className="flex items-center gap-3 mt-1">
+                <Field>
+                  <Controller
+                    control={control}
+                    name="offeringEntityId"
+                    render={({ field }) => (
+                      <Select value={field.value} onValueChange={field.onChange}>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select an entity" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {entitiesWithoutOfferings.map(entity => (
+                            <SelectItem key={entity.id} value={entity.id.toString()}>
+                              {entity.legal_name}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                </Field>
+                <Button
+                  variant="outline"
+                  onClick={e => {
+                    e.preventDefault();
+                    setEntityModal(true);
+                  }}
+                  type="button"
+                >
+                  Add New Entity
+                </Button>
               </div>
-            )}
-          </div>
-        </div>
+              {formState.errors.offeringEntityId && (
+                <div className="text-sm text-red-500 mt-1">
+                  {formState.errors.offeringEntityId.message}
+                </div>
+              )}
+            </div>
 
-        <div className="flex flex-col mt-6">
-          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
-            What do you call this offering
-          </Label>
-          <Input placeholder="e.g. First Fund" aria-label="Offering name" {...register('name')} />
-          {formState.errors.name && (
-            <div className="text-sm text-red-500 mt-1">{formState.errors.name.message}</div>
-          )}
-        </div>
+            <Field>
+              <FieldLabel>What do you call this offering</FieldLabel>
+              <Input
+                placeholder="e.g. First Fund"
+                aria-label="Offering name"
+                {...register('name')}
+              />
+              {formState.errors.name && (
+                <div className="text-sm text-red-500 mt-1">{formState.errors.name.message}</div>
+              )}
+            </Field>
+          </FieldSet>
 
-        <LoadingButton
-          onClick={handleSubmit(onSubmit)}
-          buttonState={buttonState}
-          setButtonState={setButtonState}
-          text={`Create ${watchedName}`}
-          loadingText={`Creating ${watchedName}`}
-          successText="Created!"
-          errorText="Oops. Something went wrong"
-          reset
-          className="mt-8 w-full"
-        />
+          <LoadingButton
+            onClick={handleSubmit(onSubmit)}
+            buttonState={buttonState}
+            setButtonState={setButtonState}
+            text={`Create ${watchedName}`}
+            loadingText={`Creating ${watchedName}`}
+            successText="Created!"
+            errorText="Oops. Something went wrong"
+            reset
+            className=" w-full"
+          />
+        </FieldGroup>
       </form>
     </>
   );

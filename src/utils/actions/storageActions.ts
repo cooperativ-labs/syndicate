@@ -1,7 +1,5 @@
 "use server";
-
 import { createClient } from "@supabase/utils/server";
-import { revalidatePath } from "next/cache";
 
 export async function uploadFile({
  bucket,
@@ -51,56 +49,44 @@ async function deleteFile({
  return data;
 }
 
-export async function uploadFeedbackImage({
- file,
- feedbackId,
- fileName,
+export async function getSignedUrl({
+ bucket,
+ path,
+ source,
 }: {
- file: FormData;
- feedbackId: string;
- fileName: string;
+ bucket: string;
+ path: string | null;
+ source: string;
 }) {
- const fileForUpload = file.get("image") as File;
- try {
-  const response = await uploadFile({
-   bucket: "feedback-images",
-   file: fileForUpload,
-   path: `${feedbackId}/${fileName}`,
-  });
-  return response.data;
- } catch (error) {
-  console.error(error);
+ const supabase = createClient();
+ if (!path) {
+  console.error("getSignedUrl Error", { path, source });
+  return { data: null, error: new Error("Path is required") };
  }
- revalidatePath("/feedback", "page");
+ const { data, error } = await supabase.storage.from(bucket).createSignedUrl(
+  path,
+  60 * 60 * 24 * 30,
+ );
+ if (error) {
+  console.error("getSignedUrl Error", { error, source });
+ }
+ return { data, error };
 }
 
-export async function getFeedbackImages(
- { feedbackId }: { feedbackId: string },
-) {
+export async function getPublicUrl({
+ bucket,
+ path,
+ source,
+}: {
+ bucket: string;
+ path: string | null;
+ source: string;
+}) {
  const supabase = createClient();
- const { data: imageList, error: imageListError } = await supabase.storage
-  .from("feedback-images")
-  .list(`${feedbackId}`);
-
- if (imageListError) {
-  console.error("Error listing images:", imageListError);
-  return [];
+ if (!path) {
+  console.error("getPublicUrl Error", { path, source });
+  return { data: null, error: new Error("Path is required") };
  }
-
- const imagePathList = imageList?.map((image: StorageObject) => {
-  return `${feedbackId}/${image.name}`;
- });
-
- if (imagePathList.length < 1) return [];
-
- const { data, error } = await supabase.storage
-  .from("feedback-images")
-  .createSignedUrls(imagePathList, 3600);
-
- if (error) {
-  console.error("Error getting images:", error);
-  return [];
- }
-
- return data;
+ const { data } = supabase.storage.from(bucket).getPublicUrl(path);
+ return { data: data.publicUrl, error: null };
 }

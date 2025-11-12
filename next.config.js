@@ -3,50 +3,40 @@
 //here we need a way to set endpoint bu something other than NODE_ENV
 // @ts-check
 
+const supabaseHostname = process.env.SUPABASE_URL
+  ? new URL(process.env.SUPABASE_URL).hostname
+  : 'csduwlbwlfnfswzbikcc.supabase.co';
+
+const websiteHostname = process.env.NEXT_PUBLIC_SITE_URL
+  ? new URL(process.env.NEXT_PUBLIC_SITE_URL).hostname
+  : 'localhost';
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   // Transpile packages that use ES modules
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'http',
+        hostname: '127.0.0.1',
+        pathname: '/storage/v1/object/**'
+      },
+      {
+        protocol: 'http',
+        hostname: 'localhost',
+        pathname: '/storage/v1/object/**'
+      },
+      {
+        protocol: 'https',
+        hostname: websiteHostname
+      },
+      {
+        protocol: 'https',
+        hostname: supabaseHostname,
+        pathname: '/storage/v1/object/**'
+      }
+    ]
+  }
 };
 
 module.exports = nextConfig;
-
-// module.exports = {
-
-//   webpack: (config, { buildId, dev, isServer, defaultLoaders, webpack }) => {
-//     //this is to fix an issue with webpack not finding the electron module
-//     config.module.rules.push({
-//       test: /\.md$/,
-//       exclude: /node_modules/,
-//       use: [
-//         {
-//           loader: 'markdown-loader',
-//         },
-//       ],
-//     });
-//     // if (process.env.NODE_ENV === 'production') {
-
-//     // }
-//     return config;
-//   },
-//   async headers() {
-//     return [
-//       {
-//         source: '/(.*)',
-//         headers: [
-//           {
-//             key: 'Access-Control-Allow-Origin',
-//             value: 'https://app.safe.global',
-//           },
-//           {
-//             key: 'Access-Control-Allow-Methods',
-//             value: 'GET, POST, PUT, DELETE',
-//           },
-//           {
-//             key: 'Access-Control-Allow-Headers',
-//             value: 'Content-Type, Authorization',
-//           },
-//         ],
-//       },
-//     ];
-//   },
-// };

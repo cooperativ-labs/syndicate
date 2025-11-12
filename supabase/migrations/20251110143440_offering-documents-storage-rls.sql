@@ -58,21 +58,19 @@ CREATE POLICY "Anyone can read organization assets" ON storage.objects
   FOR SELECT
   USING (bucket_id = 'organization-assets');
 
-CREATE POLICY "Editors, and admins can upload organization assets" ON storage.objects
+CREATE POLICY "Editors and admins can upload organization assets" ON storage.objects
   FOR INSERT
   WITH CHECK (
     bucket_id = 'organization-assets'
     AND EXISTS (
       SELECT 1
-      FROM offering o
-      JOIN legal_entity le ON le.id = o.offering_entity_id
-      JOIN organization_user ou ON ou.organization_id = le.organization_id
+      FROM organization o
+      JOIN organization_user ou ON ou.organization_id = o.id
       WHERE ou.user_id = auth.uid()
         AND (
           'EDITOR' = ANY(ou.permissions)
           OR 'ADMIN' = ANY(ou.permissions)
         )
-        AND (name LIKE (o.id::text || '/docs/%'))
     )
   );
 
@@ -83,14 +81,12 @@ CREATE POLICY "Editors and admins can delete organization assets" ON storage.obj
     bucket_id = 'organization-assets'
     AND EXISTS (
       SELECT 1
-      FROM offering o
-      JOIN legal_entity le ON le.id = o.offering_entity_id
-      JOIN organization_user ou ON ou.organization_id = le.organization_id
+      FROM organization o
+      JOIN organization_user ou ON ou.organization_id = o.id
       WHERE ou.user_id = auth.uid()
        AND (
           'EDITOR' = ANY(ou.permissions)
           OR 'ADMIN' = ANY(ou.permissions)
         )
-        AND (name LIKE (o.id::text || '/docs/%'))
     )
   );

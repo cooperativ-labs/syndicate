@@ -11,6 +11,7 @@ const OrganizationSettingsPage = async ({
   const { organizationId } = await params;
   const organization = await getOrganization(organizationId);
   const organizationUser = await getOrganizationUser(organizationId);
+  console.log('organization', organization);
   return (
     <div
       data-test="component-landing"

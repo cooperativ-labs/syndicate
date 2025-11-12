@@ -4,6 +4,7 @@ import { cn } from '@src/lib/utils';
 import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
 import { Plus } from 'lucide-react';
 import React, { FC } from 'react';
+import Image from 'next/image';
 
 import { Organization } from '@/types';
 
@@ -35,11 +36,19 @@ const OrganizationSwitcher: FC<OrganizationSwitcherProps> = ({ organizations }) 
             )}
             onClick={() => handleOrganizationChange(org.id.toString())}
           >
-            <img
-              className="w-14 h-14"
-              src={org.logo ?? '/assets/images/logos/company-placeholder.jpeg'}
-              alt=""
+            <Image
+              className="w-14 h-14 object-cover"
+              src={org.logo || '/assets/images/logos/company-placeholder.jpeg'}
+              alt={org.name ?? 'Organization logo'}
+              width={56}
+              height={56}
+              unoptimized={org.logo?.startsWith('http') ?? false}
             />
+            {/* <img
+              src={org.logo ?? '/assets/images/logos/company-placeholder.jpeg'}
+              alt={org.name ?? 'Organization logo'}
+              className="w-14 h-14"
+            /> */}
 
             {/* {org.name} */}
           </button>

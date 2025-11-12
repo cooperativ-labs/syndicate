@@ -8,9 +8,10 @@ import {
   Organization,
   OrganizationComplete,
   OrganizationUser,
+  OrganizationUserPermissionTypes,
   OrganizationWithLegalEntities,
 } from "@/types";
-
+import { getPublicUrl } from "./storageActions";
 export const createOrganizationWithAdmin = async ({
   userId,
   name,
@@ -58,63 +59,65 @@ export const createOrganizationWithAdmin = async ({
   }
 
   return {
-    organization_id: data[0].organization_id,
+    organization_id: data[0].organization_id.toString(),
     organization_user_id: data[0].organization_user_id,
-    slug: data[0].slug,
+    slug: data[0].organization_slug,
   };
 };
 
-// const getOrganizations = async (
-//   orgIds: string[],
-// ): Promise<Organization[]> => {
-//   const supabase = createClient();
-
-//   const { data: organizationsData, error: organizationsError } = await supabase
-//     .from("organization")
-//     .select(
-//       [
-//         "*",
-//         "organizationUsers:organization_user(id, user_id, permissions)",
-//       ].join(", "),
-//     )
-//     .in("id", orgIds);
-//   if (organizationsError) {
-//     console.error("getOrganizations error", organizationsError);
-//     return [];
-//   }
-//   return organizationsData;
-// };
-
 export const getOrganization = async (
-  id: string,
+  id: number | string,
   source?: string,
 ): Promise<OrganizationComplete | null> => {
   const supabase = createClient();
   if (!id) {
     return null;
   }
-  console.log("getOrganization id", { id, source });
-  const { data: organizationsData, error: organizationsError } = await supabase
+  // console.log("getOrganization id", { id, source });
+  const { data: organizationsData, error: organizationsError }: {
+    data: OrganizationComplete | null;
+    error: any;
+  } = await supabase
     .from("organization")
     .select(
       [
         "*",
-        "organizationUsers:organization_user(id, user_id, permissions)",
+        "organizationUsers:organization_user(id, user_id, permissions, profile(*))",
         "linkedAccounts:linked_account(*)",
         "emailAddresses:email_address(*)",
         "legalEntities:legal_entity(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address), legalEntity:legal_entity(*)))",
       ].join(", "),
     )
-    .eq("id", id)
+    .eq("id", Number(id))
     .single();
 
   if (organizationsError) {
     if (organizationsError.code === "PGRST116") {
       return null;
     }
-    console.error("getOrganization Error", organizationsError);
+    console.error("getOrganization Error", { organizationsError, id, source });
     return null;
   }
+
+  if (!organizationsData) {
+    return null;
+  }
+
+  const [logoUrl, bannerImageUrl] = await Promise.all([
+    getPublicUrl({
+      bucket: "organization-assets",
+      path: organizationsData.logo,
+      source: "getOrganization",
+    }),
+    getPublicUrl({
+      bucket: "organization-assets",
+      path: organizationsData.banner_image,
+      source: "getOrganization",
+    }),
+  ]);
+
+  organizationsData.logo = logoUrl.data || null;
+  organizationsData.banner_image = bannerImageUrl.data || null;
 
   return organizationsData;
 };
@@ -164,7 +167,7 @@ export const getOrganizationUser = async (
   const { data: organizationUserData, error: organizationUserError } =
     await supabase.from("organization_user").select(
       "*, notificationConfigurations:notification_configuration(*)",
-    ).eq("organization_id", organizationId).single();
+    ).eq("organization_id", Number(organizationId)).single();
   if (organizationUserError) {
     console.error("getOrganizationUser Error", organizationUserError);
     return null;
@@ -185,12 +188,70 @@ export const getOrganizationUsers = async ({
     await supabase
       .from("organization_user")
       .select("*")
-      .eq("organization_id", organizationId).eq("user_id", user.id);
+      .eq("organization_id", Number(organizationId)).eq("user_id", user.id);
   if (organizationUsersError) {
     console.error("getOrganizationUsers Error", organizationUsersError);
     return [];
   }
   return organizationUsersData;
+};
+
+export const addTeamMember = async ({
+  organizationId,
+  emailAddress,
+  permission,
+}: {
+  organizationId: string;
+  emailAddress: string;
+  permission: OrganizationUserPermissionTypes;
+}): Promise<void> => {
+  const supabase = createClient();
+
+  const { data: userData, error: userError } = await supabase.from("profile")
+    .select("id").eq("email", emailAddress).single();
+  if (userError) {
+    throw new Error(userError.message);
+  }
+  if (!userData) {
+    throw new Error("User not found");
+  }
+
+  const { error: organizationUserError } = await supabase.from(
+    "organization_user",
+  ).insert({
+    organization_id: Number(organizationId),
+    user_id: userData.id,
+    permission: permission,
+  });
+  if (organizationUserError) {
+    throw new Error(organizationUserError.message);
+  }
+  revalidatePath(`/${organizationId}`, "layout");
+};
+
+export const uploadOrganizationAsset = async ({
+  organizationId,
+  assetFile,
+  assetName,
+  assetType,
+}: {
+  organizationId: string | number;
+  assetFile: File;
+  assetName: string; //using file.name = "blob"
+  assetType: "logo" | "banner_image";
+}): Promise<void> => {
+  const supabase = createClient();
+  const { data: assetData, error: assetError } = await supabase.storage.from(
+    "organization-assets",
+  ).upload(`${organizationId}/${assetType}/${assetName}`, assetFile);
+  if (assetError) {
+    throw new Error(assetError.message);
+  }
+  const assetUrl = assetData.path;
+  await supabase.from("organization").update({
+    [assetType]: assetUrl,
+  }).eq("id", Number(organizationId));
+  revalidatePath(`/${organizationId}`, "layout");
 };
 
 export const updateOrganization = async ({
@@ -221,7 +282,7 @@ export const updateOrganization = async ({
     is_public: isPublic,
     description: description,
     short_description: shortDescription,
-  }).eq("id", organizationId);
+  }).eq("id", Number(organizationId));
   if (error) {
     console.error("updateOrganization Error", error);
   }
@@ -239,7 +300,7 @@ export const addOrganizationEmail = async ({
 }): Promise<void> => {
   const supabase = createClient();
   const { error } = await supabase.from("email_address").insert({
-    organization_id: organizationId,
+    organization_id: Number(organizationId),
     address: address,
     is_public: isPublic,
   });

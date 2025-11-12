@@ -2,12 +2,10 @@ import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
 import ManagerWrapper from '@src/containers/ManagerWrapper';
 import OrganizationOverview from '@src/screens/OrganizationOverview';
 import { getOrganization } from '@src/utils/actions/organizationActions';
-import React from 'react';
 
 const OrganizationPage = async ({ params }: { params: Promise<{ organizationId: string }> }) => {
   const { organizationId } = await params;
   const organization = await getOrganization(organizationId, '/overview');
-  console.log('organization', organization);
   if (!organization) {
     return <OrganizationNotFound backHref={`/${organizationId}/portal`} />;
   }

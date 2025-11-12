@@ -5,9 +5,12 @@ import { getOrganizationPermissionOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useState } from 'react';
 
-import { OrganizationUser, OrganizationUserPermission } from '@/types';
+import { OrganizationUser, OrganizationUserPermission, OrganizationUserWithProfile } from '@/types';
 
 import { EditButton } from '../form-components/ListItemButtons';
+import { Badge } from '../ui/badge';
+import { Item } from '../ui/item';
+import Image from 'next/image';
 
 export type TeamMemberBaseProps = {
   organizationId: string;
@@ -15,7 +18,7 @@ export type TeamMemberBaseProps = {
 };
 
 type TeamMemberListItemProps = TeamMemberBaseProps & {
-  teamMember: OrganizationUser;
+  teamMember: OrganizationUserWithProfile;
 };
 
 const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
@@ -25,9 +28,12 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
 }) => {
   const { userId: currentUserId } = useUserContext();
   const [editOn, setEditOn] = useState<boolean>(false);
-  const { user_id: userId, permissions, id } = teamMember as OrganizationUser;
-  const name = 'BLANK';
-  const image = 'BLANK';
+  const {
+    user_id: userId,
+    permissions,
+    id,
+    profile: { image, name }
+  } = teamMember as OrganizationUserWithProfile;
 
   const removeMember = async () => {
     await removeTeamMember({ organizationId, organizationUserId: id });
@@ -41,22 +47,22 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
       const permissionClass = () => {
         switch (name) {
           case 'Admin':
-            return `bg-blue-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+            return `bg-blue-600 rounded-full`;
           case 'Editor':
-            return `bg-green-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+            return `bg-green-600 rounded-full`;
           case 'Auditor':
-            return `bg-gray-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+            return `bg-gray-600 rounded-full`;
           case 'Viewer':
-            return `bg-gray-600 rounded-full min-w-min p-1 px-2 text-center text-white text-xs font-semibold`;
+            return `bg-gray-600 rounded-full`;
           default:
-            return 'green-600';
+            return 'green-600 rounded-full';
         }
       };
 
       return (
-        <div key={i} className={cn(permissionClass())}>
+        <Badge key={i} className={cn(permissionClass())}>
           {name}
-        </div>
+        </Badge>
       );
     });
   };
@@ -64,42 +70,50 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
   const canModify = userId !== currentUserId && isAdmin;
 
   return (
-    <div className="md:flex lg:grid grid-cols-8 gap-1 p-3  border-2 rounded-lg items-center ">
-      <div className="col-span-1">
-        <img
-          src={image as string}
-          referrerPolicy="no-referrer"
-          className="w-8 h-8 border-2 border-white rounded-full"
-        />
-      </div>
-      <div className="col-span-5 mt-3 md:mt-0">
+    <Item
+      variant="outline"
+      className="md:flex  gap-1 p-3  border-2 rounded-lg items-center justify-between "
+    >
+      <Image
+        objectFit="cover"
+        src={image || '/assets/images/user-images/placeholder.png'}
+        referrerPolicy="no-referrer"
+        className="w-8 h-8 border-2 border-white rounded-full"
+        width={32}
+        height={32}
+        alt={name || 'User Profile Image'}
+        unoptimized={process.env.NODE_ENV === 'development'}
+      />
+
+      <div className="mt-3 md:mt-0">
         <div className="md:w-auto text-sm font-medium ">{name}</div>
       </div>
-      <div className="flex col-span-1 mt-3 md:mt-0 items-center justify-end">
-        {makePermissionsChips(permissions)}
-      </div>
-
-      {canModify && (
-        <div className=" md:mt-0 flex col-span-1 justify-end min-w-max">
-          <div className="flex">
-            <EditButton toggle={editOn} setToggle={setEditOn} />
+      <div className="flex items-center justify-end gap-1">
+        <div className="flex col-span-1 mt-3 md:mt-0 items-center justify-end">
+          {makePermissionsChips(permissions)}
+        </div>
+        {canModify && (
+          <div className=" md:mt-0 flex col-span-1 justify-end min-w-max">
+            <div className="flex">
+              <EditButton toggle={editOn} setToggle={setEditOn} />
+            </div>
           </div>
-        </div>
-      )}
-      {editOn && (
-        <div className="col-span-6 flex w-full">
-          {canModify && (
-            <button
-              className="border-2 border-red-900 hover:bg-red-800 text-red-900 hover:text-white font-bold text-xs  uppercase mt-2 md:mt-0 md:ml-2 p-1 px-2 rounded-lg w-full whitespace-nowrap "
-              aria-label="remove wallet from whitelist"
-              onClick={() => removeMember()}
-            >
-              Remove team member
-            </button>
-          )}
-        </div>
-      )}
-    </div>
+        )}
+        {editOn && (
+          <div className="col-span-6 flex w-full">
+            {canModify && (
+              <button
+                className="border-2 border-red-900 hover:bg-red-800 text-red-900 hover:text-white font-bold text-xs  uppercase mt-2 md:mt-0 md:ml-2 p-1 px-2 rounded-lg w-full whitespace-nowrap "
+                aria-label="remove wallet from whitelist"
+                onClick={() => removeMember()}
+              >
+                Remove team member
+              </button>
+            )}
+          </div>
+        )}{' '}
+      </div>
+    </Item>
   );
 };
 

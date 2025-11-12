@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 
-import { OrganizationUser } from '@/types';
+import { OrganizationUserWithProfile } from '@/types';
 
 import TeamMemberItem, { TeamMemberBaseProps } from './TeamMemberItem';
 type TeamMemberListProps = TeamMemberBaseProps & {
-  teamMembers: OrganizationUser[] | [];
+  teamMembers: OrganizationUserWithProfile[] | [];
 };
 
 const TeamMemberList: FC<TeamMemberListProps> = ({ teamMembers, organizationId, isAdmin }) => {

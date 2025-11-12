@@ -2,8 +2,13 @@
 
 import { cn } from '@src/lib/utils';
 import { Maybe } from 'graphql/jsutils/Maybe';
-import { ChevronDown, ChevronUp } from 'lucide-react';
-import React, { useState } from 'react';
+import React from 'react';
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger
+} from '@src/components/ui/accordion';
 
 interface SectionBlockProps {
   sectionTitle: string | Maybe<string> | undefined;
@@ -22,30 +27,28 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
   mini,
   asAccordion
 }) => {
-  const [detailsShown, setDetailsShown] = useState(startOpen);
-  const handleDetailsReveal = () => {
-    setDetailsShown(!detailsShown);
-  };
   return (
-    <div className="">
-      <button
-        className={cn(
-          className,
-          mini ? 'text-sm text-grey-600' : 'text-xl font-bold py-4 mb-2',
-          asAccordion && 'w-full flex justify-between items-center',
-          'h-8  min-w-max flex items-center rounded outline-none'
-        )}
-        onClick={handleDetailsReveal}
-      >
-        <h2 className={cn(mini ? 'text-sm text-grey-600' : 'text-xl font-bold text-gray-800')}>
-          {sectionTitle}
-        </h2>
-        <div className="ml-2">
-          {detailsShown ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-        </div>
-      </button>
-      {detailsShown && <div>{children}</div>}
-    </div>
+    <Accordion
+      type="single"
+      collapsible
+      defaultValue={startOpen ? 'item' : undefined}
+      className={className}
+    >
+      <AccordionItem value="item" className="border-none">
+        <AccordionTrigger
+          className={cn(
+            mini ? 'text-sm text-grey-600' : 'text-xl font-bold',
+            asAccordion && 'w-full',
+            'h-8 min-w-max rounded outline-none hover:no-underline'
+          )}
+        >
+          <h2 className={cn(mini ? 'text-sm text-grey-600' : 'text-xl font-bold text-gray-800')}>
+            {sectionTitle}
+          </h2>
+        </AccordionTrigger>
+        <AccordionContent>{children}</AccordionContent>
+      </AccordionItem>
+    </Accordion>
   );
 };
 

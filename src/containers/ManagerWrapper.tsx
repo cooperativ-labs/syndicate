@@ -9,18 +9,33 @@ import React, { FC } from 'react';
 
 import NewOrganizationModal from './NewOrganizationModal';
 import WithAuthentication from './WithAuthentication';
-
+import WalletActionLockModel from './wallet/WalletActionLockModel';
 // const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 const BackgroundGradient = 'bg-white';
 
 import ManagerSideBar from './sideBar/ManagerSideBar';
 import Manager from './Manager';
+import { getPublicUrl } from '@src/utils/actions/storageActions';
 type ManagerWrapperProps = {
   children: React.ReactNode;
 };
 
 const ManagerWrapper: FC<ManagerWrapperProps> = async ({ children }) => {
   const organizations = await getOrgsFromUser();
+
+  const logoUrls = await Promise.all(
+    organizations.map(organization =>
+      getPublicUrl({
+        bucket: 'organization-assets',
+        path: organization.logo,
+        source: 'ManagerWrapper'
+      })
+    )
+  );
+  const organizationsWithLogos = organizations.map((organization, index) => ({
+    ...organization,
+    logo: logoUrls[index].data
+  }));
   const cookieStore = await cookies();
   const savedOrganizationId = cookieStore.get('CHOSEN_ORGANIZATION')?.value;
   return (
@@ -28,15 +43,14 @@ const ManagerWrapper: FC<ManagerWrapperProps> = async ({ children }) => {
       <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
         <ErrorBoundary>
           <WithAuthentication>
-            {/* <WalletActionLockModel /> */}
+            <WalletActionLockModel />
             {/* {PageIsLoading && <LoadingModal />} */}
             <ChainCompatibilityAlert />
             <AlertPopup text="This is an alpha version. Please use with caution." />
             <OrganizationsProvider
-              organizations={organizations}
+              organizations={organizationsWithLogos}
               savedOrganizationId={savedOrganizationId || null}
             >
-              {' '}
               <NewOrganizationModal />
               <div className="flex">
                 <div className="flex z-30 md:z-10 min-h-screen">

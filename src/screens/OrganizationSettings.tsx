@@ -32,7 +32,10 @@ import {
   OrganizationPermissionTypes,
   OrganizationUser
 } from '@/types';
-import { updateOrganization } from '@src/utils/actions/organizationActions';
+import {
+  updateOrganization,
+  uploadOrganizationAsset
+} from '@src/utils/actions/organizationActions';
 import ImageUpload from '@src/components/form-components/ImageUpload';
 interface OrganizationSettingsProps {
   organization: OrganizationComplete | null;
@@ -46,8 +49,8 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
 }) => {
   const { user } = useUserContext();
   const userId = user?.id;
-  const [logoUpload, setLogoUpload] = useState<File | null>(null);
-  const [bannerImageUpload, setBannerImageUpload] = useState<File | null>(null);
+  const [logoImageUrl, setLogoImageUrl] = useState<string | null>(null);
+  const [bannerImageUrl, setBannerImageUrl] = useState<string | null>(null);
   const [imageModal, setImageModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditOrganizationSelectionType>('none');
 
@@ -55,12 +58,12 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
     return <ModalLoading />;
   }
 
-  const handleLogoUpload = async (file: File) => {
-    setLogoUpload(file);
-  };
-  const handleBannerImageUpload = async (file: File) => {
-    setBannerImageUpload(file);
-  };
+  // const handleLogoUpload = async (file: File) => {
+  //   setLogoUpload(file);
+  // };
+  // const handleBannerImageUpload = async (file: File) => {
+  //   setBannerImageUpload(file);
+  // };
 
   const {
     id,
@@ -117,23 +120,22 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
     });
   };
 
-  const addLogoToDB = async (url: string) => {
-    await updateOrganization({
-      logo: url,
-      ...baseItems,
-      name: name ?? '',
-      bannerImage: banner_image ?? '',
-      isPublic: is_public ?? false
+  const addLogoToDB = async (file: File) => {
+    console.log('addLogoToDB', file);
+    await uploadOrganizationAsset({
+      assetFile: file,
+      assetName: file.name,
+      assetType: 'logo',
+      organizationId: organization.id
     });
   };
 
-  const addBannerImageToDb = async (url: string) => {
-    await updateOrganization({
-      ...baseItems,
-      logo: logo ?? '',
-      name: name ?? '',
-      isPublic: is_public ?? false,
-      bannerImage: url
+  const addBannerImageToDb = async (file: File) => {
+    await uploadOrganizationAsset({
+      assetFile: file,
+      assetName: file.name,
+      assetType: 'banner_image',
+      organizationId: organization.id
     });
   };
 
@@ -142,19 +144,23 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
       <FormModal formOpen={imageModal} onClose={() => setImageModal(false)}>
         <div className=" grid grid-cols-3 gap-4">
           <div className="flex flex-col col-span-1 justify-center">
-            <img className="h-32 object-scale-down" src={logo as string} />
+            <img className="h-32 object-scale-down" src={`${getBaseUrl()}/${logo}` as string} />
             <ImageUpload
               uploaderText="Add logo"
-              onSubmit={handleLogoUpload}
+              onSubmit={addLogoToDB}
               accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
+              selectedImageUrl={logoImageUrl}
+              setSelectedImageUrl={setLogoImageUrl}
             />
           </div>
           <div className="col-span-2">
             <img className="h-32 w-full object-cover" src={banner_image as string} />
             <ImageUpload
               uploaderText="Add banner image"
-              onSubmit={handleBannerImageUpload}
+              onSubmit={addBannerImageToDb}
               accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
+              selectedImageUrl={bannerImageUrl}
+              setSelectedImageUrl={setBannerImageUrl}
             />
           </div>
         </div>
