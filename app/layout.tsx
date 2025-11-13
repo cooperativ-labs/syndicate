@@ -6,13 +6,13 @@ import { getUserProfile } from '@src/utils/actions/userActions';
 import { getWagmiConfig } from '@src/web3/wagmi';
 import { createClient } from '@supabase/utils/server';
 import type { Metadata } from 'next';
-import { headers } from 'next/headers';
+import { cookies } from 'next/headers';
 import React from 'react';
 import { cookieToInitialState } from 'wagmi';
-
 import { UserProvider } from '@/contexts/UserContext';
-
 import Providers from './providers';
+import { OrganizationsProvider } from '@contexts/OrganizationsContext';
+import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 
 export const metadata: Metadata = {
   title: process.env.NEXT_PUBLIC_APP_NAME,
@@ -27,34 +27,22 @@ export const metadata: Metadata = {
   manifest: '/site.webmanifest'
 };
 
-//Doing this to avoid error where cookiesToInitialState is called with non-json string
-const configCookies = (cookies: string) => {
-  const allCookies = cookies.split(';');
-  const wagmiStore = allCookies.find(cookie => cookie.includes('wagmi.store')) ?? '';
-  try {
-    const cookieValue = wagmiStore?.split('=')[1];
-    if (!cookieValue) return null;
-    return wagmiStore;
-  } catch (error) {
-    // console.error('Error parsing wagmi store', error);
-    return null;
-  }
-};
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const supabase = createClient();
   const {
     data: { user }
   } = await supabase.auth.getUser();
 
-  const headersObj = await headers();
-  const wagmiCookie = configCookies(headersObj.get('cookie') || '');
+  const cookieStore = await cookies();
+  const wagmiState = cookieStore.get('wagmi.store')?.value;
+  const savedOrganizationId = cookieStore.get('CHOSEN_ORGANIZATION')?.value;
+  const analyticsApproved = cookieStore.get('COOKIE_APPROVED')?.value;
 
   const userProfile = user ? await getUserProfile(user.id) : null;
-
+  const organizations = await getOrgsFromUser();
   const config = getWagmiConfig();
 
-  const initialState = config ? cookieToInitialState(config, wagmiCookie) : undefined;
+  const initialState = config ? cookieToInitialState(config, wagmiState) : undefined;
 
   return (
     <html lang="en">
@@ -68,9 +56,14 @@ export default async function RootLayout({ children }: { children: React.ReactNo
       </head>
       <body>
         <UserProvider userProfile={userProfile} user={user}>
-          <Providers initialState={initialState}>
-            {children} <Toaster />
-          </Providers>
+          <OrganizationsProvider
+            organizations={organizations}
+            savedOrganizationId={savedOrganizationId || null}
+          >
+            <Providers initialState={initialState} analyticsCookies={analyticsApproved}>
+              {children} <Toaster />
+            </Providers>
+          </OrganizationsProvider>
         </UserProvider>
         {/* <Script
           async

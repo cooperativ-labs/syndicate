@@ -14,17 +14,12 @@ import { StateProvider } from '@/contexts/store';
 type ProvidersProps = {
   children: React.ReactNode;
   initialState: State | undefined;
+  analyticsCookies: string | undefined;
 };
 
-const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
-  const [cookiesApproved, setCookiesApproved] = useState<string | null>(null);
+const Providers: React.FC<ProvidersProps> = ({ children, initialState, analyticsCookies }) => {
   const [config] = useState(() => getWagmiConfig());
   const [queryClient] = useState(() => new QueryClient()); // This is required for Wagmi
-
-  useEffect(() => {
-    const result = window.localStorage?.getItem('COOKIE_APPROVED');
-    setCookiesApproved(result);
-  }, []);
 
   const withCookies = (
     <SetCookieContext>
@@ -48,7 +43,7 @@ const Providers: React.FC<ProvidersProps> = ({ children, initialState }) => {
       <QueryClientProvider client={queryClient}>
         <WalletContextProvider>
           <StateProvider>
-            {cookiesApproved === 'approved' ? withCookies : withoutCookies}
+            {analyticsCookies === 'approved' ? withCookies : withoutCookies}
             <WalletChooserModal />
           </StateProvider>
         </WalletContextProvider>

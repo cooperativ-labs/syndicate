@@ -1,10 +1,8 @@
 'use client';
 import { useOrganizations } from '@contexts/OrganizationsContext';
-import { useUserContext } from '@contexts/UserContext';
 import Card from '@src/components/cards/Card';
-import CreateOffering from '@src/components/offering/CreateOffering';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
-import EnsureOrganization from '@src/containers/EnsureOrganization';
+
 import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
 import { FC } from 'react';
 

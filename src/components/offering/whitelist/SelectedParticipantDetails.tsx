@@ -6,7 +6,6 @@ import JurisdictionSelect from '@src/components/form-components/JurisdictionSele
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import SectionBlock from '@src/containers/SectionBlock';
 import { updateOfferingParticipant, updateWhitelist } from '@src/utils/actions/offeringActions';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
