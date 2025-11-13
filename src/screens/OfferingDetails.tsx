@@ -27,6 +27,7 @@ import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull, OrganizationUser } from '@/types';
+import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;
@@ -289,7 +290,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
         <TwoColumnLayout twoThirdsLayout gap="12">
           {/* Slot 3 */}
           <div>
-            {details && (
+            {offering && (
               <OfferingTabContainer
                 offering={offering}
                 contractManagerMatches={contractManagerMatches}

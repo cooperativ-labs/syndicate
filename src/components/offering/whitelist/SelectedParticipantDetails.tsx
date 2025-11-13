@@ -29,7 +29,7 @@ import WhitelistTransactionItem from './WhitelistTransactionItem';
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
 export type SelectedParticipantProps = {
-  offeringParticipants: OfferingParticipant[] | undefined;
+  offeringParticipants: OfferingParticipant[] | undefined | null;
   contractSet: OfferingSmartContractSet | undefined;
   currentSalePrice: number | undefined;
   offeringId: string;
@@ -65,7 +65,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
   const participant = offeringParticipants?.find(p => p?.id === selection);
-  const participantWallet = participant?.walletAddress as String0x;
+  const participantWallet = participant?.wallet_address as String0x;
+  const participantChainId = participant?.chain_id;
+  const participantExternalId = participant?.external_id;
 
   const transferEvents = transferEventList.filter(transferEvent => {
     return (
@@ -134,22 +136,12 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
     return <div>Participant not found</div>;
   }
 
-  const {
-    name,
-    walletAddress,
-    externalId,
-    id,
-    jurisdiction,
-    investorApplication,
-    offering,
-    chainId,
-    whitelistTransactions
-  } = participant;
+  const { name, id } = participant;
 
-  const distributions = offering.distributions;
+  const distributions = offering?.distributions;
   const isEditorOrAdmin = getIsEditorOrAdmin({
     userId,
-    organizationUsers: offering.offeringEntity?.organization?.organizationUsers ?? []
+    organizationUsers: offering.legalEntity?.organization?.organizationUsers ?? []
   });
   const investorApplicationText = investorApplication?.applicationDoc.text;
 
@@ -160,7 +152,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
           name: name,
           jurCountry: jurisdiction?.country ?? '',
           jurProvince: jurisdiction?.province ?? '',
-          externalId: externalId
+          externalId: participantExternalId
         }}
         validate={values => {
           const errors: any = {}; /** @TODO : Shape */
@@ -172,14 +164,11 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         onSubmit={async (values, { setSubmitting, resetForm }) => {
           setSubmitting(true);
           await updateOfferingParticipant({
-            variables: {
-              currentDate: currentDate,
-              id: id,
-              name: values.name,
-              jurCountry: values.jurCountry,
-              jurProvince: values.jurProvince,
-              externalId: values.externalId
-            }
+            id: id,
+            name: values.name,
+            jurCountry: values.jurCountry,
+            jurProvince: values.jurProvince,
+            externalId: values.externalId
           });
           setSpecEditOn('none');
           setSubmitting(false);
@@ -236,7 +225,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       />
       <ClickToEditItem
         label="External ID"
-        currentValue={externalId}
+        currentValue={participantExternalId}
         form={updateInvestorForm('externalId')}
         editOn={specEditOn}
         itemType="externalId"
@@ -329,8 +318,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
     <div className="flex flex-col">
       <FormattedCryptoAddress
         withCopy
-        address={walletAddress}
-        chainId={chainId}
+        address={participantWallet}
+        chainId={participantChainId}
         className="font-bold text-lg"
         showFull
       />
@@ -339,7 +328,11 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         <div>{`Shares: ${numberWithCommas(numShares)} `}</div>
         <SectionBlock sectionTitle="Review approvals" mini>
           {whitelistTransactions?.map((transaction, i) => (
-            <WhitelistTransactionItem key={i} transaction={transaction} chainId={chainId} />
+            <WhitelistTransactionItem
+              key={i}
+              transaction={transaction}
+              chainId={participantChainId}
+            />
           ))}
         </SectionBlock>
       </div>

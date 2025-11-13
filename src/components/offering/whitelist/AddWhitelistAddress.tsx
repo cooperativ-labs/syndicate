@@ -12,14 +12,14 @@ import { useChainId } from 'wagmi';
 import { Organization } from '@/types';
 
 export type AddWhitelistAddressProps = {
-  organization: Organization;
+  organizationId: string | number;
   shareContractAddress: String0x;
-  offeringId: string;
+  offeringId: string | number;
 };
 const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
   shareContractAddress,
   offeringId,
-  organization
+  organizationId
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -49,10 +49,9 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
           shareContractAddress,
           offeringId,
           walletAddress: address as String0x,
-          chainId,
+          organizationId: organizationId,
           name: values.name,
           externalId: values.externalId,
-          organization,
           setButtonStep,
           updateWhitelist: addWhitelistMemberToDb
         });

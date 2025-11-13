@@ -1,13 +1,11 @@
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { createShareContract } from '@src/utils/actions/cryptoActions';
-import { shareBytecode } from '@src/web3/bytecode';
 import { deployShareContract } from '@src/web3/contractFactory';
-import { shareContractABI } from '@src/web3/generated';
 import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useContext, useState } from 'react';
 import { useAsyncFn } from 'react-use';
-import { useAccount, useDeployContract } from 'wagmi';
+import { useAccount, useChainId } from 'wagmi';
 
 import { useWalletContext } from '@/contexts/WalletContext';
 import { SmartContractType } from '@/types';
@@ -22,7 +20,6 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
   const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
-  const { deployContract } = useDeployContract();
   const { chain, chainId } = useAccount();
   if (!chain || !chainId) {
     throw new Error('No chain id found');
@@ -38,13 +35,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
     }
     setWalletActionLockModalOpen(true);
     try {
-      // const contract = await deployShareContract(userWalletAddress, chain);
-      const contract = deployContract({
-        account: userWalletAddress,
-        abi: shareContractABI,
-        bytecode: shareBytecode,
-        args: []
-      });
+      const contract = await deployShareContract(userWalletAddress, chain);
       if (!contract.contractAddress) {
         throw new Error('No contract address found');
       }
@@ -53,7 +44,11 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
         type: SmartContractType.ERC1410,
         ownerId: contractCreatorId,
         chainId: chainId,
-        protocol: protocol
+        protocol: protocol,
+        revalidationPath: {
+          path: `/${contractCreatorId}`,
+          type: 'page'
+        }
       });
       setButtonStep('confirmed');
     } catch (e) {

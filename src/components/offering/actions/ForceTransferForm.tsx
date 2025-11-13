@@ -15,7 +15,7 @@ import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helper
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import { getWagmiConfig } from '@src/web3/wagmi';
 import React from 'react';
-import { Controller, useForm } from 'react-hook-form';
+import { Controller, Resolver, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
 import { useAccount, useContractRead } from 'wagmi';
 import { readContract } from 'wagmi/actions';
@@ -28,7 +28,7 @@ import SetOperatorButton from './SetOperatorButton';
 type ForceTransferFormProps = {
   shareContractAddress: String0x;
   partitions: String0x[];
-  offeringParticipants: OfferingParticipant[] | undefined;
+  offeringParticipants: OfferingParticipant[] | undefined | null;
   target: String0x;
   refetchContracts: () => void;
 };
@@ -83,7 +83,11 @@ const ForceTransferForm = ({
     amount: number;
     recipient: string;
   }>({
-    resolver: zodResolver(schema),
+    resolver: zodResolver(schema) as Resolver<{
+      partition: string | String0x;
+      amount: number;
+      recipient: string;
+    }>,
     defaultValues: {
       partition: partitions[0] || '',
       amount: undefined as unknown as number,

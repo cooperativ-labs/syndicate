@@ -3,7 +3,7 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
-import { Currency, Maybe, OfferingParticipant, OfferingSmartContractSet } from '@/types';
+import { CurrencyCodeType, OfferingParticipant, OfferingSmartContractSet } from '@/types';
 
 import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
@@ -16,7 +16,7 @@ export type WhitelistAddressListProps = {
 type WhitelistAddressListPropsLocal = SelectedParticipantProps &
   WhitelistAddressListProps & {
     offeringId: string;
-    investmentCurrency: Maybe<Currency> | undefined;
+    investmentCurrency: CurrencyCodeType;
   };
 
 const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
@@ -25,6 +25,7 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
   contractSet,
   currentSalePrice,
   investmentCurrency,
+  organizationId,
   transferEventList,
   investorListRefreshTrigger,
   triggerInvestorListRefresh,
@@ -52,6 +53,7 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
               paymentTokenDecimals={getCurrencyOption(investmentCurrency)?.decimals}
               partitions={partitions}
               offeringId={offeringId}
+              organizationId={organizationId}
               transferEventList={transferEventList}
               refetchContracts={refetchContracts}
               setSelectedParticipant={setSelectedParticipant}

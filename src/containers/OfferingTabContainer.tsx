@@ -13,18 +13,26 @@ import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { LegalEntity, Maybe, Offering, OfferingSmartContractSet } from '@/types';
+import {
+  CurrencyCodeType,
+  LegalEntity,
+  Offering,
+  OfferingFull,
+  OfferingSmartContractSet
+} from '@/types';
 
 import FormModal from './FormModal';
+import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
+import { useAsync } from 'react-use';
 
 type OfferingTabContainerProps = WhitelistAddressListProps & {
-  offering: Offering;
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
+  offering: OfferingFull;
+  contractSet: OfferingSmartContractSet | undefined;
   contractManagerMatches: boolean;
   isContractOwner: boolean;
-  offeringEntity: Maybe<LegalEntity> | undefined;
+  offeringEntity: LegalEntity | undefined;
   isOfferingManager: boolean;
-  currentSalePrice: Maybe<number> | undefined;
+  currentSalePrice: number | undefined;
   partitions: String0x[];
   transferEvents: any[];
   investorListRefreshTrigger: number;
@@ -53,7 +61,8 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
 }) => {
   const { address: userWalletAddress } = useAccount();
   const distributions = offering.distributions;
-  const investmentCurrency = offering.details?.investmentCurrency;
+  const investmentCurrency = offering.investment_currency as CurrencyCodeType;
+  const legalEntity = offering.legalEntity;
   const distArraylength = distributions?.length;
   const hasDistributions = distArraylength && distArraylength > 0;
   const startingTab = isOfferingManager
@@ -66,13 +75,18 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   const tabList = isOfferingManager ? TabOptions : investorTabOptions;
   const [submitDistributionModal, setSubmitDistributionModal] = useState<boolean>(false);
 
+  const { value: propertiesData } = useAsync(async () => {
+    const properties = await getRealEstateProperties(legalEntity.id.toString());
+    return properties;
+  }, [legalEntity.id]);
+
+  const properties = propertiesData ?? [];
+
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
     ?.address as String0x;
-  const distributionTokenDecimals = getCurrencyOption(
-    offering.details?.investmentCurrency
-  )?.decimals;
-  const distributionTokenAddress = getCurrencyOption(offering.details?.investmentCurrency)
+  const distributionTokenDecimals = getCurrencyOption(offering.investment_currency)?.decimals;
+  const distributionTokenAddress = getCurrencyOption(offering.investment_currency)
     ?.address as String0x;
 
   return (
@@ -88,7 +102,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
             distributionTokenDecimals={distributionTokenDecimals}
             distributionTokenAddress={distributionTokenAddress}
             partitions={partitions}
-            offeringId={offering.id}
+            offeringId={offering.id.toString()}
             refetchContracts={refetchContracts}
           />
         </FormModal>
@@ -113,9 +127,10 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
               <h1 className="text-cDarkBlue text-2xl font-medium  ">Properties</h1>
             </div>
             <OfferingProperties
-              offeringEntity={offeringEntity}
+              offeringEntity={offeringEntity as LegalEntity}
               isOfferingManager={isOfferingManager}
-              offeringId={offering.id}
+              offeringId={offering.id.toString()}
+              properties={properties}
             />
           </div>
         )}
@@ -127,11 +142,12 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   <h1 className="text-cDarkBlue text-2xl font-medium ">Investors</h1>
                 </div>
                 <WhitelistAddressList
-                  offeringParticipants={offering.participants}
+                  offeringParticipants={offering.offeringParticipants}
                   contractSet={contractSet}
                   investmentCurrency={investmentCurrency}
                   currentSalePrice={currentSalePrice}
-                  offeringId={offering.id}
+                  offeringId={offering.id.toString()}
+                  organizationId={offering.legalEntity.organization_id.toString()}
                   transferEventList={transferEvents}
                   investorListRefreshTrigger={investorListRefreshTrigger}
                   triggerInvestorListRefresh={triggerInvestorListRefresh}
@@ -141,7 +157,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 <AddWhitelistAddress
                   shareContractAddress={shareContractAddress}
                   offeringId={offering.id}
-                  organization={offering.offeringEntity.organization}
+                  organizationId={offering.legalEntity.organization_id}
                 />
               </div>
             ) : (
