@@ -23,11 +23,9 @@ import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
-import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull, OrganizationUser } from '@/types';
-import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;

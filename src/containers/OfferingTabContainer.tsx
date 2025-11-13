@@ -8,9 +8,11 @@ import WhitelistAddressList, {
 } from '@src/components/offering/whitelist/WhitelistAddressList';
 import OfferingProperties from '@src/components/properties/OfferingProperties';
 import { cn } from '@src/lib/utils';
+import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
+import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
 import {
@@ -22,8 +24,6 @@ import {
 } from '@/types';
 
 import FormModal from './FormModal';
-import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
-import { useAsync } from 'react-use';
 
 type OfferingTabContainerProps = WhitelistAddressListProps & {
   offering: OfferingFull;
