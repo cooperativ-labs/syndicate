@@ -4,25 +4,26 @@ import React, { FC } from 'react';
 import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings from './ShareContractSettings';
 import SwapContractSettings from './SwapContractSettings';
+import { OfferingFull } from '@/types';
 
-const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
-  offering,
+const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: OfferingFull }> = ({
   contractSet,
   swapApprovalsEnabled,
   txnApprovalsEnabled,
   partitions,
   investmentCurrency,
   noLiveOrders,
-  refetchMainContracts
+  refetchMainContracts,
+  offering
 }) => {
   const shareContract = contractSet?.shareContract;
 
   return (
     <>
       <ShareContractSettings
-        offering={offering}
         shareContract={shareContract}
         partitions={partitions}
+        offering={offering}
       />
       <hr className="my-5" />
       <SwapContractSettings
@@ -31,13 +32,11 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
         txnApprovalsEnabled={txnApprovalsEnabled}
         contractSet={contractSet}
         investmentCurrency={investmentCurrency}
-        offering={offering}
         noLiveOrders={noLiveOrders}
       />
       <hr className="my-5" />
       <DistributionContractSettings
         investmentCurrency={investmentCurrency}
-        offering={offering}
         contractSet={contractSet}
       />
     </>

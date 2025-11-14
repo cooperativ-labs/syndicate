@@ -60,10 +60,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
   if (isTradeExecutionStep) {
     return (
       <>
-        <WalletActionModal
-          open={buttonStep === 'step1' || buttonStep === 'step2'}
-          // metaMaskWarning={isMetaMask(connector)}
-        >
+        <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
           <WalletActionIndicator
             step={buttonStep}
             step1Text="Setting contract allowance"

@@ -7,16 +7,14 @@ import { String0x } from '@src/web3/helpersChain';
 import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
 import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
-import { CurrencyCodeType, OfferingFull, OfferingSmartContractSet } from '@/types';
-
 import CreateSwapContract from '../CreateSwapContract';
+import { useOffering } from '@contexts/OfferingContext';
 
 const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   swapApprovalsEnabled,
   txnApprovalsEnabled,
   contractSet,
   investmentCurrency,
-  offering,
   noLiveOrders,
   refetchMainContracts
 }) => {
@@ -25,7 +23,7 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
 
-  const { legalEntity } = offering;
+  const { legalEntity, offering } = useOffering();
   const organizationId = legalEntity?.organization_id;
   const toggleClass = 'flex align-middle justify-between items-center ';
 

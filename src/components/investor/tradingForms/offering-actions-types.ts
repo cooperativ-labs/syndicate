@@ -1,6 +1,6 @@
-import { ManagerModalType } from '@src/utils/helpersOffering';
-import { String0x } from '@src/web3/helpersChain';
-import { Dispatch, SetStateAction } from 'react';
+import { ManagerModalType } from "@src/utils/helpersOffering";
+import { String0x } from "@src/web3/helpersChain";
+import { Dispatch, SetStateAction } from "react";
 
 import {
   CurrencyCodeType,
@@ -9,8 +9,8 @@ import {
   OfferingParticipant,
   OfferingSmartContractSet,
   ShareOrder,
-  ShareTransferEvent
-} from '@/types';
+  ShareTransferEvent,
+} from "@/types";
 
 export type ContractOrder = {
   orderId: string | undefined;
@@ -49,7 +49,7 @@ export type SwapContractSettingsProps = {
   swapApprovalsEnabled: boolean | undefined;
   txnApprovalsEnabled: boolean | undefined;
   contractSet: OfferingSmartContractSet | null;
-  offering: OfferingFull;
+
   noLiveOrders: boolean;
   investmentCurrency: CurrencyCodeType | null;
   refetchMainContracts: () => void;
@@ -115,9 +115,11 @@ export type ShareSaleListProps = ShareSaleListItemProps & {
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
 };
 
-export type AllOfferingActionsProps = SmartContractsSettingsProps &
-  PostBidAskFormProps &
-  PostInitialSaleProps & {
+export type AllOfferingActionsProps =
+  & SmartContractsSettingsProps
+  & PostBidAskFormProps
+  & PostInitialSaleProps
+  & {
     orders: ShareOrder[] | undefined;
     hasContract: boolean;
     loading: boolean | undefined;

@@ -93,10 +93,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   return (
     <>
       {!txnApprovalsEnabled && (
-        <WalletActionModal
-          open={buttonStep === 'step1' || buttonStep === 'step2'}
-          // metaMaskWarning={isMetaMask(connector)}
-        >
+        <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
           <WalletActionIndicator
             step={buttonStep}
             step1Text={isAskOrder ? 'Setting contract allowance' : 'Submitting Bid'}

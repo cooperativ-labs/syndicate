@@ -115,14 +115,13 @@ const useOfferingDetails = ({
 
   const { value: currentOrdersAndPrice } = useAsync(async () => {
     if (!paymentTokenDecimals) {
-      return { currentPrice: 0, noLiveOrders: false };
+      return { currentPrice: 0, noLiveOrders: true };
     }
     const { currentPrice, contractSaleList } = await getCurrentOrdersAndPrice({
       offeringId: offeringId,
       paymentTokenDecimals: paymentTokenDecimals ?? 0,
       priceStart: price_start ?? 0
     });
-
     const result = { currentPrice, noLiveOrders: confirmNoLiveOrders(contractSaleList) };
     return result;
   }, [offeringId]);
@@ -176,7 +175,6 @@ const useOfferingDetails = ({
     transferEvents,
     partitions,
     legalLinkTexts,
-
     noLiveOrders,
     currentSalePrice: currentPrice,
     contractOwner,

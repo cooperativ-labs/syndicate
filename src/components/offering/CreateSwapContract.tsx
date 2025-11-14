@@ -18,15 +18,14 @@ import React, { FC, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
-import { useWalletContext } from '@/contexts/WalletContext';
 import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
 
 import { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
 
 type CreateSwapContractProps = {
-  contractSet: OfferingSmartContractSet;
-  investmentCurrency: CurrencyCodeType;
+  contractSet: OfferingSmartContractSet | null;
+  investmentCurrency: CurrencyCodeType | null;
   contractOwnerEntityId: string;
   offeringId: string;
   organizationId: string;
@@ -39,7 +38,6 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   offeringId,
   organizationId
 }) => {
-  const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress } = useAccount();
 
@@ -58,7 +56,11 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
       if (!protocol || !backingToken) {
         throw new Error('No protocol or backing token found');
       }
-      setWalletActionLockModalOpen(true);
+
+      if (!contractSet) {
+        throw new Error('No contract set found');
+      }
+
       try {
         const contract = await deploySwapContract(
           userWalletAddress,
@@ -100,10 +102,12 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
         StandardChainErrorHandling(e, setButtonStep);
         console.error(`Error creating swap contract: ${e}`);
       }
-      setWalletActionLockModalOpen(false);
     },
     [userWalletAddress, shareContractAddress, chainId]
   );
+  if (!contractSet) {
+    return null;
+  }
 
   return (
     <>
@@ -169,20 +173,17 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
                     );
                   })}
                 </Select>
-                <Button
-                  className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
+
+                <LoadingButtonChain
                   type="submit"
-                >
-                  <LoadingButtonChain
-                    state={buttonStep}
-                    idleText={`Publish trading contract on ${chainName}`}
-                    step1Text="Deploying (check status in your wallet)"
-                    step2Text="Setting contract operator"
-                    confirmedText="Confirmed!"
-                    failedText="Transaction failed"
-                    rejectedText="You rejected the transaction. Click here to try again."
-                  />
-                </Button>
+                  state={buttonStep}
+                  idleText={`Publish trading contract on ${chainName}`}
+                  step1Text="Deploying (check status in your wallet)"
+                  step2Text="Setting contract operator"
+                  confirmedText="Confirmed!"
+                  failedText="Transaction failed"
+                  rejectedText="You rejected the transaction. Click here to try again."
+                />
               </Form>
             </Formik>
           )}

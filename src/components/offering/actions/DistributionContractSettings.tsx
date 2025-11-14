@@ -3,25 +3,29 @@ import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 import { useChainId } from 'wagmi';
 
-import { Currency, Maybe, Offering, OfferingSmartContractSet } from '@/types';
+import { CurrencyCodeType, OfferingSmartContractSet } from '@/types';
+import { useOffering } from '@contexts/OfferingContext';
 
 import CreateDistributionContract from '../CreateDistributionContract';
 
 export type DistributionContractSettingsProps = {
-  contractSet: Maybe<OfferingSmartContractSet> | undefined;
-  investmentCurrency: Currency | null | undefined;
-  offering: Offering;
+  contractSet: OfferingSmartContractSet | null;
+  investmentCurrency: CurrencyCodeType | null | undefined;
 };
 
 const DistributionContractSettings: FC<DistributionContractSettingsProps> = ({
   contractSet,
-  investmentCurrency,
-  offering
+  investmentCurrency
 }) => {
   const chainId = useChainId();
+  const { legalEntity } = useOffering();
   const shareContract = contractSet?.shareContract;
   const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
     ?.address as String0x;
+
+  if (!contractSet || !investmentCurrency) {
+    return null;
+  }
 
   return (
     <>
@@ -29,7 +33,7 @@ const DistributionContractSettings: FC<DistributionContractSettingsProps> = ({
         <CreateDistributionContract
           contractSet={contractSet}
           investmentCurrency={investmentCurrency}
-          contractOwnerEntityId={offering.offeringEntity?.id}
+          contractOwnerEntityId={legalEntity?.id.toString()}
         />
       ) : (
         <div className="flex items-center">

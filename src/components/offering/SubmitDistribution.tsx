@@ -81,10 +81,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
   };
   return (
     <>
-      <WalletActionModal
-        open={buttonStep === 'step1' || buttonStep === 'step2'}
-        // metaMaskWarning={isMetaMask(connector)}
-      >
+      <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
         <WalletActionIndicator
           step={buttonStep}
           step1Text="Permitting the contract to spend your tokens"

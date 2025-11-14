@@ -1,12 +1,12 @@
-import { ContractOrder } from '@src/components/investor/tradingForms/offering-actions-types';
-import { swapContractABI } from '@src/web3/generated';
-import { String0x } from '@src/web3/helpersChain';
-import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { getWagmiConfig } from '@src/web3/wagmi';
-import { readContract } from 'wagmi/actions';
+import { ContractOrder } from "@src/components/investor/tradingForms/offering-actions-types";
+import { swapContractABI } from "@src/web3/generated";
+import { String0x } from "@src/web3/helpersChain";
+import { shareContractDecimals, toNormalNumber } from "@src/web3/util";
+import { getWagmiConfig } from "@src/web3/wagmi";
+import { readContract } from "wagmi/actions";
 
-import { ShareOrder, ShareTransferEvent } from '@/types';
-import { ShareTransferEventType } from '@/types';
+import { ShareOrder, ShareTransferEvent } from "@/types";
+import { ShareTransferEventType } from "@/types";
 export function getOrdersByPrice(contractOrderList: ContractOrder[]) {
   const arrayForSort = contractOrderList && [...contractOrderList];
   return arrayForSort?.sort((a: ContractOrder, b: ContractOrder) =>
@@ -14,7 +14,10 @@ export function getOrdersByPrice(contractOrderList: ContractOrder[]) {
   );
 }
 
-export function getLowestOrderPrice(contractOrderList: ContractOrder[], priceStart: number | null) {
+export function getLowestOrderPrice(
+  contractOrderList: ContractOrder[],
+  priceStart: number | null,
+) {
   if (!priceStart) {
     return NaN;
   }
@@ -24,7 +27,7 @@ export function getLowestOrderPrice(contractOrderList: ContractOrder[], priceSta
 
 export const getCurrentOrderPrice = (
   contractOrderList: ContractOrder[],
-  startingPrice: number | null
+  startingPrice: number | null,
 ) => {
   if (!startingPrice) {
     return NaN;
@@ -35,20 +38,22 @@ export const getCurrentOrderPrice = (
 export async function getOrderArrayFromContract(
   orders: ShareOrder[],
   swapContractAddress: String0x,
-  paymentTokenDecimals: number
+  paymentTokenDecimals: number,
 ): Promise<ContractOrder[]> {
-  const orderArray = orders?.map(async order => {
-    const data =
-      order &&
+  const orderArray = orders?.map(async (order) => {
+    const data = order &&
       (await readContract(getWagmiConfig(), {
         address: swapContractAddress as String0x,
         abi: swapContractABI,
-        functionName: 'orders',
-        args: [BigInt(order.contract_index)]
+        functionName: "orders",
+        args: [BigInt(order.contract_index)],
       }));
-    const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
+    const adjustTokenDecimalsForShareContract = paymentTokenDecimals -
+      shareContractDecimals;
     const initiator = data && data[0];
-    const price = data ? toNormalNumber(data[3], adjustTokenDecimalsForShareContract) : 0;
+    const price = data
+      ? toNormalNumber(data[3], adjustTokenDecimalsForShareContract)
+      : 0;
     const amount = data && toNormalNumber(data[2], shareContractDecimals);
     const partition = data && data[1];
     const orderId = order?.id;
@@ -69,19 +74,23 @@ export async function getOrderArrayFromContract(
       isFilled,
       isAccepted,
       isApproved,
-      filler
+      filler,
     };
   });
   return Promise.all(orderArray);
 }
 
-export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]): boolean => {
-  const liveOrders = contractOrderList?.filter(order => !order.isCancelled && !order.isFilled);
+export const confirmNoLiveOrders = (
+  contractOrderList: ContractOrder[],
+): boolean => {
+  const liveOrders = contractOrderList?.filter((order) =>
+    !order.isCancelled && !order.isFilled
+  );
   const activeOrders = liveOrders?.find(
-    order =>
+    (order) =>
       order.isAccepted ||
-      order.filler !== '0x0000000000000000000000000000000000000000' ||
-      order.isApproved
+      order.filler !== "0x0000000000000000000000000000000000000000" ||
+      order.isApproved,
   );
   return !activeOrders;
 };
@@ -89,10 +98,11 @@ export const confirmNoLiveOrders = (contractOrderList: ContractOrder[]): boolean
 export const getDisapprovedTransferEvents = (
   transferEvents: ShareTransferEvent[] | undefined,
   order: ShareOrder,
-  userWalletAddress: String0x | undefined
+  userWalletAddress: String0x | undefined,
 ) =>
-  transferEvents?.filter(transferEvent => {
-    const { order_index, recipient_address, sender_address, type } = transferEvent;
+  transferEvents?.filter((transferEvent) => {
+    const { order_index, recipient_address, sender_address, type } =
+      transferEvent;
     if (
       order_index === order.contract_index &&
       recipient_address === userWalletAddress &&

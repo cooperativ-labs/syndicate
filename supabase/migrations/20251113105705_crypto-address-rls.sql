@@ -20,7 +20,7 @@ CREATE POLICY "Admins and editors can insert crypto addresses" ON crypto_address
       SELECT 1
       FROM legal_entity le
       JOIN organization_user ou ON ou.organization_id = le.organization_id
-      WHERE le.id = crypto_address.legal_entity_id
+      WHERE le.id = legal_entity_id
         AND ou.user_id = auth.uid()
         AND ('ADMIN' = ANY(ou.permissions) OR 'EDITOR' = ANY(ou.permissions))
     )
