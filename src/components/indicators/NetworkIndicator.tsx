@@ -1,11 +1,10 @@
 import { cn } from '@src/lib/utils';
-import { GET_USER } from '@src/utils/graphQueries/user';
 import { String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useContext } from 'react';
 import { useAccount, useChainId } from 'wagmi';
 
-import Button from '../buttons/Button';
+import { Button } from '../ui/button';
 
 export const networkIcon = (chainId: number, walletAddress: string) => {
   if (!walletAddress) {

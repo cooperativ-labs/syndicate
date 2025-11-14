@@ -27,6 +27,7 @@ const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization })
   const offerings = getOrgOfferingsFromEntity(organization);
 
   const hasOfferings = offerings && offerings.length > 0;
+
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
       <div className="flex">

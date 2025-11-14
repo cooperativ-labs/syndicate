@@ -288,7 +288,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
                   <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none mt-2">
                     <SelectValue placeholder="Select a state" />
                   </SelectTrigger>
-                  <SelectContent>
+                  <SelectContent position="item-aligned">
                     {states.map((state, i) => (
                       <SelectItem key={i} value={state.isoCode}>
                         {state.name}

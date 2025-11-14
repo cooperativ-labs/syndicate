@@ -1,4 +1,4 @@
-import Button from '@src/components/buttons/Button';
+import { Button } from '@src/components/ui/button';
 import { deleteDescriptionText } from '@src/utils/actions/offeringActions';
 import { Menu, Pencil, X } from 'lucide-react';
 import React, { FC, useState } from 'react';

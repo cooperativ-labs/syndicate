@@ -1,9 +1,10 @@
 import { useUserContext } from '@contexts/UserContext';
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import Input from '@src/components/form-components/Inputs';
 import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { Button } from '@src/components/ui/button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import SectionBlock from '@src/containers/SectionBlock';
 import { updateOfferingParticipant, updateWhitelist } from '@src/utils/actions/offeringActions';
 import { DownloadFile } from '@src/utils/helpersAgreement';
@@ -29,7 +30,7 @@ export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
 export type SelectedParticipantProps = {
   offeringParticipants: OfferingParticipant[] | undefined | null;
-  contractSet: OfferingSmartContractSet | undefined;
+  contractSet: OfferingSmartContractSet | null;
   currentSalePrice: number | undefined;
   offeringId: string;
   organizationId: string;
@@ -41,7 +42,6 @@ export type SelectedParticipantProps = {
 type SelectedParticipantFormPropsLocal = SelectedParticipantProps & {
   selection: string;
   partitions: String0x[];
-  paymentTokenDecimals: number | undefined;
   setSelectedParticipant: Dispatch<React.SetStateAction<string | undefined>>;
 };
 
@@ -49,7 +49,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   selection,
   offeringParticipants,
   contractSet,
-  paymentTokenDecimals,
   organizationId,
   offeringId,
   partitions,
@@ -57,10 +56,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   triggerInvestorListRefresh,
   refetchContracts
 }) => {
-  const { userId } = useUserContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
-
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
 
   const participant = offeringParticipants?.find(p => p?.id === selection);
@@ -111,7 +108,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       walletAddress: participantWallet,
       shareContractAddress: shareContractAddress,
       setButtonStep,
-      updateWhitelist,
       triggerInvestorListRefresh
     };
     try {
@@ -137,11 +133,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
 
   const { name, id } = participant;
 
-  const distributions = offering?.distributions;
-  const isEditorOrAdmin = getIsEditorOrAdmin({
-    userId,
-    organizationUsers: offering.legalEntity?.organization?.organizationUsers ?? []
-  });
   const investorApplicationText = investorApplication?.applicationDoc.text;
 
   const updateInvestorForm = (itemType: ParticipantSpecItemType) => {
@@ -210,7 +201,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         form={updateInvestorForm('name')}
         editOn={specEditOn}
         itemType="name"
-        isManager={isEditorOrAdmin}
         setEditOn={setSpecEditOn}
       />
       <ClickToEditItem
@@ -219,7 +209,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         form={updateInvestorForm('jurisdiction')}
         editOn={specEditOn}
         itemType="jurisdiction?"
-        isManager={isEditorOrAdmin}
         setEditOn={setSpecEditOn}
       />
       <ClickToEditItem
@@ -228,7 +217,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         form={updateInvestorForm('externalId')}
         editOn={specEditOn}
         itemType="externalId"
-        isManager={isEditorOrAdmin}
         setEditOn={setSpecEditOn}
       />
     </div>
@@ -266,7 +254,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
             aria-label="remove wallet from whitelist"
             onClick={() => updateWhitelistMember(WhitelistTransactionType.REMOVE)}
           >
-            <LoadingButtonText
+            <LoadingButtonChain
               state={buttonStep}
               idleText="Remove this investor from the whitelist"
               step1Text="Removing..."
@@ -281,7 +269,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
             className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
             // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
           >
-            <LoadingButtonText
+            <LoadingButtonChain
               state={buttonStep}
               idleText="Approve Investor"
               step1Text="Approving..."

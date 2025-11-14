@@ -5,7 +5,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { createOrganizationWithAdmin } from '@src/utils/actions/organizationActions';
 import { formatSlug } from '@src/utils/graphQueries/gqlUtils';
 import { fileToImageUrl } from '@src/utils/helpersDocuments';
-import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
+import { organizationChangeServer } from '@src/utils/helpersServer';
 import { Country } from 'country-state-city';
 import { useRouter } from 'next/navigation';
 import React, { FC, useContext, useState } from 'react';

@@ -1,3 +1,8 @@
+import { Button } from '@src/components/ui/button';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
@@ -16,7 +21,6 @@ import { useAccount, useChainId } from 'wagmi';
 import { useWalletContext } from '@/contexts/WalletContext';
 import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
 
-import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 import { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
 
@@ -169,7 +173,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
                   className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
                   type="submit"
                 >
-                  <LoadingButtonText
+                  <LoadingButtonChain
                     state={buttonStep}
                     idleText={`Publish trading contract on ${chainName}`}
                     step1Text="Deploying (check status in your wallet)"

@@ -1,19 +1,19 @@
+import { Button } from '@src/components/ui/button';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import {
   createDistributionContract,
   CreateDistributionContractParams
 } from '@src/utils/actions/cryptoActions';
-import {
-  bacOptions,
-  CryptoAddressProtocol,
-  getCurrencyById,
-  getCurrencyOption
-} from '@src/utils/enumConverters';
+import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
 import { deployDividendContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import { Form, Formik } from 'formik';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
@@ -26,8 +26,6 @@ import {
   Protocol,
   SmartContractType
 } from '@/types';
-
-import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
 
 type CreateDistributionContractProps = {
   contractSet: OfferingSmartContractSet;
@@ -69,7 +67,9 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
           chain,
           shareContractAddress
         );
-
+        if (!contract.contractAddress) {
+          throw new Error('No contract address found');
+        }
         await handleAddDistributionContract({
           cryptoAddress: contract.contractAddress,
           type: SmartContractType.DISTRIBUTION,
@@ -134,7 +134,7 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
                 className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
                 type="submit"
               >
-                <LoadingButtonText
+                <LoadingButtonChain
                   state={buttonStep}
                   idleText={`Publish distribution contract on ${chainName}`}
                   step1Text="Deploying (check status in your wallet)"

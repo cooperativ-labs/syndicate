@@ -1,6 +1,8 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
+import { Button } from '@src/components/ui/button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { cn } from '@src/lib/utils';
 import { updateOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -13,16 +15,7 @@ import React, { FC, useState } from 'react';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
-
-export type SaleMangerPanelProps = {
-  swapContractAddress: String0x | undefined;
-  paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | null;
-  txnApprovalsEnabled: boolean | undefined;
-  swapApprovalsEnabled: boolean | undefined;
-  isContractOwner: boolean;
-  refetchOfferingInfo: () => void;
-};
+import { SaleMangerPanelProps } from './offering-actions-types';
 
 type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
   currentUserFiller: boolean | undefined;
@@ -108,8 +101,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     numShares,
     price,
     currencyCode: getCurrencyById(paymentTokenAddress)?.value,
-    partition,
-    addApprovalRecord
+    partition
   };
 
   const listingIsApproved = isApproved || (txnApprovalsEnabled && order.visible);
@@ -182,7 +174,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       onClick={() => handleCancel()}
       disabled={cancelButtonStep === 'step1'}
     >
-      <LoadingButtonText
+      <LoadingButtonChain
         state={cancelButtonStep}
         idleText="Cancel Remaining Offer"
         step1Text="Canceling Sale..."
@@ -215,7 +207,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       }
       disabled={approveButtonStep === 'step1'}
     >
-      <LoadingButtonText
+      <LoadingButtonChain
         state={approveButtonStep}
         idleText={`${transactionIsAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'}`}
         step1Text="Approving..."
@@ -232,7 +224,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       onClick={() => handleApprove({ isDisapprove: true })}
       disabled={approveButtonStep === 'step1'}
     >
-      <LoadingButtonText
+      <LoadingButtonChain
         state={disapproveButtonStep}
         idleText={`Disapprove ${transactionIsAccepted ? 'Trade' : 'Listing'}`}
         step1Text="Disapproving..."

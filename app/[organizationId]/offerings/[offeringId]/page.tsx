@@ -1,7 +1,8 @@
+import { OfferingContextProvider } from '@contexts/OfferingContext';
 import OfferingDetails from '@src/screens/OfferingDetails';
 import OfferingProfile from '@src/screens/OfferingProfile';
 import { getOfferingById, getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
-import { getOrganization, getOrganizationUsers } from '@src/utils/actions/organizationActions';
+import { getOrganizationUsers } from '@src/utils/actions/organizationActions';
 
 export default async function OfferingPage({
   params
@@ -14,15 +15,13 @@ export default async function OfferingPage({
     getOrganizationUsers({ organizationId }),
     getOfferingById(offeringId)
   ]);
-  const documents = await getOfferingDocumentsById(offering.id.toString());
+  const documents = await getOfferingDocumentsById(offeringId);
 
   if (offering) {
     return (
-      <OfferingDetails
-        offering={offering}
-        documents={documents}
-        organizationUsers={organizationUsers}
-      />
+      <OfferingContextProvider offering={offering} organizationUsers={organizationUsers}>
+        <OfferingDetails offering={offering} documents={documents} />
+      </OfferingContextProvider>
     );
     // return <OfferingProfile offering={offering} organization={organization} />;
   }

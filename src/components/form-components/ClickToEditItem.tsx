@@ -1,15 +1,14 @@
 import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
-import { Maybe } from '@/types';
-
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
+import { useOffering } from '@contexts/OfferingContext';
 
 type ClickToEditItemProps = {
   label: string;
-  currentValue: Maybe<string> | undefined;
+  currentValue: string | undefined | null;
   form: any;
   editOn:
     | EditEntitySelectionType
@@ -18,7 +17,6 @@ type ClickToEditItemProps = {
     | string
     | undefined;
   itemType: EditEntitySelectionType | EditOrganizationSelectionType | string;
-  isManager: boolean | undefined;
   setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType | string) => void;
 };
 const ClickToEditItem: FC<ClickToEditItemProps> = ({
@@ -30,6 +28,7 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
   isManager,
   setEditOn
 }) => {
+  const { isOfferingManager } = useOffering();
   return (
     <div className={'flex justify-between gap-4 z-10'}>
       {editOn === itemType ? (

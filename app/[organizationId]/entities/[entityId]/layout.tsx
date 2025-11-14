@@ -1,6 +1,5 @@
 import { EntityProvider } from '@contexts/EntityContext';
 import LoadingModal from '@src/components/loading/ModalLoading';
-import ManagerWrapper from '@src/containers/ManagerWrapper';
 import EntityDetails from '@src/screens/EntityDetails';
 import { getLegalEntityById } from '@src/utils/actions/entityActions';
 
@@ -14,11 +13,9 @@ export default async function EntityLayout({ params }: { params: Promise<{ entit
 
   return (
     <div data-test="component-landing" className="h-full flex">
-      <ManagerWrapper>
-        <EntityProvider entity={entity}>
-          <EntityDetails entity={entity} />
-        </EntityProvider>
-      </ManagerWrapper>
+      <EntityProvider entity={entity}>
+        <EntityDetails entity={entity} />
+      </EntityProvider>
     </div>
   );
 }

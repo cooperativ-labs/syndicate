@@ -12,32 +12,15 @@ import { useAccount, useChainId } from 'wagmi';
 import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 
 import OfferingSummaryPanel from './OfferingSummaryPanel';
-import SaleManagerPanel, { SaleMangerPanelProps } from './ShareManagerPanel';
+import SaleManagerPanel from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
-
-export type OrderStatusType = {
-  isApproved: boolean;
-  isDisapproved: boolean;
-  isAccepted: boolean;
-  isCancelled: boolean;
-};
-
-export type ShareSaleListItemProps = SaleMangerPanelProps & {
-  offering: OfferingFull;
-  shareContractAddress: String0x | undefined;
-  myShareQty: number | undefined;
-  transferEvents: ShareTransferEvent[] | undefined;
-  setModal: (value: ManagerModalType) => void;
-  refetchMainContracts: () => void;
-};
+import { ShareSaleListItemProps } from './offering-actions-types';
 
 type AdditionalShareSaleListItemProps = ShareSaleListItemProps & {
-  index: number;
   order: ShareOrder;
 };
 
 const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
-  index,
   offering,
   order,
   myShareQty,
@@ -56,6 +39,13 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
+
+  if (!paymentTokenDecimals) {
+    throw new Error('Payment token decimals are required (ShareSaleListItem)');
+  }
+  if (!swapContractAddress) {
+    throw new Error('Swap contract address is required (ShareSaleListItem)');
+  }
 
   const {
     initiator,

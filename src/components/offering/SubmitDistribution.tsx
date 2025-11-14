@@ -1,3 +1,5 @@
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { addDistribution } from '@src/utils/actions/orderActions';
@@ -11,8 +13,6 @@ import React, { FC, useState } from 'react';
 import { erc20Abi } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
 
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
 
@@ -134,16 +134,16 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
                 })}
               </Select>
               <div className="mt-4" />
-              <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-                <LoadingButtonText
-                  state={buttonStep}
-                  idleText={`Distribute funds to shareholders`}
-                  step1Text="Submitting..."
-                  confirmedText="Confirmed!"
-                  failedText="Transaction failed"
-                  rejectedText="You rejected the transaction. Click here to try again."
-                />
-              </FormButton>
+              <LoadingButtonChain
+                type="submit"
+                disabled={isSubmitting || buttonStep === 'step1'}
+                state={buttonStep}
+                idleText={`Distribute funds to shareholders`}
+                step1Text="Submitting..."
+                confirmedText="Confirmed!"
+                failedText="Transaction failed"
+                rejectedText="You rejected the transaction. Click here to try again."
+              />
             </Form>
           </>
         )}

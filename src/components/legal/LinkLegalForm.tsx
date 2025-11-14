@@ -1,5 +1,7 @@
 'use client';
 
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { addLegalShareLink, addOfferingParticipant } from '@src/utils/actions/offeringActions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { setDocument } from '@src/web3/contractShareCalls';
@@ -17,8 +19,6 @@ import { useAccount, useChainId } from 'wagmi';
 
 import { CurrencyCode, CurrencyCodeType, SmartContract } from '@/types';
 
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 
 import PresentLegalText from './PresentLegalText';
@@ -139,19 +139,16 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
               Agreement Hash (Keccak-256)
             </div>
             <div className="text-sm break-all">{agreementHash}</div>
-            <FormButton
+            <LoadingButtonChain
               type="submit"
               disabled={isSubmitting}
               className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-8 rounded p-4"
-            >
-              <LoadingButtonText
-                state={buttonStep}
-                idleText="Sign"
-                step1Text="Signing (check status in your wallet)"
-                confirmedText="Confirmed!"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </FormButton>
+              state={buttonStep}
+              idleText="Sign"
+              step1Text="Signing (check status in your wallet)"
+              confirmedText="Confirmed!"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
           </Form>
         )}
       </Formik>

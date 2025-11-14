@@ -2,8 +2,7 @@
 import { useOrganizations } from '@contexts/OrganizationsContext';
 import Card from '@src/components/cards/Card';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
-
-import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
+import { organizationChangeServer } from '@src/utils/helpersServer';
 import { FC } from 'react';
 
 const Dashboard: FC = () => {

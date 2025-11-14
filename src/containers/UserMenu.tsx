@@ -1,10 +1,10 @@
 import { useUserContext } from '@contexts/UserContext';
-import Button from '@src/components/buttons/Button';
 import DisconnectButton from '@src/components/buttons/DisconnectButton';
 import LogoutButton from '@src/components/buttons/LogoutButton';
 import Card from '@src/components/cards/Card';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { networkIcon, NetworkIndicatorDot } from '@src/components/indicators/NetworkIndicator';
+import { Button } from '@src/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import React, { FC, useState } from 'react';
@@ -31,7 +31,8 @@ const UserMenu: FC = () => {
       )}
       <div className="relative flex flex-col items-center ">
         <Button
-          className={`border-gray-300 hover:border-gray-500
+          variant="outline"
+          className={`p-0 border-gray-300 hover:border-gray-500
               border-2 focus:outline-none pr-2 flex items-center rounded-full font-semibold text-xs text-gray-700`}
           aria-label={open ? 'expand section' : 'collapse section'}
           onClick={() => setOpen(!open)}

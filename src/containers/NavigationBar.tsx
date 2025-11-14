@@ -1,8 +1,8 @@
 'use client';
 
 import { useUserContext } from '@contexts/UserContext';
-import Button from '@src/components/buttons/Button';
 import DisconnectButton from '@src/components/buttons/DisconnectButton';
+import { Button } from '@src/components/ui/button';
 import { ChevronLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC, useContext } from 'react';

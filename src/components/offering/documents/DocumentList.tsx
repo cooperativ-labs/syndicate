@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 
-import { Document, Maybe } from '@/types';
+import { Document } from '@/types';
 
 import DocumentAdder from './DocumentAdder';
 import DocumentListItem from './DocumentListItem';
 
 type DocumentListProps = {
-  documents: Maybe<Document>[] | null | undefined;
+  documents: Document[] | null | undefined;
   isOfferingManager: boolean;
   offeringId?: string;
   entityId?: string | undefined | null;

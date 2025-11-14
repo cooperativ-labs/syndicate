@@ -6,7 +6,7 @@ import { sha256 } from 'js-sha256';
 import { NotificationSubject, Organization } from '@/types';
 
 const getRecipientEmails = async (
-  organizationId: string,
+  organizationId: string | number,
   notificationSubject: (typeof NotificationSubject)[keyof typeof NotificationSubject]
 ): Promise<string[]> => {
   const recipients = await getOrganizationUsers({ organizationId });
@@ -41,7 +41,7 @@ export const handleAddEmailAddress = async (address: string, completionUrl: stri
 };
 
 type EmailNotificationBaseProps = {
-  organizationId: string;
+  organizationId: string | number;
   completionUrl: string;
   notificationText: string;
 };

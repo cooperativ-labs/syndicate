@@ -1,7 +1,7 @@
 import { useOrganizations } from '@contexts/OrganizationsContext';
-import CooperativLogo from '@src/components/CooperativLogo';
+import CooperativLogo from '@src/components/PlatformLogo';
 import { cn } from '@src/lib/utils';
-import { organizationChangeServer } from '@src/utils/helpersOrganizationServer';
+import { organizationChangeServer } from '@src/utils/helpersServer';
 import { Plus } from 'lucide-react';
 import Image from 'next/image';
 import React, { FC } from 'react';

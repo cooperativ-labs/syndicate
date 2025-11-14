@@ -10,13 +10,10 @@ import { OfferingFull, Profile, SmartContract } from '@/types';
 
 import NewClassForm from './NewClassForm';
 
-export type ShareContractSettingsProps = {
-  partitions: String0x[];
-};
-
-type ShareContractSettingsLocal = ShareContractSettingsProps & {
+type ShareContractSettingsLocal = {
   shareContract: SmartContract | undefined;
   offering: OfferingFull;
+  partitions: String0x[];
 };
 
 const ShareContractSettings: FC<ShareContractSettingsLocal> = ({

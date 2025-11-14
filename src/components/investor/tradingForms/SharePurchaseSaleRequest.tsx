@@ -1,9 +1,9 @@
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import StandardButton from '@src/components/buttons/StandardButton';
 import Checkbox from '@src/components/form-components/Checkbox';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
+import { Button } from '@src/components/ui/button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { cn } from '@src/lib/utils';
@@ -211,9 +211,9 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
               <div className="my-2 p-4 rounded-md bg-slate-100">
                 <PresentLegalText text={standardSaleDisclosuresText} />
                 <div className="flex">
-                  <StandardButton
+                  <Button
+                    variant="outline"
                     className="mt-5"
-                    outlined
                     onClick={e => {
                       e.preventDefault();
                       DownloadFile(
@@ -221,17 +221,19 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                         `${offering.name} - Download Risks & Considerations.md`
                       );
                     }}
-                    text="Download Risks & Considerations"
-                  />
-                  <StandardButton
+                  >
+                    Download Risks & Considerations
+                  </Button>
+                  <Button
+                    variant="outline"
                     className="md:ml-3 mt-5"
-                    outlined
                     onClick={e => {
                       e.preventDefault();
                       setDisclosuresOpen(false);
                     }}
-                    text="Close"
-                  />
+                  >
+                    Close
+                  </Button>
                 </div>
               </div>
             )}
@@ -266,9 +268,9 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
               <div className="my-2 p-4 rounded-md bg-slate-100">
                 <PresentLegalText text={documents[0]?.text} />
                 <div className="flex">
-                  <StandardButton
+                  <Button
+                    variant="outline"
                     className="mt-5"
-                    outlined
                     onClick={e => {
                       e.preventDefault();
                       //@ts-ignore
@@ -277,33 +279,35 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                         `${offering.name} - Terms & Conditions.md`
                       );
                     }}
-                    text="Download Terms & Conditions"
-                  />
-                  <StandardButton
+                  >
+                    Download Terms & Conditions
+                  </Button>
+                  <Button
+                    variant="outline"
                     className="md:ml-3 mt-5"
-                    outlined
                     onClick={e => {
                       e.preventDefault();
                       setTocOpen(false);
                     }}
-                    text="Close"
-                  />
+                  >
+                    Close
+                  </Button>
                 </div>
               </div>
             )}
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-              <LoadingButtonText
-                state={buttonStep}
-                idleText={formButtonText(values.numUnitsPurchase)}
-                step1Text={
-                  txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'
-                }
-                step2Text="Executing transaction..."
-                confirmedText="Executed!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </FormButton>
+            <LoadingButtonChain
+              type="submit"
+              disabled={isSubmitting || buttonStep === 'step1'}
+              state={buttonStep}
+              idleText={formButtonText(values.numUnitsPurchase)}
+              step1Text={
+                txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'
+              }
+              step2Text="Executing transaction..."
+              confirmedText="Executed!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
           </Form>
         )}
       </Formik>

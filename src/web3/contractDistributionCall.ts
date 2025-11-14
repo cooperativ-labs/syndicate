@@ -1,4 +1,4 @@
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getWagmiConfig } from '@src/web3/wagmi';

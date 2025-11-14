@@ -1,4 +1,6 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { Button } from '@src/components/ui/button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { cn } from '@src/lib/utils';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { cancelAcceptance } from '@src/web3/contractSwapCalls';
@@ -60,7 +62,7 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
       onClick={() => handleCancelAcceptance()}
       disabled={cancelButtonStep === 'step1'}
     >
-      <LoadingButtonText
+      <LoadingButtonChain
         state={cancelButtonStep}
         idleText="Cancel Request"
         step1Text="Canceling..."

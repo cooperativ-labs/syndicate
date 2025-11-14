@@ -1,3 +1,8 @@
+import { Button } from '@src/components/ui/button';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { createShareContract } from '@src/utils/actions/cryptoActions';
 import { deployShareContract } from '@src/web3/contractFactory';
@@ -10,13 +15,12 @@ import { useAccount, useChainId } from 'wagmi';
 import { useWalletContext } from '@/contexts/WalletContext';
 import { SmartContractType } from '@/types';
 
-import Button, { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-
 type CreateShareContractProps = {
   contractCreatorId: string;
+  offeringId: string | number;
 };
 
-const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }) => {
+const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, offeringId }) => {
   const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { address: userWalletAddress, connector } = useAccount();
@@ -45,6 +49,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
         ownerId: contractCreatorId,
         chainId: chainId,
         protocol: protocol,
+        offeringId: offeringId,
         revalidationPath: {
           path: `/${contractCreatorId}`,
           type: 'page'
@@ -67,7 +72,7 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId }
             className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
             onClick={() => deploy()}
           >
-            <LoadingButtonText
+            <LoadingButtonChain
               state={buttonStep}
               idleText={`Create share smart contract on ${chainName}`}
               step1Text="Deploying (check status in your wallet)"

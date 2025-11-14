@@ -1,4 +1,8 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { Button } from '@src/components/ui/button';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import { setAllowance } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
@@ -44,7 +48,7 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
       className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
       onClick={e => handleAllowance(e)}
     >
-      <LoadingButtonText
+      <LoadingButtonChain
         state={buttonStep}
         idleText={`First permit the smart contract access your funds`}
         step1Text="Setting allowance..."

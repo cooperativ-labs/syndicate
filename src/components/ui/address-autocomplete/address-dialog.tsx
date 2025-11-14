@@ -226,6 +226,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
+      <DialogTitle className="sr-only">{dialogTitle}</DialogTitle>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>

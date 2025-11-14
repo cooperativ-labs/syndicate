@@ -1,8 +1,8 @@
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
 import FileUpload from '@src/components/form-components/FileUpload';
 import Input from '@src/components/form-components/Inputs';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { updateOfferingProfile } from '@src/utils/actions/offeringActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
@@ -143,19 +143,16 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
                   you see in your browser, and that you have the correct permissions to embed the
                   video.
                 </div>
-                <FormButton
+                <LoadingButtonChain
                   type="submit"
                   disabled={isSubmitting}
                   className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-4 rounded p-4 w-full"
-                >
-                  <LoadingButtonText
-                    state={buttonStep}
-                    idleText={`Update ${values.name}`}
-                    step1Text="Saving"
-                    confirmedText={`${values.name} updated!`}
-                    failedText="Oops. Something went wrong"
-                  />
-                </FormButton>
+                  state={buttonStep}
+                  idleText={`Update ${values.name}`}
+                  step1Text="Saving"
+                  confirmedText={`${values.name} updated!`}
+                  failedText="Oops. Something went wrong"
+                />
               </Form>
             )}
           </Formik>

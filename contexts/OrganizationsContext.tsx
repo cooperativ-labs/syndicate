@@ -30,16 +30,18 @@ export function OrganizationsProvider({
   const { setOrganizationUserId } = useUserContext();
 
   const foundOrganizationId = params?.organizationId as string | undefined;
-  const [chosenOrganizationId, setChosenOrganizationId] = useState<string | null>(null);
+  const [chosenOrganizationId, setChosenOrganizationId] = useState<string | null>(
+    foundOrganizationId || null
+  );
   const [createOrganizationModalOpen, setCreateOrganizationModalOpen] = useState<boolean>(false);
 
-  useEffect(() => {
-    const setOrgId = foundOrganizationId ?? savedOrganizationId ?? null;
-    if (setOrgId) {
-      setChosenOrganizationId(setOrgId);
-      setOrganizationUserId(setOrgId);
-    }
-  }, [foundOrganizationId, savedOrganizationId]);
+  // useEffect(() => {
+  //   const setOrgId = chosenOrganizationId ?? savedOrganizationId ?? null;
+  //   if (setOrgId) {
+  //     setChosenOrganizationId(setOrgId);
+  //     setOrganizationUserId(setOrgId);
+  //   }
+  // }, [chosenOrganizationId, savedOrganizationId]);
 
   return (
     <OrganizationsContext.Provider

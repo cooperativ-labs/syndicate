@@ -1,6 +1,6 @@
 import CreateEntity from '@src/components/entity/CreateEntity';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import ManagerWrapper from '@src/containers/ManagerWrapper';
+import WithAuthentication from '@src/containers/WithAuthentication';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 
 const CreateEntityPage = async ({ params }: { params: { organizationId: string } }) => {
@@ -11,13 +11,13 @@ const CreateEntityPage = async ({ params }: { params: { organizationId: string }
   }
   return (
     <div data-test="component-create-project-page" className="h-full flex">
-      <ManagerWrapper>
+      <WithAuthentication>
         <LimitedWidthSection center>
           <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
           <hr className="my-6" />
           <CreateEntity organization={organization} />
         </LimitedWidthSection>
-      </ManagerWrapper>
+      </WithAuthentication>
     </div>
   );
 };

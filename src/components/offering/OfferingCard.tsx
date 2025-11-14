@@ -2,7 +2,9 @@
 
 import { useUserContext } from '@contexts/UserContext';
 import { getOfferingSmartContractSet } from '@src/utils/actions/cryptoActions';
+import { getCurrentOrdersAndPrice } from '@src/utils/actions/offeringActions';
 import { retrieveOrders } from '@src/utils/actions/orderActions';
+import { getCurrencyByCode } from '@src/utils/enumConverters';
 import {
   ContractOrder,
   getLowestOrderPrice,
@@ -53,33 +55,23 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) =
 
   const { operating_currency } = offering.legalEntity;
 
-  const [smartContracts, setSmartContracts] = useState<OfferingSmartContractSet | null>(null);
-  const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
-  const [orders, setOrders] = useState<ShareOrder[]>([]);
+  const paymentTokenDecimals =
+    investment_currency && getCurrencyByCode(investment_currency)?.decimals;
 
   const organizationId = offering.legalEntity?.organization_id;
-
   const organizationImg = organization.logo as string;
-  const swapContract = smartContracts?.swapContract;
-  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
 
-  const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
-
-  useAsync(async () => {
-    const orders = await retrieveOrders(swapContractAddress);
-    const smartContracts = await getOfferingSmartContractSet(offering.id.toString());
-    setSmartContracts(smartContracts);
-    if (orders && smartContracts) {
-      setOrders(orders);
+  const { value: currentPrice } = useAsync(async () => {
+    if (!paymentTokenDecimals) {
+      return 0;
     }
-    const contractSaleList =
-      orders &&
-      paymentTokenDecimals &&
-      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
-    contractSaleList && setContractSaleList(contractSaleList);
-  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
-
-  const currentPrice = getLowestOrderPrice(contractSaleList, offering?.price_start);
+    const { currentPrice } = await getCurrentOrdersAndPrice({
+      offeringId: offering.id.toString(),
+      paymentTokenDecimals: paymentTokenDecimals ?? 0,
+      priceStart: offering.price_start ?? 0
+    });
+    return currentPrice;
+  }, [offering.id]);
 
   const toProfile = !userWalletAddress;
   const pushLink = userId
@@ -90,7 +82,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) =
   return (
     <div
       onClick={() => {
-        window.sessionStorage.setItem('CHOSEN_OFFERING', id.toString());
+        // window.sessionStorage.setItem('CHOSEN_OFFERING', id.toString());
         router.push(pushLink);
       }}
     >

@@ -1,4 +1,6 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
+import { Button } from '@src/components/ui/button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import SectionBlock from '@src/containers/SectionBlock';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -13,12 +15,8 @@ import { useAccount, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 
-import ShareSaleListItem, { ShareSaleListItemProps } from './ShareSaleListItem';
-
-export type ShareSaleListProps = ShareSaleListItemProps & {
-  orders: ShareOrder[] | undefined;
-  setModal: Dispatch<SetStateAction<ManagerModalType>>;
-};
+import ShareSaleListItem from './ShareSaleListItem';
+import { ShareSaleListProps } from './offering-actions-types';
 
 const ShareSaleList: FC<ShareSaleListProps> = ({
   offering,
@@ -63,7 +61,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
       onClick={handleClaimProceeds}
       disabled={claimProceedsButton === 'step1'}
     >
-      <LoadingButtonText
+      <LoadingButtonChain
         state={claimProceedsButton}
         idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
         step1Text="Claiming Proceeds..."
@@ -119,7 +117,6 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
         return (
           <ShareSaleListItem
             key={i}
-            index={i}
             offering={offering}
             order={order as ShareOrder}
             myShareQty={myShareQty}
@@ -149,7 +146,6 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
                 return (
                   <ShareSaleListItem
                     key={i}
-                    index={i}
                     offering={offering}
                     order={order as ShareOrder}
                     myShareQty={myShareQty}

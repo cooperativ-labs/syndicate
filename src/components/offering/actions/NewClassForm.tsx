@@ -1,8 +1,11 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormButton from '@src/components/buttons/FormButton';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import { addContractPartition } from '@src/utils/actions/cryptoActions';
 import { bytes32FromString } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
@@ -63,16 +66,16 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
           <div className="text-sm text-red-500 mt-1">{errors.partition.message}</div>
         )}
       </div>
-      <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-        <LoadingButtonText
-          state={buttonStep}
-          idleText={`Add new share class`}
-          step1Text="Sending shares..."
-          confirmedText="Confirmed!"
-          failedText="Transaction failed"
-          rejectedText="You rejected the transaction. Click here to try again."
-        />
-      </FormButton>
+      <LoadingButtonChain
+        type="submit"
+        disabled={isSubmitting || buttonStep === 'step1'}
+        state={buttonStep}
+        idleText={`Add new share class`}
+        step1Text="Sending shares..."
+        confirmedText="Confirmed!"
+        failedText="Transaction failed"
+        rejectedText="You rejected the transaction. Click here to try again."
+      />
     </form>
   );
 };

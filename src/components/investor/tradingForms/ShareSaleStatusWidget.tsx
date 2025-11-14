@@ -14,7 +14,7 @@ import SaleManagerPanel from './ShareManagerPanel';
 type ShareOrderStatusItemProps = {
   order: ShareOrder | undefined;
   swapContractAddress: String0x | undefined;
-  paymentTokenDecimals: number | null;
+  paymentTokenDecimals: number | undefined;
   txnApprovalsEnabled: boolean | undefined;
   swapApprovalsEnabled: boolean | undefined;
 };
@@ -27,6 +27,9 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   swapApprovalsEnabled
 }) => {
   const contractIndex = order ? order?.contract_index : 0;
+  if (!paymentTokenDecimals) {
+    throw new Error('Payment token decimals are required (ShareOrderStatusItem)');
+  }
   const { initiator, amount, filledAmount, isApproved, isCancelled, isAccepted, isFilled, filler } =
     useOrderDetails(swapContractAddress, contractIndex, paymentTokenDecimals);
   const chainId = useChainId();
@@ -70,7 +73,7 @@ type ShareSaleStatusWidgetProps = {
   orders: ShareOrder[] | undefined;
   swapContractAddress: String0x | undefined;
   paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | null;
+  paymentTokenDecimals: number | undefined;
   txnApprovalsEnabled: boolean | undefined;
   swapApprovalsEnabled: boolean | undefined;
   isContractOwner: boolean;

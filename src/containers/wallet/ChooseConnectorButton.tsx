@@ -1,5 +1,5 @@
 import { useWalletContext } from '@contexts/WalletContext';
-import Button from '@src/components/buttons/Button';
+import { Button } from '@src/components/ui/button';
 import { cn } from '@src/lib/utils';
 import { FC } from 'react';
 

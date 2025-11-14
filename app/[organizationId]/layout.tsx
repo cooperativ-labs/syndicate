@@ -1,5 +1,7 @@
 import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
+import WithAuthentication from '@src/containers/WithAuthentication';
 import { getOrganization } from '@src/utils/actions/organizationActions';
+import { createClient } from '@supabase/utils/server';
 import type { Metadata } from 'next';
 
 export const generateMetadata = async ({
@@ -50,12 +52,19 @@ const OrganizationPage = async ({
   children: React.ReactNode;
 }) => {
   const { organizationId } = await params;
-  const organization = await getOrganization(organizationId, '[organizationId]/layout');
+
+  // const supabase = createClient();
+  // const {
+  //   data: { user }
+  // } = await supabase.auth.getUser();
+  // const userId = user?.id;
+  // const organization = userId
+  const organization = (await getOrganization(organizationId, '[organizationId]/layout')) || null;
 
   if (!organization) {
     return <OrganizationNotFound backHref={`/${organizationId}/portal`} />;
   }
-  return children;
+  return <WithAuthentication>{children}</WithAuthentication>;
 };
 
 export default OrganizationPage;

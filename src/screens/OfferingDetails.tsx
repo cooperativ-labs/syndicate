@@ -2,10 +2,8 @@
 import { useUserContext } from '@contexts/UserContext';
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import AlertBanner from '@src/components/alerts/AlertBanner';
-import Button from '@src/components/buttons/Button';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
-import OfferingActions from '@src/components/offering/actions/OfferingActions';
 import OfferingActionsContainer from '@src/components/offering/actions/OfferingActionsContainer';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
@@ -17,40 +15,39 @@ import OfferingFinancialSettings from '@src/components/offering/settings/Offerin
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
-import RightSideBar from '@src/containers/sideBar/RightSidebar';
+import SheetButtonRight from '@src/containers/sideBar/SheetButtonRight';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 
-import { CurrencyCodeType, Document, DocumentType, OfferingFull, OrganizationUser } from '@/types';
+import { CurrencyCodeType, Document, DocumentType, OfferingFull } from '@/types';
+import { useOffering } from '@contexts/OfferingContext';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;
   documents?: Document[];
-  organizationUsers: OrganizationUser[];
 };
 
-const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organizationUsers }) => {
+const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
   const { address: userWalletAddress } = useAccount();
   const { user } = useUserContext();
+  const { isOfferingManager, legalEntity } = useOffering();
   const userId = user?.id;
   const {
     id,
     name,
-    offering_entity_id,
     is_public,
     access_code,
-    legalEntity,
     raise_start,
     raise_period,
     max_raise,
     distribution_period,
     stage,
     additional_info,
-    investment_currency
+    investment_currency,
+    offeringSmartContracts
   } = offering;
 
   const offeringDocs = getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT);
@@ -80,25 +77,17 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
     distributionAttachments: documents
   };
 
-  const [financialSettingsPanel, setFinancialSettingsPanel] = useState<boolean>(false);
-  const [descriptionSettingsPanel, setDescriptionSettingsPanel] = useState<boolean>(false);
-  const [transactionHistoryPanel, setTransactionHistoryPanel] = useState<boolean>(false);
-  const [investorListRefreshTrigger, setInvestorListRefreshTrigger] = useState<number>(0); //this seems extremely hackish, but I can't figure out any other way to get the contract hooks in WhitelistAddressListItem to refresh.
-
   const {
     hasContract,
     isContractOwner,
     contractManagerMatches,
     swapContractMatches,
     contractMatchesCurrentChain,
-    contractSet,
-    shareContract,
     shareContractAddress,
     contractOrders,
     transferEvents,
     partitions,
     legalLinkTexts,
-    isOfferingManager,
     currentSalePrice,
     myShareQty,
     sharesOutstanding,
@@ -115,8 +104,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
     refetchSwapContract,
     refetchOrders,
     refetchTransactionHistory
-  } = useOfferingDetails(offering, organizationUsers, userId);
+  } = useOfferingDetails({
+    price_start: offering.price_start,
+    investment_currency: offering.investment_currency,
+    offeringId: offering.id.toString(),
+    isOfferingManager,
+    documents: documents,
+    contractSet: offeringSmartContracts
+  });
 
+  const [investorListRefreshTrigger, setInvestorListRefreshTrigger] = useState<number>(0); //this seems extremely hackish, but I can't figure out any other way to get the contract hooks in WhitelistAddressListItem to refresh.
   const triggerInvestorListRefresh = () => {
     setInvestorListRefreshTrigger(investorListRefreshTrigger + 1);
   };
@@ -135,28 +132,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
 
   return (
     <>
-      <RightSideBar
-        formOpen={transactionHistoryPanel}
-        onClose={() => setTransactionHistoryPanel(false)}
-      >
-        <FullTransactionHistory transferEvents={transferEvents} />
-      </RightSideBar>
-      <RightSideBar
-        formOpen={financialSettingsPanel}
-        onClose={() => setFinancialSettingsPanel(false)}
-      >
-        <OfferingFinancialSettings offering={offering} />
-      </RightSideBar>
-      <RightSideBar
-        formOpen={descriptionSettingsPanel}
-        onClose={() => setDescriptionSettingsPanel(false)}
-      >
-        <>
-          {userId && <OfferingProfileSettings offering={offering} userId={userId} />}
-          <hr className="my-4" />
-          <OfferingDescriptionSettings offering={offering} />
-        </>
-      </RightSideBar>
       <div className="md:mx-4">
         <AlertBanner
           show={hasContract && !contractManagerMatches && !isLoading}
@@ -176,7 +151,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
           show={!contractMatchesCurrentChain}
           color="orange-600"
           text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
-            MatchSupportedChains(shareContract?.cryptoAddress.chain_id)?.name
+            MatchSupportedChains(offeringSmartContracts?.shareContract.cryptoAddress.chain_id || 0)
+              ?.name
           }.`}
         />
         {/* MAIN CONTENT  */}
@@ -192,7 +168,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
               offeringName={name}
               isOfferingManager={isOfferingManager}
               shareContractAddress={shareContractAddress}
-              chainId={shareContract?.cryptoAddress.chain_id || undefined}
+              chainId={offeringSmartContracts?.shareContract.cryptoAddress.chain_id || undefined}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
@@ -228,29 +204,24 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
             <hr className="my-10" />
             {isOfferingManager && (
               <div className="flex items-center mt-10 gap-3">
-                <Button
-                  onClick={() => {
-                    setFinancialSettingsPanel(true);
-                    refetchTransactionHistory();
-                  }}
-                  className=" bg-cLightBlue p-3 font-semibold text-white rounded-md"
+                <SheetButtonRight
+                  title="Offering Financials"
+                  buttonText="Edit Syndication Financials"
+                  onOpen={() => refetchTransactionHistory()}
                 >
-                  Edit Syndication Financials
-                </Button>
+                  <OfferingFinancialSettings offering={offering} />
+                </SheetButtonRight>
 
-                <Button
-                  onClick={() => setDescriptionSettingsPanel(true)}
-                  className=" bg-cLightBlue p-3 font-semibold text-white rounded-md"
-                >
-                  Edit Profile Details
-                </Button>
-
-                <Button
-                  onClick={() => setTransactionHistoryPanel(true)}
-                  className=" bg-cLightBlue p-3 font-semibold text-white rounded-md"
-                >
-                  View Transaction History
-                </Button>
+                <SheetButtonRight title="Profile Details" buttonText="Edit Profile Details">
+                  <>
+                    {userId && <OfferingProfileSettings offering={offering} userId={userId} />}
+                    <hr className="my-4" />
+                    <OfferingDescriptionSettings offering={offering} />
+                  </>
+                </SheetButtonRight>
+                <SheetButtonRight buttonText="View Transaction History" title="Transaction History">
+                  <FullTransactionHistory transferEvents={transferEvents} />
+                </SheetButtonRight>
               </div>
             )}
           </DashboardCard>
@@ -260,10 +231,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
             retrievalIssue={false}
             hasContract={hasContract}
             loading={isLoading}
-            isOfferingManager={isOfferingManager}
             orders={contractOrders}
             offering={offering}
-            contractSet={contractSet}
+            contractSet={offeringSmartContracts}
             issueReachingContract={issueReachingContract}
             paymentTokenAddress={paymentTokenAddress}
             paymentTokenDecimals={paymentTokenDecimals}
@@ -280,7 +250,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
             transferEvents={transferEvents}
             documents={offeringDocs}
             userWalletAddress={userWalletAddress}
-            investment_currency={investment_currency}
+            investmentCurrency={investment_currency}
           />
         </TwoColumnLayout>
         <hr className="border-t-2 border-gray-100 mb-12" />
@@ -290,12 +260,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
           <div>
             {offering && (
               <OfferingTabContainer
-                offering={offering}
+                legalEntity={legalEntity}
+                distributions={offering.distributions}
+                investment_currency={offering.investment_currency as CurrencyCodeType}
+                offeringId={offering.id.toString()}
+                offeringParticipants={offering.offeringParticipants}
                 contractManagerMatches={contractManagerMatches}
                 isContractOwner={isContractOwner}
                 offeringEntity={legalEntity}
                 isOfferingManager={isOfferingManager}
-                contractSet={contractSet}
+                contractSet={offeringSmartContracts}
                 currentSalePrice={currentSalePrice}
                 partitions={partitions}
                 transferEvents={transferEvents}
@@ -312,7 +286,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents, organi
               documents={offeringDocs}
               isOfferingManager={isOfferingManager}
               offeringId={id.toString()}
-              entityId={offering_entity_id.toString()}
+              entityId={legalEntity.id.toString()}
             />
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
             {legalLinkTexts && legalLinkTexts.length > 0 && smartContractDocuments?.length > 0 && (

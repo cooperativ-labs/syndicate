@@ -1,4 +1,4 @@
-import ManagerWrapper from '@src/containers/ManagerWrapper';
+import WithAuthentication from '@src/containers/WithAuthentication';
 
 const EntitiesLayout = async ({
   children
@@ -8,7 +8,7 @@ const EntitiesLayout = async ({
 }) => {
   return (
     <div data-test="component-landing" className="h-full flex">
-      <ManagerWrapper>{children}</ManagerWrapper>
+      <WithAuthentication>{children}</WithAuthentication>
     </div>
   );
 };

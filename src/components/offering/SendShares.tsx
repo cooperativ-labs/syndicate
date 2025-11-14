@@ -1,3 +1,5 @@
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { addContractPartition } from '@src/utils/actions/cryptoActions';
 import { addTransferEvent } from '@src/utils/actions/orderActions';
 import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
@@ -14,26 +16,12 @@ import { useAccount, useChainId, useReadContract } from 'wagmi';
 
 import { CurrencyCodeType, OfferingParticipant } from '@/types';
 
-import { LoadingButtonStateType, LoadingButtonText } from '../buttons/Button';
-import FormButton from '../buttons/FormButton';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import NewClassInputs from '../form-components/NewClassInputs';
 import Select from '../form-components/Select';
 
 import SetOperatorButton from './actions/SetOperatorButton';
-
-export type SendSharesProps = {
-  sharesIssued: number | undefined | null;
-  sharesOutstanding: number | undefined | null;
-  shareContractId: string;
-  shareContractAddress: String0x;
-  offeringParticipants: OfferingParticipant[] | undefined | null;
-  partitions: String0x[];
-  myShareQty: number | undefined;
-  investmentCurrency: CurrencyCodeType | undefined;
-  currentSalePrice: number | undefined;
-  refetchMainContracts: () => void;
-};
+import { SendSharesProps } from '../investor/tradingForms/offering-actions-types';
 
 const SendShares: FC<SendSharesProps> = ({
   sharesIssued,
@@ -213,19 +201,19 @@ const SendShares: FC<SendSharesProps> = ({
           {!isOperator && values.isIssuance === 'no' ? (
             <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
           ) : (
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-              <LoadingButtonText
-                state={buttonStep}
-                idleText={formButtonText({
-                  numShares: parseInt(values.numShares, 10),
-                  recipient: values.recipient
-                })}
-                step1Text="Sending shares..."
-                confirmedText="Sent!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </FormButton>
+            <LoadingButtonChain
+              type="submit"
+              disabled={isSubmitting || buttonStep === 'step1'}
+              state={buttonStep}
+              idleText={formButtonText({
+                numShares: parseInt(values.numShares, 10),
+                recipient: values.recipient
+              })}
+              step1Text="Sending shares..."
+              confirmedText="Sent!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
           )}
         </Form>
       )}

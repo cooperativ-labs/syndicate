@@ -1,5 +1,7 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { Button } from '@src/components/ui/button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -77,7 +79,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
             className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
             onClick={handleClick}
           >
-            <LoadingButtonText
+            <LoadingButtonChain
               state={buttonStep}
               idleText={formButtonText}
               step1Text={'Executing...'}

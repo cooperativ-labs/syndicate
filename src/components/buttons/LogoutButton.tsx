@@ -6,7 +6,7 @@ import React, { FC, useContext } from 'react';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
-import Button from './Button';
+import { Button } from '../ui/button';
 
 const LogoutButton: FC = () => {
   const applicationStore: ApplicationStoreProps = useContext(store);
@@ -21,6 +21,7 @@ const LogoutButton: FC = () => {
   }
   return (
     <Button
+      variant="outline"
       className={cn(outlinedClass, 'text-xs p-1 px-3 font-semibold rounded-full relative mr-2')}
       onClick={() => handleDisconnect()}
     >

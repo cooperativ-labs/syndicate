@@ -1,5 +1,5 @@
 'use client';
-import { Dialog, DialogContent } from '@src/components/ui/dialog';
+import { Dialog, DialogContent, DialogTitle } from '@src/components/ui/dialog';
 import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
@@ -16,6 +16,7 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
 
   return (
     <Dialog open={walletActionLockModalOpen}>
+      <DialogTitle className="sr-only">Wallet Action Lock</DialogTitle>
       <DialogContent
         data-test="component-payment-send"
         showCloseButton={false}

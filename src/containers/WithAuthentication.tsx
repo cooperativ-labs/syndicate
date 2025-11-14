@@ -12,7 +12,6 @@ interface WithAuthenticationProps {
 
 const WithAuthentication: React.FC<WithAuthenticationProps> = ({ children }) => {
   const { user } = useUserContext();
-
   const [showLoginModal, setShowLoginModal] = useState(false);
 
   useEffect(() => {

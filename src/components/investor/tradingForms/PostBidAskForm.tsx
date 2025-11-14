@@ -1,6 +1,3 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import StandardButton from '@src/components/buttons/StandardButton';
 import Checkbox from '@src/components/form-components/Checkbox';
 import Input, {
   defaultFieldDiv,
@@ -8,6 +5,11 @@ import Input, {
 } from '@src/components/form-components/Inputs';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
+import { Button } from '@src/components/ui/button';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import { cn } from '@src/lib/utils';
 import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
 import { createOrder } from '@src/utils/actions/orderActions';
@@ -20,24 +22,12 @@ import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { useAsync } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
 import { Document, OfferingFull } from '@/types';
 
 import NonInput from '../../form-components/NonInput';
-
-export type PostBidAskFormProps = {
-  offering: OfferingFull;
-  swapApprovalsEnabled: boolean;
-  partitions: String0x[];
-  paymentTokenDecimals: number | null;
-  myShareQty: number | undefined;
-  isContractOwner: boolean;
-  sharesOutstanding: number | undefined;
-  currentSalePrice: number | undefined;
-  refetchOfferingInfo: () => void;
-};
+import { PostBidAskFormProps } from './offering-actions-types';
 
 type WithAdditionalProps = PostBidAskFormProps & {
   walletAddress: string;
@@ -64,6 +54,9 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   refetchAllContracts,
   refetchOfferingInfo
 }) => {
+  if (!paymentTokenDecimals) {
+    throw new Error('Payment token decimals are required (PostBidAskForm)');
+  }
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
@@ -285,9 +278,9 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                         <div className="my-2 p-4 rounded-md bg-slate-100">
                           <PresentLegalText text={documents[0]?.text} />
                           <div className="flex">
-                            <StandardButton
+                            <Button
+                              variant="outline"
                               className="mt-5"
-                              outlined
                               onClick={e => {
                                 e.preventDefault();
                                 DownloadFile(
@@ -295,17 +288,19 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                                   `${name} - Terms & Conditions.md`
                                 );
                               }}
-                              text="Download Terms & Conditions"
-                            />
-                            <StandardButton
+                            >
+                              Download Terms & Conditions
+                            </Button>
+                            <Button
+                              variant="outline"
                               className="md:ml-3 mt-5"
-                              outlined
                               onClick={e => {
                                 e.preventDefault();
                                 setTocOpen(false);
                               }}
-                              text="Close"
-                            />
+                            >
+                              Close
+                            </Button>
                           </div>
                         </div>
                       )}
@@ -323,26 +318,27 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                       </div>
                     </>
                   )}
-                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-                    <LoadingButtonText
-                      state={buttonStep}
-                      idleText={`${
-                        isContractOwner
-                          ? `${isAsk ? 'Sell' : 'Propose to purchase'}`
-                          : `Propose ${isAsk ? 'sale' : 'purchase'} of`
-                      } ${values.numUnits ?? ''} shares ${
-                        values.numUnits
-                          ? `for ${saleAmountString(values.numUnits, values.price)} ${
-                              investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
-                            } `
-                          : ''
-                      }`}
-                      step1Text="Creating sale..."
-                      confirmedText="Confirmed!"
-                      failedText="Transaction failed"
-                      rejectedText="You rejected the transaction. Click here to try again."
-                    />
-                  </FormButton>
+
+                  <LoadingButtonChain
+                    type="submit"
+                    disabled={isSubmitting || buttonStep === 'step1'}
+                    state={buttonStep}
+                    idleText={`${
+                      isContractOwner
+                        ? `${isAsk ? 'Sell' : 'Propose to purchase'}`
+                        : `Propose ${isAsk ? 'sale' : 'purchase'} of`
+                    } ${values.numUnits ?? ''} shares ${
+                      values.numUnits
+                        ? `for ${saleAmountString(values.numUnits, values.price)} ${
+                            investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
+                          } `
+                        : ''
+                    }`}
+                    step1Text="Creating sale..."
+                    confirmedText="Confirmed!"
+                    failedText="Transaction failed"
+                    rejectedText="You rejected the transaction. Click here to try again."
+                  />
                 </>
               )}
             </Form>

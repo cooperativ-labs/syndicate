@@ -1,6 +1,6 @@
 'use client';
 
-import Button from '@src/components/buttons/Button';
+import { Button } from '@src/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';

@@ -1,8 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
 import { Input } from '@src/components/ui/input';
 import { Label } from '@src/components/ui/label';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import {
   Select,
   SelectContent,
@@ -179,19 +179,16 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         </span>
         .
       </div>
-      <FormButton
+      <LoadingButtonChain
         type="submit"
         disabled={isSubmitting || buttonStep === 'step1'}
         className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
-      >
-        <LoadingButtonText
-          state={buttonStep}
-          idleText={`Update ${isUpdate ? 'Description' : offering.name}`}
-          step1Text="Saving"
-          confirmedText={`${isUpdate ? 'Description' : offering.name} updated!`}
-          failedText="Oops. Something went wrong"
-        />
-      </FormButton>
+        state={buttonStep}
+        idleText={`Update ${isUpdate ? 'Description' : offering.name}`}
+        step1Text="Saving"
+        confirmedText={`${isUpdate ? 'Description' : offering.name} updated!`}
+        failedText="Oops. Something went wrong"
+      />
     </form>
   );
 };

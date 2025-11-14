@@ -91,7 +91,7 @@ export async function addLegalEntity({
   if (error) {
     throw error;
   }
-  console.log('data', data);
+  console.log('legal_entity - data', data);
 
   if (data && count === 1) {
     const addressPayload = {

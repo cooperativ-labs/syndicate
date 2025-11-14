@@ -1,13 +1,8 @@
+import { getCurrentOrdersAndPrice } from '@src/utils/actions/offeringActions';
 import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import {
-  confirmNoLiveOrders,
-  ContractOrder,
-  getCurrentOrderPrice,
-  getOrderArrayFromContract
-} from '@src/utils/helpersOrder';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { confirmNoLiveOrders } from '@src/utils/helpersOrder';
 import { dividendContractABI } from '@src/web3/generated';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
@@ -18,47 +13,60 @@ import { useAsync } from 'react-use';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 
 import {
+  CurrencyCodeType,
   Document,
   DocumentType,
-  OfferingFull,
-  OrganizationUser,
+  OfferingSmartContractSet,
   ShareOrder,
-  ShareTransferEvent
+  ShareTransferEvent,
+  SmartContractWithCryptoAddress
 } from '@/types';
 
-const useOfferingDetails = (
-  offering: OfferingFull,
-  organizationUsers?: OrganizationUser[] | undefined | null,
-  userId?: string | number | undefined,
-  documents?: Document[]
-) => {
+type OfferingDetailsProps = {
+  price_start: number | undefined | null;
+  investment_currency: CurrencyCodeType | undefined | null;
+  offeringId: string;
+  isOfferingManager: boolean;
+  documents?: Document[];
+  contractSet: OfferingSmartContractSet | null;
+};
+
+const useOfferingDetails = ({
+  price_start,
+  investment_currency,
+  offeringId,
+  isOfferingManager,
+  documents,
+  contractSet
+}: OfferingDetailsProps) => {
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  const { price_start, offeringSmartContracts, investment_currency, legalEntity } = offering;
-  const [contractOrderList, setContractOrderList] = useState<ShareOrder[]>([]);
+
   const [transferEvents, setTransferEvents] = useState<ShareTransferEvent[]>([]);
   const [orders, setOrders] = useState<ShareOrder[]>([]);
 
-  const contractSet = offeringSmartContracts;
-  const shareContract = contractSet?.shareContract;
-  const shareContractAddress = shareContract?.cryptoAddress.address as String0x;
-  const swapContract = contractSet?.swapContract;
-  const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
-  const distributionContractAddress = contractSet?.distributionContract?.cryptoAddress
-    .address as String0x;
+  const { swapContract, shareContract, distributionContract } = contractSet ?? {};
+
+  const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
+  const swapContractAddress = swapContract?.cryptoAddress?.address as String0x;
+  const distributionContractAddress = distributionContract?.cryptoAddress?.address as String0x;
+
   const distributionPaymentToken = getCurrencyOption(investment_currency);
   const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
-  const distributionPaymentTokenDecimals = distributionPaymentToken
-    ? distributionPaymentToken?.decimals
+  const distributionPaymentTokenDecimals = distributionPaymentToken?.decimals
+    ? distributionPaymentToken.decimals
     : 18;
 
   useAsync(async () => {
-    await Promise.all([
+    if (!swapContractAddress || !shareContractAddress) {
+      return;
+    }
+    const [ordersData, transferEventsData] = await Promise.all([
       retrieveOrders(swapContractAddress),
       retrieveTransferEvents(shareContractAddress)
     ]);
-    setOrders(orders as ShareOrder[]);
-    setTransferEvents(transferEvents as ShareTransferEvent[]);
+    setOrders(ordersData as ShareOrder[]);
+    setTransferEvents(transferEventsData as ShareTransferEvent[]);
   }, [swapContractAddress, shareContractAddress]);
 
   const refetchOrders = useCallback(() => {
@@ -105,25 +113,33 @@ const useOfferingDetails = (
   });
   const totalDistributed = toNormalNumber(distributionData, distributionPaymentTokenDecimals);
 
-  useAsync(async () => {
-    const list =
-      orders &&
-      paymentTokenDecimals &&
-      (await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals));
-    setContractOrderList(list);
-  }, [orders, swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
+  const { value: currentOrdersAndPrice } = useAsync(async () => {
+    if (!paymentTokenDecimals) {
+      return { currentPrice: 0, noLiveOrders: false };
+    }
+    const { currentPrice, contractSaleList } = await getCurrentOrdersAndPrice({
+      offeringId: offeringId,
+      paymentTokenDecimals: paymentTokenDecimals ?? 0,
+      priceStart: price_start ?? 0
+    });
 
-  const currentSalePrice = getCurrentOrderPrice(contractOrderList, offering.details?.priceStart);
-  const noLiveOrders = confirmNoLiveOrders(contractOrderList);
+    const result = { currentPrice, noLiveOrders: confirmNoLiveOrders(contractSaleList) };
+    return result;
+  }, [offeringId]);
+
+  const { currentPrice, noLiveOrders } = currentOrdersAndPrice ?? {
+    currentPrice: 0,
+    noLiveOrders: true
+  };
 
   const contractOrders = orders?.filter((order: ShareOrder) => {
     return order?.swap_contract_address === swapContractAddress;
   });
 
   const hasContract = !!contractOwner;
+
   const isContractOwner = contractOwner === userWalletAddress;
-  const isOfferingManager =
-    getIsEditorOrAdmin({ userId, organizationUsers: organizationUsers ?? [] }) ?? false;
+
   const contractManagerMatches =
     isContractOwner === !!isOfferingManager || isManager === !!isOfferingManager;
 
@@ -133,20 +149,20 @@ const useOfferingDetails = (
 
   const contractMatchesCurrentChain = !shareContract
     ? true
-    : shareContract.cryptoAddress.chain_id === chainId;
+    : shareContract.cryptoAddress?.chain_id === chainId;
 
   const isLoading = shareIsLoading || swapIsLoading;
 
   const issueReachingContract = { swap: issueReachingSwapContract, share: issueReaching1410 };
 
   //NOTE: This does not return any objects the user can get directly from the Offering node in the DB.
+
   return {
     hasContract,
     isContractOwner,
     contractManagerMatches,
     swapContractMatches,
     contractMatchesCurrentChain,
-    contractSet,
     shareContract,
     shareContractAddress,
     swapContract,
@@ -160,10 +176,9 @@ const useOfferingDetails = (
     transferEvents,
     partitions,
     legalLinkTexts,
-    isOfferingManager,
-    contractOrderList,
+
     noLiveOrders,
-    currentSalePrice,
+    currentSalePrice: currentPrice,
     contractOwner,
     myShareQty,
     sharesOutstanding,

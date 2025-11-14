@@ -1,6 +1,5 @@
 'use client';
 
-import Button from '@src/components/buttons/Button';
 import FileUpload from '@src/components/form-components/FileUpload';
 import { Input } from '@src/components/ui/input';
 import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';

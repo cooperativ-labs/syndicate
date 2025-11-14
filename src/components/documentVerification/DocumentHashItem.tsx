@@ -2,9 +2,9 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Check, Copy } from 'lucide-react';
 import React, { FC, useState } from 'react';
 
-import { Document, Maybe } from '@/types';
+import { Document } from '@/types';
 
-import StandardButton from '../buttons/StandardButton';
+import { Button } from '../ui/button';
 
 type HashInstructionsProps = {
   agreementTexts: Document[];
@@ -14,7 +14,7 @@ type HashInstructionsProps = {
 
 type DocumentHashItemProps = {
   hash: string;
-  text: Maybe<string> | undefined;
+  text: string | undefined;
 };
 
 const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
@@ -22,14 +22,13 @@ const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
 
   return (
     <div>
-      <StandardButton
+      <Button
         className="mt-1 mb-4"
-        outlined
-        link=""
-        color="blue"
-        text="Download Agreement"
+        variant="outline"
         onClick={() => text && DownloadFile(text, 'agreement-text.md')}
-      />
+      >
+        Download Agreement
+      </Button>
       <span className="mb-1 mr-2">{`Agreement Hash: ${hash.slice(0, 7)}...${hash.slice(-7)}`}</span>
 
       <span>

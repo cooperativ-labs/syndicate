@@ -1,5 +1,7 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import { Button } from '@src/components/ui/button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { String0x } from '@src/web3/helpersChain';
 import React, { useState } from 'react';
@@ -52,7 +54,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
         className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
         onClick={e => handleSetOperator(e)}
       >
-        <LoadingButtonText
+        <LoadingButtonChain
           state={buttonStep}
           idleText={`You must first set yourself as an operator for the contract`}
           step1Text="Setting operator..."

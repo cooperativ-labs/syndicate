@@ -17,10 +17,10 @@ import { useForm } from 'react-hook-form';
 import { useAccount } from 'wagmi';
 import { z } from 'zod';
 
-import { CurrencyCode } from '@/types';
+import { CurrencyCode, CurrencyCodeType } from '@/types';
 
-import { OfferingActionsProps } from './OfferingActions';
 import OfferingActions from './OfferingActions';
+import { AllOfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 
 type InvestmentCurrencyFormProps = {
   offeringId: number;
@@ -28,20 +28,19 @@ type InvestmentCurrencyFormProps = {
 
 const InvestmentCurrencyForm: FC<InvestmentCurrencyFormProps> = ({ offeringId }) => {
   const { organizationId } = useParams<{ organizationId: string }>();
-  const { chain } = useAccount();
 
+  const { chain } = useAccount();
   const currencyOptions = cryptoOptionsByChainId(chain?.id as number);
-  if (!organizationId) {
-    return <div>Organization not found</div>;
-  }
   const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
 
   const onSubmit = async (data: z.infer<typeof schema>) => {
+    setButtonState('loading');
     updateInvestmentCurrency({
       offeringId,
       organizationId,
       investmentCurrencyCode: data.investmentCurrencyCode
     });
+    setButtonState('success');
   };
 
   const schema = z.object({
@@ -54,6 +53,10 @@ const InvestmentCurrencyForm: FC<InvestmentCurrencyFormProps> = ({ offeringId })
       investmentCurrencyCode: undefined
     }
   });
+
+  if (!organizationId) {
+    return <div>Organization not found</div>;
+  }
 
   const { control, handleSubmit, formState, watch } = form;
 
@@ -100,17 +103,16 @@ const InvestmentCurrencyForm: FC<InvestmentCurrencyFormProps> = ({ offeringId })
   );
 };
 
-type OfferingActionsContainerProps = OfferingActionsProps & {
+type OfferingActionsContainerProps = AllOfferingActionsProps & {
   userWalletAddress: string | undefined;
-  investment_currency: string | undefined | null;
+  investmentCurrency: CurrencyCodeType | null;
 };
 
 export default function OfferingActionsContainer({
   userWalletAddress,
-  investment_currency,
+  investmentCurrency,
   hasContract,
   loading,
-  isOfferingManager,
   orders,
   offering,
   contractSet,
@@ -137,14 +139,14 @@ export default function OfferingActionsContainer({
         <div className="mt-4">
           {!userWalletAddress ? (
             <ChooseConnectorButton buttonText={'Connect Wallet'} />
-          ) : !investment_currency ? (
+          ) : !investmentCurrency ? (
             <InvestmentCurrencyForm offeringId={Number(offering.id)} />
           ) : (
             <OfferingActions
+              investmentCurrency={investmentCurrency}
               retrievalIssue={false}
               hasContract={hasContract}
               loading={loading}
-              isOfferingManager={isOfferingManager}
               orders={orders}
               offering={offering}
               contractSet={contractSet}

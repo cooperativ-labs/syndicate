@@ -9,21 +9,9 @@ import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagm
 import { CurrencyCodeType, OfferingFull, OfferingSmartContractSet } from '@/types';
 
 import CreateSwapContract from '../CreateSwapContract';
+import { SwapContractSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 
-export type SwapContractSettingsProps = {
-  swapApprovalsEnabled: boolean | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-  contractSet: OfferingSmartContractSet;
-  offering: OfferingFull;
-  noLiveOrders: boolean;
-  refetchMainContracts: () => void;
-};
-
-export type SwapContractsSettingsAdditional = SwapContractSettingsProps & {
-  investmentCurrency: CurrencyCodeType;
-};
-
-const SwapContractSettings: FC<SwapContractsSettingsAdditional> = ({
+const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   swapApprovalsEnabled,
   txnApprovalsEnabled,
   contractSet,

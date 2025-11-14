@@ -3,13 +3,13 @@
 import { useUserContext } from '@contexts/UserContext';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import CreateAddress from '@src/components/address/CreateAddress';
-import Button from '@src/components/buttons/Button';
 import DeleteButton from '@src/components/buttons/DeleteButton';
 import AddOwningEntity from '@src/components/entity/AddOwningEntity';
 import EntitySpecifications, {
   changeForm,
   EditEntitySelectionType
 } from '@src/components/entity/EntitySpecifications';
+import { Button } from '@src/components/ui/button';
 import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';

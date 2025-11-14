@@ -1,9 +1,8 @@
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
-import Checkbox from '@src/components/form-components/Checkbox';
 import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import NewClassInputs from '@src/components/form-components/NewClassInputs';
 import NonInput from '@src/components/form-components/NonInput';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { addContractPartition, AddContractPartitionParams } from '@src/utils/actions/cryptoActions';
 import { createOrder, CreateOrderParams, CreateOrderResult } from '@src/utils/actions/orderActions';
@@ -15,14 +14,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useAccount } from 'wagmi';
-
-export type PostInitialSaleProps = {
-  sharesOutstanding: number | null;
-  paymentTokenAddress: String0x;
-  paymentTokenDecimals: number | null;
-  partitions: String0x[];
-  refetchOfferingInfo: () => void;
-};
+import { PostInitialSaleProps } from './offering-actions-types';
 
 type WithAdditionalProps = PostInitialSaleProps & {
   sharesIssued: number | null;
@@ -216,16 +208,16 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
           {!userWalletAddress ? (
             <ChooseConnectorButton buttonText={'Connect Wallet'} />
           ) : (
-            <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-              <LoadingButtonText
-                state={buttonStep}
-                idleText={formButtonText(values) as string}
-                step1Text="Creating sale..."
-                confirmedText="Confirmed!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </FormButton>
+            <LoadingButtonChain
+              type="submit"
+              disabled={isSubmitting || buttonStep === 'step1'}
+              state={buttonStep}
+              idleText={formButtonText(values) as string}
+              step1Text="Creating sale..."
+              confirmedText="Confirmed!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
+            />
           )}
         </Form>
       )}

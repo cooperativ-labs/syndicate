@@ -78,7 +78,10 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering }) => {
       <h1 className="font-semibold text-lg">Create shares of {orgLegalName}</h1>
       {!availableContract ? (
         <div className="mt-5">
-          <CreateShareContract contractCreatorId={legalEntity?.id} />
+          <CreateShareContract
+            contractCreatorId={legalEntity?.id}
+            offeringId={offering.id.toString()}
+          />
         </div>
       ) : (
         <div className="my-3">

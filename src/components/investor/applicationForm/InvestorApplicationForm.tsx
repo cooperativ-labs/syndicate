@@ -1,8 +1,6 @@
 'use client';
 
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
-import FormButton from '@src/components/buttons/FormButton';
 import Checkbox from '@src/components/form-components/Checkbox';
 import CustomAddressAutocomplete, {
   normalizeGeoAddress
@@ -13,6 +11,8 @@ import Input, {
   defaultFieldLabelClass
 } from '@src/components/form-components/Inputs';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { ADD_OFFERING_PARTICIPANT_WITH_APPLICATION } from '@src/utils/graphQueries/offering';
@@ -524,17 +524,17 @@ const InvestorApplicationForm: FC<InvestorApplicationFormProps> = ({ offering })
                 </div>
                 <hr className="mb-6 mt-10" />
                 {userWalletAddress ? (
-                  <FormButton type="submit" disabled={isSubmitting || buttonStep === 'step1'}>
-                    <LoadingButtonText
-                      state={buttonStep}
-                      idleText={`Apply to become a ${offering.offeringEntity?.legalName} investor`}
-                      step1Text="Applying..."
-                      step2Text="Setting distribution token..."
-                      confirmedText="Confirmed!"
-                      failedText="Transaction failed"
-                      rejectedText="You rejected the transaction. Click here to try again."
-                    />
-                  </FormButton>
+                  <LoadingButtonChain
+                    type="submit"
+                    disabled={isSubmitting || buttonStep === 'step1'}
+                    state={buttonStep}
+                    idleText={`Apply to become a ${offering.offeringEntity?.legalName} investor`}
+                    step1Text="Applying..."
+                    step2Text="Setting distribution token..."
+                    confirmedText="Confirmed!"
+                    failedText="Transaction failed"
+                    rejectedText="You rejected the transaction. Click here to try again."
+                  />
                 ) : (
                   <ChooseConnectorButton buttonText={'Connect Wallet to Apply'} />
                 )}

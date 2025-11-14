@@ -1,8 +1,12 @@
-import Button, { LoadingButtonStateType, LoadingButtonText } from '@src/components/buttons/Button';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { Button } from '@src/components/ui/button';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import { cn } from '@src/lib/utils';
-import { getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
-import { getHumanDate, getHumanDateTime } from '@src/utils/helpersGeneral';
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { claimDistribution } from '@src/web3/contractDistributionCall';
 import { dividendContractABI } from '@src/web3/generated';
@@ -93,7 +97,7 @@ const DistributionListItem: FC<
           `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white text-sm p-3 px-6 font-semibold rounded-md relative`
         )}
       >
-        <LoadingButtonText
+        <LoadingButtonChain
           state={buttonStep}
           idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
           step1Text="Claiming..."

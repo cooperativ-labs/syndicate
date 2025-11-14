@@ -1,14 +1,8 @@
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import CloseButton from '@src/components/buttons/CloseButton';
-import PostBidAskForm, {
-  PostBidAskFormProps
-} from '@src/components/investor/tradingForms/PostBidAskForm';
-import PostInitialSale, {
-  PostInitialSaleProps
-} from '@src/components/investor/tradingForms/PostInitialSale';
-import ShareSaleList, {
-  ShareSaleListProps
-} from '@src/components/investor/tradingForms/ShareSaleList';
+import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
+import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
+import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
 import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSaleStatusWidget';
 import Loading from '@src/components/loading/Loading';
 import { Button } from '@src/components/ui/button';
@@ -24,34 +18,22 @@ import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
 import { useAccount, useReadContract } from 'wagmi';
 
-import { CurrencyCodeType, Document, ShareOrder, ShareTransferEvent } from '@/types';
+import { CurrencyCodeType } from '@/types';
 
 import SendShares from '../SendShares';
 
-import SmartContractsSettings, { SmartContractsSettingsProps } from './SmartContractsSettings';
+import SmartContractsSettings from './SmartContractsSettings';
+import { AllOfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
+import { useOffering } from '@contexts/OfferingContext';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
-export type OfferingActionsProps = SmartContractsSettingsProps &
-  PostBidAskFormProps &
-  PostInitialSaleProps & {
-    orders: ShareOrder[] | undefined;
-    hasContract: boolean;
-    loading: boolean | undefined;
-    isOfferingManager: boolean;
-    retrievalIssue: boolean;
-    issueReachingContract: { share: boolean; swap: boolean };
-    transferEvents: ShareTransferEvent[] | undefined;
-    documents: Document[];
-  };
-
-const OfferingActions: FC<OfferingActionsProps> = ({
+const OfferingActions: FC<AllOfferingActionsProps> = ({
   retrievalIssue,
   hasContract,
   issueReachingContract,
   loading,
-  isOfferingManager,
   offering,
   paymentTokenAddress,
   paymentTokenDecimals,
@@ -71,7 +53,7 @@ const OfferingActions: FC<OfferingActionsProps> = ({
   documents
 }) => {
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
-
+  const { isOfferingManager } = useOffering();
   const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
   const [claimProceedsButton, setClaimProceedsButton] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'

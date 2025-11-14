@@ -151,6 +151,12 @@ export async function createSmartContract({
   };
 }
 
+export type AddContractPartitionParams = {
+  smartContractId: string;
+  partition: string;
+  revalidationPath?: RevalidationPath;
+};
+
 export type AddContractPartitionResult = {
   affectedCount: number;
   records: Pick<SmartContract, 'id' | 'partitions' | 'owner_id'>[];
@@ -160,11 +166,7 @@ export async function addContractPartition({
   smartContractId,
   partition,
   revalidationPath
-}: {
-  smartContractId: string;
-  partition: string;
-  revalidationPath?: RevalidationPath;
-}): Promise<AddContractPartitionResult> {
+}: AddContractPartitionParams): Promise<AddContractPartitionResult> {
   const supabase = createClient();
 
   // First, fetch the current partitions
@@ -201,9 +203,8 @@ export async function addContractPartition({
     records: (data ?? []) as AddContractPartitionResult['records']
   };
 }
-
 export type CreateContractSetParams = {
-  offeringId: string;
+  offeringId: string | number;
   shareContractId: string;
 };
 
@@ -217,6 +218,7 @@ export async function createContractSet({
   shareContractId
 }: CreateContractSetParams): Promise<CreateContractSetResult> {
   const supabase = createClient();
+
   const { data, error, count } = await supabase
     .from('offering_smart_contract_set')
     .insert({
@@ -226,7 +228,7 @@ export async function createContractSet({
     .select('id');
 
   if (error) {
-    throw error;
+    throw new Error(`createContractSet: Failed to insert contract set: ${error.message}`);
   }
 
   return {
@@ -237,17 +239,12 @@ export async function createContractSet({
 
 type CreateShareContractParams = {
   cryptoAddress: string;
-  ownerId: string;
+  ownerId: string | number;
   type: SmartContractTypes;
   chainId: number;
   protocol: Protocol;
   revalidationPath?: RevalidationPath;
-  offeringId: string;
-};
-
-type CreateShareContractResult = {
-  affectedCount: number;
-  records: Pick<SmartContract, 'id' | 'owner_id' | 'crypto_address_id' | 'type' | 'established'>[];
+  offeringId: string | number;
 };
 
 export async function createShareContract({
@@ -258,7 +255,7 @@ export async function createShareContract({
   protocol,
   revalidationPath,
   offeringId
-}: CreateShareContractParams): Promise<CreateShareContractResult> {
+}: CreateShareContractParams): Promise<string> {
   const ownerEntityId = Number(ownerId);
   if (Number.isNaN(ownerEntityId)) {
     throw new Error('createShareContract: ownerId must be numeric');
@@ -273,25 +270,27 @@ export async function createShareContract({
     revalidationPath: revalidationPath
   });
 
-  await createSmartContract({
+  const smartContractResult = await createSmartContract({
     cryptoAddressId: contractId,
     ownerId: ownerEntityId,
     type: type
   });
 
+  const smartContractId = smartContractResult.records[0]?.id;
+  if (!smartContractId) {
+    throw new Error('createShareContract: Failed to create smart contract');
+  }
+
   await createContractSet({
     offeringId: offeringId,
-    shareContractId: data[0].id
+    shareContractId: smartContractId
   });
 
   if (revalidationPath) {
     revalidatePath(revalidationPath.path, revalidationPath.type);
   }
 
-  return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as CreateShareContractResult['records']
-  };
+  return contractId;
 }
 
 type UpdateUnestablishedSmartContractParams = {
@@ -387,7 +386,7 @@ export async function getOfferingSmartContractSet({
       shareContract: transformContract((data as any).shareContract)
     };
 
-    console.log(result);
+    console.log('transformContract', result);
     return result as OfferingSmartContractSet;
   } catch (error: any) {
     throw `getOfferingSmartContractSet: ${error.message}`;

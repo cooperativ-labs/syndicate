@@ -1,4 +1,4 @@
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
 import { bytesToString, hexToBytes, stringToHex } from 'viem';

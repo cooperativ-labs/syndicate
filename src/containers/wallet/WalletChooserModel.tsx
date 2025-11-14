@@ -26,6 +26,7 @@ export function WalletChooserModal() {
 
   return (
     <Dialog open={modalOpen} onOpenChange={setModalOpen}>
+      <DialogTitle className="sr-only">Connect Your Wallet</DialogTitle>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
           <DialogTitle>Connect Your Wallet</DialogTitle>

@@ -1,17 +1,11 @@
 import React, { FC } from 'react';
 
 import DistributionContractSettings from './DistributionContractSettings';
-import ShareContractSettings, { ShareContractSettingsProps } from './ShareContractSettings';
-import SwapContractSettings, {
-  SwapContractSettingsProps,
-  SwapContractsSettingsAdditional
-} from './SwapContractSettings';
+import ShareContractSettings from './ShareContractSettings';
+import SwapContractSettings from './SwapContractSettings';
+import { SmartContractsSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 
-export type SmartContractsSettingsProps = SwapContractSettingsProps & ShareContractSettingsProps;
-
-type SmartContractsSettingsLocal = SmartContractsSettingsProps & SwapContractsSettingsAdditional;
-
-const SmartContractsSettings: FC<SmartContractsSettingsLocal> = ({
+const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
   offering,
   contractSet,
   swapApprovalsEnabled,

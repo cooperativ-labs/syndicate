@@ -1,4 +1,4 @@
-import { LoadingButtonStateType } from '@src/components/buttons/Button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { addTransferEvent, AddTransferEventParams } from '@src/utils/actions/orderActions';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
 import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';

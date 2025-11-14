@@ -1,24 +1,26 @@
 import CreateAccount from '@src/components/account/CreateAccount';
+import { Dialog, DialogContent, DialogOverlay, DialogPortal } from '@src/components/ui/dialog';
+import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 interface LoginModalProps {}
 const LoginModal: FC<LoginModalProps> = () => {
   return (
-    <div className="grow z-10 bg-linear-to-b from-gray-100 to-blue-50 h-screen">
-      <div className="h-full px-4 md:px-8 py-2 md:py-5">
-        <div className="mx-auto min-h-full">
-          <div className="flex grow justify-center h-full z-10">
-            <div className="md:flex flex-col h-full w-full items-center pt-20">
-              <div className="flex-col px-4 w-full" style={{ maxWidth: '600px' }}>
-                <div className="px-3  md:mx-2">
-                  <CreateAccount />
-                </div>
-              </div>
-            </div>
+    <Dialog open={true}>
+      <DialogPortal>
+        <DialogOverlay className="backdrop-blur-xl bg-black/60" />
+        <DialogContent
+          showCloseButton={false}
+          className={cn(
+            'fixed top-[50%] left-[50%] z-50 grid w-full max-w-[600px] translate-x-[-50%] translate-y-[-50%] gap-4  p-6 shadow-lg duration-200 sm:max-w-[500px]'
+          )}
+        >
+          <div className="mt-5">
+            <CreateAccount />
           </div>
-        </div>
-      </div>
-    </div>
+        </DialogContent>
+      </DialogPortal>
+    </Dialog>
   );
 };
 

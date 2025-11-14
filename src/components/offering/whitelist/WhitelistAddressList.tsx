@@ -1,12 +1,11 @@
-import RightSideBar from '@src/containers/sideBar/RightSidebar';
-import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
-import { CurrencyCodeType, OfferingParticipant, OfferingSmartContractSet } from '@/types';
+import { CurrencyCodeType } from '@/types';
 
 import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@src/components/ui/sheet';
 
 export type WhitelistAddressListProps = {
   investorListRefreshTrigger: number;
@@ -24,7 +23,7 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
   offeringParticipants,
   contractSet,
   currentSalePrice,
-  investmentCurrency,
+
   organizationId,
   transferEventList,
   investorListRefreshTrigger,
@@ -34,34 +33,40 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
   const [selectedParticipant, setSelectedParticipant] = React.useState<string | undefined>(
     undefined
   );
-  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const partitions = contractSet?.shareContract?.partitions as String0x[];
 
   return (
     <>
-      <RightSideBar
-        formOpen={!!selectedParticipant}
-        onClose={() => setSelectedParticipant(undefined)}
+      <Sheet
+        open={!!selectedParticipant}
+        onOpenChange={open => !open && setSelectedParticipant(undefined)}
       >
-        <div className="w-full">
-          {selectedParticipant && (
-            <SelectedParticipantDetails
-              selection={selectedParticipant}
-              offeringParticipants={offeringParticipants}
-              contractSet={contractSet}
-              currentSalePrice={currentSalePrice}
-              paymentTokenDecimals={getCurrencyOption(investmentCurrency)?.decimals}
-              partitions={partitions}
-              offeringId={offeringId}
-              organizationId={organizationId}
-              transferEventList={transferEventList}
-              refetchContracts={refetchContracts}
-              setSelectedParticipant={setSelectedParticipant}
-              triggerInvestorListRefresh={triggerInvestorListRefresh}
-            />
-          )}
-        </div>
-      </RightSideBar>
+        <SheetContent className="sm:max-w-2/3 p-3 overflow-y-scroll ">
+          <SheetHeader>
+            <SheetTitle>Whitelist Address List</SheetTitle>
+          </SheetHeader>
+
+          <div className="w-full">
+            {selectedParticipant && (
+              <SelectedParticipantDetails
+                selection={selectedParticipant}
+                offeringParticipants={offeringParticipants}
+                contractSet={contractSet}
+                currentSalePrice={currentSalePrice}
+                partitions={partitions}
+                offeringId={offeringId}
+                organizationId={organizationId}
+                transferEventList={transferEventList}
+                refetchContracts={refetchContracts}
+                setSelectedParticipant={setSelectedParticipant}
+                triggerInvestorListRefresh={triggerInvestorListRefresh}
+              />
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
+
       <div className="w-full">
         {offeringParticipants?.map((participant, i) => {
           return (

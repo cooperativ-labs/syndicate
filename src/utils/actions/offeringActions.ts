@@ -1,8 +1,8 @@
-'use server';
+"use server";
 
-import { String0x } from '@src/web3/helpersChain';
-import { createClient } from '@supabase/utils/server';
-import { revalidatePath } from 'next/cache';
+import { String0x } from "@src/web3/helpersChain";
+import { createClient } from "@supabase/utils/server";
+import { revalidatePath } from "next/cache";
 
 import {
   CurrencyCodeType,
@@ -11,10 +11,15 @@ import {
   OfferingParticipant,
   OfferingType,
   offeringTypes,
-  WhitelistTransactionType
-} from '@/types';
+  WhitelistTransactionType,
+} from "@/types";
 
-import { getOfferingSmartContractSet } from './cryptoActions';
+import { getOrderArrayFromContract } from "../helpersOrder";
+import { getLowestOrderPrice } from "../helpersOrder";
+import { ContractOrder } from "@src/components/investor/tradingForms/offering-actions-types";
+
+import { getOfferingSmartContractSet } from "./cryptoActions";
+import { retrieveOrders } from "./orderActions";
 
 type AddOfferingParams = {
   offeringEntityId: string;
@@ -30,64 +35,68 @@ type AddOfferingResult = {
 export async function addOffering({
   offeringEntityId,
   name,
-  organizationId
+  organizationId,
 }: AddOfferingParams): Promise<AddOfferingResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('offering')
+    .from("offering")
     .insert(
       {
-        offering_entity_id: parseInt(offeringEntityId),
-        name: name
+        offering_entity_id: Number(offeringEntityId),
+        name: name,
       },
-      { count: 'exact' }
+      { count: "exact" },
     )
-    .select('id');
+    .select("id");
 
   if (error) {
     throw error;
   }
 
-  revalidatePath(`/${organizationId}`, 'page');
+  revalidatePath(`/${organizationId}`, "page");
 
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as { id: number }[]
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as { id: number }[],
   };
 }
 
-export async function getOfferingById(offeringId: string): Promise<OfferingFull> {
+export async function getOfferingById(
+  offeringId: string,
+): Promise<OfferingFull> {
   const supabase = createClient();
-  const [offeringRes, smartContracts] = await Promise.all([
+  const [{ data: offeringRes, error }, smartContracts] = await Promise.all([
     supabase
-      .from('offering')
+      .from("offering")
       .select(
         [
-          '*',
-          'legalEntity:legal_entity(*, addresses:address(*))',
-          'images:image(id, url, label, file_id)',
-          'participants:offering_participant(*)',
-          'offeringProfileDescriptions:offering_description_text(*)',
-          'distributions:offering_distribution(*)'
-        ].join(', ')
+          "*",
+          "legalEntity:legal_entity(*, addresses:address(*), jurisdiction:jurisdiction(*))",
+          "images:image(id, url, label, file_id)",
+          "participants:offering_participant(*)",
+          "offeringProfileDescriptions:offering_description_text(*)",
+          "distributions:offering_distribution(*)",
+        ].join(", "),
       )
-      .eq('id', Number(offeringId)),
-    getOfferingSmartContractSet({ offeringId })
+      .eq("id", Number(offeringId)).single(),
+    getOfferingSmartContractSet({ offeringId }),
   ]);
 
-  const { data, error } = offeringRes;
+  const offering = offeringRes as unknown as OfferingFull;
+
   if (error) throw `getOfferingById: ${error.message}`;
-  const rows = (data ?? []) as any[];
-  return { ...rows[0], offeringSmartContracts: smartContracts };
+  return { ...offering, offeringSmartContracts: smartContracts };
 }
 
-export async function getOfferingDocumentsById(offeringId: string): Promise<Document[]> {
+export async function getOfferingDocumentsById(
+  offeringId: string | number,
+): Promise<Document[]> {
   const supabase = createClient();
   const { data: documents, error } = await supabase
-    .from('document')
-    .select('*')
-    .eq('offering_id', Number(offeringId));
+    .from("document")
+    .select("*")
+    .eq("offering_id", Number(offeringId));
   if (error) throw error;
   return documents;
 }
@@ -97,7 +106,7 @@ export async function updateOfferingBasic({
   isPublic,
   name,
   organizationId,
-  accessCode
+  accessCode,
 }: {
   offeringId: string;
   isPublic: boolean;
@@ -107,16 +116,16 @@ export async function updateOfferingBasic({
 }): Promise<void> {
   const supabase = createClient();
   const { error } = await supabase
-    .from('offering')
+    .from("offering")
     .update({
       is_public: isPublic,
       name: name,
-      access_code: accessCode ?? null
+      access_code: accessCode ?? null,
     })
-    .eq('id', Number(offeringId))
-    .select('id, name, is_public, access_code');
+    .eq("id", Number(offeringId))
+    .select("id, name, is_public, access_code");
   if (error) throw error;
-  revalidatePath(`/${organizationId}`, 'layout');
+  revalidatePath(`/${organizationId}`, "layout");
 }
 
 // Update offering profile fields
@@ -130,7 +139,7 @@ export async function updateOfferingProfile({
   primaryVideo,
   website,
   shortDescription,
-  isPublic
+  isPublic,
 }: {
   offeringId: string;
   name: string;
@@ -158,7 +167,7 @@ export async function updateOfferingProfile({
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from('offering')
+    .from("offering")
     .update({
       name,
       brand_color: brandColor ?? null,
@@ -168,19 +177,19 @@ export async function updateOfferingProfile({
       primary_video: primaryVideo ?? null,
       website: website ?? null,
       short_description: shortDescription ?? null,
-      is_public: isPublic ?? null
+      is_public: isPublic ?? null,
     })
-    .eq('id', Number(offeringId))
+    .eq("id", Number(offeringId))
     .select(
-      'id, name, brand_color, website, is_public, image, banner_image, primary_video, access_code'
+      "id, name, brand_color, website, is_public, image, banner_image, primary_video, access_code",
     );
 
   if (error) throw error;
 
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
@@ -209,7 +218,7 @@ export async function updateOfferingFinancial({
   targetEquityMultipleMax,
   cocReturn,
   projectedAppreciation,
-  capRate
+  capRate,
 }: {
   offeringId: string;
   stage?: string | null;
@@ -266,7 +275,7 @@ export async function updateOfferingFinancial({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering')
+    .from("offering")
     .update({
       stage: stage ?? null,
       max_raise: maxRaise ?? null,
@@ -290,44 +299,44 @@ export async function updateOfferingFinancial({
       target_equity_multiple_max: targetEquityMultipleMax ?? null,
       coc_return: cocReturn ?? null,
       projected_appreciation: projectedAppreciation ?? null,
-      cap_rate: capRate ?? null
+      cap_rate: capRate ?? null,
     })
-    .eq('offering_id', Number(offeringId))
+    .eq("offering_id", Number(offeringId))
     .select(
       [
-        'id',
-        'stage',
-        'max_raise',
-        'min_raise',
-        'min_units_per_investor',
-        'max_units_per_investor',
-        'max_investors',
-        'min_investors',
-        'raise_start',
-        'raise_period',
-        'additional_info',
-        'distribution_period',
-        'distribution_frequency',
-        'distribution_currency',
-        'distribution_description',
-        'admin_expense',
-        'projected_irr',
-        'projected_irr_max',
-        'preferred_return',
-        'target_equity_multiple',
-        'target_equity_multiple_max',
-        'coc_return',
-        'projected_appreciation',
-        'cap_rate',
-        'offering_id'
-      ].join(', ')
+        "id",
+        "stage",
+        "max_raise",
+        "min_raise",
+        "min_units_per_investor",
+        "max_units_per_investor",
+        "max_investors",
+        "min_investors",
+        "raise_start",
+        "raise_period",
+        "additional_info",
+        "distribution_period",
+        "distribution_frequency",
+        "distribution_currency",
+        "distribution_description",
+        "admin_expense",
+        "projected_irr",
+        "projected_irr_max",
+        "preferred_return",
+        "target_equity_multiple",
+        "target_equity_multiple_max",
+        "coc_return",
+        "projected_appreciation",
+        "cap_rate",
+        "offering_id",
+      ].join(", "),
     );
 
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
@@ -341,7 +350,7 @@ export async function updateOfferingDetails({
   minUnitsPerInvestor,
   maxUnitsPerInvestor,
   priceStart,
-  maxRaise
+  maxRaise,
 }: {
   offeringId: string;
   offeringType: offeringTypes;
@@ -355,7 +364,7 @@ export async function updateOfferingDetails({
 }): Promise<{ affectedCount: number; records: any[] }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering')
+    .from("offering")
     .update({
       investment_currency: investmentCurrencyCode,
       distribution_currency: distributionCurrencyCode,
@@ -364,17 +373,17 @@ export async function updateOfferingDetails({
       max_units_per_investor: maxUnitsPerInvestor ?? null,
       price_start: priceStart ?? null,
       max_raise: maxRaise ?? null,
-      type: offeringType
+      type: offeringType,
     })
-    .eq('id', Number(offeringId))
+    .eq("id", Number(offeringId))
     .select(
-      'id, offering_id, num_units, min_units_per_investor, max_units_per_investor, price_start, max_raise'
+      "id, offering_id, num_units, min_units_per_investor, max_units_per_investor, price_start, max_raise",
     );
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: data ?? []
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: data ?? [],
   };
 }
 
@@ -382,7 +391,7 @@ export async function updateOfferingDetails({
 export async function updateInvestmentCurrency({
   organizationId,
   offeringId,
-  investmentCurrencyCode
+  investmentCurrencyCode,
 }: {
   organizationId: string;
   offeringId: number | string;
@@ -396,15 +405,15 @@ export async function updateInvestmentCurrency({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering')
+    .from("offering")
     .update({ investment_currency: investmentCurrencyCode })
-    .eq('id', Number(offeringId))
-    .select('id, investment_currency');
+    .eq("id", Number(offeringId))
+    .select("id, investment_currency");
   if (error) throw error;
-  revalidatePath(`/${organizationId}/offerings/${offeringId}`, 'page');
+  revalidatePath(`/${organizationId}/offerings/${offeringId}`, "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
@@ -415,7 +424,7 @@ export async function addLegalShareLink({
   entityId,
   agreementText,
   smartContractId,
-  agreementTitle
+  agreementTitle,
 }: {
   documentOfferingUniqueId: string;
   offeringId: string;
@@ -429,50 +438,51 @@ export async function addLegalShareLink({
 
   // 1) Turn off waitlist
   const { error: updateOfferingError } = await supabase
-    .from('offering')
+    .from("offering")
     .update({ waitlist_on: false })
-    .eq('id', Number(offeringId));
+    .eq("id", Number(offeringId));
   if (updateOfferingError) throw updateOfferingError;
 
   // 2) Insert smart contract set
-  const { error: scError } = await supabase.from('offering_smart_contract_set').insert({
-    offering_id: Number(offeringId),
-    share_contract_id: smartContractId
-  });
+  const { error: scError } = await supabase.from("offering_smart_contract_set")
+    .insert({
+      offering_id: Number(offeringId),
+      share_contract_id: smartContractId,
+    });
   if (scError) throw scError;
 
   // 3) Insert document
-  const { error: docError } = await supabase.from('document').insert({
+  const { error: docError } = await supabase.from("document").insert({
     title: agreementTitle,
     text: agreementText,
-    type: 'SHARE_LINK',
-    format: 'MARKDOWN',
+    type: "SHARE_LINK",
+    format: "MARKDOWN",
     owner_id: entityId,
     offering_unique_id: documentOfferingUniqueId,
-    offering_id: offeringId
+    offering_id: offeringId,
   });
   if (docError) throw docError;
 
   // 4) Mark smart contract established
   const { error: updateScError } = await supabase
-    .from('smart_contract')
+    .from("smart_contract")
     .update({ established: true })
-    .eq('id', smartContractId);
+    .eq("id", smartContractId);
   if (updateScError) throw updateScError;
 
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
 }
 
 export async function getOfferingParticipant({
-  walletAddress
+  walletAddress,
 }: {
   walletAddress: string;
 }): Promise<OfferingParticipant[]> {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('offering_participant')
-    .select('id, name, offering(*)')
-    .eq('wallet_address', walletAddress);
+    .from("offering_participant")
+    .select("id, name, offering(*)")
+    .eq("wallet_address", walletAddress);
   if (error) throw error;
   return data ?? [];
 }
@@ -482,7 +492,7 @@ export async function addOfferingParticipant({
   name,
   offeringId,
   walletAddress,
-  chainId
+  chainId,
 }: {
   addressOfferingId: string;
   name?: string | null;
@@ -495,23 +505,23 @@ export async function addOfferingParticipant({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .insert(
       {
         address_offering_id: addressOfferingId,
         name: name ?? null,
         offering_id: offeringId,
         wallet_address: walletAddress,
-        chain_id: chainId
+        chain_id: chainId,
       },
-      { count: 'exact' }
+      { count: "exact" },
     )
-    .select('id, name, offering_id');
+    .select("id, name, offering_id");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
@@ -528,7 +538,7 @@ export async function addOfferingParticipantWithApplication({
   applicationText,
   applicationTitle,
   signature,
-  offeringParticipantId
+  offeringParticipantId,
 }: {
   dateSigned: string;
   addressOfferingId: string;
@@ -547,48 +557,48 @@ export async function addOfferingParticipantWithApplication({
   const supabase = createClient();
 
   // Insert participant
-  const { error: pErr } = await supabase.from('offering_participant').insert({
+  const { error: pErr } = await supabase.from("offering_participant").insert({
     address_offering_id: addressOfferingId,
     name: name ?? null,
     offering_id: Number(offeringId),
     wallet_address: walletAddress,
     min_pledge: minPledge ?? null,
-    max_pledge: maxPledge ?? null
+    max_pledge: maxPledge ?? null,
   });
   if (pErr) throw pErr;
 
   // Insert application with nested document (flattened as two steps)
   const { data: appDoc, error: docErr } = await supabase
-    .from('document')
+    .from("document")
     .insert({
       text: applicationText,
       date: dateSigned,
-      type: 'AGREEMENT',
-      owner_id: parseInt(offeringEntityId),
+      type: "AGREEMENT",
+      owner_id: Number(offeringEntityId),
       offering_unique_id: offeringUniqueId,
-      title: applicationTitle
+      title: applicationTitle,
     })
-    .select('id')
+    .select("id")
     .single();
   if (docErr) throw docErr;
 
-  const { error: appErr } = await supabase.from('investor_application').insert({
+  const { error: appErr } = await supabase.from("investor_application").insert({
     offering_participant_id: offeringParticipantId,
-    application_doc_id: appDoc.id
+    application_doc_id: appDoc.id,
   });
   if (appErr) throw appErr;
 
   // Insert document signatory
-  const { error: sigErr } = await supabase.from('document_signatory').insert({
+  const { error: sigErr } = await supabase.from("document_signatory").insert({
     document_id: offeringParticipantId,
     signature,
     date: dateSigned,
     archived: false,
-    signer_address: walletAddress
+    signer_address: walletAddress,
   });
   if (sigErr) throw sigErr;
 
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
 }
 
 export type AddWhitelistMemberParams = {
@@ -600,7 +610,9 @@ export type AddWhitelistMemberParams = {
   name?: string | null;
   externalId?: string | null;
   transactionHash?: string | null;
-  type: typeof WhitelistTransactionType.ADD | typeof WhitelistTransactionType.REMOVE;
+  type:
+    | typeof WhitelistTransactionType.ADD
+    | typeof WhitelistTransactionType.REMOVE;
 };
 
 export async function addWhitelistMember({
@@ -612,32 +624,32 @@ export async function addWhitelistMember({
   name,
   externalId,
   transactionHash,
-  type
+  type,
 }: AddWhitelistMemberParams): Promise<void> {
   const supabase = createClient();
 
   const { data: participant, error: pErr } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .insert({
       address_offering_id: addressOfferingId,
       wallet_address: walletAddress,
       chain_id: chainId,
       name: name ?? null,
       offering_id: offeringId,
-      external_id: externalId ?? null
+      external_id: externalId ?? null,
     })
-    .select('id')
+    .select("id")
     .single();
   if (pErr) throw pErr;
 
-  const { error: wErr } = await supabase.from('whitelist_transaction').insert({
+  const { error: wErr } = await supabase.from("whitelist_transaction").insert({
     offering_participant_id: offering,
     transaction_hash: transactionHash ?? null,
-    type
+    type,
   });
   if (wErr) throw wErr;
 
-  revalidatePath(`/${organizationId}/offerings/${offeringId}`, 'page');
+  revalidatePath(`/${organizationId}/offerings/${offeringId}`, "page");
 }
 
 export type UpdateWhitelistParams = {
@@ -645,7 +657,9 @@ export type UpdateWhitelistParams = {
   offeringId: string | number;
   offeringParticipantId: string;
   transactionHash: string;
-  type: typeof WhitelistTransactionType.ADD | typeof WhitelistTransactionType.REMOVE;
+  type:
+    | typeof WhitelistTransactionType.ADD
+    | typeof WhitelistTransactionType.REMOVE;
 };
 
 export async function updateWhitelist({
@@ -653,23 +667,23 @@ export async function updateWhitelist({
   offeringId,
   offeringParticipantId,
   transactionHash,
-  type
+  type,
 }: UpdateWhitelistParams): Promise<void> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('whitelist_transaction')
+    .from("whitelist_transaction")
     .update({ transaction_hash: transactionHash, type })
-    .eq('offering_participant_id', offeringParticipantId)
-    .select('id, transaction_hash, type');
+    .eq("offering_participant_id", offeringParticipantId)
+    .select("id, transaction_hash, type");
   if (error) throw error;
-  revalidatePath(`/${organizationId}/offerings/${offeringId}`, 'page');
+  revalidatePath(`/${organizationId}/offerings/${offeringId}`, "page");
 }
 
 export async function updateOfferingParticipant({
   id,
   name,
   externalId,
-  jurCountry
+  jurCountry,
 }: {
   id: string;
   name?: string | null;
@@ -687,42 +701,44 @@ export async function updateOfferingParticipant({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .update({
       name: name ?? null,
       external_id: externalId ?? null,
-      jurisdiction_id: jurCountry
+      jurisdiction_id: jurCountry,
     })
-    .eq('id', id)
-    .select('id, wallet_address, external_id, name, offering_id');
+    .eq("id", id)
+    .select("id, wallet_address, external_id, name, offering_id");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
-export async function removeWhitelistObject({ participantId }: { participantId: string }): Promise<{
+export async function removeWhitelistObject(
+  { participantId }: { participantId: string },
+): Promise<{
   affectedCount: number;
   records: { id: string }[];
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .delete()
-    .eq('id', participantId)
-    .select('id');
+    .eq("id", participantId)
+    .select("id");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
 export async function archiveOfferingParticipant({
-  participantId
+  participantId,
 }: {
   participantId: string;
 }): Promise<{
@@ -731,15 +747,15 @@ export async function archiveOfferingParticipant({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .update({ archived: true })
-    .eq('id', participantId)
-    .select('id, archived');
+    .eq("id", participantId)
+    .select("id, archived");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
@@ -748,7 +764,7 @@ export async function createDescriptionText({
   title,
   text,
   section,
-  order
+  order,
 }: {
   offeringId: string;
   title: string;
@@ -768,19 +784,19 @@ export async function createDescriptionText({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_description_text')
+    .from("offering_description_text")
     .insert(
       { offering_id: Number(offeringId), title, text, section, order },
       {
-        count: 'exact'
-      }
+        count: "exact",
+      },
     )
-    .select('id, offering_id, title, text, section, order');
+    .select("id, offering_id, title, text, section, order");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
@@ -789,7 +805,7 @@ export async function updateDescriptionText({
   title,
   text,
   section,
-  order
+  order,
 }: {
   descriptionId: string;
   title: string;
@@ -809,32 +825,68 @@ export async function updateDescriptionText({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_description_text')
+    .from("offering_description_text")
     .update({ title, text, section, order })
-    .eq('id', descriptionId)
-    .select('id, text, title, section, order, offering_id');
+    .eq("id", descriptionId)
+    .select("id, text, title, section, order, offering_id");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
-export async function deleteDescriptionText({ descriptionId }: { descriptionId: string }): Promise<{
+export async function deleteDescriptionText(
+  { descriptionId }: { descriptionId: string },
+): Promise<{
   affectedCount: number;
   records: { id: string }[];
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_description_text')
+    .from("offering_description_text")
     .delete()
-    .eq('id', descriptionId)
-    .select('id');
+    .eq("id", descriptionId)
+    .select("id");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
+}
+
+export async function getCurrentOrdersAndPrice({
+  offeringId,
+  paymentTokenDecimals,
+  priceStart,
+}: {
+  offeringId: string;
+  paymentTokenDecimals: number;
+  priceStart: number;
+}): Promise<{ currentPrice: number; contractSaleList: ContractOrder[] | [] }> {
+  try {
+    const smartContracts = await getOfferingSmartContractSet({
+      offeringId: offeringId,
+    });
+    const swapContractAddress = smartContracts?.swapContract?.cryptoAddress
+      .address as String0x;
+    const orders = await retrieveOrders(swapContractAddress);
+    const contractSaleList = paymentTokenDecimals && orders && orders.length > 0
+      ? await getOrderArrayFromContract(
+        orders,
+        swapContractAddress,
+        paymentTokenDecimals,
+      )
+      : [];
+
+    const currentPrice = contractSaleList
+      ? getLowestOrderPrice(contractSaleList, priceStart)
+      : 0;
+
+    return { currentPrice, contractSaleList };
+  } catch (error: any) {
+    throw `getCurrentOrdersAndPrice: ${error.message}`;
+  }
 }

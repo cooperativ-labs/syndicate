@@ -7,7 +7,7 @@ import React, { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import CooperativLogo from '../CooperativLogo';
+import PlatformLogo from '../PlatformLogo';
 import { Button } from '../ui/button';
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
@@ -164,9 +164,9 @@ const CreateAccount: FC = () => {
   // );
 
   return (
-    <div className="mt-5 md:p-10 md:rounded-lg md:bg-white md:shadow-xl">
+    <>
       <div className="flex justify-center mb-10">
-        <CooperativLogo />
+        <PlatformLogo />
       </div>
       {loading ? (
         <div className="flex justify-center items-center ">
@@ -204,7 +204,7 @@ const CreateAccount: FC = () => {
           <div className="w-max">Privacy Policy</div>
         </Link>
       </div>
-    </div>
+    </>
   );
 };
 
