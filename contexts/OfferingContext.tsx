@@ -1,9 +1,10 @@
 'use client';
 
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import React, { createContext, useContext } from 'react';
 
 import { LegalEntityWithAddresses, OfferingFull, OrganizationUser } from '@/types';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+
 import { useUserContext } from './UserContext';
 
 type OfferingContextValue = {

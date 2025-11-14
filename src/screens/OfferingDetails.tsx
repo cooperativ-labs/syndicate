@@ -1,4 +1,5 @@
 'use client';
+import { useOffering } from '@contexts/OfferingContext';
 import { useUserContext } from '@contexts/UserContext';
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import AlertBanner from '@src/components/alerts/AlertBanner';
@@ -23,7 +24,6 @@ import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull } from '@/types';
-import { useOffering } from '@contexts/OfferingContext';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;

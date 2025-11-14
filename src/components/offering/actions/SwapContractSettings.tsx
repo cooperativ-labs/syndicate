@@ -1,5 +1,6 @@
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { SwapContractSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
@@ -9,7 +10,6 @@ import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagm
 import { CurrencyCodeType, OfferingFull, OfferingSmartContractSet } from '@/types';
 
 import CreateSwapContract from '../CreateSwapContract';
-import { SwapContractSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 
 const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   swapApprovalsEnabled,

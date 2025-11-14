@@ -1,8 +1,8 @@
-import { erc20Abi } from "viem";
-import { useReadContract, useReadContracts } from "wagmi";
+import { erc20Abi } from 'viem';
+import { useReadContract, useReadContracts } from 'wagmi';
 
-import { swapContractABI } from "../generated";
-import { String0x } from "../helpersChain";
+import { swapContractABI } from '../generated';
+import { String0x } from '../helpersChain';
 
 export type SwapContractInfoType = {
   shareTokenAddress: String0x | undefined;
@@ -17,12 +17,10 @@ export type SwapContractInfoType = {
   refetchSwapContract: () => void;
 };
 
-export const useSwapContractInfo = (
-  swapContractAddress: String0x,
-): SwapContractInfoType => {
+export const useSwapContractInfo = (swapContractAddress: String0x): SwapContractInfoType => {
   const baseContractInfo = {
     address: swapContractAddress,
-    abi: swapContractABI,
+    abi: swapContractABI
   };
 
   const {
@@ -30,16 +28,16 @@ export const useSwapContractInfo = (
     isLoading,
     isError,
     error,
-    refetch: refetchSwapContract,
+    refetch: refetchSwapContract
   } = useReadContracts({
     contracts: [
-      { ...baseContractInfo, functionName: "shareToken" },
-      { ...baseContractInfo, functionName: "paymentToken" },
-      { ...baseContractInfo, functionName: "swapApprovalsEnabled" },
-      { ...baseContractInfo, functionName: "txnApprovalsEnabled" },
-      { ...baseContractInfo, functionName: "nextOrderId" },
-      { ...baseContractInfo, functionName: "contractVersion" },
-    ],
+      { ...baseContractInfo, functionName: 'shareToken' },
+      { ...baseContractInfo, functionName: 'paymentToken' },
+      { ...baseContractInfo, functionName: 'swapApprovalsEnabled' },
+      { ...baseContractInfo, functionName: 'txnApprovalsEnabled' },
+      { ...baseContractInfo, functionName: 'nextOrderId' },
+      { ...baseContractInfo, functionName: 'contractVersion' }
+    ]
   });
 
   const shareTokenAddress = data ? (data[0].result as String0x) : undefined;
@@ -48,13 +46,12 @@ export const useSwapContractInfo = (
   const txnApprovalsEnabled = data ? (data[3].result as boolean) : undefined;
   const nextOrderId = data ? Number(data[4].result) : undefined;
   const swapContractVersion = data ? (data[5].result as string) : undefined;
-  const issueReachingSwapContract = !!swapContractAddress &&
-    !swapContractVersion;
+  const issueReachingSwapContract = !!swapContractAddress && !swapContractVersion;
 
   const { data: paymentTokenDecimals } = useReadContract({
     address: paymentTokenAddress,
     abi: erc20Abi,
-    functionName: "decimals",
+    functionName: 'decimals'
   });
 
   return {
@@ -67,6 +64,6 @@ export const useSwapContractInfo = (
     swapContractVersion,
     isLoading,
     issueReachingSwapContract,
-    refetchSwapContract,
+    refetchSwapContract
   };
 };

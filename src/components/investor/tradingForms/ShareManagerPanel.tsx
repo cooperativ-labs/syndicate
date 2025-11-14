@@ -15,6 +15,7 @@ import React, { FC, useState } from 'react';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
+
 import { SaleMangerPanelProps } from './offering-actions-types';
 
 type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {

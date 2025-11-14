@@ -1,16 +1,16 @@
-import { useReadContract } from "wagmi";
+import { useReadContract } from 'wagmi';
 
-import { swapContractABI } from "../generated";
-import { String0x } from "../helpersChain";
-import { shareContractDecimals, toNormalNumber } from "../util";
+import { swapContractABI } from '../generated';
+import { String0x } from '../helpersChain';
+import { shareContractDecimals, toNormalNumber } from '../util';
 
 export type OrderDetailsType = {
-  initiator: String0x | "" | undefined;
-  partition: String0x | "" | undefined;
+  initiator: String0x | '' | undefined;
+  partition: String0x | '' | undefined;
   amount: number | undefined;
   price: number | undefined;
   filledAmount: number | undefined;
-  filler: String0x | "" | undefined;
+  filler: String0x | '' | undefined;
   isApproved: boolean | undefined;
   isCancelled: boolean | undefined;
   isAccepted: boolean | undefined;
@@ -25,23 +25,22 @@ export type OrderDetailsType = {
 export const useOrderDetails = (
   swapContractAddress: String0x | undefined,
   contractIndex: number,
-  paymentTokenDecimals: number,
+  paymentTokenDecimals: number
 ): OrderDetailsType => {
   const {
     data,
     isLoading,
     isError,
     error,
-    refetch: refetchOrderDetails,
+    refetch: refetchOrderDetails
   } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
-    functionName: "orders",
-    args: [BigInt(contractIndex)],
+    functionName: 'orders',
+    args: [BigInt(contractIndex)]
   });
 
-  const adjustTokenDecimalsForShareContract = paymentTokenDecimals -
-    shareContractDecimals;
+  const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
 
   const initiator = data && data[0];
   const partition = data && data[1];
@@ -75,6 +74,6 @@ export const useOrderDetails = (
     isAskOrder,
     isErc20Payment,
     isLoading,
-    refetchOrderDetails,
+    refetchOrderDetails
   };
 };

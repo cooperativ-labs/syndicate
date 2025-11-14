@@ -1,5 +1,7 @@
+import { useOffering } from '@contexts/OfferingContext';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import CloseButton from '@src/components/buttons/CloseButton';
+import { AllOfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
 import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
@@ -23,8 +25,6 @@ import { CurrencyCodeType } from '@/types';
 import SendShares from '../SendShares';
 
 import SmartContractsSettings from './SmartContractsSettings';
-import { AllOfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
-import { useOffering } from '@contexts/OfferingContext';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
 export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';

@@ -15,8 +15,8 @@ import { useAccount, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 
-import ShareSaleListItem from './ShareSaleListItem';
 import { ShareSaleListProps } from './offering-actions-types';
+import ShareSaleListItem from './ShareSaleListItem';
 
 const ShareSaleList: FC<ShareSaleListProps> = ({
   offering,

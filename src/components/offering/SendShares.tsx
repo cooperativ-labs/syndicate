@@ -19,9 +19,9 @@ import { CurrencyCodeType, OfferingParticipant } from '@/types';
 import Input, { defaultFieldDiv } from '../form-components/Inputs';
 import NewClassInputs from '../form-components/NewClassInputs';
 import Select from '../form-components/Select';
+import { SendSharesProps } from '../investor/tradingForms/offering-actions-types';
 
 import SetOperatorButton from './actions/SetOperatorButton';
-import { SendSharesProps } from '../investor/tradingForms/offering-actions-types';
 
 const SendShares: FC<SendSharesProps> = ({
   sharesIssued,

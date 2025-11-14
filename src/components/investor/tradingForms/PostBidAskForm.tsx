@@ -27,6 +27,7 @@ import { useAccount, useChainId } from 'wagmi';
 import { Document, OfferingFull } from '@/types';
 
 import NonInput from '../../form-components/NonInput';
+
 import { PostBidAskFormProps } from './offering-actions-types';
 
 type WithAdditionalProps = PostBidAskFormProps & {

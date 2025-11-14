@@ -1,3 +1,4 @@
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@src/components/ui/sheet';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
@@ -5,7 +6,6 @@ import { CurrencyCodeType } from '@/types';
 
 import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
-import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@src/components/ui/sheet';
 
 export type WhitelistAddressListProps = {
   investorListRefreshTrigger: number;

@@ -1,10 +1,10 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
 import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
-import { useOffering } from '@contexts/OfferingContext';
 
 type ClickToEditItemProps = {
   label: string;

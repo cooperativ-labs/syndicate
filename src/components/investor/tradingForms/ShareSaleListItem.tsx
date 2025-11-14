@@ -11,10 +11,10 @@ import { useAccount, useChainId } from 'wagmi';
 
 import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 
+import { ShareSaleListItemProps } from './offering-actions-types';
 import OfferingSummaryPanel from './OfferingSummaryPanel';
 import SaleManagerPanel from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
-import { ShareSaleListItemProps } from './offering-actions-types';
 
 type AdditionalShareSaleListItemProps = ShareSaleListItemProps & {
   order: ShareOrder;

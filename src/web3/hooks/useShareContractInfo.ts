@@ -1,17 +1,17 @@
-import { useReadContracts } from "wagmi";
+import { ShareContractInfoType } from '@src/components/investor/tradingForms/offering-actions-types';
+import { useReadContracts } from 'wagmi';
 
-import { shareContractABI } from "../generated";
-import { String0x } from "../helpersChain";
-import { shareContractDecimals, toNormalNumber } from "../util";
-import { ShareContractInfoType } from "@src/components/investor/tradingForms/offering-actions-types";
+import { shareContractABI } from '../generated';
+import { String0x } from '../helpersChain';
+import { shareContractDecimals, toNormalNumber } from '../util';
 
 export const useShareContractInfo = (
   shareContractAddress: String0x,
-  userWalletAddress: String0x | undefined,
+  userWalletAddress: String0x | undefined
 ): ShareContractInfoType => {
   const baseContractInfo = {
     address: shareContractAddress,
-    abi: shareContractABI,
+    abi: shareContractABI
   };
 
   const {
@@ -19,38 +19,36 @@ export const useShareContractInfo = (
     isLoading,
     isError,
     error,
-    refetch: refetchShareContract,
+    refetch: refetchShareContract
   } = useReadContracts({
     contracts: [
-      { ...baseContractInfo, functionName: "owner" },
+      { ...baseContractInfo, functionName: 'owner' },
       {
         ...baseContractInfo,
-        functionName: "isManager",
-        args: [userWalletAddress as `0x${string}}`],
+        functionName: 'isManager',
+        args: [userWalletAddress as `0x${string}}`]
       },
       {
         ...baseContractInfo,
-        functionName: "isWhitelisted",
-        args: [userWalletAddress as `0x${string}}`],
+        functionName: 'isWhitelisted',
+        args: [userWalletAddress as `0x${string}}`]
       },
       {
         ...baseContractInfo,
-        functionName: "balanceOf",
-        args: [userWalletAddress as `0x${string}}`],
+        functionName: 'balanceOf',
+        args: [userWalletAddress as `0x${string}}`]
       },
-      { ...baseContractInfo, functionName: "totalSupply" },
-      { ...baseContractInfo, functionName: "getAllDocuments" },
-      { ...baseContractInfo, functionName: "partitionList", args: [BigInt(0)] },
-      { ...baseContractInfo, functionName: "contractVersion" },
-    ],
+      { ...baseContractInfo, functionName: 'totalSupply' },
+      { ...baseContractInfo, functionName: 'getAllDocuments' },
+      { ...baseContractInfo, functionName: 'partitionList', args: [BigInt(0)] },
+      { ...baseContractInfo, functionName: 'contractVersion' }
+    ]
   });
 
   const contractOwner = data ? (data[0].result as String0x) : undefined;
   const isManager = data ? (data[1].result as boolean) : undefined;
   const isWhitelisted = data ? (data[2].result as boolean) : undefined;
-  const myShareQty = data
-    ? toNormalNumber(data[3].result as bigint, shareContractDecimals)
-    : 0;
+  const myShareQty = data ? toNormalNumber(data[3].result as bigint, shareContractDecimals) : 0;
   const sharesOutstanding = data
     ? toNormalNumber(data[4].result as bigint, shareContractDecimals)
     : undefined;
@@ -70,6 +68,6 @@ export const useShareContractInfo = (
     shareContractVersion,
     isLoading: isLoading ?? false,
     issueReaching1410,
-    refetchShareContract,
+    refetchShareContract
   };
 };

@@ -3,8 +3,8 @@ import {
   Sheet,
   SheetContent,
   SheetHeader,
-  SheetTrigger,
-  SheetTitle
+  SheetTitle,
+  SheetTrigger
 } from '@src/components/ui/sheet';
 import React, { FC, ReactNode } from 'react';
 

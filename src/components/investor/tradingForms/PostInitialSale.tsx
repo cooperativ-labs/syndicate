@@ -14,6 +14,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useAccount } from 'wagmi';
+
 import { PostInitialSaleProps } from './offering-actions-types';
 
 type WithAdditionalProps = PostInitialSaleProps & {

@@ -1,5 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import DashboardCard from '@src/components/cards/DashboardCard';
+import { AllOfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 import { Field, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import { Select } from '@src/components/ui/select';
@@ -20,7 +21,6 @@ import { z } from 'zod';
 import { CurrencyCode, CurrencyCodeType } from '@/types';
 
 import OfferingActions from './OfferingActions';
-import { AllOfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 
 type InvestmentCurrencyFormProps = {
   offeringId: number;

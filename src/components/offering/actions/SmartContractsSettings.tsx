@@ -1,9 +1,9 @@
+import { SmartContractsSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 import React, { FC } from 'react';
 
 import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings from './ShareContractSettings';
 import SwapContractSettings from './SwapContractSettings';
-import { SmartContractsSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 
 const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
   offering,
