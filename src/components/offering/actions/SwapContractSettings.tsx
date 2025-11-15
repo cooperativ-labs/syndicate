@@ -96,7 +96,6 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   );
   return (
     <>
-      {!shareContractAddress && 'Trading contract:'}
       {shareContractAddress && !swapContractAddress && (
         <CreateSwapContract
           contractSet={contractSet}
@@ -107,40 +106,39 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
         />
       )}
       {swapContractAddress && (
-        <div className="flex flex-col">
-          <div className="flex items-center">
-            <div className="font-semibold"> Trading contract: </div>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <h1 className="font-semibold text-lg">Trading contract: </h1>
             <FormattedCryptoAddress
               chainId={chainId}
-              className="text-base font-medium ml-2"
+              className="text-sm text-gray-500 font-medium"
               showFull
               withCopy
               address={swapContractAddress}
             />
           </div>
-          <div className="mt-4 border-2 rounded-md px-2">
-            <SectionBlock
-              className=""
-              sectionTitle={'Trade approval settings'}
-              mini
-              startOpen
-              asAccordion
-            >
-              {noLiveOrders ? (
-                <div className="flex flex-col my-4 ml-10">
-                  {swapApproval}
-                  <hr className="my-4" />
-                  {txnApproval}
+
+          <SectionBlock
+            className="border rounded-lg p-3"
+            sectionTitle={'Trade approval settings'}
+            mini
+            startOpen
+            asAccordion
+          >
+            {noLiveOrders ? (
+              <div className="flex flex-col mt-4 ml-6">
+                {swapApproval}
+                <hr className="my-4" />
+                {txnApproval}
+              </div>
+            ) : (
+              <div className="flex flex-col my-4 ml-10">
+                <div className="text-sm font-medium text-gray-700 mr-2">
+                  Please complete or cancel all orders before changing approval settings.
                 </div>
-              ) : (
-                <div className="flex flex-col my-4 ml-10">
-                  <div className="text-sm font-medium text-gray-700 mr-2">
-                    Please complete or cancel all orders before changing approval settings.
-                  </div>
-                </div>
-              )}
-            </SectionBlock>
-          </div>
+              </div>
+            )}
+          </SectionBlock>
         </div>
       )}
     </>

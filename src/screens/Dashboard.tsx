@@ -32,7 +32,7 @@ const Dashboard: FC = () => {
         funds.`}
             </h2>
 
-            <CreateOrganization />
+            <CreateOrganization noTitle />
           </Card>
         </div>
       ) : (

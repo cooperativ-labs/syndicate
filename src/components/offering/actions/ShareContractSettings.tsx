@@ -22,38 +22,40 @@ const ShareContractSettings: FC<ShareContractSettingsLocal> = ({
   partitions
 }) => {
   const chainId = useChainId();
-  const { user } = useUserContext();
 
   if (!shareContract) {
-    return <LinkLegal user={user} offering={offering} />;
+    return <LinkLegal offering={offering} />;
   }
 
   const shareContractAddress = shareContract?.crypto_address_id as String0x;
   return (
-    <div className="flex-col ">
-      <div className="flex items-center">
-        <div className="font-semibold">Share contract: </div>
+    <div className="flex flex-col gap-3">
+      <div className="flex flex-col gap-1">
+        <h1 className="font-semibold text-lg">Share contract:</h1>
         <FormattedCryptoAddress
           chainId={chainId}
-          className="text-base font-medium ml-2"
+          className="text-sm text-gray-500 font-medium"
           showFull
           withCopy
           address={shareContractAddress}
         />
       </div>
 
-      <div className="mt-4 border-2 rounded-md px-2">
-        <SectionBlock className="" sectionTitle={'Share classes'} mini asAccordion>
-          {partitions?.map(partition => (
-            <div key={partition} className="flex items-center">
-              - {stringFromBytes32(partition)} (
-              <FormattedCryptoAddress address={partition} chainId={chainId} label="id: " withCopy />
-              )
-            </div>
-          ))}
-          <NewClassForm shareContractId={shareContract.id} />
-        </SectionBlock>
-      </div>
+      <SectionBlock
+        className="border rounded-lg p-3"
+        sectionTitle={'Share classes'}
+        mini
+        asAccordion
+      >
+        {partitions?.map(partition => (
+          <div key={partition} className="flex items-center">
+            - {stringFromBytes32(partition)} (
+            <FormattedCryptoAddress address={partition} chainId={chainId} label="id: " withCopy />)
+          </div>
+        ))}
+        {partitions?.length > 0 && <hr className="my-3" />}
+        <NewClassForm shareContractId={shareContract.id} />
+      </SectionBlock>
     </div>
   );
 };

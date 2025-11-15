@@ -68,19 +68,15 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, 
         {!userWalletAddress ? (
           <ChooseConnectorButton buttonText={'Connect Wallet'} />
         ) : (
-          <Button
-            className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
+          <LoadingButtonChain
             onClick={() => deploy()}
-          >
-            <LoadingButtonChain
-              state={buttonStep}
-              idleText={`Create share smart contract on ${chainName}`}
-              step1Text="Deploying (check status in your wallet)"
-              confirmedText="Confirmed!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </Button>
+            state={buttonStep}
+            idleText={`Create share smart contract on ${chainName}`}
+            step1Text="Deploying (check status in your wallet)"
+            confirmedText="Confirmed!"
+            failedText="Transaction failed"
+            rejectedText="You rejected the transaction. Click here to try again."
+          />
         )}
       </div>
     </div>

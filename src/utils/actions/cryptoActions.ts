@@ -363,15 +363,17 @@ export async function getOfferingSmartContractSet({
         ].join(", "),
       )
       .eq("offering_id", Number(offeringId))
-      .single();
+      .limit(1);
 
     if (error) {
       throw error;
     }
 
-    if (!data) {
+    if (!data || data.length === 0) {
       return null;
     }
+
+    const row = data[0];
 
     const transformContract = (
       contract: any,
@@ -389,12 +391,16 @@ export async function getOfferingSmartContractSet({
     };
 
     const result = {
-      ...(data as unknown as OfferingSmartContractSet),
-      swapContract: transformContract((data as any).swapContract),
-      distributionContract: transformContract(
-        (data as any).distributionContract,
+      id: (row as unknown as OfferingSmartContractSet).id,
+      swapContract: transformContract(
+        (row as unknown as OfferingSmartContractSet).swapContract,
       ),
-      shareContract: transformContract((data as any).shareContract),
+      distributionContract: transformContract(
+        (row as unknown as OfferingSmartContractSet).distributionContract,
+      ),
+      shareContract: transformContract(
+        (row as unknown as OfferingSmartContractSet).shareContract,
+      ),
     };
 
     return result as OfferingSmartContractSet;
@@ -528,7 +534,6 @@ export async function createDistributionContract({
       crypto_address_id: contractId,
       owner_id: ownerEntityId,
       type: type,
-      sub_type: "DISTRIBUTION",
       established: false,
     })
     .select("id, owner_id, crypto_address_id, type, established");

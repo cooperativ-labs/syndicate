@@ -1,7 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import FormButton from '@src/components/buttons/FormButton';
+import { Field, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
+
 import { Input } from '@src/components/ui/input';
-import { Label } from '@src/components/ui/label';
 import {
   LoadingButtonChain,
   LoadingButtonStateType
@@ -41,7 +41,11 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
     try {
       await addContractPartition({
         smartContractId: shareContractId,
-        partition: bytes32FromString(data.partition)
+        partition: bytes32FromString(data.partition),
+        revalidationPath: {
+          path: '[organizationId]/offering/[offeringId]',
+          type: 'page'
+        }
       });
       setButtonStep('confirmed');
     } catch (error) {
@@ -50,32 +54,25 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap relative">
-      <div className="pt-3 bg-opacity-0">
-        <Label htmlFor="partition" className="text-sm text-blue-900 font-semibold text-opacity-80">
-          New class name *
-        </Label>
-        <Input
-          id="partition"
-          type="text"
-          placeholder="Class A"
-          {...register('partition')}
-          className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
-        />
-        {errors.partition && (
-          <div className="text-sm text-red-500 mt-1">{errors.partition.message}</div>
-        )}
-      </div>
-      <LoadingButtonChain
-        type="submit"
-        disabled={isSubmitting || buttonStep === 'step1'}
-        state={buttonStep}
-        idleText={`Add new share class`}
-        step1Text="Sending shares..."
-        confirmedText="Confirmed!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
-      />
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col relative">
+      <FieldGroup>
+        <FieldSet>
+          <Field>
+            <FieldLabel>New class name *</FieldLabel>
+            <Input id="partition" type="text" placeholder="Class A" {...register('partition')} />
+          </Field>
+          <LoadingButtonChain
+            type="submit"
+            disabled={isSubmitting || buttonStep === 'step1'}
+            state={buttonStep}
+            idleText={`Add new share class`}
+            step1Text="Sending shares..."
+            confirmedText="Confirmed!"
+            failedText="Transaction failed"
+            rejectedText="You rejected the transaction. Click here to try again."
+          />
+        </FieldSet>
+      </FieldGroup>
     </form>
   );
 };

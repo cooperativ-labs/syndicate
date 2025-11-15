@@ -16,6 +16,7 @@ type ClickToEditItemProps = {
     | ParticipantSpecItemType
     | string
     | undefined;
+  isManager?: boolean;
   itemType: EditEntitySelectionType | EditOrganizationSelectionType | string;
   setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType | string) => void;
 };
@@ -25,10 +26,9 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
   form,
   editOn,
   itemType,
-  isManager,
+  isManager = false,
   setEditOn
 }) => {
-  const { isOfferingManager } = useOffering();
   return (
     <div className={'flex justify-between gap-4 z-10'}>
       {editOn === itemType ? (

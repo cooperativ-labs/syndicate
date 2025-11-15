@@ -81,13 +81,13 @@ export async function getOfferingById(
       )
       .eq("id", Number(offeringId))
       .single(),
-    getOfferingSmartContractSet({ offeringId }),
+    getOfferingSmartContractSet({ offeringId }) ?? null,
   ]);
 
   const offering = offeringRes as unknown as OfferingFull;
 
   if (error) throw `getOfferingById: ${error.message}`;
-  return { ...offering, offeringSmartContracts: smartContracts };
+  return { ...offering, offeringSmartContracts: smartContracts ?? null };
 }
 
 export async function getOfferingDocumentsById(

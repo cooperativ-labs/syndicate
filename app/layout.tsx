@@ -83,7 +83,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
                   <div className="flex">
                     {user?.id && (
                       <div className="flex z-30 md:z-10 min-h-screen">
-                        {/* <ManagerSideBar />{' '} */}
+                        <ManagerSideBar />{' '}
                       </div>
                     )}
                     <Manager>{children}</Manager>

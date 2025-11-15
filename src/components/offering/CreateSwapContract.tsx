@@ -87,7 +87,11 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
           type: SmartContractType.SWAP,
           protocol: protocol,
           ownerId: contractOwnerEntityId,
-          contractSetId: contractSet.id
+          contractSetId: contractSet.id,
+          revalidationPath: {
+            path: '[organizationId]/offering/[offeringId]',
+            type: 'page'
+          }
         });
         const newCurrencyCode = backingToken;
         if (newCurrencyCode !== investmentCurrency) {

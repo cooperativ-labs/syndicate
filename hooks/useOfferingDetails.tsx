@@ -8,7 +8,7 @@ import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 import { toNormalNumber } from '@src/web3/util';
-import { useCallback, useState } from 'react';
+import { useCallback, useRef, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useChainId, useReadContract } from 'wagmi';
 
@@ -44,6 +44,7 @@ const useOfferingDetails = ({
 
   const [transferEvents, setTransferEvents] = useState<ShareTransferEvent[]>([]);
   const [orders, setOrders] = useState<ShareOrder[]>([]);
+  const isManualRefetchRef = useRef(false);
 
   const { swapContract, shareContract, distributionContract } = contractSet ?? {};
 
@@ -58,7 +59,7 @@ const useOfferingDetails = ({
     : 18;
 
   useAsync(async () => {
-    if (!swapContractAddress || !shareContractAddress) {
+    if (!swapContractAddress || !shareContractAddress || isManualRefetchRef.current) {
       return;
     }
     const [ordersData, transferEventsData] = await Promise.all([
@@ -70,11 +71,23 @@ const useOfferingDetails = ({
   }, [swapContractAddress, shareContractAddress]);
 
   const refetchOrders = useCallback(() => {
-    retrieveOrders(swapContractAddress).then(setOrders);
+    if (!swapContractAddress) return;
+    isManualRefetchRef.current = true;
+    retrieveOrders(swapContractAddress)
+      .then(setOrders)
+      .finally(() => {
+        isManualRefetchRef.current = false;
+      });
   }, [swapContractAddress]);
 
   const refetchTransactionHistory = useCallback(() => {
-    retrieveTransferEvents(shareContractAddress).then(setTransferEvents);
+    if (!shareContractAddress) return;
+    isManualRefetchRef.current = true;
+    retrieveTransferEvents(shareContractAddress)
+      .then(setTransferEvents)
+      .finally(() => {
+        isManualRefetchRef.current = false;
+      });
   }, [shareContractAddress]);
 
   const partitions = shareContract?.partitions as String0x[];

@@ -12,8 +12,8 @@ import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
 import { deployDividendContract } from '@src/web3/contractFactory';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
@@ -26,6 +26,48 @@ import {
   Protocol,
   SmartContractType
 } from '@/types';
+
+type FormData = {
+  investmentCurrencyAddress: string | undefined;
+};
+
+type CreateDistributionContractFormProps = {
+  investmentCurrencyAddress: string | undefined;
+  deploy: (paymentTokenAddress: string | undefined) => void;
+  buttonStep: LoadingButtonStateType;
+  chainName: string | undefined;
+};
+
+const CreateDistributionContractForm: FC<CreateDistributionContractFormProps> = ({
+  investmentCurrencyAddress,
+  deploy,
+  buttonStep,
+  chainName
+}) => {
+  const { handleSubmit } = useForm<FormData>({
+    defaultValues: {
+      investmentCurrencyAddress
+    }
+  });
+
+  const onSubmit = async (data: FormData) => {
+    deploy(data.investmentCurrencyAddress);
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap relative">
+      <LoadingButtonChain
+        type="submit"
+        state={buttonStep}
+        idleText={`Publish distribution contract on ${chainName}`}
+        step1Text="Deploying (check status in your wallet)"
+        confirmedText="Confirmed!"
+        failedText="Transaction failed"
+        rejectedText="You rejected the transaction. Click here to try again."
+      />
+    </form>
+  );
+};
 
 type CreateDistributionContractProps = {
   contractSet: OfferingSmartContractSet;
@@ -76,7 +118,11 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
           ownerId: contractOwnerEntityId,
           contractSetId: contractSet.id,
           protocol: protocol as Protocol,
-          chainId: chainId
+          chainId: chainId,
+          revalidationPath: {
+            path: '[organizationId]/offering/[offeringId]',
+            type: 'page'
+          }
         });
 
         setButtonStep('confirmed');
@@ -98,53 +144,12 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
         {!userWalletAddress ? (
           <ChooseConnectorButton buttonText={'Connect Wallet'} />
         ) : (
-          <Formik
-            initialValues={{
-              investmentCurrencyAddress: getCurrencyOption(investmentCurrency)?.address
-            }}
-            validate={values => {
-              const errors: any = {}; /** @TODO : Shape */
-              // if (!values.investmentCurrencyAddress) {
-              //   errors.investmentCurrencyAddress = 'You must choose a currency to use for buying and selling shares';
-              // }
-              return errors;
-            }}
-            onSubmit={async (values, { setSubmitting }) => {
-              setSubmitting(true);
-              deploy(values.investmentCurrencyAddress);
-              setSubmitting(false);
-            }}
-          >
-            <Form className="flex flex-col gap relative">
-              {/* <Select
-                className={defaultFieldDiv}
-                required
-                name="investmentCurrencyAddress"
-                labelText="Payment for shares will be accepted in"
-              >
-                {chainBacs.map((option, i) => {
-                  return (
-                    <option key={i} value={option.address}>
-                      {option.symbol}
-                    </option>
-                  );
-                })}
-              </Select> */}
-              <Button
-                className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
-                type="submit"
-              >
-                <LoadingButtonChain
-                  state={buttonStep}
-                  idleText={`Publish distribution contract on ${chainName}`}
-                  step1Text="Deploying (check status in your wallet)"
-                  confirmedText="Confirmed!"
-                  failedText="Transaction failed"
-                  rejectedText="You rejected the transaction. Click here to try again."
-                />
-              </Button>
-            </Form>
-          </Formik>
+          <CreateDistributionContractForm
+            investmentCurrencyAddress={getCurrencyOption(investmentCurrency)?.address}
+            deploy={deploy}
+            buttonStep={buttonStep}
+            chainName={chainName}
+          />
         )}
       </div>
     </div>

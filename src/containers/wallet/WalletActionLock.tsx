@@ -1,12 +1,13 @@
 'use client';
 
 export default function WalletActionLock() {
+  const logo = process.env.NEXT_PUBLIC_LOGO;
   return (
     <div>
       <div className="animate-pulse">
         <div className="flex flex-col md:flex-row items-center">
           <div className="flex h-20 w-24 mb-5 md:mr-3 md:mb-0 items-center">
-            <img src="/favicon.ico" />
+            <img src={logo} />
           </div>
           <div>
             <div className="ml-1 font-bold text-cDarkBlue md:text-xl">

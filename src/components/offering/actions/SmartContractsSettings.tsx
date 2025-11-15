@@ -25,20 +25,24 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: Offer
         partitions={partitions}
         offering={offering}
       />
-      <hr className="my-5" />
-      <SwapContractSettings
-        refetchMainContracts={refetchMainContracts}
-        swapApprovalsEnabled={swapApprovalsEnabled}
-        txnApprovalsEnabled={txnApprovalsEnabled}
-        contractSet={contractSet}
-        investmentCurrency={investmentCurrency}
-        noLiveOrders={noLiveOrders}
-      />
-      <hr className="my-5" />
-      <DistributionContractSettings
-        investmentCurrency={investmentCurrency}
-        contractSet={contractSet}
-      />
+      {shareContract && (
+        <>
+          <hr className="my-5" />
+          <SwapContractSettings
+            refetchMainContracts={refetchMainContracts}
+            swapApprovalsEnabled={swapApprovalsEnabled}
+            txnApprovalsEnabled={txnApprovalsEnabled}
+            contractSet={contractSet}
+            investmentCurrency={investmentCurrency}
+            noLiveOrders={noLiveOrders}
+          />
+          <hr className="my-5" />
+          <DistributionContractSettings
+            investmentCurrency={investmentCurrency}
+            contractSet={contractSet}
+          />
+        </>
+      )}
     </>
   );
 };

@@ -25,6 +25,7 @@ import DistributionList from '../distributions/DistributionList';
 import TransferEventList from '../sales/TransferEventList';
 
 import WhitelistTransactionItem from './WhitelistTransactionItem';
+import { useOffering } from '@contexts/OfferingContext';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
@@ -56,6 +57,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   triggerInvestorListRefresh,
   refetchContracts
 }) => {
+  const { isOfferingManager } = useOffering();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
@@ -201,6 +203,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         form={updateInvestorForm('name')}
         editOn={specEditOn}
         itemType="name"
+        isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
       />
       <ClickToEditItem
@@ -208,7 +211,8 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         currentValue={jurisdiction?.country ? renderJurisdiction(jurisdiction) : null}
         form={updateInvestorForm('jurisdiction')}
         editOn={specEditOn}
-        itemType="jurisdiction?"
+        itemType="jurisdiction"
+        isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
       />
       <ClickToEditItem
@@ -217,6 +221,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         form={updateInvestorForm('externalId')}
         editOn={specEditOn}
         itemType="externalId"
+        isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
       />
     </div>
