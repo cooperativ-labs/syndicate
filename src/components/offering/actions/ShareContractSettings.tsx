@@ -1,12 +1,11 @@
-import { useUserContext } from '@contexts/UserContext';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import LinkLegal from '@src/components/legal/LinkLegal';
 import SectionBlock from '@src/containers/SectionBlock';
-import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
+import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 import { useChainId } from 'wagmi';
 
-import { OfferingFull, Profile, SmartContract } from '@/types';
+import { OfferingFull, SmartContract } from '@/types';
 
 import NewClassForm from './NewClassForm';
 

@@ -1,10 +1,10 @@
+import { useOffering } from '@contexts/OfferingContext';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 import { useChainId } from 'wagmi';
 
 import { CurrencyCodeType, OfferingSmartContractSet } from '@/types';
-import { useOffering } from '@contexts/OfferingContext';
 
 import CreateDistributionContract from '../CreateDistributionContract';
 

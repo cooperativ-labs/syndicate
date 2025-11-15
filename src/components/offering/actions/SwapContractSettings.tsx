@@ -1,3 +1,4 @@
+import { useOffering } from '@contexts/OfferingContext';
 import LoadingToggle from '@src/components/buttons/LoadingToggle';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { SwapContractSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
@@ -8,7 +9,6 @@ import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react'
 import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 import CreateSwapContract from '../CreateSwapContract';
-import { useOffering } from '@contexts/OfferingContext';
 
 const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   swapApprovalsEnabled,

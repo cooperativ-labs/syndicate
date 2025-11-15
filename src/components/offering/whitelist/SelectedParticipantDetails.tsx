@@ -1,3 +1,4 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { useUserContext } from '@contexts/UserContext';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import Input from '@src/components/form-components/Inputs';
@@ -25,7 +26,6 @@ import DistributionList from '../distributions/DistributionList';
 import TransferEventList from '../sales/TransferEventList';
 
 import WhitelistTransactionItem from './WhitelistTransactionItem';
-import { useOffering } from '@contexts/OfferingContext';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
