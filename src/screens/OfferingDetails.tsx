@@ -264,7 +264,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
                 distributions={offering.distributions}
                 investment_currency={offering.investment_currency as CurrencyCodeType}
                 offeringId={offering.id.toString()}
-                offeringParticipants={offering.offeringParticipants}
+                offeringParticipants={offering.participants}
                 contractManagerMatches={contractManagerMatches}
                 isContractOwner={isContractOwner}
                 offeringEntity={legalEntity}

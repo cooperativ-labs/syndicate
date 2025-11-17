@@ -2,9 +2,9 @@ import { Sheet, SheetContent, SheetHeader, SheetTitle } from '@src/components/ui
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
-import { CurrencyCodeType } from '@/types';
+import { CurrencyCodeType, OfferingDistribution } from '@/types';
 
-import SelectedParticipantDetails, { SelectedParticipantProps } from './SelectedParticipantDetails';
+import SelectedParticipantDetails, { SelectedParticipantProps } from './SelctedParticipantDetails';
 import WhitelistAddressListItem from './WhitelistAddressListItem';
 
 export type WhitelistAddressListProps = {
@@ -14,16 +14,17 @@ export type WhitelistAddressListProps = {
 
 type WhitelistAddressListPropsLocal = SelectedParticipantProps &
   WhitelistAddressListProps & {
+    distributions: OfferingDistribution[];
     offeringId: string;
     investmentCurrency: CurrencyCodeType;
   };
 
 const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
+  distributions,
   offeringId,
   offeringParticipants,
   contractSet,
   currentSalePrice,
-
   organizationId,
   transferEventList,
   investorListRefreshTrigger,
@@ -33,40 +34,12 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
   const [selectedParticipant, setSelectedParticipant] = React.useState<string | undefined>(
     undefined
   );
+
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const partitions = contractSet?.shareContract?.partitions as String0x[];
 
   return (
     <>
-      <Sheet
-        open={!!selectedParticipant}
-        onOpenChange={open => !open && setSelectedParticipant(undefined)}
-      >
-        <SheetContent className="sm:max-w-2/3 p-3 overflow-y-scroll ">
-          <SheetHeader>
-            <SheetTitle>Whitelist Address List</SheetTitle>
-          </SheetHeader>
-
-          <div className="w-full">
-            {selectedParticipant && (
-              <SelectedParticipantDetails
-                selection={selectedParticipant}
-                offeringParticipants={offeringParticipants}
-                contractSet={contractSet}
-                currentSalePrice={currentSalePrice}
-                partitions={partitions}
-                offeringId={offeringId}
-                organizationId={organizationId}
-                transferEventList={transferEventList}
-                refetchContracts={refetchContracts}
-                setSelectedParticipant={setSelectedParticipant}
-                triggerInvestorListRefresh={triggerInvestorListRefresh}
-              />
-            )}
-          </div>
-        </SheetContent>
-      </Sheet>
-
       <div className="w-full">
         {offeringParticipants?.map((participant, i) => {
           return (
@@ -81,6 +54,35 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
           );
         })}
       </div>
+      <Sheet
+        open={!!selectedParticipant}
+        onOpenChange={open => !open && setSelectedParticipant(undefined)}
+      >
+        <SheetContent className="sm:max-w-2/3 p-6 overflow-y-scroll ">
+          <SheetHeader>
+            <SheetTitle>Whitelist Address List</SheetTitle>
+          </SheetHeader>
+
+          <div className="w-full mt-3">
+            {selectedParticipant && (
+              <SelectedParticipantDetails
+                selection={selectedParticipant}
+                offeringParticipants={offeringParticipants}
+                contractSet={contractSet}
+                distributions={distributions}
+                currentSalePrice={currentSalePrice}
+                partitions={partitions}
+                offeringId={offeringId}
+                organizationId={organizationId}
+                transferEventList={transferEventList}
+                refetchContracts={refetchContracts}
+                setSelectedParticipant={setSelectedParticipant}
+                triggerInvestorListRefresh={triggerInvestorListRefresh}
+              />
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </>
   );
 };

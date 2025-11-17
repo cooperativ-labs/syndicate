@@ -1,41 +1,45 @@
 import { useOffering } from '@contexts/OfferingContext';
-import { useUserContext } from '@contexts/UserContext';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
-import Input from '@src/components/form-components/Inputs';
-import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import { Button } from '@src/components/ui/button';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import SectionBlock from '@src/containers/SectionBlock';
-import { updateOfferingParticipant, updateWhitelist } from '@src/utils/actions/offeringActions';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin, renderJurisdiction } from '@src/utils/helpersUserAndEntity';
-import { addWhitelistMember, removeWhitelistMember } from '@src/web3/contractShareCalls';
+import { upsertMember } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
-import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, useState } from 'react';
-import { useReadContracts } from 'wagmi';
+import { useChainId, useReadContracts } from 'wagmi';
 
-import { OfferingParticipant, OfferingSmartContractSet, WhitelistTransactionType } from '@/types';
+import {
+  OfferingDistribution,
+  OfferingSmartContractSet,
+  ShareTransferEvent,
+  WhitelistTransactionType,
+  EnrichedOfferingParticipant
+} from '@/types';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
+import ForceTransferForm from '../../actions/ForceTransferForm';
+import DistributionList from '../../distributions/DistributionList';
+import TransferEventList from '../../sales/TransferEventList';
 
-import ForceTransferForm from '../actions/ForceTransferForm';
-import DistributionList from '../distributions/DistributionList';
-import TransferEventList from '../sales/TransferEventList';
-
-import WhitelistTransactionItem from './WhitelistTransactionItem';
+import WhitelistTransactionItem from '../WhitelistTransactionItem';
+import UpdateInvestorForm from './InvestorUpdateForm';
+import { Separator } from '@src/components/ui/separator';
+import { Button } from '@src/components/ui/button';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 
 export type SelectedParticipantProps = {
-  offeringParticipants: OfferingParticipant[] | undefined | null;
+  offeringParticipants: EnrichedOfferingParticipant[];
   contractSet: OfferingSmartContractSet | null;
   currentSalePrice: number | undefined;
   offeringId: string;
   organizationId: string;
-  transferEventList: any[];
+  distributions: OfferingDistribution[];
+  transferEventList: ShareTransferEvent[];
   refetchContracts: () => void;
   triggerInvestorListRefresh: () => void;
 };
@@ -50,6 +54,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   selection,
   offeringParticipants,
   contractSet,
+  distributions,
   organizationId,
   offeringId,
   partitions,
@@ -61,16 +66,22 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [specEditOn, setSpecEditOn] = useState<string | undefined>(undefined);
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const chainId = useChainId();
 
   const participant = offeringParticipants?.find(p => p?.id === selection);
+
+  const investorApplication = participant?.investorApplication;
+  const investorApplicationText = investorApplication?.applicationDoc?.text;
+  const jurisdiction = participant?.jurisdiction;
+  const whitelistTransactions = participant?.whitelistTransactions;
   const participantWallet = participant?.wallet_address as String0x;
   const participantChainId = participant?.chain_id;
   const participantExternalId = participant?.external_id;
 
   const transferEvents = transferEventList.filter(transferEvent => {
     return (
-      transferEvent.recipientAddress === participantWallet ||
-      transferEvent.senderAddress === participantWallet
+      transferEvent.recipient_address === participantWallet ||
+      transferEvent.sender_address === participantWallet
     );
   });
 
@@ -99,130 +110,85 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   const isWhitelisted = data?.[1].result;
   const numShares = toNormalNumber(shareBalanceData, shareContractDecimals);
 
+  if (!participant) {
+    return <div>Participant not found</div>;
+  }
+
   // -----------------Approve Whitelist Participant---------------------
 
   const updateWhitelistMember = async (
     type: typeof WhitelistTransactionType.ADD | typeof WhitelistTransactionType.REMOVE
   ) => {
-    const baseVariables = {
-      offeringId,
-      organizationId,
-      walletAddress: participantWallet,
-      shareContractAddress: shareContractAddress,
-      setButtonStep,
-      triggerInvestorListRefresh
-    };
     try {
-      if (type === WhitelistTransactionType.ADD) {
-        addWhitelistMember({
-          ...baseVariables
-        });
-      } else {
-        removeWhitelistMember({
-          ...baseVariables
-        });
-      }
+      await upsertMember({
+        shareContractAddress,
+        offeringId,
+        walletAddress: participantWallet,
+        organizationId: organizationId,
+        setButtonStep,
+        chainId: chainId,
+        name: participant?.name,
+        externalId: participantExternalId,
+        type,
+        revalidationPath: {
+          path: '[organizationId]/offering/[offeringId]',
+          type: 'page'
+        }
+      });
     } catch (e) {
-      StandardChainErrorHandling(e);
+      StandardChainErrorHandling(e, setButtonStep, participantWallet);
     }
   };
 
-  //-----------------Contract Interactions END --------------------
-
-  if (!participant) {
-    return <div>Participant not found</div>;
-  }
-
-  const { name, id } = participant;
-
-  const investorApplicationText = investorApplication?.applicationDoc.text;
-
-  const updateInvestorForm = (itemType: ParticipantSpecItemType) => {
-    return (
-      <Formik
-        initialValues={{
-          name: name,
-          jurCountry: jurisdiction?.country ?? '',
-          jurProvince: jurisdiction?.province ?? '',
-          externalId: participantExternalId
-        }}
-        validate={values => {
-          const errors: any = {}; /** @TODO : Shape */
-          // if (!values.jurCountry) {
-          //   errors.type = 'Please enter a country';
-          // }
-          return errors;
-        }}
-        onSubmit={async (values, { setSubmitting, resetForm }) => {
-          setSubmitting(true);
-          await updateOfferingParticipant({
-            id: id,
-            name: values.name,
-            jurCountry: values.jurCountry,
-            jurProvince: values.jurProvince,
-            externalId: values.externalId
-          });
-          setSpecEditOn('none');
-          setSubmitting(false);
-        }}
-      >
-        {({ values, isSubmitting }) => (
-          <Form className="flex md:grid grid-cols-5 w-full items-center gap-2 my-4">
-            <div className="w-full md:col-span-3">
-              {itemType === 'name' && <Input className={' bg-opacity-0'} name="name" />}
-              {itemType === 'jurisdiction' && <JurisdictionSelect values={values} />}
-              {itemType === 'externalId' && <Input className={' bg-opacity-0'} name="externalId" />}
-            </div>
-            <Button
-              type="submit"
-              disabled={isSubmitting}
-              className=" bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
-            >
-              Save
-            </Button>
-            <Button
-              className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
-              onClick={e => {
-                e.preventDefault();
-                setSpecEditOn('none');
-              }}
-            >
-              Cancel
-            </Button>
-          </Form>
-        )}
-      </Formik>
-    );
-  };
-
   const specificationSection = (
-    <div className="text-sm font-medium text-gray-500">
+    <div className="flex flex-col text-sm font-medium text-gray-500 gap-2 max-w-[350px]">
       <ClickToEditItem
         label="Name"
-        currentValue={name}
-        form={updateInvestorForm('name')}
+        currentValue={participant?.name}
+        form={
+          <UpdateInvestorForm
+            itemType={'name'}
+            participant={participant}
+            setSpecEditOn={setSpecEditOn}
+          />
+        }
         editOn={specEditOn}
         itemType="name"
         isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
+        className="justify-start"
       />
       <ClickToEditItem
         label="Jurisdiction"
         currentValue={jurisdiction?.country ? renderJurisdiction(jurisdiction) : null}
-        form={updateInvestorForm('jurisdiction')}
+        form={
+          <UpdateInvestorForm
+            itemType={'jurisdiction'}
+            participant={participant}
+            setSpecEditOn={setSpecEditOn}
+          />
+        }
         editOn={specEditOn}
         itemType="jurisdiction"
         isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
+        className="justify-start"
       />
       <ClickToEditItem
         label="External ID"
         currentValue={participantExternalId}
-        form={updateInvestorForm('externalId')}
+        form={
+          <UpdateInvestorForm
+            itemType={'externalId'}
+            participant={participant}
+            setSpecEditOn={setSpecEditOn}
+          />
+        }
         editOn={specEditOn}
         itemType="externalId"
         isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
+        className="justify-start"
       />
     </div>
   );
@@ -245,47 +211,41 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
     <>
       <div className="flex gap-3">
         {investorApplicationText && (
-          <button
+          <Button
             className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
             aria-label="review application"
             onClick={() => DownloadFile(investorApplicationText, `${name} - application.md`)}
           >
             Review Investor Application
-          </button>
+          </Button>
         )}
         {isWhitelisted ? (
-          <button
-            className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
+          <LoadingButtonChain
             aria-label="remove wallet from whitelist"
+            className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
             onClick={() => updateWhitelistMember(WhitelistTransactionType.REMOVE)}
-          >
-            <LoadingButtonChain
-              state={buttonStep}
-              idleText="Remove this investor from the whitelist"
-              step1Text="Removing..."
-              confirmedText="Updated!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </button>
+            state={buttonStep}
+            idleText="Remove this investor from the whitelist"
+            step1Text="Removing..."
+            confirmedText="Updated!"
+            failedText="Transaction failed"
+            rejectedText="You rejected the transaction. Click here to try again."
+          />
         ) : (
-          <button
+          <LoadingButtonChain
             onClick={() => updateWhitelistMember(WhitelistTransactionType.ADD)}
             className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
-            // className="font-bold  text-white  uppercase mt-4 rounded p-2 w-full"
-          >
-            <LoadingButtonChain
-              state={buttonStep}
-              idleText="Approve Investor"
-              step1Text="Approving..."
-              confirmedText="Updated!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </button>
+            aria-label="approve investor"
+            state={buttonStep}
+            idleText="Approve Investor"
+            step1Text="Approving..."
+            confirmedText="Updated!"
+            failedText="Transaction failed"
+            rejectedText="You rejected the transaction. Click here to try again."
+          />
         )}
       </div>
-      {shareBalanceData && shareBalanceData > 0 && (
+      {!!shareBalanceData && shareBalanceData > 0 && (
         <div className="mt-4 border-2 rounded-md px-2">
           <SectionBlock
             className="font-bold"
@@ -307,7 +267,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   );
 
   return (
-    <div className="flex flex-col">
+    <div className="flex flex-col gap-4">
       <FormattedCryptoAddress
         withCopy
         address={participantWallet}
@@ -316,9 +276,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         showFull
       />
 
-      <div className="mb-4">
-        <div>{`Shares: ${numberWithCommas(numShares)} `}</div>
-        <SectionBlock sectionTitle="Review approvals" mini>
+      <div className="flex flex-col mb-4 gap-2">
+        <div>{`Shares:  ${numberWithCommas(numShares)} `}</div>
+        <SectionBlock sectionTitle="Review approvals" mini className="border-2 rounded-md p-2">
           {whitelistTransactions?.map((transaction, i) => (
             <WhitelistTransactionItem
               key={i}
@@ -331,7 +291,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
       {specificationSection}
       {tradesSection}
 
-      <hr className="my-10" />
+      <Separator />
       {buttonSection}
     </div>
   );

@@ -1,7 +1,9 @@
 import { cn } from '@src/lib/utils';
 import { Country, IState, State } from 'country-state-city';
-import { ErrorMessage, Field } from 'formik';
-import React, { ChangeEvent, FC, use, useState } from 'react';
+import React, { ChangeEvent, FC, use, useEffect, useMemo, useState } from 'react';
+import { Field, FieldError } from '../ui/field';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+import { FieldErrors, UseFormSetValue } from 'react-hook-form';
 
 type JurisdictionSelectProps = {
   id?: any;
@@ -12,10 +14,16 @@ type JurisdictionSelectProps = {
   className?: string;
   fieldClass?: string;
   fieldLabelClass?: string;
+  errors: FieldErrors<any>;
+  setValue: UseFormSetValue<{
+    jurCountry: string;
+    jurProvince: string;
+    name?: string | null | undefined;
+    externalId?: string | undefined;
+  }>;
   values: {
     jurCountry: string | undefined;
-    jurProvince?: Maybe<string> | undefined;
-    [key: string]: any;
+    jurProvince?: string | undefined;
   };
 };
 
@@ -23,21 +31,26 @@ type JurisdictionSelectProps = {
 
 const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
   labelText,
-  id,
   required,
-  multiple,
   className,
-  fieldClass,
   disabled,
   fieldLabelClass,
-  values
+  values,
+  setValue,
+  errors
 }) => {
-  const countries = Country.getAllCountries();
   const [states, setStates] = useState<IState[]>([]);
   const hasStates = states && states.length > 0;
+  const countries = useMemo(() => Country.getAllCountries(), []);
+
+  useEffect(() => {
+    if (values.jurCountry && values.jurProvince) {
+      setStates(State.getStatesOfCountry(values.jurCountry));
+    }
+  }, [values.jurCountry, values.jurProvince]);
 
   return (
-    <div className={cn(className, 'flex flex-col')}>
+    <div className={cn(className, 'flex gap-2')}>
       {labelText && (
         <label
           htmlFor="jurCountry"
@@ -51,54 +64,52 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
           {required ? ' *' : ''}
         </label>
       )}
-      <Field
-        as="select"
-        id={id}
-        disabled={disabled}
-        name={'jurCountry'}
-        multiple={multiple}
-        required={required}
-        onChange={(e: ChangeEvent<HTMLInputElement>) => {
-          setStates(State.getStatesOfCountry(e.target.value));
-          values.jurCountry = e.target.value;
-        }}
-        className={cn(
-          fieldClass
-            ? fieldClass
-            : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
-        )}
-      >
-        <option>Select a country</option>
-        {countries.map((country, i) => (
-          <option key={i} value={country.isoCode}>
-            {country.name}
-          </option>
-        ))}
-      </Field>
-      <ErrorMessage name={'jurCountry'} component="div" className="text-sm text-red-500" />
-      {hasStates && (
-        <Field
-          as="select"
-          id={id}
+      <Field>
+        <Select
           disabled={disabled}
-          name={'jurProvince'}
-          multiple={multiple}
-          required={required}
-          className={cn(
-            fieldClass
-              ? fieldClass
-              : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
-          )}
+          value={values.jurCountry}
+          onValueChange={value => {
+            setStates(State.getStatesOfCountry(value));
+            setValue('jurCountry', value);
+          }}
         >
-          <option>Select a state</option>
-          {states.map((state, i) => (
-            <option key={i} value={state.isoCode}>
-              {state.name}
-            </option>
-          ))}
+          <SelectTrigger>
+            <SelectValue placeholder="Select a country" />
+          </SelectTrigger>
+          <SelectContent position="item-aligned">
+            {countries.map((country, i) => (
+              <SelectItem key={i} value={country.isoCode}>
+                {country.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <FieldError errors={errors.jurCountry ? [errors.jurCountry] : undefined} />
+      </Field>
+      {hasStates && (
+        <Field>
+          <Select
+            disabled={disabled}
+            value={values.jurProvince}
+            onValueChange={value => {
+              setValue('jurProvince', value);
+            }}
+          >
+            <SelectTrigger>
+              <SelectValue placeholder="Select a state" />
+            </SelectTrigger>
+            <SelectContent position="item-aligned">
+              {states.map((state, i) => (
+                <SelectItem key={i} value={state.isoCode}>
+                  {state.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
+          <FieldError errors={errors.jurProvince ? [errors.jurProvince] : undefined} />
         </Field>
       )}
-      <ErrorMessage name={'jurProvince'} component="div" className="text-sm text-red-500" />
     </div>
   );
 };

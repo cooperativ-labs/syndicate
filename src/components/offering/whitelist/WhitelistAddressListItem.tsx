@@ -4,14 +4,13 @@ import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { FC, useEffect } from 'react';
-import { useAccount, useContractReads } from 'wagmi';
-
-import { Maybe, OfferingParticipant } from '@/types';
+import { useAccount, useReadContracts } from 'wagmi';
+import { EnrichedOfferingParticipant } from '@/types';
 
 import FormattedCryptoAddress from '../../FormattedCryptoAddress';
 
 type WhitelistAddressListItemProps = {
-  participant: Maybe<OfferingParticipant>;
+  participant: EnrichedOfferingParticipant;
   shareContractAddress: String0x;
   setSelectedParticipant: (participantId: string) => void;
   investorListRefreshTrigger: number;
@@ -30,17 +29,17 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
     abi: shareContractABI
   };
 
-  const { data, isLoading, refetch } = useContractReads({
+  const { data, isLoading, refetch } = useReadContracts({
     contracts: [
       {
         ...sharedContractBits,
         functionName: 'balanceOf',
-        args: [participant?.walletAddress as String0x]
+        args: [participant?.wallet_address as String0x]
       },
       {
         ...sharedContractBits,
         functionName: 'isWhitelisted',
-        args: [participant?.walletAddress as String0x]
+        args: [participant?.wallet_address as String0x]
       }
     ]
   });
@@ -49,12 +48,12 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
     if (investorListRefreshTrigger) {
       refetch();
     }
-  }, [participant?.walletAddress, investorListRefreshTrigger, refetch]);
+  }, [participant?.wallet_address, investorListRefreshTrigger, refetch]);
 
   const balance = data?.[0].result as bigint;
   const isWhitelisted = data?.[1].result;
 
-  const isYou = participant?.walletAddress === userWalletAddress;
+  const isYou = participant?.wallet_address === userWalletAddress;
   const numShares = data ? toNormalNumber(balance, shareContractDecimals) : 0;
 
   if (!participant) {
@@ -74,19 +73,18 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
       <div className="col-span-6 z-10">
         <FormattedCryptoAddress
           chainId={1}
-          address={participant.walletAddress}
+          address={participant.wallet_address}
           withCopy
           className="font-bold text-base "
           userName={participant.name}
           isYou={isYou}
         />
         <div className="text-sm">{`Shares: ${numberWithCommas(numShares)}`}</div>
-        {/* <PresentWalletUser className="md:w-auto mt-2 font-medium" walletAddress={participant.address} /> */}
       </div>
 
       <div className="col-span-2 mt-3 md:mt-0">
         <div className="text-sm">External ID:</div>
-        <div className="md:w-auto  font-medium ">{participant.externalId}</div>
+        <div className="md:w-auto  font-medium ">{participant.external_id}</div>
       </div>
       <div className="col-span-3 mt-3 md:mt-0 flex justify-end">
         {isWhitelisted ? (

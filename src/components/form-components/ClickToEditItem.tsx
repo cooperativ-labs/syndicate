@@ -3,7 +3,7 @@ import { cn } from '@src/lib/utils';
 import React, { FC } from 'react';
 
 import { EditEntitySelectionType } from '../entity/EntitySpecifications';
-import { ParticipantSpecItemType } from '../offering/whitelist/SelectedParticipantDetails';
+import { ParticipantSpecItemType } from '../offering/whitelist/SelctedParticipantDetails';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 
 type ClickToEditItemProps = {
@@ -19,6 +19,7 @@ type ClickToEditItemProps = {
   isManager?: boolean;
   itemType: EditEntitySelectionType | EditOrganizationSelectionType | string;
   setEditOn: (editOn: EditEntitySelectionType | EditOrganizationSelectionType | string) => void;
+  className?: string;
 };
 const ClickToEditItem: FC<ClickToEditItemProps> = ({
   label,
@@ -27,10 +28,11 @@ const ClickToEditItem: FC<ClickToEditItemProps> = ({
   editOn,
   itemType,
   isManager = false,
-  setEditOn
+  setEditOn,
+  className
 }) => {
   return (
-    <div className={'flex justify-between gap-4 z-10'}>
+    <div className={cn('flex justify-between gap-4 z-10', className)}>
       {editOn === itemType ? (
         form
       ) : (

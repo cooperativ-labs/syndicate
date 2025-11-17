@@ -17,20 +17,24 @@ import { useAccount } from 'wagmi';
 
 import {
   CurrencyCodeType,
+  EnrichedOfferingParticipant,
+  Jurisdiction,
   LegalEntity,
   OfferingDistribution,
   OfferingParticipant,
-  OfferingSmartContractSet
+  OfferingSmartContractSet,
+  ShareTransferEvent
 } from '@/types';
 
 import FormModal from './FormModal';
+import { Separator } from '@src/components/ui/separator';
 
 type OfferingTabContainerProps = WhitelistAddressListProps & {
   legalEntity: LegalEntity;
   distributions: OfferingDistribution[];
   investment_currency: CurrencyCodeType;
   offeringId: string;
-  offeringParticipants: OfferingParticipant[];
+  offeringParticipants: EnrichedOfferingParticipant[];
   contractSet: OfferingSmartContractSet | null;
   contractManagerMatches: boolean;
   isContractOwner: boolean;
@@ -38,7 +42,7 @@ type OfferingTabContainerProps = WhitelistAddressListProps & {
   isOfferingManager: boolean;
   currentSalePrice: number | undefined;
   partitions: String0x[];
-  transferEvents: any[];
+  transferEvents: ShareTransferEvent[];
   investorListRefreshTrigger: number;
   refetchContracts: () => void;
 };
@@ -68,7 +72,6 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   refetchContracts
 }) => {
   const { address: userWalletAddress } = useAccount();
-
   const distArraylength = distributions?.length;
   const hasDistributions = distArraylength && distArraylength > 0;
   const startingTab = isOfferingManager
@@ -148,6 +151,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 </div>
                 <WhitelistAddressList
                   offeringParticipants={offeringParticipants}
+                  distributions={distributions}
                   contractSet={contractSet}
                   investmentCurrency={investment_currency}
                   currentSalePrice={currentSalePrice}
@@ -158,7 +162,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   triggerInvestorListRefresh={triggerInvestorListRefresh}
                   refetchContracts={refetchContracts}
                 />
-                <hr className="mt-5" />
+                <Separator className="my-4 mt-5" />
                 <AddWhitelistAddress
                   shareContractAddress={shareContractAddress}
                   offeringId={offeringId}

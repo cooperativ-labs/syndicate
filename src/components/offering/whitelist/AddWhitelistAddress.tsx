@@ -1,13 +1,15 @@
+import { WhitelistTransactionType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Field, FieldError, FieldLabel } from '@src/components/ui/field';
+import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
-import { addWhitelistMember } from '@src/web3/contractShareCalls';
+import { upsertMember } from '@src/web3/contractShareCalls';
 import { getAddressFromEns, String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { isAddress } from 'viem';
+import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
 export type AddWhitelistAddressProps = {
@@ -47,7 +49,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
   organizationId
 }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-
+  const chainId = useChainId();
   const form = useForm<WhitelistFormData>({
     resolver: zodResolver(whitelistSchema),
     defaultValues: {
@@ -59,91 +61,103 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
 
   const onSubmit = async (values: WhitelistFormData) => {
     const address = await getAddressFromEns(values.address);
-    await addWhitelistMember({
+    await upsertMember({
       shareContractAddress,
       offeringId,
       walletAddress: address as String0x,
       organizationId: organizationId,
-      setButtonStep
+      setButtonStep,
+      chainId: chainId,
+      name: values.name,
+      externalId: values.externalId,
+      type: WhitelistTransactionType.ADD,
+      revalidationPath: {
+        path: '[organizationId]/offering/[offeringId]',
+        type: 'page'
+      }
     });
     form.reset();
   };
-
   const watchedAddress = form.watch('address');
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap relative">
-      <div className="md:grid grid-cols-12 gap-3">
-        <div className="col-span-6">
-          <Controller
-            control={form.control}
-            name="address"
-            render={({ field }) => (
-              <Field>
-                <FieldLabel>
-                  Wallet address <span className="text-destructive">*</span>
-                </FieldLabel>
-                <Input
-                  type="text"
-                  placeholder="0x531518975607FE8867fd5F39e9a3754F1fc38276"
-                  {...field}
-                />
-                <FieldError
-                  errors={
-                    form.formState.errors.address ? [form.formState.errors.address] : undefined
-                  }
-                />
-              </Field>
-            )}
+    <form className="flex flex-col gap relative">
+      <FieldGroup>
+        <FieldSet>
+          <div className="md:grid grid-cols-12 gap-3">
+            <div className="col-span-6">
+              <Controller
+                control={form.control}
+                name="address"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>
+                      Wallet address <span className="text-destructive">*</span>
+                    </FieldLabel>
+                    <Input
+                      type="text"
+                      placeholder="0x531518975607FE8867fd5F39e9a3754F1fc38276"
+                      {...field}
+                    />
+                    <FieldError
+                      errors={
+                        form.formState.errors.address ? [form.formState.errors.address] : undefined
+                      }
+                    />
+                  </Field>
+                )}
+              />
+            </div>
+            <div className="col-span-3">
+              <Controller
+                control={form.control}
+                name="name"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <Input type="text" placeholder="Lisa Novak" {...field} />
+                    <FieldError
+                      errors={form.formState.errors.name ? [form.formState.errors.name] : undefined}
+                    />
+                  </Field>
+                )}
+              />
+            </div>
+            <div className="col-span-3">
+              <Controller
+                control={form.control}
+                name="externalId"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel>external ID</FieldLabel>
+                    <Input type="text" placeholder="934834 (optional)" {...field} />
+                    <FieldError
+                      errors={
+                        form.formState.errors.externalId
+                          ? [form.formState.errors.externalId]
+                          : undefined
+                      }
+                    />
+                  </Field>
+                )}
+              />
+            </div>
+          </div>
+          <LoadingButtonChain
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={form.formState.isSubmitting || buttonStep === 'step1'}
+            state={buttonStep}
+            idleText={`Approve ${watchedAddress || ''}`}
+            step1Text="Adding member to whitelist..."
+            confirmedText="Added!"
+            failedText="Transaction failed"
+            rejectedText="You rejected the transaction. Click here to try again."
           />
-        </div>
-        <div className="col-span-3">
-          <Controller
-            control={form.control}
-            name="name"
-            render={({ field }) => (
-              <Field>
-                <FieldLabel>Name</FieldLabel>
-                <Input type="text" placeholder="Lisa Novak" {...field} />
-                <FieldError
-                  errors={form.formState.errors.name ? [form.formState.errors.name] : undefined}
-                />
-              </Field>
-            )}
-          />
-        </div>
-        <div className="col-span-3">
-          <Controller
-            control={form.control}
-            name="externalId"
-            render={({ field }) => (
-              <Field>
-                <FieldLabel>external ID</FieldLabel>
-                <Input type="text" placeholder="934834 (optional)" {...field} />
-                <FieldError
-                  errors={
-                    form.formState.errors.externalId
-                      ? [form.formState.errors.externalId]
-                      : undefined
-                  }
-                />
-              </Field>
-            )}
-          />
-        </div>
-      </div>
-      <LoadingButtonChain
-        type="submit"
-        disabled={form.formState.isSubmitting || buttonStep === 'step1'}
-        state={buttonStep}
-        idleText={`Approve ${watchedAddress || ''}`}
-        step1Text="Adding member to whitelist..."
-        confirmedText="Added!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
-      />
+        </FieldSet>
+      </FieldGroup>
     </form>
   );
 };
 
 export default AddWhitelistAddress;
+//0x32e3145cf84b75fa7916463d46c9be1205fc4ccb
