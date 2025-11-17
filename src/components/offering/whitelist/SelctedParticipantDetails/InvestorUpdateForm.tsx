@@ -1,11 +1,12 @@
-import { z } from 'zod';
-import { useMemo } from 'react';
-import { useForm } from 'react-hook-form';
+import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
+import { Button } from '@src/components/ui/button';
 import { Field, FieldError, FieldGroup, FieldSet } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
-import { Button } from '@src/components/ui/button';
-import JurisdictionSelect from '@src/components/form-components/JurisdictionSelect';
 import { updateOfferingParticipant } from '@src/utils/actions/offeringActions';
+import { useMemo } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+
 import { EnrichedOfferingParticipant } from '@/types';
 
 const ParticipantFormSchema = z.object({

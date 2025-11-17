@@ -1,7 +1,10 @@
 import { useOffering } from '@contexts/OfferingContext';
 import ClickToEditItem from '@src/components/form-components/ClickToEditItem';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
+import { Button } from '@src/components/ui/button';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
+import { Separator } from '@src/components/ui/separator';
 import SectionBlock from '@src/containers/SectionBlock';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -14,21 +17,19 @@ import React, { Dispatch, FC, useState } from 'react';
 import { useChainId, useReadContracts } from 'wagmi';
 
 import {
+  EnrichedOfferingParticipant,
   OfferingDistribution,
   OfferingSmartContractSet,
   ShareTransferEvent,
-  WhitelistTransactionType,
-  EnrichedOfferingParticipant
+  WhitelistTransactionType
 } from '@/types';
-import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
+
 import ForceTransferForm from '../../actions/ForceTransferForm';
 import DistributionList from '../../distributions/DistributionList';
 import TransferEventList from '../../sales/TransferEventList';
-
 import WhitelistTransactionItem from '../WhitelistTransactionItem';
+
 import UpdateInvestorForm from './InvestorUpdateForm';
-import { Separator } from '@src/components/ui/separator';
-import { Button } from '@src/components/ui/button';
 
 export type ParticipantSpecItemType = 'name' | 'jurisdiction' | 'externalId';
 

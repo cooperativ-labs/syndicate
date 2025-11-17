@@ -1,4 +1,3 @@
-import { WhitelistTransactionType } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
@@ -11,6 +10,8 @@ import { Controller, useForm } from 'react-hook-form';
 import { isAddress } from 'viem';
 import { useChainId } from 'wagmi';
 import { z } from 'zod';
+
+import { WhitelistTransactionType } from '@/types';
 
 export type AddWhitelistAddressProps = {
   organizationId: string | number;

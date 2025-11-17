@@ -9,16 +9,16 @@ import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { LegalEntity, CurrencyCodeType } from '@/types';
+import { CurrencyCodeType, LegalEntity } from '@/types';
 
-import { Button } from '../ui/button';
 import ClickToEditItem from '../form-components/ClickToEditItem';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
+import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
+import { Button } from '../ui/button';
 import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import JurisdictionSelect from '../form-components/JurisdictionSelect';
-import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 
 export type EditEntitySelectionType =
   | 'displayName'
