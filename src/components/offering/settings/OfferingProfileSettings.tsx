@@ -70,7 +70,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
     await uploadOfferingAsset({
       assetFile: file,
       assetName: file.name,
-      assetType: 'logo',
+      assetType: 'image',
       offeringId: offering.id
     });
   };
@@ -87,7 +87,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
   const handleDeleteLogo = async () => {
     await deleteOfferingAsset({
       assetUrl: image as string,
-      assetType: 'logo',
+      assetType: 'image',
       offeringId: offering.id
     });
     setLogoImageUrl(null);
@@ -173,28 +173,6 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             )}
           />
 
-          <Controller
-            control={form.control}
-            name="image"
-            render={({ field }) => (
-              <Field>
-                <FieldLabel htmlFor="image">Logo</FieldLabel>
-                <FieldContent>
-                  <Input
-                    id="image"
-                    type="text"
-                    placeholder="https://source.com/your-logo"
-                    {...field}
-                    value={field.value || ''}
-                  />
-                  <FieldError
-                    errors={form.formState.errors.image ? [form.formState.errors.image] : undefined}
-                  />
-                </FieldContent>
-              </Field>
-            )}
-          />
-
           <div className="md:grid grid-cols-7 gap-4">
             <div className="col-span-3">
               <Controller
@@ -225,7 +203,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             </div>
             <div className="col-span-1 self-center md:mt-8">
               <div
-                className="h-2 md:h-11 md:w-11 rounded-full"
+                className="h-2 md:h-11 md:w-11 rounded-full border"
                 style={{ backgroundColor: watchedBrandColor ?? '#d3d3d3' }}
               />
             </div>
@@ -334,6 +312,7 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             setSelectedImageUrl={setBannerImageUrl}
             onDelete={handleDeleteBannerImage}
             title="Banner Image"
+            classNames="max-w-56"
           />
         </div>
         <div>

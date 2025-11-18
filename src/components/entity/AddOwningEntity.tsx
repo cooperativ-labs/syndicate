@@ -1,14 +1,13 @@
 'use client';
 
 import FormModal from '@src/containers/FormModal';
-import { ADD_ENTITY_OWNER } from '@src/utils/graphQueries/entity';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 
 import { LegalEntity, Organization } from '@/types';
 
-import Button from '../buttons/Button';
+import { Button } from '../ui/button';
 import EntitySelector from '../form-components/EntitySelector';
 
 import CreateEntity from './CreateEntity';
@@ -34,7 +33,9 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({
     // refetchOuter();
   }
 
-  const legalEntites = organization.legalEntities as LegalEntity[];
+  const legalEntites = organization.legalEntities?.map(
+    entity => entity.legalEntity
+  ) as LegalEntity[];
 
   return (
     <>

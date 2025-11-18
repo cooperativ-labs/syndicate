@@ -4,16 +4,17 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
-import { CurrencyCode } from '@/types';
+import { CurrencyCode, CurrencyCodeType } from '@/types';
 
 type MoneyDisplayProps = {
   amount: number | undefined | null;
   paymentToken?: String0x;
-  currency?: keyof typeof CurrencyCode;
+  currency?: CurrencyCodeType | undefined | null;
   className?: string;
 };
 
 const MoneyDisplay: FC<MoneyDisplayProps> = ({ amount, paymentToken, currency, className }) => {
+  if (!currency) return null;
   const isUsd =
     getCurrencyById(paymentToken)?.value === CurrencyCode.USD ||
     getCurrencyOption(currency)?.value === CurrencyCode.USD;

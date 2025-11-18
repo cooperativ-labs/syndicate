@@ -14,7 +14,7 @@ export function Draggable({
   const { attributes, listeners, setNodeRef, transform, isDragging, transition } = useSortable({
     id: draggableId
   });
-  console.log({ transform });
+
   const style: CSSProperties = {
     transform: transform ? CSS.Transform.toString(transform) : `translate(0px, 0px)`,
     transition: transition || 'all 0.2s ease-in-out',

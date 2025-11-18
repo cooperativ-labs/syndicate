@@ -2,19 +2,16 @@ import { GoogleMap, Marker } from '@react-google-maps/api';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { FC, useEffect, useState } from 'react';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
 
-import { Address, Maybe } from '@/types';
+import { Address } from '@/types';
 
-import MajorActionButton from '../buttons/MajorActionButton';
-import CustomAddressAutocomplete, {
-  normalizeGeoAddress
-} from '../form-components/CustomAddressAutocomplete';
+import { Button } from '../ui/button';
+import AddressAutocomplete from '../ui/address-autocomplete';
 
 export type UpdateAddressType = {
-  address: Maybe<Address> | undefined;
+  address: Address | undefined;
   addressId: string | undefined;
-  addressLine1: Maybe<string> | undefined;
+  addressLine1: string | undefined;
   updateAddress: (data: any) => void;
   setModal: (addressModel: boolean) => void;
 };
@@ -29,19 +26,6 @@ const UpdateAddress: FC<UpdateAddressType> = ({
   const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
   const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
   const [inputAddress, setInputAddress] = useState<{ value: any }>();
-  const placeId = inputAddress && inputAddress.value.place_id;
-  useEffect(() => {
-    geocodeByPlaceId(placeId)
-      .then(results => {
-        setAutocompleteResults(results);
-        const lat = results[0]?.geometry.location.lat();
-        const lng = results[0]?.geometry.location.lng();
-        setLatLang({ lat: lat, lng: lng });
-      })
-      .catch(error => {
-        return error;
-      });
-  }, [placeId]);
 
   const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
     normalizeGeoAddress(autocompleteResults);
@@ -54,8 +38,8 @@ const UpdateAddress: FC<UpdateAddressType> = ({
         addressLine2: address?.line2,
         addressLine3: address?.line3,
         city: address?.city,
-        stateProvince: address?.stateProvince,
-        postalCode: address?.postalCode,
+        stateProvince: address?.state_province,
+        postalCode: address?.postal_code,
         country: address?.country
       }}
       validate={values => {
@@ -76,19 +60,17 @@ const UpdateAddress: FC<UpdateAddressType> = ({
       onSubmit={async (values, { setSubmitting }) => {
         setSubmitting(true);
         updateAddress({
-          variables: {
-            entityId: addressId,
-            addressLabel: values.addressLabel,
-            addressLine1: firstAddressLine,
-            addressLine2: secondAddressLine,
-            city: city,
-            stateProvince: state,
-            postalCode: postalCode,
-            country: country,
-            lat: latLang.lat,
-            lng: latLang.lng,
-            currentDate: currentDate
-          }
+          entityId: addressId,
+          addressLabel: values.addressLabel,
+          addressLine1: firstAddressLine,
+          addressLine2: secondAddressLine,
+          city: city,
+          stateProvince: state,
+          postalCode: postalCode,
+          country: country,
+          lat: latLang.lat,
+          lng: latLang.lng,
+          currentDate: currentDate
         });
         setModal(false);
         setSubmitting(false);
@@ -96,10 +78,12 @@ const UpdateAddress: FC<UpdateAddressType> = ({
     >
       {({ isSubmitting, values }) => (
         <Form className="flex flex-col gap relative">
-          <CustomAddressAutocomplete
-            name="addressAutocomplete"
-            value={inputAddress}
-            setValue={setInputAddress}
+          <AddressAutocomplete
+            address={address as AddressType}
+            setAddress={setAddress as (address: Address) => void}
+            searchInput={inputAddress?.value || ''}
+            setSearchInput={(searchInput: string) => setInputAddress({ value: searchInput })}
+            dialogTitle="Update Address"
           />
           {latLang.lat && (
             <div className="mt-4">

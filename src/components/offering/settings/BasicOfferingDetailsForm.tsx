@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import FormButton from '@src/components/buttons/FormButton';
 import NonInput from '@src/components/form-components/NonInput';
 import { Input } from '@src/components/ui/input';
-import { Label } from '@src/components/ui/label';
+import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import {
   Select,
   SelectContent,
@@ -11,15 +11,20 @@ import {
   SelectValue
 } from '@src/components/ui/select';
 import { updateOfferingDetails } from '@src/utils/actions/offeringProfileActions';
-import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
+import {
+  bacOptions,
+  getCurrencyOption,
+  investmentOfferingTypeOptions
+} from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
-import { CurrencyCode, CurrencyCodeType, OfferingType } from '@/types';
-import { Button } from '@src/components/ui/button';
+import { CurrencyCode, CurrencyCodeType, OfferingType, OfferingTypes } from '@/types';
+
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;
@@ -34,7 +39,13 @@ const schema = z.object({
     .refine(val => Object.values(CurrencyCode).includes(val as CurrencyCodeType), {
       message: 'Please select a valid currency'
     }),
-  numUnits: z.string().min(1, 'You must set a number of units')
+  numUnits: z.string().min(1, 'You must set a number of units'),
+  offeringType: z
+    .string()
+    .min(1, 'You must select an offering type')
+    .refine(val => Object.values(OfferingType).includes(val as OfferingTypes), {
+      message: 'Please select a valid offering type'
+    })
 });
 
 type FormData = z.infer<typeof schema>;
@@ -43,8 +54,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
   offeringId,
   operatingCurrency
 }) => {
-  const [alerted, setAlerted] = useState<boolean>(false);
-
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
   const chainId = useChainId();
   const chainBacs = bacOptions.filter(bac => bac.chainId === chainId);
 
@@ -68,59 +78,81 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
   const watchedInitialPrice = watch('initialPrice');
 
   const onSubmit = async (data: FormData) => {
-    setAlerted(false);
-
-    await updateOfferingDetails({
-      offeringId: offeringId,
-      offeringType: OfferingType.REAL_ESTATE,
-      numUnits: parseInt(data.numUnits, 10),
-      investmentCurrencyCode: data.investmentCurrencyCode as CurrencyCodeType,
-      distributionCurrencyCode: data.investmentCurrencyCode as CurrencyCodeType,
-      priceStart: parseInt(data.initialPrice, 10),
-      maxRaise: parseInt(data.numUnits, 10) * parseInt(data.initialPrice, 10)
-    });
+    setButtonState('loading');
+    try {
+      await updateOfferingDetails({
+        offeringId: offeringId,
+        offeringType: data.offeringType as OfferingTypes,
+        numUnits: parseInt(data.numUnits, 10),
+        investmentCurrencyCode: data.investmentCurrencyCode as CurrencyCodeType,
+        distributionCurrencyCode: data.investmentCurrencyCode as CurrencyCodeType,
+        priceStart: parseInt(data.initialPrice, 10),
+        maxRaise: parseInt(data.numUnits, 10) * parseInt(data.initialPrice, 10)
+      });
+      setButtonState('success');
+    } catch (error) {
+      setButtonState('error');
+    }
   };
 
   return (
-    <div className="bg-gray-100 pt-8 p-4 md:p-8 min-h-max mb-6 md:mb-10 md:rounded-lg bg-opacity-100 ">
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-        <div className="pt-3 bg-opacity-0">
-          <Label
-            htmlFor="investmentCurrencyCode"
-            className="text-sm text-blue-900 font-semibold text-opacity-80"
-          >
-            Distributions will be paid in *
-          </Label>
-          <Controller
-            control={control}
-            name="investmentCurrencyCode"
-            render={({ field }) => (
-              <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                  <SelectValue placeholder="Select distribution currency" />
-                </SelectTrigger>
-                <SelectContent>
-                  {chainBacs.map((option, i) => (
-                    <SelectItem key={i} value={option.value}>
-                      {option.symbol}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-          {errors.investmentCurrencyCode && (
-            <div className="text-sm text-red-500 mt-1">{errors.investmentCurrencyCode.message}</div>
-          )}
-        </div>
-        <div className="md:grid grid-cols-2 gap-3">
-          <div className="pt-3 bg-opacity-0">
-            <Label
-              htmlFor="initialPrice"
-              className="text-sm text-blue-900 font-semibold text-opacity-80"
-            >
+    <form>
+      <FieldGroup>
+        <FieldSet className="md:grid md:grid-cols-2 gap-3">
+          <Field>
+            <FieldLabel>Offering type *</FieldLabel>
+            <Controller
+              control={control}
+              name="offeringType"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                    <SelectValue placeholder="Select offering type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {investmentOfferingTypeOptions.map(
+                      (option: { value: OfferingTypes; name: string }, i: number) => (
+                        <SelectItem key={i} value={option.value}>
+                          {option.name}
+                        </SelectItem>
+                      )
+                    )}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError errors={errors.offeringType ? [errors.offeringType] : undefined} />
+          </Field>
+
+          <Field>
+            <FieldLabel>Distributions will be paid in *</FieldLabel>
+            <Controller
+              control={control}
+              name="investmentCurrencyCode"
+              render={({ field }) => (
+                <Select value={field.value} onValueChange={field.onChange}>
+                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                    <SelectValue placeholder="Select distribution currency" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {chainBacs.map((option, i) => (
+                      <SelectItem key={i} value={option.value}>
+                        {option.symbol}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              )}
+            />
+            <FieldError
+              errors={errors.investmentCurrencyCode ? [errors.investmentCurrencyCode] : undefined}
+            />
+          </Field>
+
+          <Field>
+            <FieldLabel>
               {`Initial unit price (${getCurrencyOption(operatingCurrency)?.symbol})`} *
-            </Label>
+            </FieldLabel>
             <Input
               id="initialPrice"
               type="number"
@@ -128,17 +160,10 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
               {...register('initialPrice')}
               className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
             />
-            {errors.initialPrice && (
-              <div className="text-sm text-red-500 mt-1">{errors.initialPrice.message}</div>
-            )}
-          </div>
-          <div className="pt-3 bg-opacity-0 col-span-1">
-            <Label
-              htmlFor="numUnits"
-              className="text-sm text-blue-900 font-semibold text-opacity-80"
-            >
-              Total number of shares *
-            </Label>
+            <FieldError errors={errors.initialPrice ? [errors.initialPrice] : undefined} />
+          </Field>
+          <Field>
+            <FieldLabel>Total number of shares *</FieldLabel>
             <Input
               id="numUnits"
               type="number"
@@ -146,28 +171,36 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
               {...register('numUnits')}
               className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
             />
-            {errors.numUnits && (
-              <div className="text-sm text-red-500 mt-1">{errors.numUnits.message}</div>
-            )}
-          </div>
-        </div>
+            <FieldError errors={errors.numUnits ? [errors.numUnits] : undefined} />
+          </Field>
+        </FieldSet>
+        <FieldSet>
+          <NonInput className={`pt-3 col-span-1 pl-1`} labelText={'Total raise'}>
+            <>
+              {watchedNumUnits &&
+                watchedInvestmentCurrencyCode &&
+                watchedInitialPrice &&
+                `${numberWithCommas(parseInt(watchedNumUnits, 10) * parseInt(watchedInitialPrice, 10))} ${
+                  getCurrencyOption(watchedInvestmentCurrencyCode as CurrencyCodeType)?.symbol
+                }`}
+            </>
+          </NonInput>
 
-        <NonInput className={`pt-3 col-span-1 pl-1`} labelText={'Total raise'}>
-          <>
-            {watchedNumUnits &&
-              watchedInvestmentCurrencyCode &&
-              watchedInitialPrice &&
-              `${numberWithCommas(parseInt(watchedNumUnits, 10) * parseInt(watchedInitialPrice, 10))} ${
-                getCurrencyOption(watchedInvestmentCurrencyCode as CurrencyCodeType)?.symbol
-              }`}
-          </>
-        </NonInput>
-
-        <Button type="submit" disabled={isSubmitting}>
-          SAVE
-        </Button>
-      </form>
-    </div>
+          <LoadingButton
+            onClick={handleSubmit(onSubmit)}
+            disabled={isSubmitting}
+            size="lg"
+            buttonState={buttonState}
+            setButtonState={setButtonState}
+            text="Save"
+            loadingText="Saving"
+            successText="Saved"
+            errorText="Oops. Something went wrong"
+            reset
+          />
+        </FieldSet>
+      </FieldGroup>
+    </form>
   );
 };
 

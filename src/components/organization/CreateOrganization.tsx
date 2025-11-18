@@ -86,7 +86,6 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
 
   const handleLogoUpload = async (file: File) => {
     setLogoFile(file);
-    setLogoUrl(await fileToImageUrl(file));
   };
 
   const handleLogoDelete = async () => {

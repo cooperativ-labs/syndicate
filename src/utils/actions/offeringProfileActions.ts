@@ -8,7 +8,7 @@ import {
   DistributionPeriodTypes,
   Document,
   OfferingTabSectionTypes,
-  offeringTypes,
+  OfferingTypes,
   RevalidationPath,
 } from "@/types";
 import { OfferingStage } from "../enumConverters";
@@ -52,7 +52,7 @@ export async function updateOfferingDetails({
   maxRaise,
 }: {
   offeringId: string;
-  offeringType: offeringTypes;
+  offeringType: OfferingTypes;
   investmentCurrencyCode: CurrencyCodeType;
   distributionCurrencyCode: CurrencyCodeType;
   numUnits: number | null;
@@ -79,7 +79,7 @@ export async function updateOfferingDetails({
       "id, offering_id, num_units, min_units_per_investor, max_units_per_investor, price_start, max_raise",
     );
   if (error) throw error;
-  revalidatePath("/", "page");
+  revalidatePath(`/[organizationId]/offerings/${offeringId}`, "page");
   return {
     affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
     records: data ?? [],
@@ -160,15 +160,8 @@ export const uploadOfferingAsset = async ({
   offeringId: string | number;
   assetFile: File;
   assetName: string; //using file.name = "blob"
-  assetType: "logo" | "banner_image";
+  assetType: "image" | "banner_image";
 }): Promise<void> => {
-  console.log(
-    "uploadOfferingAsset",
-    offeringId,
-    assetFile,
-    assetName,
-    assetType,
-  );
   const supabase = createClient();
   let assetPath = `${offeringId}/${assetType}/${assetName}`;
   const { data: assetData, error: assetError } = await supabase.storage
@@ -181,13 +174,23 @@ export const uploadOfferingAsset = async ({
     throw new Error(assetError.message);
   }
   assetPath = assetData?.path || assetPath;
-  await supabase
-    .from("offering")
-    .update({
-      [assetType]: assetPath,
-    })
-    .eq("id", Number(offeringId));
-  revalidatePath(`/[organizationId]/offerings/${offeringId}`, "layout");
+
+  try {
+    await supabase
+      .from("offering")
+      .update({
+        [assetType]: assetPath,
+      })
+      .eq("id", Number(offeringId));
+    revalidatePath(`/[organizationId]/offerings/${offeringId}`, "layout");
+  } catch (error) {
+    console.error(error);
+    throw new Error(
+      `uploadOfferingAsset: ${
+        error instanceof Error ? error.message : "Unknown error"
+      }`,
+    );
+  }
 };
 
 export const deleteOfferingAsset = async ({
@@ -197,7 +200,7 @@ export const deleteOfferingAsset = async ({
 }: {
   offeringId: string | number;
   assetUrl: string;
-  assetType: "logo" | "banner_image";
+  assetType: "image" | "banner_image";
 }): Promise<void> => {
   const supabase = createClient();
 

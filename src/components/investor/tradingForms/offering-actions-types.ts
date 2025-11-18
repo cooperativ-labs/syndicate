@@ -1,6 +1,6 @@
-import { ManagerModalType } from '@src/utils/helpersOffering';
-import { String0x } from '@src/web3/helpersChain';
-import { Dispatch, SetStateAction } from 'react';
+import { ManagerModalType } from "@src/utils/helpersOffering";
+import { String0x } from "@src/web3/helpersChain";
+import { Dispatch, SetStateAction } from "react";
 
 import {
   CurrencyCodeType,
@@ -9,8 +9,8 @@ import {
   OfferingParticipant,
   OfferingSmartContractSet,
   ShareOrder,
-  ShareTransferEvent
-} from '@/types';
+  ShareTransferEvent,
+} from "@/types";
 
 export type ContractOrder = {
   orderId: string | undefined;
@@ -60,7 +60,7 @@ export type SendSharesProps = {
   sharesOutstanding: number | undefined;
   shareContractId: string;
   shareContractAddress: String0x;
-  offeringParticipants: OfferingParticipant[] | undefined | null;
+  participants: OfferingParticipant[] | undefined | null;
   partitions: String0x[];
   myShareQty: number | undefined;
   investmentCurrency: CurrencyCodeType | null;
@@ -115,9 +115,11 @@ export type ShareSaleListProps = ShareSaleListItemProps & {
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
 };
 
-export type AllOfferingActionsProps = SmartContractsSettingsProps &
-  PostBidAskFormProps &
-  PostInitialSaleProps & {
+export type AllOfferingActionsProps =
+  & SmartContractsSettingsProps
+  & PostBidAskFormProps
+  & PostInitialSaleProps
+  & {
     orders: ShareOrder[] | undefined;
     hasContract: boolean;
     loading: boolean | undefined;

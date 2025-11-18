@@ -64,7 +64,7 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
 
   const {
     name: offeringName,
-    offeringParticipants,
+    participants,
     price_start: priceStart,
     min_units_per_investor: offeringMin,
     num_units: sharesIssued,
@@ -226,7 +226,7 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
           sharesOutstanding={sharesOutstanding}
           shareContractAddress={shareContractAddress}
           shareContractId={shareContractId}
-          offeringParticipants={offeringParticipants}
+          participants={participants}
           partitions={partitions}
           myShareQty={myShareQty}
           refetchMainContracts={refetchMainContracts}

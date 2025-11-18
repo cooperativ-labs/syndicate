@@ -1,35 +1,43 @@
 'use client';
 
 import { useUserContext } from '@contexts/UserContext';
-import { getOfferingSmartContractSet } from '@src/utils/actions/cryptoActions';
 import { getCurrentOrdersAndPrice } from '@src/utils/actions/offeringActions';
-import { retrieveOrders } from '@src/utils/actions/orderActions';
 import { getCurrencyByCode } from '@src/utils/enumConverters';
-import {
-  ContractOrder,
-  getLowestOrderPrice,
-  getOrderArrayFromContract
-} from '@src/utils/helpersOrder';
-import { String0x } from '@src/web3/helpersChain';
-import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 import { useRouter } from 'next/navigation';
-import React, { useState } from 'react';
+import React, { useMemo } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import {
-  LegalEntityWithAddresses,
-  OfferingFull,
-  OfferingSmartContractSet,
-  Organization
-} from '@/types';
-import { CurrencyCodeType, ShareOrder } from '@/types';
+import { OfferingFull, Organization } from '@/types';
+import { CurrencyCodeType } from '@/types';
 
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
 
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
+import { getPublicUrl } from '@src/utils/actions/storageActions';
+
+// In-memory cache for public URLs
+const publicUrlCache = new Map<string, { data: string | null; error: Error | null }>();
+const getCachedPublicUrl = async (
+  bucket: string,
+  path: string | null,
+  source: string
+): Promise<{ data: string | null; error: Error | null }> => {
+  if (!path) {
+    return { data: null, error: new Error('Path is required') };
+  }
+
+  const cacheKey = `${bucket}:${path}`;
+  if (publicUrlCache.has(cacheKey)) {
+    return publicUrlCache.get(cacheKey)!;
+  }
+
+  const result = await getPublicUrl({ bucket, path, source });
+  publicUrlCache.set(cacheKey, result);
+  return result;
+};
 
 export type OfferingCardProps = {
   offering: OfferingFull;
@@ -41,11 +49,23 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) =
   const { userId } = useUserContext();
   const router = useRouter();
 
+  const cacheKey = useMemo(
+    () => (offering.image ? `offering-assets:${offering.image}` : null),
+    [offering.image]
+  );
+
+  const { value: offeringImage } = useAsync(async () => {
+    if (!offering.image) {
+      return { data: null, error: new Error('Path is required') };
+    }
+    return getCachedPublicUrl('offering-assets', offering.image, 'OfferingCard');
+  }, [cacheKey]);
+
+  const imageUrl = offeringImage?.data as string | null;
+
   const {
     name,
-    short_description,
     id,
-    image,
     projected_irr,
     projected_irr_max,
     preferred_return,
@@ -82,29 +102,16 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) =
   return (
     <div
       onClick={() => {
-        // window.sessionStorage.setItem('CHOSEN_OFFERING', id.toString());
         router.push(pushLink);
       }}
     >
       <Card className="md:mr-5 md:w-96 rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer">
-        <img src={image as string} className="object-cover w-full h-24 absolute" />
+        <img src={imageUrl ?? undefined} className="object-cover w-full h-24 absolute" />
         <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />
-        <div className="flex justify-between absolute left-4 top-5 right-4 items-center">
-          <h2 className="text-xl font-bold text-white ">{name}</h2>
-          <img
-            src={organizationImg as string}
-            referrerPolicy="no-referrer"
-            className="w-16 h-16 border-2 border-white rounded-full"
-          />
+        <div className="p-4">
+          <div className="text-lg font-bold">{name}</div>
         </div>
         <div className="p-4">
-          {short_description && (
-            <>
-              <hr className="my-3 bg-slate-400" />
-              <div className=" text-gray-800 mb-4">{short_description}</div>
-              <hr className="my-3 bg-slate-400" />
-            </>
-          )}
           <div className="grid grid-cols-3">
             {currentPrice ? (
               <OfferingDetailDashboardItem title="Price">

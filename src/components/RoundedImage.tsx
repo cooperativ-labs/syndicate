@@ -39,7 +39,6 @@ const RoundedImage: React.FunctionComponent<RoundedImageProps> = ({
         alt={alt || 'image'}
         width={width}
         height={height}
-        objectFit="cover"
         objectPosition="center"
         unoptimized={process.env.NODE_ENV === 'development'}
       />

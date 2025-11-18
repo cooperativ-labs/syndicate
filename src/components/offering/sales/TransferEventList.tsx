@@ -36,7 +36,7 @@ const TransferEventList: FC<TransferEventListProps> = ({ transferEvents }) => {
         </div>
       </div>
       {transferEvents?.map((transferEvent: ShareTransferEvent, i: number) => {
-        return <TransferEventItem key={i} transferEvent={transferEvent} />;
+        return <TransferEventItem key={transferEvent.id} transferEvent={transferEvent} />;
       })}
     </>
   );

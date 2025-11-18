@@ -75,7 +75,6 @@ const TeamMemberListItem: FC<TeamMemberListItemProps> = ({
     >
       <div className="flex items-center gap-2">
         <Image
-          objectFit="cover"
           src={image || '/assets/images/user-images/placeholder.png'}
           referrerPolicy="no-referrer"
           className="w-8 h-8 border-2 border-white rounded-full"

@@ -21,8 +21,8 @@ export const getDescriptionsByTab = (
 };
 
 type SharesRemainingProps = {
-  x: number | undefined | number;
-  minus: number | undefined | number;
+  x: number | undefined | null;
+  minus: number | undefined | null;
 };
 export const getAmountRemaining = ({ x, minus }: SharesRemainingProps) => {
   const thisNumber = x || 0;

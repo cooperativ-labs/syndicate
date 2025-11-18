@@ -1,7 +1,7 @@
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
-import { Maybe, OfferingDetails, ShareOrder } from '@/types';
+import { OfferingFull } from '@/types';
 
 import PercentageDisplay from '../PercentageDisplay';
 
@@ -16,15 +16,15 @@ export type ContractViewDetails = {
 };
 
 export type OfferingDetailsDisplayProps = {
-  offeringDetails: Maybe<OfferingDetails> | undefined;
-  currentSalePrice: Maybe<number> | undefined;
+  offering: OfferingFull;
+  currentSalePrice: number | undefined;
   isOfferingManager: boolean | undefined;
   contractViewDetails: ContractViewDetails;
   className?: string;
 };
 
 const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
-  offeringDetails,
+  offering,
   currentSalePrice,
   isOfferingManager,
   contractViewDetails,
@@ -33,19 +33,19 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
 }) => {
   const { sharesOutstanding, myShareQty, paymentToken, totalDistributed } = contractViewDetails;
   const {
-    numUnits,
-    projectedIrr,
-    projectedIrrMax,
-    preferredReturn,
-    projectedAppreciation,
-    cocReturn,
-    capRate,
-    targetEquityMultiple,
-    targetEquityMultipleMax,
-    investmentCurrency
-  } = offeringDetails as OfferingDetails;
+    num_units,
+    projected_irr,
+    projected_irr_max,
+    preferred_return,
+    projected_appreciation,
+    coc_return,
+    cap_rate,
+    target_equity_multiple,
+    target_equity_multiple_max,
+    investment_currency
+  } = offering;
 
-  const totalValue = numUnits && currentSalePrice ? numUnits * currentSalePrice : undefined;
+  const totalValue = num_units && currentSalePrice ? num_units * currentSalePrice : undefined;
   return (
     <div className={className}>
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
@@ -53,7 +53,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
           <MoneyDisplay
             amount={totalValue}
             paymentToken={paymentToken}
-            currency={investmentCurrency}
+            currency={investment_currency}
           />
         </OfferingDetailDashboardItem>
 
@@ -65,7 +65,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
           <MoneyDisplay
             amount={currentSalePrice}
             paymentToken={paymentToken}
-            currency={investmentCurrency}
+            currency={investment_currency}
           />
         </OfferingDetailDashboardItem>
 
@@ -84,7 +84,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
             <MoneyDisplay
               amount={totalDistributed}
               paymentToken={paymentToken}
-              currency={investmentCurrency}
+              currency={investment_currency}
             />
           </OfferingDetailDashboardItem>
         ) : (
@@ -92,33 +92,33 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
             <MoneyDisplay
               amount={currentSalePrice && myShareQty ? currentSalePrice * myShareQty : undefined}
               paymentToken={paymentToken}
-              currency={investmentCurrency}
+              currency={investment_currency}
             />
           </OfferingDetailDashboardItem>
         )}
       </div>
-      {(projectedAppreciation ||
-        projectedIrr ||
-        preferredReturn ||
-        targetEquityMultiple ||
-        cocReturn ||
-        capRate) && <div className=" mt-10" />}
+      {(projected_appreciation ||
+        projected_irr ||
+        preferred_return ||
+        target_equity_multiple ||
+        coc_return ||
+        cap_rate) && <div className=" mt-10" />}
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 ">
-        {projectedAppreciation ? (
+        {projected_appreciation ? (
           <OfferingDetailDashboardItem title="Projected Appreciation">
-            <PercentageDisplay className="text-gray-900" percent={projectedAppreciation} />
+            <PercentageDisplay className="text-gray-900" percent={projected_appreciation} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>
         )}
 
-        {projectedIrr ? (
+        {projected_irr ? (
           <OfferingDetailDashboardItem title="Projected IRR">
             <div>
               <PercentageDisplay
                 className=" text-gray-900"
-                percent={projectedIrr}
-                secondPercent={projectedIrrMax}
+                percent={projected_irr}
+                secondPercent={projected_irr_max}
               />
             </div>
           </OfferingDetailDashboardItem>
@@ -126,38 +126,38 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
           <></>
         )}
 
-        {preferredReturn ? (
+        {preferred_return ? (
           <OfferingDetailDashboardItem
             title="Preferred Return"
             note="(Cumulative, Non-Compounding)"
           >
-            <PercentageDisplay className="text-gray-900" percent={preferredReturn} />
+            <PercentageDisplay className="text-gray-900" percent={preferred_return} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>
         )}
 
-        {targetEquityMultiple ? (
+        {target_equity_multiple ? (
           <OfferingDetailDashboardItem title="Target Equity Multiple">
             <PercentageDisplay
               className="text-gray-900"
-              multiple={targetEquityMultiple}
-              secondMultiple={targetEquityMultipleMax}
+              multiple={target_equity_multiple}
+              secondMultiple={target_equity_multiple_max}
             />
           </OfferingDetailDashboardItem>
         ) : (
           <></>
         )}
-        {cocReturn ? (
+        {coc_return ? (
           <OfferingDetailDashboardItem title="CoC Return">
-            <PercentageDisplay className="text-gray-900" percent={cocReturn} />
+            <PercentageDisplay className="text-gray-900" percent={coc_return} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>
         )}
-        {capRate ? (
+        {cap_rate ? (
           <OfferingDetailDashboardItem title="Cap Rate">
-            <PercentageDisplay className="text-gray-900" percent={capRate} />
+            <PercentageDisplay className="text-gray-900" percent={cap_rate} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>

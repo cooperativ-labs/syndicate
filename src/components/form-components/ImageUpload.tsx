@@ -11,12 +11,14 @@ import { toast } from 'sonner';
 
 import DeleteButton from '../buttons/DeleteButton';
 import DragAndDrop from '../DndFiles';
+import { cn } from '@src/lib/utils';
 
 type ImageUploadProps = {
   accept: string[];
   title?: string;
   description?: string;
   allowMultiple?: boolean;
+  classNames?: string;
   selectedImageUrl: string | null;
   setSelectedImageUrl: (imageUrl: string | null) => void;
   onSubmit: (file: File) => Promise<void>;
@@ -31,7 +33,8 @@ const ImageUpload: FC<ImageUploadProps> = ({
   selectedImageUrl,
   setSelectedImageUrl,
   onSubmit,
-  onDelete
+  onDelete,
+  classNames
 }) => {
   const [progressAmt, setProgressAmt] = useState<number>(0);
   const [isProcessing, setIsProcessing] = useState<boolean>(false);
@@ -51,12 +54,11 @@ const ImageUpload: FC<ImageUploadProps> = ({
       }
 
       setSelectedImageUrl(await fileToImageUrl(compressedFile));
-
       return compressedFile;
     } catch (error) {
-      console.error('Error compressing image:', error);
+      console.error('Error processing image:', error);
       toast.error(
-        `${error instanceof Error ? error.message : 'Failed to upload file. Please try again.'}`
+        `${error instanceof Error ? error.message : 'Failed to process file. Please try again.'}`
       );
     } finally {
       setIsProcessing(false);
@@ -74,7 +76,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
   }
 
   return (
-    <div className="flex flex-col">
+    <div className={cn('flex flex-col', classNames)}>
       {isProcessing ? (
         <div className="flex items-center justify-center h-40">
           <Loader2 className="size-6 animate-spin" />

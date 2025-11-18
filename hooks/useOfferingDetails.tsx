@@ -18,8 +18,7 @@ import {
   DocumentType,
   OfferingSmartContractSet,
   ShareOrder,
-  ShareTransferEvent,
-  SmartContractWithCryptoAddress
+  ShareTransferEvent
 } from '@/types';
 
 type OfferingDetailsProps = {

@@ -24,6 +24,7 @@ import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull } from '@/types';
+import OfferingBasicDetailsForm from '@src/components/offering/OfferingBasicDetailsForm';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;
@@ -129,6 +130,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     refetchTransactionHistory();
     refetchOrders();
   };
+  const showBasicOfferingDetailsForm =
+    !!details.priceStart && !!details.numUnits && !!details.investmentCurrency;
 
   return (
     <>
@@ -173,10 +176,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
             <hr className="my-5" />
-            {details ? (
+            {showBasicOfferingDetailsForm ? (
+              <OfferingBasicDetailsForm
+                offering={offering}
+                isOfferingManager={isOfferingManager}
+                legalEntity={legalEntity}
+              />
+            ) : (
               <OfferingDetailsDisplay
                 className="my-6"
-                offeringDetails={details}
+                offering={offering}
                 currentSalePrice={currentSalePrice}
                 isOfferingManager={isOfferingManager}
                 contractViewDetails={{
@@ -186,19 +195,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
                   totalDistributed: totalDistributed
                 }}
               />
-            ) : isOfferingManager ? (
-              !userWalletAddress ? (
-                <div className="flex mt-4">
-                  <ChooseConnectorButton buttonText={'Connect wallet to continue'} large />
-                </div>
-              ) : (
-                <BasicOfferingDetailsForm
-                  offeringId={id.toString()}
-                  operatingCurrency={legalEntity?.operating_currency as CurrencyCodeType}
-                />
-              )
-            ) : (
-              'This offering has no details yet.'
             )}
 
             <hr className="my-10" />

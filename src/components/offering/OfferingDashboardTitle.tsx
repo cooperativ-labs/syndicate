@@ -194,7 +194,9 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             size="sm"
             onClick={e => {
               e.stopPropagation();
-              navigator.clipboard.writeText(`${getBaseUrl()}/portal/${offeringId}`);
+              navigator.clipboard.writeText(
+                `${process.env.NEXT_PUBLIC_SITE_URL}/portal/${offeringId}`
+              );
               setCopied(true);
               setTimeout(() => {
                 setCopied(false);

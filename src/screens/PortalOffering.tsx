@@ -1,6 +1,6 @@
 'use client';
 
-import { Organization, Offering, OfferingParticipant } from '@/types';
+import { Organization, Offering, OfferingParticipant, OfferingFull } from '@/types';
 
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import DashboardCard from '@src/components/cards/DashboardCard';
@@ -26,23 +26,14 @@ import React, { FC, useState } from 'react';
 import { useAccount, useBalance, useReadContracts } from 'wagmi';
 
 type PortalOfferingProps = {
-  offering: Offering;
+  offering: OfferingFull;
   organization: Organization;
 };
 
 const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => {
   const { address: userWalletAddress } = useAccount();
 
-  const {
-    min_units_per_investor,
-    name: offeringName,
-    id: offeringId,
-    offeringParticipants
-    min_units_per_investor,
-    name: offeringName,
-    id: offeringId,
-    offeringParticipants
-  } = offering;
+  const { min_units_per_investor, name: offeringName, id: offeringId, participants } = offering;
 
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
@@ -65,7 +56,14 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
     refetchOrders,
     refetchTransactionHistory,
     transferEvents
-  } = useOfferingDetails(offering);
+  } = useOfferingDetails({
+    offeringId: offering.id.toString(),
+    isOfferingManager: false,
+    price_start: offering.price_start,
+    investment_currency: offering.investment_currency,
+    documents: offering.documents,
+    contractSet: offering.offeringSmartContracts
+  });
 
   const sharedContractSpecs = {
     address: shareContractAddress,

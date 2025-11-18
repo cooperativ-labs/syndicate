@@ -87,14 +87,14 @@ export async function getOfferingById(
 
   const [logoUrl, bannerImageUrl] = await Promise.all([
     getPublicUrl({
-      bucket: "organization-assets",
+      bucket: "offering-assets",
       path: offering.image,
-      source: "getOrganization",
+      source: "getOfferingById",
     }),
     getPublicUrl({
-      bucket: "organization-assets",
+      bucket: "offering-assets",
       path: offering.banner_image,
-      source: "getOrganization",
+      source: "getOfferingById",
     }),
   ]);
 
