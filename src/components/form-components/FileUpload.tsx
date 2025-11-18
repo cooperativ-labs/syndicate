@@ -5,7 +5,7 @@ import { FC, useState } from 'react';
 import { toast } from 'sonner';
 
 import DeleteButton from '../buttons/DeleteButton';
-import DragAndDrop from '../ui/drag_and_drop';
+import DragAndDrop from '../DndFiles';
 import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
 
 type FileUploadProps = {

@@ -1,33 +1,53 @@
-import { updateDescriptionText } from '@src/utils/actions/offeringActions';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { updateDescriptionText } from '@src/utils/actions/offeringProfileActions';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
-import React, { FC, useEffect, useState } from 'react';
-// @ts-expect-error - react-beautiful-dnd types can mismatch our generics here
-import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import React, { FC, useEffect, useMemo, useState } from 'react';
+import {
+  closestCenter,
+  DndContext,
+  type DragEndEvent,
+  KeyboardSensor,
+  MouseSensor,
+  TouchSensor,
+  type UniqueIdentifier,
+  useSensor,
+  useSensors
+} from '@dnd-kit/core';
+
+import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
+
 import toast from 'react-hot-toast';
 
-import { Offering, OfferingDescriptionText, offeringTabSectionTypes } from '@/types';
+import { OfferingDescriptionText, OfferingFull, OfferingTabSectionTypes } from '@/types';
 
 import OfferingDescriptionItem from './OfferingDescriptionItem';
+import { Accordion } from '@src/components/ui/accordion';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 type TabDescriptionListProps = {
-  offering: Offering;
-  tab: offeringTabSectionTypes;
+  offering: OfferingFull;
+  tab: OfferingTabSectionTypes;
 };
 
-const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
-  const [list, setList] = useState<ArrayLike<OfferingDescriptionText | undefined>>([]);
+export default function TabDescriptionList({ offering, tab }: TabDescriptionListProps) {
+  const [list, setList] = useState<OfferingDescriptionText[]>([]);
+  const listIds = useMemo<UniqueIdentifier[]>(
+    () => list?.map(description => description.id),
+    [list]
+  );
 
   useEffect(() => {
     const descriptions = getDescriptionsByTab(offering, tab);
-    setList(descriptions);
+    const normalizedList = Array.from(descriptions ?? []) as (
+      | OfferingDescriptionText
+      | undefined
+    )[];
+    const orderedList = normalizedList
+      .filter((description): description is OfferingDescriptionText => Boolean(description))
+      .sort((a: any, b: any) => a.order - b.order);
+    setList(orderedList);
   }, [offering, tab]);
 
-  const reorder = (
-    list: ArrayLike<OfferingDescriptionText | undefined>,
-    startIndex: number,
-    endIndex: number
-  ) => {
+  const reorder = (list: OfferingDescriptionText[], startIndex: number, endIndex: number) => {
     const result = Array.from(list);
     const [removed] = result.splice(startIndex, 1);
     result.splice(endIndex, 0, removed);
@@ -41,59 +61,61 @@ const TabDescriptionList: FC<TabDescriptionListProps> = ({ offering, tab }) => {
         title: description.title,
         text: description.text,
         section: tab,
-        order: i
+        order: i,
+        revalidationPath: {
+          path: `/[organizationId]/offerings/${offering.id}`,
+          type: 'layout'
+        }
       });
     } catch (error: any) {
       toast.error(`${error.message}`);
     }
   };
 
-  const handleDragEnd = async ({ destination, source }: { destination: any; source: any }) => {
-    if (!destination) return;
-    const newOrder = reorder(list, source.index, destination.index);
-    setList(newOrder);
-    await Promise.all(
-      newOrder.map((description: any, i: number) => {
-        return handleChange(description, i);
-      })
-    );
+  const onDragEnd = async (event: DragEndEvent) => {
+    const { active, over } = event;
+    if (active && over && active.id !== over.id) {
+      const oldIndex = listIds.indexOf(active.id);
+      const newIndex = listIds.indexOf(over.id);
+      const newOrder = reorder(list, oldIndex, newIndex);
+      setList(newOrder);
+      await Promise.all(
+        newOrder.map((description: any, i: number) => {
+          return handleChange(description, i);
+        })
+      );
+    }
   };
 
-  // @ts-expect-error - list is ArrayLike<Maybe<OfferingDescriptionText>>; sort uses any
-  const orderedList = list?.sort((a: any, b: any) => a.order - b.order);
-  return (
-    <DragDropContext onDragEnd={handleDragEnd}>
-      {list && (
-        <Droppable droppableId="droppable">
-          {(provided: any) => (
-            <div ref={provided.innerRef} {...provided.droppableProps}>
-              {orderedList.map((description: OfferingDescriptionText, i: number) => {
-                return (
-                  <Draggable key={description.id} index={i} draggableId={description.id}>
-                    {(provided: any) => (
-                      <div
-                        ref={provided.innerRef}
-                        {...provided.draggableProps}
-                        {...provided.dragHandleProps}
-                      >
-                        <OfferingDescriptionItem
-                          order={description.order}
-                          offering={offering}
-                          description={description}
-                          tab={description.section as offeringTabSectionTypes}
-                        />
-                      </div>
-                    )}
-                  </Draggable>
-                );
-              })}
-              {provided.placeholder}
-            </div>
-          )}
-        </Droppable>
-      )}
-    </DragDropContext>
+  const sensors = useSensors(
+    useSensor(MouseSensor, {}),
+    useSensor(TouchSensor, {}),
+    useSensor(KeyboardSensor, {})
   );
-};
 
-export default TabDescriptionList;
+  return (
+    <DndContext
+      collisionDetection={closestCenter}
+      modifiers={[restrictToVerticalAxis, restrictToParentElement]}
+      onDragEnd={onDragEnd}
+      sensors={sensors}
+      id="task-table"
+    >
+      {list && (
+        <SortableContext items={listIds} strategy={verticalListSortingStrategy}>
+          <Accordion type="single" collapsible className="flex flex-col gap-2">
+            {list.map((description: OfferingDescriptionText, i: number) => {
+              return (
+                <OfferingDescriptionItem
+                  offering={offering}
+                  description={description}
+                  tab={description.section as OfferingTabSectionTypes}
+                />
+              );
+            })}
+          </Accordion>
+        </SortableContext>
+      )}
+    </DndContext>
+  );
+}

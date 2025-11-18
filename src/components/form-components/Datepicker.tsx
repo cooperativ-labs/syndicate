@@ -1,9 +1,7 @@
-import 'react-datepicker/dist/react-datepicker.css';
-
 import { cn } from '@src/lib/utils';
 import { ErrorMessage, useField, useFormikContext } from 'formik';
+import { Calendar } from 'lucide-react';
 import React from 'react';
-import DatePicker, { CalendarContainer } from 'react-datepicker';
 
 export interface InputProps {
   name: string;
@@ -31,22 +29,6 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
   const { setFieldValue } = useFormikContext();
   const [field] = useField(name);
 
-  const MyContainer = ({
-    className,
-    children
-  }: {
-    className: string;
-    children: React.ReactNode[];
-  }) => {
-    return (
-      <div style={{ color: '#fff' }}>
-        <CalendarContainer className={className}>
-          <div style={{ position: 'relative' }}>{children}</div>
-        </CalendarContainer>
-      </div>
-    );
-  };
-
   return (
     <div className={cn(className, 'flex flex-col')}>
       {labelText && (
@@ -62,13 +44,12 @@ export const Datepicker: React.FC<CustomDatepickerProps> = ({
           {required ? ' *' : ''}
         </label>
       )}
-      <DatePicker
+      <Calendar
         // {...field}
         selected={(field.value && new Date(field.value)) || null}
         onChange={val => {
           setFieldValue(field.name, val);
         }}
-        calendarContainer={MyContainer}
         className={cn(
           fieldClass
             ? fieldClass

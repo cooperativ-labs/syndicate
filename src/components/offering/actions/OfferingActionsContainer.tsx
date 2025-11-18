@@ -9,7 +9,7 @@ import { SelectValue } from '@src/components/ui/select';
 import { SelectContent } from '@src/components/ui/select';
 import { SelectItem } from '@src/components/ui/select';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import { updateInvestmentCurrency } from '@src/utils/actions/offeringActions';
+import { updateInvestmentCurrency } from '@src/utils/actions/offeringProfileActions';
 import { cryptoOptionsByChainId } from '@src/utils/enumConverters';
 import { useParams } from 'next/navigation';
 import { FC, useState } from 'react';
@@ -134,7 +134,7 @@ export default function OfferingActionsContainer({
 }: OfferingActionsContainerProps) {
   return (
     <DashboardCard>
-      <div className="">
+      <div className="min-w-[200px]">
         <div className="font-xl font-semibold">Smart contract actions</div>
         <div className="mt-4">
           {!userWalletAddress ? (

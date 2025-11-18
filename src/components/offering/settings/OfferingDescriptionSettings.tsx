@@ -3,34 +3,35 @@ import CloseButton from '@src/components/buttons/CloseButton';
 import Card from '@src/components/cards/Card';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 import React, { FC, useState } from 'react';
-import toast from 'react-hot-toast';
 
-import { OfferingFull, OfferingTabSection, offeringTabSectionTypes } from '@/types';
+import { OfferingFull, OfferingTabSection, OfferingTabSectionTypes } from '@/types';
 
-import OfferingDescriptionItem from './OfferingDescriptionItem';
 import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
 import TabDescriptionList from './OfferingTabDescriptionList';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@src/components/ui/select';
 
 type OfferingDescriptionSettingsProps = {
   offering: OfferingFull;
 };
 const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ offering }) => {
   const [showForm, setShowForm] = useState<boolean>(false);
-  const [selectedTab, setSelectedTab] = useState<offeringTabSectionTypes>(
-    OfferingTabSection.DETAILS
-  );
-
-  const offeringProfileDescriptions = offering.offeringProfileDescriptions;
+  const [selectedTab, setSelectedTab] = useState<OfferingTabSectionTypes | undefined>(undefined);
 
   const tabSectionOptionsOhneFinancials = tabSectionOptions.filter(
     option => option.value !== OfferingTabSection.FINANCIALS
   );
 
   const addNewDescription = (
-    <div className="mt-8">
+    <div>
       {selectedTab &&
         (showForm ? (
-          <Card className=" p-4 border-2 rounded-lg ">
+          <Card className=" p-4 border-2 rounded-lg bg-white ">
             <div className="flex justify-between items-center">
               <h2 className="font-medium text-lg">Add description</h2>
               <CloseButton
@@ -42,7 +43,6 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
             <div>
               <OfferingProfileDescriptionForm
                 offering={offering}
-                description={offeringProfileDescriptions[0]}
                 tab={selectedTab}
                 onSubmit={() => {
                   setShowForm(false);
@@ -62,25 +62,29 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
 
   return (
     <div>
-      <h2 className="text-xl mb-4 md:mt-8 text-blue-900 font-semibold">Profile tabs</h2>
-      <div className="p-3 bg-gray-100 rounded-lg">
-        <select
-          className="pt-3 mb-4 pr-10 ext-sm bg-white p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+      <h2 className="text-lg mb-4 md:mt-8 font-semibold">Profile tabs</h2>
+      <div className="p-3 bg-gray-50 rounded-lg flex flex-col gap-4">
+        <Select
           aria-label="Which tab"
           required
           name="section"
-          onChange={e => {
-            setSelectedTab(e.target.value as offeringTabSectionTypes);
+          onValueChange={value => {
+            setSelectedTab(value as OfferingTabSectionTypes);
           }}
         >
-          {tabSectionOptionsOhneFinancials.map((section, i) => {
-            return (
-              <option key={i} value={section.value}>
-                {section.name} Tab
-              </option>
-            );
-          })}
-        </select>
+          <SelectTrigger className="w-fit bg-white">
+            <SelectValue placeholder="Select a tab" />
+          </SelectTrigger>
+          <SelectContent>
+            {tabSectionOptionsOhneFinancials.map((section, i) => {
+              return (
+                <SelectItem key={i} value={section.value}>
+                  {section.name} Tab
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
+        </Select>
 
         {selectedTab && <TabDescriptionList offering={offering} tab={selectedTab} />}
         {addNewDescription}

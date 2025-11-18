@@ -12,15 +12,11 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { cn } from '@src/lib/utils';
-import { getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
-import { getDistributions, retrieveOrders } from '@src/utils/actions/orderActions';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringProfileActions';
+import { retrieveOrders } from '@src/utils/actions/orderActions';
 import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import {
-  ContractOrder,
-  getCurrentOrderPrice,
-  getOrderArrayFromContract
-} from '@src/utils/helpersOrder';
+import { getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
 import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
@@ -29,6 +25,7 @@ import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
+import { ContractOrder } from '@src/components/investor/tradingForms/offering-actions-types';
 import {
   Document,
   DocumentType,

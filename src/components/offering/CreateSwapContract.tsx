@@ -1,4 +1,3 @@
-import { Button } from '@src/components/ui/button';
 import {
   LoadingButtonChain,
   LoadingButtonStateType
@@ -6,8 +5,7 @@ import {
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { createSwapContract } from '@src/utils/actions/cryptoActions';
-import { updateInvestmentCurrency } from '@src/utils/actions/offeringActions';
+import { updateInvestmentCurrency } from '@src/utils/actions/offeringProfileActions';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { deploySwapContract } from '@src/web3/contractFactory';
 import { setContractOperator } from '@src/web3/contractShareCalls';
@@ -17,11 +15,10 @@ import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
-
 import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
-
 import { defaultFieldDiv } from '../form-components/Inputs';
 import Select from '../form-components/Select';
+import { createSwapContract } from '@src/utils/actions/cryptoActions';
 
 type CreateSwapContractProps = {
   contractSet: OfferingSmartContractSet | null;

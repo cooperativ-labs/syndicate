@@ -10,7 +10,7 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
-import { updateOfferingDetails } from '@src/utils/actions/offeringActions';
+import { updateOfferingDetails } from '@src/utils/actions/offeringProfileActions';
 import { bacOptions, getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React, { FC, useState } from 'react';
@@ -19,6 +19,7 @@ import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import { CurrencyCode, CurrencyCodeType, OfferingType } from '@/types';
+import { Button } from '@src/components/ui/button';
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;
@@ -162,13 +163,9 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
           </>
         </NonInput>
 
-        <FormButton
-          type="submit"
-          disabled={isSubmitting}
-          className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-8 rounded p-4"
-        >
+        <Button type="submit" disabled={isSubmitting}>
           SAVE
-        </FormButton>
+        </Button>
       </form>
     </div>
   );

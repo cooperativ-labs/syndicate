@@ -1,16 +1,45 @@
-import Checkbox from '@src/components/form-components/Checkbox';
-import FileUpload from '@src/components/form-components/FileUpload';
-import Input from '@src/components/form-components/Inputs';
+'use client';
+
+import { zodResolver } from '@hookform/resolvers/zod';
+import {
+  Field,
+  FieldContent,
+  FieldDescription,
+  FieldError,
+  FieldGroup,
+  FieldLabel
+} from '@src/components/ui/field';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { Checkbox } from '@src/components/ui/checkbox';
+import { Input } from '@src/components/ui/input';
+import { Textarea } from '@src/components/ui/textarea';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
-import { updateOfferingProfile } from '@src/utils/actions/offeringActions';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
+import {
+  updateOfferingProfile,
+  uploadOfferingAsset,
+  deleteOfferingAsset
+} from '@src/utils/actions/offeringProfileActions';
 import React, { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { Offering } from '@/types';
+import ImageUpload from '@src/components/form-components/ImageUpload';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
-const fieldDiv = 'my-2 bg-opacity-0';
+const schema = z.object({
+  name: z.string().min(1, 'Please name this syndication.'),
+  shortDescription: z.string().optional(),
+  brandColor: z.string().optional(),
+  lightBrand: z.boolean().optional(),
+  isPublic: z.boolean().optional(),
+  primaryVideo: z.string().optional(),
+  website: z.string().optional(),
+  image: z.string().optional(),
+  bannerImage: z.string().optional()
+});
+
+type OfferingProfileFormData = z.infer<typeof schema>;
 
 type OfferingProfileSettingsProps = {
   offering: Offering;
@@ -18,7 +47,7 @@ type OfferingProfileSettingsProps = {
 };
 
 const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, userId }) => {
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
 
   const {
     id,
@@ -33,156 +62,296 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
     is_public
   } = offering;
 
-  const addLogoToDb = (url: string) => {
-    // updateOfferingProfile({
-    //   offeringId: offering.id.toString(),
-    //   name: offering.name,
-    //   image: url
-    // });
+  const [logoImageUrl, setLogoImageUrl] = useState<string | null>(image || null);
+  const [bannerImageUrl, setBannerImageUrl] = useState<string | null>(banner_image || null);
+
+  const handleAddLogo = async (file: File) => {
+    console.log('handleAddLogo', file);
+    await uploadOfferingAsset({
+      assetFile: file,
+      assetName: file.name,
+      assetType: 'logo',
+      offeringId: offering.id
+    });
   };
 
-  const addBannerImageToDb = (url: string) => {
-    // updateOfferingProfile({
-    //   offeringId: offering.id.toString(),
-    //   name: offering.name,
-    //   bannerImage: url
-    // });
+  const handleAddBannerImage = async (file: File) => {
+    await uploadOfferingAsset({
+      assetFile: file,
+      assetName: file.name,
+      assetType: 'banner_image',
+      offeringId: offering.id
+    });
+  };
+
+  const handleDeleteLogo = async () => {
+    await deleteOfferingAsset({
+      assetUrl: image as string,
+      assetType: 'logo',
+      offeringId: offering.id
+    });
+    setLogoImageUrl(null);
+  };
+
+  const handleDeleteBannerImage = async () => {
+    await deleteOfferingAsset({
+      assetUrl: banner_image as string,
+      assetType: 'banner_image',
+      offeringId: offering.id
+    });
+    setBannerImageUrl(null);
+  };
+
+  const form = useForm<OfferingProfileFormData>({
+    resolver: zodResolver(schema),
+    defaultValues: {
+      name: name || '',
+      shortDescription: short_description || '',
+      brandColor: brand_color || '',
+      lightBrand: light_brand || false,
+      isPublic: is_public || false,
+      primaryVideo: primary_video || '',
+      website: website || '',
+      image: image || '',
+      bannerImage: banner_image || ''
+    }
+  });
+
+  const watchedBrandColor = form.watch('brandColor');
+  const watchedName = form.watch('name');
+
+  const onSubmit = async (values: OfferingProfileFormData) => {
+    setButtonState('loading');
+    try {
+      await updateOfferingProfile({
+        offeringId: offering.id.toString(),
+        name: values.name,
+        brandColor: values.brandColor,
+        lightBrand: values.lightBrand,
+        shortDescription: values.shortDescription,
+        primaryVideo: values.primaryVideo,
+        website: values.website,
+        image: values.image,
+        bannerImage: values.bannerImage
+      });
+      setButtonState('success');
+    } catch (e) {
+      setButtonState('error');
+      alert(e);
+    }
   };
 
   return (
-    <>
-      <h2 className="text-xl md:mt-8 mb-4 text-blue-900 font-semibold">Offering Profile</h2>
-      <div className="flex md:grid-span-2 gap-12">
-        <div className="flex w-full">
-          <Formik
-            initialValues={{
-              name: name,
-              shortDescription: short_description,
-              brandColor: brand_color,
-              lightBrand: light_brand,
-              isPublic: is_public,
-              primaryVideo: primary_video,
-              website: website,
-              image: image,
-              bannerImage: banner_image
-            }}
-            validate={values => {
-              const errors: any = {}; /** @TODO : Shape */
-              if (!values.name) {
-                errors.name = 'Please name this syndication.';
-              }
-              return errors;
-            }}
-            onSubmit={(values, { setSubmitting }) => {
-              setButtonStep('step1');
-
-              setSubmitting(true);
-              try {
-                updateOfferingProfile({
-                  offeringId: offering.id.toString(),
-                  name: values.name,
-                  brandColor: values.brandColor,
-                  lightBrand: values.lightBrand,
-                  shortDescription: values.shortDescription,
-                  primaryVideo: values.primaryVideo,
-                  website: values.website,
-                  image: values.image,
-                  bannerImage: values.bannerImage
-                });
-                setButtonStep('confirmed');
-              } catch (e) {
-                setButtonStep('failed');
-                alert(e);
-              }
-              setSubmitting(false);
-            }}
-          >
-            {({ isSubmitting, values }) => (
-              <Form className="flex flex-col w-full relative">
-                {/* <Input
-            className={fieldDiv}
-            textArea
-            required
-            labelText="Short Description (160 Characters)"
+    <div className="flex md:grid-span-2 gap-12">
+      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col w-full relative">
+        <FieldGroup>
+          <Controller
+            control={form.control}
             name="shortDescription"
-            placeholder=""
-          /> */}
-
-                {/* <Input className={fieldDiv} labelText="Logo" name="logo" placeholder="https://source.com/your-logo" /> */}
-
-                <div className="md:grid grid-cols-7 gap-4">
-                  {/* <div className="col-span-3 ">
-                  <Input className={fieldDiv} labelText="Brand color" name="brandColor" placeholder="#d3d3d3" />
-                </div> */}
-                  {/* <div className="col-span-1 self-center md:mt-8">
-                  <div className="h-2 md:h-11 md:w-11 rounded-full" style={{ backgroundColor: values.brandColor }} />
-                </div>
-                <div className="col-span-3">
-                  <Checkbox
-                    className={fieldDiv}
-                    labelText="Adjust for light brand color"
-                    name="lightBrand"
-                    checked={values.lightBrand}
+            render={({ field }) => (
+              <Field>
+                <FieldLabel htmlFor="shortDescription">
+                  Short Description (160 Characters) <span className="text-destructive">*</span>
+                </FieldLabel>
+                <FieldContent>
+                  <Textarea
+                    id="shortDescription"
+                    placeholder=""
+                    {...field}
+                    value={field.value || ''}
+                    className="min-h-[60px]"
                   />
-                </div> */}
-                </div>
-                <Input
-                  className={fieldDiv}
-                  labelText="External website"
-                  name="website"
-                  placeholder="https://www.awesome.com"
-                />
-                <Input
-                  className={fieldDiv}
-                  labelText="Primary video"
-                  name="primaryVideo"
-                  placeholder="https://www.youtube.com/embed/FbPODl0eyVQ"
-                />
-                <div className="text-sm text-orange-700 font-medium -mt-2">
-                  Note: Be sure to use the embed link, which is sometimes different from the link
-                  you see in your browser, and that you have the correct permissions to embed the
-                  video.
-                </div>
-                <LoadingButtonChain
-                  type="submit"
-                  disabled={isSubmitting}
-                  className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-4 rounded p-4 w-full"
-                  state={buttonStep}
-                  idleText={`Update ${values.name}`}
-                  step1Text="Saving"
-                  confirmedText={`${values.name} updated!`}
-                  failedText="Oops. Something went wrong"
-                />
-              </Form>
+                  <FieldError
+                    errors={
+                      form.formState.errors.shortDescription
+                        ? [form.formState.errors.shortDescription]
+                        : undefined
+                    }
+                  />
+                </FieldContent>
+              </Field>
             )}
-          </Formik>
+          />
+
+          <Controller
+            control={form.control}
+            name="image"
+            render={({ field }) => (
+              <Field>
+                <FieldLabel htmlFor="image">Logo</FieldLabel>
+                <FieldContent>
+                  <Input
+                    id="image"
+                    type="text"
+                    placeholder="https://source.com/your-logo"
+                    {...field}
+                    value={field.value || ''}
+                  />
+                  <FieldError
+                    errors={form.formState.errors.image ? [form.formState.errors.image] : undefined}
+                  />
+                </FieldContent>
+              </Field>
+            )}
+          />
+
+          <div className="md:grid grid-cols-7 gap-4">
+            <div className="col-span-3">
+              <Controller
+                control={form.control}
+                name="brandColor"
+                render={({ field }) => (
+                  <Field>
+                    <FieldLabel htmlFor="brandColor">Brand color</FieldLabel>
+                    <FieldContent>
+                      <Input
+                        id="brandColor"
+                        type="text"
+                        placeholder="#d3d3d3"
+                        {...field}
+                        value={field.value || ''}
+                      />
+                      <FieldError
+                        errors={
+                          form.formState.errors.brandColor
+                            ? [form.formState.errors.brandColor]
+                            : undefined
+                        }
+                      />
+                    </FieldContent>
+                  </Field>
+                )}
+              />
+            </div>
+            <div className="col-span-1 self-center md:mt-8">
+              <div
+                className="h-2 md:h-11 md:w-11 rounded-full"
+                style={{ backgroundColor: watchedBrandColor ?? '#d3d3d3' }}
+              />
+            </div>
+            <div className="col-span-3">
+              <Controller
+                control={form.control}
+                name="lightBrand"
+                render={({ field }) => (
+                  <Field orientation="horizontal">
+                    <Checkbox
+                      id="lightBrand"
+                      checked={field.value ?? false}
+                      onCheckedChange={checked => {
+                        field.onChange(checked === true);
+                      }}
+                    />
+                    <FieldLabel htmlFor="lightBrand" className="font-normal">
+                      Light brand
+                    </FieldLabel>
+                    {form.formState.errors.lightBrand && (
+                      <FieldError errors={[form.formState.errors.lightBrand]} className="w-full" />
+                    )}
+                  </Field>
+                )}
+              />
+            </div>
+          </div>
+
+          <Controller
+            control={form.control}
+            name="website"
+            render={({ field }) => (
+              <Field>
+                <FieldLabel htmlFor="website">External website</FieldLabel>
+                <FieldContent>
+                  <Input
+                    id="website"
+                    type="text"
+                    placeholder="https://www.awesome.com"
+                    {...field}
+                    value={field.value || ''}
+                  />
+                  <FieldError
+                    errors={
+                      form.formState.errors.website ? [form.formState.errors.website] : undefined
+                    }
+                  />
+                </FieldContent>
+              </Field>
+            )}
+          />
+
+          <Controller
+            control={form.control}
+            name="primaryVideo"
+            render={({ field }) => (
+              <Field>
+                <FieldLabel htmlFor="primaryVideo">Primary video</FieldLabel>
+                <FieldContent>
+                  <Input
+                    id="primaryVideo"
+                    type="text"
+                    placeholder="https://www.youtube.com/embed/FbPODl0eyVQ"
+                    {...field}
+                    value={field.value || ''}
+                  />
+                  <FieldDescription>
+                    Be sure to use the embed link, which is sometimes different from the link you
+                    see in your browser, and that you have the correct permissions to embed the
+                    video.
+                  </FieldDescription>
+                  <FieldError
+                    errors={
+                      form.formState.errors.primaryVideo
+                        ? [form.formState.errors.primaryVideo]
+                        : undefined
+                    }
+                  />
+                </FieldContent>
+              </Field>
+            )}
+          />
+
+          <LoadingButton
+            onClick={form.handleSubmit(onSubmit)}
+            disabled={form.formState.isSubmitting}
+            buttonState={buttonState}
+            text={`Update ${watchedName || 'Offering'}`}
+            loadingText="Saving"
+            successText={`${watchedName || 'Offering'} updated!`}
+            errorText="Oops. Something went wrong"
+            className="mt-4"
+          />
+        </FieldGroup>
+      </form>
+
+      <div className="flex flex-col min-w-max gap-3">
+        <div>
+          {/* <div className="h-36">
+            <img src={banner_image as string} className="object-cover h-36" />
+          </div> */}
+          <ImageUpload
+            onSubmit={handleAddBannerImage}
+            accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
+            selectedImageUrl={bannerImageUrl}
+            setSelectedImageUrl={setBannerImageUrl}
+            onDelete={handleDeleteBannerImage}
+            title="Banner Image"
+          />
         </div>
-        <div className="flex min-w-max gap-3">
-          <div>
-            <div className="h-36">
-              <img src={offering.bannerImage as string} className="object-cover h-36" />
-            </div>
-            <FileUpload
-              uploaderText="Add Banner"
-              urlToDatabase={addBannerImageToDb}
-              accept={['jpg', 'jpeg', 'png']}
-              baseUploadUrl={`/offerings/${offering.id}/image/${userId}`}
-            />
-          </div>
-          <div>
-            <div className="h-36">
-              <img src={offering.image as string} className="object-cover h-36" />
-            </div>
-            <FileUpload
-              uploaderText="Add Logo"
-              urlToDatabase={addLogoToDb}
-              accept={['jpg', 'jpeg', 'png']}
-              baseUploadUrl={`/offerings/${offering.id}/image/${userId}`}
-            />
-          </div>
+        <div>
+          {/* <div className="h-36">
+            <img src={offering.image as string} className="object-cover h-36" />
+          </div> */}
+          <ImageUpload
+            onSubmit={handleAddLogo}
+            accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
+            selectedImageUrl={logoImageUrl}
+            setSelectedImageUrl={setLogoImageUrl}
+            onDelete={handleDeleteLogo}
+            title="Logo"
+            description="Choose file."
+          />
         </div>
       </div>
-    </>
+    </div>
   );
 };
 

@@ -74,13 +74,7 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
     organizationUser && userId && getIsAdmin({ userId, organizationUsers: [organizationUser] });
   const isEditorOrAdmin = getIsEditorOrAdmin({
     userId: userId ?? '',
-    organizationUsers: [
-      organizationUser ?? {
-        id: '',
-        user_id: '',
-        permissions: []
-      }
-    ]
+    organizationUsers: organizationUser ? [organizationUser] : []
   });
 
   const baseItems = {

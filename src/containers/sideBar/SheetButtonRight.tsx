@@ -29,7 +29,7 @@ const SheetButtonRight: FC<SheetButtonRightProps> = ({
         <Button variant="outline"> {buttonText} </Button>
       </SheetTrigger>
 
-      <SheetContent className="sm:max-w-2/3 p-3 overflow-y-scroll ">
+      <SheetContent className="sm:max-w-2/3 p-6 overflow-y-scroll ">
         <SheetHeader>
           <SheetTitle>{title} </SheetTitle>
         </SheetHeader>

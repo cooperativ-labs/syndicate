@@ -96,39 +96,6 @@ export default function DragAndDrop({
     }
   };
 
-  // const imageUploadDisplay = (selectedFile: File) => {
-  //   if (selectedImageUrl) {
-  //     return (
-  //       <div className="relative flex flex-col items-center justify-center gap-3">
-  //         <img
-  //           className="h-40 w-auto max-w-full object-contain rounded"
-  //           src={selectedImageUrl}
-  //           alt={selectedFile.name}
-  //         />
-  //         <div className="flex items-center justify-center gap-3 w-full">
-  //           <div className="flex flex-col items-center text-center">
-  //             <span className="font-medium text-green-800">{selectedFile.name}</span>
-  //             <span className="text-sm text-green-600">
-  //               {(selectedFile.size / 1024).toFixed(1)} KB
-  //             </span>
-  //           </div>
-  //           <Button
-  //             variant="ghost"
-  //             size="sm"
-  //             onClick={e => {
-  //               e.stopPropagation();
-  //               clearSelectedFile();
-  //             }}
-  //           >
-  //             <X className="h-4 w-4" />
-  //           </Button>
-  //         </div>
-  //       </div>
-  //     );
-  //   }
-  //   return null;
-  // };
-
   const fileUploadDisplay = ({ fileName, fileSize }: { fileName: string; fileSize: number }) => {
     return (
       <div className="flex items-center justify-center gap-3">
@@ -189,7 +156,7 @@ export default function DragAndDrop({
               </div>
             </div>
             {/* {uploadButtonState === 'loading' && ( */}
-            <progress className="mt-1" value={progressAmt} max="100" />
+            {/* <progress className="mt-1" value={progressAmt} max="100" /> */}
             {/* )} */}
           </div>
         )}

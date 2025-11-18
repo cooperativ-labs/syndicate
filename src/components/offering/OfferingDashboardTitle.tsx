@@ -1,6 +1,5 @@
 import { cn } from '@src/lib/utils';
-import { updateOfferingBasic } from '@src/utils/actions/offeringActions';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { updateOfferingBasic } from '@src/utils/actions/offeringProfileActions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
 import { Form, Formik } from 'formik';
@@ -9,7 +8,6 @@ import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
 
 import Input from '../form-components/Inputs';
-import FormattedCryptoAddress from '../FormattedCryptoAddress';
 import { Button } from '../ui/button';
 
 import AccessCodeForm from './profile/AccessCodeForm';
@@ -32,9 +30,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
   isOfferingManager,
   offeringId,
   accessCode,
-  organizationId,
-  shareContractAddress,
-  chainId
+  organizationId
 }) => {
   const [nameEditOn, setNameEditOn] = useState<boolean>(false);
 

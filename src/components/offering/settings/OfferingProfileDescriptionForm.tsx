@@ -1,6 +1,6 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Input } from '@src/components/ui/input';
-import { Label } from '@src/components/ui/label';
+import { FieldLabel } from '@src/components/ui/field';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import {
@@ -11,7 +11,10 @@ import {
   SelectValue
 } from '@src/components/ui/select';
 import { Textarea } from '@src/components/ui/textarea';
-import { createDescriptionText, updateDescriptionText } from '@src/utils/actions/offeringActions';
+import {
+  createDescriptionText,
+  updateDescriptionText
+} from '@src/utils/actions/offeringProfileActions';
 import { tabSectionOptions } from '@src/utils/enumConverters';
 import { getDescriptionsByTab } from '@src/utils/helpersOffering';
 import React, { FC, useState } from 'react';
@@ -19,18 +22,19 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import {
-  Offering,
+  OfferingFull,
   OfferingDescriptionText,
   OfferingTabSection,
-  offeringTabSectionTypes
+  OfferingTabSectionTypes
 } from '@/types';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 
 export type OfferingProfileDescriptionFormProps = {
-  offering: Offering;
-  description: OfferingDescriptionText;
-  tab: offeringTabSectionTypes | undefined;
+  offering: OfferingFull;
+  description?: OfferingDescriptionText;
+  tab: OfferingTabSectionTypes | undefined;
   onSubmit?: () => void;
 };
 
@@ -40,7 +44,7 @@ const schema = z.object({
   tab: z
     .string()
     .min(1, 'Please indicate the tab where you want this text to appear.')
-    .refine(val => Object.values(OfferingTabSection).includes(val as offeringTabSectionTypes), {
+    .refine(val => Object.values(OfferingTabSection).includes(val as OfferingTabSectionTypes), {
       message: 'Please select a valid tab'
     })
 });
@@ -53,7 +57,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   tab,
   onSubmit
 }) => {
-  const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
 
   const isUpdate = !!description;
 
@@ -65,21 +69,29 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
 
   const nextOrder = descriptionsByTab.length ? descriptionsByTab.length + 1 : 0;
 
-  function handleSubmission(values: { title: string; text: string; tab: offeringTabSectionTypes }) {
+  function handleSubmission(values: { title: string; text: string; tab: OfferingTabSectionTypes }) {
     description
       ? updateDescriptionText({
           descriptionId: description.id,
           title: values.title,
           text: values.text,
           section: values.tab,
-          order: description.order
+          order: description.order,
+          revalidationPath: {
+            path: `/[organizationId]/offerings/${offering.id}`,
+            type: 'layout'
+          }
         })
       : createDescriptionText({
           offeringId: offering.id.toString(),
           title: values.title,
           text: values.text,
           section: values.tab,
-          order: nextOrder
+          order: nextOrder,
+          revalidationPath: {
+            path: `/[organizationId]/offerings/${offering.id}`,
+            type: 'layout'
+          }
         });
   }
 
@@ -93,33 +105,36 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
     defaultValues: {
       title: description?.title ?? '',
       text: description?.text ?? '',
-      tab: (description?.section ?? tab ?? '') as offeringTabSectionTypes | string
+      tab: (description?.section ?? tab ?? '') as OfferingTabSectionTypes | string
     }
   });
 
   const onFormSubmit = async (data: FormData) => {
-    setButtonStep('step1');
+    setButtonState('loading');
 
     try {
       handleSubmission({
         ...data,
-        tab: data.tab as offeringTabSectionTypes
+        tab: data.tab as OfferingTabSectionTypes
       });
-      setButtonStep('confirmed');
+      setButtonState('success');
       onSubmit && onSubmit();
     } catch (e) {
-      setButtonStep('failed');
+      setButtonState('error');
       alert(e);
     }
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col relative pr-7">
+    <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col relative bg">
       <div className="grid grid-cols-2 gap-6">
         <div className={fieldDiv}>
-          <Label htmlFor="title" className="text-sm text-blue-900 font-semibold text-opacity-80">
+          <FieldLabel
+            htmlFor="title"
+            className="text-sm text-blue-900 font-semibold text-opacity-80"
+          >
             Section title *
-          </Label>
+          </FieldLabel>
           <Input
             id="title"
             type="text"
@@ -130,9 +145,9 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
           {errors.title && <div className="text-sm text-red-500 mt-1">{errors.title.message}</div>}
         </div>
         <div className={fieldDiv}>
-          <Label htmlFor="tab" className="text-sm text-blue-900 font-semibold text-opacity-80">
+          <FieldLabel htmlFor="tab" className="text-sm text-blue-900 font-semibold text-opacity-80">
             Move to a different tab *
-          </Label>
+          </FieldLabel>
           <Controller
             control={control}
             name="tab"
@@ -155,9 +170,9 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         </div>
       </div>
       <div className={fieldDiv}>
-        <Label htmlFor="text" className="text-sm text-blue-900 font-semibold text-opacity-80">
+        <FieldLabel htmlFor="text" className="text-sm text-blue-900 font-semibold text-opacity-80">
           Content *
-        </Label>
+        </FieldLabel>
         <Textarea
           id="text"
           placeholder=""
@@ -166,7 +181,7 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         />
         {errors.text && <div className="text-sm text-red-500 mt-1">{errors.text.message}</div>}
       </div>
-      <div className="text-sm ">
+      <div className="text-sm mb-4">
         You can add styling to this text using{' '}
         <span className="underline">
           <a
@@ -179,15 +194,17 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         </span>
         .
       </div>
-      <LoadingButtonChain
-        type="submit"
-        disabled={isSubmitting || buttonStep === 'step1'}
-        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
-        state={buttonStep}
-        idleText={`Update ${isUpdate ? 'Description' : offering.name}`}
-        step1Text="Saving"
-        confirmedText={`${isUpdate ? 'Description' : offering.name} updated!`}
-        failedText="Oops. Something went wrong"
+      <LoadingButton
+        onClick={e => {
+          e.stopPropagation();
+          handleSubmit(onFormSubmit);
+        }}
+        disabled={isSubmitting || buttonState === 'loading'}
+        buttonState={buttonState}
+        text={`Update ${isUpdate ? 'Description' : offering.name}`}
+        loadingText="Saving"
+        successText={`${isUpdate ? 'Description' : offering.name} updated!`}
+        errorText="Oops. Something went wrong"
       />
     </form>
   );

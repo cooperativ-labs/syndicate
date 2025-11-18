@@ -1,7 +1,8 @@
 import { OfferingContextProvider } from '@contexts/OfferingContext';
 import OfferingDetails from '@src/screens/OfferingDetails';
 import OfferingProfile from '@src/screens/OfferingProfile';
-import { getOfferingById, getOfferingDocumentsById } from '@src/utils/actions/offeringActions';
+import { getOfferingById } from '@src/utils/actions/offeringActions';
+import { getOfferingDocumentsById } from '@src/utils/actions/offeringProfileActions';
 import { getOrganizationUsers } from '@src/utils/actions/organizationActions';
 
 export default async function OfferingPage({

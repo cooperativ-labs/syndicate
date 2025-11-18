@@ -1,26 +1,28 @@
-import { Maybe, Offering, OfferingDescriptionText, OfferingTabSection } from '@/types';
+import {
+  OfferingDescriptionText,
+  OfferingFull,
+  OfferingTabSectionTypes,
+} from "@/types";
 
-export type ManagerModalType = 'saleForm' | 'shareSaleList' | 'smartContractsSettings' | 'none';
-
-export const getLatestDistribution = (offering: Offering | undefined) => {
-  const distributions = offering?.distributions;
-  const distributionsExist = distributions && distributions.length > 0;
-  return distributionsExist && offering?.distributions?.slice(-1)[0];
-};
+export type ManagerModalType =
+  | "saleForm"
+  | "shareSaleList"
+  | "smartContractsSettings"
+  | "none";
 
 export const getDescriptionsByTab = (
-  offering: Offering,
-  tab: OfferingTabSection | undefined
-): ArrayLike<Maybe<OfferingDescriptionText>> => {
-  if (!offering.profileDescriptions) return [];
-  return offering.profileDescriptions.filter((description, i) => {
+  offering: OfferingFull,
+  tab: OfferingTabSectionTypes | undefined,
+): ArrayLike<OfferingDescriptionText | undefined> => {
+  if (!offering.descriptions) return [];
+  return offering.descriptions.filter((description, i) => {
     return description?.section === tab;
   });
 };
 
 type SharesRemainingProps = {
-  x: Maybe<number> | undefined | number;
-  minus: Maybe<number> | undefined | number;
+  x: number | undefined | number;
+  minus: number | undefined | number;
 };
 export const getAmountRemaining = ({ x, minus }: SharesRemainingProps) => {
   const thisNumber = x || 0;
