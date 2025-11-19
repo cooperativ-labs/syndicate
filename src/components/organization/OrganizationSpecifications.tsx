@@ -150,7 +150,6 @@ const OrganizationChangeForm: FC<OrganizationChangeFormProps> = ({
         )}
       </div>
       <LoadingButton
-        type="submit"
         disabled={isSubmitting}
         className=" bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
         onClick={handleSubmit(onSubmit)}

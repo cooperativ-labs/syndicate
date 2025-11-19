@@ -2,23 +2,24 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@src/lib/utils';
-import { currencyOptionsExcludeCredits, getCurrencyOption } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
+import { currencyOptionsExcludeCredits } from '@src/utils/enumConverters';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { CurrencyCodeType, LegalEntity } from '@/types';
+import { CurrencyCodeType, LegalEntity, LegalEntityWithJurisdiction } from '@/types';
 
 import ClickToEditItem from '../form-components/ClickToEditItem';
-import JurisdictionSelect from '../form-components/JurisdictionSelect';
+
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 import { Button } from '../ui/button';
-import { Field, FieldContent, FieldDescription, FieldError, FieldLabel } from '../ui/field';
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
+import { updateLegalEntity } from '@src/utils/actions/entityActions';
+import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
 
 export type EditEntitySelectionType =
   | 'displayName'
@@ -41,7 +42,7 @@ export type ChangeFormProps = {
 
 const createEntityValidationSchema = () =>
   z.object({
-    displayName: z.string().optional().catch(undefined),
+    displayName: z.string().optional(),
     legalName: z.string().min(1, 'Please include the legal name of this syndication.'),
     jurCountry: z.string().min(1, 'Please select a country for jurisdiction.'),
     jurProvince: z.string().optional().catch(undefined),
@@ -52,12 +53,12 @@ const createEntityValidationSchema = () =>
 
 type EntityFormProps = {
   itemType: EditEntitySelectionType;
-  entity: LegalEntity;
+  entity: LegalEntityWithJurisdiction;
   setEditOn: (editOn: EditEntitySelectionType) => void;
-  handleChange: (values: ChangeFormProps) => void;
 };
 
-const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn, handleChange }) => {
+const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) => {
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
   const schema = createEntityValidationSchema();
   type EntityFormData = z.infer<typeof schema>;
 
@@ -65,29 +66,59 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn, hand
     control,
     handleSubmit,
     formState: { errors, isSubmitting },
-    getValues
+    getValues,
+    setValue
   } = useForm<EntityFormData>({
     resolver: zodResolver(schema),
     mode: 'onBlur',
     defaultValues: {
       displayName: entity.display_name || '',
       legalName: entity.legal_name || '',
-      jurCountry: '',
-      jurProvince: '',
-      operatingCurrencyCode: entity.operating_currency || '',
-      taxId: entity.tax_id || '',
+      jurCountry: entity.jurisdiction?.country || '',
+      jurProvince: entity.jurisdiction?.province || '',
+      operatingCurrencyCode: entity.operating_currency || undefined,
+      taxId: entity.tax_id || undefined,
       purpose: entity.purpose || ''
     }
   });
 
-  const onSubmit = (values: EntityFormData) => {
-    handleChange(values);
+  const handleChange = async () => {
+    const {
+      legalName,
+      displayName,
+      operatingCurrencyCode,
+      taxId,
+      purpose,
+      jurCountry,
+      jurProvince
+    } = getValues();
+    try {
+      setButtonState('loading');
+      updateLegalEntity({
+        entityId: entity.id,
+        displayName: displayName,
+        legalName: legalName,
+        jurCountry: jurCountry,
+        jurProvince: jurProvince,
+        operatingCurrency: operatingCurrencyCode as CurrencyCodeType,
+        taxId: taxId,
+        purpose: purpose
+      });
+      setButtonState('success');
+      setEditOn('none');
+    } catch (e: any) {
+      setButtonState('error');
+      alert(`Oops. Looks like something went wrong: ${e.message}`);
+    }
+  };
+
+  const onSubmit = () => {
+    handleChange();
     setEditOn('none');
   };
 
   return (
     <form
-      onSubmit={handleSubmit(onSubmit)}
       className={cn(
         itemType !== 'purpose' && 'md:grid',
         'flex flex-col grid-cols-5 w-full items-center gap-2 my-4'
@@ -128,7 +159,15 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn, hand
 
         {itemType === 'jurisdiction' && (
           <div className="w-full">
-            <JurisdictionSelect values={getValues()} errors={errors} />
+            <JurisdictionSelect
+              values={{
+                jurCountry: entity.jurisdiction?.country || '',
+                jurProvince: entity.jurisdiction?.province || ''
+              }}
+              errors={errors}
+              setValue={setValue}
+              labelText="Jurisdiction"
+            />
           </div>
         )}
 
@@ -199,13 +238,13 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn, hand
         )}
       </div>
 
-      <Button
-        type="submit"
+      <LoadingButton
+        onClick={handleSubmit(onSubmit)}
         disabled={isSubmitting}
-        className="bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
-      >
-        Save
-      </Button>
+        buttonState={buttonState}
+        text="Save"
+        loadingText="Saving..."
+      />
 
       <Button
         type="button"
@@ -223,33 +262,15 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn, hand
 };
 
 type EntitySpecificationsProps = {
-  entity: LegalEntity;
+  entity: LegalEntityWithJurisdiction;
   isManager: boolean | undefined;
-  updateLegalEntity: (arg0: {
-    variables: {
-      currentDate: string;
-      entityId: number;
-      displayName: string | undefined;
-      legalName: string | undefined;
-      jurCountry: string | undefined;
-      jurProvince?: string | undefined;
-      operatingCurrencyCode: CurrencyCodeType | undefined;
-      taxId: string | undefined;
-      purpose: string | undefined;
-    };
-  }) => void;
 };
 
-const EntitySpecifications: FC<EntitySpecificationsProps> = ({
-  entity,
-  isManager,
-  updateLegalEntity
-}) => {
+const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager }) => {
   const [editOn, setEditOn] = useState<
     EditEntitySelectionType | EditOrganizationSelectionType | string
   >('none');
   const {
-    id,
     legal_name: legalName,
     display_name: displayName,
     operating_currency: operatingCurrency,
@@ -257,41 +278,12 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
     purpose
   } = entity;
 
-  const handleChange = async (values: ChangeFormProps) => {
-    const { legalName, displayName, operatingCurrencyCode, taxId, purpose } = values;
-    try {
-      updateLegalEntity({
-        variables: {
-          currentDate: currentDate,
-          entityId: id,
-          displayName: displayName,
-          legalName: legalName,
-          jurCountry: values.jurCountry,
-          jurProvince: values.jurProvince,
-          operatingCurrencyCode: operatingCurrencyCode,
-          taxId: taxId,
-          purpose: purpose
-        }
-      });
-      setEditOn('none');
-    } catch (e: any) {
-      alert(`Oops. Looks like something went wrong: ${e.message}`);
-    }
-  };
-
   return (
     <>
       <ClickToEditItem
         label="Legal name"
         currentValue={legalName}
-        form={
-          <EntityEditForm
-            itemType="legalName"
-            entity={entity}
-            setEditOn={setEditOn}
-            handleChange={handleChange}
-          />
-        }
+        form={<EntityEditForm itemType="legalName" entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
         itemType="legalName"
         isManager={isManager}
@@ -300,14 +292,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="d/b/a"
         currentValue={displayName}
-        form={
-          <EntityEditForm
-            itemType="displayName"
-            entity={entity}
-            setEditOn={setEditOn}
-            handleChange={handleChange}
-          />
-        }
+        form={<EntityEditForm itemType="displayName" entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
         itemType="displayName"
         isManager={isManager}
@@ -316,14 +301,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Jurisdiction"
         currentValue={entity.jurisdiction_id || 'Not set'}
-        form={
-          <EntityEditForm
-            itemType="jurisdiction"
-            entity={entity}
-            setEditOn={setEditOn}
-            handleChange={handleChange}
-          />
-        }
+        form={<EntityEditForm itemType="jurisdiction" entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
         itemType="jurisdiction"
         isManager={isManager}
@@ -331,15 +309,8 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       />
       <ClickToEditItem
         label="Currency"
-        currentValue={getCurrencyOption(operatingCurrency)?.symbol}
-        form={
-          <EntityEditForm
-            itemType="currency"
-            entity={entity}
-            setEditOn={setEditOn}
-            handleChange={handleChange}
-          />
-        }
+        currentValue={operatingCurrency}
+        form={<EntityEditForm itemType="currency" entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
         itemType="currency"
         isManager={isManager}
@@ -348,14 +319,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Tax ID"
         currentValue={taxId}
-        form={
-          <EntityEditForm
-            itemType="taxId"
-            entity={entity}
-            setEditOn={setEditOn}
-            handleChange={handleChange}
-          />
-        }
+        form={<EntityEditForm itemType="taxId" entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
         itemType="taxId"
         isManager={isManager}
@@ -364,14 +328,7 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({
       <ClickToEditItem
         label="Entity purpose"
         currentValue={purpose}
-        form={
-          <EntityEditForm
-            itemType="purpose"
-            entity={entity}
-            setEditOn={setEditOn}
-            handleChange={handleChange}
-          />
-        }
+        form={<EntityEditForm itemType="purpose" entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
         itemType="purpose"
         isManager={isManager}

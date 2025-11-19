@@ -12,13 +12,10 @@ import {
 } from '@src/components/ui/select';
 import FormModal from '@src/containers/FormModal';
 import { addOffering } from '@src/utils/actions/offeringActions';
-import { currencyOptionsExcludeCredits } from '@src/utils/enumConverters';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
-
-import { CurrencyCode, CurrencyCodeType, OrganizationComplete } from '@/types';
 
 import CreateEntity from '../entity/CreateEntity';
 import { Button } from '../ui/button';
@@ -26,11 +23,11 @@ import { Field, FieldGroup, FieldLabel, FieldLegend, FieldSet } from '../ui/fiel
 import { LoadingButton } from '../ui/loading-button';
 
 type CreateOfferingType = {
-  organization: OrganizationComplete | null;
   refetch?: () => void;
+  legalEntities: { legal_name: string | null; id: number; offeringCount: number }[] | null;
 };
 
-const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
+const CreateOffering: FC<CreateOfferingType> = ({ refetch, legalEntities }) => {
   const router = useRouter();
   const { chosenOrganizationId } = useOrganizations();
   const [entityModal, setEntityModal] = useState<boolean>(false);
@@ -54,9 +51,9 @@ const CreateOffering: FC<CreateOfferingType> = ({ organization, refetch }) => {
   if (!chosenOrganizationId) {
     return <div>Organization not found</div>;
   }
-  const entities = organization?.legalEntities;
 
-  const entitiesWithoutOfferings = entities?.filter(entity => entity.offerings.length === 0) ?? [];
+  const entitiesWithoutOfferings =
+    legalEntities?.filter(entity => entity.offeringCount === 0) ?? [];
   const entitySubmissionCompletion = () => {
     refetch?.();
     setEntityModal(false);

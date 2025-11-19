@@ -92,8 +92,8 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
   const buttonText = !permittedEntity ? 'Manage Investment' : 'Apply to Invest';
   const buttonLink =
     !permittedEntity && organization
-      ? `/${organization.id}/portal/${offering.id}`
-      : (customOnboardingLink ?? `/${organization?.id}/portal/${offering.id}/investor-application`);
+      ? `/portal/${organization.id}/${offering.id}`
+      : (customOnboardingLink ?? `/portal/${organization?.id}/${offering.id}/investor-application`);
 
   const ApplyManageButton = (
     <button

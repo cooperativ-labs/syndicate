@@ -1,9 +1,9 @@
-'use server';
-import { createClient } from '@supabase/utils/server';
-import { revalidatePath } from 'next/cache';
+"use server";
+import { createClient } from "@supabase/utils/server";
+import { revalidatePath } from "next/cache";
 
-import { LegalEntity } from '@/types';
-import { LegalEntityWithSubsidiaries } from '@/types';
+import { CurrencyCodeType, LegalEntity, LegalEntityFull } from "@/types";
+import { LegalEntityWithSubsidiaries } from "@/types";
 
 type AddLegalEntityParams = {
   organizationId: string | number;
@@ -29,15 +29,15 @@ type AddLegalEntityResult = {
   affectedCount: number;
   records: Pick<
     LegalEntity,
-    | 'id'
-    | 'tax_id'
-    | 'display_name'
-    | 'legal_name'
-    | 'purpose'
-    | 'jurisdiction_id'
-    | 'operating_currency'
-    | 'organization_id'
-    | 'type'
+    | "id"
+    | "tax_id"
+    | "display_name"
+    | "legal_name"
+    | "purpose"
+    | "jurisdiction_id"
+    | "operating_currency"
+    | "organization_id"
+    | "type"
   >[];
 };
 
@@ -58,18 +58,18 @@ export async function addLegalEntity({
   postalCode,
   country,
   lat,
-  lng
+  lng,
 }: AddLegalEntityParams): Promise<void> {
   const supabase = createClient();
 
   const jurisdictionPayload = {
     country: jurCountry,
-    province: jurProvince
+    province: jurProvince,
   };
   const { data: jurisdictionData, error: jurisdictionError } = await supabase
-    .from('jurisdiction')
+    .from("jurisdiction")
     .insert(jurisdictionPayload)
-    .select('id');
+    .select("id");
   if (jurisdictionError) {
     throw jurisdictionError;
   }
@@ -81,17 +81,17 @@ export async function addLegalEntity({
     display_name: displayName,
     operating_currency: operatingCurrency,
     purpose: entityPurpose ?? null,
-    jurisdiction_id: jurisdictionData[0].id
+    jurisdiction_id: jurisdictionData[0].id,
   };
 
   const { data, error, count } = await supabase
-    .from('legal_entity')
-    .insert(entityPayload, { count: 'exact' })
-    .select(['id'].join(', '));
+    .from("legal_entity")
+    .insert(entityPayload, { count: "exact" })
+    .select(["id"].join(", "));
   if (error) {
     throw error;
   }
-  console.log('legal_entity - data', data);
+  console.log("legal_entity - data", data);
 
   if (data && count === 1) {
     const addressPayload = {
@@ -104,74 +104,119 @@ export async function addLegalEntity({
       postal_code: postalCode,
       country: country,
       lat: lat,
-      lng: lng
+      lng: lng,
     };
 
     const { data: addressData, error: addressError } = await supabase
-      .from('address')
+      .from("address")
       .insert(addressPayload)
-      .select('id');
+      .select("id");
   }
   if (error) {
     throw error;
   }
 
-  revalidatePath(`/${organizationId}`, 'page');
+  revalidatePath(`/manager/${organizationId}`, "page");
 }
 
-const ownersAndSubsidiariesFields = [
-  'subsidiaries:legal_entity_relationship!legal_entity_relationship_parent_entity_id_fkey(' +
-    'id, relationship_type, child:legal_entity!legal_entity_relationship_child_entity_id_fkey(*)' +
-    ')',
-  'owners:legal_entity_relationship!legal_entity_relationship_child_entity_id_fkey(' +
-    'id, relationship_type, parent:legal_entity!legal_entity_relationship_parent_entity_id_fkey(*)' +
-    ')'
-].join(', ');
+//LegalEntityWithAddresses
+const legelEntityFieldsAddress = [
+  "*",
+  "addresses:address(*)",
+].join(", ");
 
-const legelEntityFields = [
-  '*',
-  ownersAndSubsidiariesFields,
-  'offerings:offering(*)',
-  'addresses:address(*)',
-  'organization(id, organization_user(id, user_id, permissions))'
-].join(', ');
+//LegalEntityWithOffering
+const legelEntityFieldsOffering = [
+  "*, organizationId:organization_id",
+  "offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address))",
+].join(", ");
+
+//LegalEntityWithSubsidiaries
+const ownersAndSubsidiariesFields = [
+  legelEntityFieldsOffering,
+  "subsidiaries:legal_entity_relationship!legal_entity_relationship_parent_entity_id_fkey(" +
+  "id, relationship_type, child:legal_entity!legal_entity_relationship_child_entity_id_fkey(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address)))" +
+  ")",
+  "owners:legal_entity_relationship!legal_entity_relationship_child_entity_id_fkey(" +
+  "id, relationship_type, parent:legal_entity!legal_entity_relationship_parent_entity_id_fkey(*,offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address)))" +
+  ")",
+].join(", ");
+
+//LegalEntityFull
+// const legalEntityFullFields = [
+//   "*",
+//   ownersAndSubsidiariesFields,
+//   "organization(id, organization_user(*))",
+// ].join(", ");
 
 export async function getLegalEntityById(
-  entityId: string
+  entityId: string,
 ): Promise<LegalEntityWithSubsidiaries | null> {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('legal_entity')
-    .select(`${legelEntityFields}`)
-    .eq('id', Number(entityId))
+    .from("legal_entity")
+    .select(ownersAndSubsidiariesFields)
+    .eq("id", Number(entityId))
     .single();
   if (error) throw error;
   if (!data) return null;
-  return data as unknown as LegalEntityWithSubsidiaries;
+  return data;
 }
 
+export async function getSimpleEntitiesByOrganizationId(
+  organizationId: string,
+): Promise<
+  { id: number; legal_name: string | null; offeringCount: number }[] | []
+> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("legal_entity")
+    .select("id, legal_name", { count: "exact" })
+    .eq("organization_id", Number(organizationId));
+  if (error) throw error;
+  const offeringCount = data.length;
+  const result = data.map((entity) => ({
+    id: entity.id,
+    legal_name: entity.legal_name,
+    offeringCount,
+  }));
+  return result;
+}
 export async function getEntitiesByOrganizationId(
-  organizationId: string
+  organizationId: string,
 ): Promise<LegalEntityWithSubsidiaries[]> {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('legal_entity')
-    .select(
-      [
-        '*',
-        'organization_user(id, user_id, permissions) ',
-        ownersAndSubsidiariesFields,
-        'offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address))'
-      ].join(', ')
-    )
-    .eq('legal_entity.organization_id', Number(organizationId));
+    .from("legal_entity")
+    .select(ownersAndSubsidiariesFields)
+    .eq("organization_id", Number(organizationId));
   if (error) {
     throw error;
   }
   if (!data) {
     return [];
   }
-  return data as LegalEntityWithSubsidiaries[];
+  return data;
+}
+
+export async function updateEntityName({
+  entityId,
+  displayName,
+}: {
+  entityId: string | number;
+  displayName: string;
+}): Promise<void> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("legal_entity")
+    .update({
+      display_name: displayName,
+    })
+    .eq("id", Number(entityId));
+  if (error) {
+    throw error;
+  }
+  revalidatePath(`/manager/[organizationId]/entities/[entityId]`, "page");
 }
 
 export async function updateLegalEntity({
@@ -179,58 +224,91 @@ export async function updateLegalEntity({
   displayName,
   legalName,
   operatingCurrency,
-  organizationId
+  jurCountry,
+  jurProvince,
+  taxId,
+  purpose,
 }: {
   entityId: string | number;
-  displayName: string;
+  displayName: string | undefined;
   legalName: string;
-  operatingCurrency: string | null;
-  organizationId: string | number;
+  operatingCurrency: CurrencyCodeType | null;
+  jurCountry: string | undefined;
+  jurProvince: string | undefined;
+  taxId: string | undefined;
+  purpose: string | undefined;
 }): Promise<void> {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('legal_entity')
+    .from("legal_entity")
     .update({
       display_name: displayName,
       legal_name: legalName,
-      operating_currency: operatingCurrency
+      operating_currency: operatingCurrency,
+      tax_id: taxId,
+      jurisdiction_id: jurCountry,
+      purpose: purpose,
     })
-    .eq('id', entityId);
+    .eq("id", Number(entityId));
   if (error) {
     throw error;
   }
-  revalidatePath(`/${organizationId}/entities/${entityId}`, 'layout');
+  revalidatePath(`/manager/[organizationId]/entities/[entityId]`, "layout");
 }
 
 export async function deleteAddress({
   geoAddressId,
-  entityId
+  entityId,
 }: {
   geoAddressId: string | number;
   entityId: string | number;
 }): Promise<void> {
   const supabase = createClient();
-  const { data, error } = await supabase.from('address').delete().eq('id', geoAddressId);
+  const { data, error } = await supabase.from("address").delete().eq(
+    "id",
+    geoAddressId,
+  );
   if (error) {
     throw error;
   }
-  revalidatePath(`/${entityId}/entities/${entityId}`, 'layout');
+  revalidatePath(`/${entityId}/entities/${entityId}`, "layout");
 }
 
-export async function removeOwner({
+export async function addOwner({
   ownerId,
-  entityId
+  entityId,
 }: {
   ownerId: string | number;
   entityId: string | number;
 }): Promise<void> {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('legal_entity_relationship')
-    .delete()
-    .eq('id', ownerId);
+    .from("legal_entity_relationship")
+    .insert({
+      parent_entity_id: Number(ownerId),
+      child_entity_id: Number(entityId),
+      relationship_type: "owner",
+    });
   if (error) {
     throw error;
   }
-  revalidatePath(`/${entityId}/entities/${entityId}`, 'layout');
+  revalidatePath(`/manager/[organizationId]/entities/${entityId}`, "layout");
+}
+
+export async function removeOwner({
+  ownerId,
+  entityId,
+}: {
+  ownerId: string | number;
+  entityId: string | number;
+}): Promise<void> {
+  const supabase = createClient();
+  const { data, error } = await supabase
+    .from("legal_entity_relationship")
+    .delete()
+    .eq("child_entity_id", Number(ownerId));
+  if (error) {
+    throw error;
+  }
+  revalidatePath(`/${entityId}/entities/${entityId}`, "layout");
 }

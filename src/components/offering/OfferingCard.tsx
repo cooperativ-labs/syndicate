@@ -8,13 +8,12 @@ import React, { useMemo } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { OfferingFull, Organization } from '@/types';
 import { CurrencyCodeType } from '@/types';
 
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
-
+import { OfferingWithParticipants } from '@/types';
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
 import { getPublicUrl } from '@src/utils/actions/storageActions';
 
@@ -40,11 +39,16 @@ const getCachedPublicUrl = async (
 };
 
 export type OfferingCardProps = {
-  offering: OfferingFull;
-  organization: Organization;
+  organizationId: string | number;
+  operatingCurrency: string | null;
+  offering: OfferingWithParticipants;
 };
 
-const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) => {
+const OfferingCard: React.FC<OfferingCardProps> = ({
+  offering,
+  operatingCurrency,
+  organizationId
+}) => {
   const { address: userWalletAddress } = useAccount();
   const { userId } = useUserContext();
   const router = useRouter();
@@ -73,13 +77,8 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) =
     investment_currency
   } = offering;
 
-  const { operating_currency } = offering.legalEntity;
-
   const paymentTokenDecimals =
     investment_currency && getCurrencyByCode(investment_currency)?.decimals;
-
-  const organizationId = offering.legalEntity?.organization_id;
-  const organizationImg = organization.logo as string;
 
   const { value: currentPrice } = useAsync(async () => {
     if (!paymentTokenDecimals) {
@@ -95,10 +94,10 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) =
 
   const toProfile = !userWalletAddress;
   const pushLink = userId
-    ? `/${organizationId}/offerings/${id}`
+    ? `/manager/${organizationId}/offerings/${id}`
     : toProfile
       ? `/${organizationId}/${id}`
-      : `/${organizationId}/portal/${id}`;
+      : `/portal/${organizationId}/${id}`;
   return (
     <div
       onClick={() => {
@@ -118,7 +117,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({ offering, organization }) =
                 <MoneyDisplay
                   className="text-center"
                   amount={currentPrice}
-                  currency={operating_currency as CurrencyCodeType}
+                  currency={operatingCurrency as CurrencyCodeType}
                 />
               </OfferingDetailDashboardItem>
             ) : (

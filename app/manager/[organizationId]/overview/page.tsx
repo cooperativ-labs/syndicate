@@ -6,7 +6,7 @@ const OrganizationPage = async ({ params }: { params: Promise<{ organizationId: 
   const { organizationId } = await params;
   const organization = await getOrganization(organizationId, '/overview');
   if (!organization) {
-    return <OrganizationNotFound backHref={`/${organizationId}/portal`} />;
+    return <OrganizationNotFound backHref={`/portal/${organizationId}`} />;
   }
   return (
     <div data-test="page-overview">

@@ -1,14 +1,15 @@
 import CreateOffering from '@src/components/offering/CreateOffering';
-import { getOrganization } from '@src/utils/actions/organizationActions';
+import { getSimpleEntitiesByOrganizationId } from '@src/utils/actions/entityActions';
 import React from 'react';
 
 const CreateOfferingPage = async ({ params }: { params: Promise<{ organizationId: string }> }) => {
   const { organizationId } = await params;
 
-  const organization = await getOrganization(organizationId, '/offerings/create-offering');
+  const legalEntities = await getSimpleEntitiesByOrganizationId(organizationId);
+
   return (
     <div data-test="component-create-project-page" className="h-full flex">
-      <CreateOffering organization={organization} />
+      <CreateOffering legalEntities={legalEntities} />
     </div>
   );
 };

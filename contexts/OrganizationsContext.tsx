@@ -2,55 +2,68 @@
 
 import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-
-import { Organization } from '@/types';
-
+import { OrganizationWithUsers } from '@/types';
+import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
 import { useUserContext } from './UserContext';
+import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 
 type OrganizationsContextValue = {
-  organizations: Organization[];
-  // chosenOrganization: OrganizationWithLegalEntities | null;
+  organizations: OrganizationWithUsers[];
+  chosenOrganization: OrganizationWithUsers | null;
   chosenOrganizationId: string | null;
+  isAdmin: boolean;
+  isEditorOrAdmin: boolean;
   createOrganizationModalOpen: boolean;
   setCreateOrganizationModalOpen: (open: boolean) => void;
+  setIsEditorOrAdmin: (isEditorOrAdmin: boolean) => void;
 };
 
 const OrganizationsContext = createContext<OrganizationsContextValue | undefined>(undefined);
 
 export function OrganizationsProvider({
   organizations,
-  children,
-  savedOrganizationId
+  children
 }: {
-  organizations: Organization[];
+  organizations: OrganizationWithUsers[];
   children: ReactNode;
-  savedOrganizationId: string | null;
 }) {
   const params = useParams<{ organizationId: string }>();
-  const { setOrganizationUserId } = useUserContext();
-
-  const foundOrganizationId = params?.organizationId as string | undefined;
-  const [chosenOrganizationId, setChosenOrganizationId] = useState<string | null>(
-    foundOrganizationId || null
-  );
+  const { user } = useUserContext();
+  const [isAdmin, setIsAdmin] = useState<boolean>(false);
+  const [isEditorOrAdmin, setIsEditorOrAdmin] = useState<boolean>(false);
   const [createOrganizationModalOpen, setCreateOrganizationModalOpen] = useState<boolean>(false);
+  const chosenOrganizationId = (params?.organizationId as string | undefined) || null;
+  const chosenOrganization =
+    organizations.find(organization => organization.id.toString() === chosenOrganizationId) || null;
 
-  // useEffect(() => {
-  //   const setOrgId = chosenOrganizationId ?? savedOrganizationId ?? null;
-  //   if (setOrgId) {
-  //     setChosenOrganizationId(setOrgId);
-  //     setOrganizationUserId(setOrgId);
-  //   }
-  // }, [chosenOrganizationId, savedOrganizationId]);
+  useEffect(() => {
+    if (chosenOrganization) {
+      setIsAdmin(
+        getIsAdmin({
+          userId: user?.id,
+          organizationUsers: chosenOrganization.organizationUsers
+        })
+      );
+      setIsEditorOrAdmin(
+        getIsEditorOrAdmin({
+          userId: user?.id,
+          organizationUsers: chosenOrganization.organizationUsers
+        })
+      );
+    }
+  }, [chosenOrganization, user]);
 
   return (
     <OrganizationsContext.Provider
       value={{
         organizations,
-        // chosenOrganization,
+        chosenOrganization,
         chosenOrganizationId,
+        isAdmin,
+        isEditorOrAdmin,
         createOrganizationModalOpen,
-        setCreateOrganizationModalOpen
+        setCreateOrganizationModalOpen,
+        setIsEditorOrAdmin
       }}
     >
       {children}

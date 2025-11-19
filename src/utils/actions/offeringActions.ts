@@ -53,7 +53,7 @@ export async function addOffering({
     throw error;
   }
 
-  revalidatePath(`/${organizationId}`, "page");
+  revalidatePath(`/manager/${organizationId}`, "page");
 
   return {
     affectedCount: typeof count === "number" ? count : (data?.length ?? 0),

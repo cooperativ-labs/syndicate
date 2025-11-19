@@ -4,8 +4,7 @@ import React, { FC } from 'react';
 
 import { LegalEntity } from '@/types';
 
-import Button from '../buttons/Button';
-
+import { Button } from '../ui/button';
 import { defaultFieldDiv } from './Inputs';
 import Select from './Select';
 
@@ -34,14 +33,14 @@ const EntitySelector: FC<EntitySelectorProps> = ({
         if (entityNotHuman(entity)) {
           return (
             <option key={i} value={entity?.id}>
-              {entity?.legalName}
+              {entity?.legal_name}
             </option>
           );
         }
       } else {
         return (
           <option key={i} value={entity?.id}>
-            {entity?.legalName}
+            {entity?.legal_name}
           </option>
         );
       }

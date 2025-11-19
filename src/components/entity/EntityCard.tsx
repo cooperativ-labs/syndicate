@@ -4,37 +4,30 @@ import { renderJurisdiction } from '@src/utils/helpersUserAndEntity';
 import { useRouter } from 'next/navigation';
 import React from 'react';
 
-import { LegalEntityWithSubsidiaries } from '@/types';
-
-import Card from '../cards/Card';
+import { LegalEntityWithJurisdiction } from '@/types';
+import { Card } from '../ui/card';
 
 export type EntityCardProps = {
-  entity: LegalEntityWithSubsidiaries;
+  entity: LegalEntityWithJurisdiction;
+  organizationId: string | number;
 };
 
-const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
+const EntityCard: React.FC<EntityCardProps> = ({ entity, organizationId }) => {
   const router = useRouter();
-  const { display_name, jurisdiction_id, id, subsidiaries, owners, offerings, organizationId } =
-    entity ?? {};
+  const { display_name, jurisdiction, id, offerings } = entity ?? {};
 
   const isOfferingEntity = offerings && offerings.length > 0;
 
   return (
     <div
       onClick={() => {
-        router.push(`/${organizationId}/entities/${id}`);
+        router.push(`/manager/${organizationId}/entities/${id}`);
       }}
     >
       <Card className="rounded-lg hover:shadow-xl cursor-pointer md:w-96">
         <div className=" p-6 flex items-center">
           <div>
             <h1 className="text-lg font-bold">{display_name}</h1>
-            <div className="text-xs text-gray-600 mb-1">
-              {owners?.length} {`owner${owners?.length === 1 ? '' : `s`}`}
-            </div>
-            <div className="text-xs text-gray-600 mb-4">
-              {subsidiaries?.length} {`subsidiar${subsidiaries?.length === 1 ? 'y' : 'ies'}`}
-            </div>
           </div>
         </div>
 
@@ -45,9 +38,9 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity }) => {
             )}
           </div>
           <div>
-            {jurisdiction_id && (
+            {jurisdiction && (
               <div className="text-sm font-medium text-gray-500">
-                {renderJurisdiction(jurisdiction_id)}
+                {renderJurisdiction(jurisdiction)}
               </div>
             )}
           </div>

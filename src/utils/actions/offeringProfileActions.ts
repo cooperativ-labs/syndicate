@@ -37,7 +37,7 @@ export async function updateOfferingBasic({
     .eq("id", Number(offeringId))
     .select("id, name, is_public, access_code");
   if (error) throw error;
-  revalidatePath(`/${organizationId}`, "layout");
+  revalidatePath(`/manager/${organizationId}`, "layout");
 }
 
 export async function updateOfferingDetails({
@@ -79,7 +79,7 @@ export async function updateOfferingDetails({
       "id, offering_id, num_units, min_units_per_investor, max_units_per_investor, price_start, max_raise",
     );
   if (error) throw error;
-  revalidatePath(`/[organizationId]/offerings/${offeringId}`, "page");
+  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, "page");
   return {
     affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
     records: data ?? [],
@@ -182,7 +182,10 @@ export const uploadOfferingAsset = async ({
         [assetType]: assetPath,
       })
       .eq("id", Number(offeringId));
-    revalidatePath(`/[organizationId]/offerings/${offeringId}`, "layout");
+    revalidatePath(
+      `/manager/[organizationId]/offerings/${offeringId}`,
+      "layout",
+    );
   } catch (error) {
     console.error(error);
     throw new Error(
@@ -216,7 +219,7 @@ export const deleteOfferingAsset = async ({
       [assetType]: null,
     })
     .eq("id", Number(offeringId));
-  revalidatePath(`/[organizationId]/offerings/${offeringId}`, "layout");
+  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, "layout");
 };
 
 // Update offering financial details (offering_detail)
@@ -389,23 +392,11 @@ export async function updateInvestmentCurrency({
     .eq("id", Number(offeringId))
     .select("id, investment_currency");
   if (error) throw error;
-  revalidatePath(`/${organizationId}/offerings/${offeringId}`, "page");
+  revalidatePath(`/manager/${organizationId}/offerings/${offeringId}`, "page");
   return {
     affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
     records: (data ?? []) as any,
   };
-}
-
-export async function getOfferingDocumentsById(
-  offeringId: string | number,
-): Promise<Document[]> {
-  const supabase = createClient();
-  const { data: documents, error } = await supabase
-    .from("document")
-    .select("*")
-    .eq("offering_id", Number(offeringId));
-  if (error) throw error;
-  return documents;
 }
 
 export async function createDescriptionText({

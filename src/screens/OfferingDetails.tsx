@@ -28,7 +28,7 @@ import OfferingBasicDetailsForm from '@src/components/offering/OfferingBasicDeta
 
 type OfferingDetailsProps = {
   offering: OfferingFull;
-  documents?: Document[];
+  documents: Document[] | null;
 };
 
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
@@ -51,7 +51,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     offeringSmartContracts
   } = offering;
 
-  const offeringDocs = getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT);
+  const offeringDocs = documents
+    ? getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT)
+    : [];
 
   const distributionEndDate =
     raise_start && raise_period
@@ -110,7 +112,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     investment_currency: offering.investment_currency,
     offeringId: offering.id.toString(),
     isOfferingManager,
-    documents: documents,
+    documents: documents || [],
     contractSet: offeringSmartContracts
   });
 

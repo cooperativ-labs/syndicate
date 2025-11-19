@@ -160,7 +160,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
         </button>
       )}
       {profileVisibility && (
-        <a href={`/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
+        <a href={`/portal/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
           <SquareArrowOutUpRight className="text-lg ml-2" />
         </a>
       )}

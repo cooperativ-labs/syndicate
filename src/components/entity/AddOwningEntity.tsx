@@ -1,41 +1,26 @@
 'use client';
 
 import FormModal from '@src/containers/FormModal';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { Form, Formik } from 'formik';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-
-import { LegalEntity, Organization } from '@/types';
-
 import { Button } from '../ui/button';
 import EntitySelector from '../form-components/EntitySelector';
-
 import CreateEntity from './CreateEntity';
+import { addOwner } from '@src/utils/actions/entityActions';
+import { useEntities } from '@contexts/EntityContext';
 
 type AddOwningEntityProps = {
-  ownedEntityId: string;
-  organization: Organization;
+  ownedEntityId: string | number;
   refetchOuter?: () => void;
 };
 
-const AddOwningEntity: FC<AddOwningEntityProps> = ({
-  ownedEntityId,
-  organization,
-  refetchOuter
-}) => {
+const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, refetchOuter }) => {
+  const { entities } = useEntities();
   const [entityModal, setEntityModal] = useState<boolean>(false);
 
   const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {
     setModal(false);
   };
-
-  if (data) {
-    // refetchOuter();
-  }
-
-  const legalEntites = organization.legalEntities?.map(
-    entity => entity.legalEntity
-  ) as LegalEntity[];
 
   return (
     <>
@@ -44,10 +29,7 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({
         onClose={() => setEntityModal(false)}
         title={`Add an entity to your account`}
       >
-        <CreateEntity
-          actionOnCompletion={() => submissionCompletion(setEntityModal)}
-          organization={organization}
-        />
+        <CreateEntity actionOnCompletion={() => submissionCompletion(setEntityModal)} />
       </FormModal>
 
       <Formik
@@ -59,22 +41,19 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({
           setSubmitting(true);
 
           addOwner({
-            variables: {
-              currentDate: currentDate,
-              addEntityOwner: values.addEntityOwner,
-              ownedEntityId: ownedEntityId
-            }
+            ownerId: values.addEntityOwner,
+            entityId: ownedEntityId
           });
           setSubmitting(false);
         }}
       >
         {({ isSubmitting, values }) => (
           <Form className="flex flex-col gap relative">
-            {legalEntites && (
+            {entities && (
               <EntitySelector
                 className="flex flex-col"
                 fieldName="addEntityOwner"
-                entities={legalEntites}
+                entities={entities}
                 setModal={setEntityModal}
                 label="Add a General Partner"
                 withAdd

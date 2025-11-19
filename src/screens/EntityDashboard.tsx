@@ -1,18 +1,21 @@
 'use client';
 
-import { useUserContext } from '@contexts/UserContext';
+import { useOrganizations } from '@/contexts/OrganizationsContext';
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CreateEntity from '@src/components/entity/CreateEntity';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { useRouter } from 'next/navigation';
 import React, { FC } from 'react';
 
-import { LegalEntityWithSubsidiaries, OrganizationWithUsers } from '@/types';
+import { useEntities } from '@/contexts/EntityContext';
+import { useParams } from 'next/navigation';
 
-const EntityDashboard: FC<{ entities: LegalEntityWithSubsidiaries[] }> = ({ entities }) => {
-  const { user } = useUserContext();
+const EntityDashboard: FC = () => {
+  const { isEditorOrAdmin } = useOrganizations();
+  const { organizationId } = useParams();
+
+  const { entities } = useEntities();
   const router = useRouter();
 
   const hasEntities = entities.length > 0;
@@ -33,18 +36,13 @@ const EntityDashboard: FC<{ entities: LegalEntityWithSubsidiaries[] }> = ({ enti
     );
   }
 
-  const organization = entities[0].organization;
-  const organizationUsers = organization.organizationUsers;
-
-  const isAdminOrEditor = getIsEditorOrAdmin({ userId: user?.id, organizationUsers });
-  console.log('isAdminOrEditor', isAdminOrEditor);
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
       <div className=" ">
-        <EntitiesList entities={entities} />
-        {isAdminOrEditor && (
+        <EntitiesList entities={entities} organizationId={organizationId as string} />
+        {isEditorOrAdmin && (
           <AddItemButton
-            onClick={() => router.push(`/${organization.id.toString()}/create-entity`)}
+            onClick={() => router.push(`/manager/${organizationId}/create-entity`)}
             classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
             text="Add Entity"
           />

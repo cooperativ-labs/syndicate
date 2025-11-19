@@ -12,6 +12,7 @@ import {
   OrganizationUser,
   OrganizationUserPermissionTypes,
   OrganizationWithLegalEntities,
+  OrganizationWithUsers,
 } from "@/types";
 
 import { getPublicUrl } from "./storageActions";
@@ -138,7 +139,9 @@ export const getOrganization = async (
   return organizationsData;
 };
 
-export const getOrgsFromUser = async (): Promise<Organization[] | []> => {
+export const getOrgsFromUser = async (): Promise<
+  OrganizationWithUsers[] | []
+> => {
   const supabase = createClient();
   const {
     data: { user },
@@ -152,7 +155,7 @@ export const getOrgsFromUser = async (): Promise<Organization[] | []> => {
     const { data: organizationsData, error: organizationsErrors } =
       await supabase
         .from("organization_user")
-        .select("org:organization(*)")
+        .select("org:organization(*, organizationUsers:organization_user(*))")
         .eq("user_id", user.id);
 
     if (organizationsErrors) {
@@ -164,7 +167,12 @@ export const getOrgsFromUser = async (): Promise<Organization[] | []> => {
     }
 
     const organizations = organizationsData.map(
-      (organization) => organization.org as unknown as Organization,
+      (organization) => {
+        return {
+          ...organization.org,
+          organizationUsers: organization.org.organizationUsers,
+        };
+      },
     );
     if (!organizations) {
       return [];
@@ -270,7 +278,7 @@ export const addTeamMember = async ({
   if (organizationUserError) {
     throw new Error(organizationUserError.message);
   }
-  revalidatePath(`/${organizationId}`, "layout");
+  revalidatePath(`/manager/${organizationId}`, "layout");
 };
 
 export const uploadOrganizationAsset = async ({
@@ -302,7 +310,7 @@ export const uploadOrganizationAsset = async ({
       [assetType]: assetPath,
     })
     .eq("id", Number(organizationId));
-  revalidatePath(`/${organizationId}`, "layout");
+  revalidatePath(`/manager/${organizationId}`, "layout");
 };
 
 export const deleteOrganizationAsset = async ({
@@ -328,7 +336,7 @@ export const deleteOrganizationAsset = async ({
       [assetType]: null,
     })
     .eq("id", Number(organizationId));
-  revalidatePath(`/${organizationId}`, "layout");
+  revalidatePath(`/manager/${organizationId}`, "layout");
 };
 
 export const updateOrganization = async ({
@@ -366,7 +374,7 @@ export const updateOrganization = async ({
   if (error) {
     console.error("updateOrganization Error", error);
   }
-  revalidatePath(`/${organizationId}/settings`, "page");
+  revalidatePath(`/manager/${organizationId}/settings`, "page");
 };
 
 export const addOrganizationEmail = async ({
@@ -387,7 +395,7 @@ export const addOrganizationEmail = async ({
   if (error) {
     console.error("addOrganizationEmail Error", error);
   }
-  revalidatePath(`/${organizationId}/settings`, "page");
+  revalidatePath(`/manager/${organizationId}/settings`, "page");
 };
 
 export const removeTeamMember = async ({
@@ -405,7 +413,7 @@ export const removeTeamMember = async ({
   if (error) {
     throw new Error(error.message);
   }
-  revalidatePath(`/${organizationId}/settings`, "page");
+  revalidatePath(`/manager/${organizationId}/settings`, "page");
 };
 
 export const removeLinkedAccount = async ({
@@ -423,5 +431,5 @@ export const removeLinkedAccount = async ({
   if (error) {
     throw new Error(error.message);
   }
-  revalidatePath(`/${organizationId}/settings`, "page");
+  revalidatePath(`/manager/${organizationId}/settings`, "page");
 };

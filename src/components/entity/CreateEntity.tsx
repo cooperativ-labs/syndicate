@@ -80,7 +80,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
   // }
   // if (data) {
   //   toast.success('Entity created successfully');
-  //   actionOnCompletion?.() ?? router.push(`/${organization.id}/entities`);
+  //   actionOnCompletion?.() ?? router.push(`/manager/${organization.id}/entities`);
   // }
 
   const form = useForm<FormData>({

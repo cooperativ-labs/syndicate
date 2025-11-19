@@ -8,7 +8,7 @@ import { fileToImageUrl } from '@src/utils/helpersDocuments';
 import { organizationChangeServer } from '@src/utils/helpersServer';
 import { Country } from 'country-state-city';
 import { useRouter } from 'next/navigation';
-import React, { FC, useContext, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
@@ -108,7 +108,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
       });
       setButtonState('success');
       handleOrganizationChange(orgData.organization_id);
-      router.push(`/${orgData.organization_id}/overview`);
+      router.push(`/manager/${orgData.organization_id}/overview`);
       actionOnCompletion && actionOnCompletion();
     } catch (error: any) {
       setButtonState('error');

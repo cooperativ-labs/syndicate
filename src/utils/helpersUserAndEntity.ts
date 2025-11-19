@@ -1,15 +1,16 @@
-import { Country, State } from 'country-state-city';
+import { Country, State } from "country-state-city";
 
 import {
+  BaseOrganizationUser,
   Jurisdiction,
   LegalEntity,
   LegalEntityType,
   OrganizationComplete,
   OrganizationPermissionType,
   OrganizationPermissionTypes,
-  OrganizationUser
-} from '@/types';
-import { LegalEntityWithAddresses, OfferingFull } from '@/types';
+  OrganizationUser,
+} from "@/types";
+import { LegalEntityWithAddresses, OfferingFull } from "@/types";
 
 // export const getUserPersonalEntity = (user: User) => {
 //   const entityObject = user.legalEntities.find((entity) => entity.legalEntity.type === LegalEntityType.Individual);
@@ -25,9 +26,9 @@ export const entityNotHuman = (entity: LegalEntity) => {
 
 export const getSelectedAddressFromEntity = (
   entity: LegalEntityWithAddresses,
-  addressId: string
+  addressId: string,
 ) => {
-  return entity.addresses?.find(address => address?.id === addressId);
+  return entity.addresses?.find((address) => address?.id === addressId);
 };
 
 // export const getNonHumanEntities = (user: User) => {
@@ -37,26 +38,30 @@ export const getSelectedAddressFromEntity = (
 //   return removeHumans.map((entity) => entity.legalEntity);
 // };
 
-export const getOrgOfferingsFromEntity = (organization: OrganizationComplete): OfferingFull[] => {
-  return organization.legalEntities?.map(entity => entity?.offerings).flat();
+export const getOfferingsFromOrganization = (
+  organization: OrganizationComplete,
+): OfferingFull[] => {
+  return organization.legalEntities?.map((entity) => entity?.offerings).flat();
 };
 
 type GetPermissionLevelProps = {
   userId: string | number | undefined;
   organizationUsers:
     | OrganizationUser[]
-    | {
-        id: string;
-        user_id: string;
-        permissions: OrganizationPermissionTypes[];
-      }[];
+    | BaseOrganizationUser[];
 };
-export const getPermissionLevel = ({ userId, organizationUsers }: GetPermissionLevelProps) => {
+export const getPermissionLevel = (
+  { userId, organizationUsers }: GetPermissionLevelProps,
+) => {
   if (!organizationUsers) return false;
-  return organizationUsers?.find(u => u?.user_id.toString() === userId?.toString());
+  return organizationUsers?.find((u) =>
+    u?.user_id.toString() === userId?.toString()
+  );
 };
 
-export const getIsAdmin = ({ userId, organizationUsers }: GetPermissionLevelProps): boolean => {
+export const getIsAdmin = (
+  { userId, organizationUsers }: GetPermissionLevelProps,
+): boolean => {
   if (!organizationUsers) return false;
   const user = getPermissionLevel({ userId, organizationUsers });
   if (!user) return false;
@@ -65,7 +70,7 @@ export const getIsAdmin = ({ userId, organizationUsers }: GetPermissionLevelProp
 
 export const getIsEditorOrAdmin = ({
   userId,
-  organizationUsers
+  organizationUsers,
 }: GetPermissionLevelProps): boolean => {
   const user = getPermissionLevel({ userId, organizationUsers });
   if (!user) return false;
@@ -75,12 +80,15 @@ export const getIsEditorOrAdmin = ({
   );
 };
 
-export const renderJurisdiction = (jurisdiction: Jurisdiction | undefined): string | undefined => {
+export const renderJurisdiction = (
+  jurisdiction: Jurisdiction | undefined,
+): string | undefined => {
   const jurCountry = jurisdiction?.country;
   const jurProvince = jurisdiction?.province;
   const country = jurCountry && Country.getCountryByCode(jurCountry)?.name;
   const states = jurProvince && State.getStatesOfCountry(jurProvince);
-  const province = states && states.find(state => state.isoCode === jurProvince)?.name;
+  const province = states &&
+    states.find((state) => state.isoCode === jurProvince)?.name;
   if (province) {
     return `${province}, ${country}`;
   }

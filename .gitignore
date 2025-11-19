@@ -37,7 +37,7 @@ yarn-error.log*
 
 .vs
 .vscode
-types/
+
 
 /firebase-debug.log
 pages/api/file/syndicate-cloud-key-staging.json

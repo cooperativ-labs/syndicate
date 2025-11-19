@@ -12,7 +12,7 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { cn } from '@src/lib/utils';
-import { getOfferingDocumentsById } from '@src/utils/actions/offeringProfileActions';
+import { getOfferingDocumentsById } from '@src/utils/actions/documentActions';
 import { retrieveOrders } from '@src/utils/actions/orderActions';
 import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';

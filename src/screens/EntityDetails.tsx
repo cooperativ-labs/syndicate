@@ -1,12 +1,10 @@
 'use client';
 
-import { useUserContext } from '@contexts/UserContext';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import CreateAddress from '@src/components/address/CreateAddress';
 import DeleteButton from '@src/components/buttons/DeleteButton';
 import AddOwningEntity from '@src/components/entity/AddOwningEntity';
 import EntitySpecifications, {
-  changeForm,
   EditEntitySelectionType
 } from '@src/components/entity/EntitySpecifications';
 import { Button } from '@src/components/ui/button';
@@ -14,28 +12,26 @@ import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
-import { deleteAddress, removeOwner, updateLegalEntity } from '@src/utils/actions/entityActions';
-import { getIsAdmin, getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { deleteAddress, removeOwner, updateEntityName } from '@src/utils/actions/entityActions';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-
-import { LegalEntityWithSubsidiaries } from '@/types';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import { LegalEntityWithSubsidiaries, Offering } from '@/types';
+import { changeForm } from '@src/components/organization/OrganizationSpecifications';
+import { Input } from '@src/components/ui/input';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
 type EntityDetailsProps = {
   entity: LegalEntityWithSubsidiaries;
 };
 
 const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
-  const { userId } = useUserContext();
-  const organization = entity.organization;
+  const { isEditorOrAdmin, isAdmin } = useOrganizations();
 
   const [addOwnerModal, setAddOwnerModal] = useState<boolean>(false);
   const [nameEditOn, setNameEditOn] = useState<EditEntitySelectionType>('none');
-  const [alerted, setAlerted] = useState<boolean>(false);
-
-  const isAdmin = userId && getIsAdmin(userId, organization);
-  const isAdminOrEditor = getIsEditorOrAdmin(userId, organization);
 
   const {
+    id,
     display_name,
     legal_name,
     subsidiaries,
@@ -47,26 +43,22 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     addresses
   } = entity;
 
-  const offeringsIncludingSubsidiaries = [
-    subsidiaries?.map(entity => {
-      if (entity) return entity.offerings;
-    }),
-    offerings
-  ].flat();
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
+  const [displayName, setDisplayName] = useState(display_name);
 
-  const handleDisplayNameChange = async (values: { displayName: string | undefined }) => {
+  const handleDisplayNameChange = async () => {
+    if (!displayName || !entity.id) return;
+    setButtonState('loading');
     try {
-      await updateLegalEntity({
+      await updateEntityName({
         entityId: entity.id,
-        displayName: values.displayName,
-        legalName: entity.legal_name,
-        // jurCountry: jurisdiction?.country,
-        operatingCurrency: entity.operating_currency,
-        organizationId: organization.id
+        displayName: displayName
       });
       setNameEditOn('none');
+      setButtonState('default');
     } catch (error) {
       console.error(error);
+      setButtonState('error');
     }
   };
 
@@ -79,9 +71,9 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     removeOwner({ ownerId: owner, entityId: entity.id });
   };
 
-  const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {
-    setModal(false);
-  };
+  // const submissionCompletion = (setModal: Dispatch<SetStateAction<boolean>>) => {
+  //   setModal(false);
+  // };
 
   return (
     <div data-test="component-dashboard" className="flex flex-col w-full h-full">
@@ -90,15 +82,33 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
         onClose={() => setAddOwnerModal(false)}
         title={`Add an address to ${entity.display_name}`}
       >
-        <CreateAddress
-          entity={entity}
-          actionOnCompletion={() => submissionCompletion(setAddOwnerModal)}
-        />
+        <CreateAddress entity={entity} actionOnCompletion={() => setAddOwnerModal(false)} />
       </FormModal>
       <div className="flex items-center">
         <div>
           {nameEditOn === 'displayName' ? (
-            changeForm('displayName', entity, setNameEditOn, handleDisplayNameChange)
+            <form>
+              <Input type="text" required onChange={e => setDisplayName(e.target.value)} />
+              <LoadingButton
+                className=" bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
+                onClick={e => {
+                  e.preventDefault();
+                  handleDisplayNameChange();
+                }}
+                buttonState={buttonState}
+                text="Save changes"
+              />
+
+              <Button
+                className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
+                onClick={e => {
+                  e.preventDefault();
+                  setNameEditOn('none');
+                }}
+              >
+                Cancel
+              </Button>
+            </form>
           ) : (
             <div
               className="font-ubuntu text-3xl text-cDarkBlue font-semibold hover:cursor-pointer"
@@ -112,11 +122,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       <TwoColumnLayout>
         <div>
           {/* <hr className="my-4" /> */}
-          <EntitySpecifications
-            entity={entity}
-            isManager={isAdminOrEditor}
-            updateLegalEntity={updateLegalEntity}
-          />
+          <EntitySpecifications entity={entity} isManager={isEditorOrAdmin} />
 
           <div>
             <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
@@ -141,7 +147,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                     );
                   })}
                 </div>
-                {isAdminOrEditor && (
+                {isEditorOrAdmin && (
                   <Button
                     className="mt-4 rounded-md bg-cLightBlue p-2 px-4 text-white font-semibold"
                     onClick={() => setAddOwnerModal(true)}
@@ -157,11 +163,11 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                   {owners?.map((owner, i) => {
                     return (
                       <div key={i} className="p-3 bg-slate-100 rounded-md relative">
-                        <div className="mr-10">{owner?.legalName}</div>
+                        <div className="mr-10">{owner?.legal_name}</div>
                         {isAdmin && owner && (
                           <div className="absolute -right-1 -top-1">
                             <DeleteButton
-                              onDelete={() => handleRemoveOwner(owner.id)}
+                              onDelete={() => handleRemoveOwner(owner.id.toString())}
                               iconColor={'gray-800'}
                               bgColor={'white'}
                             />
@@ -172,9 +178,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                   })}
                 </div>
                 <hr className="my-4" />
-                {isAdmin && (
-                  <AddOwningEntity ownedEntityId={entity.id} organization={organization} />
-                )}
+                {isAdmin && <AddOwningEntity ownedEntityId={entity.id} />}
               </SectionBlock>
             </div>
           </div>
@@ -183,8 +187,10 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       </TwoColumnLayout>
       <EntityTabContainer
         subsidiaries={subsidiaries}
-        offerings={offeringsIncludingSubsidiaries as Offering[]}
-        entity={entity}
+        offerings={offerings}
+        entityId={entity.id}
+        operatingCurrency={operating_currency}
+        organizationId={organization_id}
       />
     </div>
   );

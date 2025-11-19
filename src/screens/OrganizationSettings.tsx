@@ -228,7 +228,12 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
                     handleToggle={handleToggle}
                   />
                 )}
-                <a href={`/${organization.id}`} target="_blank" rel="noreferrer" className="ml-2">
+                <a
+                  href={`/portal/${organization.id}`}
+                  target="_blank"
+                  rel="noreferrer"
+                  className="ml-2"
+                >
                   <SquareArrowOutUpRight className="text-lg " />
                 </a>
               </div>

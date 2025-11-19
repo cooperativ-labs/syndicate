@@ -3,7 +3,7 @@ import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import WithAuthentication from '@src/containers/WithAuthentication';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 
-const CreateEntityPage = async ({ params }: { params: { organizationId: string } }) => {
+const CreateEntityPage = async ({ params }: { params: Promise<{ organizationId: string }> }) => {
   const { organizationId } = await params;
   const organization = await getOrganization(organizationId, '/create-entity');
   if (!organization) {
@@ -15,7 +15,7 @@ const CreateEntityPage = async ({ params }: { params: { organizationId: string }
         <LimitedWidthSection center>
           <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
           <hr className="my-6" />
-          <CreateEntity organization={organization} />
+          <CreateEntity />
         </LimitedWidthSection>
       </WithAuthentication>
     </div>

@@ -1,10 +1,10 @@
-import { redirect } from 'next/navigation';
+import { redirect } from "next/navigation";
 
 export default async function OrganizationOverviewRoute({
-  params
+  params,
 }: {
   params: Promise<{ organizationId: string }>;
 }) {
   const { organizationId } = await params;
-  // redirect(`/${organizationId}/overview`);
+  // redirect(`/manager/${organizationId}/overview`);
 }

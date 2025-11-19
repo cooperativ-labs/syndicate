@@ -1,12 +1,12 @@
 import { cn } from '@src/lib/utils';
 import { Country, IState, State } from 'country-state-city';
-import React, { ChangeEvent, FC, use, useEffect, useMemo, useState } from 'react';
-import { FieldErrors, UseFormSetValue } from 'react-hook-form';
+import React, { FC, useEffect, useMemo, useState } from 'react';
+import { FieldErrors, FieldValues, Path, PathValue, UseFormSetValue } from 'react-hook-form';
 
 import { Field, FieldError } from '../ui/field';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
-type JurisdictionSelectProps = {
+type JurisdictionSelectProps<T extends FieldValues> = {
   id?: any;
   required?: boolean;
   multiple?: boolean;
@@ -16,12 +16,7 @@ type JurisdictionSelectProps = {
   fieldClass?: string;
   fieldLabelClass?: string;
   errors: FieldErrors<any>;
-  setValue: UseFormSetValue<{
-    jurCountry: string;
-    jurProvince: string;
-    name?: string | null | undefined;
-    externalId?: string | undefined;
-  }>;
+  setValue: UseFormSetValue<T>;
   values: {
     jurCountry: string | undefined;
     jurProvince?: string | undefined;
@@ -30,7 +25,7 @@ type JurisdictionSelectProps = {
 
 // NOTE - These field values are always 'jurCountry' and 'jurProvince' - they are not dynamic
 
-const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
+const JurisdictionSelect = <T extends FieldValues>({
   labelText,
   required,
   className,
@@ -39,7 +34,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
   values,
   setValue,
   errors
-}) => {
+}: JurisdictionSelectProps<T>) => {
   const [states, setStates] = useState<IState[]>([]);
   const hasStates = states && states.length > 0;
   const countries = useMemo(() => Country.getAllCountries(), []);
@@ -71,7 +66,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
           value={values.jurCountry}
           onValueChange={value => {
             setStates(State.getStatesOfCountry(value));
-            setValue('jurCountry', value);
+            setValue('jurCountry' as Path<T>, value as PathValue<T, Path<T>>);
           }}
         >
           <SelectTrigger>
@@ -94,7 +89,7 @@ const JurisdictionSelect: FC<JurisdictionSelectProps> = ({
             disabled={disabled}
             value={values.jurProvince}
             onValueChange={value => {
-              setValue('jurProvince', value);
+              setValue('jurProvince' as Path<T>, value as PathValue<T, Path<T>>);
             }}
           >
             <SelectTrigger>

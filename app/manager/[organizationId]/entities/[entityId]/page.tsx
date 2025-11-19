@@ -1,4 +1,3 @@
-import { EntityProvider } from '@contexts/EntityContext';
 import LoadingModal from '@src/components/loading/ModalLoading';
 import EntityDetails from '@src/screens/EntityDetails';
 import { getLegalEntityById } from '@src/utils/actions/entityActions';
@@ -7,15 +6,15 @@ export default async function EntityLayout({ params }: { params: Promise<{ entit
   const { entityId } = await params;
   const entity = await getLegalEntityById(entityId);
 
+  console.log('entity', entity);
+
   if (!entity) {
     return <LoadingModal />;
   }
 
   return (
-    <div data-test="component-landing" className="h-full flex">
-      <EntityProvider entity={entity}>
-        <EntityDetails entity={entity} />
-      </EntityProvider>
+    <div data-test="page-entity" className="h-full flex">
+      <EntityDetails entity={entity} />
     </div>
   );
 }

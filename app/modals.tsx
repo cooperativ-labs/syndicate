@@ -7,7 +7,6 @@ import { WalletChooserModal } from '@src/containers/wallet/WalletChooserModel';
 export default function ModalsAndAlerts() {
   return (
     <>
-      <NewOrganizationModal />
       <WalletChooserModal />
       <WalletActionLockModel />
       {/* {PageIsLoading && <LoadingModal />} */}

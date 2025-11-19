@@ -7,24 +7,17 @@ import DashboardCard from '@src/components/cards/DashboardCard';
 import CreateOffering from '@src/components/offering/CreateOffering';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
-import { getIsEditorOrAdmin, getOrgOfferingsFromEntity } from '@src/utils/helpersUserAndEntity';
+import { getOfferingsFromOrganization } from '@src/utils/helpersUserAndEntity';
 import React, { FC } from 'react';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import { OfferingFull } from '@/types';
 
-import { OrganizationComplete } from '@/types';
-
-const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
-  const { user } = useUserContext();
+const Offerings: FC<{
+  offerings: OfferingFull[];
+  legalEntities: { legal_name: string | null; id: number; offeringCount: number }[] | null;
+}> = ({ offerings, legalEntities }) => {
+  const { isEditorOrAdmin } = useOrganizations();
   const [entityFormOpen, setEntityFormOpen] = React.useState(false);
-
-  if (!organization) {
-    return <></>;
-  }
-  const isAdminOrEditor = getIsEditorOrAdmin({
-    userId: user?.id,
-    organizationUsers: organization.organizationUsers
-  });
-
-  const offerings = getOrgOfferingsFromEntity(organization);
 
   const hasOfferings = offerings && offerings.length > 0;
 
@@ -34,17 +27,17 @@ const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization })
         <section>
           {hasOfferings ? (
             <>
-              <OfferingsList offerings={offerings} organization={organization} />
+              <OfferingsList offerings={offerings} />
               {entityFormOpen ? (
                 <DashboardCard className="mt-5">
                   <div className="flex justify-between">
                     <h2 className="text-2xl font-medium text-cDarkBlue">Add Offering</h2>
                     <CloseButton onClick={() => setEntityFormOpen(false)} className="self-end" />
                   </div>
-                  <CreateOffering organization={organization} />
+                  <CreateOffering legalEntities={legalEntities} />
                 </DashboardCard>
               ) : (
-                isAdminOrEditor && (
+                isEditorOrAdmin && (
                   <AddItemButton
                     onClick={() => setEntityFormOpen(true)}
                     classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
@@ -54,7 +47,7 @@ const Offerings: FC<{ organization: OrganizationComplete }> = ({ organization })
               )}
             </>
           ) : (
-            <CreateOffering organization={organization} />
+            <CreateOffering legalEntities={legalEntities} />
           )}
         </section>
       </div>
