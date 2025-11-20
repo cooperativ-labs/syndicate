@@ -1,6 +1,5 @@
 'use client';
 
-import { useEntity } from '@contexts/EntityContext';
 import { useUserContext } from '@contexts/UserContext';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import UpdateAddress from '@src/components/address/UpdateAddress';
@@ -12,13 +11,9 @@ import UpdatePropertyFinancials from '@src/components/properties/UpdatePropertyF
 import { Button } from '@src/components/ui/button';
 import FormModal from '@src/containers/FormModal';
 import { getPropertyTypeOption } from '@src/utils/enumConverters';
-import { UPDATE_ADDRESS } from '@src/utils/graphQueries/entity';
+
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import {
-  ADD_PROPERTY_IMAGE,
-  REMOVE_ENTITY_PROPERTY,
-  UPDATE_RE_PROPERTY_INFO
-} from '@src/utils/graphQueries/reProperty';
+
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil } from 'lucide-react';
@@ -34,12 +29,7 @@ type PropertyDetailsProps = {
 const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
   const router = useRouter();
   const { userId } = useUserContext();
-  const { entity } = useEntity();
-  const [addImage, { error: imageError }] = useMutation(ADD_PROPERTY_IMAGE);
-  const [updateAddress, { error: addressError }] = useMutation(UPDATE_ADDRESS);
-  const [updateProperty, { error: propertyError }] = useMutation(UPDATE_RE_PROPERTY_INFO);
-  const [deleteProperty, { data: deleteData, error: deleteError }] =
-    useMutation(REMOVE_ENTITY_PROPERTY);
+
   const [alerted, setAlerted] = useState<boolean>(false);
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [detailsModal, setDetailsModal] = useState<boolean>(false);

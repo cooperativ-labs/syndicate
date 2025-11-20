@@ -1,8 +1,12 @@
-import Input from '@src/components/form-components/Inputs';
+import { Field, FieldError } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
 import { cn } from '@src/lib/utils';
-import { Form, Formik } from 'formik';
+import { zodResolver } from '@hookform/resolvers/zod';
 import { ChevronRight } from 'lucide-react';
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
+import { Button } from 'react-day-picker';
 
 type AccessCodeFormProps = {
   accessCode: string | undefined | null;
@@ -10,6 +14,12 @@ type AccessCodeFormProps = {
   mini?: boolean;
   isOfferingManager?: boolean;
 };
+
+const formSchema = z.object({
+  code: z.string().min(1, 'Please enter your four-digit code.')
+});
+
+type FormValues = z.infer<typeof formSchema>;
 
 const AccessCodeForm: FC<AccessCodeFormProps> = ({
   mini,
@@ -21,10 +31,31 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({
     ? 'h-6 text-xs w-14 bg-opacity-0 px-2 rounded-md focus:border-blue-900 focus:outline-none'
     : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-300 rounded-l-md focus:border-blue-900 focus:outline-none';
   const buttonClasses = mini
-    ? 'bg-cLightBlue hover:bg-cDarkBlue text-white text-xs font-medium  rounded-md p-1 px-2 flex justify-center items-center whitespace-nowrap'
-    : 'bg-cLightBlue hover:bg-cDarkBlue text-white font-semibold rounded-r-full px-5 h-12 flex justify-center items-center ';
+    ? 'text-xs font-medium  rounded-md p-1 px-2 flex justify-center items-center whitespace-nowrap'
+    : 'font-semibold rounded-r-full px-5 h-12 flex justify-center items-center ';
 
   const code = isOfferingManager && accessCode;
+
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+    reset
+  } = useForm<FormValues>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      code: code ? code : ''
+    }
+  });
+
+  // Reset form when code changes (e.g. if it comes from props)
+  useEffect(() => {
+    reset({ code: code ? code : '' });
+  }, [code, reset]);
+
+  const onSubmit = (values: FormValues) => {
+    handleCodeSubmission(values.code);
+  };
 
   return (
     <>
@@ -33,43 +64,32 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({
           Remove code
         </button>
       ) : (
-        <Formik
-          initialValues={{
-            code: code ? code : ''
-          }}
-          validate={values => {
-            const errors: any = {}; /** @TODO : Shape */
-            if (!values.code) {
-              errors.code = 'Please enter your four-digit code.';
-            }
-            return errors;
-          }}
-          onSubmit={(values, { setSubmitting }) => {
-            setSubmitting(true);
-            handleCodeSubmission(values.code);
-            setSubmitting(false);
-          }}
-        >
-          {({ isSubmitting }) => (
-            <Form
-              className={cn(
-                'flex items-center',
-                mini ? 'gap-1 border-2  border-gray-400 rounded-lg' : ' gap-0'
-              )}
-            >
-              <Input
-                className="bg-opacity-0"
-                fieldClass={fieldClasses}
-                name="code"
-                type="name"
-                placeholder={isOfferingManager ? '1234' : 'e.g. 1234'}
-              />
-              <button type="submit" disabled={isSubmitting} className={buttonClasses}>
-                {mini ? 'Set access code' : <ChevronRight className="mr-2 text-lg" />}
-              </button>
-            </Form>
+        <form
+          onSubmit={handleSubmit(onSubmit)}
+          className={cn(
+            'flex items-center',
+            mini ? 'gap-1 border-2  border-gray-400 rounded-lg' : ' gap-0'
           )}
-        </Formik>
+        >
+          <Field>
+            <Input
+              className={cn(fieldClasses, 'max-w-[60px] placeholder:text-gray-500')}
+              type="text"
+              placeholder={isOfferingManager ? '1234' : 'e.g. 1234'}
+              {...register('code')}
+            />
+            {errors.code && !mini && (
+              <FieldError errors={[{ message: errors.code.message }]} className="absolute mt-1" />
+            )}
+          </Field>
+          <Button
+            type="submit"
+            disabled={isSubmitting}
+            className={cn('hover:cursor-pointer', buttonClasses)}
+          >
+            {mini ? 'Set access code' : <ChevronRight className="mr-2 text-lg" />}
+          </Button>
+        </form>
       )}
     </>
   );

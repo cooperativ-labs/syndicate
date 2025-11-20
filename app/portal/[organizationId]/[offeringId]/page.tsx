@@ -1,8 +1,7 @@
-import PortalWrapper from '@src/containers/PortalWrapper';
 import PortalOfferingPage from '@src/screens/PortalOffering';
+import { getOfferingDocumentsById } from '@src/utils/actions/documentActions';
 import { getOfferingById } from '@src/utils/actions/offeringActions';
 import { getOrganization } from '@src/utils/actions/organizationActions';
-import React from 'react';
 
 const PortalOfferingRoute = async ({
   params
@@ -17,11 +16,9 @@ const PortalOfferingRoute = async ({
     return <div>Organization or offering not found</div>;
   }
 
-  return (
-    <PortalWrapper organization={organization}>
-      <PortalOfferingPage offering={offering} />
-    </PortalWrapper>
-  );
+  const documents = await getOfferingDocumentsById(offeringId);
+
+  return <PortalOfferingPage offering={offering} documents={documents ?? []} />;
 };
 
 export default PortalOfferingRoute;

@@ -22,14 +22,14 @@ type NavBarProps = {
 export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
   const { user } = useUserContext();
   const router = useRouter();
-  const isAuthenticated = !!user;
+
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch } = applicationStore;
   const { address: userWalletAddress } = useAccount();
   return (
     <div className="flex py-2 px-2 pr-4 z-30  mx-auto justify-between">
       <div className=" justify-start flex items-center">
-        {isAuthenticated && (
+        {!!user && (
           <div className="flex md:hidden">
             <Button
               onClick={e => {

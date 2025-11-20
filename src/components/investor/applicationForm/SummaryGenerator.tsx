@@ -6,11 +6,10 @@ import {
 } from '@src/utils/helpersAgreement';
 import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { entityNotHuman } from '@src/utils/helpersUserAndEntity';
 import axios from 'axios';
 import { useAsync } from 'react-use';
 
-import { Address, CurrencyCode, LegalEntity, Offering } from '@/types';
+import { CurrencyCodeType, OfferingWithLegalEntity } from '@/types';
 type AgreementText = {
   custom: string;
   standard: string;
@@ -24,7 +23,7 @@ type AgreementContentType = {
   minPledge?: number;
   maxPledge?: number;
   pricePerUnit?: number;
-  investmentCurrency?: CurrencyCode;
+  investmentCurrency?: CurrencyCodeType;
   purchaserEntityName: string;
   purchaserEntityManager: string;
   purchaserEntityManagerTitle: string;
@@ -76,7 +75,7 @@ type AgreementContentType = {
 export const GeneratedApplicationText = (
   agreementContent: AgreementContentType,
   // isNonHuman: boolean,
-  offering: Offering,
+  offering: OfferingWithLegalEntity,
   purchaserAddressLine1: string | undefined,
   purchaserAddressLine2: string,
   purchaserCity: string,
@@ -113,9 +112,9 @@ export const GeneratedApplicationText = (
     axios.get(considerations).then(resp => resp.data);
   const { value: considerationsText } = useAsync(getConsiderations, []);
 
-  const offeringEntity = offering.offeringEntity;
-  const offeringPrice = offering.details?.priceStart;
-  const offeringCurrency = offering.details?.investmentCurrency.code;
+  const offeringEntity = offering.legalEntity;
+  const offeringPrice = offering.price_start;
+  const offeringCurrency = offering.investment_currency;
   // const contractAddress = cryptoAddress.address;
 
   const {
@@ -170,7 +169,7 @@ export const GeneratedApplicationText = (
   const ApplicationSummary = GenerateInvestorApplicationSummary(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity?.legalName,
+      offeringEntityName: offeringEntity?.legal_name,
       purchaserEntityName: purchaserEntityName,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
@@ -197,7 +196,7 @@ export const GeneratedApplicationText = (
       isNonHuman: isCompany,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
-      offeringEntityName: offeringEntity?.legalName,
+      offeringEntityName: offeringEntity?.legal_name,
       purchaserEntityName: purchaserEntityName,
       purchaserAge: purchaserAge ? numberWithCommas(purchaserAge) : '',
       purchaserPrincipleResidence: purchaserPrincipleResidence,
@@ -231,8 +230,8 @@ export const GeneratedApplicationText = (
       advisor_country: advisor_country,
       maxPledge: maxPledge,
       minPledge: minPledge,
-      pricePerUnit: offering.details?.priceStart,
-      investmentCurrency: getCurrencyOption(offering.details?.investmentCurrency)?.symbol
+      pricePerUnit: offering.price_start,
+      investmentCurrency: getCurrencyOption(offering.investment_currency)?.symbol
     },
     applicantSuitabilityAttestationText ?? ''
   );
@@ -240,7 +239,7 @@ export const GeneratedApplicationText = (
   const PurchaseAttestation = GenerateSubscriptionPurchaseAttestation(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity?.legalName,
+      offeringEntityName: offeringEntity?.legal_name,
       numUnitsPurchase: numUnitsPurchase ? numberWithCommas(numUnitsPurchase) : '',
       offeringPrice: offeringPrice ? numberWithCommas(offeringPrice / 100) : '',
       purchasePrice:

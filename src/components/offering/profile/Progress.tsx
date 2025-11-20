@@ -1,13 +1,11 @@
 import { cn } from '@src/lib/utils';
 import { getAssetStatusOption } from '@src/utils/enumConverters';
-import useBrandColor from 'hooks/useBrandColor';
+import useBrandColor from '@hooks/useBrandColor';
 import React from 'react';
-
-import { AssetStatus, Maybe, OfferingStage } from '@/types';
-
+import { OfferingStageTypes, AssetStatusTypes } from '@/types';
 type ProgressProps = {
-  offeringStage?: OfferingStage;
-  propertyInvestmentStage?: Maybe<AssetStatus> | undefined;
+  offeringStage?: OfferingStageTypes;
+  propertyInvestmentStage?: AssetStatusTypes | undefined;
   brandColor: string;
   lightBrand: boolean;
   className?: string;

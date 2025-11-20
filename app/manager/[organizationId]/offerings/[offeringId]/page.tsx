@@ -24,7 +24,6 @@ export default async function OfferingPage({
         <OfferingDetails offering={offering} documents={documents} />
       </OfferingContextProvider>
     );
-    // return <OfferingProfile offering={offering} organization={organization} />;
   }
 
   return (

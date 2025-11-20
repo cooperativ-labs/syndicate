@@ -1,39 +1,23 @@
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { REMOVE_PROPERTY_IMAGE } from '@src/utils/graphQueries/reProperty';
 import React, { FC } from 'react';
 
-import { Image, Maybe } from '@/types';
+import { Image } from '@/types';
 
 import DeleteButton from '../buttons/DeleteButton';
+import { removePropertyImage } from '@src/utils/actions/rePropertyActions';
 
 type PropertyImageProps = {
-  image: Maybe<Image>;
+  image: Image | undefined;
   propertyId: string;
   isOwner?: boolean;
 };
 
 const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) => {
-  const [deleteImage, { error: deleteError }] = useMutation(REMOVE_PROPERTY_IMAGE);
-
-  if (deleteError) {
-    alert(`from Cloud: ${deleteError}`);
-  }
   const handleDelete = async () => {
+    if (!image?.id) {
+      throw new Error('Image ID is required');
+    }
     try {
-      const response = await fetch(`/api/file/${image?.fileId}`, {
-        method: 'DELETE'
-      });
-
-      if (!response.ok) {
-        // if (error.includes('No such object')) {
-        //   deleteImage({ variables: { currentDate: currentDate, propertyId: propertyId, imageId: image.id } });
-        // }
-        const error = await response.text();
-        throw new Error(error);
-      }
-      deleteImage({
-        variables: { currentDate: currentDate, propertyId: propertyId, imageId: image?.id }
-      });
+      await removePropertyImage(image.id);
     } catch (error: any) {
       throw new Error('Error details:', error);
     }

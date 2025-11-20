@@ -18,6 +18,7 @@
       }
     ],
     "paths": {
+      "@address-autocomplete": ["./src/components/ui/address-autocomplete"],
       "@interfaces/*": ["./interfaces/*"],
       "@pages/*": ["./pages-old/*"],
       "@supabase/*": ["./supabase/*"],

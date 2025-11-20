@@ -4,7 +4,6 @@ import { useParams } from 'next/navigation';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
 import { OrganizationWithUsers } from '@/types';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
-import { useUserContext } from './UserContext';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 
 type OrganizationsContextValue = {
@@ -22,13 +21,14 @@ const OrganizationsContext = createContext<OrganizationsContextValue | undefined
 
 export function OrganizationsProvider({
   organizations,
+  userId,
   children
 }: {
   organizations: OrganizationWithUsers[];
+  userId?: string | number | undefined;
   children: ReactNode;
 }) {
   const params = useParams<{ organizationId: string }>();
-  const { user } = useUserContext();
   const [isAdmin, setIsAdmin] = useState<boolean>(false);
   const [isEditorOrAdmin, setIsEditorOrAdmin] = useState<boolean>(false);
   const [createOrganizationModalOpen, setCreateOrganizationModalOpen] = useState<boolean>(false);
@@ -40,18 +40,18 @@ export function OrganizationsProvider({
     if (chosenOrganization) {
       setIsAdmin(
         getIsAdmin({
-          userId: user?.id,
+          userId: userId,
           organizationUsers: chosenOrganization.organizationUsers
         })
       );
       setIsEditorOrAdmin(
         getIsEditorOrAdmin({
-          userId: user?.id,
+          userId: userId,
           organizationUsers: chosenOrganization.organizationUsers
         })
       );
     }
-  }, [chosenOrganization, user]);
+  }, [chosenOrganization, userId]);
 
   return (
     <OrganizationsContext.Provider

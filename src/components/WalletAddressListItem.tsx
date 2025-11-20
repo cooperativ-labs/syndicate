@@ -9,6 +9,8 @@ import Checkbox from './form-components/Checkbox';
 import Input from './form-components/Inputs';
 import { MarkPublic } from './form-components/ListItemButtons';
 import FormattedCryptoAddress from './FormattedCryptoAddress';
+import { CryptoAddress, CryptoAddressType } from '@/types';
+import { deleteCryptoAddressById, updateCryptoAddress } from '@src/utils/actions/cryptoActions';
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;
@@ -16,12 +18,12 @@ type WalletAddressListItemProps = {
 };
 
 const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdit }) => {
-  const { owner, id, name, type, chainId, address, description, isPublic } = wallet;
+  const { legal_entity_id, id, name, type, chain_id, address, description, is_public } = wallet;
   const [editOn, setEditOn] = useState<boolean>(false);
   const [alerted, setAlerted] = useState<boolean>(false);
   const { address: userWalletAddress } = useAccount();
 
-  const getChainLogo = (chainId: Maybe<number> | undefined) => {
+  const getChainLogo = (chainId: number | null) => {
     return (
       <div className="flex">
         only:{' '}
@@ -40,21 +42,32 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
     );
   };
 
+  const handleDeleteCryptoAddress = async () => {
+    await deleteCryptoAddressById({
+      id: id,
+      revalidationPath: { path: '/profile', type: 'layout' }
+    });
+  };
+
   return (
     <div className={cn(withEdit && 'grid grid-cols-9 gap-3 items-center')}>
       <div className="p-3 border-2 rounded-lg col-span-8">
         <div className="flex justify-between">
           {name}{' '}
-          {type === CryptoAddressType.Contract ? getChainLogo(chainId) : <div> all EVM chains</div>}{' '}
+          {type === CryptoAddressType.CONTRACT ? (
+            getChainLogo(chain_id)
+          ) : (
+            <div> all EVM chains</div>
+          )}{' '}
           {withEdit && (
             <div className="items-center">
-              <MarkPublic isPublic={isPublic} />
+              <MarkPublic isPublic={is_public} />
             </div>
           )}
         </div>
         <div className="md:w-auto mt-3">
           <FormattedCryptoAddress
-            chainId={chainId}
+            chainId={chain_id}
             address={address}
             className="text-large font-bold"
             withCopy
@@ -67,16 +80,18 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
           <div className="bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6">
             <Formik
               initialValues={{
-                isPublic: isPublic,
+                is_public: is_public,
                 name: name
               }}
               onSubmit={(values, { setSubmitting }) => {
                 setSubmitting(true);
                 updateCryptoAddress({
-                  variables: {
-                    id: id,
-                    name: values.name,
-                    isPublic: values.isPublic
+                  id: id,
+                  name: values.name,
+                  isPublic: values.is_public,
+                  revalidationPath: {
+                    path: '/profile',
+                    type: 'layout'
                   }
                 });
                 setSubmitting(false);
@@ -121,11 +136,7 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                 )}
                 disabled={userWalletAddress === wallet.address}
                 aria-label="remove wallet from account"
-                onClick={() =>
-                  deleteWallet({
-                    variables: { entityId: owner?.id, walletAddress: wallet.address }
-                  })
-                }
+                onClick={handleDeleteCryptoAddress}
               >
                 {userWalletAddress === wallet.address
                   ? 'You cannot remove your login wallet'

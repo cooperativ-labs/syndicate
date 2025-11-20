@@ -30,10 +30,7 @@ const ManagerLayout = async ({ children }: { children: React.ReactNode }) => {
   return (
     <>
       <UserProvider userProfile={userProfile} user={user}>
-        <OrganizationsProvider
-          organizations={organizations}
-          // savedOrganizationId={savedOrganizationId || null}
-        >
+        <OrganizationsProvider organizations={organizations} userId={user?.id}>
           <WithAuthentication>
             <div className="flex">
               {user?.id && (

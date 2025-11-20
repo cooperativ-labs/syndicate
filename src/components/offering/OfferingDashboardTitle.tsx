@@ -2,13 +2,15 @@ import { cn } from '@src/lib/utils';
 import { updateOfferingBasic } from '@src/utils/actions/offeringProfileActions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
-import { Form, Formik } from 'formik';
+
 import { Check, Copy, SquareArrowOutUpRight } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import toast from 'react-hot-toast';
+import { useForm } from 'react-hook-form';
 
-import Input from '../form-components/Inputs';
+import { Input } from '../ui/input';
 import { Button } from '../ui/button';
+import { Field, FieldContent, FieldError } from '../ui/field';
 
 import AccessCodeForm from './profile/AccessCodeForm';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';
@@ -80,58 +82,57 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
     }
   };
 
-  const nameChangeForm = (
-    <Formik
-      initialValues={{
+  const NameChangeForm = () => {
+    const {
+      register,
+      handleSubmit,
+      formState: { errors, isSubmitting }
+    } = useForm<{ name: string }>({
+      defaultValues: {
         name: offeringName
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.name) {
-          errors.name = 'Please name this syndication.';
-        }
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting }) => {
-        setSubmitting(true);
-        handleNameChange(values.name);
+      }
+    });
 
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting }) => (
-        <Form className="flex items-center">
-          <Input
-            className={' bg-opacity-0'}
-            required
-            name="name"
-            type="name"
-            placeholder="Cosy Apartments"
-          />
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="ml-2 bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase px-3 h-11 rounded w-full"
-          >
-            Save
-          </Button>
-          <Button
-            className="ml-2 border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase px-3 h-11 rounded w-full"
-            onClick={e => {
-              e.preventDefault();
-              setNameEditOn(false);
-            }}
-          >
-            Cancel
-          </Button>
-        </Form>
-      )}
-    </Formik>
-  );
+    const onSubmit = async (values: { name: string }) => {
+      await handleNameChange(values.name);
+    };
+
+    return (
+      <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-2">
+        <Field className="flex-1">
+          <FieldContent>
+            <Input
+              {...register('name', {
+                required: 'Please name this syndication.'
+              })}
+              type="text"
+              placeholder="Cosy Apartments"
+              required
+            />
+            {errors.name && <FieldError errors={[{ message: errors.name.message }]} />}
+          </FieldContent>
+        </Field>
+        <Button type="submit" disabled={isSubmitting}>
+          Save
+        </Button>
+        <Button
+          variant="secondary"
+          onClick={e => {
+            e.preventDefault();
+            setNameEditOn(false);
+          }}
+        >
+          Cancel
+        </Button>
+      </form>
+    );
+  };
+
+  const nameChangeForm = <NameChangeForm />;
 
   const [showVisibilitySettings, setShowVisibilitySettings] = useState<boolean>(false);
   const visibilitySettings = (
-    <div className="absolute right-4 top-1 flex min-w-max">
+    <div className="absolute right-4 top-1 flex min-w-max items-center">
       {showVisibilitySettings ? (
         <>
           {isOfferingManager && profileVisibility && (
@@ -152,12 +153,9 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           )}
         </>
       ) : (
-        <button
-          className="bg-cLightBlue hover:bg-cDarkBlue text-white text-xs font-medium  rounded-md p-1 px-2 flex justify-center items-center whitespace-nowrap"
-          onClick={() => setShowVisibilitySettings(true)}
-        >
+        <Button variant="outline" size="sm" onClick={() => setShowVisibilitySettings(true)}>
           Set profile visibility
-        </button>
+        </Button>
       )}
       {profileVisibility && (
         <a href={`/portal/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">

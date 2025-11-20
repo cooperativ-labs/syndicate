@@ -1,26 +1,29 @@
 import { cn } from '@src/lib/utils';
-import { Form, Formik } from 'formik';
 import { Trash } from 'lucide-react';
 import React, { FC, useState } from 'react';
+import { useForm, Controller } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
-import Checkbox from './form-components/Checkbox';
-import Input from './form-components/Inputs';
+import { Checkbox } from './ui/checkbox';
+import { Input } from './ui/input';
+import { Button } from './ui/button';
+import { Field, FieldContent, FieldLabel, FieldTitle, FieldError } from './ui/field';
 import { EditButton, MarkPublic } from './form-components/ListItemButtons';
+import { EmailAddress } from '@/types';
+import {
+  updateOrganizationEmail,
+  removeOrganizationEmail
+} from '@src/utils/actions/organizationActions';
 
 type EmailAddressListItemProps = {
-  email: EmailAddressFull | undefined;
+  email: EmailAddress;
   withEdit?: boolean;
 };
 
 const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }) => {
-  const { organization, name, address, description, isPublic } = email as EmailAddressFull;
+  const { name, address, description, is_public, organization_id } = email;
   const [editOn, setEditOn] = useState<boolean>(false);
-  const [alerted, setAlerted] = useState<boolean>(false);
-
-  if ((updateError && !alerted) || (deleteError && !alerted)) {
-    alert(`Oops, looks like something went wrong. ${updateError?.message || deleteError?.message}`);
-    setAlerted(true);
-  }
+  const organizationId = organization_id?.toString() || '';
 
   return (
     <div className={cn(withEdit && 'grid grid-cols-9 gap-3 items-center')}>
@@ -31,7 +34,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
             {withEdit && (
               <div className="flex justify-between">
                 <div className="hidden md:flex">
-                  <MarkPublic isPublic={isPublic} />
+                  <MarkPublic isPublic={is_public} />
                 </div>
                 <div className="ml-6 w-5">
                   <EditButton toggle={editOn} setToggle={setEditOn} />
@@ -42,7 +45,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
           {name && <div className="flex justify-between">{name}</div>}
           {withEdit && (
             <div className="md:hidden">
-              <MarkPublic isPublic={isPublic} />{' '}
+              <MarkPublic isPublic={is_public} />{' '}
             </div>
           )}
         </div>
@@ -50,73 +53,111 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
 
         {editOn && (
           <div className="bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6">
-            <Formik
-              initialValues={{
-                isPublic: !!isPublic,
-                name: name
-              }}
-              onSubmit={(values, { setSubmitting }) => {
-                setSubmitting(true);
-                updateEmailAddress({
-                  variables: {
-                    address: address,
-                    name: values.name,
-                    isPublic: values.isPublic
-                  }
-                });
-                setSubmitting(false);
-              }}
-            >
-              {({ isSubmitting, values }) => (
-                <Form className="flex flex-col">
-                  <div className="grid grid-cols-4 gap-3 md:gap-8 items-center">
-                    <Input
-                      className={`bg-opacity-0 w-full col-span-3`}
-                      labelText="Label"
-                      name="name"
-                      placeholder="e.g. Personal"
-                    />
-
-                    <Checkbox
-                      className="col-span-1"
-                      fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
-                      name="isPublic"
-                      checked={values.isPublic}
-                      labelText="Public"
-                    />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4 rounded p-2"
-                  >
-                    Save
-                  </button>
-                </Form>
-              )}
-            </Formik>
+            <EmailEditForm
+              email={email}
+              organizationId={organizationId}
+              onSave={() => setEditOn(false)}
+              onCancel={() => setEditOn(false)}
+            />
           </div>
         )}
       </div>
       {withEdit && (
         <div className="flex col-span-1 justify-center">
           <button
-            aria-label="edit address info"
-            onClick={() =>
-              deleteEmail({
-                variables: {
-                  currentDate: currentDate,
-                  organizationId: organization?.id,
-                  emailAddress: address
+            aria-label="delete email address"
+            onClick={async () => {
+              if (confirm('Are you sure you want to delete this email address?')) {
+                try {
+                  await removeOrganizationEmail({
+                    organizationId,
+                    address
+                  });
+                  toast.success('Email address deleted');
+                } catch (error: any) {
+                  toast.error(`Failed to delete email: ${error.message}`);
                 }
-              })
-            }
+              }
+            }}
           >
             <Trash className="text-lg text-gray-600 mr-2" />
           </button>
         </div>
       )}
     </div>
+  );
+};
+
+type EmailEditFormProps = {
+  email: EmailAddress;
+  organizationId: string;
+  onSave: () => void;
+  onCancel: () => void;
+};
+
+const EmailEditForm: FC<EmailEditFormProps> = ({ email, organizationId, onSave, onCancel }) => {
+  const { name, address, is_public } = email;
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting }
+  } = useForm<{ name: string; isPublic: boolean }>({
+    defaultValues: {
+      name: name || '',
+      isPublic: !!is_public
+    }
+  });
+
+  const onSubmit = async (values: { name: string; isPublic: boolean }) => {
+    try {
+      await updateOrganizationEmail({
+        organizationId,
+        address,
+        name: values.name || null,
+        isPublic: values.isPublic
+      });
+      toast.success('Email address updated');
+      onSave();
+    } catch (error: any) {
+      toast.error(`Failed to update email: ${error.message}`);
+    }
+  };
+
+  return (
+    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
+      <div className="grid grid-cols-4 gap-3 md:gap-8 items-center">
+        <Field className="col-span-3">
+          <FieldLabel>Label</FieldLabel>
+          <FieldContent>
+            <Input {...register('name')} placeholder="e.g. Personal" />
+            {errors.name && <FieldError errors={[{ message: errors.name.message }]} />}
+          </FieldContent>
+        </Field>
+
+        <Field orientation="horizontal" className="col-span-1">
+          <Controller
+            name="isPublic"
+            control={control}
+            render={({ field }) => (
+              <>
+                <Checkbox checked={field.value} onCheckedChange={field.onChange} />
+                <FieldContent className="ml-0!">
+                  <FieldTitle>Public</FieldTitle>
+                </FieldContent>
+              </>
+            )}
+          />
+        </Field>
+      </div>
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4"
+      >
+        Save
+      </Button>
+    </form>
   );
 };
 

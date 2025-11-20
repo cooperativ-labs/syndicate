@@ -1,5 +1,4 @@
 @import 'tailwindcss';
-
 @plugin 'tailwindcss-animate';
 
 @custom-variant dark (&:is(.dark *));
@@ -83,6 +82,13 @@
   --sidebar-accent-foreground: oklch(0.216 0.006 56.043);
   --sidebar-border: oklch(0.923 0.003 48.717);
   --sidebar-ring: oklch(0.709 0.01 56.259);
+  --cDarkBlue: #161F48;
+  --cLightBlue: #275A8F;
+  --cGold: #9F7748;
+  --cRed: #E43727;
+  --cCream: #EAE5DD;
+  --cLightCream: #F4F1EC;
+  --cYellow: #F19938;
 }
 
 .dark {

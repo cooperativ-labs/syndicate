@@ -5,7 +5,6 @@ import Footer from '@src/Footer/Footer';
 import OfferingProfile from '@src/screens/OfferingProfile';
 import { getOfferingById } from '@src/utils/actions/offeringActions';
 import { getOrganization } from '@src/utils/actions/organizationActions';
-import { Metadata } from 'next';
 import Link from 'next/link';
 
 type Params = {

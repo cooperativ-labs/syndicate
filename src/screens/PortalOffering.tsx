@@ -1,6 +1,6 @@
 'use client';
 
-import { Organization, Offering, OfferingParticipant, OfferingFull } from '@/types';
+import { DocumentType, OfferingParticipant, OfferingFull, Document } from '@/types';
 
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import DashboardCard from '@src/components/cards/DashboardCard';
@@ -14,29 +14,32 @@ import FormModal from '@src/containers/FormModal';
 import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
+import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
 
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { floatWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
 import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
-import { toNormalNumber } from '@src/web3/util';
-import { useParams } from 'next/navigation';
 import React, { FC, useState } from 'react';
+import { useAsync } from 'react-use';
 import { useAccount, useBalance, useReadContracts } from 'wagmi';
 
 type PortalOfferingProps = {
   offering: OfferingFull;
-  organization: Organization;
+  documents: Document[];
 };
 
-const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => {
+const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
   const { address: userWalletAddress } = useAccount();
 
   const { min_units_per_investor, name: offeringName, id: offeringId, participants } = offering;
 
-  const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
+  const offeringDocs = documents
+    ? getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT)
+    : [];
 
+  const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
   const {
     shareContractAddress,
     swapContractAddress,
@@ -61,7 +64,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
     isOfferingManager: false,
     price_start: offering.price_start,
     investment_currency: offering.investment_currency,
-    documents: offering.documents,
+    documents: offeringDocs,
     contractSet: offering.offeringSmartContracts
   });
 
@@ -109,13 +112,12 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
     refetchOrders();
   };
 
-  const documents = offering?.documents;
-
   const offeringParticipant = participants?.find((participant: OfferingParticipant) => {
-    return participant?.addressOfferingId === userWalletAddress + offeringId;
+    return (
+      userWalletAddress &&
+      participant?.wallet_address.toLowerCase() === userWalletAddress.toLowerCase()
+    );
   });
-
-  const offeringDocs = documents && getDocumentsOfType(documents, DocumentType.OfferingDocument);
 
   if (!offeringParticipant) {
     return (
@@ -149,6 +151,13 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
       </div>
     </div>
   );
+
+  const { value: propertiesData } = useAsync(async () => {
+    const properties = await getRealEstateProperties(offering.legalEntity.id.toString());
+    return properties;
+  }, [offering.legalEntity.id]);
+
+  const realEstateProperties = propertiesData ?? [];
 
   if (isWhitelistError) {
     return whitelistError;
@@ -185,6 +194,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
           paymentTokenDecimals={paymentTokenDecimals}
           refetchOfferingInfo={refetchOfferingInfo}
           refetchAllContracts={refetchMainContracts}
+          documents={offeringDocs}
         />
       </FormModal>
 
@@ -218,7 +228,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
           <DashboardCard>
             <OfferingDetailsDisplay
               className="my-6"
-              offeringDetails={details}
+              offering={offering}
               currentSalePrice={currentSalePrice}
               isOfferingManager={false}
               contractViewDetails={{
@@ -255,7 +265,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, organization }) => 
             <DocumentList
               documents={offeringDocs}
               isOfferingManager={false}
-              offeringId={offering.id}
+              offeringId={offering.id.toString()}
             />{' '}
             <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
             {legalLinkTexts &&

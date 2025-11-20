@@ -1,57 +1,41 @@
 import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
 import { getOrganization } from '@src/utils/actions/organizationActions';
-import type { Metadata } from 'next';
 
-import ClientOrganizationPage from './ClientOrganizationPage';
+import { OrganizationsProvider } from '@contexts/OrganizationsContext';
+import NavBar from '@src/containers/NavigationBar';
+import { UserProvider } from '@contexts/UserContext';
 
-type Params = {
-  params: Promise<{ organizationId: string }> | { organizationId: string };
-};
-
-export const generateMetadata = async ({ params }: Params): Promise<Metadata> => {
-  const { organizationId } = await params;
-  if (organizationId === 'dist') return { title: 'Organization not available' };
-  const organization = await getOrganization(
-    organizationId,
-    '[organizationId]/layout(generateMetadata)'
-  );
-
-  if (!organization) {
-    return { title: 'Organization not available' };
-  }
-
-  const { name, short_description, banner_image, id } = organization;
-  // const imageUrl = image
-  //   ? `/assets/images/sharing-images/${image.url}`
-  //   : '/assets/images/share.png';
-
-  return {
-    metadataBase: new URL(process.env.NEXT_PUBLIC_SITE_URL || 'https://cooperativ.io'),
-    title: name ?? undefined,
-    openGraph: {
-      title: name ?? '',
-      type: 'website',
-      description: short_description ?? undefined,
-      url: `${process.env.NEXT_PUBLIC_SITE_URL}/${id}/portal/`,
-      images: [banner_image ?? '/assets/images/share.png']
-    },
-    twitter: {
-      title: name ?? '',
-      description: short_description ?? undefined,
-      card: 'summary_large_image',
-      images: [banner_image ?? '/assets/images/share.png']
-    }
-  };
-};
-
-const OrganizationPage = async ({ params }: Params) => {
+const OrganizationLayout = async ({
+  children,
+  params
+}: {
+  children: React.ReactNode;
+  params: Promise<{ organizationId: string }>;
+}) => {
   const { organizationId } = await params;
   const organization = await getOrganization(organizationId, '[organizationId]/layout');
-
   if (!organization) {
     return <OrganizationNotFound backHref={`/${organizationId}/portal`} />;
   }
-  return <ClientOrganizationPage organization={organization} />;
+
+  return (
+    <UserProvider user={null}>
+      <OrganizationsProvider organizations={[organization]}>
+        <div className="flex">
+          <div className="flex z-30 md:z-10 min-h-screen">
+            {/* <PortalSideBar organizations={[organization]} />{' '} */}
+          </div>
+          <div className="w-full">
+            <NavBar orgLogo={organization?.logo} orgName={organization.name} />
+
+            <div className="grow z-10">
+              <div className="mx-auto ">{children}</div>
+            </div>
+          </div>
+        </div>
+      </OrganizationsProvider>
+    </UserProvider>
+  );
 };
 
-export default OrganizationPage;
+export default OrganizationLayout;

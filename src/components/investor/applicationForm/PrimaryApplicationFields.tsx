@@ -1,70 +1,62 @@
-import { FC } from 'react';
-import Input, { defaultFieldDiv } from '../../form-components/Inputs';
-import Select from '../../form-components/Select';
+'use client';
 
-type PrimaryApplicationFieldsProps = {
-  isNonHuman: boolean;
-};
+import { useFormContext, useWatch } from 'react-hook-form';
 
-const PrimaryApplicationFields: FC<PrimaryApplicationFieldsProps> = ({ isNonHuman }) => {
-  return (
-    <>
-      {isNonHuman && (
-        <>
-          <Select
-            required
-            className={defaultFieldDiv}
-            labelText="How are these units being purchased?"
-            name="purchaseMethod"
-          >
-            <option value="">Select</option>
-            <option value="Company">Company</option>
-            <option value="Trust">Trust</option>
-            <option value="Traditional individual retirement account">
-              Traditional individual retirement account
-            </option>
-            <option value="Roth IRA">Roth IRA</option>
-            <option value="Pensions or profit-sharing trust">
-              Pensions or profit-sharing trust
-            </option>
-            <option value="Custodian for Minor">Custodian for Minor</option>
-            <option value="Employee Benefit Plan">Employee Benefit Plan</option>
-            <option value="Kheogh Plan">Kheogh Plan</option>
-            <option value="SEP retirement account">SEP retirement account</option>
-          </Select>
-          <Input
-            className={defaultFieldDiv}
-            labelText={`Name of purchasing entity manager`}
-            name="purchaserEntityManager"
-            placeholder="e.g. Moritz Zimmerman"
-            required
-          />
-          <Input
-            className={defaultFieldDiv}
-            labelText={`Title of manager`}
-            name="purchaserEntityManagerTitle"
-            placeholder="e.g. President"
-            required
-          />
-        </>
-      )}
-      {!isNonHuman && (
-        <Input
-          className={defaultFieldDiv}
-          labelText={`In which state, if any, do you pay income tax?`}
-          name="purchaserTaxState"
-          placeholder="e.g. Florida"
+import { SelectField, TextField } from './FormControls';
+import type { InvestorFormInputsType } from './InvestorApplicationForm';
+
+const purchaseMethodOptions = [
+  { label: 'Company', value: 'Company' },
+  { label: 'Trust', value: 'Trust' },
+  {
+    label: 'Traditional individual retirement account',
+    value: 'Traditional individual retirement account'
+  },
+  { label: 'Roth IRA', value: 'Roth IRA' },
+  { label: 'Pensions or profit-sharing trust', value: 'Pensions or profit-sharing trust' },
+  { label: 'Custodian for Minor', value: 'Custodian for Minor' },
+  { label: 'Employee Benefit Plan', value: 'Employee Benefit Plan' },
+  { label: 'Kheogh Plan', value: 'Kheogh Plan' },
+  { label: 'SEP retirement account', value: 'SEP retirement account' }
+];
+
+const PrimaryApplicationFields = () => {
+  const form = useFormContext<InvestorFormInputsType>();
+  const isNonHuman = useWatch({ control: form.control, name: 'isCompany' });
+
+  if (isNonHuman) {
+    return (
+      <>
+        <SelectField
+          name="purchaseMethod"
+          label="How are these units being purchased?"
+          placeholder="Select purchase method"
+          required
+          options={purchaseMethodOptions}
+        />
+        <TextField
+          name="purchaserEntityManager"
+          label="Name of purchasing entity manager"
+          placeholder="e.g. Moritz Zimmerman"
           required
         />
-      )}
-      {/* <Input
-            className={defaultFieldDiv}
-            labelText={`${isNonHuman ? `Tax ID` : `Social Security Number`}`}
-            name="taxId"
-            placeholder={`e.g. ${isNonHuman ? `85-9940320 ` : `052-98-4444`}`}
-            required
-          /> */}
-    </>
+        <TextField
+          name="purchaserEntityManagerTitle"
+          label="Title of manager"
+          placeholder="e.g. President"
+          required
+        />
+      </>
+    );
+  }
+
+  return (
+    <TextField
+      name="purchaserTaxState"
+      label="In which state, if any, do you pay income tax?"
+      placeholder="e.g. Florida"
+      required
+    />
   );
 };
 

@@ -1,223 +1,279 @@
 'use client';
 
 import { GoogleMap, Marker } from '@react-google-maps/api';
+import { zodResolver } from '@hookform/resolvers/zod';
+import { useForm, Controller } from 'react-hook-form';
+import * as z from 'zod';
+import { useRouter } from 'next/navigation';
+import React, { FC, useState } from 'react';
+import { toast } from 'sonner';
+
 import {
   assetStatusOptions,
   getCurrencyOption,
   propertyTypeOptions
 } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { ADD_RE_PROPERTY_INFO } from '@src/utils/graphQueries/reProperty';
-import { Form, Formik } from 'formik';
-import { useRouter } from 'next/navigation';
-import React, { FC, useEffect, useState } from 'react';
-import { geocodeByPlaceId } from 'react-google-places-autocomplete';
+import { addRePropertyInfo, addPropertyAddress } from '@src/utils/actions/rePropertyActions';
 
-import { CurrencyCode } from '@/types';
+import { RealEstatePropertyTypes, InvestmentStatusType } from '@/types';
 
-import CustomAddressAutocomplete, {
-  normalizeGeoAddress
-} from '../form-components/CustomAddressAutocomplete';
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import Select from '../form-components/Select';
+import AddressAutoComplete, { AddressType } from '@src/components/ui/address-autocomplete';
+import { Button } from '@src/components/ui/button';
+import { Field, FieldLabel, FieldContent, FieldError } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@src/components/ui/select';
+import { LoadingButton, ButtonLoadingState } from '../ui/loading-button';
+import { CurrencyCodeType } from '@/types';
+import { useOffering } from '@contexts/OfferingContext';
 
-type AddPropertyInfoProps = {
-  entityId: string;
-  entityOperatingCurrency: CurrencyCode;
-};
-const AddPropertyInfo: FC<AddPropertyInfoProps> = ({ entityId, entityOperatingCurrency }) => {
+const numberFieldSchema = z
+  .any()
+  .transform(val => {
+    if (val === '' || val === null || val === undefined) return null;
+    const num = Number(val);
+    return isNaN(num) ? null : num;
+  })
+  .pipe(z.number().min(0, 'Please set a positive amount').nullable())
+  .optional();
+
+const formSchema = z.object({
+  investmentStatus: z.string().min(1, 'Please select a status'),
+  propertyType: z.string().min(1, 'Please select a property type'),
+  description: z.string().optional(),
+  amenitiesDescription: z.string().optional(),
+  downPayment: numberFieldSchema,
+  lenderFees: numberFieldSchema,
+  closingCosts: numberFieldSchema
+});
+
+const AddPropertyInfo: FC = () => {
   const router = useRouter();
-  const [AddRePropertyInfo, { data, error }] = useMutation(ADD_RE_PROPERTY_INFO);
-  const [latLang, setLatLang] = useState({ lat: 0, lng: 0 });
-  const [autocompleteResults, setAutocompleteResults] = useState<google.maps.GeocoderResult[]>([]);
-  const [inputAddress, setInputAddress] = useState<{ value: any }>();
-  const [alerted, setAlerted] = useState<boolean>(false);
+  const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
 
-  if (error && !alerted) {
-    alert(`Oops. Looks like something went wrong: ${error.message}`);
-    setAlerted(true);
-  }
+  const { offering } = useOffering();
+  const entityId = offering.legalEntity.id;
+  const entityOperatingCurrency = offering.investment_currency;
+  const [address, setAddress] = useState<AddressType>({
+    address1: '',
+    address2: '',
+    formattedAddress: '',
+    city: '',
+    region: '',
+    postalCode: '',
+    country: '',
+    lat: 0,
+    lng: 0
+  });
+  const [searchInput, setSearchInput] = useState('');
 
-  if (data) {
-    router.back();
-  }
+  const {
+    register,
+    control,
+    handleSubmit,
+    getValues,
+    formState: { errors, isSubmitting }
+  } = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
+    defaultValues: {
+      investmentStatus: '',
+      propertyType: '',
+      description: '',
+      amenitiesDescription: '',
+      downPayment: null,
+      lenderFees: null,
+      closingCosts: null
+    }
+  });
 
-  const placeId = inputAddress && inputAddress.value.place_id;
-  useEffect(() => {
-    geocodeByPlaceId(placeId)
-      .then(results => {
-        setAutocompleteResults(results);
-        const lat = results[0]?.geometry.location.lat();
-        const lng = results[0]?.geometry.location.lng();
-        setLatLang({ lat: lat, lng: lng });
-      })
-      .catch(error => {
-        return error;
+  const onSubmit = async () => {
+    const values = getValues();
+    if (!address.city || !address.region) {
+      toast.error('Please select a valid address');
+      return;
+    }
+
+    setButtonState('loading');
+    try {
+      const propertyResult = await addRePropertyInfo({
+        entityId: entityId.toString(),
+        propertyType: values.propertyType as RealEstatePropertyTypes,
+        investmentStatus: values.investmentStatus as InvestmentStatusType,
+        amenitiesDescription: values.amenitiesDescription,
+        description: values.description,
+        downPayment: values.downPayment,
+        lenderFees: values.lenderFees,
+        closingCosts: values.closingCosts
       });
-  }, [placeId]);
 
-  const { firstAddressLine, secondAddressLine, city, state, postalCode, country } =
-    normalizeGeoAddress(autocompleteResults);
+      if (propertyResult.records && propertyResult.records.length > 0) {
+        const propertyId = propertyResult.records[0].id;
+
+        await addPropertyAddress({
+          propertyId,
+          addressLine1: address.address1,
+          addressLine2: address.address2,
+          city: address.city,
+          stateProvince: address.region,
+          postalCode: address.postalCode,
+          country: address.country,
+          lat: address.lat,
+          lng: address.lng,
+          addressLabel: 'Property Address'
+        });
+
+        toast.success('Property added successfully');
+        setButtonState('default');
+        router.back();
+      }
+    } catch (error: any) {
+      setButtonState('default');
+      toast.error(`Error adding property: ${error.message}`);
+    }
+  };
 
   return (
-    <Formik
-      initialValues={{
-        propertyType: '',
-        investmentStatus: '',
-        amenitiesDescription: '',
-        description: '',
-        downPayment: null,
-        lenderFees: null,
-        closingCosts: null,
-        jurisdiction: '',
-        addressAutocomplete: ''
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (values.downPayment && parseInt(values.downPayment, 10) < 0) {
-          errors.downPayment = 'Please set a positive amount';
-        }
-        if (values.lenderFees && parseInt(values.lenderFees, 10) < 0) {
-          errors.lenderFees = 'Please set a positive amount';
-        }
+    <form className="space-y-6">
+      <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">Add a real estate property</h2>
+      <hr className="my-6" />
 
-        if (values.closingCosts && parseInt(values.closingCosts, 10) < 0) {
-          errors.closingCosts = 'Please set a positive amount';
-        }
-        if (!city || !state) {
-          errors.addressAutocomplete = 'Please select a valid address';
-        }
-
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting }) => {
-        setSubmitting(true);
-        AddRePropertyInfo({
-          variables: {
-            currentDate: currentDate,
-            entityId: entityId,
-            propertyType: values.propertyType,
-            investmentStatus: values.investmentStatus,
-            amenitiesDescription: values.amenitiesDescription,
-            description: values.description,
-            downPayment: values.downPayment,
-            lenderFees: values.lenderFees,
-            closingCosts: values.closingCosts,
-            addressLine1: firstAddressLine,
-            addressLine2: secondAddressLine,
-            city: city,
-            stateProvince: state,
-            postalCode: postalCode,
-            country: country,
-            lat: latLang.lat,
-            lng: latLang.lng
-          }
-        });
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting, values }) => (
-        <Form className="">
-          <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">
-            Add a real estate property
-          </h2>
-          <hr className="my-6" />
-          <Select
-            required
-            className={defaultFieldDiv}
-            labelText="Status of property"
+      <Field>
+        <FieldLabel>Status of property</FieldLabel>
+        <FieldContent>
+          <Controller
+            control={control}
             name="investmentStatus"
-          >
-            <option value="">Select a status</option>
-            {assetStatusOptions.map((type, i) => {
-              return (
-                <option key={i} value={type.value}>
-                  {type.name}
-                </option>
-              );
-            })}
-          </Select>
-
-          <Select
-            required
-            className={defaultFieldDiv}
-            labelText="Type of property"
-            name="propertyType"
-          >
-            <option value="">Select an property type</option>
-            {propertyTypeOptions.map((type, i) => {
-              return (
-                <option key={i} value={type.value}>
-                  {type.name}
-                </option>
-              );
-            })}
-          </Select>
-          <Input
-            className={defaultFieldDiv}
-            textArea
-            labelText="Describe this property generally"
-            name="description"
-            placeholder="e.g. Super sweet home with super sweet views"
-          />
-
-          <Input
-            className={defaultFieldDiv}
-            textArea
-            labelText="Describe this property's amenities"
-            name="amenitiesDescription"
-            placeholder="e.g. swimming pool, 3 parking spaces, central air-conditioning"
-          />
-
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Down payment (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="downPayment"
-          />
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Lender's fees (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="lenderFees"
-          />
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Closing costs (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="closingCosts"
-          />
-          <div>
-            <hr className="my-6" />
-            <h3 className="text-md md:mt-8 text-blue-900 font-semibold mb-4">{`This property's address`}</h3>
-            <CustomAddressAutocomplete
-              name="addressAutocomplete"
-              value={inputAddress}
-              setValue={setInputAddress}
-            />
-            {latLang.lat && (
-              <div className="mt-4">
-                <GoogleMap
-                  mapContainerStyle={{ height: '300px', width: '100%' }}
-                  center={latLang}
-                  zoom={14}
-                >
-                  <Marker position={latLang} />
-                </GoogleMap>
-              </div>
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a status" />
+                </SelectTrigger>
+                <SelectContent>
+                  {assetStatusOptions.map((type, i) => (
+                    <SelectItem key={i} value={type.value}>
+                      {type.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             )}
-          </div>
+          />
+        </FieldContent>
+        <FieldError errors={[errors.investmentStatus]} />
+      </Field>
 
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4 w-full"
-          >
-            {`Create ${firstAddressLine ? firstAddressLine : `${city}, ${state}`}`}
-          </button>
-        </Form>
-      )}
-    </Formik>
+      <Field>
+        <FieldLabel>Type of property</FieldLabel>
+        <FieldContent>
+          <Controller
+            control={control}
+            name="propertyType"
+            render={({ field }) => (
+              <Select onValueChange={field.onChange} defaultValue={field.value}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a property type" />
+                </SelectTrigger>
+                <SelectContent>
+                  {propertyTypeOptions.map((type, i) => (
+                    <SelectItem key={i} value={type.value}>
+                      {type.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
+          />
+        </FieldContent>
+        <FieldError errors={[errors.propertyType]} />
+      </Field>
+
+      <Field>
+        <FieldLabel>Describe this property generally</FieldLabel>
+        <FieldContent>
+          <Input
+            placeholder="e.g. Super sweet home with super sweet views"
+            {...register('description')}
+          />
+        </FieldContent>
+        <FieldError errors={[errors.description]} />
+      </Field>
+
+      <Field>
+        <FieldLabel>Describe this property's amenities</FieldLabel>
+        <FieldContent>
+          <Input
+            placeholder="e.g. swimming pool, 3 parking spaces"
+            {...register('amenitiesDescription')}
+          />
+        </FieldContent>
+        <FieldError errors={[errors.amenitiesDescription]} />
+      </Field>
+
+      <Field>
+        <FieldLabel>Down payment ({getCurrencyOption(entityOperatingCurrency)?.symbol})</FieldLabel>
+        <FieldContent>
+          <Input type="number" {...register('downPayment')} />
+        </FieldContent>
+        <FieldError errors={[errors.downPayment]} />
+      </Field>
+
+      <Field>
+        <FieldLabel>
+          Lender's fees ({getCurrencyOption(entityOperatingCurrency)?.symbol})
+        </FieldLabel>
+        <FieldContent>
+          <Input type="number" {...register('lenderFees')} />
+        </FieldContent>
+        <FieldError errors={[errors.lenderFees]} />
+      </Field>
+
+      <Field>
+        <FieldLabel>
+          Closing costs ({getCurrencyOption(entityOperatingCurrency)?.symbol})
+        </FieldLabel>
+        <FieldContent>
+          <Input type="number" {...register('closingCosts')} />
+        </FieldContent>
+        <FieldError errors={[errors.closingCosts]} />
+      </Field>
+
+      <div>
+        <hr className="my-6" />
+        <h3 className="text-md md:mt-8 text-blue-900 font-semibold mb-4">{`This property's address`}</h3>
+        <AddressAutoComplete
+          address={address}
+          setAddress={setAddress}
+          searchInput={searchInput}
+          setSearchInput={setSearchInput}
+          dialogTitle="Select Address"
+        />
+        {address.lat !== 0 && (
+          <div className="mt-4">
+            <GoogleMap
+              mapContainerStyle={{ height: '300px', width: '100%' }}
+              center={{ lat: address.lat, lng: address.lng }}
+              zoom={14}
+            >
+              <Marker position={{ lat: address.lat, lng: address.lng }} />
+            </GoogleMap>
+          </div>
+        )}
+      </div>
+
+      <LoadingButton
+        onClick={handleSubmit(onSubmit)}
+        disabled={isSubmitting}
+        className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
+        text={`Create ${address.address1 ? address.address1 : address.city ? `${address.city}, ${address.region}` : 'Property'}`}
+        loadingText="Creating Property..."
+        buttonState={buttonState}
+      />
+    </form>
   );
 };
 

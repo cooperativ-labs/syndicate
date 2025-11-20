@@ -75,7 +75,7 @@ export async function addOfferingParticipantWithApplication({
   applicationText,
   applicationTitle,
   signature,
-  offeringParticipantId,
+  chainId,
 }: {
   dateSigned: string;
   addressOfferingId: string;
@@ -89,27 +89,37 @@ export async function addOfferingParticipantWithApplication({
   applicationText: string;
   applicationTitle: string;
   signature: string;
-  offeringParticipantId: string;
+  chainId: number;
 }): Promise<void> {
   const supabase = createClient();
 
-  // Insert participant
-  const { error: pErr } = await supabase.from("offering_participant").insert({
-    address_offering_id: addressOfferingId,
-    name: name ?? null,
-    offering_id: Number(offeringId),
-    wallet_address: walletAddress,
-    min_pledge: minPledge ?? null,
-    max_pledge: maxPledge ?? null,
-  });
+  const { data: participant, error: pErr } = await supabase
+    .from("offering_participant")
+    .insert(
+      {
+        address_offering_id: addressOfferingId,
+        name: name ?? null,
+        offering_id: Number(offeringId),
+        wallet_address: walletAddress,
+        min_pledge: minPledge ?? null,
+        max_pledge: maxPledge ?? null,
+        chain_id: chainId,
+      },
+      { count: "exact" },
+    )
+    .select("id")
+    .single();
   if (pErr) throw pErr;
+  if (!participant?.id) {
+    throw new Error("Failed to create offering participant");
+  }
 
   // Insert application with nested document (flattened as two steps)
   const { data: appDoc, error: docErr } = await supabase
     .from("document")
     .insert({
       text: applicationText,
-      date: dateSigned,
+      date: dateSigned || null,
       type: "AGREEMENT",
       owner_id: Number(offeringEntityId),
       offering_unique_id: offeringUniqueId,
@@ -120,16 +130,16 @@ export async function addOfferingParticipantWithApplication({
   if (docErr) throw docErr;
 
   const { error: appErr } = await supabase.from("investor_application").insert({
-    offering_participant_id: offeringParticipantId,
+    offering_participant_id: participant.id,
     application_doc_id: appDoc.id,
   });
   if (appErr) throw appErr;
 
   // Insert document signatory
   const { error: sigErr } = await supabase.from("document_signatory").insert({
-    document_id: offeringParticipantId,
+    document_id: appDoc.id,
     signature,
-    date: dateSigned,
+    date: dateSigned || null,
     archived: false,
     signer_address: walletAddress,
   });

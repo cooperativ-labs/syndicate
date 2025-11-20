@@ -6,14 +6,19 @@ import Tab from '@src/components/offering/tabs/Tab';
 import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
-import { LegalEntityWithJurisdiction, OfferingWithParticipants, RealEstateProperty } from '@/types';
+import {
+  LegalEntityWithJurisdiction,
+  OfferingWithLegalEntity,
+  OfferingWithParticipants,
+  RealEstateProperty
+} from '@/types';
 import { getEntityDocumentsById } from '@src/utils/actions/documentActions';
 
 type EntityTabContainerProps = {
   operatingCurrency: string | null;
   organizationId: string | number;
   properties?: RealEstateProperty[];
-  offerings: OfferingWithParticipants[];
+  offerings: OfferingWithLegalEntity[];
   subsidiaries: LegalEntityWithJurisdiction[] | null;
   entityId: string | number;
 };
@@ -57,11 +62,7 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({
       <div>
         {activeTab === 'offerings' && (
           <div className="mt-8">
-            <OfferingsList
-              offerings={offerings}
-              operatingCurrency={operatingCurrency}
-              organizationId={organizationId}
-            />
+            <OfferingsList offerings={offerings} organizationId={organizationId} />
           </div>
         )}{' '}
         {/* {activeTab === 'properties' && (

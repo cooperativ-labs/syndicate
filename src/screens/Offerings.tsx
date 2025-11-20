@@ -16,7 +16,7 @@ const Offerings: FC<{
   offerings: OfferingFull[];
   legalEntities: { legal_name: string | null; id: number; offeringCount: number }[] | null;
 }> = ({ offerings, legalEntities }) => {
-  const { isEditorOrAdmin } = useOrganizations();
+  const { isEditorOrAdmin, chosenOrganizationId } = useOrganizations();
   const [entityFormOpen, setEntityFormOpen] = React.useState(false);
 
   const hasOfferings = offerings && offerings.length > 0;
@@ -27,7 +27,7 @@ const Offerings: FC<{
         <section>
           {hasOfferings ? (
             <>
-              <OfferingsList offerings={offerings} />
+              <OfferingsList offerings={offerings} organizationId={chosenOrganizationId} />
               {entityFormOpen ? (
                 <DashboardCard className="mt-5">
                   <div className="flex justify-between">

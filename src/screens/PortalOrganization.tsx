@@ -1,31 +1,21 @@
 'use client';
 
-import LoadingModal from '@src/components/loading/ModalLoading';
 import OfferingsList from '@src/components/offering/OfferingsList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import React, { FC } from 'react';
 import { useAccount } from 'wagmi';
 
-import { OrganizationComplete } from '@/types';
+import { OfferingWithLegalEntity, OrganizationComplete } from '@/types';
 
 const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
   const { address: userWalletAddress } = useAccount();
 
-  if (!organization) {
-    return (
-      <div>
-        <LoadingModal />
-      </div>
-    );
-  }
-
+  const organizationId = organization.id;
   const participantOfferings = organization.legalEntities
     .flatMap(entity => entity.offerings)
     .filter(offering =>
-      offering.offeringParticipants.some(
-        participant => participant.walletAddress === userWalletAddress
-      )
-    );
+      offering.participants.some(participant => participant.walletAddress === userWalletAddress)
+    ) as OfferingWithLegalEntity[];
 
   return (
     <div
@@ -36,7 +26,7 @@ const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organi
         {participantOfferings && (
           <div>
             <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your investments: </h2>
-            <OfferingsList offerings={participantOfferings} />
+            <OfferingsList offerings={participantOfferings} organizationId={organizationId} />
           </div>
         )}
         <></>

@@ -23,13 +23,7 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
     legalEntities
   } = organization;
 
-  const offerings =
-    legalEntities &&
-    legalEntities
-      .map(entity => {
-        return entity?.offerings;
-      })
-      .flat();
+  const offerings = legalEntities.flatMap(entity => entity.offerings);
 
   return (
     <div className="flex min-h-screen ">
@@ -82,13 +76,23 @@ const OrganizationProfile: FC<OrganizationProfileProps> = ({ organization }) => 
 
             <hr className="my-10" />
             <div className="flex flex-col md:flex-row md:flex-wrap justify center gap-5">
-              {offerings?.map((offering, i) => {
-                return (
-                  <div key={i}>
-                    <OfferingCard offering={offering} organization={organization} />
-                  </div>
-                );
-              })}
+              {offerings.length > 0 ? (
+                offerings.map((offering, i) => {
+                  return (
+                    <div key={i}>
+                      <OfferingCard
+                        offering={offering}
+                        organizationId={organization.id.toString()}
+                        operatingCurrency={offering.legalEntity?.operating_currency}
+                      />
+                    </div>
+                  );
+                })
+              ) : (
+                <div className="text-center text-gray-500">
+                  This organization does not have any available offerings.
+                </div>
+              )}
             </div>
           </div>
         </div>

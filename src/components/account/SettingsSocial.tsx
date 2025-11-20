@@ -1,78 +1,115 @@
+'use client';
+
 import { socialAccountOptions } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
 import React, { FC } from 'react';
+import { Controller, useForm } from 'react-hook-form';
 
 import { OrganizationComplete } from '@/types';
 
-import Input from '../form-components/Inputs';
-import Select from '../form-components/Select';
-
-const fieldDiv = 'pt-3 my-2 bg-opacity-0';
+import { Button } from '../ui/button';
+import {
+  Field,
+  FieldContent,
+  FieldError,
+  FieldLabel
+} from '../ui/field';
+import { Input } from '../ui/input';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '../ui/select';
 
 type SettingsSocialProps = {
   organization: OrganizationComplete;
 };
+
+type SocialFormValues = {
+  url: string;
+  type: string;
+};
+
 const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
+  const {
+    register,
+    handleSubmit,
+    reset,
+    control,
+    formState: { errors, isSubmitting }
+  } = useForm<SocialFormValues>({
+    defaultValues: {
+      url: '',
+      type: ''
+    }
+  });
+
+  const onSubmit = async (values: SocialFormValues) => {
+    try {
+      await addSocials({
+        variables: {
+          currentDate: currentDate,
+          organizationId: organization.id,
+          url: values.url,
+          type: values.type
+        }
+      });
+      reset();
+    } catch (error) {
+      console.error('Failed to add social account', error);
+    }
+  };
+
   return (
-    <Formik
-      initialValues={{
-        url: '',
-        type: ''
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.url) {
-          errors.url = 'Please include a url';
-        }
-        if (!values.type) {
-          errors.type = 'Please select a platform';
-        }
-        return errors;
-      }}
-      onSubmit={(values, { setSubmitting, resetForm }) => {
-        setSubmitting(true);
-        addSocials({
-          variables: {
-            currentDate: currentDate,
-            organizationId: organization.id,
-            url: values.url,
-            type: values.type
-          }
-        });
-        setSubmitting(false);
-        resetForm();
-      }}
-    >
-      {({ isSubmitting }) => (
-        <Form className="grid grid-cols-5 gap-3 relative">
-          <Select className={`${fieldDiv} col-span-2`} labelText="Platform" name="type">
-            <option value="">Select a platform</option>
-            {socialAccountOptions.map(option => {
-              return (
-                <option key={option.value} value={option.value}>
-                  {option.name}
-                </option>
-              );
-            })}
-          </Select>
-          <Input
-            className={`${fieldDiv} col-span-2`}
-            type="text"
-            labelText="URL"
-            name="url"
-            placeholder="url"
+    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-5 gap-3 relative">
+      <Field className="col-span-2">
+        <FieldLabel>Platform</FieldLabel>
+        <FieldContent>
+          <Controller
+            name="type"
+            control={control}
+            rules={{ required: 'Please select a platform.' }}
+            render={({ field }) => (
+              <Select value={field.value} onValueChange={field.onChange}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Select a platform" />
+                </SelectTrigger>
+                <SelectContent>
+                  {socialAccountOptions.map(option => (
+                    <SelectItem key={option.value} value={option.value}>
+                      {option.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
           />
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
-          >
-            Add
-          </button>
-        </Form>
-      )}
-    </Formik>
+          {errors.type && <FieldError errors={[{ message: errors.type.message }]} />}
+        </FieldContent>
+      </Field>
+
+      <Field className="col-span-2">
+        <FieldLabel>URL</FieldLabel>
+        <FieldContent>
+          <Input
+            {...register('url', { required: 'Please include a url.' })}
+            type="url"
+            placeholder="https://example.com"
+          />
+          {errors.url && <FieldError errors={[{ message: errors.url.message }]} />}
+        </FieldContent>
+      </Field>
+
+      <Button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
+      >
+        {isSubmitting ? 'Adding...' : 'Add'}
+      </Button>
+    </form>
   );
 };
 

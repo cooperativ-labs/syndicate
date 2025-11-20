@@ -398,6 +398,61 @@ export const addOrganizationEmail = async ({
   revalidatePath(`/manager/${organizationId}/settings`, "page");
 };
 
+export const updateOrganizationEmail = async ({
+  organizationId,
+  address,
+  name,
+  isPublic,
+}: {
+  organizationId: string;
+  address: string;
+  name?: string | null;
+  isPublic?: boolean;
+}): Promise<void> => {
+  const supabase = createClient();
+  const updateData: { name?: string | null; is_public?: boolean } = {};
+  
+  if (name !== undefined) {
+    updateData.name = name;
+  }
+  if (isPublic !== undefined) {
+    updateData.is_public = isPublic;
+  }
+
+  const { error } = await supabase
+    .from("email_address")
+    .update(updateData)
+    .eq("address", address)
+    .eq("organization_id", Number(organizationId));
+  
+  if (error) {
+    console.error("updateOrganizationEmail Error", error);
+    throw new Error(error.message);
+  }
+  revalidatePath(`/manager/${organizationId}/settings`, "page");
+};
+
+export const removeOrganizationEmail = async ({
+  organizationId,
+  address,
+}: {
+  organizationId: string;
+  address: string;
+}): Promise<void> => {
+  const supabase = createClient();
+  const { error } = await supabase
+    .from("email_address")
+    .delete()
+    .eq("address", address)
+    .eq("organization_id", Number(organizationId));
+  
+  if (error) {
+    console.error("removeOrganizationEmail Error", error);
+    throw new Error(error.message);
+  }
+  revalidatePath(`/manager/${organizationId}/settings`, "page");
+};
+
 export const removeTeamMember = async ({
   organizationId,
   organizationUserId,

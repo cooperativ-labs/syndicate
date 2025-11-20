@@ -124,3 +124,4 @@ CREATE POLICY "Admins and editors can delete offering assets" ON storage.objects
     )
   );
 
+

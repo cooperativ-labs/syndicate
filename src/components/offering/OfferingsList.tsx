@@ -1,19 +1,17 @@
 import React, { FC } from 'react';
 
-import { OfferingWithParticipants } from '@/types';
+import { OfferingWithLegalEntity } from '@/types';
 
 import OfferingCard from './OfferingCard';
 
 type OfferingsListProps = {
-  offerings: OfferingWithParticipants[];
-  operatingCurrency: string | null;
-  organizationId: string | number;
+  offerings: OfferingWithLegalEntity[];
+  organizationId: string | number | null;
 };
-const OfferingsList: FC<OfferingsListProps> = ({
-  offerings,
-  operatingCurrency,
-  organizationId
-}) => {
+const OfferingsList: FC<OfferingsListProps> = ({ offerings, organizationId }) => {
+  if (!organizationId) {
+    return <div>Organization not found</div>;
+  }
   return (
     <div className="flex flex-col md:flex-row md:flex-wrap justify-start gap-4">
       {offerings.map((offering, i: number) => {
@@ -22,7 +20,7 @@ const OfferingsList: FC<OfferingsListProps> = ({
             <OfferingCard
               offering={offering}
               organizationId={organizationId}
-              operatingCurrency={operatingCurrency}
+              operatingCurrency={offering.legalEntity?.operating_currency}
             />
           </div>
         );

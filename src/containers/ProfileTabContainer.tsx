@@ -29,22 +29,22 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering, realEstat
   }
 
   const detailsDescriptions = sortByOrder(
-    offering.offeringProfileDescriptions?.filter(
+    offering.descriptions?.filter(
       description => description?.section === OfferingTabSection.DETAILS
     ) as OfferingDescriptionText[]
   );
   const termsDescriptions = sortByOrder(
-    offering.offeringProfileDescriptions?.filter(
+    offering.descriptions?.filter(
       description => description?.section === OfferingTabSection.TERMS
     ) as OfferingDescriptionText[]
   );
   const offerorInfoDescriptions = sortByOrder(
-    offering.offeringProfileDescriptions?.filter(
+    offering.descriptions?.filter(
       description => description?.section === OfferingTabSection.OFFEROR_INFO
     ) as OfferingDescriptionText[]
   );
   const disclosuresDescriptions = sortByOrder(
-    offering.offeringProfileDescriptions?.filter(
+    offering.descriptions?.filter(
       description => description?.section === OfferingTabSection.DISCLOSURES
     ) as OfferingDescriptionText[]
   );

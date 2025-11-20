@@ -1,214 +1,186 @@
-import React, { FC } from 'react';
+'use client';
 
-import Checkbox from '../../form-components/Checkbox';
-import Input, { defaultFieldDiv } from '../../form-components/Inputs';
-import Select from '../../form-components/Select';
+import { FieldDescription, FieldSeparator } from '@src/components/ui/field';
+import React from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
+
+import { CheckboxField, SelectField, TextField, TextareaField } from './FormControls';
+import type { InvestorFormInputsType } from './InvestorApplicationForm';
 
 type AdditionalApplicationFieldsProps = {
-  values: any;
   offeringEntityName: string;
 };
 
-const AdditionalApplicationFields: FC<AdditionalApplicationFieldsProps> = ({
-  values,
+const accreditationOptions = [
+  { label: 'Bank, insurance, or investment company', value: 'bank' },
+  { label: 'Employee benefit plan', value: 'employee-benefit-plan' },
+  {
+    label: 'Charitable organization with assets over $5,000,000',
+    value: 'charitable-organization'
+  },
+  {
+    label: 'Business where all equity owners are accredited investors',
+    value: 'all-equity-owners-accredited'
+  },
+  { label: 'Trust with assets over $5,000,000 not formed for this investment', value: 'trust-5m' },
+  { label: 'Other (explain below)', value: 'other' }
+];
+
+const frequencyOptions = [
+  { label: 'Often', value: 'often' },
+  { label: 'Occasionally', value: 'occasionally' },
+  { label: 'Seldom', value: 'seldom' },
+  { label: 'Never', value: 'never' }
+];
+
+const AdditionalApplicationFields: React.FC<AdditionalApplicationFieldsProps> = ({
   offeringEntityName
 }) => {
+  const form = useFormContext<InvestorFormInputsType>();
+  const isCompany = useWatch({ control: form.control, name: 'isCompany' });
+  const purchaserAccredited = useWatch({ control: form.control, name: 'purchaserAccredited' });
+  const purchaserAccreditedType = useWatch({
+    control: form.control,
+    name: 'purchaserAccreditedType'
+  });
+  const purchaserSophisticated = useWatch({
+    control: form.control,
+    name: 'purchaserSophisticated'
+  });
+  const purchaserSophisticatedSelf = useWatch({
+    control: form.control,
+    name: 'purchaserSophisticatedSelf'
+  });
+  const workingWithAdvisor = useWatch({ control: form.control, name: 'workingWithAdvisor' });
+  const purchaserIsWithOfferingCompany = useWatch({
+    control: form.control,
+    name: 'purchaserIsWithOfferingCompany'
+  });
+
   return (
     <>
-      <h2 className="text-2xl md:mt-8 text-blue-900 font-semibold">{`Information for investor approval`}</h2>
-      {/* INDIVIDUALS PERSONAL INFO */}
-      {!values.isCompany && (
+      <h2 className="text-2xl md:mt-8 text-blue-900 font-semibold">
+        Information for investor approval
+      </h2>
+      {!isCompany && (
         <>
-          <Input
-            className={defaultFieldDiv}
-            labelText={`Your current age`}
+          <TextField
             name="purchaserAge"
-            type="number"
+            label="Your current age"
             placeholder="e.g. 35"
+            type="number"
             required
           />
-          <Input
-            className={defaultFieldDiv}
-            labelText={`List all the states where you have maintained a principal residence during the past two years and the dates during which the purchaser resided there.`}
+          <TextareaField
             name="purchaserPrincipleResidence"
-            placeholder="e.g. "
-            textArea
+            label="List the states where you have maintained a principal residence during the past two years and the dates during which you resided there."
           />
-          <Input
-            className={defaultFieldDiv}
-            labelText={`Please disclose if you maintain a house or apartment in any other state and if so disclose which state.`}
+          <TextareaField
             name="purchaserResidenceHistory"
-            placeholder="e.g. "
-            textArea
+            label="If you maintain a house or apartment in any other state, please disclose which state."
           />
         </>
       )}
-      {/* INVESTOR QUALIFICATION*/}
-      <div className="mt-5 text-lg">Check all of the following that apply:</div>
-      <Checkbox
-        labelText="You are an accredited investor."
-        className=""
-        fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
-        name="purchaserAccredited"
-        checked={values.purchaserAccredited}
-        sideLabel
-      />
-      {values.isCompany ? (
-        <div>
-          <Select
-            required
-            className={defaultFieldDiv}
-            labelText="What definition of accredited investor applies to you?"
-            name="purchaserAccreditedType"
-          >
-            <option value="">Please select</option>
-            <option value="a bank, insurance, or investment company.">
-              Bank, insurance, or investment company.
-            </option>
-            <option value="an Employee benefit plan.">Employee benefit plan.</option>
-            <option value="a charitable organization with excess of $5,000,000 in funds.">
-              Charitable organization with excess of $5,000,000 in funds.
-            </option>
-            <option value="a business where all equity owners classify as accredited investors.">
-              A business where all equity owners classify as accredited investors.
-            </option>
-            <option value="a trust with assets in excess of $5,000,000 not created to acquire this investment.">
-              A trust with assets in excess of $5,000,000 not created to acquire this investment.
-            </option>
-            <option value="a">other (explain below)</option>
-          </Select>
-          {values.purchaserAccreditedType === 'a' && (
-            <Input
-              labelText={`Please explain`}
-              className={defaultFieldDiv}
-              name="purchaserAccreditedTypeOther"
-              textArea
-            />
-          )}
-        </div>
-      ) : (
-        <div>
-          <Checkbox
-            labelText="Your net worth in excess of 1 million USD."
-            className=""
-            fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
-            name="purchaserNetWorth"
-            checked={values.purchaserNetWorth}
-            sideLabel
-          />
-          <Checkbox
-            labelText="Your income last year in excess of $200k single or $300k joint."
-            className=""
-            fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
-            name="purchaserIncome"
-            checked={values.purchaserIncome}
-            sideLabel
-          />
-        </div>
-      )}
-      {!values.isCompany && (
+
+      <div className="mt-6 text-lg font-semibold">Check all of the following that apply:</div>
+      <CheckboxField name="purchaserAccredited" label="You are an accredited investor." />
+
+      {isCompany ? (
         <>
-          <Checkbox
-            labelText="You are a sophisticated investor."
-            className=""
-            fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
-            name="purchaserSophisticated"
-            checked={values.purchaserSophisticated}
-            sideLabel
-          />
-          {values.purchaserSophisticated && (
-            <div className="ml-5 mb-5">
-              <Checkbox
-                labelText="You have the required knowledge of financial matters, as defined by the SEC."
-                className=""
-                fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
-                name="purchaserSophisticatedSelf"
-                checked={values.purchaserSophisticatedSelf && values.purchaserSophisticated}
-                sideLabel
+          {purchaserAccredited && (
+            <>
+              <SelectField
+                name="purchaserAccreditedType"
+                label="What definition of accredited investor applies to you?"
+                placeholder="Select definition"
+                required
+                options={accreditationOptions}
               />
-              {values.purchaserSophisticatedSelf && (
-                <Input
-                  className={`${defaultFieldDiv} mb-3`}
-                  labelText={`Briefly describe the principal positions held during the last 10 years or since graduation that
-                demonstrate related experience in financial and business matters.`}
+              {purchaserAccreditedType === 'other' && (
+                <TextareaField name="purchaserAccreditedTypeOther" label="Please explain" />
+              )}
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          {purchaserAccredited && (
+            <FieldDescription className="mt-2">
+              Please let us know which of the following apply.
+            </FieldDescription>
+          )}
+          <CheckboxField
+            name="purchaserNetWorth"
+            label="Your net worth is in excess of $1,000,000."
+            disabled={!purchaserAccredited}
+          />
+          <CheckboxField
+            name="purchaserIncome"
+            label="Your income last year exceeded $200k (single) or $300k (joint)."
+            disabled={!purchaserAccredited}
+          />
+        </>
+      )}
+
+      {!isCompany && (
+        <>
+          <CheckboxField name="purchaserSophisticated" label="You are a sophisticated investor." />
+          {purchaserSophisticated && (
+            <div className="ml-5 mb-5 space-y-4">
+              <CheckboxField
+                name="purchaserSophisticatedSelf"
+                label="You have the required knowledge of financial matters, as defined by the SEC."
+              />
+              {purchaserSophisticatedSelf && (
+                <TextareaField
                   name="purchaserExperienceFinancial"
-                  textArea
+                  label="Briefly describe the principal positions held during the last 10 years (or since graduation) that demonstrate experience in financial and business matters."
                   required
                 />
               )}
-              <Checkbox
-                labelText="You are working with a Professional Advisor."
-                className=""
-                fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
+              <CheckboxField
                 name="workingWithAdvisor"
-                checked={values.workingWithAdvisor && values.purchaserSophisticated}
-                sideLabel
+                label="You are working with a professional advisor."
+                description="Please complete the advisor section below."
               />
-              {values.workingWithAdvisor && 'Please complete advisor section below.'}
-
-              <hr className="my-4" />
+              <FieldSeparator />
             </div>
           )}
-          <Checkbox
-            labelText={`You are a director, officer, or partner of ${offeringEntityName}.`}
-            className=""
-            fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
+          <CheckboxField
             name="purchaserIsWithOfferingCompany"
-            checked={values.purchaserNonUS}
-            sideLabel
+            label={`You are a director, officer, or partner of ${offeringEntityName}.`}
+            trueValue="yes"
+            falseValue=""
           />
         </>
       )}
-      <Checkbox
-        labelText="The purchaser is NOT a US-Person or Entity."
-        className=""
-        fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
-        name="purchaserNonUs"
-        checked={values.purchaserNonUS}
-        sideLabel
-      />
-      <Input
-        labelText={`Describe any relationship, whether personal or business, you have with the Company or any of its
-              members or principals or directors.`}
-        required={values.purchaserIsWithOfferingCompany}
-        className={defaultFieldDiv}
+
+      <CheckboxField name="purchaserNonUs" label="The purchaser is NOT a US person or entity." />
+
+      <TextareaField
         name="purchaserPriorRelationship"
-        placeholder="e.g. "
-        textArea
-      />{' '}
-      <Input
-        labelText={`Please include any additional information that may assist the Company in determining whether you are
-            able to evaluate the risks and merits of this investment.`}
-        className={defaultFieldDiv}
-        name="purchaserExperienceOther"
-        placeholder="e.g. "
-        textArea
+        label="Describe any relationship, whether personal or business, you have with the Company or any of its members, principals, or directors."
+        required={Boolean(purchaserIsWithOfferingCompany)}
       />
-      <div className="m-4"></div>
-      <Select
-        labelText="Indicate the frequency of your investment in non-marketable securities."
-        required
-        className={defaultFieldDiv}
+      <TextareaField
+        name="purchaserExperienceOther"
+        label="Please include any additional information that may assist the Company in determining whether you can evaluate the risks and merits of this investment."
+      />
+
+      <SelectField
         name="purchaserExperienceSecurities"
-      >
-        <option value="">Please select</option>
-        <option value="often">Often</option>
-        <option value="occasionally">Occasionally</option>
-        <option value="seldom">Seldom</option>
-        <option value="never">Never</option>
-      </Select>
-      <Select
-        labelText="Indicate the frequency of your investment in limited liability companies or limited partnerships."
+        label="Indicate the frequency of your investment in non-marketable securities."
+        placeholder="Select frequency"
         required
-        className={defaultFieldDiv}
+        options={frequencyOptions}
+      />
+      <SelectField
         name="purchaserExperienceLLCs"
-      >
-        <option value="">Please select</option>
-        <option value="often">Often</option>
-        <option value="occasionally">Occasionally</option>
-        <option value="seldom">Seldom</option>
-        <option value="never">Never</option>
-      </Select>
+        label="Indicate the frequency of your investment in limited liability companies or limited partnerships."
+        placeholder="Select frequency"
+        required
+        options={frequencyOptions}
+      />
     </>
   );
 };

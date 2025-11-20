@@ -1,78 +1,75 @@
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
-import NonInput from '@src/components/form-components/NonInput';
+'use client';
+
+import { FieldDescription } from '@src/components/ui/field';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React from 'react';
+import { useFormContext, useWatch } from 'react-hook-form';
 
-import { Maybe, Offering } from '@/types';
+import { TextField } from './FormControls';
+import type { InvestorFormInputsType } from './InvestorApplicationForm';
+import type { Offering } from '@/types';
 
 type InvestorApplicationPledgeFieldsProps = {
   offering: Offering;
-  values: any;
-  saleAmountString: (shares: string, price: Maybe<number> | undefined) => string;
+  saleAmountString: (shares: string, price: number | undefined) => string;
 };
 
 const InvestorApplicationPledgeFields: React.FC<InvestorApplicationPledgeFieldsProps> = ({
   offering,
-  values,
   saleAmountString
 }) => {
+  const { investment_currency, price_start, min_units_per_investor } = offering;
+  const form = useFormContext<InvestorFormInputsType>();
+  const minPledge = useWatch({ control: form.control, name: 'minPledge' });
+  const maxPledge = useWatch({ control: form.control, name: 'maxPledge' });
+
+  const currencySymbol = investment_currency && getCurrencyOption(investment_currency)?.symbol;
+
   return (
-    <div>
-      <div className="text-xs font-semibold uppercase">
+    <div className="space-y-4">
+      <div className="text-xs font-semibold uppercase space-y-1">
         <div>
           Price per share:{' '}
-          <span className="font-normal ">
-            {numberWithCommas(offering.details?.minUnitsPerInvestor)}{' '}
-            {offering.details?.investmentCurrency &&
-              getCurrencyOption(offering.details.investmentCurrency)?.symbol}
+          <span className="font-normal">
+            {numberWithCommas(min_units_per_investor)} {currencySymbol}
           </span>
         </div>
         <div>
           Minimum purchase:{' '}
-          <span className="font-normal ">
-            {numberWithCommas(offering.details?.priceStart)} shares{' '}
-          </span>
+          <span className="font-normal">{numberWithCommas(price_start)} shares</span>
         </div>
       </div>
-      <div className="md:grid grid-cols-2 gap-3">
+      <div className="grid gap-4 md:grid-cols-2">
         <div>
-          <Input
-            className={`${defaultFieldDiv} col-span-1`}
-            labelText="Min shares you'd purchase"
+          <TextField
             name="minPledge"
-            type="number"
+            label="Min shares you'd purchase"
             placeholder="e.g. 10"
+            type="number"
             required
+            inputProps={{ min: 0 }}
           />
-          <NonInput className={`${defaultFieldDiv} `}>
-            <>
-              {values.minPledge &&
-                `${saleAmountString(values.minPledge, offering.details?.priceStart)} ${
-                  offering.details?.investmentCurrency &&
-                  getCurrencyOption(offering.details.investmentCurrency)?.symbol
-                }`}
-            </>
-          </NonInput>
+          {minPledge && price_start && (
+            <FieldDescription className="mt-1">
+              {saleAmountString(minPledge.toString(), price_start)} {currencySymbol}
+            </FieldDescription>
+          )}
         </div>
         <div>
-          <Input
-            className={`${defaultFieldDiv} col-span-1`}
-            labelText="Max shares you'd purchase"
+          <TextField
             name="maxPledge"
-            type="number"
+            label="Max shares you'd purchase"
             placeholder="e.g. 150"
+            type="number"
             required
+            inputProps={{ min: 0 }}
           />
-          <NonInput className={`${defaultFieldDiv} `}>
-            <>
-              {values.maxPledge &&
-                `${saleAmountString(values.maxPledge, offering.details?.priceStart)} ${
-                  offering.details?.investmentCurrency &&
-                  getCurrencyOption(offering.details.investmentCurrency)?.symbol
-                }`}
-            </>
-          </NonInput>
+          {maxPledge && price_start && (
+            <FieldDescription className="mt-1">
+              {saleAmountString(maxPledge.toString(), price_start)} {currencySymbol}
+            </FieldDescription>
+          )}
         </div>
       </div>
     </div>

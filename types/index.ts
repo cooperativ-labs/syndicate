@@ -81,14 +81,20 @@ export type OfferingWithParticipants = Offering & {
   })[];
 };
 
-export type OfferingFull = OfferingWithParticipants & {
-  images: Image[];
-  descriptions: OfferingDescriptionText[];
+export type OfferingWithLegalEntity = OfferingWithParticipants & {
   legalEntity: LegalEntityWithJurisdiction;
-  offeringSmartContracts: OfferingSmartContractSet | null;
-  distributions: OfferingDistribution[];
-  participants: EnrichedOfferingParticipant[];
 };
+
+export type OfferingFull =
+  & OfferingWithParticipants
+  & OfferingWithLegalEntity
+  & {
+    images: Image[];
+    descriptions: OfferingDescriptionText[];
+    offeringSmartContracts: OfferingSmartContractSet | null;
+    distributions: OfferingDistribution[];
+    participants: EnrichedOfferingParticipant[];
+  };
 
 // =========== LEGAL ENTITY ================
 export type LegalEntityWithAddresses = LegalEntity & {
@@ -131,7 +137,7 @@ export type OrganizationWithLegalEntities = OrganizationWithUsers & {
 };
 
 export type OrganizationComplete = OrganizationWithUsers & {
-  legalEntities: LegalEntityWithSubsidiaries[];
+  legalEntities: LegalEntityFull[];
   linkedAccounts: LinkedAccount[];
   emailAddresses: EmailAddress[];
   organizationUsers: OrganizationUserWithProfile[];
@@ -220,14 +226,14 @@ export const OfferingType = Object.fromEntries(
   ),
 ) as { [K in OfferingTypes]: K };
 
-type realEstatePropertyTypes =
+export type RealEstatePropertyTypes =
   Database["public"]["Enums"]["real_estate_property_type"];
 export const RealEstatePropertyType = Object.fromEntries(
   (Constants.public.Enums
-    .real_estate_property_type as readonly realEstatePropertyTypes[]).map((c) =>
+    .real_estate_property_type as readonly RealEstatePropertyTypes[]).map((c) =>
       [c, c] as const
     ),
-) as { [K in realEstatePropertyTypes]: K };
+) as { [K in RealEstatePropertyTypes]: K };
 
 export type DocumentTypes = Database["public"]["Enums"]["document_type"];
 export const DocumentType = Object.fromEntries(
@@ -295,3 +301,22 @@ export const CryptoAddressProtocol = Object.fromEntries(
     .crypto_address_protocol as readonly Protocol[])
     .map((c) => [c, c] as const),
 ) as { [K in Protocol]: K };
+export type InvestmentStatusType = Database["public"]["Enums"]["asset_status"];
+export const InvestmentStatus = Object.fromEntries(
+  (Constants.public.Enums
+    .asset_status as readonly InvestmentStatusType[])
+    .map((c) => [c, c] as const),
+) as { [K in InvestmentStatusType]: K };
+
+export type OfferingStageTypes = Database["public"]["Enums"]["offering_stage"];
+export const OfferingStage = Object.fromEntries(
+  (Constants.public.Enums
+    .offering_stage as readonly OfferingStageTypes[])
+    .map((c) => [c, c] as const),
+) as { [K in OfferingStageTypes]: K };
+export type AssetStatusTypes = Database["public"]["Enums"]["asset_status"];
+export const AssetStatus = Object.fromEntries(
+  (Constants.public.Enums
+    .asset_status as readonly AssetStatusTypes[])
+    .map((c) => [c, c] as const),
+) as { [K in AssetStatusTypes]: K };
