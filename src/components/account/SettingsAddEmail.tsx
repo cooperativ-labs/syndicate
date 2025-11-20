@@ -1,7 +1,10 @@
-import { Form, Formik } from 'formik';
+import { zodResolver } from '@hookform/resolvers/zod';
 import React, { FC } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
-import Input from '../form-components/Inputs';
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
+import { Input } from '../ui/input';
 import { handleAddEmailAddress } from '../notifications/notificationFunctions';
 
 const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';
@@ -10,48 +13,53 @@ type SettingsAddEmailProps = {
   completionUrl: string;
 };
 
+const emailSchema = z.object({
+  address: z.string().min(1, 'Please include an email address.').email('Invalid email address')
+});
+
+type EmailFormValues = z.infer<typeof emailSchema>;
+
 const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
+  const {
+    handleSubmit,
+    register,
+    formState: { errors, isSubmitting }
+  } = useForm<EmailFormValues>({
+    resolver: zodResolver(emailSchema),
+    defaultValues: {
+      address: ''
+    }
+  });
+
+  const onSubmit = async (values: EmailFormValues) => {
+    await handleAddEmailAddress(values.address, completionUrl);
+  };
+
   return (
-    <Formik
-      initialValues={{
-        address: ''
-      }}
-      validate={async values => {
-        const errors: any = {}; /** @TODO : Shape */
-        if (!values.address) {
-          errors.address = 'Please include an email address.';
-        } else if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i.test(values.address)) {
-          errors.address = 'Invalid email address';
-        }
-        return errors;
-      }}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
-        await handleAddEmailAddress(values.address, completionUrl);
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting }) => (
-        <Form className="flex flex-col">
-          <div className="grid md:grid-cols-4 gap-4">
+    <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+      <div className="grid md:grid-cols-4 gap-4">
+        <Field className={`${fieldDiv} w-full md:col-span-3`}>
+          <FieldLabel htmlFor="settings-add-email">Address</FieldLabel>
+          <FieldContent>
             <Input
-              className={`${fieldDiv} w-full md:col-span-3`}
-              labelText="Address"
-              name="address"
-              required
+              id="settings-add-email"
               placeholder="e.g moritz@bonuslife.com"
+              type="email"
+              aria-invalid={Boolean(errors.address)}
+              {...register('address')}
             />
-          </div>
-          <button
-            type="submit"
-            disabled={isSubmitting}
-            className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
-          >
-            Add Email
-          </button>
-        </Form>
-      )}
-    </Formik>
+            <FieldError errors={errors.address ? [errors.address] : undefined} />
+          </FieldContent>
+        </Field>
+      </div>
+      <button
+        type="submit"
+        disabled={isSubmitting}
+        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
+      >
+        Add Email
+      </button>
+    </form>
   );
 };
 

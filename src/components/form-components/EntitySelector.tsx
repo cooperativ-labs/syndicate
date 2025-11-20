@@ -5,8 +5,7 @@ import React, { FC } from 'react';
 import { LegalEntity } from '@/types';
 
 import { Button } from '../ui/button';
-import { defaultFieldDiv } from './Inputs';
-import Select from './Select';
+import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from '../ui/select';
 
 type EntitySelectorProps = {
   entities: LegalEntity[];
@@ -49,10 +48,21 @@ const EntitySelector: FC<EntitySelectorProps> = ({
   return (
     <div className={cn(className ? className : 'md:grid grid-cols-5 gap-4')}>
       <div className="col-span-3 align-end ">
-        <Select required className={defaultFieldDiv} labelText={label} name={fieldName}>
-          <option value="">Select an entity</option>
-          {createEntityList(entities)}
+        <Select required value={fieldName} onValueChange={value => {}}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select an entity" />
+          </SelectTrigger>
+          <SelectContent>
+            {entities.map((entity, i) => {
+              return (
+                <SelectItem key={i} value={entity.id.toString()}>
+                  {entity.legal_name}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
         </Select>
+        {createEntityList(entities)}
       </div>
       {withAdd && (
         <div className="flex flex-col col-span-2 justify-end">

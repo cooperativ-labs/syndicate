@@ -1,7 +1,6 @@
 import { cn } from '@src/lib/utils';
 import React, { ReactNode } from 'react';
 
-import { defaultFieldLabelClass } from './Inputs';
 import { FieldLabel } from '../ui/field';
 
 export type CustomNonInputProps = {
@@ -10,6 +9,9 @@ export type CustomNonInputProps = {
   className?: string;
   children: ReactNode;
 };
+
+export const defaultFieldLabelClass = 'text-sm text-blue-900 font-semibold text-opacity-80';
+export const defaultFieldDiv = 'pt-2 my-2 bg-opacity-0';
 
 export const NonInput: React.FC<CustomNonInputProps> = ({
   labelText,
@@ -24,7 +26,12 @@ export const NonInput: React.FC<CustomNonInputProps> = ({
           {labelText}
         </FieldLabel>
       )}
-      <div className="mt-1 rounded-md bg-slate-50 border-2 border-gray-200 h-12 p-2 pl-3 flex items-center">
+      <div
+        className={cn(
+          defaultFieldDiv,
+          'mt-1 rounded-md bg-slate-50 border-2 border-gray-200 h-12 p-2 pl-3 flex items-center'
+        )}
+      >
         {children}
       </div>
     </div>

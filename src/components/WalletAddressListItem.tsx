@@ -1,12 +1,15 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@src/lib/utils';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import { Form, Formik } from 'formik';
 import { Pencil, X } from 'lucide-react';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { z } from 'zod';
 import { useAccount } from 'wagmi';
 
-import Checkbox from './form-components/Checkbox';
-import Input from './form-components/Inputs';
+import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
+import { Checkbox } from '@src/components/ui/checkbox';
 import { MarkPublic } from './form-components/ListItemButtons';
 import FormattedCryptoAddress from './FormattedCryptoAddress';
 import { CryptoAddress, CryptoAddressType } from '@/types';
@@ -17,11 +20,37 @@ type WalletAddressListItemProps = {
   withEdit?: boolean;
 };
 
+const updateWalletSchema = z.object({
+  name: z.string().min(1, 'Name is required'),
+  isPublic: z.boolean()
+});
+
+type WalletFormValues = z.infer<typeof updateWalletSchema>;
+
 const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdit }) => {
   const { legal_entity_id, id, name, type, chain_id, address, description, is_public } = wallet;
   const [editOn, setEditOn] = useState<boolean>(false);
-  const [alerted, setAlerted] = useState<boolean>(false);
   const { address: userWalletAddress } = useAccount();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    register,
+    formState: { errors, isSubmitting }
+  } = useForm<WalletFormValues>({
+    resolver: zodResolver(updateWalletSchema),
+    defaultValues: {
+      name: name ?? '',
+      isPublic: Boolean(is_public)
+    }
+  });
+
+  useEffect(() => {
+    reset({
+      name: name ?? '',
+      isPublic: Boolean(is_public)
+    });
+  }, [name, is_public, reset]);
 
   const getChainLogo = (chainId: number | null) => {
     return (
@@ -46,6 +75,18 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
     await deleteCryptoAddressById({
       id: id,
       revalidationPath: { path: '/profile', type: 'layout' }
+    });
+  };
+
+  const onSubmit = async (values: WalletFormValues) => {
+    await updateCryptoAddress({
+      id: id,
+      name: values.name,
+      isPublic: values.isPublic,
+      revalidationPath: {
+        path: '/profile',
+        type: 'layout'
+      }
     });
   };
 
@@ -78,54 +119,47 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
 
         {editOn && (
           <div className="bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6">
-            <Formik
-              initialValues={{
-                is_public: is_public,
-                name: name
-              }}
-              onSubmit={(values, { setSubmitting }) => {
-                setSubmitting(true);
-                updateCryptoAddress({
-                  id: id,
-                  name: values.name,
-                  isPublic: values.is_public,
-                  revalidationPath: {
-                    path: '/profile',
-                    type: 'layout'
-                  }
-                });
-                setSubmitting(false);
-              }}
-            >
-              {({ isSubmitting, values }) => (
-                <Form className="flex flex-col">
-                  <div className="grid grid-cols-4 gap-3 md:gap-8 items-center">
+            <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+              <div className="grid grid-cols-4 gap-3 md:gap-8 items-center">
+                <Field className="col-span-3">
+                  <FieldLabel htmlFor={`wallet-name-${id}`}>Name</FieldLabel>
+                  <FieldContent>
                     <Input
-                      className={`bg-opacity-0 w-full col-span-3`}
-                      required
-                      labelText="Name"
-                      name="name"
+                      id={`wallet-name-${id}`}
                       placeholder="Personal"
+                      aria-invalid={Boolean(errors.name)}
+                      {...register('name')}
                     />
-
-                    <Checkbox
-                      className="col-span-1"
-                      fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-non"
+                    <FieldError errors={errors.name ? [errors.name] : undefined} />
+                  </FieldContent>
+                </Field>
+                <Field className="col-span-1">
+                  <FieldLabel htmlFor={`wallet-public-${id}`}>Public</FieldLabel>
+                  <FieldContent>
+                    <Controller
+                      control={control}
                       name="isPublic"
-                      checked={values.isPublic}
-                      labelText="Public"
+                      render={({ field }) => (
+                        <Checkbox
+                          id={`wallet-public-${id}`}
+                          checked={field.value}
+                          onCheckedChange={checked => field.onChange(Boolean(checked))}
+                          aria-label="toggle wallet visibility"
+                        />
+                      )}
                     />
-                  </div>
-                  <button
-                    type="submit"
-                    disabled={isSubmitting}
-                    className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4 rounded p-2"
-                  >
-                    Save
-                  </button>
-                </Form>
-              )}
-            </Formik>
+                    <FieldError errors={errors.isPublic ? [errors.isPublic] : undefined} />
+                  </FieldContent>
+                </Field>
+              </div>
+              <button
+                type="submit"
+                disabled={isSubmitting}
+                className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4 rounded p-2"
+              >
+                Save
+              </button>
+            </form>
             <div>
               <button
                 className={cn(

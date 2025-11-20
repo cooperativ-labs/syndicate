@@ -173,7 +173,8 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
   const {
     control,
     handleSubmit,
-    formState: { isSubmitting },
+    register,
+    formState: { errors, isSubmitting },
     setValue
   } = form;
 
@@ -359,7 +360,7 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
                       <h2 className="text-xl mt-3 text-blue-900 font-semibold">
                         Advisor Information
                       </h2>
-                      <AdvisorFields />
+                      <AdvisorFields register={register} errors={errors} />
                     </div>
                   )}
                 </FieldSet>

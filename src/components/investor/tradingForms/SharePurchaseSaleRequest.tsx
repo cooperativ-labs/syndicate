@@ -1,7 +1,10 @@
-import Checkbox from '@src/components/form-components/Checkbox';
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
+import { zodResolver } from '@hookform/resolvers/zod';
+
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import { Button } from '@src/components/ui/button';
+import { Checkbox } from '@src/components/ui/checkbox';
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
@@ -12,15 +15,66 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 // import { isMetaMask } from '@src/web3/wagmi';
 import axios from 'axios';
-import { Form, Formik } from 'formik';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import React, { FC, useState } from 'react';
+import React, { FC, useMemo, useState } from 'react';
 import { useAsync } from 'react-use';
-import { useAccount } from 'wagmi';
+import { z } from 'zod';
 
-import { CurrencyCodeType, Offering, OfferingFull, ShareOrder } from '@/types';
+import { CurrencyCodeType, Document, Offering, OfferingFull, ShareOrder } from '@/types';
 
-import NonInput from '../../form-components/NonInput';
+import NonInput, { defaultFieldDiv } from '../../form-components/NonInput';
+
+type SharePurchaseSaleRequestFormValues = {
+  numUnitsPurchase: string;
+  disclosures: boolean;
+  toc: boolean;
+};
+
+const createSharePurchaseSaleRequestSchema = (shareQtyRemaining: number, order: ShareOrder) =>
+  z.object({
+    numUnitsPurchase: z
+      .string()
+      .min(1, 'You must choose a number of shares to purchase.')
+      .superRefine((value, ctx) => {
+        const parsedValue = Number.parseInt(value, 10);
+
+        if (!Number.isFinite(parsedValue) || parsedValue <= 0) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: 'Enter a valid whole number of shares.'
+          });
+          return;
+        }
+
+        if (parsedValue > shareQtyRemaining) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `There are only ${shareQtyRemaining} for sale.`
+          });
+        }
+
+        if (order.min_units && parsedValue < order.min_units) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `You must purchase at least ${order.min_units} shares.`
+          });
+        }
+
+        if (order.max_units && parsedValue > order.max_units) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            message: `You cannot purchase more than ${order.max_units} shares`
+          });
+        }
+      }),
+    disclosures: z.boolean().refine(val => val, {
+      message: "You must confirm that you have read this offering's disclosures"
+    }),
+    toc: z.boolean().refine(val => val, {
+      message: "You must accept this offering's Terms & Conditions"
+    })
+  });
 
 export type SharePurchaseSaleRequestProps = {
   offering: OfferingFull;
@@ -59,6 +113,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   const getStandardSaleDisclosuresText = async (): Promise<string> =>
     axios.get(standardSaleDisclosures).then(resp => resp.data);
   const { value: standardSaleDisclosuresText } = useAsync(getStandardSaleDisclosuresText, []);
+  const documents: Document[] = [];
 
   const purchaseCalculator = (numUnits: number) => {
     return numUnits * price;
@@ -69,9 +124,36 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
     return numberWithCommas(purchaseCalculator(parseInt(numUnitsPurchase, 10)), 2);
   };
 
-  const handlePurchaseSaleRequest = async (values: any) => {
-    const amountToBuySell = values.numUnitsPurchase;
-    callFillOrder({ amount: amountToBuySell, setButtonStep });
+  const handlePurchaseSaleRequest = async (amountToBuySell: number) => {
+    await callFillOrder({ amount: amountToBuySell, setButtonStep });
+  };
+
+  const validationSchema = useMemo(
+    () => createSharePurchaseSaleRequestSchema(shareQtyRemaining, order),
+    [order, shareQtyRemaining]
+  );
+
+  const {
+    control,
+    register,
+    handleSubmit,
+    watch,
+    formState: { errors, isSubmitting }
+  } = useForm<SharePurchaseSaleRequestFormValues>({
+    resolver: zodResolver(validationSchema),
+    defaultValues: {
+      numUnitsPurchase: '',
+      disclosures: false,
+      toc: false
+    }
+  });
+
+  const watchedNumUnitsPurchase = watch('numUnitsPurchase');
+
+  const onSubmit: SubmitHandler<SharePurchaseSaleRequestFormValues> = async values => {
+    const parsedValue = Number.parseInt(values.numUnitsPurchase, 10);
+    if (!Number.isFinite(parsedValue)) return;
+    await handlePurchaseSaleRequest(parsedValue);
   };
 
   const formButtonText = (numUnitsPurchase: string) => {
@@ -110,204 +192,191 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
         </WalletActionModal>
       )}
 
-      <Formik
-        initialValues={{
-          numUnitsPurchase: '',
-          disclosures: false,
-          toc: false
-        }}
-        validate={values => {
-          const errors: any = {}; /** @TODO : Shape */
-          const numUnitsPurchase = parseInt(values.numUnitsPurchase, 10);
-          if (!values.numUnitsPurchase) {
-            errors.numUnitsPurchase = 'You must choose a number of shares to purchase.';
-          }
-          if (numUnitsPurchase && numUnitsPurchase > shareQtyRemaining) {
-            errors.numUnitsPurchase = `There are only ${shareQtyRemaining} for sale.`;
-          }
-          if (order.min_units) {
-            if (numUnitsPurchase && numUnitsPurchase < order.min_units) {
-              errors.numUnitsPurchase = `You must purchase at least ${order.min_units} shares.`;
-            } else if (numUnitsPurchase && order.max_units && numUnitsPurchase > order.max_units) {
-              errors.numUnitsPurchase = `You cannot purchase more than ${order.max_units} shares`;
-            }
-          }
-          if (!values.disclosures) {
-            errors.disclosures = "You must confirm that you have read this offering's disclosures";
-          }
-          if (!values.toc) {
-            errors.toc = "You must accept this offering's Terms & Conditions";
-          }
-          return errors;
-        }}
-        onSubmit={async (values, { setSubmitting }) => {
-          if (values.numUnitsPurchase === '') return;
-          setSubmitting(true);
-          handlePurchaseSaleRequest(values);
-          setSubmitting(false);
-        }}
-      >
-        {({ isSubmitting, values }) => (
-          <Form className="">
-            <div className="md:grid grid-cols-3 gap-3">
+      <form className="" onSubmit={handleSubmit(onSubmit)} noValidate>
+        <FieldGroup className="md:grid grid-cols-3 gap-3">
+          <Field className={cn(defaultFieldDiv, 'col-span-2')}>
+            <FieldLabel htmlFor="numUnitsPurchase" className="text-sm font-semibold text-blue-900">
+              {`How many units would you like to ${isAskOrder ? 'purchase' : 'sell'}? (${
+                isAskOrder ? shareQtyRemaining : myShareQty
+              } available)`}
+            </FieldLabel>
+            <FieldContent>
               <Input
-                className={cn(defaultFieldDiv, 'col-span-2')}
-                labelText={`How many units would you like to ${isAskOrder ? 'purchase' : 'sell'}? (${
-                  isAskOrder ? shareQtyRemaining : myShareQty
-                } available)`}
-                name="numUnitsPurchase"
+                id="numUnitsPurchase"
                 type="number"
                 placeholder="e.g. 80"
-                required
+                inputMode="numeric"
+                aria-invalid={errors.numUnitsPurchase ? 'true' : 'false'}
+                {...register('numUnitsPurchase')}
               />
-              <NonInput
-                className={`${defaultFieldDiv} col-span-1 pl-1`}
-                labelText={`${isAskOrder ? 'Purchase' : 'Sale'} Price:`}
-              >
-                <>
-                  {values.numUnitsPurchase &&
-                    `${purchaseString(values.numUnitsPurchase)} ${
-                      investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
-                    }`}
-                </>
-              </NonInput>
-              <div className="col-span-2" />
-              <div className="col-span-1 text-xs pl-2">{`Current balance: ${floatWithCommas(
-                myBacBalance as string
-              )}`}</div>
-            </div>
-            <hr className="my-6" />
-            {/* Disclosures */}
-            <div className="mb-3">
-              <Checkbox
-                fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
-                name="disclosures"
-                checked={values.disclosures}
-                sideLabel
-                labelText={
+              <FieldError errors={[errors.numUnitsPurchase]} />
+            </FieldContent>
+          </Field>
+          <NonInput
+            className={`${defaultFieldDiv} col-span-1 pl-1`}
+            labelText={`${isAskOrder ? 'Purchase' : 'Sale'} Price:`}
+          >
+            <>
+              {watchedNumUnitsPurchase &&
+                `${purchaseString(watchedNumUnitsPurchase)} ${
+                  investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
+                }`}
+            </>
+          </NonInput>
+          <div className="col-span-2" />
+          <div className="col-span-1 text-xs pl-2">{`Current balance: ${floatWithCommas(
+            myBacBalance as string
+          )}`}</div>
+        </FieldGroup>
+        <hr className="my-6" />
+        {/* Disclosures */}
+        <Controller
+          name="disclosures"
+          control={control}
+          render={({ field }) => (
+            <Field className="mb-3">
+              <div className="rounded-md border-2 border-gray-200 p-3 text-sm text-gray-700">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="disclosures"
+                    checked={field.value}
+                    onCheckedChange={checked => field.onChange(Boolean(checked))}
+                    className="mt-0.5"
+                  />
+                  <FieldLabel
+                    htmlFor="disclosures"
+                    className="cursor-pointer text-sm font-semibold text-blue-900 text-opacity-80"
+                  >
+                    {`I have read this offering's Risks & Considerations`}
+                  </FieldLabel>
                   <button
-                    className="text-sm text-gray-700 hover:underline "
+                    type="button"
+                    className="ml-auto flex items-center gap-1 text-sm text-gray-700 hover:underline"
                     aria-label="review application"
-                    onClick={e => {
-                      e.preventDefault();
+                    onClick={() => {
                       setDisclosuresOpen(!disclosuresOpen);
                       setTocOpen(false);
                     }}
                   >
-                    <div className="flex">
-                      {`I have read this offering's Risks & Considerations`}
-                      <div className="ml-2">
-                        {disclosuresOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                      </div>
-                    </div>
+                    {disclosuresOpen ? 'Hide' : 'Review'}
+                    {disclosuresOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
-                }
-              />
-            </div>
-            {disclosuresOpen && (
-              <div className="my-2 p-4 rounded-md bg-slate-100">
-                <PresentLegalText text={standardSaleDisclosuresText} />
-                <div className="flex">
-                  <Button
-                    variant="outline"
-                    className="mt-5"
-                    onClick={e => {
-                      e.preventDefault();
-                      DownloadFile(
-                        standardSaleDisclosuresText as string,
-                        `${offering.name} - Download Risks & Considerations.md`
-                      );
-                    }}
-                  >
-                    Download Risks & Considerations
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="md:ml-3 mt-5"
-                    onClick={e => {
-                      e.preventDefault();
-                      setDisclosuresOpen(false);
-                    }}
-                  >
-                    Close
-                  </Button>
                 </div>
               </div>
-            )}
-            {/* TOC SECTION */}
-            <div className="mb-5">
-              <Checkbox
-                fieldClass="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-non"
-                name="toc"
-                checked={values.toc}
-                sideLabel
-                labelText={
+              <FieldError errors={[errors.disclosures]} />
+            </Field>
+          )}
+        />
+        {disclosuresOpen && (
+          <div className="my-2 rounded-md bg-slate-100 p-4">
+            <PresentLegalText text={standardSaleDisclosuresText} />
+            <div className="flex">
+              <Button
+                variant="outline"
+                className="mt-5"
+                onClick={e => {
+                  e.preventDefault();
+                  DownloadFile(
+                    standardSaleDisclosuresText as string,
+                    `${offering.name} - Download Risks & Considerations.md`
+                  );
+                }}
+              >
+                Download Risks & Considerations
+              </Button>
+              <Button
+                variant="outline"
+                className="md:ml-3 mt-5"
+                onClick={e => {
+                  e.preventDefault();
+                  setDisclosuresOpen(false);
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
+        )}
+        {/* TOC SECTION */}
+        <Controller
+          name="toc"
+          control={control}
+          render={({ field }) => (
+            <Field className="mb-5">
+              <div className="rounded-md border-2 border-gray-200 p-3 text-sm text-gray-700">
+                <div className="flex items-center gap-3">
+                  <Checkbox
+                    id="toc"
+                    checked={field.value}
+                    onCheckedChange={checked => field.onChange(Boolean(checked))}
+                    className="mt-0.5"
+                  />
+                  <FieldLabel
+                    htmlFor="toc"
+                    className="cursor-pointer text-sm font-semibold text-blue-900 text-opacity-80"
+                  >
+                    {`I accept this offering's Terms and Conditions`}
+                  </FieldLabel>
                   <button
-                    className="text-sm text text-gray-700 hover:underline "
+                    type="button"
+                    className="ml-auto flex items-center gap-1 text-sm text-gray-700 hover:underline"
                     aria-label="review application"
-                    onClick={e => {
-                      e.preventDefault();
+                    onClick={() => {
                       setTocOpen(!tocOpen);
                       setDisclosuresOpen(false);
                     }}
                   >
-                    <div className="flex">
-                      <div className="">{`I accept this offering's Terms and Conditions`}</div>
-                      <div className="ml-2">
-                        {tocOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
-                      </div>
-                    </div>
+                    {tocOpen ? 'Hide' : 'Review'}
+                    {tocOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                   </button>
-                }
-              />
-            </div>
-            {tocOpen && !!documents && (
-              <div className="my-2 p-4 rounded-md bg-slate-100">
-                <PresentLegalText text={documents[0]?.text} />
-                <div className="flex">
-                  <Button
-                    variant="outline"
-                    className="mt-5"
-                    onClick={e => {
-                      e.preventDefault();
-                      //@ts-ignore
-                      DownloadFile(
-                        documents[0]?.text as string,
-                        `${offering.name} - Terms & Conditions.md`
-                      );
-                    }}
-                  >
-                    Download Terms & Conditions
-                  </Button>
-                  <Button
-                    variant="outline"
-                    className="md:ml-3 mt-5"
-                    onClick={e => {
-                      e.preventDefault();
-                      setTocOpen(false);
-                    }}
-                  >
-                    Close
-                  </Button>
                 </div>
               </div>
-            )}
-            <LoadingButtonChain
-              type="submit"
-              disabled={isSubmitting || buttonStep === 'step1'}
-              state={buttonStep}
-              idleText={formButtonText(values.numUnitsPurchase)}
-              step1Text={
-                txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'
-              }
-              step2Text="Executing transaction..."
-              confirmedText="Executed!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </Form>
+              <FieldError errors={[errors.toc]} />
+            </Field>
+          )}
+        />
+        {tocOpen && documents.length > 0 && (
+          <div className="my-2 rounded-md bg-slate-100 p-4">
+            <PresentLegalText text={documents[0]?.text} />
+            <div className="flex">
+              <Button
+                variant="outline"
+                className="mt-5"
+                onClick={e => {
+                  e.preventDefault();
+                  DownloadFile(
+                    documents[0]?.text as string,
+                    `${offering.name} - Terms & Conditions.md`
+                  );
+                }}
+              >
+                Download Terms & Conditions
+              </Button>
+              <Button
+                variant="outline"
+                className="md:ml-3 mt-5"
+                onClick={e => {
+                  e.preventDefault();
+                  setTocOpen(false);
+                }}
+              >
+                Close
+              </Button>
+            </div>
+          </div>
         )}
-      </Formik>
+        <LoadingButtonChain
+          type="submit"
+          disabled={isSubmitting || buttonStep === 'step1'}
+          state={buttonStep}
+          idleText={formButtonText(watchedNumUnitsPurchase)}
+          step1Text={txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'}
+          step2Text="Executing transaction..."
+          confirmedText="Executed!"
+          failedText="Transaction failed"
+          rejectedText="You rejected the transaction. Click here to try again."
+        />
+      </form>
     </>
   );
 };

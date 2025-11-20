@@ -1,4 +1,3 @@
-import Input, { defaultFieldDiv } from '@src/components/form-components/Inputs';
 import { Button } from '@src/components/ui/button';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
@@ -6,6 +5,9 @@ import { setContractOperator } from '@src/web3/contractShareCalls';
 import { String0x } from '@src/web3/helpersChain';
 import React, { useState } from 'react';
 import { useAccount } from 'wagmi';
+
+import { Input } from '@src/components/ui/input';
+import { Field, FieldLabel, FieldContent, FieldError } from '@src/components/ui/field';
 
 type SetOperatorButtonProps = {
   shareContractAddress: String0x;
@@ -38,17 +40,20 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
   return (
     <>
       {operatorField && (
-        <Input
-          className={defaultFieldDiv}
-          type="text"
-          name="operator"
-          placeholder="Operator Address"
-          value={operatorAddress}
-          onBlur={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
-            setOperatorAddress(e.target.value as String0x)
-          }
-          required
-        />
+        <Field>
+          <FieldContent>
+            <FieldLabel>Operator Address</FieldLabel>
+            <Input
+              type="text"
+              placeholder="Operator Address"
+              value={operatorAddress}
+              onBlur={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
+                setOperatorAddress(e.target.value as String0x)
+              }
+              required
+            />
+          </FieldContent>
+        </Field>
       )}
       <Button
         className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"

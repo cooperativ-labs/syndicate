@@ -2,7 +2,7 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@src/lib/utils';
 import { signIn, signInWithEmail } from '@src/utils/actions/userActions';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import React, { FC, ReactNode, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
@@ -11,41 +11,16 @@ import PlatformLogo from '../PlatformLogo';
 import { Button } from '../ui/button';
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
 import { Input } from '../ui/input';
+import { GoogleButton } from './helpersLogin';
 
 export const loginButtonClass =
   'flex my-5 items-center rounded-sm bg-white hover:bg-slate-700 border-2 border-gray-300 justify-center p-3 text-slate-700: hover:text-white font-medium w-full';
 
-type SSOButtonProps = {
-  text: ReactNode;
-  onClick: () => void;
-};
-const SSOButton: FC<SSOButtonProps> = ({ onClick, text }) => {
-  return (
-    <button className={loginButtonClass} onClick={() => onClick()}>
-      {text}
-    </button>
-  );
-};
-
 const CreateAccount: FC = () => {
   const [loading, setLoading] = useState<boolean>(false);
   const router = useRouter();
+  const currentPath = usePathname();
   //===========================================================================
-
-  // const handleGoogleLogin = async () => {
-  //   setLoading(true);
-  //   signIn('google');
-  // };
-
-  // const handleMicrosoftLogin = async () => {
-  //   setLoading(true);
-  //   signIn('azure-ad-b2c');
-  // };
-
-  // const handleLinkedInLogin = async () => {
-  //   setLoading(true);
-  //   signIn('linkedin');
-  // };
 
   const handleMagicLink = async (email: string) => {
     setLoading(true);
@@ -54,15 +29,15 @@ const CreateAccount: FC = () => {
     router.push('/check-your-email?email=' + email);
   };
 
-  const handlePasswordLogin = (email: string, password: string) => {
-    setLoading(true);
-    signIn({ email, password });
-  };
+  // const handlePasswordLogin = (email: string, password: string) => {
+  //   setLoading(true);
+  //   signIn({ email, password });
+  // };
 
-  const handleTestLogin = (email: string, password: string) => {
-    setLoading(true);
-    signIn({ email, password });
-  };
+  // const handleTestLogin = (email: string, password: string) => {
+  //   setLoading(true);
+  //   signIn({ email, password });
+  // };
 
   const magicLinkSchema = z.object({
     email: z.email('Invalid email address').min(1, 'Email is required')
@@ -114,55 +89,6 @@ const CreateAccount: FC = () => {
     </form>
   );
 
-  // const TestLoginSchema = Yup.object().shape({
-  //   email: Yup.string().email('Invalid email address').required('Email is required'),
-  //   password: Yup.string().required('Password is required'),
-  // });
-
-  // const testCredentials = (
-  //   <Formik
-  //     initialValues={{ email: '', password: '' }}
-  //     validationSchema={TestLoginSchema}
-  //     onSubmit={(values) => handleTestLogin(values.email, values.password)}
-  //   >
-  //     {({ errors, touched, isSubmitting }) => (
-  //       <Form>
-  //         <div>
-  //           <Field
-  //             type="email"
-  //             name="email"
-  //             aria-label="login-email"
-  //             placeholder="you@example.com"
-  //             className={`w-full rounded-sm h-14 border-2 ${
-  //               touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
-  //             } focus:no-outline focus:ring-2 focus:ring-blue-400`}
-  //           />
-  //           <ErrorMessage name="email" component="div" className="mt-1 text-sm font-semibold text-red-700" />
-  //         </div>
-  //         <div>
-  //           <Field
-  //             type="password"
-  //             name="password"
-  //             aria-label="password"
-  //             placeholder="123456"
-  //             className={`w-full rounded-sm h-14 border-2 ${
-  //               touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
-  //             } focus:no-outline focus:ring-2 focus:ring-blue-400`}
-  //           />
-  //           <ErrorMessage name="password" component="div" className="mt-1 text-sm font-semibold text-red-700" />
-  //         </div>
-  //         <button
-  //           type="submit"
-  //           disabled={isSubmitting}
-  //           className="flex my-5 items-center rounded-sm bg-cLightBlue  justify-center p-3 text-slate-50 font-medium w-full"
-  //         >
-  //           TestLogin
-  //         </button>
-  //       </Form>
-  //     )}
-  //   </Formik>
-  // );
-
   return (
     <>
       <div className="flex justify-center mb-10">
@@ -184,23 +110,16 @@ const CreateAccount: FC = () => {
             <hr className="my-4 w-full border-gray-500" />
             <div className="m-4">or</div> <hr className="my-4 w-full border-gray-500" />
           </div>
-          {/* <SSOButton
-            onClick={handleGoogleLogin}
-            iconPrefix="fab"
-            icon="google"
-            text="Continue with Google"
-          /> */}
-          {/* <SSOButton onClick={handleMicrosoftLogin} iconPrefix="fab" icon="microsoft" text="Continue with Microsoft" /> */}
-          {/* <SSOButton onClick={handleLinkedInLogin} iconPrefix="fab" icon="linkedin" text="Continue with LinkedIn" /> */}
+          <GoogleButton redirectTo={currentPath} />
         </div>
       )}
       {/* <div>{testCredentials}</div> */}
       <div className="flex text-sm text-cGold text-center mt-10 justify-center">
-        <Link href="https://cooperativ.io/terms">
+        <Link href={`${process.env.NEXT_PUBLIC_TERMS_URL}`}>
           <div className="w-max">Terms of Service</div>
         </Link>
         <div className="mx-4">|</div>
-        <Link href="https://cooperativ.io/privacy">
+        <Link href={`${process.env.NEXT_PUBLIC_PRIVACY_URL}`}>
           <div className="w-max">Privacy Policy</div>
         </Link>
       </div>

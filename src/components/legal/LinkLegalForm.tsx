@@ -1,5 +1,6 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { addLegalShareLink, addOfferingParticipant } from '@src/utils/actions/offeringActions';
@@ -10,17 +11,18 @@ import {
   StandardChainErrorHandling,
   String0x
 } from '@src/web3/helpersChain';
-import { Form, Formik } from 'formik';
 import { useRouter } from 'next/navigation';
 import router from 'next/router';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
+import { z } from 'zod';
 import { useAccount, useChainId } from 'wagmi';
 
 import { CurrencyCode, CurrencyCodeType, SmartContract } from '@/types';
 
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
+import { Input } from '../ui/input';
 import PresentLegalText from './PresentLegalText';
 
 type LinkLegalFormProps = {
@@ -34,6 +36,12 @@ type LinkLegalFormProps = {
   offeringId: string;
   entityId: string;
 };
+
+const signatureSchema = z.object({
+  signature: z.string().min(1, 'Signature is required')
+});
+
+type SignatureFormValues = z.infer<typeof signatureSchema>;
 
 const LinkLegalForm: FC<LinkLegalFormProps> = ({
   setAgreementContent,
@@ -103,55 +111,61 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
     });
   };
 
+  const {
+    handleSubmit,
+    register,
+    watch,
+    formState: { errors, isSubmitting }
+  } = useForm<SignatureFormValues>({
+    resolver: zodResolver(signatureSchema),
+    defaultValues: {
+      signature: ''
+    }
+  });
+
+  const signatureValue = watch('signature');
+
+  useEffect(() => {
+    setAgreementContent({ signature: signatureValue });
+  }, [setAgreementContent, signatureValue]);
+
+  const onSubmit = async (values: SignatureFormValues) => {
+    await createDocHash(values.signature);
+  };
+
   return (
     <div className="bg-gray-100 pt-8 p-4 md:p-8 min-h-max mb-6 md:mb-10 md:rounded-lg bg-opacity-100 ">
-      <Formik
-        initialValues={{
-          signature: ''
-        }}
-        validate={values => {
-          const errors: any = {}; /** @TODO : Shape */
-          // setAgreementContent(spvEntityName, gpEntityName, bacName, bacId, chainName, values.signature);
-          setAgreementContent({ signature: values.signature });
-
-          return errors;
-        }}
-        onSubmit={async (values, { setSubmitting }) => {
-          setSubmitting(true);
-          await createDocHash(values.signature);
-          setSubmitting(false);
-        }}
-      >
-        {({ isSubmitting, values }) => (
-          <Form className="flex flex-col">
-            <div className="mb-5">
-              <PresentLegalText text={agreement} />
-            </div>
+      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
+        <div className="mb-5">
+          <PresentLegalText text={agreement} />
+        </div>
+        <Field className="pt-3 bg-opacity-0">
+          <FieldLabel htmlFor="link-legal-signature">Signature</FieldLabel>
+          <FieldContent>
             <Input
-              className={defaultFieldDiv}
-              name="signature"
-              type="text"
+              id="link-legal-signature"
               placeholder="e.g. Type your full legal name to sign"
-              labelText="Signature"
-              required
+              aria-invalid={Boolean(errors.signature)}
+              {...register('signature')}
             />
-            <div className="text-sm text-blue-900 font-semibold text-opacity-80 mt-4">
-              Agreement Hash (Keccak-256)
-            </div>
-            <div className="text-sm break-all">{agreementHash}</div>
-            <LoadingButtonChain
-              type="submit"
-              disabled={isSubmitting}
-              className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-8 rounded p-4"
-              state={buttonStep}
-              idleText="Sign"
-              step1Text="Signing (check status in your wallet)"
-              confirmedText="Confirmed!"
-              rejectedText="You rejected the transaction. Click here to try again."
-            />
-          </Form>
-        )}
-      </Formik>
+            <FieldError errors={errors.signature ? [errors.signature] : undefined} />
+          </FieldContent>
+        </Field>
+        <div className="text-sm text-blue-900 font-semibold text-opacity-80 mt-4">
+          Agreement Hash (Keccak-256)
+        </div>
+        <div className="text-sm break-all">{agreementHash}</div>
+        <LoadingButtonChain
+          type="submit"
+          disabled={isSubmitting}
+          className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-8 rounded p-4"
+          state={buttonStep}
+          idleText="Sign"
+          step1Text="Signing (check status in your wallet)"
+          confirmedText="Confirmed!"
+          rejectedText="You rejected the transaction. Click here to try again."
+        />
+      </form>
     </div>
   );
 };

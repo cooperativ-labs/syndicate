@@ -1,3 +1,4 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
@@ -8,13 +9,14 @@ import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { setAllowance } from '@src/web3/contractSwapCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
-import { Form, Formik } from 'formik';
-import React, { FC, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
+import { useForm } from 'react-hook-form';
 import { erc20Abi } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
+import { z } from 'zod';
 
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
-import Select from '../form-components/Select';
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
+import { Input } from '../ui/input';
 
 type SubmitDistributionProps = {
   distributionContractAddress: String0x | undefined;
@@ -24,6 +26,15 @@ type SubmitDistributionProps = {
   offeringId: string;
   refetchContracts: () => void;
 };
+const distributionSchema = z.object({
+  amount: z.coerce
+    .number({ invalid_type_error: 'Please indicate how many shares you want to send' })
+    .min(1, 'Please indicate how many shares you want to send'),
+  partition: z.string().min(1, 'Select class')
+});
+
+type DistributionFormValues = z.infer<typeof distributionSchema>;
+
 const SubmitDistribution: FC<SubmitDistributionProps> = ({
   distributionContractAddress,
   distributionTokenDecimals,
@@ -43,7 +54,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     args: [userWalletAddress as String0x, distributionContractAddress as String0x]
   });
 
-  const handleSubmitDistribution = async ({ amount, partition }: any) => {
+  const handleSubmitDistribution = async ({ amount, partition }: DistributionFormValues) => {
     const allowance =
       rawAllowance && toNormalNumber(rawAllowance as bigint, distributionTokenDecimals);
     const allowanceRequiredForPurchase = amount;
@@ -52,7 +63,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     const callSubmitDistribution = async () => {
       await submitDistribution({
         distributionContractAddress,
-        amount: parseInt(amount, 10),
+        amount,
         distributionTokenDecimals,
         distributionTokenAddress,
         partition: partition,
@@ -79,6 +90,27 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     }
     refetchContracts();
   };
+  const {
+    control,
+    handleSubmit,
+    register,
+    reset,
+    formState: { errors, isSubmitting }
+  } = useForm<DistributionFormValues>({
+    resolver: zodResolver(distributionSchema),
+    defaultValues: {
+      amount: undefined as unknown as number,
+      partition: partitions[0] ?? ''
+    }
+  });
+
+  useEffect(() => {
+    reset({
+      amount: undefined as unknown as number,
+      partition: partitions[0] ?? ''
+    });
+  }, [partitions, reset]);
+
   return (
     <>
       <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
@@ -91,60 +123,54 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         />
       </WalletActionModal>
 
-      <Formik
-        initialValues={{
-          amount: '',
-          partition: partitions[0]
-        }}
-        validate={values => {
-          const errors: any = {}; /** @TODO : Shape */
-          if (!values.amount) {
-            errors.type = 'Please indicate how many shares you want to send';
-          }
-        }}
-        onSubmit={async (values, { setSubmitting }) => {
-          setSubmitting(true);
-          await handleSubmitDistribution(values);
-          setSubmitting(false);
-        }}
+      <form
+        className="flex flex-col gap relative"
+        onSubmit={handleSubmit(handleSubmitDistribution)}
       >
-        {({ isSubmitting, values }) => (
-          <>
-            <Form className="flex flex-col gap relative">
-              <Input
-                className={defaultFieldDiv}
-                labelText="Amount to distribute"
-                name="amount"
-                type="number"
-                placeholder="2000"
-                required
-              />
-              <Select className={'mt-3'} name="partition" labelText="Share class">
-                <option value="">Select class</option>
-
-                {partitions.map((partition, i) => {
-                  return (
-                    <option key={i} value={partition}>
-                      {stringFromBytes32(partition)}
-                    </option>
-                  );
-                })}
-              </Select>
-              <div className="mt-4" />
-              <LoadingButtonChain
-                type="submit"
-                disabled={isSubmitting || buttonStep === 'step1'}
-                state={buttonStep}
-                idleText={`Distribute funds to shareholders`}
-                step1Text="Submitting..."
-                confirmedText="Confirmed!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
-              />
-            </Form>
-          </>
-        )}
-      </Formik>
+        <Field className="pt-3 bg-opacity-0">
+          <FieldLabel htmlFor="distribution-amount">Amount to distribute</FieldLabel>
+          <FieldContent>
+            <Input
+              id="distribution-amount"
+              type="number"
+              placeholder="2000"
+              aria-invalid={Boolean(errors.amount)}
+              {...register('amount')}
+            />
+            <FieldError errors={errors.amount ? [errors.amount] : undefined} />
+          </FieldContent>
+        </Field>
+        <Field className="mt-3">
+          <FieldLabel htmlFor="distribution-partition">Share class</FieldLabel>
+          <FieldContent>
+            <select
+              id="distribution-partition"
+              className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+              aria-invalid={Boolean(errors.partition)}
+              {...register('partition')}
+            >
+              <option value="">Select class</option>
+              {partitions.map((partition, i) => (
+                <option key={partition ?? i} value={partition}>
+                  {stringFromBytes32(partition)}
+                </option>
+              ))}
+            </select>
+            <FieldError errors={errors.partition ? [errors.partition] : undefined} />
+          </FieldContent>
+        </Field>
+        <div className="mt-4" />
+        <LoadingButtonChain
+          type="submit"
+          disabled={isSubmitting || buttonStep === 'step1'}
+          state={buttonStep}
+          idleText={`Distribute funds to shareholders`}
+          step1Text="Submitting..."
+          confirmedText="Confirmed!"
+          failedText="Transaction failed"
+          rejectedText="You rejected the transaction. Click here to try again."
+        />
+      </form>
     </>
   );
 };

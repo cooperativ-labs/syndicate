@@ -1,37 +1,42 @@
 import AddressFields from '@src/components/address/AddressFields';
 import React, { FC } from 'react';
 
-import Input, { defaultFieldDiv } from '../../form-components/Inputs';
+import { Input } from '@src/components/ui/input';
+import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@src/components/ui/field';
+import { FieldErrors, UseFormRegister } from 'react-hook-form';
+import { InvestorFormInputsType } from './InvestorApplicationForm';
 
-const AdvisorFields: FC = () => {
+type AdvisorFieldsProps = {
+  register: UseFormRegister<InvestorFormInputsType>;
+  errors: FieldErrors<InvestorFormInputsType>;
+};
+
+const AdvisorFields: FC<AdvisorFieldsProps> = ({ register, errors }) => {
   return (
-    <>
-      <Input
-        className={defaultFieldDiv}
-        name="advisorFullName"
-        type="text"
-        placeholder=""
-        labelText="Full name"
-        required
-      />
-      <Input
-        className={defaultFieldDiv}
-        name="advisorEmail"
-        type="text"
-        placeholder=""
-        labelText="Email address"
-        required
-      />
-      <Input
-        className={defaultFieldDiv}
-        name="advisorPhone"
-        type="text"
-        placeholder=""
-        labelText="Phone number"
-        required
-      />
+    <FieldGroup>
+      <Field>
+        <FieldContent>
+          <FieldLabel>Full Name</FieldLabel>
+          <Input type="text" placeholder="" required {...register('advisorFullName')} />
+          <FieldError errors={errors.advisorFullName ? [errors.advisorFullName] : undefined} />
+        </FieldContent>
+      </Field>
+      <Field>
+        <FieldContent>
+          <FieldLabel>Email</FieldLabel>
+          <Input type="text" placeholder="" required {...register('advisorEmail')} />
+          <FieldError errors={errors.advisorEmail ? [errors.advisorEmail] : undefined} />
+        </FieldContent>
+      </Field>
+      <Field>
+        <FieldContent>
+          <FieldLabel>Phone</FieldLabel>
+          <Input type="text" placeholder="" required {...register('advisorPhone')} />
+          <FieldError errors={errors.advisorPhone ? [errors.advisorPhone] : undefined} />
+        </FieldContent>
+      </Field>
       <AddressFields fieldNameModifier="advisor_" excludeAddressLabel />
-    </>
+    </FieldGroup>
   );
 };
 

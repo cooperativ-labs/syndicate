@@ -1,15 +1,16 @@
 import { cn } from '@src/lib/utils';
-import { ErrorMessage, Field } from 'formik';
+
 import React from 'react';
 import { ReactElement } from 'react-markdown/lib/react-markdown';
-
-import { Maybe } from '@/types';
+import { Checkbox as CheckboxUI } from '../ui/checkbox';
+import { FieldError, FieldLabel } from '../ui/field';
+import { FieldErrors, FieldValues } from 'react-hook-form';
 
 export interface CheckboxProps {
   id?: any;
   name: string;
   required?: boolean;
-  checked: Maybe<boolean> | undefined;
+  checked: boolean | undefined;
 }
 export interface CustomCheckboxProps extends CheckboxProps {
   labelText?: string | ReactElement;
@@ -17,6 +18,7 @@ export interface CustomCheckboxProps extends CheckboxProps {
   fieldClass?: string;
   fieldLabelClass?: string;
   sideLabel?: boolean;
+  errors: FieldErrors<FieldValues>;
 }
 
 const Checkbox: React.FC<CustomCheckboxProps> = ({
@@ -26,9 +28,10 @@ const Checkbox: React.FC<CustomCheckboxProps> = ({
   required,
   checked,
   className,
-  fieldClass,
+
   fieldLabelClass,
-  sideLabel
+  sideLabel,
+  errors
 }) => {
   return (
     <div>
@@ -38,7 +41,7 @@ const Checkbox: React.FC<CustomCheckboxProps> = ({
         ])}
       >
         {labelText && (
-          <label
+          <FieldLabel
             htmlFor={name}
             className={cn(
               fieldLabelClass
@@ -49,22 +52,11 @@ const Checkbox: React.FC<CustomCheckboxProps> = ({
           >
             {labelText}
             {required ? ' *' : ''}
-          </label>
+          </FieldLabel>
         )}
-        <Field
-          id={id}
-          name={name}
-          type="checkbox"
-          checked={checked}
-          className={cn(
-            fieldClass
-              ? fieldClass
-              : 'text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 mt-3 focus:outline-none'
-          )}
-          required={required}
-        />
+        <CheckboxUI id={id} checked={checked} />
       </div>
-      <ErrorMessage name={name} component="div" className="text-sm text-red-500" />
+      <FieldError errors={errors.name ? [errors.name] : undefined} />
     </div>
   );
 };

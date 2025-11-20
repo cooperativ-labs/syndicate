@@ -1,11 +1,14 @@
+import { zodResolver } from '@hookform/resolvers/zod';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-import { Form, Formik } from 'formik';
 import React, { FC, useState } from 'react';
+import { useForm } from 'react-hook-form';
+import { z } from 'zod';
 
 import { RealEstateProperty } from '@/types';
 
-import Input, { defaultFieldDiv } from '../form-components/Inputs';
+import { Field, FieldContent, FieldLabel } from '../ui/field';
+import { Input } from '../ui/input';
 import { LoadingButton } from '../ui/loading-button';
 
 export type UpdatePropertyFinancialsType = {
@@ -13,6 +16,17 @@ export type UpdatePropertyFinancialsType = {
   updateProperty: (data: any) => void;
   setModal: (addressModel: boolean) => void;
 };
+
+const financialSchema = z.object({
+  assetValue: z.string().optional(),
+  assetValueNote: z.string().optional(),
+  downPayment: z.string().optional(),
+  lenderFees: z.string().optional(),
+  closingCosts: z.string().optional(),
+  loanAmount: z.string().optional()
+});
+
+type FinancialFormValues = z.infer<typeof financialSchema>;
 
 const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({
   property,
@@ -23,98 +37,96 @@ const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
   const entityOperatingCurrency = property.owner?.operatingCurrency;
-  return (
-    <Formik
-      initialValues={{
-        assetValue: property.assetValue,
-        assetValueNote: property.assetValueNote,
-        downPayment: property.downPayment,
-        lenderFees: property.lenderFees,
-        closingCosts: property.closingCosts,
-        loanAmount: property.loan
-      }}
-      validate={values => {
-        const errors: any = {}; /** @TODO : Shape */
-      }}
-      onSubmit={async (values, { setSubmitting }) => {
-        setSubmitting(true);
-        setButtonState('loading');
-        try {
-          await updateProperty({
-            variables: {
-              currentDate: currentDate,
-              rePropertyId: property.id,
-              propertyType: property.propertyType,
-              investmentStatus: property.investmentStatus,
-              assetValue: values.assetValue,
-              assetValueNote: values.assetValueNote,
-              downPayment: values.downPayment,
-              lenderFees: values.lenderFees,
-              closingCosts: values.closingCosts,
-              loanAmount: values.loanAmount
-            }
-          });
-          setButtonState('success');
-          setModal(false);
-        } catch (error) {
-          setButtonState('error');
-        }
-        setSubmitting(false);
-      }}
-    >
-      {({ isSubmitting, values }) => (
-        <Form className="flex flex-col gap relative">
-          <hr className="my-6" />
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Asset value (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="assetValue"
-          />
-          <Input
-            className={defaultFieldDiv}
-            labelText={`Note about how this value is calculated`}
-            name="assetValueNote"
-          />
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Loan amount (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="loanAmount"
-          />
+  const { handleSubmit, register } = useForm<FinancialFormValues>({
+    resolver: zodResolver(financialSchema),
+    defaultValues: {
+      assetValue: property.assetValue?.toString() ?? '',
+      assetValueNote: property.assetValueNote ?? '',
+      downPayment: property.downPayment?.toString() ?? '',
+      lenderFees: property.lenderFees?.toString() ?? '',
+      closingCosts: property.closingCosts?.toString() ?? '',
+      loanAmount: property.loan?.toString() ?? ''
+    }
+  });
 
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Down payment (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="downPayment"
-          />
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Lender's fees (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="lenderFees"
-          />
-          <Input
-            className={defaultFieldDiv}
-            type="number"
-            labelText={`Closing costs (${getCurrencyOption(entityOperatingCurrency)?.symbol})`}
-            name="closingCosts"
-          />
-          <LoadingButton
-            type="submit"
-            buttonState={buttonState}
-            setButtonState={setButtonState}
-            text={`Update ${property.address?.line1}`}
-            loadingText="Updating property..."
-            successText="Property updated!"
-            errorText="Failed to update property"
-            reset
-            className="mt-8"
-          />
-        </Form>
-      )}
-    </Formik>
+  const onSubmit = async (values: FinancialFormValues) => {
+    setButtonState('loading');
+    try {
+      await updateProperty({
+        variables: {
+          currentDate: currentDate,
+          rePropertyId: property.id,
+          propertyType: property.propertyType,
+          investmentStatus: property.investmentStatus,
+          assetValue: values.assetValue,
+          assetValueNote: values.assetValueNote,
+          downPayment: values.downPayment,
+          lenderFees: values.lenderFees,
+          closingCosts: values.closingCosts,
+          loanAmount: values.loanAmount
+        }
+      });
+      setButtonState('success');
+      setModal(false);
+    } catch (error) {
+      setButtonState('error');
+    }
+  };
+
+  const currencyLabel = (field: string) =>
+    `${field} (${getCurrencyOption(entityOperatingCurrency)?.symbol ?? ''})`;
+
+  return (
+    <form className="flex flex-col gap relative" onSubmit={handleSubmit(onSubmit)}>
+      <hr className="my-6" />
+      <Field className="pt-3 bg-opacity-0">
+        <FieldLabel htmlFor="assetValue">{currencyLabel('Asset value')}</FieldLabel>
+        <FieldContent>
+          <Input id="assetValue" type="number" {...register('assetValue')} />
+        </FieldContent>
+      </Field>
+      <Field className="pt-3 bg-opacity-0">
+        <FieldLabel htmlFor="assetValueNote">Note about how this value is calculated</FieldLabel>
+        <FieldContent>
+          <Input id="assetValueNote" {...register('assetValueNote')} />
+        </FieldContent>
+      </Field>
+      <Field className="pt-3 bg-opacity-0">
+        <FieldLabel htmlFor="loanAmount">{currencyLabel('Loan amount')}</FieldLabel>
+        <FieldContent>
+          <Input id="loanAmount" type="number" {...register('loanAmount')} />
+        </FieldContent>
+      </Field>
+      <Field className="pt-3 bg-opacity-0">
+        <FieldLabel htmlFor="downPayment">{currencyLabel('Down payment')}</FieldLabel>
+        <FieldContent>
+          <Input id="downPayment" type="number" {...register('downPayment')} />
+        </FieldContent>
+      </Field>
+      <Field className="pt-3 bg-opacity-0">
+        <FieldLabel htmlFor="lenderFees">{currencyLabel("Lender's fees")}</FieldLabel>
+        <FieldContent>
+          <Input id="lenderFees" type="number" {...register('lenderFees')} />
+        </FieldContent>
+      </Field>
+      <Field className="pt-3 bg-opacity-0">
+        <FieldLabel htmlFor="closingCosts">{currencyLabel('Closing costs')}</FieldLabel>
+        <FieldContent>
+          <Input id="closingCosts" type="number" {...register('closingCosts')} />
+        </FieldContent>
+      </Field>
+      <LoadingButton
+        type="submit"
+        buttonState={buttonState}
+        setButtonState={setButtonState}
+        text={`Update ${property.address?.line1}`}
+        loadingText="Updating property..."
+        successText="Property updated!"
+        errorText="Failed to update property"
+        reset
+        className="mt-8"
+      />
+    </form>
   );
 };
 

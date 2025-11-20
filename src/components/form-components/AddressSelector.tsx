@@ -1,11 +1,10 @@
 import React, { FC } from 'react';
 
-import { Address, LegalEntity } from '@/types';
+import { Address } from '@/types';
 
-import Button from '../buttons/Button';
+import { Button } from '../ui/button';
 
-import { defaultFieldDiv } from './Inputs';
-import Select from './Select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type AddressSelectorProps = {
   addresses: Address[];
@@ -18,15 +17,19 @@ const AddressSelector: FC<AddressSelectorProps> = ({ addresses, fieldName, setMo
   return (
     <div className="md:grid grid-cols-5 gap-4">
       <div className="col-span-3 align-end ">
-        <Select required className={defaultFieldDiv} labelText={label} name={fieldName}>
-          <option value="">Select an address</option>
-          {addresses.map((address, i) => {
-            return (
-              <option key={i} value={address.id}>
-                {address.line1}
-              </option>
-            );
-          })}
+        <Select required value={fieldName} onValueChange={value => {}}>
+          <SelectTrigger>
+            <SelectValue placeholder="Select an address" />
+          </SelectTrigger>
+          <SelectContent>
+            {addresses.map((address, i) => {
+              return (
+                <SelectItem key={i} value={address.id}>
+                  {address.line1}
+                </SelectItem>
+              );
+            })}
+          </SelectContent>
         </Select>
       </div>
 
