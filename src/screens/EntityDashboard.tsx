@@ -1,15 +1,15 @@
 'use client';
 
-import { useOrganizations } from '@/contexts/OrganizationsContext';
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CreateEntity from '@src/components/entity/CreateEntity';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import { useRouter } from 'next/navigation';
+import { useParams } from 'next/navigation';
 import React, { FC } from 'react';
 
 import { useEntities } from '@/contexts/EntityContext';
-import { useParams } from 'next/navigation';
+import { useOrganizations } from '@/contexts/OrganizationsContext';
 
 const EntityDashboard: FC = () => {
   const { isEditorOrAdmin } = useOrganizations();

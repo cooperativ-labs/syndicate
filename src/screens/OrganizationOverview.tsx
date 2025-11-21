@@ -1,5 +1,6 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import LoadingModal from '@src/components/loading/ModalLoading';
@@ -13,7 +14,6 @@ import React, { FC } from 'react';
 
 import { OrganizationPermissionTypes } from '@/types';
 import { OrganizationComplete } from '@/types';
-import { useOrganizations } from '@contexts/OrganizationsContext';
 
 const OrganizationOverview: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
   const { isEditorOrAdmin, isAdmin } = useOrganizations();

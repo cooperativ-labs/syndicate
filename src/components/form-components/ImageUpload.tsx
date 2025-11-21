@@ -1,5 +1,6 @@
 'use client';
 
+import { cn } from '@src/lib/utils';
 import {
   fileToImageUrl,
   handleImageCompression,
@@ -11,7 +12,6 @@ import { toast } from 'sonner';
 
 import DeleteButton from '../buttons/DeleteButton';
 import DragAndDrop from '../DndFiles';
-import { cn } from '@src/lib/utils';
 
 type ImageUploadProps = {
   accept: string[];

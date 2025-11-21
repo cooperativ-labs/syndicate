@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import { Button } from '@src/components/ui/button';
 import { Checkbox } from '@src/components/ui/checkbox';
@@ -15,9 +14,9 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 // import { isMetaMask } from '@src/web3/wagmi';
 import axios from 'axios';
-import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useMemo, useState } from 'react';
+import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
 import { z } from 'zod';
 

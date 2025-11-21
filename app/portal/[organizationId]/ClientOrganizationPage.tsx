@@ -1,13 +1,13 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
 import OrganizationProfile from '@src/screens/OrganizationProfile';
 import PortalOrganization from '@src/screens/PortalOrganization';
 import React from 'react';
 import { useAccount } from 'wagmi';
 
 import { OrganizationComplete } from '@/types';
-import { useOrganizations } from '@contexts/OrganizationsContext';
-import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
 
 const ClientOrganizationPage: React.FC = () => {
   const { chosenOrganization, chosenOrganizationId } = useOrganizations();

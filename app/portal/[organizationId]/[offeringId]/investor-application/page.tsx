@@ -5,6 +5,7 @@ import Header from '@src/containers/Header';
 import { getOfferingById } from '@src/utils/actions/offeringActions';
 import { getOrganization } from '@src/utils/actions/organizationActions';
 import { getRealEstatePropertiesFromEntity } from '@src/utils/actions/rePropertyActions';
+
 import { RealEstatePropertyWithAssets } from '@/types';
 
 type Params = {

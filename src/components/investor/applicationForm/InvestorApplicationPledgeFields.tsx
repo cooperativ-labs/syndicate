@@ -6,9 +6,10 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
+import type { Offering } from '@/types';
+
 import { TextField } from './FormControls';
 import type { InvestorFormInputsType } from './InvestorApplicationForm';
-import type { Offering } from '@/types';
 
 type InvestorApplicationPledgeFieldsProps = {
   offering: Offering;

@@ -1,5 +1,6 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CloseButton from '@src/components/buttons/CloseButton';
@@ -9,7 +10,7 @@ import OfferingsList from '@src/components/offering/OfferingsList';
 import LimitedWidthSection from '@src/containers/LimitedWidthSection';
 import { getOfferingsFromOrganization } from '@src/utils/helpersUserAndEntity';
 import React, { FC } from 'react';
-import { useOrganizations } from '@contexts/OrganizationsContext';
+
 import { OfferingFull } from '@/types';
 
 const Offerings: FC<{

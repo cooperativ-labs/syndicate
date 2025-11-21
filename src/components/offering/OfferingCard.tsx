@@ -2,6 +2,7 @@
 
 import { useUserContext } from '@contexts/UserContext';
 import { getCurrentOrdersAndPrice } from '@src/utils/actions/offeringActions';
+import { getPublicUrl } from '@src/utils/actions/storageActions';
 import { getCurrencyByCode } from '@src/utils/enumConverters';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
@@ -9,13 +10,13 @@ import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
 import { CurrencyCodeType, Offering } from '@/types';
+import { OfferingWithParticipants } from '@/types';
 
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
-import { OfferingWithParticipants } from '@/types';
+
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
-import { getPublicUrl } from '@src/utils/actions/storageActions';
 
 // In-memory cache for public URLs
 const publicUrlCache = new Map<string, { data: string | null; error: Error | null }>();

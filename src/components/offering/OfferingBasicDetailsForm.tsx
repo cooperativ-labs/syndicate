@@ -1,11 +1,13 @@
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import BasicOfferingDetailsForm from './settings/BasicOfferingDetailsForm';
-import { CurrencyCodeType, LegalEntityWithAddresses, OfferingFull } from '@/types';
-import { useState } from 'react';
-
-import { useAccount } from 'wagmi';
 import { cn } from '@src/lib/utils';
-import { Dialog, DialogTitle, DialogHeader, DialogContent, DialogDescription } from '../ui/dialog';
+import { useState } from 'react';
+import { useAccount } from 'wagmi';
+
+import { CurrencyCodeType, LegalEntityWithAddresses, OfferingFull } from '@/types';
+
+import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from '../ui/dialog';
+
+import BasicOfferingDetailsForm from './settings/BasicOfferingDetailsForm';
 
 type OfferingBasicDetailsFormProps = {
   offering: OfferingFull;

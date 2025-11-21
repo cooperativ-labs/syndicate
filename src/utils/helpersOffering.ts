@@ -1,18 +1,10 @@
-import {
-  OfferingDescriptionText,
-  OfferingFull,
-  OfferingTabSectionTypes,
-} from "@/types";
+import { OfferingDescriptionText, OfferingFull, OfferingTabSectionTypes } from '@/types';
 
-export type ManagerModalType =
-  | "saleForm"
-  | "shareSaleList"
-  | "smartContractsSettings"
-  | "none";
+export type ManagerModalType = 'saleForm' | 'shareSaleList' | 'smartContractsSettings' | 'none';
 
 export const getDescriptionsByTab = (
   offering: OfferingFull,
-  tab: OfferingTabSectionTypes | undefined,
+  tab: OfferingTabSectionTypes | undefined
 ): ArrayLike<OfferingDescriptionText | undefined> => {
   if (!offering.descriptions) return [];
   return offering.descriptions.filter((description, i) => {

@@ -3,19 +3,20 @@ import EntitiesList from '@src/components/entity/EntitiesList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import OfferingsList, { OfferingListOfferingType } from '@src/components/offering/OfferingsList';
 import Tab from '@src/components/offering/tabs/Tab';
+import PropertyCardList from '@src/components/properties/PropertyCardList';
 import { cn } from '@src/lib/utils';
+import { getEntityDocumentsById } from '@src/utils/actions/documentActions';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
+
 import {
+  CurrencyCodeType,
+  LegalEntity,
   LegalEntityWithJurisdiction,
   Offering,
-  LegalEntity,
   RealEstateProperty,
-  RealEstatePropertyWithAddress,
-  CurrencyCodeType
+  RealEstatePropertyWithAddress
 } from '@/types';
-import { getEntityDocumentsById } from '@src/utils/actions/documentActions';
-import PropertyCardList from '@src/components/properties/PropertyCardList';
 
 type EntityTabContainerProps = {
   operatingCurrency: CurrencyCodeType | null;

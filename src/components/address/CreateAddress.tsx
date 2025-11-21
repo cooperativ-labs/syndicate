@@ -1,6 +1,5 @@
 'use client';
 
-import { LegalEntityWithSubsidiaries } from '@/types';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import AddressAutoComplete, { AddressType } from '@src/components/ui/address-autocomplete';
@@ -12,6 +11,8 @@ import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
 import { z } from 'zod';
+
+import { LegalEntityWithSubsidiaries } from '@/types';
 
 export type CreateAddressType = {
   entity: LegalEntityWithSubsidiaries;

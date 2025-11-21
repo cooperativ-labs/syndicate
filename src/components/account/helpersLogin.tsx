@@ -1,8 +1,7 @@
-import Image from 'next/image';
-import { useState } from 'react';
-
 import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import { createClient } from '@supabase/utils/client';
+import Image from 'next/image';
+import { useState } from 'react';
 
 export const signInWithGoogle = async ({ redirectTo }: { redirectTo?: string }) => {
   const supabase = createClient();

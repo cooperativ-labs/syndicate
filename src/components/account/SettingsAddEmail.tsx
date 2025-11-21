@@ -3,9 +3,9 @@ import React, { FC } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
+import { handleAddEmailAddress } from '../notifications/notificationFunctions';
 import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
-import { handleAddEmailAddress } from '../notifications/notificationFunctions';
 
 const fieldDiv = 'md:pt-3 md:my-2 bg-opacity-0';
 

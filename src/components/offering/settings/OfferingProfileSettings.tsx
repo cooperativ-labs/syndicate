@@ -1,6 +1,8 @@
 'use client';
 
 import { zodResolver } from '@hookform/resolvers/zod';
+import ImageUpload from '@src/components/form-components/ImageUpload';
+import { Checkbox } from '@src/components/ui/checkbox';
 import {
   Field,
   FieldContent,
@@ -9,23 +11,21 @@ import {
   FieldGroup,
   FieldLabel
 } from '@src/components/ui/field';
-import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
-import { Checkbox } from '@src/components/ui/checkbox';
 import { Input } from '@src/components/ui/input';
-import { Textarea } from '@src/components/ui/textarea';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
+import { Textarea } from '@src/components/ui/textarea';
 import {
+  deleteOfferingAsset,
   updateOfferingProfile,
-  uploadOfferingAsset,
-  deleteOfferingAsset
+  uploadOfferingAsset
 } from '@src/utils/actions/offeringProfileActions';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { Offering } from '@/types';
-import ImageUpload from '@src/components/form-components/ImageUpload';
-import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
 const schema = z.object({
   name: z.string().min(1, 'Please name this syndication.'),

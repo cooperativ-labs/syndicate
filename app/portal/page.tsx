@@ -1,5 +1,5 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@src/components/ui/card';
-import { Mail, Link2 } from 'lucide-react';
+import { Link2, Mail } from 'lucide-react';
 
 export default function PortalPage() {
   return (

@@ -1,29 +1,26 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { useUserContext } from '@contexts/UserContext';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import UpdateAddress from '@src/components/address/UpdateAddress';
 import FileUpload from '@src/components/form-components/FileUpload';
+import ImageUpload from '@src/components/form-components/ImageUpload';
 import Progress from '@src/components/offering/profile/Progress';
 import PropertyImage from '@src/components/properties/PropertyImage';
 import UpdatePropertyDescription from '@src/components/properties/UpdatePropertyDescription';
 import UpdatePropertyFinancials from '@src/components/properties/UpdatePropertyFinancials';
 import { Button } from '@src/components/ui/button';
 import FormModal from '@src/containers/FormModal';
+import { removeReProperty, uploadRePropertyAsset } from '@src/utils/actions/rePropertyActions';
 import { getPropertyTypeOption } from '@src/utils/enumConverters';
-
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
-
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil } from 'lucide-react';
-
 import React, { FC, useState } from 'react';
 
 import { RealEstatePropertyWithAssets } from '@/types';
-import { removeReProperty, uploadRePropertyAsset } from '@src/utils/actions/rePropertyActions';
-import { useOrganizations } from '@contexts/OrganizationsContext';
-import ImageUpload from '@src/components/form-components/ImageUpload';
 
 type PropertyDetailsProps = {
   property: RealEstatePropertyWithAssets;

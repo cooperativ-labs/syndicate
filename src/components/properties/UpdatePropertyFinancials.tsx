@@ -1,4 +1,6 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { UpdateRePropertyFinancials } from '@src/utils/actions/rePropertyActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useState } from 'react';
@@ -10,8 +12,6 @@ import { RealEstatePropertyWithAddress } from '@/types';
 import { Field, FieldContent, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 import { LoadingButton } from '../ui/loading-button';
-import { useOffering } from '@contexts/OfferingContext';
-import { UpdateRePropertyFinancials } from '@src/utils/actions/rePropertyActions';
 
 export type UpdatePropertyFinancialsType = {
   property: RealEstatePropertyWithAddress;

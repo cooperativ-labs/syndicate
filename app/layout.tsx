@@ -7,8 +7,8 @@ import { getWagmiConfig } from '@src/web3/wagmi';
 import { createClient } from '@supabase/utils/server';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
-import React from 'react';
 import Script from 'next/script';
+import React from 'react';
 import { cookieToInitialState } from 'wagmi';
 
 import ModalsAndAlerts from './modals';

@@ -1,7 +1,7 @@
+import ErrorBoundary from '@src/components/ErrorBoundary';
 import React, { FC } from 'react';
 
 import NavBar from './NavigationBar';
-import ErrorBoundary from '@src/components/ErrorBoundary';
 
 type ManagerProps = {
   children: React.ReactNode;

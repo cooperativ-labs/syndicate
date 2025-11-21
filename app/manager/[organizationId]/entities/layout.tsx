@@ -1,4 +1,5 @@
 import { getEntitiesByOrganizationId } from '@src/utils/actions/entityActions';
+
 import { EntityProvider } from '@/contexts/EntityContext';
 
 const EntitiesLayout = async ({

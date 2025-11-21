@@ -1,6 +1,3 @@
-import { updateDescriptionText } from '@src/utils/actions/offeringProfileActions';
-import { getDescriptionsByTab } from '@src/utils/helpersOffering';
-import React, { FC, useEffect, useMemo, useState } from 'react';
 import {
   closestCenter,
   DndContext,
@@ -12,16 +9,17 @@ import {
   useSensor,
   useSensors
 } from '@dnd-kit/core';
-
-import { restrictToVerticalAxis, restrictToParentElement } from '@dnd-kit/modifiers';
-
+import { restrictToParentElement, restrictToVerticalAxis } from '@dnd-kit/modifiers';
+import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
+import { Accordion } from '@src/components/ui/accordion';
+import { updateDescriptionText } from '@src/utils/actions/offeringProfileActions';
+import { getDescriptionsByTab } from '@src/utils/helpersOffering';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import toast from 'react-hot-toast';
 
 import { OfferingDescriptionText, OfferingFull, OfferingTabSectionTypes } from '@/types';
 
 import OfferingDescriptionItem from './OfferingDescriptionItem';
-import { Accordion } from '@src/components/ui/accordion';
-import { SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 
 type TabDescriptionListProps = {
   offering: OfferingFull;

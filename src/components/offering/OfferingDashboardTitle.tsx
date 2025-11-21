@@ -2,15 +2,14 @@ import { cn } from '@src/lib/utils';
 import { updateOfferingBasic } from '@src/utils/actions/offeringProfileActions';
 import { getBaseUrl } from '@src/utils/helpersURL';
 import { String0x } from '@src/web3/helpersChain';
-
 import { Check, Copy, SquareArrowOutUpRight } from 'lucide-react';
 import React, { FC, useState } from 'react';
-import toast from 'react-hot-toast';
 import { useForm } from 'react-hook-form';
+import toast from 'react-hot-toast';
 
-import { Input } from '../ui/input';
 import { Button } from '../ui/button';
 import { Field, FieldContent, FieldError } from '../ui/field';
+import { Input } from '../ui/input';
 
 import AccessCodeForm from './profile/AccessCodeForm';
 import ProfileVisibilityToggle from './settings/ProfileVisibilityToggle';

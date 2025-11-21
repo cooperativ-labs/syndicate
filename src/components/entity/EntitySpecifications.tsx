@@ -2,6 +2,7 @@
 
 import { zodResolver } from '@hookform/resolvers/zod';
 import { cn } from '@src/lib/utils';
+import { updateLegalEntity } from '@src/utils/actions/entityActions';
 import { currencyOptionsExcludeCredits } from '@src/utils/enumConverters';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
@@ -10,16 +11,14 @@ import { z } from 'zod';
 import { CurrencyCodeType, LegalEntity, LegalEntityWithJurisdiction } from '@/types';
 
 import ClickToEditItem from '../form-components/ClickToEditItem';
-
+import JurisdictionSelect from '../form-components/JurisdictionSelect';
 import { EditOrganizationSelectionType } from '../organization/OrganizationSpecifications';
 import { Button } from '../ui/button';
 import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
+import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 import { Textarea } from '../ui/textarea';
-import { updateLegalEntity } from '@src/utils/actions/entityActions';
-import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
-import JurisdictionSelect from '../form-components/JurisdictionSelect';
 
 export type EditEntitySelectionType =
   | 'displayName'

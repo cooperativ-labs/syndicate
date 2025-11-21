@@ -1,7 +1,5 @@
 'use client';
 
-import { DocumentType, OfferingParticipant, OfferingFull, Document } from '@/types';
-
 import useOfferingDetails from '@hooks/useOfferingDetails';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
@@ -15,7 +13,6 @@ import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import { getRealEstatePropertiesFromEntity } from '@src/utils/actions/rePropertyActions';
-
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { floatWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
@@ -24,6 +21,8 @@ import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useBalance, useReadContracts } from 'wagmi';
+
+import { Document, DocumentType, OfferingFull, OfferingParticipant } from '@/types';
 
 type PortalOfferingProps = {
   offering: OfferingFull;

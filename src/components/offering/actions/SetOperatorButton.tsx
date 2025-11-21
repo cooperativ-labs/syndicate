@@ -1,13 +1,12 @@
 import { Button } from '@src/components/ui/button';
+import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { String0x } from '@src/web3/helpersChain';
 import React, { useState } from 'react';
 import { useAccount } from 'wagmi';
-
-import { Input } from '@src/components/ui/input';
-import { Field, FieldLabel, FieldContent, FieldError } from '@src/components/ui/field';
 
 type SetOperatorButtonProps = {
   shareContractAddress: String0x;

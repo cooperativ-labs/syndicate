@@ -1,9 +1,9 @@
 import AddressFields from '@src/components/address/AddressFields';
-import React, { FC } from 'react';
-
-import { Input } from '@src/components/ui/input';
 import { Field, FieldContent, FieldError, FieldGroup, FieldLabel } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
+import React, { FC } from 'react';
 import { FieldErrors, UseFormRegister } from 'react-hook-form';
+
 import { InvestorFormInputsType } from './InvestorApplicationForm';
 
 type AdvisorFieldsProps = {

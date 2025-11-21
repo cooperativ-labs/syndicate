@@ -7,6 +7,7 @@ import DashboardCard from '@src/components/cards/DashboardCard';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
 import OfferingActionsContainer from '@src/components/offering/actions/OfferingActionsContainer';
 import DocumentList from '@src/components/offering/documents/DocumentList';
+import OfferingBasicDetailsForm from '@src/components/offering/OfferingBasicDetailsForm';
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
@@ -24,7 +25,6 @@ import React, { FC, useState } from 'react';
 import { useAccount } from 'wagmi';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull } from '@/types';
-import OfferingBasicDetailsForm from '@src/components/offering/OfferingBasicDetailsForm';
 
 type OfferingDetailsProps = {
   offering: OfferingFull;

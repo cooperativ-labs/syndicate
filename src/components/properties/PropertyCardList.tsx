@@ -1,4 +1,5 @@
 import { CurrencyCodeType, RealEstatePropertyWithAddress } from '@/types';
+
 import RealEstatePropertyCard from './RealEstatePropertyCard';
 
 type PropertyCardListProps = {

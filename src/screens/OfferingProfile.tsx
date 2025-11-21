@@ -1,6 +1,7 @@
 'use client';
 
 import AddressDisplay from '@src/components/address/AddressDisplay';
+import { ContractOrder } from '@src/components/investor/tradingForms/offering-actions-types';
 import DistributionList from '@src/components/offering/distributions/DistributionList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
 import ShareOfferPanel from '@src/components/offering/ShareOfferPanel';
@@ -25,7 +26,6 @@ import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { ContractOrder } from '@src/components/investor/tradingForms/offering-actions-types';
 import {
   Document,
   DocumentType,

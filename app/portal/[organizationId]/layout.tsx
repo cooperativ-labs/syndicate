@@ -1,9 +1,8 @@
-import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
-import { getOrganization } from '@src/utils/actions/organizationActions';
-
 import { OrganizationsProvider } from '@contexts/OrganizationsContext';
-import NavBar from '@src/containers/NavigationBar';
 import { UserProvider } from '@contexts/UserContext';
+import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
+import NavBar from '@src/containers/NavigationBar';
+import { getOrganization } from '@src/utils/actions/organizationActions';
 
 const OrganizationLayout = async ({
   children,

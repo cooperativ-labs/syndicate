@@ -16,9 +16,11 @@ import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
-import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
-import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { z } from 'zod';
+
+import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
+
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 const deploySchema = z.object({
   investmentCurrencyAddress: z
     .string()

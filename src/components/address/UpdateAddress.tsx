@@ -1,16 +1,17 @@
 'use client';
 
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import { Address } from '@/types';
 import AddressAutoComplete, { AddressType } from '@src/components/ui/address-autocomplete';
 import { Button } from '@src/components/ui/button';
 import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
+import { updateAddress } from '@src/utils/actions/addressActions';
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
-import { updateAddress } from '@src/utils/actions/addressActions';
+
+import { Address } from '@/types';
 
 export type UpdateAddressType = {
   address: Address | null;

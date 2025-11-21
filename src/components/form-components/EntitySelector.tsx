@@ -5,7 +5,7 @@ import React, { FC } from 'react';
 import { LegalEntity } from '@/types';
 
 import { Button } from '../ui/button';
-import { Select, SelectItem, SelectContent, SelectTrigger, SelectValue } from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type EntitySelectorProps = {
   entities: LegalEntity[];

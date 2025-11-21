@@ -1,24 +1,20 @@
-import {
-  SmartContract,
-  SmartContractType,
-  SmartContractWithCryptoAddress,
-} from "@/types";
+import { SmartContract, SmartContractType, SmartContractWithCryptoAddress } from '@/types';
 
 const contractIsSameChain = (
   contract: SmartContractWithCryptoAddress,
-  chainId: number,
+  chainId: number
 ): boolean => {
   return contract?.cryptoAddress.chain_id === chainId;
 };
 
 export const getAvailableContracts = ({
   shareContracts,
-  chainId,
+  chainId
 }: {
   shareContracts: SmartContractWithCryptoAddress[];
   chainId: number;
 }) => {
-  return shareContracts.find((contract) => {
+  return shareContracts.find(contract => {
     if (
       contractIsSameChain(contract, chainId) &&
       !contract?.established &&

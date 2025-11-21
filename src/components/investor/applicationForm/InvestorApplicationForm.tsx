@@ -1,18 +1,18 @@
 'use client';
 
+import AddressAutoComplete, { type AddressType } from '@address-autocomplete';
 import { GoogleMap, Marker } from '@react-google-maps/api';
-import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import FormCard from '@src/components/cards/FormCard';
+import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { Field, FieldContent, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import {
   LoadingButtonChain,
   LoadingButtonStateType
 } from '@src/components/ui/loading-button-chain';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
-import AddressAutoComplete, { type AddressType } from '@address-autocomplete';
+import { addOfferingParticipantWithApplication } from '@src/utils/actions/offeringActions';
 import { checkDateInPast } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { addOfferingParticipantWithApplication } from '@src/utils/actions/offeringActions';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';

@@ -1,9 +1,12 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import NonInput from '@src/components/form-components/NonInput';
+import { Button } from '@src/components/ui/button';
+import { Calendar } from '@src/components/ui/calendar';
+import { Field, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
-import { FieldLabel, FieldGroup, FieldSet, Field } from '@src/components/ui/field';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
+import { Popover, PopoverContent, PopoverTrigger } from '@src/components/ui/popover';
 import {
   Select,
   SelectContent,
@@ -20,16 +23,12 @@ import {
   StageOptions
 } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
+import { ChevronDownIcon } from 'lucide-react';
 import React, { FC, useState } from 'react';
-
 import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import { CurrencyCodeType, DistributionPeriodTypes, OfferingFull } from '@/types';
-import { Popover, PopoverContent, PopoverTrigger } from '@src/components/ui/popover';
-import { Button } from '@src/components/ui/button';
-import { ChevronDownIcon } from 'lucide-react';
-import { Calendar } from '@src/components/ui/calendar';
 const defaultFieldDiv = 'pt-3 bg-opacity-0';
 
 type OfferingFinancialSettingsProps = {

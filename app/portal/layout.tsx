@@ -1,7 +1,7 @@
-import { cn } from '@src/lib/utils';
-import { Footer } from 'react-day-picker';
 import AlertPopup from '@src/components/alerts/AlertPopup';
 import EnsureCompatibleNetwork from '@src/containers/wallet/EnsureCompatibleNetwork';
+import { cn } from '@src/lib/utils';
+import { Footer } from 'react-day-picker';
 const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 
 const PortalLayout = ({ children }: { children: React.ReactNode }) => {

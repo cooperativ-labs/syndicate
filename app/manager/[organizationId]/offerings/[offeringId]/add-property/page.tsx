@@ -1,5 +1,4 @@
 import FormCard from '@src/components/cards/FormCard';
-
 import AddPropertyInfo from '@src/components/offering/AddPropertyInfo';
 
 const AddProperty = async () => {

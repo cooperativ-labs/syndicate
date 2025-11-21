@@ -1,19 +1,20 @@
 import { zodResolver } from '@hookform/resolvers/zod';
+import { Checkbox } from '@src/components/ui/checkbox';
+import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
 import { cn } from '@src/lib/utils';
+import { deleteCryptoAddressById, updateCryptoAddress } from '@src/utils/actions/cryptoActions';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import { Pencil, X } from 'lucide-react';
 import React, { FC, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useAccount } from 'wagmi';
+import { z } from 'zod';
 
-import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
-import { Input } from '@src/components/ui/input';
-import { Checkbox } from '@src/components/ui/checkbox';
+import { CryptoAddress, CryptoAddressType } from '@/types';
+
 import { MarkPublic } from './form-components/ListItemButtons';
 import FormattedCryptoAddress from './FormattedCryptoAddress';
-import { CryptoAddress, CryptoAddressType } from '@/types';
-import { deleteCryptoAddressById, updateCryptoAddress } from '@src/utils/actions/cryptoActions';
 
 type WalletAddressListItemProps = {
   wallet: CryptoAddress;

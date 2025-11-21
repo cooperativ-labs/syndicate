@@ -1,5 +1,4 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import { Button } from '@src/components/ui/button';
@@ -8,7 +7,6 @@ import {
   LoadingButtonStateType
 } from '@src/components/ui/loading-button-chain';
 import { cn } from '@src/lib/utils';
-
 import { createOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { DownloadFile } from '@src/utils/helpersAgreement';
@@ -19,15 +17,15 @@ import { String0x } from '@src/web3/helpersChain';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, Resolver, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useAccount, useChainId } from 'wagmi';
+import { z } from 'zod';
 
 import { Document, OfferingFull } from '@/types';
 
 import NonInput from '../../form-components/NonInput';
+import { Checkbox } from '../../ui/checkbox';
 import { Field, FieldContent, FieldError, FieldLabel } from '../../ui/field';
 import { Input } from '../../ui/input';
-import { Checkbox } from '../../ui/checkbox';
 
 import { PostBidAskFormProps } from './offering-actions-types';
 

@@ -1,12 +1,13 @@
+import { Draggable } from '@src/components/DndList';
+import { AccordionContent, AccordionItem, AccordionTrigger } from '@src/components/ui/accordion';
 import { Button } from '@src/components/ui/button';
 import { deleteDescriptionText } from '@src/utils/actions/offeringProfileActions';
 import { Menu, Pencil, X } from 'lucide-react';
 import React, { FC, useState } from 'react';
 
 import { OfferingDescriptionText, OfferingFull, OfferingTabSectionTypes } from '@/types';
+
 import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
-import { AccordionContent, AccordionItem, AccordionTrigger } from '@src/components/ui/accordion';
-import { Draggable } from '@src/components/DndList';
 
 type OfferingDescriptionItemProps = {
   offering: OfferingFull;

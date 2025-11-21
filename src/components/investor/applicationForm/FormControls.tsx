@@ -18,7 +18,7 @@ import {
 } from '@src/components/ui/select';
 import { Textarea } from '@src/components/ui/textarea';
 import React from 'react';
-import { Controller, useFormContext, type FieldPath } from 'react-hook-form';
+import { Controller, type FieldPath, useFormContext } from 'react-hook-form';
 
 import type { InvestorFormInputsType } from './InvestorApplicationForm';
 

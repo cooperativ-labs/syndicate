@@ -1,9 +1,9 @@
+import { removePropertyImage } from '@src/utils/actions/rePropertyActions';
 import React, { FC } from 'react';
 
 import { Image } from '@/types';
 
 import DeleteButton from '../buttons/DeleteButton';
-import { removePropertyImage } from '@src/utils/actions/rePropertyActions';
 
 type PropertyImageProps = {
   image: Image;

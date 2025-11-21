@@ -1,32 +1,17 @@
 'use client';
 
-import { GoogleMap, Marker } from '@react-google-maps/api';
+import { useOffering } from '@contexts/OfferingContext';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { useForm, Controller } from 'react-hook-form';
-import * as z from 'zod';
-import { useRouter } from 'next/navigation';
-import React, { FC, useState } from 'react';
-import { toast } from 'sonner';
-
-import {
-  assetStatusOptions,
-  getCurrencyOption,
-  propertyTypeOptions
-} from '@src/utils/enumConverters';
-import { addRePropertyInfo, addPropertyAddress } from '@src/utils/actions/rePropertyActions';
-
-import { RealEstatePropertyTypes, InvestmentStatusType } from '@/types';
-
+import { GoogleMap, Marker } from '@react-google-maps/api';
 import AddressAutoComplete, { AddressType } from '@src/components/ui/address-autocomplete';
-
 import {
   Field,
-  FieldGroup,
-  FieldLabel,
   FieldContent,
   FieldError,
-  FieldSeparator,
+  FieldGroup,
+  FieldLabel,
   FieldLegend,
+  FieldSeparator,
   FieldSet
 } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
@@ -37,8 +22,21 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
-import { LoadingButton, ButtonLoadingState } from '../ui/loading-button';
-import { useOffering } from '@contexts/OfferingContext';
+import { addPropertyAddress, addRePropertyInfo } from '@src/utils/actions/rePropertyActions';
+import {
+  assetStatusOptions,
+  getCurrencyOption,
+  propertyTypeOptions
+} from '@src/utils/enumConverters';
+import { useRouter } from 'next/navigation';
+import React, { FC, useState } from 'react';
+import { Controller, useForm } from 'react-hook-form';
+import { toast } from 'sonner';
+import * as z from 'zod';
+
+import { InvestmentStatusType, RealEstatePropertyTypes } from '@/types';
+
+import { ButtonLoadingState, LoadingButton } from '../ui/loading-button';
 
 const numberFieldSchema = z
   .any()

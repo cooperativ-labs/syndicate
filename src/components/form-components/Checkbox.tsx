@@ -1,10 +1,9 @@
 import { cn } from '@src/lib/utils';
-
 import React, { ReactElement } from 'react';
+import { FieldErrors, FieldValues } from 'react-hook-form';
 
 import { Checkbox as CheckboxUI } from '../ui/checkbox';
 import { FieldError, FieldLabel } from '../ui/field';
-import { FieldErrors, FieldValues } from 'react-hook-form';
 
 export interface CheckboxProps {
   id?: any;

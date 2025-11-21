@@ -16,13 +16,14 @@ import router from 'next/router';
 import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { z } from 'zod';
 import { useAccount, useChainId } from 'wagmi';
+import { z } from 'zod';
 
 import { CurrencyCode, CurrencyCodeType, SmartContract } from '@/types';
 
 import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
+
 import PresentLegalText from './PresentLegalText';
 
 type LinkLegalFormProps = {

@@ -6,6 +6,7 @@ import { useRouter } from 'next/navigation';
 import { FC } from 'react';
 
 import { LegalEntity, RealEstatePropertyWithAddress } from '@/types';
+
 import PropertyCardList from './PropertyCardList';
 
 type OfferingPropertiesProps = {

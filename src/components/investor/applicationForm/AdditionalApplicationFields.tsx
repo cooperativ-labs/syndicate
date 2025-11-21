@@ -4,7 +4,7 @@ import { FieldDescription, FieldSeparator } from '@src/components/ui/field';
 import React from 'react';
 import { useFormContext, useWatch } from 'react-hook-form';
 
-import { CheckboxField, SelectField, TextField, TextareaField } from './FormControls';
+import { CheckboxField, SelectField, TextareaField, TextField } from './FormControls';
 import type { InvestorFormInputsType } from './InvestorApplicationForm';
 
 type AdditionalApplicationFieldsProps = {

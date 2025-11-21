@@ -2,16 +2,16 @@
 
 import useWindowSize from '@hooks/useWindowSize';
 import { cn } from '@src/lib/utils';
+import { getRePropertyAssets } from '@src/utils/actions/rePropertyActions';
 import { useRouter } from 'next/router';
 import React from 'react';
+import { useAsync } from 'react-use';
 
-import { Offering, OfferingFull, RealEstatePropertyWithAddress, Image } from '@/types';
+import { Image, Offering, OfferingFull, RealEstatePropertyWithAddress } from '@/types';
 
 import { getBaseUrl } from '../utils/helpersURL';
 
 import Container from './Layouts/Container';
-import { useAsync } from 'react-use';
-import { getRePropertyAssets } from '@src/utils/actions/rePropertyActions';
 
 type HeaderProps = {
   offering: OfferingFull;

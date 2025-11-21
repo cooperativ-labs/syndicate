@@ -1,10 +1,11 @@
 'use client';
 
-import { useParams } from 'next/navigation';
-import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { OrganizationWithUsers } from '@/types';
 import { getIsAdmin } from '@src/utils/helpersUserAndEntity';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
+import { useParams } from 'next/navigation';
+import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+
+import { OrganizationWithUsers } from '@/types';
 
 type OrganizationsContextValue = {
   organizations: OrganizationWithUsers[];

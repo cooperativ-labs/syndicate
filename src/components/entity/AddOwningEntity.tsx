@@ -6,21 +6,11 @@ import { addOwner } from '@src/utils/actions/entityActions';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import CreateEntity from './CreateEntity';
 import { Button } from '../ui/button';
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldLabel
-} from '../ui/field';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '../ui/select';
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
+
+import CreateEntity from './CreateEntity';
 
 type AddOwningEntityForm = {
   addEntityOwner: string;

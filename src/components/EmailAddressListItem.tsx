@@ -1,19 +1,20 @@
 import { cn } from '@src/lib/utils';
+import {
+  removeOrganizationEmail,
+  updateOrganizationEmail
+} from '@src/utils/actions/organizationActions';
 import { Trash } from 'lucide-react';
 import React, { FC, useState } from 'react';
-import { useForm, Controller } from 'react-hook-form';
+import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
 
-import { Checkbox } from './ui/checkbox';
-import { Input } from './ui/input';
-import { Button } from './ui/button';
-import { Field, FieldContent, FieldLabel, FieldTitle, FieldError } from './ui/field';
-import { EditButton, MarkPublic } from './form-components/ListItemButtons';
 import { EmailAddress } from '@/types';
-import {
-  updateOrganizationEmail,
-  removeOrganizationEmail
-} from '@src/utils/actions/organizationActions';
+
+import { EditButton, MarkPublic } from './form-components/ListItemButtons';
+import { Button } from './ui/button';
+import { Checkbox } from './ui/checkbox';
+import { Field, FieldContent, FieldError, FieldLabel, FieldTitle } from './ui/field';
+import { Input } from './ui/input';
 
 type EmailAddressListItemProps = {
   email: EmailAddress;

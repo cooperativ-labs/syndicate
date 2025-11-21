@@ -1,6 +1,6 @@
-import { getOfferingById } from '@src/utils/actions/offeringActions';
-import { getOfferingDocumentsById } from '@src/utils/actions/documentActions';
 import OfferingDetails from '@src/screens/OfferingDetails';
+import { getOfferingDocumentsById } from '@src/utils/actions/documentActions';
+import { getOfferingById } from '@src/utils/actions/offeringActions';
 
 export default async function OfferingPage({
   params

@@ -1,6 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
+import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import {
   Select,
   SelectContent,
@@ -8,8 +10,6 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
-import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
-import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { addContractPartition } from '@src/utils/actions/cryptoActions';
 import { addTransferEvent } from '@src/utils/actions/orderActions';
 import { bacOptions, fiatOptions, getCurrencyByCode } from '@src/utils/enumConverters';
@@ -17,7 +17,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { sendShares } from '@src/web3/contractShareCalls';
 import { shareContractABI } from '@src/web3/generated';
-import { addressWithoutEns, stringFromBytes32, String0x } from '@src/web3/helpersChain';
+import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';

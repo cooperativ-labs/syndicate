@@ -1,7 +1,7 @@
-"use server";
+'use server';
 
-import { createClient } from "@supabase/utils/server";
-import { revalidatePath } from "next/cache";
+import { createClient } from '@supabase/utils/server';
+import { revalidatePath } from 'next/cache';
 
 import {
   CurrencyCodeType,
@@ -9,16 +9,17 @@ import {
   Document,
   OfferingTabSectionTypes,
   OfferingTypes,
-  RevalidationPath,
-} from "@/types";
-import { OfferingStage } from "../enumConverters";
+  RevalidationPath
+} from '@/types';
+
+import { OfferingStage } from '../enumConverters';
 
 export async function updateOfferingBasic({
   offeringId,
   isPublic,
   name,
   organizationId,
-  accessCode,
+  accessCode
 }: {
   offeringId: string;
   isPublic: boolean;
@@ -28,16 +29,16 @@ export async function updateOfferingBasic({
 }): Promise<void> {
   const supabase = createClient();
   const { error } = await supabase
-    .from("offering")
+    .from('offering')
     .update({
       is_public: isPublic,
       name: name,
-      access_code: accessCode ?? null,
+      access_code: accessCode ?? null
     })
-    .eq("id", Number(offeringId))
-    .select("id, name, is_public, access_code");
+    .eq('id', Number(offeringId))
+    .select('id, name, is_public, access_code');
   if (error) throw error;
-  revalidatePath(`/manager/${organizationId}`, "layout");
+  revalidatePath(`/manager/${organizationId}`, 'layout');
 }
 
 export async function updateOfferingDetails({
@@ -49,7 +50,7 @@ export async function updateOfferingDetails({
   minUnitsPerInvestor,
   maxUnitsPerInvestor,
   priceStart,
-  maxRaise,
+  maxRaise
 }: {
   offeringId: string;
   offeringType: OfferingTypes;
@@ -63,7 +64,7 @@ export async function updateOfferingDetails({
 }): Promise<{ affectedCount: number; records: any[] }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from("offering")
+    .from('offering')
     .update({
       investment_currency: investmentCurrencyCode,
       distribution_currency: distributionCurrencyCode,
@@ -72,17 +73,17 @@ export async function updateOfferingDetails({
       max_units_per_investor: maxUnitsPerInvestor ?? null,
       price_start: priceStart ?? null,
       max_raise: maxRaise ?? null,
-      type: offeringType,
+      type: offeringType
     })
-    .eq("id", Number(offeringId))
+    .eq('id', Number(offeringId))
     .select(
-      "id, offering_id, num_units, min_units_per_investor, max_units_per_investor, price_start, max_raise",
+      'id, offering_id, num_units, min_units_per_investor, max_units_per_investor, price_start, max_raise'
     );
   if (error) throw error;
-  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, "page");
+  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, 'page');
   return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: data ?? [],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: data ?? []
   };
 }
 
@@ -97,7 +98,7 @@ export async function updateOfferingProfile({
   primaryVideo,
   website,
   shortDescription,
-  isPublic,
+  isPublic
 }: {
   offeringId: string;
   name: string;
@@ -125,7 +126,7 @@ export async function updateOfferingProfile({
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("offering")
+    .from('offering')
     .update({
       name,
       brand_color: brandColor ?? null,
@@ -135,19 +136,19 @@ export async function updateOfferingProfile({
       primary_video: primaryVideo ?? null,
       website: website ?? null,
       short_description: shortDescription ?? null,
-      is_public: isPublic ?? null,
+      is_public: isPublic ?? null
     })
-    .eq("id", Number(offeringId))
+    .eq('id', Number(offeringId))
     .select(
-      "id, name, brand_color, website, is_public, image, banner_image, primary_video, access_code",
+      'id, name, brand_color, website, is_public, image, banner_image, primary_video, access_code'
     );
 
   if (error) throw error;
 
-  revalidatePath("/", "page");
+  revalidatePath('/', 'page');
   return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as any,
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as any
   };
 }
 
@@ -155,19 +156,19 @@ export const uploadOfferingAsset = async ({
   offeringId,
   assetFile,
   assetName,
-  assetType,
+  assetType
 }: {
   offeringId: string | number;
   assetFile: File;
   assetName: string; //using file.name = "blob"
-  assetType: "image" | "banner_image";
+  assetType: 'image' | 'banner_image';
 }): Promise<void> => {
   const supabase = createClient();
   let assetPath = `${offeringId}/${assetType}/${assetName}`;
   const { data: assetData, error: assetError } = await supabase.storage
-    .from("offering-assets")
+    .from('offering-assets')
     .upload(assetPath, assetFile, {
-      upsert: true,
+      upsert: true
     });
 
   if (assetError) {
@@ -177,21 +178,16 @@ export const uploadOfferingAsset = async ({
 
   try {
     await supabase
-      .from("offering")
+      .from('offering')
       .update({
-        [assetType]: assetPath,
+        [assetType]: assetPath
       })
-      .eq("id", Number(offeringId));
-    revalidatePath(
-      `/manager/[organizationId]/offerings/${offeringId}`,
-      "layout",
-    );
+      .eq('id', Number(offeringId));
+    revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, 'layout');
   } catch (error) {
     console.error(error);
     throw new Error(
-      `uploadOfferingAsset: ${
-        error instanceof Error ? error.message : "Unknown error"
-      }`,
+      `uploadOfferingAsset: ${error instanceof Error ? error.message : 'Unknown error'}`
     );
   }
 };
@@ -199,27 +195,25 @@ export const uploadOfferingAsset = async ({
 export const deleteOfferingAsset = async ({
   offeringId,
   assetUrl,
-  assetType,
+  assetType
 }: {
   offeringId: string | number;
   assetUrl: string;
-  assetType: "image" | "banner_image";
+  assetType: 'image' | 'banner_image';
 }): Promise<void> => {
   const supabase = createClient();
 
-  const { error } = await supabase.storage.from("offering-assets").remove([
-    assetUrl,
-  ]);
+  const { error } = await supabase.storage.from('offering-assets').remove([assetUrl]);
   if (error) {
     throw new Error(error.message);
   }
   await supabase
-    .from("offering")
+    .from('offering')
     .update({
-      [assetType]: null,
+      [assetType]: null
     })
-    .eq("id", Number(offeringId));
-  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, "layout");
+    .eq('id', Number(offeringId));
+  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, 'layout');
 };
 
 // Update offering financial details (offering_detail)
@@ -247,7 +241,7 @@ export async function updateOfferingFinancial({
   targetEquityMultipleMax,
   cocReturn,
   projectedAppreciation,
-  capRate,
+  capRate
 }: {
   offeringId: string;
   stage?: string | null;
@@ -304,7 +298,7 @@ export async function updateOfferingFinancial({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from("offering")
+    .from('offering')
     .update({
       stage: stage as OfferingStage | null,
       max_raise: maxRaise ?? null,
@@ -328,44 +322,44 @@ export async function updateOfferingFinancial({
       target_equity_multiple_max: targetEquityMultipleMax ?? null,
       coc_return: cocReturn ?? null,
       projected_appreciation: projectedAppreciation ?? null,
-      cap_rate: capRate ?? null,
+      cap_rate: capRate ?? null
     })
-    .eq("offering_id", Number(offeringId))
+    .eq('offering_id', Number(offeringId))
     .select(
       [
-        "id",
-        "stage",
-        "max_raise",
-        "min_raise",
-        "min_units_per_investor",
-        "max_units_per_investor",
-        "max_investors",
-        "min_investors",
-        "raise_start",
-        "raise_period",
-        "additional_info",
-        "distribution_period",
-        "distribution_frequency",
-        "distribution_currency",
-        "distribution_description",
-        "admin_expense",
-        "projected_irr",
-        "projected_irr_max",
-        "preferred_return",
-        "target_equity_multiple",
-        "target_equity_multiple_max",
-        "coc_return",
-        "projected_appreciation",
-        "cap_rate",
-        "offering_id",
-      ].join(", "),
+        'id',
+        'stage',
+        'max_raise',
+        'min_raise',
+        'min_units_per_investor',
+        'max_units_per_investor',
+        'max_investors',
+        'min_investors',
+        'raise_start',
+        'raise_period',
+        'additional_info',
+        'distribution_period',
+        'distribution_frequency',
+        'distribution_currency',
+        'distribution_description',
+        'admin_expense',
+        'projected_irr',
+        'projected_irr_max',
+        'preferred_return',
+        'target_equity_multiple',
+        'target_equity_multiple_max',
+        'coc_return',
+        'projected_appreciation',
+        'cap_rate',
+        'offering_id'
+      ].join(', ')
     );
 
   if (error) throw error;
-  revalidatePath("/", "page");
+  revalidatePath('/', 'page');
   return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as any,
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as any
   };
 }
 
@@ -373,7 +367,7 @@ export async function updateOfferingFinancial({
 export async function updateInvestmentCurrency({
   organizationId,
   offeringId,
-  investmentCurrencyCode,
+  investmentCurrencyCode
 }: {
   organizationId: string;
   offeringId: number | string;
@@ -387,15 +381,15 @@ export async function updateInvestmentCurrency({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from("offering")
+    .from('offering')
     .update({ investment_currency: investmentCurrencyCode })
-    .eq("id", Number(offeringId))
-    .select("id, investment_currency");
+    .eq('id', Number(offeringId))
+    .select('id, investment_currency');
   if (error) throw error;
-  revalidatePath(`/manager/${organizationId}/offerings/${offeringId}`, "page");
+  revalidatePath(`/manager/${organizationId}/offerings/${offeringId}`, 'page');
   return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as any,
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as any
   };
 }
 
@@ -405,7 +399,7 @@ export async function createDescriptionText({
   text,
   section,
   order,
-  revalidationPath,
+  revalidationPath
 }: {
   offeringId: string;
   title: string;
@@ -416,20 +410,20 @@ export async function createDescriptionText({
 }): Promise<void> {
   const supabase = createClient();
   const { error } = await supabase
-    .from("offering_description_text")
+    .from('offering_description_text')
     .insert(
       {
         offering_id: Number(offeringId),
         title,
         text,
         section: section as OfferingTabSectionTypes,
-        order,
+        order
       },
       {
-        count: "exact",
-      },
+        count: 'exact'
+      }
     )
-    .select("id, offering_id, title, text, section, order");
+    .select('id, offering_id, title, text, section, order');
   if (error) throw error;
   revalidatePath(revalidationPath.path, revalidationPath.type);
 }
@@ -440,7 +434,7 @@ export async function updateDescriptionText({
   text,
   section,
   order,
-  revalidationPath,
+  revalidationPath
 }: {
   descriptionId: string;
   title: string;
@@ -451,26 +445,27 @@ export async function updateDescriptionText({
 }): Promise<void> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from("offering_description_text")
+    .from('offering_description_text')
     .update({ title, text, section, order })
-    .eq("id", descriptionId)
-    .select("id, text, title, section, order, offering_id");
+    .eq('id', descriptionId)
+    .select('id, text, title, section, order, offering_id');
   if (error) throw error;
   revalidatePath(revalidationPath.path, revalidationPath.type);
 }
 
-export async function deleteDescriptionText(
-  { descriptionId, revalidationPath }: {
-    descriptionId: string;
-    revalidationPath: RevalidationPath;
-  },
-): Promise<void> {
+export async function deleteDescriptionText({
+  descriptionId,
+  revalidationPath
+}: {
+  descriptionId: string;
+  revalidationPath: RevalidationPath;
+}): Promise<void> {
   const supabase = createClient();
   const { error } = await supabase
-    .from("offering_description_text")
+    .from('offering_description_text')
     .delete()
-    .eq("id", descriptionId)
-    .select("id");
+    .eq('id', descriptionId)
+    .select('id');
   if (error) throw error;
   revalidatePath(revalidationPath.path, revalidationPath.type);
 }

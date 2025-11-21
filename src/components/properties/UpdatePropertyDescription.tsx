@@ -1,4 +1,6 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { zodResolver } from '@hookform/resolvers/zod';
+import { updateRePropertyDescription } from '@src/utils/actions/rePropertyActions';
 import {
   assetStatusOptions,
   getCurrencyOption,
@@ -7,21 +9,19 @@ import {
 import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
+import { toast } from 'sonner';
 import { z } from 'zod';
 
 import {
+  InvestmentStatusType,
   RealEstatePropertyTypes,
-  RealEstatePropertyWithAddress,
-  InvestmentStatusType
+  RealEstatePropertyWithAddress
 } from '@/types';
 
 import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 import { LoadingButton } from '../ui/loading-button';
 import { Textarea } from '../ui/textarea';
-import { useOffering } from '@contexts/OfferingContext';
-import { updateRePropertyDescription } from '@src/utils/actions/rePropertyActions';
-import { toast } from 'sonner';
 
 export type UpdatePropertyDescriptionType = {
   property: RealEstatePropertyWithAddress;

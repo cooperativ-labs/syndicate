@@ -1,7 +1,7 @@
 'use client';
 
-import { socialAccountOptions } from '@src/utils/enumConverters';
 import { addOrganizationSocialAccount } from '@src/utils/actions/organizationActions';
+import { socialAccountOptions } from '@src/utils/enumConverters';
 import React, { FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 

@@ -1,7 +1,8 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import NonInput from '@src/components/form-components/NonInput';
-import { Input } from '@src/components/ui/input';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import {
   Select,
   SelectContent,
@@ -22,8 +23,6 @@ import { useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import { CurrencyCode, CurrencyCodeType, OfferingType, OfferingTypes } from '@/types';
-
-import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
 type BasicOfferingDetailsFormProps = {
   offeringId: string;

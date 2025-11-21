@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation';
 import React from 'react';
 
 import { LegalEntityWithJurisdiction } from '@/types';
+
 import { Card } from '../ui/card';
 
 export type EntityCardProps = {

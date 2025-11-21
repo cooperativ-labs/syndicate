@@ -1,14 +1,14 @@
 import { OrganizationsProvider } from '@contexts/OrganizationsContext';
 import { UserProvider } from '@contexts/UserContext';
 import Manager from '@src/containers/Manager';
+import ModalCreateOrganization from '@src/containers/NewOrganizationModal';
 import ManagerSideBar from '@src/containers/sideBar/ManagerSideBar';
 import WithAuthentication from '@src/containers/WithAuthentication';
+import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
 import { getUserProfile } from '@src/utils/actions/userActions';
 import { createClient } from '@supabase/utils/server';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
-import { getOrgsFromUser } from '@src/utils/actions/organizationActions';
-import ModalCreateOrganization from '@src/containers/NewOrganizationModal';
 
 const getCachedUserProfile = cache(async (userId: string) => {
   return await getUserProfile(userId);

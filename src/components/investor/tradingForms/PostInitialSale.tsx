@@ -1,9 +1,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import NonInput, { defaultFieldDiv } from '@src/components/form-components/NonInput';
 import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
-import { Input } from '@src/components/ui/input';
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { addContractPartition, AddContractPartitionParams } from '@src/utils/actions/cryptoActions';
 import { createOrder, CreateOrderParams, CreateOrderResult } from '@src/utils/actions/orderActions';
@@ -14,8 +14,8 @@ import { submitSwap } from '@src/web3/contractSwapCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
-import { z } from 'zod';
 import { useAccount } from 'wagmi';
+import { z } from 'zod';
 
 import { PostInitialSaleProps } from './offering-actions-types';
 

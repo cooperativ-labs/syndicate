@@ -1,13 +1,6 @@
 import AddItemButton from '@src/components/buttons/AddItemButton';
 import CloseButton from '@src/components/buttons/CloseButton';
 import Card from '@src/components/cards/Card';
-import { tabSectionOptions } from '@src/utils/enumConverters';
-import React, { FC, useState } from 'react';
-
-import { OfferingFull, OfferingTabSection, OfferingTabSectionTypes } from '@/types';
-
-import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
-import TabDescriptionList from './OfferingTabDescriptionList';
 import {
   Select,
   SelectContent,
@@ -15,6 +8,13 @@ import {
   SelectTrigger,
   SelectValue
 } from '@src/components/ui/select';
+import { tabSectionOptions } from '@src/utils/enumConverters';
+import React, { FC, useState } from 'react';
+
+import { OfferingFull, OfferingTabSection, OfferingTabSectionTypes } from '@/types';
+
+import OfferingProfileDescriptionForm from './OfferingProfileDescriptionForm';
+import TabDescriptionList from './OfferingTabDescriptionList';
 
 type OfferingDescriptionSettingsProps = {
   offering: OfferingFull;

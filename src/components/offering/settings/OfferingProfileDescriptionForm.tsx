@@ -1,6 +1,7 @@
 import { zodResolver } from '@hookform/resolvers/zod';
-import { Input } from '@src/components/ui/input';
 import { FieldLabel } from '@src/components/ui/field';
+import { Input } from '@src/components/ui/input';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import {
@@ -22,12 +23,11 @@ import { Controller, useForm } from 'react-hook-form';
 import { z } from 'zod';
 
 import {
-  OfferingFull,
   OfferingDescriptionText,
+  OfferingFull,
   OfferingTabSection,
   OfferingTabSectionTypes
 } from '@/types';
-import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
 const fieldDiv = 'pt-3 my-2 bg-opacity-0';
 

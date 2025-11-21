@@ -1,5 +1,6 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import AddressDisplay from '@src/components/address/AddressDisplay';
 import CreateAddress from '@src/components/address/CreateAddress';
 import DeleteButton from '@src/components/buttons/DeleteButton';
@@ -7,18 +8,18 @@ import AddOwningEntity from '@src/components/entity/AddOwningEntity';
 import EntitySpecifications, {
   EditEntitySelectionType
 } from '@src/components/entity/EntitySpecifications';
+import { changeForm } from '@src/components/organization/OrganizationSpecifications';
 import { Button } from '@src/components/ui/button';
+import { Input } from '@src/components/ui/input';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import EntityTabContainer from '@src/containers/entity/EntityTabContainer';
 import FormModal from '@src/containers/FormModal';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
 import { deleteAddress, removeOwner, updateEntityName } from '@src/utils/actions/entityActions';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { useOrganizations } from '@contexts/OrganizationsContext';
+
 import { LegalEntity, LegalEntityWithSubsidiaries, Offering } from '@/types';
-import { changeForm } from '@src/components/organization/OrganizationSpecifications';
-import { Input } from '@src/components/ui/input';
-import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 
 type EntityDetailsProps = {
   entity: LegalEntityWithSubsidiaries;

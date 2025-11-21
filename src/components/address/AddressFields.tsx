@@ -1,7 +1,7 @@
 import React, { FC } from 'react';
 
-import { Input } from '../ui/input';
 import { Field, FieldContent, FieldGroup, FieldLabel, FieldSet } from '../ui/field';
+import { Input } from '../ui/input';
 
 type AddressFieldsProps = {
   excludeAddressLabel?: boolean;

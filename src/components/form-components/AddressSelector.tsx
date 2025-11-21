@@ -3,7 +3,6 @@ import React, { FC } from 'react';
 import { Address } from '@/types';
 
 import { Button } from '../ui/button';
-
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type AddressSelectorProps = {
