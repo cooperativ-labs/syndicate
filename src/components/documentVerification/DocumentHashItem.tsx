@@ -2,15 +2,7 @@ import { DownloadFile } from '@src/utils/helpersAgreement';
 import { Check, Copy } from 'lucide-react';
 import React, { FC, useState } from 'react';
 
-import { Document } from '@/types';
-
 import { Button } from '../ui/button';
-
-type HashInstructionsProps = {
-  agreementTexts: Document[];
-  contractDocuments: string[];
-  shareContractId: string;
-};
 
 type DocumentHashItemProps = {
   hash: string;

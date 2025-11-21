@@ -1,10 +1,10 @@
 import { GoogleMap, Marker } from '@react-google-maps/api';
 import React, { FC, useState } from 'react';
 
-import { Address, Maybe } from '@/types';
+import { Address } from '@/types';
 
 type MapPanelProps = {
-  address?: Maybe<Address> | undefined;
+  address?: Address | undefined;
   height: string;
   width: string;
   showTextAddress?: boolean;
@@ -26,25 +26,27 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
   const onLoad = React.useCallback(
     function callback(map: any) {
       if (!address?.lng) {
-        const formatted_address = `${address?.line1}, ${address?.city}, ${address?.stateProvince} ${address?.postalCode}`;
-        const request = {
-          query: formatted_address,
-          fields: ['name', 'geometry']
-        };
+        if (typeof window !== 'undefined' && window.google?.maps?.places) {
+          const formatted_address = `${address?.line1}, ${address?.city}, ${address?.state_province} ${address?.postal_code}`;
+          const request = {
+            query: formatted_address,
+            fields: ['name', 'geometry']
+          };
 
-        const service = new window.google.maps.places.PlacesService(map);
+          const service = new window.google.maps.places.PlacesService(map);
 
-        service.findPlaceFromQuery(request, function (results, status) {
-          if (status === google.maps.places.PlacesServiceStatus.OK && results) {
-            for (var i = 0; i < results.length; i++) {
-              setLatLang({
-                lat: results[i].geometry?.location?.lat() as number,
-                lng: results[i].geometry?.location?.lng() as number
-              });
+          service.findPlaceFromQuery(request, function (results, status) {
+            if (status === window.google.maps.places.PlacesServiceStatus.OK && results) {
+              for (var i = 0; i < results.length; i++) {
+                setLatLang({
+                  lat: results[i].geometry?.location?.lat() as number,
+                  lng: results[i].geometry?.location?.lng() as number
+                });
+              }
+              map.setCenter(results[0].geometry?.location);
             }
-            map.setCenter(results[0].geometry?.location);
-          }
-        });
+          });
+        }
       } else {
         setLatLang({ lat: address.lat as number, lng: address.lng });
       }
@@ -61,7 +63,7 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
   return true ? (
     <div>
       {showTextAddress && address?.line1 && (
-        <div className="text-sm font-medium">{`${address?.line1}, ${address?.city}, ${address?.stateProvince} ${address?.postalCode}`}</div>
+        <div className="text-sm font-medium">{`${address?.line1}, ${address?.city}, ${address?.state_province} ${address?.postal_code}`}</div>
       )}
       <GoogleMap
         mapContainerStyle={containerStyle}

@@ -6,8 +6,6 @@ export default async function EntityLayout({ params }: { params: Promise<{ entit
   const { entityId } = await params;
   const entity = await getLegalEntityById(entityId);
 
-  console.log('entity', entity);
-
   if (!entity) {
     return <LoadingModal />;
   }

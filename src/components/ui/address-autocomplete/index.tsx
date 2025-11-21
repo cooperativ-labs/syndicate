@@ -16,6 +16,7 @@ import AddressDialog from './address-dialog';
 export interface AddressType {
   address1: string;
   address2: string;
+  address3: string;
   formattedAddress: string;
   city: string;
   region: string;
@@ -92,6 +93,7 @@ export default function AddressAutoComplete(props: AddressAutoCompleteProps) {
               setAddress({
                 address1: '',
                 address2: '',
+                address3: '',
                 formattedAddress: '',
                 city: '',
                 region: '',

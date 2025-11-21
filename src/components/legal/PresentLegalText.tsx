@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-import { Maybe } from '@/types';
 interface PresentLegalTextProps {
-  text: Maybe<string> | undefined;
+  text: string | undefined | null;
 }
 
 const PresentLegalText: FC<PresentLegalTextProps> = ({ text }) => {
+  if (!text) return null;
   return (
     <div className="w-full">
       <hr className="md:hidden border border-gray-400 my-8" />

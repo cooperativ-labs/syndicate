@@ -5,15 +5,16 @@ import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { RealEstateProperty } from '@/types';
+import { RealEstatePropertyWithAddress } from '@/types';
 
 import { Field, FieldContent, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 import { LoadingButton } from '../ui/loading-button';
+import { useOffering } from '@contexts/OfferingContext';
+import { UpdateRePropertyFinancials } from '@src/utils/actions/rePropertyActions';
 
 export type UpdatePropertyFinancialsType = {
-  property: RealEstateProperty;
-  updateProperty: (data: any) => void;
+  property: RealEstatePropertyWithAddress;
   setModal: (addressModel: boolean) => void;
 };
 
@@ -28,23 +29,21 @@ const financialSchema = z.object({
 
 type FinancialFormValues = z.infer<typeof financialSchema>;
 
-const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({
-  property,
-  updateProperty,
-  setModal
-}) => {
+const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({ property, setModal }) => {
+  const { legalEntity } = useOffering();
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
-  const entityOperatingCurrency = property.owner?.operatingCurrency;
+  // @TODO: This is a temporary fix, currency should come from property entity
+  const entityOperatingCurrency = legalEntity?.operating_currency;
   const { handleSubmit, register } = useForm<FinancialFormValues>({
     resolver: zodResolver(financialSchema),
     defaultValues: {
-      assetValue: property.assetValue?.toString() ?? '',
-      assetValueNote: property.assetValueNote ?? '',
-      downPayment: property.downPayment?.toString() ?? '',
-      lenderFees: property.lenderFees?.toString() ?? '',
-      closingCosts: property.closingCosts?.toString() ?? '',
+      assetValue: property.asset_value?.toString() ?? '',
+      assetValueNote: property.asset_value_note ?? '',
+      downPayment: property.down_payment?.toString() ?? '',
+      lenderFees: property.lender_fees?.toString() ?? '',
+      closingCosts: property.closing_costs?.toString() ?? '',
       loanAmount: property.loan?.toString() ?? ''
     }
   });
@@ -52,18 +51,17 @@ const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({
   const onSubmit = async (values: FinancialFormValues) => {
     setButtonState('loading');
     try {
-      await updateProperty({
-        variables: {
-          currentDate: currentDate,
-          rePropertyId: property.id,
-          propertyType: property.propertyType,
-          investmentStatus: property.investmentStatus,
-          assetValue: values.assetValue,
-          assetValueNote: values.assetValueNote,
-          downPayment: values.downPayment,
-          lenderFees: values.lenderFees,
-          closingCosts: values.closingCosts,
-          loanAmount: values.loanAmount
+      await UpdateRePropertyFinancials({
+        rePropertyId: property.id,
+        assetValue: values.assetValue ? parseInt(values.assetValue) : null,
+        assetValueNote: values.assetValueNote,
+        downPayment: values.downPayment ? parseInt(values.downPayment) : null,
+        lenderFees: values.lenderFees ? parseInt(values.lenderFees) : null,
+        closingCosts: values.closingCosts ? parseInt(values.closingCosts) : null,
+        loanAmount: values.loanAmount ? parseInt(values.loanAmount) : null,
+        revalidationPath: {
+          path: `/manager/[organizationId]/entities/${property.owner_id}`,
+          type: 'page'
         }
       });
       setButtonState('success');

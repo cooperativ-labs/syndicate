@@ -8,6 +8,7 @@ import { useRef, useState } from 'react';
 import { toast } from 'sonner';
 
 interface DragAndDropProps {
+  onSelect: (file: File | null) => Promise<void>;
   acceptedFileTypes?: string;
   acceptedMimeTypes?: string[];
   title?: string;
@@ -16,8 +17,7 @@ interface DragAndDropProps {
   progressAmt?: number;
   multiple?: boolean;
   isImage?: boolean;
-  onSelect: (file: File | null) => Promise<void>;
-  setSelectedImageUrl: (imageUrl: string | null) => void;
+  setSelectedImageUrl?: (imageUrl: string | null) => void;
 }
 
 export default function DragAndDrop({
@@ -90,7 +90,7 @@ export default function DragAndDrop({
 
   const clearSelectedFile = () => {
     onSelect(null);
-    setSelectedImageUrl(null);
+    setSelectedImageUrl?.(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }

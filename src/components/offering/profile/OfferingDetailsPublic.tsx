@@ -3,72 +3,71 @@ import { getHumanDate } from '@src/utils/helpersGeneral';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import React, { FC } from 'react';
 
-import { OfferingDetails } from '@/types';
+import { OfferingFull } from '@/types';
 
 import OfferingDetailItem from '../OfferingDetailItem';
 
 type OfferingDetailsPublicProps = {
-  offeringDetails: OfferingDetails;
+  offering: OfferingFull;
   currentSharePrice: number;
   brandColor: string;
 };
 
 const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({
-  offeringDetails,
+  offering,
   brandColor,
   currentSharePrice
 }) => {
   const {
     type,
-    investmentCurrency,
-    maxRaise,
-    minRaise,
-    numUnits,
-    maxInvestors,
-    minInvestors,
-    raiseStart,
-    raisePeriod,
-    additionalInfo,
-    distributionPeriod,
-    distributionFrequency,
-    distributionCurrency,
-    distributionDescription,
-    adminExpense
-  } = offeringDetails;
+    investment_currency,
+    max_raise,
+    min_raise,
+    num_units,
+    max_investors,
+    min_investors,
+    raise_start,
+    raise_period,
+    additional_info,
+    distribution_period,
+    distribution_frequency,
+    distribution_currency,
+    distribution_description
+  } = offering;
 
   return (
     <div className="grid grid-cols-2 md:grid-cols-3 items-center gap-3">
       <OfferingDetailItem brandColor={brandColor} title="Deal size">{` ${
-        numUnits && numberWithCommas(currentSharePrice * numUnits)
-      } ${getCurrencyOption(investmentCurrency)?.symbol}`}</OfferingDetailItem>
+        num_units && numberWithCommas(currentSharePrice * num_units)
+      } ${getCurrencyOption(investment_currency)?.symbol}`}</OfferingDetailItem>
 
       <OfferingDetailItem
         brandColor={brandColor}
         title="Share price"
       >{` ${numberWithCommas(currentSharePrice)} ${
-        getCurrencyOption(investmentCurrency)?.symbol
+        getCurrencyOption(investment_currency)?.symbol
       }`}</OfferingDetailItem>
 
-      {distributionPeriod && (
+      {distribution_period && (
         <OfferingDetailItem
           brandColor={brandColor}
           title="Distribution period"
-        >{`  Every ${distributionFrequency} ${getDistributionPeriod(distributionPeriod)}`}</OfferingDetailItem>
+        >{`  Every ${distribution_frequency} ${getDistributionPeriod(distribution_period)}`}</OfferingDetailItem>
       )}
-      {maxInvestors && (
+      {max_investors && (
         <OfferingDetailItem brandColor={brandColor} title="Maximum investors">
           {' '}
-          {`${numberWithCommas(maxInvestors)}`}
+          {`${numberWithCommas(max_investors)}`}
         </OfferingDetailItem>
       )}
-      {minInvestors && (
+      {min_investors && (
         <OfferingDetailItem brandColor={brandColor} title="Minimum investors">{`${numberWithCommas(
-          minInvestors
+          min_investors
         )}`}</OfferingDetailItem>
       )}
-      {raiseStart && (
+      {raise_start && (
         <OfferingDetailItem brandColor={brandColor} title="Offering Opens">{`${getHumanDate(
-          raiseStart
+          raise_start
         )}`}</OfferingDetailItem>
       )}
     </div>

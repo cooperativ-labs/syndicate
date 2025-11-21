@@ -349,17 +349,6 @@ CREATE TABLE linked_account (
     updated_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Images table
-CREATE TABLE image (
-    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
-    label TEXT,
-    url TEXT NOT NULL,
-    file_id TEXT,
-    created_at TIMESTAMPTZ DEFAULT NOW(),
-    updated_at TIMESTAMPTZ DEFAULT NOW()
-);
-
-
 -- Crypto Addresses table
 CREATE TABLE crypto_address (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
@@ -385,7 +374,7 @@ CREATE TABLE offering (
     image TEXT,
     banner_image TEXT,
     primary_video TEXT,
-    sharing_image_id UUID REFERENCES image(id),
+    sharing_image TEXT,
     brand_color TEXT,
     light_brand BOOLEAN DEFAULT false,
     website TEXT,
@@ -471,7 +460,7 @@ CREATE TABLE document (
     type document_type,
     url TEXT,
     file_id TEXT,
-    thumbnail_image_id UUID REFERENCES image(id),
+    thumbnail_image TEXT,
     owner_id BIGINT NOT NULL REFERENCES legal_entity(id) ON DELETE CASCADE,
     smart_contract_id UUID,
     creation_date TIMESTAMPTZ DEFAULT NOW(),
@@ -569,9 +558,8 @@ CREATE TABLE real_estate_property (
 CREATE TABLE real_estate_property_image (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     property_id UUID NOT NULL REFERENCES real_estate_property(id) ON DELETE CASCADE,
-    image_id UUID NOT NULL REFERENCES image(id) ON DELETE CASCADE,
     created_at TIMESTAMPTZ DEFAULT NOW(),
-    UNIQUE(property_id, image_id)
+    UNIQUE(property_id)
 );
 
 -- Notification Configurations table
@@ -756,7 +744,6 @@ ALTER TABLE legal_entity_relationship ENABLE ROW LEVEL SECURITY;
 ALTER TABLE address ENABLE ROW LEVEL SECURITY;
 ALTER TABLE email_address ENABLE ROW LEVEL SECURITY;
 ALTER TABLE linked_account ENABLE ROW LEVEL SECURITY;
-ALTER TABLE image ENABLE ROW LEVEL SECURITY;
 ALTER TABLE document ENABLE ROW LEVEL SECURITY;
 ALTER TABLE document_signatory ENABLE ROW LEVEL SECURITY;
 ALTER TABLE crypto_address ENABLE ROW LEVEL SECURITY;
@@ -877,7 +864,6 @@ CREATE TRIGGER update_legal_entity_updated_at BEFORE UPDATE ON legal_entity FOR 
 CREATE TRIGGER update_address_updated_at BEFORE UPDATE ON address FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_email_address_updated_at BEFORE UPDATE ON email_address FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_linked_account_updated_at BEFORE UPDATE ON linked_account FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
-CREATE TRIGGER update_image_updated_at BEFORE UPDATE ON image FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();    
 CREATE TRIGGER update_documents_updated_at BEFORE UPDATE ON document FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_document_signatory_updated_at BEFORE UPDATE ON document_signatory FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
 CREATE TRIGGER update_crypto_address_updated_at BEFORE UPDATE ON crypto_address FOR EACH ROW EXECUTE FUNCTION update_updated_at_column();
@@ -910,7 +896,6 @@ COMMENT ON TABLE offering_participant IS 'Blockchain events for share transfers 
 COMMENT ON TABLE whitelist_transaction IS 'Share trading orders (independent chain data)';
 COMMENT ON TABLE investor_application IS 'Share trading orders (independent chain data)';
 COMMENT ON TABLE real_estate_property IS 'Share trading orders (independent chain data)';
-COMMENT ON TABLE real_estate_property_image IS 'Share trading orders (independent chain data)';
 COMMENT ON TABLE notification_configuration IS 'Share trading orders (independent chain data)';
 COMMENT ON TABLE share_transfer_event IS 'Share trading orders (independent chain data)';
 COMMENT ON TABLE share_order IS 'Share trading orders (independent chain data)';

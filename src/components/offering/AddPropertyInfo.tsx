@@ -18,8 +18,17 @@ import { addRePropertyInfo, addPropertyAddress } from '@src/utils/actions/reProp
 import { RealEstatePropertyTypes, InvestmentStatusType } from '@/types';
 
 import AddressAutoComplete, { AddressType } from '@src/components/ui/address-autocomplete';
-import { Button } from '@src/components/ui/button';
-import { Field, FieldLabel, FieldContent, FieldError } from '@src/components/ui/field';
+
+import {
+  Field,
+  FieldGroup,
+  FieldLabel,
+  FieldContent,
+  FieldError,
+  FieldSeparator,
+  FieldLegend,
+  FieldSet
+} from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
 import {
   Select,
@@ -29,7 +38,6 @@ import {
   SelectValue
 } from '@src/components/ui/select';
 import { LoadingButton, ButtonLoadingState } from '../ui/loading-button';
-import { CurrencyCodeType } from '@/types';
 import { useOffering } from '@contexts/OfferingContext';
 
 const numberFieldSchema = z
@@ -62,6 +70,7 @@ const AddPropertyInfo: FC = () => {
   const [address, setAddress] = useState<AddressType>({
     address1: '',
     address2: '',
+    address3: '',
     formattedAddress: '',
     city: '',
     region: '',
@@ -100,7 +109,7 @@ const AddPropertyInfo: FC = () => {
 
     setButtonState('loading');
     try {
-      const propertyResult = await addRePropertyInfo({
+      const propertyId = await addRePropertyInfo({
         entityId: entityId.toString(),
         propertyType: values.propertyType as RealEstatePropertyTypes,
         investmentStatus: values.investmentStatus as InvestmentStatusType,
@@ -108,29 +117,38 @@ const AddPropertyInfo: FC = () => {
         description: values.description,
         downPayment: values.downPayment,
         lenderFees: values.lenderFees,
-        closingCosts: values.closingCosts
+        closingCosts: values.closingCosts,
+        revalidationPath: {
+          path: `/manager/[organizationId]/entities/${entityId}`,
+          type: 'page'
+        }
+      });
+      if (!propertyId) {
+        toast.error('Error adding property');
+        setButtonState('default');
+        return;
+      }
+      await addPropertyAddress({
+        ownerId: entityId.toString(),
+        propertyId,
+        addressLine1: address.address1,
+        addressLine2: address.address2,
+        city: address.city,
+        stateProvince: address.region,
+        postalCode: address.postalCode,
+        country: address.country,
+        lat: address.lat,
+        lng: address.lng,
+        addressLabel: 'Property Address',
+        revalidationPath: {
+          path: `/manager/[organizationId]/entities/${entityId}`,
+          type: 'page'
+        }
       });
 
-      if (propertyResult.records && propertyResult.records.length > 0) {
-        const propertyId = propertyResult.records[0].id;
-
-        await addPropertyAddress({
-          propertyId,
-          addressLine1: address.address1,
-          addressLine2: address.address2,
-          city: address.city,
-          stateProvince: address.region,
-          postalCode: address.postalCode,
-          country: address.country,
-          lat: address.lat,
-          lng: address.lng,
-          addressLabel: 'Property Address'
-        });
-
-        toast.success('Property added successfully');
-        setButtonState('default');
-        router.back();
-      }
+      toast.success('Property added successfully');
+      setButtonState('default');
+      router.back();
     } catch (error: any) {
       setButtonState('default');
       toast.error(`Error adding property: ${error.message}`);
@@ -138,141 +156,146 @@ const AddPropertyInfo: FC = () => {
   };
 
   return (
-    <form className="space-y-6">
-      <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">Add a real estate property</h2>
-      <hr className="my-6" />
+    <form className="space-y-6 w-full">
+      <FieldGroup>
+        <FieldLegend>Add a real estate property</FieldLegend>
 
-      <Field>
-        <FieldLabel>Status of property</FieldLabel>
-        <FieldContent>
-          <Controller
-            control={control}
-            name="investmentStatus"
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a status" />
-                </SelectTrigger>
-                <SelectContent>
-                  {assetStatusOptions.map((type, i) => (
-                    <SelectItem key={i} value={type.value}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </FieldContent>
-        <FieldError errors={[errors.investmentStatus]} />
-      </Field>
+        <FieldSeparator />
+        <FieldSet>
+          <Field>
+            <FieldLabel>Status of property</FieldLabel>
+            <FieldContent>
+              <Controller
+                control={control}
+                name="investmentStatus"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a status" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {assetStatusOptions.map((type, i) => (
+                        <SelectItem key={i} value={type.value}>
+                          {type.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </FieldContent>
+            <FieldError errors={[errors.investmentStatus]} />
+          </Field>
 
-      <Field>
-        <FieldLabel>Type of property</FieldLabel>
-        <FieldContent>
-          <Controller
-            control={control}
-            name="propertyType"
-            render={({ field }) => (
-              <Select onValueChange={field.onChange} defaultValue={field.value}>
-                <SelectTrigger>
-                  <SelectValue placeholder="Select a property type" />
-                </SelectTrigger>
-                <SelectContent>
-                  {propertyTypeOptions.map((type, i) => (
-                    <SelectItem key={i} value={type.value}>
-                      {type.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
-          />
-        </FieldContent>
-        <FieldError errors={[errors.propertyType]} />
-      </Field>
+          <Field>
+            <FieldLabel>Type of property</FieldLabel>
+            <FieldContent>
+              <Controller
+                control={control}
+                name="propertyType"
+                render={({ field }) => (
+                  <Select onValueChange={field.onChange} defaultValue={field.value}>
+                    <SelectTrigger>
+                      <SelectValue placeholder="Select a property type" />
+                    </SelectTrigger>
+                    <SelectContent>
+                      {propertyTypeOptions.map((type, i) => (
+                        <SelectItem key={i} value={type.value}>
+                          {type.name}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                )}
+              />
+            </FieldContent>
+            <FieldError errors={[errors.propertyType]} />
+          </Field>
 
-      <Field>
-        <FieldLabel>Describe this property generally</FieldLabel>
-        <FieldContent>
-          <Input
-            placeholder="e.g. Super sweet home with super sweet views"
-            {...register('description')}
-          />
-        </FieldContent>
-        <FieldError errors={[errors.description]} />
-      </Field>
+          <Field>
+            <FieldLabel>Describe this property generally</FieldLabel>
+            <FieldContent>
+              <Input
+                placeholder="e.g. Super sweet home with super sweet views"
+                {...register('description')}
+              />
+            </FieldContent>
+            <FieldError errors={[errors.description]} />
+          </Field>
 
-      <Field>
-        <FieldLabel>Describe this property's amenities</FieldLabel>
-        <FieldContent>
-          <Input
-            placeholder="e.g. swimming pool, 3 parking spaces"
-            {...register('amenitiesDescription')}
-          />
-        </FieldContent>
-        <FieldError errors={[errors.amenitiesDescription]} />
-      </Field>
+          <Field>
+            <FieldLabel>Describe this property's amenities</FieldLabel>
+            <FieldContent>
+              <Input
+                placeholder="e.g. swimming pool, 3 parking spaces"
+                {...register('amenitiesDescription')}
+              />
+            </FieldContent>
+            <FieldError errors={[errors.amenitiesDescription]} />
+          </Field>
 
-      <Field>
-        <FieldLabel>Down payment ({getCurrencyOption(entityOperatingCurrency)?.symbol})</FieldLabel>
-        <FieldContent>
-          <Input type="number" {...register('downPayment')} />
-        </FieldContent>
-        <FieldError errors={[errors.downPayment]} />
-      </Field>
+          <Field>
+            <FieldLabel>
+              Down payment ({getCurrencyOption(entityOperatingCurrency)?.symbol})
+            </FieldLabel>
+            <FieldContent>
+              <Input type="number" {...register('downPayment')} />
+            </FieldContent>
+            <FieldError errors={[errors.downPayment]} />
+          </Field>
 
-      <Field>
-        <FieldLabel>
-          Lender's fees ({getCurrencyOption(entityOperatingCurrency)?.symbol})
-        </FieldLabel>
-        <FieldContent>
-          <Input type="number" {...register('lenderFees')} />
-        </FieldContent>
-        <FieldError errors={[errors.lenderFees]} />
-      </Field>
+          <Field>
+            <FieldLabel>
+              Lender's fees ({getCurrencyOption(entityOperatingCurrency)?.symbol})
+            </FieldLabel>
+            <FieldContent>
+              <Input type="number" {...register('lenderFees')} />
+            </FieldContent>
+            <FieldError errors={[errors.lenderFees]} />
+          </Field>
 
-      <Field>
-        <FieldLabel>
-          Closing costs ({getCurrencyOption(entityOperatingCurrency)?.symbol})
-        </FieldLabel>
-        <FieldContent>
-          <Input type="number" {...register('closingCosts')} />
-        </FieldContent>
-        <FieldError errors={[errors.closingCosts]} />
-      </Field>
+          <Field>
+            <FieldLabel>
+              Closing costs ({getCurrencyOption(entityOperatingCurrency)?.symbol})
+            </FieldLabel>
+            <FieldContent>
+              <Input type="number" {...register('closingCosts')} />
+            </FieldContent>
+            <FieldError errors={[errors.closingCosts]} />
+          </Field>
 
-      <div>
-        <hr className="my-6" />
-        <h3 className="text-md md:mt-8 text-blue-900 font-semibold mb-4">{`This property's address`}</h3>
-        <AddressAutoComplete
-          address={address}
-          setAddress={setAddress}
-          searchInput={searchInput}
-          setSearchInput={setSearchInput}
-          dialogTitle="Select Address"
-        />
-        {address.lat !== 0 && (
-          <div className="mt-4">
-            <GoogleMap
-              mapContainerStyle={{ height: '300px', width: '100%' }}
-              center={{ lat: address.lat, lng: address.lng }}
-              zoom={14}
-            >
-              <Marker position={{ lat: address.lat, lng: address.lng }} />
-            </GoogleMap>
+          <div>
+            <hr className="my-6" />
+            <h3 className="text-md md:mt-8 text-blue-900 font-semibold mb-4">{`This property's address`}</h3>
+            <AddressAutoComplete
+              address={address}
+              setAddress={setAddress}
+              searchInput={searchInput}
+              setSearchInput={setSearchInput}
+              dialogTitle="Select Address"
+            />
+            {/* {address.lat !== 0 && (
+              <div className="mt-4">
+                <GoogleMap
+                  mapContainerStyle={{ height: '300px', width: '100%' }}
+                  center={{ lat: address.lat, lng: address.lng }}
+                  zoom={14}
+                >
+                  <Marker position={{ lat: address.lat, lng: address.lng }} />
+                </GoogleMap>
+              </div>
+            )} */}
           </div>
-        )}
-      </div>
-
-      <LoadingButton
-        onClick={handleSubmit(onSubmit)}
-        disabled={isSubmitting}
-        className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
-        text={`Create ${address.address1 ? address.address1 : address.city ? `${address.city}, ${address.region}` : 'Property'}`}
-        loadingText="Creating Property..."
-        buttonState={buttonState}
-      />
+        </FieldSet>
+        <LoadingButton
+          onClick={handleSubmit(onSubmit)}
+          disabled={isSubmitting}
+          className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
+          text={`Create ${address.address1 ? address.address1 : address.city ? `${address.city}, ${address.region}` : 'Property'}`}
+          loadingText="Creating Property..."
+          buttonState={buttonState}
+        />
+      </FieldGroup>
     </form>
   );
 };

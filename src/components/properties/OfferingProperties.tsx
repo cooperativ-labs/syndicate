@@ -3,14 +3,13 @@
 import { Button } from '@src/components/ui/button';
 import { Plus } from 'lucide-react';
 import { useRouter } from 'next/navigation';
-import React, { FC } from 'react';
+import { FC } from 'react';
 
-import { LegalEntity, RealEstatePropertyWithAddresses } from '@/types';
-
-import RealEstatePropertyCard from './RealEstatePropertyCard';
+import { LegalEntity, RealEstatePropertyWithAddress } from '@/types';
+import PropertyCardList from './PropertyCardList';
 
 type OfferingPropertiesProps = {
-  properties: RealEstatePropertyWithAddresses[] | undefined;
+  properties: RealEstatePropertyWithAddress[];
   offeringEntity: LegalEntity;
   isOfferingManager: boolean;
   offeringId: string;
@@ -25,17 +24,14 @@ const OfferingProperties: FC<OfferingPropertiesProps> = ({
   const router = useRouter();
   return (
     <div className="flex flex-col md:flex-row md:flex-wrap justify center gap-5">
-      {properties?.map((property: RealEstatePropertyWithAddresses, i: number) => (
-        <RealEstatePropertyCard
-          key={i}
-          property={property}
-          currency={offeringEntity.operating_currency}
-          offeringEntityId={offeringEntity.id.toString()}
-        />
-      ))}
+      <PropertyCardList
+        properties={properties}
+        operatingCurrency={offeringEntity.operating_currency}
+      />
       {isOfferingManager && (
         <Button
-          className="mt-3 md:mt-0 p-3 border-2 border-cLightBlue rounded-md md:rounded-full text-cLightBlue text-bold text-xl w-full md:h-20 md:w-20  hover:text-white hover:bg-cLightBlue self-center m-8"
+          variant="outline"
+          className="mt-3 md:mt-0 p-3 border-2 border-cLightBlue rounded-md md:rounded-full text-bold text-xl w-full md:h-20 md:w-20 hover:text-black self-center m-8"
           onClick={() => router.push(`./${offeringId}/add-property`)}
         >
           <Plus size={16} />

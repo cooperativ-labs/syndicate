@@ -14,6 +14,8 @@ import {
   OrganizationPermissionType,
   OrganizationUserPermissionTypes,
   RealEstatePropertyType,
+  ShareTransferEventType,
+  ShareTransferEventTypes,
 } from "@/types";
 
 // ===== PROFILE ======
@@ -34,7 +36,7 @@ export const getTabSectionOption = (
   desiredSectionValue: keyof typeof OfferingTabSection,
 ) => {
   return tabSectionOptions.find(
-    (option) => (option.value === desiredSectionValue ? option : null)
+    (option) => (option.value === desiredSectionValue ? option : null),
   );
 };
 
@@ -65,7 +67,7 @@ export const getSocialAccountOption = (
   type: keyof typeof LinkedAccountType | null | undefined,
 ): { value: LinkedAccountTypes; name: string; icon: string } | undefined => {
   return socialAccountOptions.find(
-    (option) => (option.value === type ? option : null)
+    (option) => (option.value === type ? option : null),
   );
 };
 
@@ -221,7 +223,7 @@ export const docFormatOptions = [
 ];
 
 export const getDocFormatOption = (
-  type: keyof typeof DocumentFormat | undefined,
+  type: keyof typeof DocumentFormat | undefined | null,
 ) => {
   return docFormatOptions.find((option) => option.value === type);
 };
@@ -241,7 +243,7 @@ export const getDistributionPeriod = (
   period: keyof typeof DistributionPeriodType,
 ) => {
   const option = distributionPeriodOptions.find(
-    (per) => (per.value === period ? per : null)
+    (per) => (per.value === period ? per : null),
   );
   return option?.name;
 };
@@ -283,7 +285,7 @@ export const getPropertyTypeOption = (
   inputValue: keyof typeof RealEstatePropertyType,
 ) => {
   return propertyTypeOptions.find(
-    (option) => (option.value === inputValue ? option : null)
+    (option) => (option.value === inputValue ? option : null),
   );
 };
 
@@ -314,10 +316,10 @@ export enum OfferingStage {
   Closed = "CLOSED",
 }
 export const getAssetStatusOption = (
-  inputValue: OfferingStageTypes | AssetStatusTypes | undefined,
+  inputValue: OfferingStageTypes | AssetStatusTypes | undefined | null,
 ) => {
   return assetStatusOptions.find(
-    (option) => (option.value === inputValue ? option : null)
+    (option) => (option.value === inputValue ? option : null),
   );
 };
 
@@ -410,39 +412,42 @@ export const getSwapStatusOption = ({
 };
 
 // ===== Trades =====
-export enum ShareTransferEventType {
-  Trade = "TRADE",
-  Issuance = "ISSUANCE",
-  Forced = "FORCED",
-  Transfer = "TRANSFER",
-  Disapproval = "DISAPPROVAL",
-  Approval = "APPROVAL",
-}
+// export enum ShareTransferEventType {
+//   Trade = "TRADE",
+//   Issuance = "ISSUANCE",
+//   Forced = "FORCED",
+//   Transfer = "TRANSFER",
+//   Disapproval = "DISAPPROVAL",
+//   Approval = "APPROVAL",
+// }
 
 export const TransferEventOptions = [
-  { value: ShareTransferEventType.Trade, name: "Trade", color: "Purple-600" },
+  { value: ShareTransferEventType.TRADE, name: "Trade", color: "Purple-600" },
   {
-    value: ShareTransferEventType.Issuance,
+    value: ShareTransferEventType.ISSUANCE,
     name: "Issuance",
     color: "blue-600",
   },
-  { value: ShareTransferEventType.Forced, name: "Forced", color: "red-600" },
-  { value: ShareTransferEventType.Transfer, name: "Transfer", color: "black" },
+  { value: ShareTransferEventType.FORCED, name: "Forced", color: "red-600" },
+  { value: ShareTransferEventType.TRANSFER, name: "Transfer", color: "black" },
   {
-    value: ShareTransferEventType.Disapproval,
+    value: ShareTransferEventType.DISAPPROVAL,
     name: "Disapproval",
     color: "red-600",
   },
   {
-    value: ShareTransferEventType.Approval,
+    value: ShareTransferEventType.APPROVAL,
     name: "Approval",
     color: "green-600",
   },
 ];
 
-export const getTransferEventOption = (tradeType: ShareTransferEventType) => {
+export const getTransferEventOption = (
+  tradeType: ShareTransferEventTypes | undefined,
+) => {
+  if (!tradeType) return null;
   return TransferEventOptions.find(
-    (option) => (option.value === tradeType ? option : null)
+    (option) => (option.value === tradeType ? option : null),
   );
 };
 
@@ -673,7 +678,7 @@ export const getCurrencyByCode = (
   currencyCode: keyof typeof CurrencyCode | undefined,
 ) => {
   return currencyOptions.find(
-    (cur) => (cur.value === currencyCode ? cur : null)
+    (cur) => (cur.value === currencyCode ? cur : null),
   );
 };
 

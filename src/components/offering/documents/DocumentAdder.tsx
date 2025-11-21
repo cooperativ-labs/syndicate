@@ -25,11 +25,13 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
 
   const handleUploadSubmit = async (file: File) => {
     setButtonState('loading');
+    const offeringUniqueId = offeringId + file.name;
     await uploadOfferingDocument({
       file,
       offeringId,
       entityId,
-      title: ''
+      title: '',
+      offeringUniqueId
     });
     setButtonState('success');
   };
@@ -47,13 +49,15 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
 
   const onSubmit = async (data: { title: string; docUrl: string }) => {
     setButtonState('loading');
+    const offeringUniqueId = offeringId + data.title;
     try {
       await linkOfferingDocument({
         offeringId,
         entityId,
         title: data.title,
         format: fileFormat as DocumentFormatType,
-        docUrl: data.docUrl
+        docUrl: data.docUrl,
+        offeringUniqueId: offeringUniqueId
       });
       setButtonState('success');
     } catch (err: any) {

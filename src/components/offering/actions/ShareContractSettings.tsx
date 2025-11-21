@@ -5,12 +5,12 @@ import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 import { useChainId } from 'wagmi';
 
-import { OfferingFull, SmartContract } from '@/types';
+import { OfferingFull, SmartContractWithCryptoAddress } from '@/types';
 
 import NewClassForm from './NewClassForm';
 
 type ShareContractSettingsLocal = {
-  shareContract: SmartContract | undefined;
+  shareContract: SmartContractWithCryptoAddress;
   offering: OfferingFull;
   partitions: String0x[];
 };
@@ -22,8 +22,8 @@ const ShareContractSettings: FC<ShareContractSettingsLocal> = ({
 }) => {
   const chainId = useChainId();
 
-  if (!shareContract) {
-    return <LinkLegal offering={offering} />;
+  if (!shareContract?.established) {
+    return <LinkLegal offering={offering} shareContracts={shareContract ? [shareContract] : []} />;
   }
 
   const shareContractAddress = shareContract?.crypto_address_id as String0x;

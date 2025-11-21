@@ -162,7 +162,7 @@ export type Database = {
           owner_id: number
           smart_contract_id: string | null
           text: string | null
-          thumbnail_image_id: string | null
+          thumbnail_image: string | null
           title: string | null
           type: Database["public"]["Enums"]["document_type"] | null
           updated_at: string | null
@@ -180,7 +180,7 @@ export type Database = {
           owner_id: number
           smart_contract_id?: string | null
           text?: string | null
-          thumbnail_image_id?: string | null
+          thumbnail_image?: string | null
           title?: string | null
           type?: Database["public"]["Enums"]["document_type"] | null
           updated_at?: string | null
@@ -198,7 +198,7 @@ export type Database = {
           owner_id?: number
           smart_contract_id?: string | null
           text?: string | null
-          thumbnail_image_id?: string | null
+          thumbnail_image?: string | null
           title?: string | null
           type?: Database["public"]["Enums"]["document_type"] | null
           updated_at?: string | null
@@ -217,13 +217,6 @@ export type Database = {
             columns: ["owner_id"]
             isOneToOne: false
             referencedRelation: "legal_entity"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "document_thumbnail_image_id_fkey"
-            columns: ["thumbnail_image_id"]
-            isOneToOne: false
-            referencedRelation: "image"
             referencedColumns: ["id"]
           },
         ]
@@ -319,33 +312,6 @@ export type Database = {
             referencedColumns: ["id"]
           },
         ]
-      }
-      image: {
-        Row: {
-          created_at: string | null
-          file_id: string | null
-          id: string
-          label: string | null
-          updated_at: string | null
-          url: string
-        }
-        Insert: {
-          created_at?: string | null
-          file_id?: string | null
-          id?: string
-          label?: string | null
-          updated_at?: string | null
-          url: string
-        }
-        Update: {
-          created_at?: string | null
-          file_id?: string | null
-          id?: string
-          label?: string | null
-          updated_at?: string | null
-          url?: string
-        }
-        Relationships: []
       }
       investor_application: {
         Row: {
@@ -640,7 +606,7 @@ export type Database = {
           projected_irr_max: number | null
           raise_period: number | null
           raise_start: string | null
-          sharing_image_id: string | null
+          sharing_image: string | null
           short_description: string | null
           stage: Database["public"]["Enums"]["offering_stage"] | null
           target_equity_multiple: number | null
@@ -693,7 +659,7 @@ export type Database = {
           projected_irr_max?: number | null
           raise_period?: number | null
           raise_start?: string | null
-          sharing_image_id?: string | null
+          sharing_image?: string | null
           short_description?: string | null
           stage?: Database["public"]["Enums"]["offering_stage"] | null
           target_equity_multiple?: number | null
@@ -746,7 +712,7 @@ export type Database = {
           projected_irr_max?: number | null
           raise_period?: number | null
           raise_start?: string | null
-          sharing_image_id?: string | null
+          sharing_image?: string | null
           short_description?: string | null
           stage?: Database["public"]["Enums"]["offering_stage"] | null
           target_equity_multiple?: number | null
@@ -763,13 +729,6 @@ export type Database = {
             columns: ["offering_entity_id"]
             isOneToOne: false
             referencedRelation: "legal_entity"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "offering_sharing_image_id_fkey"
-            columns: ["sharing_image_id"]
-            isOneToOne: false
-            referencedRelation: "image"
             referencedColumns: ["id"]
           },
         ]
@@ -1177,33 +1136,23 @@ export type Database = {
         Row: {
           created_at: string | null
           id: string
-          image_id: string
           property_id: string
         }
         Insert: {
           created_at?: string | null
           id?: string
-          image_id: string
           property_id: string
         }
         Update: {
           created_at?: string | null
           id?: string
-          image_id?: string
           property_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "real_estate_property_image_image_id_fkey"
-            columns: ["image_id"]
-            isOneToOne: false
-            referencedRelation: "image"
-            referencedColumns: ["id"]
-          },
-          {
             foreignKeyName: "real_estate_property_image_property_id_fkey"
             columns: ["property_id"]
-            isOneToOne: false
+            isOneToOne: true
             referencedRelation: "real_estate_property"
             referencedColumns: ["id"]
           },
@@ -1425,11 +1374,19 @@ export type Database = {
           organization_user_id: string
         }[]
       }
+      is_any_organization_admin: {
+        Args: { p_user_id: string }
+        Returns: boolean
+      }
       is_organization_admin: {
         Args: { p_organization_id: number; p_user_id: string }
         Returns: boolean
       }
       is_organization_admin_for_legal_entity: {
+        Args: { p_organization_id: number; p_user_id: string }
+        Returns: boolean
+      }
+      is_organization_admin_or_editor: {
         Args: { p_organization_id: number; p_user_id: string }
         Returns: boolean
       }
@@ -1442,6 +1399,10 @@ export type Database = {
         Returns: boolean
       }
       is_organization_member: {
+        Args: { p_organization_id: number; p_user_id: string }
+        Returns: boolean
+      }
+      is_organization_viewer_or_better: {
         Args: { p_organization_id: number; p_user_id: string }
         Returns: boolean
       }

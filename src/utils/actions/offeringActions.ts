@@ -72,7 +72,6 @@ export async function getOfferingById(
         [
           "*",
           "legalEntity:legal_entity(*, addresses:address(*), jurisdiction:jurisdiction(*))",
-          "images:image(id, url, label, file_id)",
           "participants:offering_participant(*, jurisdiction:jurisdiction(*), investorApplication:investor_application(*, applicationDoc:document(*)),whitelistTransactions:whitelist_transaction(*))",
           "descriptions:offering_description_text(*)",
           "distributions:offering_distribution(*)",
@@ -84,6 +83,7 @@ export async function getOfferingById(
   ]);
 
   const offering = offeringRes as unknown as OfferingFull;
+  if (error) throw `getOfferingById: ${error.message}`;
 
   const [logoUrl, bannerImageUrl] = await Promise.all([
     getPublicUrl({
@@ -101,7 +101,6 @@ export async function getOfferingById(
   offering.image = logoUrl.data || null;
   offering.banner_image = bannerImageUrl.data || null;
 
-  if (error) throw `getOfferingById: ${error.message}`;
   return { ...offering, offeringSmartContracts: smartContracts ?? null };
 }
 
@@ -145,9 +144,10 @@ export async function addLegalShareLink({
     text: agreementText,
     type: "SHARE_LINK",
     format: "MARKDOWN",
-    owner_id: entityId,
+    owner_id: Number(entityId),
     offering_unique_id: documentOfferingUniqueId,
-    offering_id: offeringId,
+    offering_id: Number(offeringId),
+    access: "SIGNATORY",
   });
   if (docError) throw docError;
 
@@ -161,19 +161,19 @@ export async function addLegalShareLink({
   revalidatePath("/", "page");
 }
 
-export async function getOfferingParticipant({
-  walletAddress,
-}: {
-  walletAddress: string;
-}): Promise<OfferingParticipant[]> {
-  const supabase = createClient();
-  const { data, error } = await supabase
-    .from("offering_participant")
-    .select("id, name, offering(*)")
-    .eq("wallet_address", walletAddress);
-  if (error) throw error;
-  return data ?? [];
-}
+// export async function getOfferingParticipant({
+//   walletAddress,
+// }: {
+//   walletAddress: string;
+// }): Promise<OfferingParticipant | null> {
+//   const supabase = createClient();
+//   const { data, error } = await supabase
+//     .from("offering_participant")
+//     .select("id, name, offering(*)")
+//     .eq("wallet_address", walletAddress).single();
+//   if (error) throw error;
+//   return data ?? null;
+// }
 
 export async function addOfferingParticipant({
   addressOfferingId,
@@ -187,30 +187,22 @@ export async function addOfferingParticipant({
   offeringId: string;
   walletAddress: string;
   chainId: number;
-}): Promise<{
-  affectedCount: number;
-  records: { id: string; name: string | null; offering_id: string }[];
-}> {
+}): Promise<void> {
   const supabase = createClient();
-  const { data, error, count } = await supabase
+  const { error } = await supabase
     .from("offering_participant")
     .insert(
       {
         address_offering_id: addressOfferingId,
         name: name ?? null,
-        offering_id: offeringId,
+        offering_id: Number(offeringId),
         wallet_address: walletAddress,
-        chain_id: chainId,
+        chain_id: Number(chainId),
       },
-      { count: "exact" },
     )
     .select("id, name, offering_id");
   if (error) throw error;
-  revalidatePath("/", "page");
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as any,
-  };
+  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, "page");
 }
 
 export async function addOfferingParticipantWithApplication({
@@ -440,28 +432,6 @@ export async function removeWhitelistObject(
     .delete()
     .eq("id", participantId)
     .select("id");
-  if (error) throw error;
-  revalidatePath("/", "page");
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as any,
-  };
-}
-
-export async function archiveOfferingParticipant({
-  participantId,
-}: {
-  participantId: string;
-}): Promise<{
-  affectedCount: number;
-  records: { id: string; archived: boolean }[];
-}> {
-  const supabase = createClient();
-  const { data, error, count } = await supabase
-    .from("offering_participant")
-    .update({ archived: true })
-    .eq("id", participantId)
-    .select("id, archived");
   if (error) throw error;
   revalidatePath("/", "page");
   return {

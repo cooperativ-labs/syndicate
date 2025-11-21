@@ -403,7 +403,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                 </div>
                 {tocOpen && documents && (
                   <div className="my-2 p-4 rounded-md bg-slate-100">
-                    <PresentLegalText text={documents[0]?.text} />
+                    <PresentLegalText text={documents[0].text} />
                     <div className="flex">
                       <Button
                         variant="outline"

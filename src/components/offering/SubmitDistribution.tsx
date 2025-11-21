@@ -10,7 +10,7 @@ import { setAllowance } from '@src/web3/contractSwapCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useEffect, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import { Resolver, useForm } from 'react-hook-form';
 import { erc20Abi } from 'viem';
 import { useAccount, useReadContract } from 'wagmi';
 import { z } from 'zod';
@@ -28,7 +28,7 @@ type SubmitDistributionProps = {
 };
 const distributionSchema = z.object({
   amount: z.coerce
-    .number({ invalid_type_error: 'Please indicate how many shares you want to send' })
+    .number({ error: 'Please indicate how many shares you want to send' })
     .min(1, 'Please indicate how many shares you want to send'),
   partition: z.string().min(1, 'Select class')
 });
@@ -66,7 +66,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         amount,
         distributionTokenDecimals,
         distributionTokenAddress,
-        partition: partition,
+        partition: partition as String0x,
         offeringId: offeringId,
         setButtonStep,
         addDistribution
@@ -97,7 +97,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
     reset,
     formState: { errors, isSubmitting }
   } = useForm<DistributionFormValues>({
-    resolver: zodResolver(distributionSchema),
+    resolver: zodResolver(distributionSchema) as Resolver<DistributionFormValues>,
     defaultValues: {
       amount: undefined as unknown as number,
       partition: partitions[0] ?? ''

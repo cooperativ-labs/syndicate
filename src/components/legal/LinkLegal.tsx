@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount, useChainId } from 'wagmi';
 
-import { Offering, OfferingFull } from '@/types';
+import { OfferingFull, SmartContractWithCryptoAddress } from '@/types';
 
 import CreateShareContract from '../offering/CreateShareContract';
 import UnestablishedContractCard from '../offering/UnestablishedContractCard';
@@ -25,9 +25,10 @@ type AgreementText = {
 
 type LinkLegalProps = {
   offering: OfferingFull;
+  shareContracts: SmartContractWithCryptoAddress[];
 };
 
-const LinkLegal: React.FC<LinkLegalProps> = ({ offering }) => {
+const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
   const chainId = useChainId();
   const { chain } = useAccount();
   const legalEntity = offering.legalEntity;
@@ -45,10 +46,9 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering }) => {
   const orgLegalName = legalEntity?.legal_name;
   const offerEntityGP = legalEntity?.owners ? legalEntity.owners[0]?.legal_name : orgLegalName;
 
-  const availableContract =
-    legalEntity?.smart_contracts && getAvailableContracts(legalEntity.smart_contracts, chainId);
+  const availableContract = shareContracts && getAvailableContracts({ shareContracts, chainId });
 
-  const backingToken = availableContract?.backingToken;
+  const backingToken = availableContract?.backing_token;
   const bacToken = getCurrencyOption(backingToken);
   const bacValue = bacToken?.value;
   const bacName = bacToken?.symbol;
@@ -59,9 +59,9 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering }) => {
   const agreement = GenerateLegalLink(
     {
       offeringId: offering.id,
-      spvEntityName: orgLegalName,
-      gpEntityName: offerEntityGP,
-      contractAddress: availableContract?.cryptoAddress.address,
+      spvEntityName: orgLegalName ?? '',
+      gpEntityName: offerEntityGP ?? '',
+      contractAddress: availableContract?.crypto_address_id,
       chainName: MatchSupportedChains(chainId)?.name,
       bacName: bacName,
       bacAddress: bacId,
@@ -79,7 +79,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering }) => {
       {!availableContract ? (
         <div className="mt-5">
           <CreateShareContract
-            contractCreatorId={legalEntity?.id}
+            contractCreatorId={legalEntity.id.toString()}
             offeringId={offering.id.toString()}
           />
         </div>
@@ -94,8 +94,8 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering }) => {
               bacValue={bacValue}
               bacName={bacName}
               bacId={bacId}
-              entityId={legalEntity.id}
-              spvEntityName={legalEntity.legalName}
+              entityId={legalEntity.id.toString()}
+              spvEntityName={legalEntity.legal_name ?? undefined}
               offeringId={offering.id.toString()}
             />
             {/* <FormChainWarning /> */}

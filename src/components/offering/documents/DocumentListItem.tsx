@@ -4,11 +4,11 @@ import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from 'lucide-react';
 import React, { FC } from 'react';
 
-import { Document, Maybe } from '@/types';
+import { Document } from '@/types';
 
 const DocumentListItem: FC<{
-  document: Maybe<Document>;
-  offeringId: string | undefined;
+  document: Document;
+  offeringId?: string;
   deleteButton?: boolean | undefined;
 }> = ({ document, offeringId, deleteButton }) => {
   // const [deleteDocument, { error: deleteError }] = useMutation(REMOVE_OFFERING_DOCUMENT);
@@ -33,6 +33,7 @@ const DocumentListItem: FC<{
   const { url, id, format, title, file_id } = document;
 
   const handleDelete = async () => {
+    if (!offeringId) return;
     if (url?.includes('cooperativ-filestore.storage.googleapis')) {
       try {
         const response = await fetch(`/api/file/${file_id}`, {
@@ -42,22 +43,16 @@ const DocumentListItem: FC<{
         if (!response.ok) {
           const error = await response.text();
           if (error.includes('No such object')) {
-            deleteDocument({
-              variables: { currentDate: currentDate, offeringId: offeringId, documentId: id }
-            });
+            deleteDocument({ offeringId: offeringId, documentId: id });
           }
           throw new Error(error);
         }
-        deleteDocument({
-          variables: { currentDate: currentDate, offeringId: offeringId, documentId: id }
-        });
+        deleteDocument({ offeringId: offeringId, documentId: id });
       } catch (error: any) {
         throw new Error('Error details:', error);
       }
     } else {
-      deleteDocument({
-        variables: { currentDate: currentDate, offeringId: offeringId, documentId: id }
-      });
+      deleteDocument({ offeringId: offeringId, documentId: id });
     }
   };
 
@@ -102,7 +97,7 @@ const DocumentListItem: FC<{
           </h2>
         </div>
       </a>
-      {deleteButton && (
+      {deleteButton && offeringId && (
         <button aria-label="delete-document" onClick={handleDelete}>
           <Trash className="text-lg text-gray-600 mr-2" />
         </button>

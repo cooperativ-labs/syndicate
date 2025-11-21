@@ -175,7 +175,7 @@ const ForceTransferForm = ({
                 {recipientOptions?.map((participant, i) => {
                   const presentableAddress = addressWithoutEns({
                     address: participant?.wallet_address,
-                    userName: participant?.name
+                    userName: participant?.name ?? ''
                   });
                   return (
                     <SelectItem key={i} value={participant?.wallet_address as String0x}>

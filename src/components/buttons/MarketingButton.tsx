@@ -1,8 +1,6 @@
 import { cn } from '@src/lib/utils';
 import React from 'react';
-
-import Button from './Button';
-
+import { Button } from '../ui/button';
 interface MarketingButtonProps {
   external?: boolean;
   outlined?: boolean;

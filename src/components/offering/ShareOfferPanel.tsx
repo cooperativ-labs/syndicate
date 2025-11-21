@@ -6,7 +6,6 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { Info } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
-import { Maybe } from 'yup';
 
 import { OfferingFull, Organization } from '@/types';
 
@@ -41,8 +40,8 @@ const ShareOfferPanelItem: FC<ShareOfferPanelItemProps> = ({ children, title, no
 };
 
 type ShareOfferPanelProps = {
-  offering: Offering;
-  currentSalePrice: Maybe<number> | undefined;
+  offering: OfferingFull;
+  currentSalePrice: number | undefined;
   organization: Organization | undefined;
   currentUser?: string;
 };
@@ -56,44 +55,42 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
   const router = useRouter();
   const participants = offering.participants;
   const permittedEntity = participants?.find(participant => {
-    return participant?.addressOfferingId === currentUser + offering.id;
+    return currentUser && participant?.address_offering_id === currentUser + offering.id;
   });
 
   const sharesPledged = participants
     ? participants.reduce((acc, participant) => {
-        const maxPledge = participant?.maxPledge ?? 0;
+        const maxPledge = participant?.max_pledge ?? 0;
         return acc + maxPledge;
       }, 0)
     : 0;
 
-  const percentPledged = offering.details?.numUnits
-    ? (sharesPledged / offering.details.numUnits) * 100
-    : 0;
-
-  const { details } = offering;
+  const percentPledged = offering?.num_units ? (sharesPledged / offering.num_units) * 100 : 0;
 
   const {
-    investmentCurrency,
-    projectedIrr,
-    projectedIrrMax,
-    preferredReturn,
-    cocReturn,
-    minUnitsPerInvestor,
-    customOnboardingLink
-  } = details || {
-    investmentCurrency: undefined,
-    projectedIrr: undefined,
-    projectedIrrMax: undefined,
-    preferredReturn: undefined,
-    cocReturn: undefined,
-    minUnitsPerInvestor: undefined
+    investment_currency,
+    projected_irr,
+    projected_irr_max,
+    preferred_return,
+    coc_return,
+    min_units_per_investor,
+    custom_onboarding_link
+  } = offering || {
+    investment_currency: undefined,
+    projected_irr: undefined,
+    projected_irr_max: undefined,
+    preferred_return: undefined,
+    coc_return: undefined,
+    min_units_per_investor: undefined,
+    custom_onboarding_link: undefined
   };
 
   const buttonText = !permittedEntity ? 'Manage Investment' : 'Apply to Invest';
   const buttonLink =
     !permittedEntity && organization
       ? `/portal/${organization.id}/${offering.id}`
-      : (customOnboardingLink ?? `/portal/${organization?.id}/${offering.id}/investor-application`);
+      : (custom_onboarding_link ??
+        `/portal/${organization?.id}/${offering.id}/investor-application`);
 
   const ApplyManageButton = (
     <button
@@ -114,7 +111,7 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
           Price<span className="text-sm">/share</span>
         </div>
         <div className="flex items-center">
-          <img src={getCurrencyOption(investmentCurrency)?.logo} className="h-6 mr-1" />
+          <img src={getCurrencyOption(investment_currency)?.logo} className="h-6 mr-1" />
           <div className="text-4xl font-bold"> {`${numberWithCommas(currentSalePrice)} `}</div>
         </div>
       </div>
@@ -129,43 +126,43 @@ const ShareOfferPanel: FC<ShareOfferPanelProps> = ({
       </div>
       {/* <hr className="mt-5 mb-2 col-span-3" /> */}
       <div className="my-2 flex flex-col gap-4">
-        {projectedIrr ? (
+        {projected_irr ? (
           <div className="my-6">
             <ShareOfferPanelItem
               title="Projected IRR"
               note="This is an estimate. Returns are not guaranteed."
             >
-              {`${projectedIrr / 100}`}
-              {projectedIrrMax ? ` - ${projectedIrrMax / 100}` : ''}%
+              {`${projected_irr / 100}`}
+              {projected_irr_max ? ` - ${projected_irr_max / 100}` : ''}%
             </ShareOfferPanelItem>
           </div>
         ) : (
           <></>
         )}
-        {preferredReturn ? (
+        {preferred_return ? (
           <ShareOfferPanelItem title="Preferred Return" note="Cumulative, Non-Compounding">
-            <div className="col-span-1">{preferredReturn / 100}% </div>
+            <div className="col-span-1">{preferred_return / 100}% </div>
           </ShareOfferPanelItem>
         ) : (
           <></>
         )}
-        {cocReturn ? (
+        {coc_return ? (
           <ShareOfferPanelItem
             title="CoC Return"
             note="This is an estimate. Returns are not guaranteed."
           >
-            <div className="col-span-1">{cocReturn ? `${cocReturn / 100}` : ''}% </div>
+            <div className="col-span-1">{coc_return ? `${coc_return / 100}` : ''}% </div>
           </ShareOfferPanelItem>
         ) : (
           <></>
         )}
       </div>
       <div>{ApplyManageButton}</div>
-      {minUnitsPerInvestor ? (
-        <div className="mt-2 font-semibold text-xs  text-gray-300 lg:text-gray-700 text-center">{`* Minimum purchase: ${minUnitsPerInvestor} share${
-          minUnitsPerInvestor !== 1 ? 's' : ''
-        }  (${numberWithCommas(currentSalePrice ? currentSalePrice * minUnitsPerInvestor : undefined)} ${
-          getCurrencyOption(investmentCurrency)?.symbol
+      {min_units_per_investor ? (
+        <div className="mt-2 font-semibold text-xs  text-gray-300 lg:text-gray-700 text-center">{`* Minimum purchase: ${min_units_per_investor} share${
+          min_units_per_investor !== 1 ? 's' : ''
+        }  (${numberWithCommas(currentSalePrice ? currentSalePrice * min_units_per_investor : undefined)} ${
+          getCurrencyOption(investment_currency)?.symbol
         })`}</div>
       ) : (
         <></>

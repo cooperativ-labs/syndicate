@@ -59,6 +59,9 @@ export function useAnalytics() {
     }
   };
   useEffect(() => {
+    if (!TagManager.initialize) {
+      return;
+    }
     TagManager.initialize(gtmProperties);
     function demoServerDimensions() {
       try {

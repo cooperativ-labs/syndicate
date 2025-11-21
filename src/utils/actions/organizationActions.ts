@@ -6,6 +6,7 @@ import { revalidatePath } from "next/cache";
 
 import {
   LegalEntity,
+  LinkedAccountTypes,
   NotificationConfiguration,
   Organization,
   OrganizationComplete,
@@ -411,7 +412,7 @@ export const updateOrganizationEmail = async ({
 }): Promise<void> => {
   const supabase = createClient();
   const updateData: { name?: string | null; is_public?: boolean } = {};
-  
+
   if (name !== undefined) {
     updateData.name = name;
   }
@@ -424,7 +425,7 @@ export const updateOrganizationEmail = async ({
     .update(updateData)
     .eq("address", address)
     .eq("organization_id", Number(organizationId));
-  
+
   if (error) {
     console.error("updateOrganizationEmail Error", error);
     throw new Error(error.message);
@@ -445,7 +446,7 @@ export const removeOrganizationEmail = async ({
     .delete()
     .eq("address", address)
     .eq("organization_id", Number(organizationId));
-  
+
   if (error) {
     console.error("removeOrganizationEmail Error", error);
     throw new Error(error.message);
@@ -465,6 +466,27 @@ export const removeTeamMember = async ({
     "id",
     organizationUserId,
   );
+  if (error) {
+    throw new Error(error.message);
+  }
+  revalidatePath(`/manager/${organizationId}/settings`, "page");
+};
+
+export const addOrganizationSocialAccount = async ({
+  organizationId,
+  url,
+  type,
+}: {
+  organizationId: string | number;
+  url: string;
+  type: LinkedAccountTypes;
+}) => {
+  const supabase = createClient();
+  const { error } = await supabase.from("linked_account").insert({
+    organization_id: Number(organizationId),
+    url: url,
+    type: type,
+  });
   if (error) {
     throw new Error(error.message);
   }

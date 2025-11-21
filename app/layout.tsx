@@ -8,6 +8,7 @@ import { createClient } from '@supabase/utils/server';
 import type { Metadata } from 'next';
 import { cookies } from 'next/headers';
 import React from 'react';
+import Script from 'next/script';
 import { cookieToInitialState } from 'wagmi';
 
 import ModalsAndAlerts from './modals';
@@ -66,11 +67,11 @@ export default async function RootLayout({ children }: { children: React.ReactNo
           </div>
         </Providers>
 
-        {/* <Script
+        <Script
           async
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&libraries=places`}
           strategy="afterInteractive"
-        /> */}
+        />
       </body>
     </html>
   );

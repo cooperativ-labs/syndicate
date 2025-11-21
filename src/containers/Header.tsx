@@ -5,31 +5,29 @@ import { cn } from '@src/lib/utils';
 import { useRouter } from 'next/router';
 import React from 'react';
 
-import { Offering, OfferingFull, RealEstatePropertyWithAddresses } from '@/types';
+import { Offering, OfferingFull, RealEstatePropertyWithAddress, Image } from '@/types';
 
 import { getBaseUrl } from '../utils/helpersURL';
 
 import Container from './Layouts/Container';
+import { useAsync } from 'react-use';
+import { getRePropertyAssets } from '@src/utils/actions/rePropertyActions';
 
 type HeaderProps = {
   offering: OfferingFull;
   small?: boolean;
-  realEstateProperties: RealEstatePropertyWithAddresses[] | undefined;
+  offeringPropertyImages: Image[] | undefined;
 };
 
 const Header: React.FunctionComponent<HeaderProps> = ({
   offering,
   small,
-  realEstateProperties
+  offeringPropertyImages
 }) => {
   const windowSize = useWindowSize();
   const { id, name, offering_entity_id, legalEntity, banner_image } = offering;
 
   const shareURL = `${getBaseUrl()}/${id}`;
-
-  const offeringPropertyImages = realEstateProperties
-    ?.map((property: RealEstatePropertyWithAddresses) => property?.images)
-    .flat();
 
   const desktopHeight = small ? 'h-64' : 'h-96';
   const mobileHeight = small ? 'h-24' : 'h-32';
@@ -54,7 +52,9 @@ const Header: React.FunctionComponent<HeaderProps> = ({
             {offeringPropertyImages.slice(-4).map((image, i) => {
               return (
                 <div key={i} className={cn(imageBannerHeight, 'flex overflow-hidden col-span-1')}>
-                  {image && <img className={'object-cover object-center w-full'} src={image.url} />}
+                  {image && (
+                    <img className={'object-cover object-center w-full'} src={image.url ?? ''} />
+                  )}
                 </div>
               );
             })}

@@ -10,18 +10,20 @@ import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import React, { FC, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'sonner';
+import { updateAddress } from '@src/utils/actions/addressActions';
 
 export type UpdateAddressType = {
-  address: Address | undefined;
-  addressId: string | undefined;
-  addressLine1: string | undefined;
-  updateAddress: (data: any) => Promise<void> | void;
+  address: Address | null;
+  addressId: string | null;
+  addressLine1: string | null;
+
   setModal: (addressModel: boolean) => void;
 };
 
 const emptyAddress: AddressType = {
   address1: '',
   address2: '',
+  address3: '',
   formattedAddress: '',
   city: '',
   region: '',
@@ -31,7 +33,7 @@ const emptyAddress: AddressType = {
   lng: 0
 };
 
-const toAddressType = (address?: Address): AddressType => {
+const toAddressType = (address: Address | null): AddressType => {
   if (!address) {
     return emptyAddress;
   }
@@ -39,6 +41,7 @@ const toAddressType = (address?: Address): AddressType => {
   return {
     address1: address.line1 ?? '',
     address2: address.line2 ?? '',
+    address3: address.line3 ?? '',
     formattedAddress: address.line1 ? `${address.line1}, ${address.city ?? ''}` : '',
     city: address.city ?? '',
     region: address.state_province ?? '',
@@ -53,13 +56,7 @@ type UpdateAddressForm = {
   addressLabel: string;
 };
 
-const UpdateAddress: FC<UpdateAddressType> = ({
-  address,
-  addressId,
-  addressLine1,
-  updateAddress,
-  setModal
-}) => {
+const UpdateAddress: FC<UpdateAddressType> = ({ address, setModal }) => {
   const [selectedAddress, setSelectedAddress] = useState<AddressType>(() => toAddressType(address));
   const [searchInput, setSearchInput] = useState('');
 
@@ -80,6 +77,10 @@ const UpdateAddress: FC<UpdateAddressType> = ({
 
   const hasCoordinates = latLang.lat !== 0 && latLang.lng !== 0;
 
+  if (!address) {
+    return null;
+  }
+
   const onSubmit = async (values: UpdateAddressForm) => {
     if (
       !selectedAddress.address1 ||
@@ -94,17 +95,22 @@ const UpdateAddress: FC<UpdateAddressType> = ({
 
     try {
       await updateAddress({
-        entityId: addressId,
-        addressLabel: values.addressLabel,
-        addressLine1: selectedAddress.address1,
-        addressLine2: selectedAddress.address2,
+        id: address.id,
+        label: values.addressLabel,
+        line1: selectedAddress.address1,
+        line2: selectedAddress.address2,
+        line3: selectedAddress.address3,
         city: selectedAddress.city,
-        stateProvince: selectedAddress.region,
-        postalCode: selectedAddress.postalCode,
+        state_province: selectedAddress.region,
+        postal_code: selectedAddress.postalCode,
         country: selectedAddress.country,
         lat: selectedAddress.lat,
         lng: selectedAddress.lng,
-        currentDate: currentDate
+        legal_entity_id: address.legal_entity_id,
+        revalidationPath: {
+          path: `/manager/[organizationId]/entities/${address.legal_entity_id}`,
+          type: 'page'
+        }
       });
       setModal(false);
     } catch (error) {
@@ -122,7 +128,9 @@ const UpdateAddress: FC<UpdateAddressType> = ({
             {...register('addressLabel', { required: 'Please include a label.' })}
             placeholder="e.g. HQ"
           />
-          {errors.addressLabel && <FieldError errors={[{ message: errors.addressLabel.message }]} />}
+          {errors.addressLabel && (
+            <FieldError errors={[{ message: errors.addressLabel.message }]} />
+          )}
         </FieldContent>
       </Field>
 
@@ -141,14 +149,18 @@ const UpdateAddress: FC<UpdateAddressType> = ({
 
       {hasCoordinates && (
         <div className="mt-4">
-          <GoogleMap mapContainerStyle={{ height: '300px', width: '100%' }} center={latLang} zoom={14}>
+          <GoogleMap
+            mapContainerStyle={{ height: '300px', width: '100%' }}
+            center={latLang}
+            zoom={14}
+          >
             <Marker position={latLang} />
           </GoogleMap>
         </div>
       )}
 
       <Button type="submit" disabled={isSubmitting}>
-        {isSubmitting ? 'Updating...' : `Update ${addressLine1 ?? 'address'}`}
+        {isSubmitting ? 'Updating...' : `Update ${address?.line1 ?? 'address'}`}
       </Button>
     </form>
   );

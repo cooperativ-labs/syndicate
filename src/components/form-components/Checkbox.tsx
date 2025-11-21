@@ -1,7 +1,7 @@
 import { cn } from '@src/lib/utils';
 
-import React from 'react';
-import { ReactElement } from 'react-markdown/lib/react-markdown';
+import React, { ReactElement } from 'react';
+
 import { Checkbox as CheckboxUI } from '../ui/checkbox';
 import { FieldError, FieldLabel } from '../ui/field';
 import { FieldErrors, FieldValues } from 'react-hook-form';

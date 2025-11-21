@@ -57,6 +57,7 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
   const [inputAddress, setInputAddress] = useState<AddressType>({
     address1: '',
     address2: '',
+    address3: '',
     formattedAddress: '',
     city: '',
     region: '',

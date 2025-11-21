@@ -55,10 +55,6 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
 
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
-  // const [addLegalLink, { data: agreementData, error: agreementError }] =
-  //   useMutation(ADD_LEGAL_SHARE_LINK);
-  // const [addOfferingParticipant, { data: participantData, error: participantError }] =
-  //   useMutation(ADD_OFFERING_PARTICIPANT);
 
   const agreementHash = hashBytes32FromString(agreement);
 

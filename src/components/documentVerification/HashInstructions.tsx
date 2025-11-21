@@ -1,14 +1,14 @@
 import { shareContractABI } from '@src/web3/generated';
 import { getHashTextPairs, String0x } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
-import { useContractReads } from 'wagmi';
+import { useReadContracts } from 'wagmi';
 
-import { Document, Maybe } from '@/types';
+import { Document } from '@/types';
 
 import DocumentHashItem from './DocumentHashItem';
 
 type HashInstructionsProps = {
-  agreementTexts: Maybe<Document>[] | undefined;
+  agreementTexts: Document[] | undefined;
   contractDocuments: string[];
   shareContractAddress: string;
 };
@@ -27,7 +27,7 @@ const HashInstructions: FC<HashInstructionsProps> = ({
     };
   });
 
-  const { data, isError, isLoading } = useContractReads({
+  const { data, isError, isLoading } = useReadContracts({
     contracts: chainDocs
   });
 
@@ -36,6 +36,7 @@ const HashInstructions: FC<HashInstructionsProps> = ({
   return (
     <div className="p-3 border-2 border-cLightBlue bg-gray-100 rounded-md">
       {hashTextArray?.map((doc, i) => {
+        if (!doc.hash || !doc.text) return null;
         return <DocumentHashItem key={i} hash={doc.hash} text={doc.text} />;
       })}
       <div className="text-sm text-gray-700 mt-2">

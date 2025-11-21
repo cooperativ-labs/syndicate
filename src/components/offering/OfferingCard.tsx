@@ -8,7 +8,7 @@ import React, { useMemo } from 'react';
 import { useAsync } from 'react-use';
 import { useAccount } from 'wagmi';
 
-import { CurrencyCodeType } from '@/types';
+import { CurrencyCodeType, Offering } from '@/types';
 
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
@@ -41,7 +41,7 @@ const getCachedPublicUrl = async (
 export type OfferingCardProps = {
   organizationId: string | number;
   operatingCurrency: string | null;
-  offering: OfferingWithParticipants;
+  offering: Offering;
 };
 
 const OfferingCard: React.FC<OfferingCardProps> = ({

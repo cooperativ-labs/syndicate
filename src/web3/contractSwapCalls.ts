@@ -14,7 +14,7 @@ import {
   CreateOrderParams,
   CreateOrderResult
 } from '@src/utils/actions/orderActions';
-import { ShareTransferEventType } from '@src/utils/enumConverters';
+
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getBaseUrl } from '@src/utils/helpersURL';
@@ -24,7 +24,7 @@ import toast from 'react-hot-toast';
 import { erc20Abi } from 'viem';
 import { simulateContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
 
-import { CurrencyCodeType } from '@/types';
+import { CurrencyCodeType, ShareTransferEventType } from '@/types';
 
 import { swapContractABI } from './generated';
 import { bytes32FromString, StandardChainErrorHandling, String0x } from './helpersChain';
@@ -309,7 +309,7 @@ export const approveRejectSwap = async ({
           currencyCode: currencyCode,
           transactionHash: transactionDetails.transactionHash,
           partition: partition as string,
-          type: isDisapprove ? ShareTransferEventType.Disapproval : ShareTransferEventType.Approval
+          type: isDisapprove ? ShareTransferEventType.DISAPPROVAL : ShareTransferEventType.APPROVAL
         });
       }
       setButtonStep('confirmed');
@@ -515,7 +515,7 @@ export const fillOrder = async ({
         currencyCode: getCurrencyById(paymentTokenAddress)?.value,
         transactionHash: transactionDetails.transactionHash,
         partition: partition as string,
-        type: ShareTransferEventType.Trade
+        type: ShareTransferEventType.TRADE
       });
       await handleTradeExecutionNotification({
         organizationId,

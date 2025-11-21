@@ -14,7 +14,7 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 import { cn } from '@src/lib/utils';
 import { getOfferingDocumentsById } from '@src/utils/actions/documentActions';
 import { retrieveOrders } from '@src/utils/actions/orderActions';
-import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
+import { getRealEstatePropertiesFromEntity } from '@src/utils/actions/rePropertyActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { getBaseUrl } from '@src/utils/helpersURL';
@@ -32,7 +32,8 @@ import {
   OfferingDistribution,
   OfferingFull,
   OrganizationComplete,
-  RealEstatePropertyWithAddresses
+  RealEstatePropertyWithAddress,
+  RealEstatePropertyWithAssets
 } from '@/types';
 
 type OfferingProfileProps = {
@@ -55,15 +56,18 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
   } = offering;
 
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
-  const [realEstateProperties, setRealEstateProperties] = useState<
-    RealEstatePropertyWithAddresses[]
-  >([]);
+  const [realEstateProperties, setRealEstateProperties] = useState<RealEstatePropertyWithAssets[]>(
+    []
+  );
 
   const shareContract = offeringSmartContracts?.shareContract;
   const swapContract = offeringSmartContracts?.swapContract;
   const swapContractAddress = swapContract?.cryptoAddress.address as String0x;
   const distributionContract = offeringSmartContracts?.distributionContract;
   const distributionContractAddress = distributionContract?.cryptoAddress.address as String0x;
+  const offeringPropertyImages = realEstateProperties.flatMap(
+    (property: RealEstatePropertyWithAssets) => property.images
+  );
 
   const partitions = shareContract?.partitions as String0x[];
 
@@ -82,7 +86,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
   }, [swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
   useAsync(async () => {
-    const realEstateProperties = await getRealEstateProperties(legalEntity.id.toString());
+    const realEstateProperties = await getRealEstatePropertiesFromEntity(legalEntity.id.toString());
     setRealEstateProperties(realEstateProperties);
   }, [legalEntity.id]);
 
@@ -103,7 +107,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
 
   return (
     <div data-test="layout-project" className="w-full h-full pb-10 md:pb-20">
-      <Header offering={offering} realEstateProperties={realEstateProperties} />
+      <Header offering={offering} offeringPropertyImages={offeringPropertyImages} />
       {/* <div className="w-full bg-white border-gray-200 border-b-2 ">
         <section className="w-full flex py-4 mx-8 md:px-8 lg:px-16">
           {stage && <Progress brandColor={brandColor ?? '#275A8F'} lightBrand={false} stage={stage} className="flex" />}

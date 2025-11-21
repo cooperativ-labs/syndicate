@@ -1,11 +1,15 @@
 import React, { FC } from 'react';
 
-import { OfferingWithLegalEntity } from '@/types';
+import { CurrencyCodeType, LegalEntity, Offering } from '@/types';
 
 import OfferingCard from './OfferingCard';
 
+export type OfferingListOfferingType = Offering & {
+  legalEntity: { operating_currency: CurrencyCodeType | null };
+};
+
 type OfferingsListProps = {
-  offerings: OfferingWithLegalEntity[];
+  offerings: OfferingListOfferingType[];
   organizationId: string | number | null;
 };
 const OfferingsList: FC<OfferingsListProps> = ({ offerings, organizationId }) => {

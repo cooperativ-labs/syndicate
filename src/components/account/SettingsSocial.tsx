@@ -1,27 +1,16 @@
 'use client';
 
 import { socialAccountOptions } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
+import { addOrganizationSocialAccount } from '@src/utils/actions/organizationActions';
 import React, { FC } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 
-import { OrganizationComplete } from '@/types';
+import { LinkedAccountTypes, OrganizationComplete } from '@/types';
 
 import { Button } from '../ui/button';
-import {
-  Field,
-  FieldContent,
-  FieldError,
-  FieldLabel
-} from '../ui/field';
+import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '../ui/select';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '../ui/select';
 
 type SettingsSocialProps = {
   organization: OrganizationComplete;
@@ -29,7 +18,7 @@ type SettingsSocialProps = {
 
 type SocialFormValues = {
   url: string;
-  type: string;
+  type: LinkedAccountTypes;
 };
 
 const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
@@ -42,19 +31,16 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
   } = useForm<SocialFormValues>({
     defaultValues: {
       url: '',
-      type: ''
+      type: undefined as unknown as LinkedAccountTypes
     }
   });
 
   const onSubmit = async (values: SocialFormValues) => {
     try {
-      await addSocials({
-        variables: {
-          currentDate: currentDate,
-          organizationId: organization.id,
-          url: values.url,
-          type: values.type
-        }
+      await addOrganizationSocialAccount({
+        organizationId: organization.id,
+        url: values.url,
+        type: values.type
       });
       reset();
     } catch (error) {

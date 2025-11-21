@@ -1,5 +1,5 @@
 "use server";
-import { RevalidationPath } from "@/types";
+import { Address, RevalidationPath } from "@/types";
 import { createClient } from "@supabase/utils/server";
 import { revalidatePath } from "next/cache";
 
@@ -15,7 +15,7 @@ type AddAddressParams = {
  lng: number | null;
  postal_code: string | null;
  state_province: string | null;
- revalidationPath: RevalidationPath;
+ revalidationPath?: RevalidationPath;
 };
 export async function addAddress({
  city,
@@ -30,7 +30,7 @@ export async function addAddress({
  postal_code,
  state_province,
  revalidationPath,
-}: AddAddressParams) {
+}: AddAddressParams): Promise<string | null> {
  const supabase = createClient();
  const { data, error } = await supabase.from("address").insert({
   city,
@@ -44,8 +44,48 @@ export async function addAddress({
   lng,
   postal_code,
   state_province,
- });
+ }).select("id").single();
  if (error) throw error;
 
- revalidatePath(revalidationPath.path, revalidationPath.type);
+ if (revalidationPath) {
+  revalidatePath(revalidationPath.path, revalidationPath.type);
+ }
+ return data.id;
+}
+
+type UpdateAddressParams = AddAddressParams & {
+ id: string;
+};
+
+export async function updateAddress({
+ id,
+ label,
+ line1,
+ line2,
+ line3,
+ city,
+ state_province,
+ postal_code,
+ country,
+ lat,
+ lng,
+ revalidationPath,
+}: UpdateAddressParams): Promise<void> {
+ const supabase = createClient();
+ const { data, error } = await supabase.from("address").update({
+  label,
+  line1,
+  line2,
+  line3,
+  city,
+  state_province,
+  postal_code,
+  country,
+  lat,
+  lng,
+ }).eq("id", id);
+ if (error) throw error;
+ if (revalidationPath) {
+  revalidatePath(revalidationPath.path, revalidationPath.type);
+ }
 }

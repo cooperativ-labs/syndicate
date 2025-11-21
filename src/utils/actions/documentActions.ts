@@ -139,12 +139,14 @@ export async function linkOfferingDocument({
   title,
   format,
   docUrl,
+  offeringUniqueId,
 }: {
   offeringId: string;
   entityId: string;
   title: string;
   format: DocumentFormatType;
   docUrl: string;
+  offeringUniqueId: string;
 }): Promise<void> {
   const supabase = createClient();
 
@@ -159,10 +161,11 @@ export async function linkOfferingDocument({
       {
         title,
         url: docUrl,
+        offering_unique_id: offeringUniqueId,
         type: "OFFERING_DOCUMENT",
         format,
-        offering_id: offeringId,
-        owner_id: entityId,
+        offering_id: Number(offeringId),
+        owner_id: Number(entityId),
       },
       { count: "exact" },
     )
@@ -176,7 +179,7 @@ export async function linkOfferingDocument({
   const { error: offeringError } = await supabase
     .from("offering")
     .update({ updated_at: new Date().toISOString() })
-    .eq("id", offeringId);
+    .eq("id", Number(offeringId));
 
   if (offeringError) throw offeringError;
   revalidatePath(`/${offeringId}`, "page");
@@ -188,11 +191,13 @@ export async function uploadOfferingDocument({
   title,
   offeringId,
   entityId,
+  offeringUniqueId,
 }: {
   file: File;
   title: string;
   offeringId: string;
   entityId: string;
+  offeringUniqueId: string;
 }): Promise<void> {
   const supabase = createClient();
   try {
@@ -206,6 +211,7 @@ export async function uploadOfferingDocument({
 
     await linkOfferingDocument({
       offeringId,
+      offeringUniqueId,
       entityId,
       title,
       format: getFileFormat(file),
@@ -246,7 +252,7 @@ export async function removeOfferingDocument({
   } = await supabase
     .from("offering")
     .update({ updated_at: new Date().toISOString() })
-    .eq("id", offeringId)
+    .eq("id", Number(offeringId))
     .select("id, updated_at");
 
   if (offeringError) throw offeringError;

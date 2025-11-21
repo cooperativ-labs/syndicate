@@ -169,7 +169,7 @@ export const GeneratedApplicationText = (
   const ApplicationSummary = GenerateInvestorApplicationSummary(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity?.legal_name,
+      offeringEntityName: offeringEntity.legal_name ?? '',
       purchaserEntityName: purchaserEntityName,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
@@ -196,7 +196,7 @@ export const GeneratedApplicationText = (
       isNonHuman: isCompany,
       purchaserEntityManager: purchaserEntityManager,
       purchaserEntityManagerTitle: purchaserEntityManagerTitle,
-      offeringEntityName: offeringEntity?.legal_name,
+      offeringEntityName: offeringEntity.legal_name ?? '',
       purchaserEntityName: purchaserEntityName,
       purchaserAge: purchaserAge ? numberWithCommas(purchaserAge) : '',
       purchaserPrincipleResidence: purchaserPrincipleResidence,
@@ -230,7 +230,7 @@ export const GeneratedApplicationText = (
       advisor_country: advisor_country,
       maxPledge: maxPledge,
       minPledge: minPledge,
-      pricePerUnit: offering.price_start,
+      pricePerUnit: offering.price_start ?? undefined,
       investmentCurrency: getCurrencyOption(offering.investment_currency)?.symbol
     },
     applicantSuitabilityAttestationText ?? ''
@@ -239,7 +239,7 @@ export const GeneratedApplicationText = (
   const PurchaseAttestation = GenerateSubscriptionPurchaseAttestation(
     {
       isNonHuman: isCompany,
-      offeringEntityName: offeringEntity?.legal_name,
+      offeringEntityName: offeringEntity.legal_name ?? '',
       numUnitsPurchase: numUnitsPurchase ? numberWithCommas(numUnitsPurchase) : '',
       offeringPrice: offeringPrice ? numberWithCommas(offeringPrice / 100) : '',
       purchasePrice:

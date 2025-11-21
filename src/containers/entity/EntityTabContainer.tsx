@@ -1,24 +1,27 @@
 'use client';
 import EntitiesList from '@src/components/entity/EntitiesList';
 import DocumentList from '@src/components/offering/documents/DocumentList';
-import OfferingsList from '@src/components/offering/OfferingsList';
+import OfferingsList, { OfferingListOfferingType } from '@src/components/offering/OfferingsList';
 import Tab from '@src/components/offering/tabs/Tab';
 import { cn } from '@src/lib/utils';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
 import {
   LegalEntityWithJurisdiction,
-  OfferingWithLegalEntity,
-  OfferingWithParticipants,
-  RealEstateProperty
+  Offering,
+  LegalEntity,
+  RealEstateProperty,
+  RealEstatePropertyWithAddress,
+  CurrencyCodeType
 } from '@/types';
 import { getEntityDocumentsById } from '@src/utils/actions/documentActions';
+import PropertyCardList from '@src/components/properties/PropertyCardList';
 
 type EntityTabContainerProps = {
-  operatingCurrency: string | null;
+  operatingCurrency: CurrencyCodeType | null;
   organizationId: string | number;
-  properties?: RealEstateProperty[];
-  offerings: OfferingWithLegalEntity[];
+  properties?: RealEstatePropertyWithAddress[];
+  offerings: OfferingListOfferingType[];
   subsidiaries: LegalEntityWithJurisdiction[] | null;
   entityId: string | number;
 };
@@ -31,11 +34,11 @@ const TabOptions = [
 ];
 const EntityTabContainer: FC<EntityTabContainerProps> = ({
   properties,
-  operatingCurrency,
   organizationId,
   offerings,
   subsidiaries,
-  entityId
+  entityId,
+  operatingCurrency
 }) => {
   const [activeTab, setActiveTab] = useState<string>('offerings');
 
@@ -65,12 +68,12 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({
             <OfferingsList offerings={offerings} organizationId={organizationId} />
           </div>
         )}{' '}
-        {/* {activeTab === 'properties' && (
+        {activeTab === 'properties' && properties && (
           <div className="mt-8">
             <h1 className="text-cDarkBlue text-2xl font-medium   mb-6 ">Properties</h1>
-            <OfferingsList offerings={offerings} />
+            <PropertyCardList properties={properties} operatingCurrency={operatingCurrency} />
           </div>
-        )} */}
+        )}
         {activeTab === 'subsidiaries' && (
           <div className="mt-8">
             <EntitiesList entities={subsidiaries} organizationId={organizationId} />

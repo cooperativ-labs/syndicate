@@ -5,17 +5,16 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import { CheckIcon, CopyIcon } from 'lucide-react';
 import React, { FC, use, useState } from 'react';
 import { useAsync } from 'react-use';
-import { Maybe } from 'yup';
 
 type FormattedCryptoAddressProps = {
-  chainId: Maybe<number> | undefined;
-  address: Maybe<string> | string | String0x | undefined;
+  chainId: number | undefined | null;
+  address: string | String0x | undefined;
   label?: string;
   withCopy?: boolean;
   className?: string;
   showFull?: boolean;
   lookupType?: 'address' | 'tx';
-  userName?: Maybe<string> | undefined;
+  userName?: string | undefined | null;
   isYou?: boolean;
 };
 
@@ -41,7 +40,7 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
   const chain = chainId ? MatchSupportedChains(chainId) : undefined;
   const blockExplorer = chain?.blockExplorer;
 
-  const formURL = (chainId: Maybe<number> | undefined, lookupType?: string) => {
+  const formURL = (chainId: number | undefined | null, lookupType?: string) => {
     const type = lookupType === 'tx' ? 'tx' : 'address';
     const url = `${blockExplorer}/${lookupType ? type : 'address'}/${address}`;
     return url;

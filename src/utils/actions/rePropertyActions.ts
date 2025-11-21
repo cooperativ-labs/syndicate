@@ -3,64 +3,27 @@
 import { createClient } from "@supabase/utils/server";
 import { revalidatePath } from "next/cache";
 
-import { RealEstatePropertyWithAddresses } from "@/types";
+import {
+  RealEstatePropertyWithAddress,
+  RealEstatePropertyWithAssets,
+  RevalidationPath,
+} from "@/types";
 import { Database } from "@/types/database.types";
-
-type RealEstateProperty =
-  Database["public"]["Tables"]["real_estate_property"]["Row"];
-type Address = Database["public"]["Tables"]["address"]["Row"];
-type Image = Database["public"]["Tables"]["image"]["Row"];
+import { Image, InvestmentStatusType, RealEstatePropertyTypes } from "@/types";
+import { addAddress } from "./addressActions";
+import { getFilesFromFolder, getPublicUrl } from "./storageActions";
 
 // =========== RE PROPERTY ================
 
-type GetRePropertyResult = {
-  properties:
-    & Pick<
-      RealEstateProperty,
-      | "id"
-      | "property_type"
-      | "investment_status"
-      | "address_id"
-      | "amenities_description"
-      | "description"
-      | "asset_value"
-      | "asset_value_note"
-      | "loan"
-      | "down_payment"
-      | "lender_fees"
-      | "closing_costs"
-      | "owner_id"
-    >
-    & {
-      address?:
-        | Pick<
-          Address,
-          | "id"
-          | "label"
-          | "line1"
-          | "line2"
-          | "line3"
-          | "city"
-          | "state_province"
-          | "postal_code"
-          | "country"
-          | "lat"
-          | "lng"
-          | "legal_entity_id"
-        >
-        | null;
-    };
-}[];
-
 export async function getReProperty(
   id: string,
-): Promise<RealEstatePropertyWithAddresses | null> {
+): Promise<RealEstatePropertyWithAssets | null> {
   const supabase = createClient();
 
   const { data: property, error } = await supabase
     .from("real_estate_property")
     .select(
-      "id, property_type, investment_status, address_id, amenities_description, description, asset_value, asset_value_note, loan, down_payment, lender_fees, closing_costs, owner_id",
+      "id, property_type, investment_status, address_id, amenities_description, description, asset_value, asset_value_note, loan, down_payment, lender_fees, closing_costs, owner_id, address:address(*)",
     )
     .eq("id", id)
     .limit(1)
@@ -73,77 +36,82 @@ export async function getReProperty(
   if (!property) {
     return null;
   }
+  const { images } = await getRePropertyAssets({
+    entityId: property.owner_id.toString(),
+    rePropertyId: property.id,
+  });
 
-  // Fetch address if address_id exists
-  let addressData = null;
-  if (property.address_id) {
-    const { data: address, error: addressError } = await supabase
-      .from("address")
-      .select(
-        "id, label, line1, line2, line3, city, state_province, postal_code, country, lat, lng, legal_entity_id",
-      )
-      .eq("id", property.address_id)
-      .single();
-
-    if (!addressError && address) {
-      addressData = address;
-    }
-  }
-
-  return {
+  const propertyWithAssets = {
     ...property,
-    addresses: [addressData] as Address[],
-  };
+    // documents: documents,
+    images: images,
+  } as RealEstatePropertyWithAssets;
+
+  return propertyWithAssets;
 }
 
-export async function getRealEstateProperties(
+export async function getRealEstatePropertiesFromEntity(
   entityId: string,
-): Promise<RealEstatePropertyWithAddresses[]> {
+): Promise<RealEstatePropertyWithAssets[]> {
   const supabase = createClient();
-  const { data: properties, error } = await supabase
+
+  const { data: propertiesData, error: propertiesError } = await supabase
     .from("real_estate_property")
     .select(
       [
         "*",
-        "addresses:address(*)",
-        "images:real_estate_property_image(*, image:image(*))",
+        "address:address(*)",
       ].join(
         ", ",
       ),
     )
     .eq("owner_id", Number(entityId));
-  if (error) {
-    throw error;
+  if (propertiesError) {
+    throw propertiesError;
   }
-  return properties ?? [];
+
+  const properties =
+    propertiesData as unknown as RealEstatePropertyWithAddress[];
+
+  const propertiesWithAssets = await Promise.all(
+    properties.map(async (property: RealEstatePropertyWithAddress) => {
+      const { images } = await getRePropertyAssets({
+        entityId: entityId,
+        rePropertyId: property.id.toString(),
+      });
+      return {
+        ...property,
+        images: images,
+      } as RealEstatePropertyWithAssets;
+    }),
+  );
+
+  return propertiesWithAssets;
 }
 
 type AddRePropertyInfoParams = {
   entityId: string;
-  propertyType: Database["public"]["Enums"]["real_estate_property_type"];
-  investmentStatus: Database["public"]["Enums"]["asset_status"];
+  propertyType: RealEstatePropertyTypes;
+  investmentStatus: InvestmentStatusType;
   amenitiesDescription?: string | null;
   description?: string | null;
   downPayment?: number | null;
   lenderFees?: number | null;
   closingCosts?: number | null;
-};
-
-type AddRePropertyInfoResult = {
-  affectedCount: number;
-  records: Pick<RealEstateProperty, "id" | "investment_status">[];
+  revalidationPath?: RevalidationPath;
 };
 
 export async function addRePropertyInfo(
   params: AddRePropertyInfoParams,
-): Promise<AddRePropertyInfoResult> {
+  revalidationPath?: RevalidationPath,
+): Promise<string | null> {
   const supabase = createClient();
 
-  const { data, error, count } = await supabase
+  const { data, error } = await supabase
     .from("real_estate_property")
     .insert(
       {
-        owner_id: params.entityId,
+        owner_id: Number(params.entityId),
         property_type: params.propertyType,
         investment_status: params.investmentStatus,
         amenities_description: params.amenitiesDescription ?? null,
@@ -154,92 +122,105 @@ export async function addRePropertyInfo(
       },
       { count: "exact" },
     )
-    .select("id, investment_status");
+    .select("id")
+    .single();
 
   if (error) {
     throw error;
   }
 
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as AddRePropertyInfoResult["records"],
-  };
+  if (revalidationPath) {
+    revalidatePath(revalidationPath.path, revalidationPath.type);
+  }
+  return data.id ?? null;
 }
 
-type UpdateRePropertyInfoParams = {
-  rePropertyId: string;
-  propertyType: Database["public"]["Enums"]["real_estate_property_type"];
-  investmentStatus: Database["public"]["Enums"]["asset_status"];
-  amenitiesDescription?: string | null;
-  description?: string | null;
-  assetValue?: number | null;
-  assetValueNote?: string | null;
-  downPayment?: number | null;
-  lenderFees?: number | null;
-  closingCosts?: number | null;
-  loanAmount?: number | null;
-};
-
-type UpdateRePropertyInfoResult = {
-  affectedCount: number;
-  records: Pick<
-    RealEstateProperty,
-    | "id"
-    | "investment_status"
-    | "amenities_description"
-    | "description"
-    | "asset_value"
-    | "asset_value_note"
-    | "down_payment"
-    | "lender_fees"
-    | "closing_costs"
-    | "loan"
-    | "owner_id"
-  >[];
-};
-
-export async function updateRePropertyInfo(
-  params: UpdateRePropertyInfoParams,
-): Promise<UpdateRePropertyInfoResult> {
+export async function updateRePropertyDescription(
+  {
+    rePropertyId,
+    propertyType,
+    investmentStatus,
+    amenitiesDescription,
+    description,
+    revalidationPath,
+  }: {
+    rePropertyId: string;
+    propertyType: RealEstatePropertyTypes;
+    investmentStatus: InvestmentStatusType;
+    amenitiesDescription?: string | null;
+    description?: string | null;
+    revalidationPath?: RevalidationPath;
+  },
+): Promise<void> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
     .from("real_estate_property")
     .update({
-      property_type: params.propertyType,
-      investment_status: params.investmentStatus,
-      amenities_description: params.amenitiesDescription ?? null,
-      description: params.description ?? null,
-      asset_value: params.assetValue ?? null,
-      asset_value_note: params.assetValueNote ?? null,
-      down_payment: params.downPayment ?? null,
-      lender_fees: params.lenderFees ?? null,
-      closing_costs: params.closingCosts ?? null,
-      loan: params.loanAmount ?? null,
+      property_type: propertyType,
+      investment_status: investmentStatus,
+      amenities_description: amenitiesDescription ?? null,
+      description: description ?? null,
     })
-    .eq("id", params.rePropertyId)
-    .select(
-      "id, investment_status, amenities_description, description, asset_value, asset_value_note, down_payment, lender_fees, closing_costs, loan, owner_id",
-    );
+    .eq("id", rePropertyId);
 
   if (error) {
     throw error;
   }
 
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as UpdateRePropertyInfoResult["records"],
-  };
+  if (revalidationPath) {
+    revalidatePath(revalidationPath.path, revalidationPath.type);
+  }
 }
 
-type RemoveEntityPropertyResult = {
-  affectedCount: number;
-  records: Pick<RealEstateProperty, "id">[];
-};
+export async function UpdateRePropertyFinancials(
+  {
+    rePropertyId,
+    assetValue,
+    assetValueNote,
+    downPayment,
+    lenderFees,
+    closingCosts,
+    loanAmount,
+    revalidationPath,
+  }: {
+    rePropertyId: string;
+    assetValue?: number | null;
+    assetValueNote?: string | null;
+    downPayment?: number | null;
+    lenderFees?: number | null;
+    closingCosts?: number | null;
+    loanAmount?: number | null;
+    revalidationPath?: RevalidationPath;
+  },
+): Promise<void> {
+  const supabase = createClient();
 
-export async function removeEntityProperty(
-  propertyId: string,
-): Promise<RemoveEntityPropertyResult> {
+  const { data, error, count } = await supabase
+    .from("real_estate_property")
+    .update({
+      asset_value: assetValue ?? null,
+      asset_value_note: assetValueNote ?? null,
+      down_payment: downPayment ?? null,
+      lender_fees: lenderFees ?? null,
+      closing_costs: closingCosts ?? null,
+      loan: loanAmount ?? null,
+    })
+    .eq("id", rePropertyId);
+
+  if (error) {
+    throw error;
+  }
+
+  if (revalidationPath) {
+    revalidatePath(revalidationPath.path, revalidationPath.type);
+  }
+}
+
+export async function removeReProperty({ propertyId, revalidationPath }: {
+  propertyId: string;
+  revalidationPath?: RevalidationPath;
+}): Promise<void> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
@@ -251,16 +232,102 @@ export async function removeEntityProperty(
   if (error) {
     throw error;
   }
+  if (revalidationPath) {
+    revalidatePath(revalidationPath.path, revalidationPath.type);
+  }
+}
+
+export const uploadRePropertyAsset = async ({
+  entityId,
+  rePropertyId,
+  assetFile,
+  assetName,
+  assetType,
+}: {
+  entityId: string | number;
+  rePropertyId: string;
+  assetFile: File;
+  assetName: string; //using file.name = "blob"
+  assetType: "image" | "document";
+  revalidationPath?: RevalidationPath;
+}): Promise<void> => {
+  const supabase = createClient();
+
+  let assetPath = `${entityId}/re/${rePropertyId}/${assetType}/${assetName}`;
+  const { error: assetError } = await supabase.storage
+    .from("entity-assets")
+    .upload(assetPath, assetFile, {
+      upsert: true,
+    });
+
+  if (assetError) {
+    throw new Error(assetError.message);
+  }
+};
+
+export const getRePropertyAssets = async (
+  { entityId, rePropertyId }: {
+    entityId: string | number;
+    rePropertyId: string;
+  },
+): Promise<
+  {
+    images: Image[];
+  }
+> => {
+  const imagesPath = `${entityId.toString()}/re/${rePropertyId}/image`;
+
+  const [images] = await Promise.all([
+    getFilesFromFolder({
+      bucket: "entity-assets",
+      folderPath: imagesPath,
+    }),
+  ]);
+
+  let errors: Error[] = [];
+  const imageItems = await Promise.all(images.map(async (image) => {
+    const { data: publicUrlData, error: publicUrlError } = await getPublicUrl({
+      bucket: "entity-assets",
+      path: `${imagesPath}/${image.name}`,
+      source: "rePropertyAssets",
+    });
+    if (publicUrlError) {
+      errors.push(new Error(publicUrlError.message));
+    }
+
+    if (!publicUrlData) {
+      errors.push(new Error(`Public URL is null for file: ${image.name}`));
+      return {
+        id: image.id,
+        label: image.name,
+        url: null,
+        created_at: image.created_at,
+      };
+    }
+
+    return {
+      id: image.id,
+      label: image.name,
+      url: publicUrlData,
+      created_at: image.created_at,
+      updated_at: image.updated_at,
+      metadata: image.metadata,
+    };
+  }));
+
+  if (errors.length > 0) {
+    throw new Error(errors.map((error) => error.message).join(", "));
+  }
 
   return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as RemoveEntityPropertyResult["records"],
+    images: imageItems,
   };
-}
+};
 
 // =========== ADDRESS ================
 
 type AddPropertyAddressParams = {
+  ownerId: string;
   propertyId: string;
   addressLabel?: string | null;
   addressLine1: string;
@@ -272,6 +339,7 @@ type AddPropertyAddressParams = {
   country: string;
   lat?: number | null;
   lng?: number | null;
+  revalidationPath?: RevalidationPath;
 };
 
 type AddPropertyAddressResult = {
@@ -281,56 +349,33 @@ type AddPropertyAddressResult = {
 
 export async function addPropertyAddress(
   params: AddPropertyAddressParams,
-): Promise<AddPropertyAddressResult> {
+): Promise<void> {
   const supabase = createClient();
 
-  // First, fetch the property to get the owner_id (legal_entity_id)
-  const { data: property, error: propertyError } = await supabase
-    .from("real_estate_property")
-    .select("owner_id")
-    .eq("id", params.propertyId)
-    .single();
-
-  if (propertyError || !property) {
-    throw propertyError || new Error("Property not found");
-  }
-
-  const { data, error, count } = await supabase
-    .from("address")
-    .insert(
-      {
-        label: params.addressLabel ?? null,
-        line1: params.addressLine1,
-        line2: params.addressLine2 ?? null,
-        line3: params.addressLine3 ?? null,
-        city: params.city,
-        state_province: params.stateProvince ?? null,
-        postal_code: params.postalCode ?? null,
-        country: params.country,
-        legal_entity_id: property.owner_id,
-        lat: params.lat ?? null,
-        lng: params.lng ?? null,
-      },
-      { count: "exact" },
-    )
-    .select("id, label, line1");
-
-  if (error) {
-    throw error;
-  }
-
+  const addressId = await addAddress({
+    city: params.city,
+    country: params.country,
+    label: params.addressLabel ?? null,
+    lat: params.lat ?? null,
+    legal_entity_id: Number(params.ownerId),
+    line1: params.addressLine1,
+    line2: params.addressLine2,
+    line3: params.addressLine3,
+    lng: params.lng ?? null,
+    postal_code: params.postalCode ?? null,
+    state_province: params.stateProvince ?? null,
+  });
   // Update property's address_id if address was created successfully
-  if (data && data.length > 0) {
+  if (addressId) {
     await supabase
       .from("real_estate_property")
-      .update({ address_id: data[0].id })
+      .update({ address_id: addressId })
       .eq("id", params.propertyId);
   }
 
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as AddPropertyAddressResult["records"],
-  };
+  if (params.revalidationPath) {
+    revalidatePath(params.revalidationPath.path, params.revalidationPath.type);
+  }
 }
 
 type RemovePropertyAddressResult = {

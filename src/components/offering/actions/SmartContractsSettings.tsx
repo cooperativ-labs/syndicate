@@ -19,6 +19,10 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: Offer
 }) => {
   const shareContract = contractSet?.shareContract;
 
+  if (!shareContract) {
+    return null;
+  }
+
   return (
     <>
       <ShareContractSettings
@@ -26,24 +30,20 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: Offer
         partitions={partitions}
         offering={offering}
       />
-      {shareContract && (
-        <>
-          <hr className="my-5" />
-          <SwapContractSettings
-            refetchMainContracts={refetchMainContracts}
-            swapApprovalsEnabled={swapApprovalsEnabled}
-            txnApprovalsEnabled={txnApprovalsEnabled}
-            contractSet={contractSet}
-            investmentCurrency={investmentCurrency}
-            noLiveOrders={noLiveOrders}
-          />
-          <hr className="my-5" />
-          <DistributionContractSettings
-            investmentCurrency={investmentCurrency}
-            contractSet={contractSet}
-          />
-        </>
-      )}
+      <hr className="my-5" />
+      <SwapContractSettings
+        refetchMainContracts={refetchMainContracts}
+        swapApprovalsEnabled={swapApprovalsEnabled}
+        txnApprovalsEnabled={txnApprovalsEnabled}
+        contractSet={contractSet}
+        investmentCurrency={investmentCurrency}
+        noLiveOrders={noLiveOrders}
+      />
+      <hr className="my-5" />
+      <DistributionContractSettings
+        investmentCurrency={investmentCurrency}
+        contractSet={contractSet}
+      />
     </>
   );
 };

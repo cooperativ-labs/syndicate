@@ -230,7 +230,7 @@ const SendShares: FC<SendSharesProps> = ({
                         participant &&
                         addressWithoutEns({
                           address: participant.wallet_address,
-                          userName: participant.name
+                          userName: participant.name ?? ''
                         });
                       return (
                         <SelectItem key={i} value={participant?.wallet_address || ''}>

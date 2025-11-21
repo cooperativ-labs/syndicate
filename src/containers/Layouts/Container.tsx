@@ -1,6 +1,6 @@
 import { cn } from '@src/lib/utils';
 import React from 'react';
-import { ReactNode } from 'react-markdown/lib/react-markdown';
+import { ReactNode } from 'react';
 export type ContainerProps = {
   children?: ReactNode | ReactNode[];
   constrain?: string;

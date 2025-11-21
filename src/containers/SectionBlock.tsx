@@ -7,11 +7,10 @@ import {
   AccordionTrigger
 } from '@src/components/ui/accordion';
 import { cn } from '@src/lib/utils';
-import { Maybe } from 'graphql/jsutils/Maybe';
 import React from 'react';
 
 interface SectionBlockProps {
-  sectionTitle: string | Maybe<string> | undefined;
+  sectionTitle: string | undefined;
   children: React.ReactNode;
   className?: string;
   startOpen?: boolean;

@@ -6,12 +6,15 @@ import DeleteButton from '../buttons/DeleteButton';
 import { removePropertyImage } from '@src/utils/actions/rePropertyActions';
 
 type PropertyImageProps = {
-  image: Image | undefined;
+  image: Image;
   propertyId: string;
   isOwner?: boolean;
 };
 
 const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) => {
+  if (!image.url) {
+    return null;
+  }
   const handleDelete = async () => {
     if (!image?.id) {
       throw new Error('Image ID is required');
@@ -29,7 +32,7 @@ const PropertyImage: FC<PropertyImageProps> = ({ image, propertyId, isOwner }) =
           <DeleteButton onDelete={handleDelete} iconColor={'gray-800'} bgColor={'white'} />
         </div>
       )}
-      <img className="h-64" src={image?.url} />
+      <img className="h-64" src={image.url} alt={image.label} />
     </div>
   );
 };

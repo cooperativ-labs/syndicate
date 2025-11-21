@@ -1,5 +1,6 @@
+import { Image, RealEstatePropertyWithAssets } from '@/types';
 import PropertyDetails from '@src/screens/PropertyDetails';
-import { getReProperty } from '@src/utils/actions/rePropertyActions';
+import { getReProperty, getRePropertyAssets } from '@src/utils/actions/rePropertyActions';
 
 export default async function PropertyPage({
   params

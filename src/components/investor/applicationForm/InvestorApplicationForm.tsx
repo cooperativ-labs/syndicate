@@ -149,6 +149,7 @@ const defaultFormValues: InvestorFormInputsType = {
 const initialAddressState: AddressType = {
   address1: '',
   address2: '',
+  address3: '',
   formattedAddress: '',
   city: '',
   region: '',
@@ -190,7 +191,7 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
         }
       : null;
 
-  const orgId = legalEntity.organizationId;
+  const orgId = legalEntity.organization_id;
 
   useEffect(() => {
     if (userWalletAddress) {

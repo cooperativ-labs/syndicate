@@ -169,7 +169,7 @@ export function SelectField({
           control={control}
           rules={required ? { required: true } : undefined}
           render={({ field }) => (
-            <Select value={field.value || undefined} onValueChange={field.onChange}>
+            <Select value={field.value as string} onValueChange={field.onChange}>
               <SelectTrigger className={triggerClassName}>
                 <SelectValue placeholder={placeholder} />
               </SelectTrigger>

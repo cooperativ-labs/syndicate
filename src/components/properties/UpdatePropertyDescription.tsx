@@ -9,16 +9,22 @@ import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { z } from 'zod';
 
-import { Address, RealEstateProperty } from '@/types';
+import {
+  RealEstatePropertyTypes,
+  RealEstatePropertyWithAddress,
+  InvestmentStatusType
+} from '@/types';
 
 import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 import { LoadingButton } from '../ui/loading-button';
 import { Textarea } from '../ui/textarea';
+import { useOffering } from '@contexts/OfferingContext';
+import { updateRePropertyDescription } from '@src/utils/actions/rePropertyActions';
+import { toast } from 'sonner';
 
 export type UpdatePropertyDescriptionType = {
-  property: RealEstateProperty;
-  updateProperty: (data: any) => void;
+  property: RealEstatePropertyWithAddress;
   setModal: (addressModel: boolean) => void;
 };
 
@@ -34,15 +40,13 @@ const descriptionSchema = z.object({
 
 type DescriptionFormValues = z.infer<typeof descriptionSchema>;
 
-const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({
-  property,
-  updateProperty,
-  setModal
-}) => {
+const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property, setModal }) => {
+  const { legalEntity } = useOffering();
   const [buttonState, setButtonState] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
-  const entityOperatingCurrency = property.owner?.operatingCurrency;
+  // @TODO: This is a temporary fix, currency should come from property entity
+  const entityOperatingCurrency = legalEntity?.operating_currency;
   const {
     handleSubmit,
     register,
@@ -50,31 +54,27 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({
   } = useForm<DescriptionFormValues>({
     resolver: zodResolver(descriptionSchema),
     defaultValues: {
-      propertyType: property.propertyType ?? '',
-      investmentStatus: property.investmentStatus ?? '',
-      amenitiesDescription: property.amenitiesDescription ?? '',
-      description: property.description ?? '',
-      downPayment: property.downPayment?.toString() ?? '',
-      lenderFees: property.lenderFees?.toString() ?? '',
-      closingCosts: property.closingCosts?.toString() ?? ''
+      propertyType: property.property_type as RealEstatePropertyTypes,
+      investmentStatus: property.investment_status as InvestmentStatusType,
+      amenitiesDescription: property.amenities_description ?? '',
+      description: property.description ?? ''
     }
   });
 
   const onSubmit = async (values: DescriptionFormValues) => {
     setButtonState('loading');
+    if (!values.propertyType || !values.investmentStatus) {
+      setButtonState('error');
+      toast.error('Please select a property type and investment status');
+      return;
+    }
     try {
-      await updateProperty({
-        variables: {
-          currentDate: currentDate,
-          rePropertyId: property.id,
-          propertyType: values.propertyType,
-          investmentStatus: values.investmentStatus,
-          amenitiesDescription: values.amenitiesDescription,
-          description: values.description,
-          downPayment: values.downPayment,
-          lenderFees: values.lenderFees,
-          closingCosts: values.closingCosts
-        }
+      await updateRePropertyDescription({
+        rePropertyId: property.id,
+        propertyType: values.propertyType as RealEstatePropertyTypes,
+        investmentStatus: values.investmentStatus as InvestmentStatusType,
+        amenitiesDescription: values.amenitiesDescription,
+        description: values.description
       });
       setButtonState('success');
       setModal(false);

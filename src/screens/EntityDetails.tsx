@@ -15,7 +15,7 @@ import SectionBlock from '@src/containers/SectionBlock';
 import { deleteAddress, removeOwner, updateEntityName } from '@src/utils/actions/entityActions';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
 import { useOrganizations } from '@contexts/OrganizationsContext';
-import { LegalEntityWithSubsidiaries, Offering } from '@/types';
+import { LegalEntity, LegalEntityWithSubsidiaries, Offering } from '@/types';
 import { changeForm } from '@src/components/organization/OrganizationSpecifications';
 import { Input } from '@src/components/ui/input';
 import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
@@ -42,6 +42,13 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
     organization_id,
     addresses
   } = entity;
+
+  const offeringWithOperatingCurrency = offerings.map(offering => {
+    return {
+      ...offering,
+      legalEntity: entity
+    };
+  });
 
   const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
   const [displayName, setDisplayName] = useState(display_name);
@@ -187,7 +194,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       </TwoColumnLayout>
       <EntityTabContainer
         subsidiaries={subsidiaries}
-        offerings={offerings}
+        offerings={offeringWithOperatingCurrency}
         entityId={entity.id}
         operatingCurrency={operating_currency}
         organizationId={organization_id}

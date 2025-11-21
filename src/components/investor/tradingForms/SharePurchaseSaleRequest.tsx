@@ -337,7 +337,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
         />
         {tocOpen && documents.length > 0 && (
           <div className="my-2 rounded-md bg-slate-100 p-4">
-            <PresentLegalText text={documents[0]?.text} />
+            <PresentLegalText text={documents[0].text} />
             <div className="flex">
               <Button
                 variant="outline"

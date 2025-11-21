@@ -1,11 +1,11 @@
 import React, { FC } from 'react';
 
-import { EmailAddress, Maybe } from '@/types';
+import { EmailAddress } from '@/types';
 
 import EmailAddressListItem from './EmailAddressListItem';
 
 type EmailAddressListProps = {
-  emailAddresses: Maybe<Maybe<EmailAddress>[]> | undefined;
+  emailAddresses: EmailAddress[] | undefined;
   withEdit?: boolean;
   isOrganizationManager?: boolean;
 };

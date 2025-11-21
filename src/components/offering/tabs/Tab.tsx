@@ -1,13 +1,13 @@
 import { cn } from '@src/lib/utils';
 import React, { Dispatch, FC, SetStateAction } from 'react';
 
-import { OfferingTabSection } from '@/types';
+import { OfferingTabSectionTypes } from '@/types';
 
 type TabProps = {
   label: string;
-  activeTab: OfferingTabSection | string;
-  tabId: OfferingTabSection | string;
-  setActiveTab: Dispatch<SetStateAction<OfferingTabSection | string>>;
+  activeTab: OfferingTabSectionTypes | string;
+  tabId: OfferingTabSectionTypes | string;
+  setActiveTab: Dispatch<SetStateAction<OfferingTabSectionTypes | string>>;
 };
 
 const Tab: FC<TabProps> = ({ label, activeTab, tabId, setActiveTab }) => {

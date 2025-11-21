@@ -17,27 +17,28 @@ import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getIsEditorOrAdmin } from '@src/utils/helpersUserAndEntity';
 import { Pencil } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+
 import React, { FC, useState } from 'react';
 
-import { RealEstatePropertyWithAddresses } from '@/types';
+import { RealEstatePropertyWithAssets } from '@/types';
+import { removeReProperty, uploadRePropertyAsset } from '@src/utils/actions/rePropertyActions';
+import { useOrganizations } from '@contexts/OrganizationsContext';
+import ImageUpload from '@src/components/form-components/ImageUpload';
 
 type PropertyDetailsProps = {
-  property: RealEstatePropertyWithAddresses;
+  property: RealEstatePropertyWithAssets;
 };
 
 const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
-  const router = useRouter();
-  const { userId } = useUserContext();
+  const { isEditorOrAdmin } = useOrganizations();
 
-  const [alerted, setAlerted] = useState<boolean>(false);
   const [addressModal, setAddressModal] = useState<boolean>(false);
   const [detailsModal, setDetailsModal] = useState<boolean>(false);
   const [financialsModal, setFinancialsModal] = useState<boolean>(false);
 
   const {
     id,
-    addresses,
+    address,
     amenities_description,
     description,
     images,
@@ -51,71 +52,52 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
     loan
   } = property;
 
-  const organization = entity?.organization;
-
-  const isEntityManager = getIsEditorOrAdmin(userId, organization);
-
-  const error = imageError || addressError || propertyError || deleteError;
-  if (error && !alerted) {
-    alert(`Oops. Looks like something went wrong: ${error.message}`);
-    setAlerted(true);
-  }
-
-  if (deleteData) {
-    router.back();
-  }
-
-  const addImageToDb = (url: string, fileId: string, label: string) => {
-    addImage({
-      variables: {
-        propertyId: property.id,
-        currentDate: currentDate,
-        label: label,
-        url: url,
-        fileId: fileId
+  const addImageToDb = async (file: File) => {
+    await uploadRePropertyAsset({
+      entityId: property.owner_id,
+      rePropertyId: property.id,
+      assetFile: file,
+      assetName: file.name,
+      assetType: 'image',
+      revalidationPath: {
+        path: `/manager/[organizationId]/entities/[entityId]/properties/[propertyId]`,
+        type: 'page'
       }
     });
   };
 
   return (
     <div className="flex min-h-full mx-auto px-4 md:px-8 md:mt-8" style={{ maxWidth: '1280px' }}>
-      <FormModal
-        formOpen={addressModal}
-        onClose={() => setAddressModal(false)}
-        title={'Edit Address'}
-      >
-        <UpdateAddress
-          address={addresses[0]}
-          addressId={addresses[0]?.id}
-          addressLine1={addresses[0]?.line1}
-          updateAddress={updateAddress}
-          setModal={() => setAddressModal(false)}
-        />
-      </FormModal>
+      {address && (
+        <FormModal
+          formOpen={addressModal}
+          onClose={() => setAddressModal(false)}
+          title={'Edit Address'}
+        >
+          <UpdateAddress
+            address={address}
+            addressId={address?.id}
+            addressLine1={address?.line1}
+            setModal={() => setAddressModal(false)}
+          />
+        </FormModal>
+      )}
       <FormModal
         formOpen={detailsModal}
         onClose={() => setDetailsModal(false)}
         title={'Edit Property Details'}
       >
-        <UpdatePropertyDescription
-          property={property}
-          updateProperty={updateProperty}
-          setModal={() => setDetailsModal(false)}
-        />
+        <UpdatePropertyDescription property={property} setModal={() => setDetailsModal(false)} />
       </FormModal>
       <FormModal
         formOpen={financialsModal}
         onClose={() => setFinancialsModal(false)}
         title={'Edit Property Financials'}
       >
-        <UpdatePropertyFinancials
-          property={property}
-          updateProperty={updateProperty}
-          setModal={() => setFinancialsModal(false)}
-        />
+        <UpdatePropertyFinancials property={property} setModal={() => setFinancialsModal(false)} />
       </FormModal>
       <div className=" z-10 md:z-10 min-h-screen w-full">
-        <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{addresses[0]?.line1}</h1>
+        <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{address?.line1}</h1>
         <Progress
           brandColor={'#275A8F'}
           lightBrand={false}
@@ -139,16 +121,15 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           <div className="flex">
             {images?.map((image, i) => {
               return (
-                <PropertyImage key={i} image={image} propertyId={id} isOwner={isEntityManager} />
+                <PropertyImage key={i} image={image} propertyId={id} isOwner={isEditorOrAdmin} />
               );
             })}
           </div>
-          {isEntityManager && (
-            <FileUpload
-              uploaderText="Add Picture"
-              urlToDatabase={addImageToDb}
-              accept={['jpg', 'jpeg', 'png']}
-              baseUploadUrl={`/properties/${id}/${userId}`}
+          {isEditorOrAdmin && (
+            <ImageUpload
+              accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
+              selectedImageUrl={images[0]?.url}
+              onSubmit={addImageToDb}
             />
           )}
         </div>
@@ -158,7 +139,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             <h2 className="font-bold text-gray-700">Address</h2>
             <AddressDisplay address={address} withCountry />
           </div>
-          {isEntityManager && (
+          {isEditorOrAdmin && (
             <Button onClick={() => setAddressModal(true)}>
               <Pencil size={16} />
             </Button>
@@ -169,7 +150,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           <div>
             <h2 className="font-bold text-gray-700">Amenities</h2> {amenities_description}
           </div>
-          {isEntityManager && (
+          {isEditorOrAdmin && (
             <Button onClick={() => setDetailsModal(true)}>
               <Pencil size={16} />
             </Button>
@@ -190,14 +171,14 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             <div>Down payment: {numberWithCommas(down_payment)}</div>
             <div>Lender fees: {numberWithCommas(lender_fees)}</div>
           </div>
-          {isEntityManager && (
+          {isEditorOrAdmin && (
             <Button onClick={() => setFinancialsModal(true)}>
               <Pencil size={16} />
             </Button>
           )}
         </div>
 
-        {isEntityManager && (
+        {isEditorOrAdmin && (
           <>
             <hr className="my-4" />
             <div className="flex col-span-1 justify-center">
@@ -205,11 +186,11 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
                 className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
                 aria-label="Delete this property"
                 onClick={() =>
-                  deleteProperty({
-                    variables: {
-                      currentDate: currentDate,
-                      legalEntityId: entity?.id,
-                      propertyId: property.id
+                  removeReProperty({
+                    propertyId: property.id,
+                    revalidationPath: {
+                      path: `/manager/[organizationId]/entities/${property.owner_id}`,
+                      type: 'page'
                     }
                   })
                 }

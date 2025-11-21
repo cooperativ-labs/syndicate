@@ -43,6 +43,12 @@ const FileUpload: FC<FileUploadProps> = ({
     }
   }
 
+  const handleOnSelect = async (file: File | null) => {
+    if (file) {
+      setSelectedFile(file);
+    }
+  };
+
   return (
     <div className="flex flex-col">
       {imagePreview ? (
@@ -54,14 +60,12 @@ const FileUpload: FC<FileUploadProps> = ({
         </div>
       ) : (
         <DragAndDrop
-          setSelectedFile={setSelectedFile}
-          selectedFile={selectedFile}
-          uploadButtonText={uploaderText}
           acceptedFileTypes={accept.join(', ')}
           acceptedMimeTypes={accept}
           title="Drag and drop or click"
           description="Chose a file to upload."
           progressAmt={progressAmt}
+          onSelect={handleOnSelect}
         />
       )}
       {selectedFile && (

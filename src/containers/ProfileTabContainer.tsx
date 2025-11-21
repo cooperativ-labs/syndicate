@@ -11,16 +11,17 @@ import {
   OfferingDescriptionText,
   OfferingFull,
   OfferingTabSection,
-  RealEstatePropertyWithAddresses
+  OfferingTabSectionTypes,
+  RealEstatePropertyWithAddress
 } from '@/types';
 
 type ProfileTabContainerProps = {
   offering: OfferingFull;
-  realEstateProperties: RealEstatePropertyWithAddresses[];
+  realEstateProperties: RealEstatePropertyWithAddress[];
 };
 
 const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering, realEstateProperties }) => {
-  const [activeTab, setActiveTab] = useState<typeof OfferingTabSection | string>(
+  const [activeTab, setActiveTab] = useState<OfferingTabSectionTypes | string>(
     OfferingTabSection.DETAILS
   );
   const isMobile = useWindowSize().width < 768;
@@ -80,7 +81,6 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering, realEstat
                   width={isMobile ? '350' : '560'}
                   height={isMobile ? '200' : '315'}
                   src={offering.primary_video}
-                  frameBorder="0"
                   allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
                 ></iframe>

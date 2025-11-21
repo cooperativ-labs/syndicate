@@ -20,9 +20,9 @@ type ImageUploadProps = {
   allowMultiple?: boolean;
   classNames?: string;
   selectedImageUrl: string | null;
-  setSelectedImageUrl: (imageUrl: string | null) => void;
+  setSelectedImageUrl?: (imageUrl: string | null) => void;
   onSubmit: (file: File) => Promise<void>;
-  onDelete: () => Promise<void>;
+  onDelete?: () => Promise<void>;
 };
 
 const ImageUpload: FC<ImageUploadProps> = ({
@@ -53,7 +53,9 @@ const ImageUpload: FC<ImageUploadProps> = ({
         return;
       }
 
-      setSelectedImageUrl(await fileToImageUrl(compressedFile));
+      if (setSelectedImageUrl) {
+        setSelectedImageUrl(await fileToImageUrl(compressedFile));
+      }
       return compressedFile;
     } catch (error) {
       console.error('Error processing image:', error);
@@ -81,7 +83,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
         <div className="flex items-center justify-center h-40">
           <Loader2 className="size-6 animate-spin" />
         </div>
-      ) : selectedImageUrl ? (
+      ) : selectedImageUrl && onDelete ? (
         <div className="relative">
           <div className="absolute -right-2 -top-2">
             <DeleteButton onDelete={onDelete} />
@@ -91,7 +93,7 @@ const ImageUpload: FC<ImageUploadProps> = ({
       ) : (
         <DragAndDrop
           onSelect={handleUploadFile}
-          setSelectedImageUrl={setSelectedImageUrl}
+          setSelectedImageUrl={setSelectedImageUrl ?? undefined}
           multiple={allowMultiple}
           isImage={true}
           acceptedFileTypes={accept.join(', ')}

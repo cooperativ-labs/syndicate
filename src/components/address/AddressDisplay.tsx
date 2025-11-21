@@ -3,7 +3,7 @@ import React, { FC } from 'react';
 import { Address } from '@/types';
 
 type AddressProps = {
-  address: Address | undefined;
+  address: Address | null;
   className?: string;
   withLabel?: boolean;
   withCountry?: boolean;

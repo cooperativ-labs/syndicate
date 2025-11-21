@@ -23,7 +23,20 @@ export type NotificationConfiguration =
 export type OfferingDescriptionText =
   Database["public"]["Tables"]["offering_description_text"]["Row"];
 export type ShareOrder = Database["public"]["Tables"]["share_order"]["Row"];
-export type Image = Database["public"]["Tables"]["image"]["Row"];
+
+export type Image = {
+  id: string;
+  label: string;
+  url: string | null;
+  created_at: string;
+  updated_at: string;
+  // metadata: {
+  //   width: number;
+  //   height: number;
+  //   format: string;
+  //   size: number;
+  // };
+};
 export type InvestorApplication =
   Database["public"]["Tables"]["investor_application"]["Row"];
 export type ShareTransferEvent =
@@ -49,8 +62,12 @@ export type OfferingSmartContractSet = {
   shareContract: SmartContractWithCryptoAddress;
 };
 
-export type RealEstatePropertyWithAddresses = RealEstateProperty & {
-  addresses: Address[];
+export type RealEstatePropertyWithAddress = RealEstateProperty & {
+  address: Address | null;
+};
+
+export type RealEstatePropertyWithAssets = RealEstatePropertyWithAddress & {
+  // documents: { id: string; label: string; url: string; created_at: string }[];
   images: Image[];
 };
 
@@ -82,14 +99,16 @@ export type OfferingWithParticipants = Offering & {
 };
 
 export type OfferingWithLegalEntity = OfferingWithParticipants & {
-  legalEntity: LegalEntityWithJurisdiction;
+  legalEntity: LegalEntityWithAddresses & {
+    owners: { legal_name: string }[];
+  };
 };
 
 export type OfferingFull =
   & OfferingWithParticipants
   & OfferingWithLegalEntity
   & {
-    images: Image[];
+    // images: Image[];
     descriptions: OfferingDescriptionText[];
     offeringSmartContracts: OfferingSmartContractSet | null;
     distributions: OfferingDistribution[];
@@ -242,12 +261,12 @@ export const DocumentType = Object.fromEntries(
   ),
 ) as { [K in DocumentTypes]: K };
 
-type legalEntityTypes = Database["public"]["Enums"]["legal_entity_type"];
+export type LegalEntityTypes = Database["public"]["Enums"]["legal_entity_type"];
 export const LegalEntityType = Object.fromEntries(
-  (Constants.public.Enums.legal_entity_type as readonly legalEntityTypes[]).map(
+  (Constants.public.Enums.legal_entity_type as readonly LegalEntityTypes[]).map(
     (c) => [c, c] as const,
   ),
-) as { [K in legalEntityTypes]: K };
+) as { [K in LegalEntityTypes]: K };
 
 export type SmartContractTypes =
   Database["public"]["Enums"]["smart_contract_type"];

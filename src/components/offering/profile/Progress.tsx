@@ -5,7 +5,7 @@ import React from 'react';
 import { OfferingStageTypes, AssetStatusTypes } from '@/types';
 type ProgressProps = {
   offeringStage?: OfferingStageTypes;
-  propertyInvestmentStage?: AssetStatusTypes | undefined;
+  propertyInvestmentStage?: AssetStatusTypes | undefined | null;
   brandColor: string;
   lightBrand: boolean;
   className?: string;

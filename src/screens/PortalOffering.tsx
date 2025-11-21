@@ -14,7 +14,7 @@ import FormModal from '@src/containers/FormModal';
 import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
-import { getRealEstateProperties } from '@src/utils/actions/rePropertyActions';
+import { getRealEstatePropertiesFromEntity } from '@src/utils/actions/rePropertyActions';
 
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { floatWithCommas } from '@src/utils/helpersMoney';
@@ -153,7 +153,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
   );
 
   const { value: propertiesData } = useAsync(async () => {
-    const properties = await getRealEstateProperties(offering.legalEntity.id.toString());
+    const properties = await getRealEstatePropertiesFromEntity(offering.legalEntity.id.toString());
     return properties;
   }, [offering.legalEntity.id]);
 

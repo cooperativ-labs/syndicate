@@ -1,12 +1,12 @@
 import React, { FC } from 'react';
 
-import { Currency, RealEstateProperty } from '@/types';
+import { CurrencyCodeType, RealEstatePropertyWithAddress } from '@/types';
 
 import FinancialFactItem from './FinancialFactItem';
 
 type TotalInvestmentValueDataProps = {
-  propertyDetails: RealEstateProperty;
-  operatingCurrency: Currency;
+  propertyDetails: RealEstatePropertyWithAddress;
+  operatingCurrency: CurrencyCodeType;
   name?: string | null;
 };
 
@@ -15,9 +15,9 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({
   operatingCurrency,
   name
 }) => {
-  const { assetValue, closingCosts, downPayment, lenderFees, loan } = propertyDetails;
+  const { asset_value, closing_costs, down_payment, lender_fees, loan } = propertyDetails;
 
-  if (!assetValue && !closingCosts && !downPayment && !lenderFees && !loan) {
+  if (!asset_value && !closing_costs && !down_payment && !lender_fees && !loan) {
     return <></>;
   }
 
@@ -31,27 +31,31 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({
         )}
       </div>
       <div>
-        {assetValue && (
+        {asset_value && (
           <FinancialFactItem
             label="Underlying asset price"
-            amount={assetValue}
+            amount={asset_value}
             currency={operatingCurrency}
           />
         )}
-        {closingCosts && (
+        {closing_costs && (
           <FinancialFactItem
             label="Closing costs"
-            amount={closingCosts}
+            amount={closing_costs}
             currency={operatingCurrency}
           />
         )}
-        {lenderFees && (
-          <FinancialFactItem label="Lender fees" amount={lenderFees} currency={operatingCurrency} />
+        {lender_fees && (
+          <FinancialFactItem
+            label="Lender fees"
+            amount={lender_fees}
+            currency={operatingCurrency}
+          />
         )}
-        {downPayment && (
+        {down_payment && (
           <FinancialFactItem
             label="Down payment"
-            amount={downPayment}
+            amount={down_payment}
             currency={operatingCurrency}
           />
         )}
@@ -59,7 +63,7 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({
           <FinancialFactItem
             label="Amount borrowed"
             amount={loan}
-            percent={assetValue ? loan / assetValue : 0}
+            percent={asset_value ? loan / asset_value : 0}
             currency={operatingCurrency}
           />
         )}
@@ -69,8 +73,8 @@ const TotalInvestmentValueData: FC<TotalInvestmentValueDataProps> = ({
 };
 
 type TotalInvestmentValueProps = {
-  OfferingReProperties: RealEstateProperty[];
-  operatingCurrency: Currency;
+  OfferingReProperties: RealEstatePropertyWithAddress[];
+  operatingCurrency: CurrencyCodeType;
 };
 
 const TotalInvestmentValue: FC<TotalInvestmentValueProps> = ({

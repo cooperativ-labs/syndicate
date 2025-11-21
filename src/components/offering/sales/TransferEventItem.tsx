@@ -14,26 +14,27 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
   const chainId = useChainId();
   const publicClient = usePublicClient();
   const {
-    transactionHash,
-    recipientAddress,
+    transaction_hash,
+    recipient_address,
     amount,
     partition,
     type,
-    senderAddress,
+    sender_address,
     price,
-    currencyCode
+    currency_code
   } = transferEvent;
   const [blockTime, setBlockTime] = React.useState<Date | null>(null);
 
-  const paymentTokenDecimals = getCurrencyByCode(currencyCode)?.decimals;
+  const paymentTokenDecimals = currency_code && getCurrencyByCode(currency_code)?.decimals;
   const humanPrice =
     price && paymentTokenDecimals ? toNormalNumber(BigInt(price), paymentTokenDecimals) : null;
 
   const { data: transactionData } = useTransaction({
-    hash: transactionHash as String0x
+    hash: transaction_hash as String0x
   });
 
   useAsync(async () => {
+    if (!publicClient) return null;
     const block = await publicClient.getBlock({
       blockHash: transactionData?.blockHash as String0x
     });
@@ -53,13 +54,13 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
       <FormattedCryptoAddress
         className={`font-medium text-${getTransferEventOption(type)?.color} flex col-span-1 justify-center`}
         chainId={chainId}
-        address={senderAddress}
+        address={sender_address}
       />
 
       <FormattedCryptoAddress
         className={'font-medium flex col-span-1 justify-center'}
         chainId={chainId}
-        address={recipientAddress}
+        address={recipient_address}
       />
 
       <div className="flex col-span-1 justify-center">
@@ -71,7 +72,7 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
       <FormattedCryptoAddress
         className={'font-medium flex col-span-1 justify-center '}
         chainId={chainId}
-        address={transactionHash}
+        address={transaction_hash}
         lookupType="tx"
       />
 

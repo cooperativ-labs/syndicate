@@ -2,15 +2,15 @@
 import { createClient } from "@supabase/utils/server";
 import { revalidatePath } from "next/cache";
 
-import { CurrencyCodeType, LegalEntity, LegalEntityFull } from "@/types";
+import { CurrencyCodeType, LegalEntity, LegalEntityTypes } from "@/types";
 import { LegalEntityWithSubsidiaries } from "@/types";
 
 type AddLegalEntityParams = {
   organizationId: string | number;
   legalName: string;
   displayName: string;
-  type: string; // legal_entity_type
-  operatingCurrency: string; // currency_code
+  type: LegalEntityTypes; // legal_entity_type
+  operatingCurrency: CurrencyCodeType; // currency_code
   entityPurpose?: string | null;
   jurCountry: string;
   jurProvince: string;
@@ -75,7 +75,7 @@ export async function addLegalEntity({
   }
 
   const entityPayload = {
-    organization_id: organizationId,
+    organization_id: Number(organizationId),
     type,
     legal_name: legalName,
     display_name: displayName,
@@ -87,15 +87,15 @@ export async function addLegalEntity({
   const { data, error, count } = await supabase
     .from("legal_entity")
     .insert(entityPayload, { count: "exact" })
-    .select(["id"].join(", "));
+    .select("id")
+    .single();
   if (error) {
     throw error;
   }
-  console.log("legal_entity - data", data);
 
   if (data && count === 1) {
     const addressPayload = {
-      legal_entity_id: data[0].id,
+      legal_entity_id: Number(data.id),
       label: addressLabel,
       line1: addressLine1,
       line2: addressLine2,
@@ -109,11 +109,10 @@ export async function addLegalEntity({
 
     const { data: addressData, error: addressError } = await supabase
       .from("address")
-      .insert(addressPayload)
-      .select("id");
-  }
-  if (error) {
-    throw error;
+      .insert(addressPayload);
+    if (addressError) {
+      throw addressError;
+    }
   }
 
   revalidatePath(`/manager/${organizationId}`, "page");
@@ -133,7 +132,6 @@ const legelEntityFieldsOffering = [
 
 //LegalEntityWithSubsidiaries
 const ownersAndSubsidiariesFields = [
-  legelEntityFieldsOffering,
   "subsidiaries:legal_entity_relationship!legal_entity_relationship_parent_entity_id_fkey(" +
   "id, relationship_type, child:legal_entity!legal_entity_relationship_child_entity_id_fkey(*, offerings:offering(*, offeringParticipants:offering_participant(*, walletAddress:wallet_address)))" +
   ")",
@@ -143,11 +141,12 @@ const ownersAndSubsidiariesFields = [
 ].join(", ");
 
 //LegalEntityFull
-// const legalEntityFullFields = [
-//   "*",
-//   ownersAndSubsidiariesFields,
-//   "organization(id, organization_user(*))",
-// ].join(", ");
+const legalEntityFullFields = [
+  "*",
+  legelEntityFieldsOffering,
+  ownersAndSubsidiariesFields,
+  "organization(id, organization_user(*))",
+].join(", ");
 
 export async function getLegalEntityById(
   entityId: string,
@@ -155,7 +154,7 @@ export async function getLegalEntityById(
   const supabase = createClient();
   const { data, error } = await supabase
     .from("legal_entity")
-    .select(ownersAndSubsidiariesFields)
+    .select(legalEntityFullFields)
     .eq("id", Number(entityId))
     .single();
   if (error) throw error;
@@ -266,7 +265,7 @@ export async function deleteAddress({
   const supabase = createClient();
   const { data, error } = await supabase.from("address").delete().eq(
     "id",
-    geoAddressId,
+    String(geoAddressId),
   );
   if (error) {
     throw error;

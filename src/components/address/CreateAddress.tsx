@@ -28,6 +28,7 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
   const [inputAddress, setInputAddress] = useState<AddressType>({
     address1: '',
     address2: '',
+    address3: '',
     formattedAddress: '',
     city: '',
     region: '',
