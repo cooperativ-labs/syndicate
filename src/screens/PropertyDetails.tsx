@@ -123,11 +123,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             })}
           </div>
           {isEditorOrAdmin && (
-            <ImageUpload
-              accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
-              selectedImageUrl={images[0]?.url}
-              onSubmit={addImageToDb}
-            />
+            <ImageUpload selectedImageUrl={images[0]?.url} onSubmit={addImageToDb} />
           )}
         </div>
         <hr className='my-4' />

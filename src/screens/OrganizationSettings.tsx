@@ -150,7 +150,6 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
             <div className='flex flex-col col-span-1 justify-center'>
               <ImageUpload
                 onSubmit={addLogoToDB}
-                accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
                 selectedImageUrl={logoImageUrl}
                 setSelectedImageUrl={setLogoImageUrl}
                 onDelete={deleteLogoFromDb}
@@ -161,7 +160,6 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
             <div className='col-span-2'>
               <ImageUpload
                 onSubmit={addBannerImageToDb}
-                accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
                 selectedImageUrl={bannerImageUrl}
                 setSelectedImageUrl={setBannerImageUrl}
                 onDelete={deleteBannerImageFromDb}
