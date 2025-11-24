@@ -17,7 +17,7 @@ import { getWagmiConfig } from '@src/web3/wagmi';
 import React from 'react';
 import { Controller, Resolver, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
-import { useAccount, useContractRead } from 'wagmi';
+import { useAccount, useReadContract } from 'wagmi';
 import { readContract } from 'wagmi/actions';
 import { z } from 'zod';
 
@@ -51,7 +51,7 @@ const ForceTransferForm = ({
     return participant?.wallet_address !== target;
   });
 
-  const { data: isOperator, refetch } = useContractRead({
+  const { data: isOperator, refetch } = useReadContract({
     address: shareContractAddress,
     abi: shareContractABI,
     functionName: 'isOperator',
