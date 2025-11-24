@@ -3,6 +3,7 @@ import { useOrganizations } from '@contexts/OrganizationsContext';
 import Card from '@src/components/cards/Card';
 import CreateOrganization from '@src/components/organization/CreateOrganization';
 import { organizationChangeServer } from '@src/utils/helpersServer';
+import { capitalizeFirstLetter } from '@src/utils/helpersText';
 import { FC } from 'react';
 
 const Dashboard: FC = () => {
@@ -12,7 +13,7 @@ const Dashboard: FC = () => {
   const handleOrganizationChange = (id: string) => {
     organizationChangeServer(id);
   };
-
+  const platformName = capitalizeFirstLetter(process.env.NEXT_PUBLIC_CLIENT);
   return (
     <div data-test='component-dashboard' className='flex flex-col w-full h-full'>
       {/* <button onClick={handleClick}>Log User</button> */}
@@ -21,7 +22,7 @@ const Dashboard: FC = () => {
       {!hasOrganizations ? (
         <div className='flex flex-col w-full h-full items-center'>
           <h1 className='text-2xl mb-4 text-center'>
-            {`Welcome to Cooperativ's portal for creating and managing investment funds.`}
+            {`Welcome to ${platformName}'s portal for creating and managing investment funds.`}
           </h1>
           <h2 className='text-2xl font-medium mb-8 text-center'>
             Start by creating an organization.

@@ -5,12 +5,9 @@ import Link from 'next/link';
 import React, { FC, useEffect, useState } from 'react';
 
 import { Button } from './components/ui/button';
-import { setCookieApproval } from './utils/helpersServer';
 
 const buttonGradient =
-  'bg-linear-to-r from-cLightBlue to-cDarkBlue hover:from-cDarkBlue hover:to-cLightBlue shadow-lg hover:shadow-2xl focus:shadow-sm';
-
-const siteUrl = process.env.NEXT_PUBLIC_DOMAIN;
+  'bg-linear-to-r from-blue-500 to-blue-700 hover:from-blue-700 hover:to-blue-500 shadow-lg hover:shadow-2xl focus:shadow-sm';
 
 const CookieBanner: FC<{ handleAnalyticsApproval: () => void }> = ({ handleAnalyticsApproval }) => {
   return (
@@ -18,7 +15,7 @@ const CookieBanner: FC<{ handleAnalyticsApproval: () => void }> = ({ handleAnaly
       <div className='flex font-medium text-white text-xs md:text-base mx-auto px-2 justify-between items-center'>
         <span className='mr-3'>
           We use cookies to improve our services. Using this website means you agree to this.{' '}
-          <Link href={`${siteUrl}/privacy`}>
+          <Link href={`${process.env.NEXT_PUBLIC_PRIVACY_POLICY_URL}`}>
             <span className='underline decoration-cLightBlue'>Privacy Policy</span>
           </Link>
         </span>
