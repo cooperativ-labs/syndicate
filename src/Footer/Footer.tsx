@@ -1,4 +1,5 @@
 import { cn } from '@src/lib/utils';
+import { capitalizeFirstLetter } from '@src/utils/helpersText';
 import Link from 'next/link';
 import React from 'react';
 
@@ -12,9 +13,8 @@ const signUpLink = '';
 const Footer: React.FunctionComponent<FooterProps> = ({ color, lightText }) => {
   const currentYear = new Date().getFullYear();
   const textColor = lightText ? 'text-gray-300' : 'text-gray-600';
-  const stamp = lightText
-    ? 'https://cooperativ.io/assets/images/branding/stamp_white.svg'
-    : 'https://cooperativ.io/assets/images/branding/stamp_dark_blue.svg';
+  const stamp =
+    process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? '/reizen/favicon.ico' : '/cooperativ/favicon.ico';
   return (
     <div
       className={cn(
@@ -30,7 +30,8 @@ const Footer: React.FunctionComponent<FooterProps> = ({ color, lightText }) => {
         <div className='flex px-4 py-1 md:p-0'>
           <a href='https://cooperativ.io' rel='noreferrer' target='_blank'>
             <span className='flex md:mr-8 w-max'>
-              <img src={stamp} alt='logo' width='15' /> {`Cooperativ Labs ${currentYear}`}{' '}
+              <img src={stamp} alt='logo' width='15' />{' '}
+              {capitalizeFirstLetter(process.env.NEXT_PUBLIC_CLIENT ?? '')} {currentYear}{' '}
             </span>
           </a>
         </div>

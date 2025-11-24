@@ -1,6 +1,6 @@
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { cn } from '@src/lib/utils';
-import { Check, Waves, X } from 'lucide-react';
+import { Check, Loader2Icon, Waves, X } from 'lucide-react';
 import React, { FC } from 'react';
 
 type StepStatusType = 'waiting' | 'pending' | 'success' | 'error';
@@ -14,11 +14,12 @@ const WalletActionStep: FC<{
 }> = ({ stepStatus, message, subMessage }) => {
   const icon =
     stepStatus === 'pending' ? (
-      <img
-        src='/assets/images/loading-circle.png'
-        aria-label='loading'
-        className='h-10 mr-1 animate-spin bg-white rounded-full'
-      />
+      // <img
+      //   src='/assets/images/loading-circle.png'
+      //   aria-label='loading'
+      //   className='h-10 mr-1 animate-spin bg-white rounded-full'
+      // />
+      <Loader2Icon className='h-10 mr-1 animate-spin bg-white rounded-full' />
     ) : stepStatus === 'success' ? (
       <Check />
     ) : stepStatus === 'error' ? (

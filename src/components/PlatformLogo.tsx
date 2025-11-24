@@ -10,8 +10,10 @@ type PlatformLogoProps = {
 const PlatformLogo: FC<PlatformLogoProps> = ({ onlySymbol }) => {
   const windowSize = useWindowSize();
 
-  const logo = '/assets/images/branding/full_dark_blue.svg';
-  const symbolLogo = '/assets/images/branding/symbol_dark_blue.svg';
+  const logo =
+    process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? '/reizen/logo.png' : '/cooperativ/logo.svg';
+  const symbolLogo =
+    process.env.NEXT_PUBLIC_CLIENT === 'reizen' ? '/reizen/favicon.ico' : '/cooperativ/symbol.svg';
 
   const isSmall = windowSize.width < 768 || onlySymbol;
   return (

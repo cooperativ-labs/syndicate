@@ -74,33 +74,36 @@ const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChai
         case 'step1':
           return (
             <>
-              <img
+              {/* <img
                 src='/assets/images/loading-circle.png'
                 aria-label='loading'
                 className='h-6 mr-1 animate-spin bg-white rounded-full'
-              />
+              /> */}
+              <Loader2Icon className='h-6 mr-1 animate-spin bg-white rounded-full' />
               <span>{step1Text}</span>
             </>
           );
         case 'step2':
           return (
             <>
-              <img
+              {/* <img
                 src='/assets/images/loading-circle.png'
                 aria-label='loading'
                 className='h-6 mr-1 animate-spin bg-white rounded-full'
-              />
+              /> */}
+              <Loader2Icon className='h-6 mr-1 animate-spin bg-white rounded-full' />
               <span>{step2Text}</span>
             </>
           );
         case 'step3':
           return (
             <>
-              <img
+              {/* <img
                 src='/assets/images/loading-circle.png'
                 aria-label='loading'
                 className='h-6 mr-1 animate-spin bg-white rounded-full'
-              />
+              /> */}
+              <Loader2Icon className='h-6 mr-1 animate-spin bg-white rounded-full' />
               <span>{step3Text}</span>
             </>
           );
