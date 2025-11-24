@@ -6,6 +6,7 @@ import { OfferingFull } from '@/types';
 import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings from './ShareContractSettings';
 import SwapContractSettings from './SwapContractSettings';
+import LinkLegal from '@src/components/legal/LinkLegal';
 
 const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: OfferingFull }> = ({
   contractSet,
@@ -19,17 +20,13 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: Offer
 }) => {
   const shareContract = contractSet?.shareContract;
 
-  if (!shareContract) {
-    return null;
+  if (!shareContract?.established) {
+    return <LinkLegal offering={offering} shareContracts={shareContract ? [shareContract] : []} />;
   }
 
   return (
     <>
-      <ShareContractSettings
-        shareContract={shareContract}
-        partitions={partitions}
-        offering={offering}
-      />
+      <ShareContractSettings shareContract={shareContract} partitions={partitions} />
       <hr className="my-5" />
       <SwapContractSettings
         refetchMainContracts={refetchMainContracts}

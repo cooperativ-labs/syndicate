@@ -54,9 +54,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
   >('default');
 
   const router = useRouter();
-  const handleOrganizationChange = (id: string) => {
-    organizationChangeServer(id);
-  };
+
   const countries = Country.getAllCountries();
 
   const form = useForm<CreateOrganizationFormData>({
@@ -107,7 +105,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
         logoFileName: logoFile?.name || ''
       });
       setButtonState('success');
-      handleOrganizationChange(orgData.organization_id);
+      //     organizationChangeServer(id);
       router.push(`/manager/${orgData.organization_id}/overview`);
       actionOnCompletion && actionOnCompletion();
     } catch (error: any) {

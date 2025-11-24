@@ -23,6 +23,7 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import SectionBlock from '@src/containers/SectionBlock';
 import {
   deleteOrganizationAsset,
+  setProfileVisibility,
   updateOrganization,
   uploadOrganizationAsset
 } from '@src/utils/actions/organizationActions';
@@ -96,12 +97,9 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
     window.location.reload();
   };
   const handleToggle = async (profileVisibility: boolean) => {
-    await updateOrganization({
-      isPublic: profileVisibility ?? false,
-      ...baseItems,
-      logo: logo ?? '',
-      bannerImage: banner_image ?? '',
-      name: name ?? ''
+    await setProfileVisibility({
+      organizationId: organization.id.toString(),
+      isPublic: profileVisibility
     });
   };
 

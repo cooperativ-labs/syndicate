@@ -45,7 +45,8 @@ export const GoogleButton = ({ redirectTo }: { redirectTo?: string }) => {
       setButtonState={setButtonState}
       text={
         <>
-          <Image src="/icons/google.png" alt="Google" width={20} height={20} /> Login with Google
+          <Image src="/assets/images/icons/google.png" alt="Google" width={20} height={20} /> Login
+          with Google
         </>
       }
       loadingText="Redirecting to Google..."

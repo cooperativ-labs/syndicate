@@ -15,7 +15,7 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 import { cn } from '@src/lib/utils';
 import { getOfferingDocumentsById } from '@src/utils/actions/documentActions';
 import { retrieveOrders } from '@src/utils/actions/orderActions';
-import { getRealEstatePropertiesFromEntity } from '@src/utils/actions/rePropertyActions';
+import { getRealEstatePropertiesFromOffering } from '@src/utils/actions/rePropertyActions';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { getCurrentOrderPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
 import { getBaseUrl } from '@src/utils/helpersURL';
@@ -86,9 +86,9 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
   }, [swapContractAddress, paymentTokenDecimals, getOrderArrayFromContract]);
 
   useAsync(async () => {
-    const realEstateProperties = await getRealEstatePropertiesFromEntity(legalEntity.id.toString());
+    const realEstateProperties = await getRealEstatePropertiesFromOffering(offeringId.toString());
     setRealEstateProperties(realEstateProperties);
-  }, [legalEntity.id]);
+  }, [offeringId]);
 
   const { value: documentsData } = useAsync(async () => {
     const documents = await getOfferingDocumentsById(offering.id.toString());

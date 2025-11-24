@@ -18,7 +18,6 @@ type OfferingBasicDetailsFormProps = {
 export default function OfferingBasicDetailsForm({
   offering,
   isOfferingManager,
-
   legalEntity
 }: OfferingBasicDetailsFormProps) {
   const { address: userWalletAddress } = useAccount();

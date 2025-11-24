@@ -13,6 +13,7 @@ import CreateShareContract from '../offering/CreateShareContract';
 import UnestablishedContractCard from '../offering/UnestablishedContractCard';
 
 import LinkLegalForm from './LinkLegalForm';
+import { capitalizeFirstLetter } from '@src/utils/helpersText';
 
 export type AgreementContentType = {
   signature: string;
@@ -59,6 +60,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
   const agreement = GenerateLegalLink(
     {
       offeringId: offering.id,
+      organizationId: offering.legalEntity?.organization_id,
       spvEntityName: orgLegalName ?? '',
       gpEntityName: offerEntityGP ?? '',
       contractAddress: availableContract?.crypto_address_id,
@@ -68,13 +70,16 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
       signature: signature,
       isNotMainnet: isTestNet as boolean,
       agreementCurrency: bacName,
-      baseUrl: window.location.origin
+      baseUrl: window.location.origin,
+      offeringPageUrl: `${window.location.origin}/portal/${offering.legalEntity?.organization_id}/${offering.id}`,
+      termsOfServiceUrl: `${process.env.NEXT_PUBLIC_TERMS_URL}`,
+      platformName: capitalizeFirstLetter(process.env.NEXT_PUBLIC_CLIENT ?? '[Platform Name]')
     },
     standardAgreementText ?? ''
   );
 
   return (
-    <div className="flex flex-col gap">
+    <div className="flex flex-col gap h-full">
       <h1 className="font-semibold text-lg">Create shares of {orgLegalName}</h1>
       {!availableContract ? (
         <div className="mt-5">
@@ -84,9 +89,9 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
           />
         </div>
       ) : (
-        <div className="my-3">
+        <div className="my-3 h-full w-full">
           <UnestablishedContractCard unestablishedContract={availableContract} />
-          <div className="mt-4">
+          <div className="mt-4 ">
             <LinkLegalForm
               setAgreementContent={setAgreementContent}
               availableContract={availableContract}

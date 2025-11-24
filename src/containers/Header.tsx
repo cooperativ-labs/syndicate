@@ -2,7 +2,6 @@
 
 import useWindowSize from '@hooks/useWindowSize';
 import { cn } from '@src/lib/utils';
-import { getRePropertyAssets } from '@src/utils/actions/rePropertyActions';
 import { useRouter } from 'next/router';
 import React from 'react';
 import { useAsync } from 'react-use';

@@ -14,7 +14,6 @@ type MoneyDisplayProps = {
 };
 
 const MoneyDisplay: FC<MoneyDisplayProps> = ({ amount, paymentToken, currency, className }) => {
-  if (!currency) return null;
   const isUsd =
     getCurrencyById(paymentToken)?.value === CurrencyCode.USD ||
     getCurrencyOption(currency)?.value === CurrencyCode.USD;

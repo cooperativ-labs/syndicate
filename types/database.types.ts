@@ -1077,7 +1077,7 @@ export type Database = {
           investment_status: Database["public"]["Enums"]["asset_status"] | null
           lender_fees: number | null
           loan: number | null
-          owner_id: number
+          offering_id: number
           property_type: Database["public"]["Enums"]["real_estate_property_type"]
           updated_at: string | null
         }
@@ -1094,7 +1094,7 @@ export type Database = {
           investment_status?: Database["public"]["Enums"]["asset_status"] | null
           lender_fees?: number | null
           loan?: number | null
-          owner_id: number
+          offering_id: number
           property_type: Database["public"]["Enums"]["real_estate_property_type"]
           updated_at?: string | null
         }
@@ -1111,7 +1111,7 @@ export type Database = {
           investment_status?: Database["public"]["Enums"]["asset_status"] | null
           lender_fees?: number | null
           loan?: number | null
-          owner_id?: number
+          offering_id?: number
           property_type?: Database["public"]["Enums"]["real_estate_property_type"]
           updated_at?: string | null
         }
@@ -1124,10 +1124,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "real_estate_property_owner_id_fkey"
-            columns: ["owner_id"]
+            foreignKeyName: "real_estate_property_offering_id_fkey"
+            columns: ["offering_id"]
             isOneToOne: false
-            referencedRelation: "legal_entity"
+            referencedRelation: "offering"
             referencedColumns: ["id"]
           },
         ]

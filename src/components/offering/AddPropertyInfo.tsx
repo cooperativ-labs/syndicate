@@ -63,6 +63,7 @@ const AddPropertyInfo: FC = () => {
   const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
 
   const { offering } = useOffering();
+  const offeringId = offering.id;
   const entityId = offering.legalEntity.id;
   const entityOperatingCurrency = offering.investment_currency;
   const [address, setAddress] = useState<AddressType>({
@@ -108,7 +109,7 @@ const AddPropertyInfo: FC = () => {
     setButtonState('loading');
     try {
       const propertyId = await addRePropertyInfo({
-        entityId: entityId.toString(),
+        offeringId: offeringId.toString(),
         propertyType: values.propertyType as RealEstatePropertyTypes,
         investmentStatus: values.investmentStatus as InvestmentStatusType,
         amenitiesDescription: values.amenitiesDescription,
@@ -127,7 +128,7 @@ const AddPropertyInfo: FC = () => {
         return;
       }
       await addPropertyAddress({
-        ownerId: entityId.toString(),
+        offeringId: offeringId.toString(),
         propertyId,
         addressLine1: address.address1,
         addressLine2: address.address2,

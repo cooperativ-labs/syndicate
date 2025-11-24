@@ -64,10 +64,6 @@
     "@react-google-maps/api": "^2.17.0",
     "@supabase/ssr": "^0.7.0",
     "@supabase/supabase-js": "^2.76.1",
-    "@tailwindcss/aspect-ratio": "^0.4.0",
-    "@tailwindcss/forms": "^0.5.2",
-    "@tailwindcss/line-clamp": "^0.4.0",
-    "@tailwindcss/typography": "^0.5.2",
     "@tanstack/query-core": "^5.90.5",
     "@tanstack/react-query": "^5.90.5",
     "@types/google.maps": "^3.58.1",
@@ -124,7 +120,11 @@
     "zod": "^4.1.12"
   },
   "devDependencies": {
+    "@tailwindcss/aspect-ratio": "^0.4.0",
+    "@tailwindcss/forms": "^0.5.2",
+    "@tailwindcss/line-clamp": "^0.4.0",
     "@tailwindcss/postcss": "^4.1.16",
+    "@tailwindcss/typography": "^0.5.19",
     "@types/jest": "^26.0.15",
     "@types/node": "^24.9.1",
     "@types/postmark": "^2.0.3",

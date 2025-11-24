@@ -20,7 +20,10 @@ type FormModalProps = {
 const FormModal: FC<FormModalProps> = ({ formOpen, title, subTitle, onClose, children }) => {
   return (
     <Dialog open={formOpen} onOpenChange={open => !open && onClose()}>
-      <DialogContent data-test="component-form-modal" className={cn('max-w-[600px] min-w-[600px]')}>
+      <DialogContent
+        data-test="component-form-modal"
+        className={cn('min-w-[600px] sm:max-w-[900px] w-full max-h-[90vh] overflow-y-auto')}
+      >
         <DialogHeader>
           <DialogTitle className={cn(!title && 'sr-only')}>{title}</DialogTitle>
           {subTitle && title && <DialogDescription>{subTitle}</DialogDescription>}

@@ -9,7 +9,7 @@ import OfferingProperties from '@src/components/properties/OfferingProperties';
 import { Button } from '@src/components/ui/button';
 import { Separator } from '@src/components/ui/separator';
 import { cn } from '@src/lib/utils';
-import { getRealEstatePropertiesFromEntity } from '@src/utils/actions/rePropertyActions';
+import { getRealEstatePropertiesFromOffering } from '@src/utils/actions/rePropertyActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
@@ -85,9 +85,9 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   const [submitDistributionModal, setSubmitDistributionModal] = useState<boolean>(false);
 
   const { value: propertiesData } = useAsync(async () => {
-    const properties = await getRealEstatePropertiesFromEntity(legalEntity.id.toString());
+    const properties = await getRealEstatePropertiesFromOffering(offeringId);
     return properties;
-  }, [legalEntity.id]);
+  }, [offeringId]);
 
   const properties = propertiesData ?? [];
 

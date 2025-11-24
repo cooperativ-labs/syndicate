@@ -116,6 +116,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     contractSet: offeringSmartContracts
   });
 
+  console.log('currentSalePrice in OfferingDetails', currentSalePrice);
+
   const [investorListRefreshTrigger, setInvestorListRefreshTrigger] = useState<number>(0); //this seems extremely hackish, but I can't figure out any other way to get the contract hooks in WhitelistAddressListItem to refresh.
   const triggerInvestorListRefresh = () => {
     setInvestorListRefreshTrigger(investorListRefreshTrigger + 1);
@@ -133,10 +135,10 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     refetchOrders();
   };
   const showBasicOfferingDetailsForm =
-    !!details.priceStart && !!details.numUnits && !!details.investmentCurrency;
+    !details.priceStart && !details.numUnits && !details.investmentCurrency;
 
   return (
-    <>
+    <div className="flex flex-col h-full">
       <div className="md:mx-4">
         <AlertBanner
           show={hasContract && !contractManagerMatches && !isLoading}
@@ -301,7 +303,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
           {/* Slot 4 */}
         </TwoColumnLayout>
       </div>
-    </>
+    </div>
   );
 };
 

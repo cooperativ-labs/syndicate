@@ -51,12 +51,6 @@ const useOfferingDetails = ({
   const swapContractAddress = swapContract?.cryptoAddress?.address as String0x;
   const distributionContractAddress = distributionContract?.cryptoAddress?.address as String0x;
 
-  const distributionPaymentToken = getCurrencyOption(investment_currency);
-  const distributionPaymentTokenAddress = distributionPaymentToken?.address as String0x;
-  const distributionPaymentTokenDecimals = distributionPaymentToken?.decimals
-    ? distributionPaymentToken.decimals
-    : 18;
-
   useAsync(async () => {
     if (!swapContractAddress || !shareContractAddress || isManualRefetchRef.current) {
       return;
@@ -117,21 +111,28 @@ const useOfferingDetails = ({
     refetchSwapContract
   } = useSwapContractInfo(swapContractAddress);
 
+  const paymentToken = getCurrencyOption(investment_currency);
+  const defaultPaymentTokenAddress = paymentToken?.address as String0x;
+  const defaultPaymentTokenDecimals = paymentToken ? paymentToken.decimals : 18;
+  const _paymentTokenAddress = paymentTokenAddress ?? defaultPaymentTokenAddress;
+  const _paymentTokenDecimals = paymentTokenDecimals ?? defaultPaymentTokenDecimals;
+
   const { data: distributionData } = useReadContract({
     address: distributionContractAddress,
     abi: dividendContractABI,
     functionName: 'balances',
-    args: [distributionPaymentTokenAddress as String0x]
+    args: [defaultPaymentTokenAddress as String0x]
   });
-  const totalDistributed = toNormalNumber(distributionData, distributionPaymentTokenDecimals);
+
+  const totalDistributed = toNormalNumber(distributionData, defaultPaymentTokenDecimals);
 
   const { value: currentOrdersAndPrice } = useAsync(async () => {
-    if (!paymentTokenDecimals) {
+    if (!_paymentTokenDecimals) {
       return { currentPrice: 0, noLiveOrders: true };
     }
     const { currentPrice, contractSaleList } = await getCurrentOrdersAndPrice({
       offeringId: offeringId,
-      paymentTokenDecimals: paymentTokenDecimals ?? 0,
+      paymentTokenDecimals: _paymentTokenDecimals,
       priceStart: price_start ?? 0
     });
     const result = { currentPrice, noLiveOrders: confirmNoLiveOrders(contractSaleList) };
@@ -179,9 +180,9 @@ const useOfferingDetails = ({
     swapContract,
     swapContractAddress,
     distributionContractAddress,
-    distributionPaymentToken,
-    distributionPaymentTokenAddress,
-    distributionPaymentTokenDecimals,
+    distributionPaymentToken: paymentToken,
+    distributionPaymentTokenAddress: _paymentTokenAddress,
+    distributionPaymentTokenDecimals: _paymentTokenDecimals,
     orders,
     contractOrders,
     transferEvents,

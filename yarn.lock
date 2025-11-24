@@ -4568,7 +4568,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@tailwindcss/typography@npm:^0.5.2":
+"@tailwindcss/typography@npm:^0.5.19":
   version: 0.5.19
   resolution: "@tailwindcss/typography@npm:0.5.19"
   dependencies:
@@ -15307,7 +15307,7 @@ __metadata:
     "@tailwindcss/forms": "npm:^0.5.2"
     "@tailwindcss/line-clamp": "npm:^0.4.0"
     "@tailwindcss/postcss": "npm:^4.1.16"
-    "@tailwindcss/typography": "npm:^0.5.2"
+    "@tailwindcss/typography": "npm:^0.5.19"
     "@tanstack/query-core": "npm:^5.90.5"
     "@tanstack/react-query": "npm:^5.90.5"
     "@types/google.maps": "npm:^3.58.1"

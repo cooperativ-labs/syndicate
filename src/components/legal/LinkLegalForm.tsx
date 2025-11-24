@@ -19,16 +19,22 @@ import { toast } from 'react-hot-toast';
 import { useAccount, useChainId } from 'wagmi';
 import { z } from 'zod';
 
-import { CurrencyCode, CurrencyCodeType, SmartContract } from '@/types';
+import {
+  CurrencyCode,
+  CurrencyCodeType,
+  SmartContract,
+  SmartContractWithCryptoAddress
+} from '@/types';
 
 import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 
 import PresentLegalText from './PresentLegalText';
+import { useOrganizations } from '@contexts/OrganizationsContext';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
-  availableContract: SmartContract;
+  availableContract: SmartContractWithCryptoAddress;
   bacValue: CurrencyCodeType | undefined;
   bacName: string | undefined;
   bacId: string | undefined;
@@ -53,12 +59,11 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   entityId
 }) => {
   const router = useRouter();
-
+  const { chosenOrganizationId: organizationId } = useOrganizations();
   const { address: userWalletAddress } = useAccount();
   const chainId = useChainId();
 
   const agreementHash = hashBytes32FromString(agreement);
-
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const createDocHash = async (signature: string) => {
@@ -75,11 +80,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
           entityId: entityId,
           agreementText: agreement,
           smartContractId: availableContract.id,
-          // minUnits: values.minUnits,
-          // priceStart: parseInt(values.initialPrice, 10),
-          // maxRaise: values.numUnits * parseInt(values.initialPrice, 10),
           agreementTitle: docTitle
-          // signature: signature
         });
         await addOfferingParticipant({
           addressOfferingId: userWalletAddress + offeringId,
@@ -90,18 +91,18 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
         });
 
         setButtonStep('confirmed');
-        router.push(`${getBaseUrl()}/offerings/${offeringId}`);
+        router.push(`/manager/${organizationId}/offerings/${offeringId}`);
       } catch (e) {
         StandardChainErrorHandling(e, setButtonStep);
       }
     };
     const docTitle = `Token Link Agreement`;
-    const uri = `${getBaseUrl()}/offerings/${offeringId}`;
+    const uri = `/manager/${organizationId}/offerings/${offeringId}`;
 
     await setDocument({
       docName: docTitle,
       text: agreement,
-      shareContractAddress: availableContract.crypto_address_id as String0x,
+      shareContractAddress: availableContract.cryptoAddress.address as String0x,
       setButtonStep,
       callback: handleEstablish,
       uri

@@ -3,6 +3,7 @@ import { Check, Loader2Icon } from 'lucide-react';
 import * as React from 'react';
 
 import { Button, buttonVariants } from './button';
+import { cn } from '@src/lib/utils';
 export type LoadingButtonStateType =
   | 'idle'
   | 'step1'
@@ -34,6 +35,7 @@ export interface LoadingButtonChainProps
   confirmedText: string;
   failedText?: string;
   rejectedText?: string;
+  wrapText?: boolean;
 }
 
 const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChainProps>(
@@ -51,6 +53,7 @@ const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChai
       confirmedText,
       failedText,
       rejectedText,
+      wrapText = false,
       ...props
     },
     ref
@@ -70,36 +73,36 @@ const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChai
           return <>{idleText}</>;
         case 'step1':
           return (
-            <div className="flex justify-center items-center ">
+            <>
               <img
                 src="/assets/images/loading-circle.png"
                 aria-label="loading"
                 className="h-6 mr-1 animate-spin bg-white rounded-full"
               />
               <span>{step1Text}</span>
-            </div>
+            </>
           );
         case 'step2':
           return (
-            <div className="flex justify-center items-center ">
+            <>
               <img
                 src="/assets/images/loading-circle.png"
                 aria-label="loading"
                 className="h-6 mr-1 animate-spin bg-white rounded-full"
               />
               <span>{step2Text}</span>
-            </div>
+            </>
           );
         case 'step3':
           return (
-            <div className="flex justify-center items-center ">
+            <>
               <img
                 src="/assets/images/loading-circle.png"
                 aria-label="loading"
                 className="h-6 mr-1 animate-spin bg-white rounded-full"
               />
               <span>{step3Text}</span>
-            </div>
+            </>
           );
         case 'confirmed':
           return <>{confirmedText}</>;
@@ -121,16 +124,18 @@ const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChai
         ref={ref}
         {...props}
       >
-        <LoadingButtonText
-          state={state}
-          idleText={idleText}
-          step1Text={step1Text}
-          step2Text={step2Text}
-          step3Text={step3Text}
-          confirmedText={confirmedText}
-          failedText={failedText}
-          rejectedText={rejectedText}
-        />
+        <div className={cn('flex justify-center items-center ', wrapText && 'flex-wrap text-wrap')}>
+          <LoadingButtonText
+            state={state}
+            idleText={idleText}
+            step1Text={step1Text}
+            step2Text={step2Text}
+            step3Text={step3Text}
+            confirmedText={confirmedText}
+            failedText={failedText}
+            rejectedText={rejectedText}
+          />
+        </div>
       </Button>
     );
   }

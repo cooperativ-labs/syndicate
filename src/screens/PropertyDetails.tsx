@@ -51,7 +51,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
 
   const addImageToDb = async (file: File) => {
     await uploadRePropertyAsset({
-      entityId: property.owner_id,
+      offeringId: property.offering_id.toString(),
       rePropertyId: property.id,
       assetFile: file,
       assetName: file.name,

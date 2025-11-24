@@ -32,6 +32,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
   className
 }) => {
   const { sharesOutstanding, myShareQty, paymentToken, totalDistributed } = contractViewDetails;
+
   const {
     num_units,
     projected_irr,

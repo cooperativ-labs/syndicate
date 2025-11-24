@@ -19,6 +19,7 @@ import React, { FC, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
 import { z } from 'zod';
+import { capitalizeFirstLetter } from '@src/utils/helpersText';
 
 import { CurrencyCodeType, Document, Offering, OfferingFull, ShareOrder } from '@/types';
 
@@ -156,9 +157,6 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   };
 
   const formButtonText = (numUnitsPurchase: string) => {
-    function capitalizeFirstLetter(str: string) {
-      return str.charAt(0).toUpperCase() + str.slice(1);
-    }
     const action = isAskOrder ? 'purchase' : 'sell';
     const mainText = txnApprovalsEnabled
       ? `Request to ${action}`

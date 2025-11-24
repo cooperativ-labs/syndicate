@@ -390,6 +390,7 @@ const SendShares: FC<SendSharesProps> = ({
             <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
           ) : (
             <LoadingButtonChain
+              wrapText={true}
               type="submit"
               disabled={form.formState.isSubmitting || buttonStep === 'step1'}
               state={buttonStep}

@@ -263,13 +263,7 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
               Manage Share Sales
             </Button>
           ) : (
-            <Button
-              onClick={() => {
-                setManagerModal('smartContractsSettings');
-              }}
-            >
-              Configure trading
-            </Button>
+            <></>
           )}
           {proceeds !== 0 && (
             <LoadingButton

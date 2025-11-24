@@ -69,7 +69,7 @@ const CreateOffering: FC<CreateOfferingType> = ({ refetch, legalEntities }) => {
       });
       const offeringId = result.records[0].id;
       if (offeringId) {
-        router.push(`/${chosenOrganizationId}/offerings/${offeringId}`);
+        router.push(`/manager/${chosenOrganizationId}/offerings/${offeringId}`);
       }
       setButtonState('success');
     } catch (e: any) {
