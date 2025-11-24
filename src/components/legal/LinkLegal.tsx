@@ -54,6 +54,7 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
   const bacValue = bacToken?.value;
   const bacName = bacToken?.symbol;
   const bacId = bacToken?.address;
+  const contractChainId = availableContract?.cryptoAddress.chain_id;
 
   const isTestNet = chain?.testnet;
 
@@ -63,8 +64,8 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
       organizationId: offering.legalEntity?.organization_id,
       spvEntityName: orgLegalName ?? '',
       gpEntityName: offerEntityGP ?? '',
-      contractAddress: availableContract?.crypto_address_id,
-      chainName: MatchSupportedChains(chainId)?.name,
+      contractAddress: availableContract?.cryptoAddress.address,
+      chainName: contractChainId ? MatchSupportedChains(contractChainId)?.name : '',
       bacName: bacName,
       bacAddress: bacId,
       signature: signature,
