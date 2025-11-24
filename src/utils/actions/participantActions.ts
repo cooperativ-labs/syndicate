@@ -1,23 +1,27 @@
-'use server';
+"use server";
 
-import { String0x } from '@src/web3/helpersChain';
-import { createClient } from '@supabase/utils/server';
-import { revalidatePath } from 'next/cache';
+import { String0x } from "@src/web3/helpersChain";
+import { createClient } from "@supabase/utils/server";
+import { revalidatePath } from "next/cache";
 
-import { OfferingParticipant, RevalidationPath, WhitelistTransactionType } from '@/types';
+import {
+  OfferingParticipant,
+  RevalidationPath,
+  WhitelistTransactionType,
+} from "@/types";
 
 export async function getOfferingParticipant({
-  walletAddress
+  walletAddress,
 }: {
   walletAddress: string;
 }): Promise<OfferingParticipant[]> {
   const supabase = createClient();
   const { data, error } = await supabase
-    .from('offering_participant')
-    .select('id, name, offering(*)')
-    .eq('wallet_address', walletAddress);
+    .from("offering_participant")
+    .select("*, offering(*)")
+    .eq("wallet_address", walletAddress);
   if (error) throw error;
-  return data ?? [];
+  return data as OfferingParticipant[];
 }
 
 export async function addOfferingParticipant({
@@ -25,7 +29,7 @@ export async function addOfferingParticipant({
   name,
   offeringId,
   walletAddress,
-  chainId
+  chainId,
 }: {
   addressOfferingId: string;
   name?: string | null;
@@ -38,23 +42,23 @@ export async function addOfferingParticipant({
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .insert(
       {
         address_offering_id: addressOfferingId,
         name: name ?? null,
-        offering_id: offeringId,
+        offering_id: Number(offeringId),
         wallet_address: walletAddress,
-        chain_id: chainId
+        chain_id: Number(chainId),
       },
-      { count: 'exact' }
+      { count: "exact" },
     )
-    .select('id, name, offering_id');
+    .select("id, name, offering_id");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
@@ -71,7 +75,7 @@ export async function addOfferingParticipantWithApplication({
   applicationText,
   applicationTitle,
   signature,
-  chainId
+  chainId,
 }: {
   dateSigned: string;
   addressOfferingId: string;
@@ -90,7 +94,7 @@ export async function addOfferingParticipantWithApplication({
   const supabase = createClient();
 
   const { data: participant, error: pErr } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .insert(
       {
         address_offering_id: addressOfferingId,
@@ -99,49 +103,49 @@ export async function addOfferingParticipantWithApplication({
         wallet_address: walletAddress,
         min_pledge: minPledge ?? null,
         max_pledge: maxPledge ?? null,
-        chain_id: chainId
+        chain_id: chainId,
       },
-      { count: 'exact' }
+      { count: "exact" },
     )
-    .select('id')
+    .select("id")
     .single();
   if (pErr) throw pErr;
   if (!participant?.id) {
-    throw new Error('Failed to create offering participant');
+    throw new Error("Failed to create offering participant");
   }
 
   // Insert application with nested document (flattened as two steps)
   const { data: appDoc, error: docErr } = await supabase
-    .from('document')
+    .from("document")
     .insert({
       text: applicationText,
       date: dateSigned || null,
-      type: 'AGREEMENT',
+      type: "AGREEMENT",
       owner_id: Number(offeringEntityId),
       offering_unique_id: offeringUniqueId,
-      title: applicationTitle
+      title: applicationTitle,
     })
-    .select('id')
+    .select("id")
     .single();
   if (docErr) throw docErr;
 
-  const { error: appErr } = await supabase.from('investor_application').insert({
+  const { error: appErr } = await supabase.from("investor_application").insert({
     offering_participant_id: participant.id,
-    application_doc_id: appDoc.id
+    application_doc_id: appDoc.id,
   });
   if (appErr) throw appErr;
 
   // Insert document signatory
-  const { error: sigErr } = await supabase.from('document_signatory').insert({
+  const { error: sigErr } = await supabase.from("document_signatory").insert({
     document_id: appDoc.id,
     signature,
     date: dateSigned || null,
     archived: false,
-    signer_address: walletAddress
+    signer_address: walletAddress,
   });
   if (sigErr) throw sigErr;
 
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
 }
 
 export type UpsertWhitelistMemberParams = {
@@ -152,7 +156,9 @@ export type UpsertWhitelistMemberParams = {
   name?: string | null;
   externalId?: string | null;
   transactionHash?: string | null;
-  type: typeof WhitelistTransactionType.ADD | typeof WhitelistTransactionType.REMOVE;
+  type:
+    | typeof WhitelistTransactionType.ADD
+    | typeof WhitelistTransactionType.REMOVE;
   revalidationPath: RevalidationPath | undefined;
 };
 
@@ -165,12 +171,12 @@ export async function upsertWhitelistMember({
   externalId,
   transactionHash,
   type,
-  revalidationPath
+  revalidationPath,
 }: UpsertWhitelistMemberParams): Promise<void> {
   const supabase = createClient();
 
   const { data: participant, error: pErr } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .upsert(
       {
         address_offering_id: addressOfferingId,
@@ -178,18 +184,18 @@ export async function upsertWhitelistMember({
         chain_id: chainId,
         name: name ?? null,
         offering_id: Number(offeringId),
-        external_id: externalId ?? null
+        external_id: externalId ?? null,
       },
-      { onConflict: 'address_offering_id', ignoreDuplicates: true }
+      { onConflict: "address_offering_id", ignoreDuplicates: true },
     )
-    .select('id')
+    .select("id")
     .single();
   if (pErr) throw pErr;
 
-  const { error: wErr } = await supabase.from('whitelist_transaction').insert({
+  const { error: wErr } = await supabase.from("whitelist_transaction").insert({
     offering_participant_id: participant.id,
-    transaction_hash: transactionHash ?? '',
-    type
+    transaction_hash: transactionHash ?? "",
+    type,
   });
   if (wErr) throw wErr;
 
@@ -201,7 +207,9 @@ export async function upsertWhitelistMember({
 export type UpdateWhitelistParams = {
   offeringParticipantId: string;
   transactionHash: string;
-  type: typeof WhitelistTransactionType.ADD | typeof WhitelistTransactionType.REMOVE;
+  type:
+    | typeof WhitelistTransactionType.ADD
+    | typeof WhitelistTransactionType.REMOVE;
   revalidationPath: RevalidationPath | undefined;
 };
 
@@ -212,7 +220,7 @@ export async function updateOfferingParticipant({
   jurCountry,
   jurProvince,
   jurisdictionId,
-  revalidationPath
+  revalidationPath,
 }: {
   id: string;
   name?: string | null;
@@ -235,76 +243,78 @@ export async function updateOfferingParticipant({
   let jurId = jurisdictionId ?? null;
   if (jurCountry && jurProvince) {
     const { data: jurisdictionData, error: jurisdictionError } = await supabase
-      .from('jurisdiction')
+      .from("jurisdiction")
       .upsert(
         {
           id: jurId ?? undefined,
           country: jurCountry,
-          province: jurProvince ?? null
+          province: jurProvince ?? null,
         },
-        { onConflict: 'id' }
+        { onConflict: "id" },
       )
-      .select('id')
+      .select("id")
       .single();
     if (jurisdictionError) throw jurisdictionError;
     jurId = jurisdictionData?.id ?? null;
   }
 
   const { data, error, count } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .update({
       name: name ?? null,
       external_id: externalId ?? null,
-      jurisdiction_id: jurisdictionId ?? null
+      jurisdiction_id: jurisdictionId ?? null,
     })
-    .eq('id', id)
-    .select('id, wallet_address, external_id, name, offering_id');
+    .eq("id", id)
+    .select("id, wallet_address, external_id, name, offering_id");
   if (error) throw error;
   if (revalidationPath) {
     revalidatePath(revalidationPath.path, revalidationPath.type);
   }
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
-export async function removeWhitelistObject({ participantId }: { participantId: string }): Promise<{
+export async function removeWhitelistObject(
+  { participantId }: { participantId: string },
+): Promise<{
   affectedCount: number;
   records: { id: string }[];
 }> {
   const supabase = createClient();
   const { data, error, count } = await supabase
-    .from('offering_participant')
+    .from("offering_participant")
     .delete()
-    .eq('id', participantId)
-    .select('id');
+    .eq("id", participantId)
+    .select("id");
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
   return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
+    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+    records: (data ?? []) as any,
   };
 }
 
-export async function archiveOfferingParticipant({
-  participantId
-}: {
-  participantId: string;
-}): Promise<{
-  affectedCount: number;
-  records: { id: string; archived: boolean }[];
-}> {
-  const supabase = createClient();
-  const { data, error, count } = await supabase
-    .from('offering_participant')
-    .update({ archived: true })
-    .eq('id', participantId)
-    .select('id, archived');
-  if (error) throw error;
-  revalidatePath('/', 'page');
-  return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as any
-  };
-}
+// export async function archiveOfferingParticipant({
+//   participantId,
+// }: {
+//   participantId: string;
+// }): Promise<{
+//   affectedCount: number;
+//   records: { id: string; archived: boolean }[];
+// }> {
+//   const supabase = createClient();
+//   const { data, error, count } = await supabase
+//     .from("offering_participant")
+//     .update({ archived: true })
+//     .eq("id", participantId)
+//     .select("id, archived");
+//   if (error) throw error;
+//   revalidatePath("/", "page");
+//   return {
+//     affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
+//     records: (data ?? []) as any,
+//   };
+// }

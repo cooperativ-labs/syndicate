@@ -4,7 +4,7 @@ import InvestorApplicationForm from '@src/components/investor/applicationForm/In
 import Header from '@src/containers/Header';
 import { getOfferingById } from '@src/utils/actions/offeringActions';
 import { getOrganization } from '@src/utils/actions/organizationActions';
-import { getRealEstatePropertiesFromEntity } from '@src/utils/actions/rePropertyActions';
+import { getRealEstatePropertiesFromOffering } from '@src/utils/actions/rePropertyActions';
 
 import { RealEstatePropertyWithAssets } from '@/types';
 
@@ -27,7 +27,7 @@ export default async function InvestorApplicationPage({ params }: Params) {
     return <div>Offering not found</div>;
   }
 
-  const properties = await getRealEstatePropertiesFromEntity(offering.legalEntity.id.toString());
+  const properties = await getRealEstatePropertiesFromOffering(offering.legalEntity.id.toString());
   const propertyImages =
     properties?.flatMap((property: RealEstatePropertyWithAssets) => property.images) ?? [];
 

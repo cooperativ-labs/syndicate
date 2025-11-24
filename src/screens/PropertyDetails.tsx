@@ -186,7 +186,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
                   removeReProperty({
                     propertyId: property.id,
                     revalidationPath: {
-                      path: `/manager/[organizationId]/entities/${property.owner_id}`,
+                      path: `/manager/[organizationId]/offerings/${property.offering_id.toString()}`,
                       type: 'page'
                     }
                   })
