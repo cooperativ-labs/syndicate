@@ -158,7 +158,6 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
           <ImageUpload
             title='Add logo'
             onSubmit={handleLogoUpload}
-            accept={['image/jpeg', 'image/png', 'image/svg+xml']}
             selectedImageUrl={logoUrl}
             setSelectedImageUrl={setLogoUrl}
             onDelete={handleLogoDelete}

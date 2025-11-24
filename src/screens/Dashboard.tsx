@@ -13,7 +13,7 @@ const Dashboard: FC = () => {
   const handleOrganizationChange = (id: string) => {
     organizationChangeServer(id);
   };
-  const platformName = capitalizeFirstLetter(process.env.NEXT_PUBLIC_CLIENT);
+  const platformName = capitalizeFirstLetter(process.env.NEXT_PUBLIC_CLIENT ?? 'Cooperativ');
   return (
     <div data-test='component-dashboard' className='flex flex-col w-full h-full'>
       {/* <button onClick={handleClick}>Log User</button> */}
