@@ -7,10 +7,9 @@ import { getCurrencyByCode } from '@src/utils/enumConverters';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useAsync } from 'react-use';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { CurrencyCodeType, Offering } from '@/types';
-import { OfferingWithParticipants } from '@/types';
 
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
@@ -50,7 +49,7 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
   operatingCurrency,
   organizationId
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const { userId } = useUserContext();
   const router = useRouter();
 

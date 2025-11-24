@@ -8,7 +8,7 @@ import { Button } from '@src/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import React, { FC, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 
@@ -16,7 +16,7 @@ const UserMenu: FC = () => {
   const [open, setOpen] = useState<boolean>(false);
   const { user } = useUserContext();
   const isAuthenticated = !!user;
-  const { address: userWalletAddress, isConnected } = useAccount();
+  const { address: userWalletAddress, isConnected } = useConnection();
   const chainId = useChainId();
   const userImageUrl = user?.user_metadata?.avatar_url as string | undefined;
 

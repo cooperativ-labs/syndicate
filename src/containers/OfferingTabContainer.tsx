@@ -14,7 +14,7 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import {
   CurrencyCodeType,
@@ -71,7 +71,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
   triggerInvestorListRefresh,
   refetchContracts
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const distArraylength = distributions?.length;
   const hasDistributions = distArraylength && distArraylength > 0;
   const startingTab = isOfferingManager

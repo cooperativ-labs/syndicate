@@ -3,12 +3,12 @@
 import OfferingsList from '@src/components/offering/OfferingsList';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import React, { FC } from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { OfferingWithLegalEntity, OrganizationComplete } from '@/types';
 
 const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   const organizationId = organization.id;
   const participantOfferings = organization.legalEntities

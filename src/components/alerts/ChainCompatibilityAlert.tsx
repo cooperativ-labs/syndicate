@@ -1,13 +1,13 @@
 'use client';
 
 import { SupportedChains } from '@src/web3/wagmi';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import AlertBanner from './AlertBanner';
 
 export default function ChainCompatibilityAlert() {
   const projectName = process.env.NEXT_PUBLIC_PROJECT_NAME;
-  const { isConnected, chain } = useAccount();
+  const { isConnected, chain } = useConnection();
 
   const compatibleChain = SupportedChains.some(c => c.id === chain?.id);
 

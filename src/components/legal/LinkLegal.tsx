@@ -6,7 +6,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import { OfferingFull, SmartContractWithCryptoAddress } from '@/types';
 
@@ -31,7 +31,7 @@ type LinkLegalProps = {
 
 const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
   const chainId = useChainId();
-  const { chain } = useAccount();
+  const { chain } = useConnection();
   const legalEntity = offering.legalEntity;
   const [agreementContent, setAgreementContent] = useState<AgreementContentType>({
     signature: ''

@@ -6,7 +6,7 @@ import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { String0x } from '@src/web3/helpersChain';
 import React, { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 type SetOperatorButtonProps = {
   shareContractAddress: String0x;
@@ -19,7 +19,7 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
   operatorField,
   refetch
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [operatorAddress, setOperatorAddress] = useState<String0x | ''>('');
 

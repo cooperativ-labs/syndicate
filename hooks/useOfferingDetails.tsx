@@ -10,7 +10,7 @@ import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 import { toNormalNumber } from '@src/web3/util';
 import { useCallback, useRef, useState } from 'react';
 import { useAsync } from 'react-use';
-import { useAccount, useChainId, useReadContract } from 'wagmi';
+import { useConnection, useChainId, useReadContract } from 'wagmi';
 
 import {
   CurrencyCodeType,
@@ -38,7 +38,7 @@ const useOfferingDetails = ({
   documents,
   contractSet
 }: OfferingDetailsProps) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
 
   const [transferEvents, setTransferEvents] = useState<ShareTransferEvent[]>([]);

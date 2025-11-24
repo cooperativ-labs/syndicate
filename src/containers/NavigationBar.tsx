@@ -6,7 +6,7 @@ import { Button } from '@src/components/ui/button';
 import { ChevronLeftIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import React, { FC, useContext } from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
@@ -25,7 +25,7 @@ export const NavBar: FC<NavBarProps> = ({ orgLogo, orgName }) => {
 
   const applicationStore: ApplicationStoreProps = useContext(store);
   const { dispatch } = applicationStore;
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   return (
     <div className='flex py-2 px-2 pr-4 z-30  mx-auto justify-between'>
       <div className=' justify-start flex items-center'>

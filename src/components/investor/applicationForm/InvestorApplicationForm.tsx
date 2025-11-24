@@ -16,7 +16,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import type { Offering, OfferingWithLegalEntity } from '@/types';
 
@@ -162,7 +162,7 @@ const initialAddressState: AddressType = {
 const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offering }) => {
   const router = useRouter();
   const chainId = useChainId();
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   const legalEntity = offering.legalEntity;
 

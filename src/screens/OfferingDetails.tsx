@@ -22,7 +22,7 @@ import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton'
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { CurrencyCodeType, Document, DocumentType, OfferingFull } from '@/types';
 
@@ -32,7 +32,7 @@ type OfferingDetailsProps = {
 };
 
 const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const { user } = useUserContext();
   const { isOfferingManager, legalEntity } = useOffering();
   const userId = user?.id;

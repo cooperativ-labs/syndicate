@@ -5,13 +5,13 @@ import OrganizationNotFound from '@src/components/alerts/OrganizationNotFound';
 import OrganizationProfile from '@src/screens/OrganizationProfile';
 import PortalOrganization from '@src/screens/PortalOrganization';
 import React from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { OrganizationComplete } from '@/types';
 
 const ClientOrganizationPage: React.FC = () => {
   const { chosenOrganization, chosenOrganizationId } = useOrganizations();
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   const organization = chosenOrganization as OrganizationComplete;
 

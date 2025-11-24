@@ -2,7 +2,7 @@ import { cn } from '@src/lib/utils';
 import { String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useContext } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import { Button } from '../ui/button';
 
@@ -49,7 +49,7 @@ export const NetworkIndicatorDot: FC<NetworkIndicatorDotProps> = ({ chainId, wal
 
 const NetworkIndicator: FC = () => {
   const chainId = useChainId();
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   // const whichWallet = `with ${user?.walletAddresses.find((userWallet) => userWallet.address === walletAddress)?.name}`;
 

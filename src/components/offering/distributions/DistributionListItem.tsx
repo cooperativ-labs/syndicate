@@ -14,7 +14,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
 import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useEffect } from 'react';
-import { useAccount, useChainId, useReadContract, useReadContracts } from 'wagmi';
+import { useConnection, useChainId, useReadContract, useReadContracts } from 'wagmi';
 
 import { OfferingDistribution } from '@/types';
 
@@ -35,7 +35,7 @@ const DistributionListItem: FC<
   walletAddress
 }) => {
   const chainId = useChainId();
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const isMyDistribution = userWalletAddress === walletAddress;
 
   const { transaction_hash, contract_index } = distribution;

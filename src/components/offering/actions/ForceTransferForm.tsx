@@ -17,7 +17,7 @@ import { getWagmiConfig } from '@src/web3/wagmi';
 import React from 'react';
 import { Controller, Resolver, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
-import { useAccount, useReadContract } from 'wagmi';
+import { useConnection, useReadContract } from 'wagmi';
 import { readContract } from 'wagmi/actions';
 import { z } from 'zod';
 
@@ -40,7 +40,7 @@ const ForceTransferForm = ({
   target,
   refetchContracts
 }: ForceTransferFormProps) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const [buttonState, setButtonState] = React.useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');

@@ -17,7 +17,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, Resolver, useForm } from 'react-hook-form';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import { Document, OfferingFull } from '@/types';
@@ -149,7 +149,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   if (!paymentTokenDecimals) {
     throw new Error('Payment token decimals are required (PostBidAskForm)');
   }
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [tocOpen, setTocOpen] = useState<boolean>(false);

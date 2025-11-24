@@ -4,7 +4,7 @@ import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { FC, useEffect } from 'react';
-import { useAccount, useReadContracts } from 'wagmi';
+import { useConnection, useReadContracts } from 'wagmi';
 
 import { EnrichedOfferingParticipant } from '@/types';
 
@@ -23,7 +23,7 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
   investorListRefreshTrigger,
   setSelectedParticipant
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   const sharedContractBits = {
     address: shareContractAddress,

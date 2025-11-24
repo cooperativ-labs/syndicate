@@ -18,7 +18,7 @@ import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
-import { useAccount, useReadContract } from 'wagmi';
+import { useConnection, useReadContract } from 'wagmi';
 
 import { CurrencyCodeType } from '@/types';
 
@@ -71,7 +71,7 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
     investment_currency: investmentCurrency
   } = offering;
 
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const shareContractId = contractSet?.shareContract?.id as string;
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;

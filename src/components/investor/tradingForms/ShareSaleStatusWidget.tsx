@@ -5,7 +5,7 @@ import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import React, { FC } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 
@@ -87,7 +87,7 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
   swapContractAddress,
   isContractOwner
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const myOrders =
     orders && orders?.filter(order => order?.initiator === userWalletAddress || isContractOwner);
 

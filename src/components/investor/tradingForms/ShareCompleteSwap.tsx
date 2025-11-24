@@ -9,7 +9,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 // import { isMetaMask } from '@src/web3/wagmi';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 type ShareCompleteSwapProps = {
   acceptedOrderQty: number;
@@ -37,7 +37,7 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
 }) => {
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const { connector } = useAccount();
+  const { connector } = useConnection();
 
   const handleClick = async () => {
     await callFillOrder({

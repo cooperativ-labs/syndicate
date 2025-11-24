@@ -1,7 +1,7 @@
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { cn } from '@src/lib/utils';
 import { useState } from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { CurrencyCodeType, LegalEntityWithAddresses, OfferingFull } from '@/types';
 
@@ -20,7 +20,7 @@ export default function OfferingBasicDetailsForm({
   isOfferingManager,
   legalEntity
 }: OfferingBasicDetailsFormProps) {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const { id } = offering;
 
   return (

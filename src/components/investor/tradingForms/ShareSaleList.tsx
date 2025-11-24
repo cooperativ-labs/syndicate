@@ -11,7 +11,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { RefreshCw } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useState } from 'react';
-import { useAccount, useReadContract } from 'wagmi';
+import { useConnection, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 
@@ -34,7 +34,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   refetchMainContracts,
   refetchOfferingInfo
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
   const { data: contractData } = useReadContract({
     address: swapContractAddress,

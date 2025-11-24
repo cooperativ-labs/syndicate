@@ -15,7 +15,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
@@ -47,10 +47,10 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   organizationId
 }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   const chainId = useChainId();
-  const { chain } = useAccount();
+  const { chain } = useConnection();
   const defaultCurrencyAddress = useMemo(
     () => getCurrencyOption(investmentCurrency)?.address ?? '',
     [investmentCurrency]

@@ -2,15 +2,15 @@
 import Card from '@src/components/cards/Card';
 import { MatchSupportedChains, SupportedChains } from '@src/web3/wagmi';
 import React, { FC } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import ChooseConnectorButton from './ChooseConnectorButton';
 
 type EnsureCompatibleNetworkProps = { children: React.ReactNode };
 
 const EnsureCompatibleNetwork: FC<EnsureCompatibleNetworkProps> = ({ children }) => {
-  const { isConnected } = useAccount();
-  const { chain } = useAccount();
+  const { isConnected } = useConnection();
+  const { chain } = useConnection();
   const compatibleChain = SupportedChains.some(c => c.id === chain?.id);
   if (!isConnected) {
     return (

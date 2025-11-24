@@ -14,7 +14,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 import { useWalletContext } from '@/contexts/WalletContext';
@@ -81,14 +81,14 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
 }) => {
   const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const { address: userWalletAddress, connector } = useAccount();
+  const { address: userWalletAddress, connector } = useConnection();
 
   const handleAddDistributionContract = async (params: CreateDistributionContractParams) => {
     const result = await createDistributionContract(params);
     return result;
   };
   const chainId = useChainId();
-  const { chain } = useAccount();
+  const { chain } = useConnection();
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const chainBacs = bacOptions.filter(bac => bac.chainId === chainId);

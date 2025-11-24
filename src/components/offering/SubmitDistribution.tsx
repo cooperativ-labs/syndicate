@@ -12,7 +12,7 @@ import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useEffect, useState } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
 import { erc20Abi } from 'viem';
-import { useAccount, useReadContract } from 'wagmi';
+import { useConnection, useReadContract } from 'wagmi';
 import { z } from 'zod';
 
 import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
@@ -43,7 +43,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
   offeringId,
   refetchContracts
 }) => {
-  const { address: userWalletAddress, connector } = useAccount();
+  const { address: userWalletAddress, connector } = useConnection();
 
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 

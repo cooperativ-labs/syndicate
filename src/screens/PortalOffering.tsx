@@ -20,7 +20,8 @@ import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
-import { useAccount, useBalance, useReadContracts } from 'wagmi';
+import { useConnection, useReadContract, useReadContracts } from 'wagmi';
+import { erc20Abi, formatUnits } from 'viem';
 
 import { Document, DocumentType, OfferingFull, OfferingParticipant } from '@/types';
 
@@ -30,7 +31,7 @@ type PortalOfferingProps = {
 };
 
 const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   const { min_units_per_investor, name: offeringName, id: offeringId, participants } = offering;
 
@@ -87,12 +88,17 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
     ]
   });
 
-  const { data: bacBalanceData, refetch: refetchUserBalance } = useBalance({
-    address: userWalletAddress,
-    token: paymentTokenAddress
+  const tokenDecimals = paymentTokenDecimals ?? 18;
+
+  const { data: bacBalanceData, refetch: refetchUserBalance } = useReadContract({
+    address: paymentTokenAddress,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: userWalletAddress ? [userWalletAddress as String0x] : undefined,
+    query: { enabled: Boolean(userWalletAddress && paymentTokenAddress) }
   });
-  const myBacBalance = bacBalanceData?.formatted;
-  const bacSymbol = bacBalanceData?.symbol;
+  const myBacBalance = bacBalanceData ? formatUnits(bacBalanceData, tokenDecimals) : undefined;
+  const bacSymbol = offering.investment_currency;
 
   const partitions = data?.[0].result;
   const isWhitelistError = data?.[1].error;

@@ -11,12 +11,19 @@ import { cn } from '@src/lib/utils';
 import { WalletErrorCodes } from '@src/web3/helpersChain';
 import { ChevronRightIcon } from 'lucide-react';
 import React, { FC, useContext } from 'react';
-import { Connector, useAccount, useConnect, useDisconnect, useEnsAvatar, useEnsName } from 'wagmi';
+import {
+  Connector,
+  useConnection,
+  useConnect,
+  useDisconnect,
+  useEnsAvatar,
+  useEnsName
+} from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 
 export function Account() {
-  const { address } = useAccount();
+  const { address } = useConnection();
   const { disconnect } = useDisconnect();
   const { data: ensName } = useEnsName({ address });
   const { data: ensAvatar } = useEnsAvatar({ name: ensName! });

@@ -9,7 +9,7 @@ import { StandardChainErrorHandling } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
 import { useAsyncFn } from 'react-use';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { useWalletContext } from '@/contexts/WalletContext';
 import { SmartContractType } from '@/types';
@@ -22,8 +22,8 @@ type CreateShareContractProps = {
 const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, offeringId }) => {
   const { setWalletActionLockModalOpen } = useWalletContext();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
-  const { address: userWalletAddress } = useAccount();
-  const { chain, chainId } = useAccount();
+  const { address: userWalletAddress } = useConnection();
+  const { chain, chainId } = useConnection();
   if (!chain || !chainId) {
     throw new Error('No chain id found');
   }

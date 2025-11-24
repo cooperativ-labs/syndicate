@@ -8,7 +8,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import { Pencil, X } from 'lucide-react';
 import React, { FC, useEffect, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 import { z } from 'zod';
 
 import { CryptoAddress, CryptoAddressType } from '@/types';
@@ -31,7 +31,7 @@ type WalletFormValues = z.infer<typeof updateWalletSchema>;
 const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdit }) => {
   const { legal_entity_id, id, name, type, chain_id, address, description, is_public } = wallet;
   const [editOn, setEditOn] = useState<boolean>(false);
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const {
     control,
     handleSubmit,

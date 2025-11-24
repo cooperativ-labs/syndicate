@@ -9,13 +9,13 @@ import {
   DialogTitle
 } from '@src/components/ui/dialog';
 import { useEffect } from 'react';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import { WalletOptions } from './ChooseConnector';
 
 export function WalletChooserModal() {
   const { modalOpen, setModalOpen } = useWalletContext();
-  const { isConnected } = useAccount();
+  const { isConnected } = useConnection();
 
   // Close modal when wallet is connected
   useEffect(() => {

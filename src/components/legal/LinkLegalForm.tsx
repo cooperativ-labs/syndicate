@@ -17,7 +17,7 @@ import router from 'next/router';
 import React, { FC, useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 import { z } from 'zod';
 
 import {
@@ -60,7 +60,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
 }) => {
   const router = useRouter();
   const { chosenOrganizationId: organizationId } = useOrganizations();
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
 
   const agreementHash = hashBytes32FromString(agreement);

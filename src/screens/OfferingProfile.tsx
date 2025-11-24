@@ -24,7 +24,7 @@ import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 import { useRouter } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 
 import {
   Document,
@@ -44,7 +44,7 @@ type OfferingProfileProps = {
 const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) => {
   const router = useRouter();
 
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const {
     id: offeringId,
     name: offeringName,

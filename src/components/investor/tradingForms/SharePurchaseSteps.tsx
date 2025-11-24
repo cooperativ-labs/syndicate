@@ -1,5 +1,5 @@
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
-import { addTransferEvent, AddTransferEventParams } from '@src/utils/actions/orderActions';
+import { addTransferEvent } from '@src/utils/actions/orderActions';
 import { getIsAllowanceSufficient } from '@src/utils/helpersAllowance';
 import { acceptOrder, fillOrder, setAllowance } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
@@ -7,7 +7,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { Dispatch, FC, SetStateAction } from 'react';
 import { erc20Abi, formatUnits } from 'viem';
-import { useAccount, useBalance, useReadContract } from 'wagmi';
+import { useConnection, useReadContract } from 'wagmi';
 
 import OrderStatusBar from './OrderStatusBar';
 import ShareCompleteSwap from './ShareCompleteSwap';
@@ -54,7 +54,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   myShareQty,
   refetchAllContracts
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
 
   const isEnded = isCancelled || isFilled;
 
@@ -65,9 +65,14 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
     args: [filler as String0x, BigInt(order.contract_index)]
   });
 
-  const { data: bacBalanceData } = useBalance({
-    address: userWalletAddress,
-    token: paymentTokenAddress
+  const { data: bacBalanceData } = useReadContract({
+    address: paymentTokenAddress,
+    abi: erc20Abi,
+    functionName: 'balanceOf',
+    args: userWalletAddress ? [userWalletAddress as String0x] : undefined,
+    query: {
+      enabled: Boolean(userWalletAddress)
+    }
   });
 
   const refetchAllPlusAccepted = () => {
@@ -76,7 +81,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   };
 
   const myBacBalance = bacBalanceData
-    ? formatUnits(bacBalanceData.value, bacBalanceData.decimals)
+    ? formatUnits(bacBalanceData, paymentTokenDecimals)
     : undefined;
   const acceptedOrderQty = toNormalNumber(orderQtyData, shareContractDecimals);
   const isFiller = filler !== '0x0000000000000000000000000000000000000000';

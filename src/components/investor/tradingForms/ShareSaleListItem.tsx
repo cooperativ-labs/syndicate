@@ -7,7 +7,7 @@ import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
-import { useAccount, useChainId } from 'wagmi';
+import { useConnection, useChainId } from 'wagmi';
 
 import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 
@@ -36,7 +36,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   refetchMainContracts,
   refetchOfferingInfo
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
 

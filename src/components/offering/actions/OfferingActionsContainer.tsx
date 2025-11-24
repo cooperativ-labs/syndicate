@@ -15,7 +15,7 @@ import { useParams } from 'next/navigation';
 import { FC, useState } from 'react';
 import { Controller } from 'react-hook-form';
 import { useForm } from 'react-hook-form';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 import { z } from 'zod';
 
 import { CurrencyCode, CurrencyCodeType } from '@/types';
@@ -29,7 +29,7 @@ type InvestmentCurrencyFormProps = {
 const InvestmentCurrencyForm: FC<InvestmentCurrencyFormProps> = ({ offeringId }) => {
   const { organizationId } = useParams<{ organizationId: string }>();
 
-  const { chain } = useAccount();
+  const { chain } = useConnection();
   const currencyOptions = cryptoOptionsByChainId(chain?.id as number);
   const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
 

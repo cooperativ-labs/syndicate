@@ -21,7 +21,7 @@ import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helper
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useAccount, useChainId, useReadContract } from 'wagmi';
+import { useConnection, useChainId, useReadContract } from 'wagmi';
 import { z } from 'zod';
 
 import { CurrencyCode, CurrencyCodeType, OfferingParticipant } from '@/types';
@@ -42,7 +42,7 @@ const SendShares: FC<SendSharesProps> = ({
   currentSalePrice,
   refetchMainContracts
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 

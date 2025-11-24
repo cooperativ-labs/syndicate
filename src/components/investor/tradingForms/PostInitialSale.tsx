@@ -14,7 +14,7 @@ import { submitSwap } from '@src/web3/contractSwapCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useState } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
-import { useAccount } from 'wagmi';
+import { useConnection } from 'wagmi';
 import { z } from 'zod';
 
 import { PostInitialSaleProps } from './offering-actions-types';
@@ -94,7 +94,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   refetchAllContracts,
   refetchOfferingInfo
 }) => {
-  const { address: userWalletAddress } = useAccount();
+  const { address: userWalletAddress } = useConnection();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
   const handleCreateOrder = async (params: CreateOrderParams): Promise<CreateOrderResult> => {
