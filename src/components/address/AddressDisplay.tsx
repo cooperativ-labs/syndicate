@@ -18,7 +18,7 @@ export const AddressDisplay: FC<AddressProps> = ({
     const { label, line1, line2, city, postal_code, state_province, country } = address;
     return (
       <div className={className}>
-        {withLabel && label && <div className="font-bold">{label}:</div>}
+        {withLabel && label && <div className='font-bold'>{label}:</div>}
         <div>
           {line1 && line1}
           {line2 && `, ${line2}`}

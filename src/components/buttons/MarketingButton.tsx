@@ -41,10 +41,10 @@ const MarketingButton: React.FC<MarketingButtonProps> = ({
           )}
           aria-label={`button-${text}`}
         >
-          <div className="flex">
-            <span className="uppercase nowrap">{text}</span>{' '}
+          <div className='flex'>
+            <span className='uppercase nowrap'>{text}</span>{' '}
             {symbols && (
-              <span className="ml-4 p-1 px-2 bg-white rounded-full shadow-inner">{symbols}</span>
+              <span className='ml-4 p-1 px-2 bg-white rounded-full shadow-inner'>{symbols}</span>
             )}
           </div>
         </Button>

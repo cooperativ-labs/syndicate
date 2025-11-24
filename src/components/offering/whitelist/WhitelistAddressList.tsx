@@ -40,10 +40,10 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
 
   return (
     <>
-      <div className="w-full">
+      <div className='w-full'>
         {offeringParticipants?.map((participant, i) => {
           return (
-            <div className="mb-3" key={i}>
+            <div className='mb-3' key={i}>
               <WhitelistAddressListItem
                 investorListRefreshTrigger={investorListRefreshTrigger}
                 participant={participant}
@@ -58,12 +58,12 @@ const WhitelistAddressList: FC<WhitelistAddressListPropsLocal> = ({
         open={!!selectedParticipant}
         onOpenChange={open => !open && setSelectedParticipant(undefined)}
       >
-        <SheetContent className="sm:max-w-2/3 p-6 overflow-y-scroll ">
+        <SheetContent className='sm:max-w-2/3 p-6 overflow-y-scroll '>
           <SheetHeader>
             <SheetTitle>Whitelist Address List</SheetTitle>
           </SheetHeader>
 
-          <div className="w-full mt-3">
+          <div className='w-full mt-3'>
             {selectedParticipant && (
               <SelectedParticipantDetails
                 selection={selectedParticipant}

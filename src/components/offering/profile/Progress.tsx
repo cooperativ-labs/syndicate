@@ -21,10 +21,10 @@ const Progress: React.FunctionComponent<ProgressProps> = ({
 }) => {
   const stage = offeringStage ?? propertyInvestmentStage;
   return (
-    <div data-test="atom-progress" className={cn(className, 'items-center grow')}>
-      <div className="flex text-sm md:text-base flex-col mr-2 grow" style={{ minWidth: '100px' }}>
-        <span className="font-bold">Stage: {getAssetStatusOption(stage)?.name}</span>
-        <div className="w-full h-2 bg-gray-200 mt-2 rounded">
+    <div data-test='atom-progress' className={cn(className, 'items-center grow')}>
+      <div className='flex text-sm md:text-base flex-col mr-2 grow' style={{ minWidth: '100px' }}>
+        <span className='font-bold'>Stage: {getAssetStatusOption(stage)?.name}</span>
+        <div className='w-full h-2 bg-gray-200 mt-2 rounded'>
           <div
             style={{
               background: useBrandColor(brandColor, lightBrand),

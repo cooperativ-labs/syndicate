@@ -10,10 +10,10 @@ type TeamMemberListProps = TeamMemberBaseProps & {
 const TeamMemberList: FC<TeamMemberListProps> = ({ teamMembers, organizationId, isAdmin }) => {
   if (!teamMembers) return null;
   return (
-    <div className="w-full">
+    <div className='w-full'>
       {teamMembers?.map((member, i) => {
         return (
-          <div className="mb-3 gap-2" key={i}>
+          <div className='mb-3 gap-2' key={i}>
             <TeamMemberItem teamMember={member} organizationId={organizationId} isAdmin={isAdmin} />
           </div>
         );

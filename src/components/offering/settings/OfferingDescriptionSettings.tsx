@@ -31,9 +31,9 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
     <div>
       {selectedTab &&
         (showForm ? (
-          <Card className=" p-4 border-2 rounded-lg bg-white ">
-            <div className="flex justify-between items-center">
-              <h2 className="font-medium text-lg">Add description</h2>
+          <Card className=' p-4 border-2 rounded-lg bg-white '>
+            <div className='flex justify-between items-center'>
+              <h2 className='font-medium text-lg'>Add description</h2>
               <CloseButton
                 onClick={() => {
                   setShowForm(false);
@@ -52,8 +52,8 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
           </Card>
         ) : (
           <AddItemButton
-            classNames="p-3 w-full border-gray-600 text-gray-600 hover:border-gray-900 hover:text-gray-900"
-            text="Add Description"
+            classNames='p-3 w-full border-gray-600 text-gray-600 hover:border-gray-900 hover:text-gray-900'
+            text='Add Description'
             onClick={() => setShowForm(true)}
           />
         ))}
@@ -62,18 +62,18 @@ const OfferingDescriptionSettings: FC<OfferingDescriptionSettingsProps> = ({ off
 
   return (
     <div>
-      <h2 className="text-lg mb-4 md:mt-8 font-semibold">Profile tabs</h2>
-      <div className="p-3 bg-gray-50 rounded-lg flex flex-col gap-4">
+      <h2 className='text-lg mb-4 md:mt-8 font-semibold'>Profile tabs</h2>
+      <div className='p-3 bg-gray-50 rounded-lg flex flex-col gap-4'>
         <Select
-          aria-label="Which tab"
+          aria-label='Which tab'
           required
-          name="section"
+          name='section'
           onValueChange={value => {
             setSelectedTab(value as OfferingTabSectionTypes);
           }}
         >
-          <SelectTrigger className="w-fit bg-white">
-            <SelectValue placeholder="Select a tab" />
+          <SelectTrigger className='w-fit bg-white'>
+            <SelectValue placeholder='Select a tab' />
           </SelectTrigger>
           <SelectContent>
             {tabSectionOptionsOhneFinancials.map((section, i) => {

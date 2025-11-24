@@ -76,14 +76,14 @@ const NetworkIndicator: FC = () => {
     }
   };
   return (
-    <Button className="focus:outline-none">
+    <Button className='focus:outline-none'>
       <div
         className={cn(
           hoverColor,
           'flex items-center rounded-full border-2 border-gray-300 p-1 text-xs font-semibold text-gray-600'
         )}
       >
-        <div className=" mx-auto px-2">{ChainName()}</div>
+        <div className=' mx-auto px-2'>{ChainName()}</div>
         <NetworkIndicatorDot chainId={chainId} walletAddress={userWalletAddress} />
       </div>
     </Button>

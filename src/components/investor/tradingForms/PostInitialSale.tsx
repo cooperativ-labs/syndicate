@@ -214,23 +214,23 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
   };
 
   return (
-    <form className="flex flex-col gap relative" onSubmit={handleSubmit(onSubmit)}>
-      <Field className="mt-3">
-        <FieldLabel htmlFor="partition">Share class</FieldLabel>
+    <form className='flex flex-col gap relative' onSubmit={handleSubmit(onSubmit)}>
+      <Field className='mt-3'>
+        <FieldLabel htmlFor='partition'>Share class</FieldLabel>
         <FieldContent>
           <select
-            id="partition"
-            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+            id='partition'
+            className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
             aria-invalid={Boolean(errors.partition)}
             {...register('partition')}
           >
-            <option value="">Select class</option>
+            <option value=''>Select class</option>
             {partitions.map((partition, i) => (
               <option key={`${partition}-${i}`} value={partition}>
                 {stringFromBytes32(partition)}
               </option>
             ))}
-            <option value="0xNew">+ Add new class</option>
+            <option value='0xNew'>+ Add new class</option>
           </select>
           <FieldError errors={errors.partition ? [errors.partition] : undefined} />
         </FieldContent>
@@ -238,11 +238,11 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
 
       {partitionValue === '0xNew' && (
         <Field className={defaultFieldDiv}>
-          <FieldLabel htmlFor="newPartition">New class name</FieldLabel>
+          <FieldLabel htmlFor='newPartition'>New class name</FieldLabel>
           <FieldContent>
             <Input
-              id="newPartition"
-              placeholder="Class A"
+              id='newPartition'
+              placeholder='Class A'
               aria-invalid={Boolean(errors.newPartition)}
               {...register('newPartition')}
             />
@@ -252,33 +252,33 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
       )}
 
       <Field className={defaultFieldDiv}>
-        <FieldLabel htmlFor="numShares">{`Shares to list for sale (${sharesRemaining} available )`}</FieldLabel>
+        <FieldLabel htmlFor='numShares'>{`Shares to list for sale (${sharesRemaining} available )`}</FieldLabel>
         <FieldContent>
           <Input
-            id="numShares"
-            type="number"
-            placeholder="800"
+            id='numShares'
+            type='number'
+            placeholder='800'
             aria-invalid={Boolean(errors.numShares)}
             {...register('numShares')}
           />
           <FieldError errors={errors.numShares ? [errors.numShares] : undefined} />
         </FieldContent>
       </Field>
-      <div className="md:grid grid-cols-2 gap-3">
+      <div className='md:grid grid-cols-2 gap-3'>
         <Field className={defaultFieldDiv}>
-          <FieldLabel htmlFor="price">{`Price (${getCurrencyById(paymentTokenAddress)?.symbol})`}</FieldLabel>
+          <FieldLabel htmlFor='price'>{`Price (${getCurrencyById(paymentTokenAddress)?.symbol})`}</FieldLabel>
           <FieldContent>
             <Input
-              id="price"
-              type="number"
-              placeholder="1300"
+              id='price'
+              type='number'
+              placeholder='1300'
               aria-invalid={Boolean(errors.price)}
               {...register('price')}
             />
             <FieldError errors={errors.price ? [errors.price] : undefined} />
           </FieldContent>
         </Field>
-        <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText="Total sale:">
+        <NonInput className={`${defaultFieldDiv} col-span-1 pl-1`} labelText='Total sale:'>
           <>
             {watchedNumShares &&
               watchedPrice &&
@@ -288,12 +288,12 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
           </>
         </NonInput>
         <Field className={`${defaultFieldDiv} col-span-1`}>
-          <FieldLabel htmlFor="minUnits">Minimum purchase in units</FieldLabel>
+          <FieldLabel htmlFor='minUnits'>Minimum purchase in units</FieldLabel>
           <FieldContent>
             <Input
-              id="minUnits"
-              type="number"
-              placeholder="e.g. 10"
+              id='minUnits'
+              type='number'
+              placeholder='e.g. 10'
               aria-invalid={Boolean(errors.minUnits)}
               {...register('minUnits')}
             />
@@ -301,12 +301,12 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
           </FieldContent>
         </Field>
         <Field className={`${defaultFieldDiv} col-span-1`}>
-          <FieldLabel htmlFor="maxUnits">Maximum purchase in units</FieldLabel>
+          <FieldLabel htmlFor='maxUnits'>Maximum purchase in units</FieldLabel>
           <FieldContent>
             <Input
-              id="maxUnits"
-              type="number"
-              placeholder="e.g. 120"
+              id='maxUnits'
+              type='number'
+              placeholder='e.g. 120'
               aria-invalid={Boolean(errors.maxUnits)}
               {...register('maxUnits')}
             />
@@ -315,19 +315,19 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
         </Field>
       </div>
 
-      <hr className="bg-grey-600 my-3 mb-4" />
+      <hr className='bg-grey-600 my-3 mb-4' />
       {!userWalletAddress ? (
         <ChooseConnectorButton buttonText={'Connect Wallet'} />
       ) : (
         <LoadingButtonChain
-          type="submit"
+          type='submit'
           disabled={isSubmitting || buttonStep === 'step1'}
           state={buttonStep}
           idleText={formButtonText()}
-          step1Text="Creating sale..."
-          confirmedText="Confirmed!"
-          failedText="Transaction failed"
-          rejectedText="You rejected the transaction. Click here to try again."
+          step1Text='Creating sale...'
+          confirmedText='Confirmed!'
+          failedText='Transaction failed'
+          rejectedText='You rejected the transaction. Click here to try again.'
         />
       )}
     </form>

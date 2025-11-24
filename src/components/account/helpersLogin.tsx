@@ -30,8 +30,8 @@ export const GoogleButton = ({ redirectTo }: { redirectTo?: string }) => {
   const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
   return (
     <LoadingButton
-      type="button"
-      className="w-full"
+      type='button'
+      className='w-full'
       onClick={async (e: React.MouseEvent<HTMLButtonElement>) => {
         e.preventDefault(); // if inside a form
         setButtonState('loading');
@@ -45,14 +45,14 @@ export const GoogleButton = ({ redirectTo }: { redirectTo?: string }) => {
       setButtonState={setButtonState}
       text={
         <>
-          <Image src="/assets/images/icons/google.png" alt="Google" width={20} height={20} /> Login
+          <Image src='/assets/images/icons/google.png' alt='Google' width={20} height={20} /> Login
           with Google
         </>
       }
-      loadingText="Redirecting to Google..."
-      successText="Redirecting..."
-      errorText="Google sign-in failed"
-      variant="outline"
+      loadingText='Redirecting to Google...'
+      successText='Redirecting...'
+      errorText='Google sign-in failed'
+      variant='outline'
     />
   );
 };

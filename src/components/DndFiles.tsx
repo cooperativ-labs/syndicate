@@ -98,21 +98,21 @@ export default function DragAndDrop({
 
   const fileUploadDisplay = ({ fileName, fileSize }: { fileName: string; fileSize: number }) => {
     return (
-      <div className="flex items-center justify-center gap-3">
-        <FileText className="h-8 w-8 text-green-600" />
-        <div className="flex flex-col items-start text-left">
-          <span className="font-medium text-green-800">{fileName}</span>
-          <span className="text-sm text-green-600">{fileSize} KB</span>
+      <div className='flex items-center justify-center gap-3'>
+        <FileText className='h-8 w-8 text-green-600' />
+        <div className='flex flex-col items-start text-left'>
+          <span className='font-medium text-green-800'>{fileName}</span>
+          <span className='text-sm text-green-600'>{fileSize} KB</span>
         </div>
         <Button
-          variant="ghost"
-          size="sm"
+          variant='ghost'
+          size='sm'
           onClick={e => {
             e.stopPropagation();
             clearSelectedFile();
           }}
         >
-          <X className="h-4 w-4" />
+          <X className='h-4 w-4' />
         </Button>
       </div>
     );
@@ -121,11 +121,11 @@ export default function DragAndDrop({
   return (
     <div className={cn('space-y-4', className)}>
       <Input
-        type="file"
+        type='file'
         multiple={multiple}
         ref={fileInputRef}
         accept={acceptedFileTypes}
-        className="hidden"
+        className='hidden'
         onChange={handleFileChange}
       />
 
@@ -147,12 +147,12 @@ export default function DragAndDrop({
             fileUploadDisplay({ fileName: selectedFile.name, fileSize: selectedFile.size / 1024 })
           )
         ) : (
-          <div className="flex flex-col items-center justify-center gap-4">
-            <div className="space-y-2 flex items-center gap-4 ">
-              <Upload className="h-10 w-10 mx-auto pt-1 text-muted-foreground" />
-              <div className="flex flex-col items-center justify-center">
-                <p className="text-lg font-medium">{title}</p>
-                <p className="text-sm text-muted-foreground">{description}</p>
+          <div className='flex flex-col items-center justify-center gap-4'>
+            <div className='space-y-2 flex items-center gap-4 '>
+              <Upload className='h-10 w-10 mx-auto pt-1 text-muted-foreground' />
+              <div className='flex flex-col items-center justify-center'>
+                <p className='text-lg font-medium'>{title}</p>
+                <p className='text-sm text-muted-foreground'>{description}</p>
               </div>
             </div>
             {/* {uploadButtonState === 'loading' && ( */}

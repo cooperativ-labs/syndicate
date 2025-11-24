@@ -132,11 +132,11 @@ const ForceTransferForm = ({
         <Label>Share class</Label>
         <Controller
           control={control}
-          name="partition"
+          name='partition'
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Select class" />
+                <SelectValue placeholder='Select class' />
               </SelectTrigger>
               <SelectContent>
                 {partitions.map((p, i) => (
@@ -149,15 +149,15 @@ const ForceTransferForm = ({
           )}
         />
         {formState.errors.partition && (
-          <div className="text-sm text-red-500 mt-1">{formState.errors.partition.message}</div>
+          <div className='text-sm text-red-500 mt-1'>{formState.errors.partition.message}</div>
         )}
       </div>
 
       <div className={'mt-3'}>
         <Label>{`Amount to transfer (${targetBalance} available)`}</Label>
-        <Input type="number" placeholder="5" aria-label="Amount" {...register('amount')} />
+        <Input type='number' placeholder='5' aria-label='Amount' {...register('amount')} />
         {formState.errors.amount && (
-          <div className="text-sm text-red-500 mt-1">{formState.errors.amount.message}</div>
+          <div className='text-sm text-red-500 mt-1'>{formState.errors.amount.message}</div>
         )}
       </div>
 
@@ -165,11 +165,11 @@ const ForceTransferForm = ({
         <Label>Receives Shares</Label>
         <Controller
           control={control}
-          name="recipient"
+          name='recipient'
           render={({ field }) => (
             <Select value={field.value} onValueChange={field.onChange}>
               <SelectTrigger>
-                <SelectValue placeholder="Select recipient" />
+                <SelectValue placeholder='Select recipient' />
               </SelectTrigger>
               <SelectContent>
                 {recipientOptions?.map((participant, i) => {
@@ -188,7 +188,7 @@ const ForceTransferForm = ({
           )}
         />
         {formState.errors.recipient && (
-          <div className="text-sm text-red-500 mt-1">{formState.errors.recipient.message}</div>
+          <div className='text-sm text-red-500 mt-1'>{formState.errors.recipient.message}</div>
         )}
       </div>
 
@@ -196,7 +196,7 @@ const ForceTransferForm = ({
         <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
       ) : (
         <LoadingButton
-          variant="destructive"
+          variant='destructive'
           buttonState={buttonState}
           setButtonState={setButtonState}
           text={
@@ -204,12 +204,12 @@ const ForceTransferForm = ({
               ? `Force Transfer to ${addressWithoutEns({ address: watchedRecipient as String0x })}`
               : 'Force Transfer'
           }
-          loadingText="Transferring..."
-          successText="Shares transferred!"
-          errorText="Transaction failed"
+          loadingText='Transferring...'
+          successText='Shares transferred!'
+          errorText='Transaction failed'
           reset
-          className="mt-2 w-full"
-          type="submit"
+          className='mt-2 w-full'
+          type='submit'
         />
       )}
     </form>

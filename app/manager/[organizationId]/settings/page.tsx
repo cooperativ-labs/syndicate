@@ -13,7 +13,7 @@ const OrganizationSettingsPage = async ({
   const organizationUser = await getOrganizationUser(organizationId);
 
   return (
-    <div data-test="component-landing">
+    <div data-test='component-landing'>
       <WithAuthentication>
         <OrganizationSettings organization={organization} organizationUser={organizationUser} />
       </WithAuthentication>

@@ -67,17 +67,17 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
   };
 
   return (
-    <div className="col-span-2">
-      <div className="mt-4 border-2 rounded-md px-2">
+    <div className='col-span-2'>
+      <div className='mt-4 border-2 rounded-md px-2'>
         <SectionBlock
-          className="font-bold"
+          className='font-bold'
           sectionTitle={'Attach links and documents'}
           mini
           asAccordion
         >
-          <hr className="mt-1 mb-2" />
+          <hr className='mt-1 mb-2' />
           <FileUpload
-            uploaderText="Add Offering Document"
+            uploaderText='Add Offering Document'
             onSubmit={handleUploadSubmit}
             accept={[
               'pdf',
@@ -89,7 +89,7 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
               'md'
             ]}
           />
-          <div className="grid grid-cols-3 gap-3 mb-2">
+          <div className='grid grid-cols-3 gap-3 mb-2'>
             <div
               className={cn(
                 fileFormat === DocumentFormat.VIDEO && 'bg-gray-600 text-white',
@@ -119,32 +119,32 @@ const DocumentAdder: FC<DocumentAdderProps> = ({ offeringId, entityId }) => {
             </div>
           </div>
           {fileFormat !== undefined && (
-            <form className="flex flex-col items-center">
-              <div className="w-full mb-2">
+            <form className='flex flex-col items-center'>
+              <div className='w-full mb-2'>
                 <Input
                   {...register('title', { required: 'Please title this document.' })}
-                  className="bg-opacity-0"
-                  placeholder="Title"
+                  className='bg-opacity-0'
+                  placeholder='Title'
                 />
                 {errors.title && (
-                  <div className="text-sm text-red-500 mt-1">{errors.title.message}</div>
+                  <div className='text-sm text-red-500 mt-1'>{errors.title.message}</div>
                 )}
               </div>
-              <div className="w-full mb-2">
+              <div className='w-full mb-2'>
                 <Input
                   {...register('docUrl', { required: 'URL is required.' })}
-                  className="bg-opacity-0"
-                  placeholder="URL"
+                  className='bg-opacity-0'
+                  placeholder='URL'
                 />
                 {errors.docUrl && (
-                  <div className="text-sm text-red-500 mt-1">{errors.docUrl.message}</div>
+                  <div className='text-sm text-red-500 mt-1'>{errors.docUrl.message}</div>
                 )}
               </div>
 
               <LoadingButton
                 onClick={handleSubmit(onSubmit)}
                 disabled={isSubmitting}
-                className="mb-2 bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase px-2 h-11 rounded w-full"
+                className='mb-2 bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase px-2 h-11 rounded w-full'
                 text={`Link ${getDocFormatOption(fileFormat)?.name}`}
                 loadingText={`Linking ...`}
                 buttonState={buttonState}

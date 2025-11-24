@@ -8,7 +8,7 @@ const CreateOfferingPage = async ({ params }: { params: Promise<{ organizationId
   const legalEntities = await getSimpleEntitiesByOrganizationId(organizationId);
 
   return (
-    <div data-test="component-create-project-page" className="h-full flex">
+    <div data-test='component-create-project-page' className='h-full flex'>
       <CreateOffering legalEntities={legalEntities} />
     </div>
   );

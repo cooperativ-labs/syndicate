@@ -54,15 +54,15 @@ const CreateDistributionContractForm: FC<CreateDistributionContractFormProps> = 
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap relative">
+    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap relative'>
       <LoadingButtonChain
-        type="submit"
+        type='submit'
         state={buttonStep}
         idleText={`Publish distribution contract on ${chainName}`}
-        step1Text="Deploying (check status in your wallet)"
-        confirmedText="Confirmed!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        step1Text='Deploying (check status in your wallet)'
+        confirmedText='Confirmed!'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </form>
   );
@@ -135,8 +135,8 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
 
   return (
     <div>
-      <h1 className="font-semibold text-lg">Deploy distribution contract</h1>
-      <p className="text-sm text-gray-500 mb-4">
+      <h1 className='font-semibold text-lg'>Deploy distribution contract</h1>
+      <p className='text-sm text-gray-500 mb-4'>
         This contract will allow you to distribute dividends to your shareholders.
       </p>
       <div>

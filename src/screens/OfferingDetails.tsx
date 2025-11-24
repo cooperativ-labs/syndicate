@@ -138,11 +138,11 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     !details.priceStart && !details.numUnits && !details.investmentCurrency;
 
   return (
-    <div className="flex flex-col h-full">
-      <div className="md:mx-4">
+    <div className='flex flex-col h-full'>
+      <div className='md:mx-4'>
         <AlertBanner
           show={hasContract && !contractManagerMatches && !isLoading}
-          color="orange-600"
+          color='orange-600'
           text={`${
             isContractOwner
               ? 'Your account does not manage this offering, but the connected wallet manages the associated shares.'
@@ -151,12 +151,12 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
         />
         <AlertBanner
           show={!swapContractMatches && contractMatchesCurrentChain}
-          color="orange-600"
+          color='orange-600'
           text={`The swap contract for this offering does not match the share contract. Please contact Cooperativ Support.`}
         />
         <AlertBanner
           show={!contractMatchesCurrentChain}
-          color="orange-600"
+          color='orange-600'
           text={`The share contract for this offering is not on the chain to which your wallet is currently connected. Please which to ${
             MatchSupportedChains(offeringSmartContracts?.shareContract.cryptoAddress.chain_id || 0)
               ?.name
@@ -164,7 +164,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
         />
         {/* MAIN CONTENT  */}
 
-        <TwoColumnLayout twoThirdsLayout gap="12">
+        <TwoColumnLayout twoThirdsLayout gap='12'>
           {/* Slot 1 */}
           <DashboardCard>
             <OfferingDashboardTitle
@@ -179,7 +179,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
 
-            <hr className="my-5" />
+            <hr className='my-5' />
             {showBasicOfferingDetailsForm ? (
               <OfferingBasicDetailsForm
                 offering={offering}
@@ -188,7 +188,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
               />
             ) : (
               <OfferingDetailsDisplay
-                className="my-6"
+                className='my-6'
                 offering={offering}
                 currentSalePrice={currentSalePrice}
                 isOfferingManager={isOfferingManager}
@@ -201,25 +201,25 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
               />
             )}
 
-            <hr className="my-10" />
+            <hr className='my-10' />
             {isOfferingManager && (
-              <div className="flex items-center mt-10 gap-3">
+              <div className='flex items-center mt-10 gap-3'>
                 <SheetButtonRight
-                  title="Offering Financials"
-                  buttonText="Edit Syndication Financials"
+                  title='Offering Financials'
+                  buttonText='Edit Syndication Financials'
                   onOpen={() => refetchTransactionHistory()}
                 >
                   <OfferingFinancialSettings offering={offering} />
                 </SheetButtonRight>
 
-                <SheetButtonRight title="Profile Details" buttonText="Edit Profile Details">
+                <SheetButtonRight title='Profile Details' buttonText='Edit Profile Details'>
                   <>
                     {userId && <OfferingProfileSettings offering={offering} userId={userId} />}
-                    <hr className="my-4" />
+                    <hr className='my-4' />
                     <OfferingDescriptionSettings offering={offering} />
                   </>
                 </SheetButtonRight>
-                <SheetButtonRight buttonText="View Transaction History" title="Transaction History">
+                <SheetButtonRight buttonText='View Transaction History' title='Transaction History'>
                   <FullTransactionHistory transferEvents={transferEvents} />
                 </SheetButtonRight>
               </div>
@@ -253,9 +253,9 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
             investmentCurrency={investment_currency}
           />
         </TwoColumnLayout>
-        <hr className="border-t-2 border-gray-100 mb-12" />
+        <hr className='border-t-2 border-gray-100 mb-12' />
 
-        <TwoColumnLayout twoThirdsLayout gap="12">
+        <TwoColumnLayout twoThirdsLayout gap='12'>
           {/* Slot 3 */}
           <div>
             {offering && (
@@ -281,14 +281,14 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
           </div>
 
           <>
-            <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Documents</h1>
+            <h1 className='text-cDarkBlue text-xl font-bold  mb-3 mt-16 '>Documents</h1>
             <DocumentList
               documents={offeringDocs}
               isOfferingManager={isOfferingManager}
               offeringId={id.toString()}
               entityId={legalEntity.id.toString()}
             />
-            <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
+            <h1 className='text-cDarkBlue text-xl font-bold  mb-3 mt-16 '>Token agreement</h1>
             {legalLinkTexts && legalLinkTexts.length > 0 && smartContractDocuments?.length > 0 && (
               <HashInstructions
                 contractDocuments={smartContractDocuments}

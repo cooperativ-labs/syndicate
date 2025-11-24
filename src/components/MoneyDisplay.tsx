@@ -32,7 +32,7 @@ const MoneyDisplay: FC<MoneyDisplayProps> = ({ amount, paymentToken, currency, c
         (currencyLogo ? (
           <img src={currencyLogo} className={'ml-1 h-4 border rounded-full'} />
         ) : (
-          <span className="text-xs ">{currencySymbol} </span>
+          <span className='text-xs '>{currencySymbol} </span>
         ))}
     </div>
   );

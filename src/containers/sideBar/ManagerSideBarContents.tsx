@@ -16,15 +16,15 @@ type ManagerSideBarContentsProps = {
 
 const ManagerSideBarContents: FC<ManagerSideBarContentsProps> = ({ organizationId }) => {
   return (
-    <div className="flex flex-col mr-2">
-      <ManagerSidebarItem link={`/manager/${organizationId}/overview`} title="Overview" />
-      <ManagerSidebarItem link={`/manager/${organizationId}/offerings`} title="Offerings" />
-      <ManagerSidebarItem link={`/manager/${organizationId}/entities`} title="Entities" />
-      <ManagerSidebarItem link={`/manager/${organizationId}/settings`} title="Settings" />
+    <div className='flex flex-col mr-2'>
+      <ManagerSidebarItem link={`/manager/${organizationId}/overview`} title='Overview' />
+      <ManagerSidebarItem link={`/manager/${organizationId}/offerings`} title='Offerings' />
+      <ManagerSidebarItem link={`/manager/${organizationId}/entities`} title='Entities' />
+      <ManagerSidebarItem link={`/manager/${organizationId}/settings`} title='Settings' />
       {/* <ManagerSidebarItem link={`/marketplace`} title="Marketplace" /> */}
 
-      <div className="md:hidden ml-4">
-        <div className="flex flex-col my-4 gap-8">
+      <div className='md:hidden ml-4'>
+        <div className='flex flex-col my-4 gap-8'>
           <DisconnectButton />
           <LogoutButton />
         </div>

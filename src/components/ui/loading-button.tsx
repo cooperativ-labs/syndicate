@@ -68,19 +68,19 @@ const LoadingButton = React.forwardRef<HTMLButtonElement, LoadingButtonProps>(
         {...props}
       >
         {buttonState === 'loading' ? (
-          <span className="flex gap-2 items-center">
+          <span className='flex gap-2 items-center'>
             {(isString(loadingText) || !loadingText) && (
-              <Loader2Icon className="mr-2 h-4 w-4 animate-spin" />
+              <Loader2Icon className='mr-2 h-4 w-4 animate-spin' />
             )}
             {loadingText}
           </span>
         ) : buttonState === 'success' ? (
-          <span className="flex gap-2 justify-between items-center">
+          <span className='flex gap-2 justify-between items-center'>
             {successText}
-            {(isString(successText) || !successText) && <Check className="ml-2 h-4 w-4" />}
+            {(isString(successText) || !successText) && <Check className='ml-2 h-4 w-4' />}
           </span>
         ) : buttonState === 'error' ? (
-          <span className="flex gap-2 items-center">{errorText}</span>
+          <span className='flex gap-2 items-center'>{errorText}</span>
         ) : (
           text
         )}{' '}

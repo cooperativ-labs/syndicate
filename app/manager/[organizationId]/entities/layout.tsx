@@ -12,7 +12,7 @@ const EntitiesLayout = async ({
   const { organizationId } = await params;
   const entities = await getEntitiesByOrganizationId(organizationId);
   return (
-    <div data-test="layout-entities" className="flex flex-col w-full h-full mx-auto p-8">
+    <div data-test='layout-entities' className='flex flex-col w-full h-full mx-auto p-8'>
       <EntityProvider entities={entities}>
         <div style={{ maxWidth: '1580px' }}> {children}</div>
       </EntityProvider>

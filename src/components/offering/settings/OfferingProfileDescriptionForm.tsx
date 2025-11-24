@@ -126,35 +126,35 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
   };
 
   return (
-    <form onSubmit={handleSubmit(onFormSubmit)} className="flex flex-col relative bg">
-      <div className="grid grid-cols-2 gap-6">
+    <form onSubmit={handleSubmit(onFormSubmit)} className='flex flex-col relative bg'>
+      <div className='grid grid-cols-2 gap-6'>
         <div className={fieldDiv}>
           <FieldLabel
-            htmlFor="title"
-            className="text-sm text-blue-900 font-semibold text-opacity-80"
+            htmlFor='title'
+            className='text-sm text-blue-900 font-semibold text-opacity-80'
           >
             Section title *
           </FieldLabel>
           <Input
-            id="title"
-            type="text"
-            placeholder="e.g. About this offering"
+            id='title'
+            type='text'
+            placeholder='e.g. About this offering'
             {...register('title')}
-            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+            className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
           />
-          {errors.title && <div className="text-sm text-red-500 mt-1">{errors.title.message}</div>}
+          {errors.title && <div className='text-sm text-red-500 mt-1'>{errors.title.message}</div>}
         </div>
         <div className={fieldDiv}>
-          <FieldLabel htmlFor="tab" className="text-sm text-blue-900 font-semibold text-opacity-80">
+          <FieldLabel htmlFor='tab' className='text-sm text-blue-900 font-semibold text-opacity-80'>
             Move to a different tab *
           </FieldLabel>
           <Controller
             control={control}
-            name="tab"
+            name='tab'
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                  <SelectValue placeholder="Select a tab" />
+                <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                  <SelectValue placeholder='Select a tab' />
                 </SelectTrigger>
                 <SelectContent>
                   {tabSectionOptionsOhneFinancials.map((section, i) => (
@@ -166,28 +166,28 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
               </Select>
             )}
           />
-          {errors.tab && <div className="text-sm text-red-500 mt-1">{errors.tab.message}</div>}
+          {errors.tab && <div className='text-sm text-red-500 mt-1'>{errors.tab.message}</div>}
         </div>
       </div>
       <div className={fieldDiv}>
-        <FieldLabel htmlFor="text" className="text-sm text-blue-900 font-semibold text-opacity-80">
+        <FieldLabel htmlFor='text' className='text-sm text-blue-900 font-semibold text-opacity-80'>
           Content *
         </FieldLabel>
         <Textarea
-          id="text"
-          placeholder=""
+          id='text'
+          placeholder=''
           {...register('text')}
-          className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none h-96"
+          className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none h-96'
         />
-        {errors.text && <div className="text-sm text-red-500 mt-1">{errors.text.message}</div>}
+        {errors.text && <div className='text-sm text-red-500 mt-1'>{errors.text.message}</div>}
       </div>
-      <div className="text-sm mb-4">
+      <div className='text-sm mb-4'>
         You can add styling to this text using{' '}
-        <span className="underline">
+        <span className='underline'>
           <a
-            href="https://rawgit.com/fletcher/human-markdown-reference/master/index.html"
-            target="_blank"
-            rel="noreferrer"
+            href='https://rawgit.com/fletcher/human-markdown-reference/master/index.html'
+            target='_blank'
+            rel='noreferrer'
           >
             Markdown
           </a>
@@ -202,9 +202,9 @@ const OfferingProfileDescriptionForm: FC<OfferingProfileDescriptionFormProps> = 
         disabled={isSubmitting || buttonState === 'loading'}
         buttonState={buttonState}
         text={`Update ${isUpdate ? 'Description' : offering.name}`}
-        loadingText="Saving"
+        loadingText='Saving'
         successText={`${isUpdate ? 'Description' : offering.name} updated!`}
-        errorText="Oops. Something went wrong"
+        errorText='Oops. Something went wrong'
       />
     </form>
   );

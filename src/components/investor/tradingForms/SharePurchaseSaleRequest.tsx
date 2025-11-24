@@ -12,6 +12,7 @@ import { cn } from '@src/lib/utils';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
+import { capitalizeFirstLetter } from '@src/utils/helpersText';
 // import { isMetaMask } from '@src/web3/wagmi';
 import axios from 'axios';
 import { ChevronDown, ChevronUp } from 'lucide-react';
@@ -19,7 +20,6 @@ import React, { FC, useMemo, useState } from 'react';
 import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
 import { z } from 'zod';
-import { capitalizeFirstLetter } from '@src/utils/helpersText';
 
 import { CurrencyCodeType, Document, Offering, OfferingFull, ShareOrder } from '@/types';
 
@@ -189,20 +189,20 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
         </WalletActionModal>
       )}
 
-      <form className="" onSubmit={handleSubmit(onSubmit)} noValidate>
-        <FieldGroup className="md:grid grid-cols-3 gap-3">
+      <form className='' onSubmit={handleSubmit(onSubmit)} noValidate>
+        <FieldGroup className='md:grid grid-cols-3 gap-3'>
           <Field className={cn(defaultFieldDiv, 'col-span-2')}>
-            <FieldLabel htmlFor="numUnitsPurchase" className="text-sm font-semibold text-blue-900">
+            <FieldLabel htmlFor='numUnitsPurchase' className='text-sm font-semibold text-blue-900'>
               {`How many units would you like to ${isAskOrder ? 'purchase' : 'sell'}? (${
                 isAskOrder ? shareQtyRemaining : myShareQty
               } available)`}
             </FieldLabel>
             <FieldContent>
               <Input
-                id="numUnitsPurchase"
-                type="number"
-                placeholder="e.g. 80"
-                inputMode="numeric"
+                id='numUnitsPurchase'
+                type='number'
+                placeholder='e.g. 80'
+                inputMode='numeric'
                 aria-invalid={errors.numUnitsPurchase ? 'true' : 'false'}
                 {...register('numUnitsPurchase')}
               />
@@ -220,36 +220,36 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                 }`}
             </>
           </NonInput>
-          <div className="col-span-2" />
-          <div className="col-span-1 text-xs pl-2">{`Current balance: ${floatWithCommas(
+          <div className='col-span-2' />
+          <div className='col-span-1 text-xs pl-2'>{`Current balance: ${floatWithCommas(
             myBacBalance as string
           )}`}</div>
         </FieldGroup>
-        <hr className="my-6" />
+        <hr className='my-6' />
         {/* Disclosures */}
         <Controller
-          name="disclosures"
+          name='disclosures'
           control={control}
           render={({ field }) => (
-            <Field className="mb-3">
-              <div className="rounded-md border-2 border-gray-200 p-3 text-sm text-gray-700">
-                <div className="flex items-center gap-3">
+            <Field className='mb-3'>
+              <div className='rounded-md border-2 border-gray-200 p-3 text-sm text-gray-700'>
+                <div className='flex items-center gap-3'>
                   <Checkbox
-                    id="disclosures"
+                    id='disclosures'
                     checked={field.value}
                     onCheckedChange={checked => field.onChange(Boolean(checked))}
-                    className="mt-0.5"
+                    className='mt-0.5'
                   />
                   <FieldLabel
-                    htmlFor="disclosures"
-                    className="cursor-pointer text-sm font-semibold text-blue-900 text-opacity-80"
+                    htmlFor='disclosures'
+                    className='cursor-pointer text-sm font-semibold text-blue-900 text-opacity-80'
                   >
                     {`I have read this offering's Risks & Considerations`}
                   </FieldLabel>
                   <button
-                    type="button"
-                    className="ml-auto flex items-center gap-1 text-sm text-gray-700 hover:underline"
-                    aria-label="review application"
+                    type='button'
+                    className='ml-auto flex items-center gap-1 text-sm text-gray-700 hover:underline'
+                    aria-label='review application'
                     onClick={() => {
                       setDisclosuresOpen(!disclosuresOpen);
                       setTocOpen(false);
@@ -265,12 +265,12 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           )}
         />
         {disclosuresOpen && (
-          <div className="my-2 rounded-md bg-slate-100 p-4">
+          <div className='my-2 rounded-md bg-slate-100 p-4'>
             <PresentLegalText text={standardSaleDisclosuresText} />
-            <div className="flex">
+            <div className='flex'>
               <Button
-                variant="outline"
-                className="mt-5"
+                variant='outline'
+                className='mt-5'
                 onClick={e => {
                   e.preventDefault();
                   DownloadFile(
@@ -282,8 +282,8 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                 Download Risks & Considerations
               </Button>
               <Button
-                variant="outline"
-                className="md:ml-3 mt-5"
+                variant='outline'
+                className='md:ml-3 mt-5'
                 onClick={e => {
                   e.preventDefault();
                   setDisclosuresOpen(false);
@@ -296,28 +296,28 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
         )}
         {/* TOC SECTION */}
         <Controller
-          name="toc"
+          name='toc'
           control={control}
           render={({ field }) => (
-            <Field className="mb-5">
-              <div className="rounded-md border-2 border-gray-200 p-3 text-sm text-gray-700">
-                <div className="flex items-center gap-3">
+            <Field className='mb-5'>
+              <div className='rounded-md border-2 border-gray-200 p-3 text-sm text-gray-700'>
+                <div className='flex items-center gap-3'>
                   <Checkbox
-                    id="toc"
+                    id='toc'
                     checked={field.value}
                     onCheckedChange={checked => field.onChange(Boolean(checked))}
-                    className="mt-0.5"
+                    className='mt-0.5'
                   />
                   <FieldLabel
-                    htmlFor="toc"
-                    className="cursor-pointer text-sm font-semibold text-blue-900 text-opacity-80"
+                    htmlFor='toc'
+                    className='cursor-pointer text-sm font-semibold text-blue-900 text-opacity-80'
                   >
                     {`I accept this offering's Terms and Conditions`}
                   </FieldLabel>
                   <button
-                    type="button"
-                    className="ml-auto flex items-center gap-1 text-sm text-gray-700 hover:underline"
-                    aria-label="review application"
+                    type='button'
+                    className='ml-auto flex items-center gap-1 text-sm text-gray-700 hover:underline'
+                    aria-label='review application'
                     onClick={() => {
                       setTocOpen(!tocOpen);
                       setDisclosuresOpen(false);
@@ -333,12 +333,12 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           )}
         />
         {tocOpen && documents.length > 0 && (
-          <div className="my-2 rounded-md bg-slate-100 p-4">
+          <div className='my-2 rounded-md bg-slate-100 p-4'>
             <PresentLegalText text={documents[0].text} />
-            <div className="flex">
+            <div className='flex'>
               <Button
-                variant="outline"
-                className="mt-5"
+                variant='outline'
+                className='mt-5'
                 onClick={e => {
                   e.preventDefault();
                   DownloadFile(
@@ -350,8 +350,8 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
                 Download Terms & Conditions
               </Button>
               <Button
-                variant="outline"
-                className="md:ml-3 mt-5"
+                variant='outline'
+                className='md:ml-3 mt-5'
                 onClick={e => {
                   e.preventDefault();
                   setTocOpen(false);
@@ -363,15 +363,15 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           </div>
         )}
         <LoadingButtonChain
-          type="submit"
+          type='submit'
           disabled={isSubmitting || buttonStep === 'step1'}
           state={buttonStep}
           idleText={formButtonText(watchedNumUnitsPurchase)}
           step1Text={txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'}
-          step2Text="Executing transaction..."
-          confirmedText="Executed!"
-          failedText="Transaction failed"
-          rejectedText="You rejected the transaction. Click here to try again."
+          step2Text='Executing transaction...'
+          confirmedText='Executed!'
+          failedText='Transaction failed'
+          rejectedText='You rejected the transaction. Click here to try again.'
         />
       </form>
     </>

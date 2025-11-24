@@ -86,18 +86,18 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
   const currencySuffix = ` (${getCurrencyOption(entityOperatingCurrency)?.symbol ?? ''})`;
 
   return (
-    <form className="flex flex-col gap relative" onSubmit={handleSubmit(onSubmit)}>
-      <hr className="my-6" />
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="investmentStatus">Status of property</FieldLabel>
+    <form className='flex flex-col gap relative' onSubmit={handleSubmit(onSubmit)}>
+      <hr className='my-6' />
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='investmentStatus'>Status of property</FieldLabel>
         <FieldContent>
           <select
-            id="investmentStatus"
-            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+            id='investmentStatus'
+            className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
             aria-invalid={Boolean(errors.investmentStatus)}
             {...register('investmentStatus')}
           >
-            <option value="">Select a status</option>
+            <option value=''>Select a status</option>
             {assetStatusOptions.map(option => (
               <option key={option.value} value={option.value}>
                 {option.name}
@@ -108,16 +108,16 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
         </FieldContent>
       </Field>
 
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="propertyType">Type of property</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='propertyType'>Type of property</FieldLabel>
         <FieldContent>
           <select
-            id="propertyType"
-            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+            id='propertyType'
+            className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
             aria-invalid={Boolean(errors.propertyType)}
             {...register('propertyType')}
           >
-            <option value="">Select an entity</option>
+            <option value=''>Select an entity</option>
             {propertyTypeOptions.map(option => (
               <option key={option.value} value={option.value}>
                 {option.name}
@@ -128,12 +128,12 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
         </FieldContent>
       </Field>
 
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="description">Describe this property generally</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='description'>Describe this property generally</FieldLabel>
         <FieldContent>
           <Textarea
-            id="description"
-            placeholder="e.g. Super sweet home with super sweet views"
+            id='description'
+            placeholder='e.g. Super sweet home with super sweet views'
             aria-invalid={Boolean(errors.description)}
             {...register('description')}
           />
@@ -141,12 +141,12 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
         </FieldContent>
       </Field>
 
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="amenitiesDescription">Describe this property's amenities</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='amenitiesDescription'>Describe this property's amenities</FieldLabel>
         <FieldContent>
           <Textarea
-            id="amenitiesDescription"
-            placeholder="e.g. swimming pool, 3 parking spaces, central air-conditioning"
+            id='amenitiesDescription'
+            placeholder='e.g. swimming pool, 3 parking spaces, central air-conditioning'
             aria-invalid={Boolean(errors.amenitiesDescription)}
             {...register('amenitiesDescription')}
           />
@@ -156,34 +156,34 @@ const UpdatePropertyDescription: FC<UpdatePropertyDescriptionType> = ({ property
         </FieldContent>
       </Field>
 
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="downPayment">{`Down payment${currencySuffix}`}</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='downPayment'>{`Down payment${currencySuffix}`}</FieldLabel>
         <FieldContent>
-          <Input id="downPayment" type="number" {...register('downPayment')} />
+          <Input id='downPayment' type='number' {...register('downPayment')} />
         </FieldContent>
       </Field>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="lenderFees">{`Lender's fees${currencySuffix}`}</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='lenderFees'>{`Lender's fees${currencySuffix}`}</FieldLabel>
         <FieldContent>
-          <Input id="lenderFees" type="number" {...register('lenderFees')} />
+          <Input id='lenderFees' type='number' {...register('lenderFees')} />
         </FieldContent>
       </Field>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="closingCosts">{`Closing costs${currencySuffix}`}</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='closingCosts'>{`Closing costs${currencySuffix}`}</FieldLabel>
         <FieldContent>
-          <Input id="closingCosts" type="number" {...register('closingCosts')} />
+          <Input id='closingCosts' type='number' {...register('closingCosts')} />
         </FieldContent>
       </Field>
       <LoadingButton
-        type="submit"
+        type='submit'
         buttonState={buttonState}
         setButtonState={setButtonState}
         text={`Update ${property.address?.line1}`}
-        loadingText="Updating property..."
-        successText="Property updated!"
-        errorText="Failed to update property"
+        loadingText='Updating property...'
+        successText='Property updated!'
+        errorText='Failed to update property'
         reset
-        className="mt-8"
+        className='mt-8'
       />
     </form>
   );

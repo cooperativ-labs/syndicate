@@ -30,7 +30,7 @@ const ClientOrganizationPage: React.FC = () => {
   const isParticipant = orgParticipants?.includes(true);
 
   return (
-    <div data-test="component-project" className="bg-gray-50">
+    <div data-test='component-project' className='bg-gray-50'>
       {isParticipant ? (
         <PortalOrganization organization={organization} />
       ) : (

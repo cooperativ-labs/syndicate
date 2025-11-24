@@ -74,20 +74,20 @@ const AccessCodeForm: FC<AccessCodeFormProps> = ({
           <Field>
             <Input
               className={cn(fieldClasses, 'max-w-[60px] placeholder:text-gray-500')}
-              type="text"
+              type='text'
               placeholder={isOfferingManager ? '1234' : 'e.g. 1234'}
               {...register('code')}
             />
             {errors.code && !mini && (
-              <FieldError errors={[{ message: errors.code.message }]} className="absolute mt-1" />
+              <FieldError errors={[{ message: errors.code.message }]} className='absolute mt-1' />
             )}
           </Field>
           <Button
-            type="submit"
+            type='submit'
             disabled={isSubmitting}
             className={cn('hover:cursor-pointer', buttonClasses)}
           >
-            {mini ? 'Set access code' : <ChevronRight className="mr-2 text-lg" />}
+            {mini ? 'Set access code' : <ChevronRight className='mr-2 text-lg' />}
           </Button>
         </form>
       )}

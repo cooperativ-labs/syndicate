@@ -38,13 +38,7 @@ export default function UpdateInvestorForm({
       jurProvince: jurisdiction?.province ?? '',
       externalId: participantExternalId ?? ''
     }),
-    [
-      participantId,
-      participantName,
-      jurisdiction?.country,
-      jurisdiction?.province,
-      participantExternalId
-    ]
+    [participantName, jurisdiction?.country, jurisdiction?.province, participantExternalId]
   );
 
   const {
@@ -75,12 +69,12 @@ export default function UpdateInvestorForm({
   });
 
   return (
-    <form className="flex w-full">
+    <form className='flex w-full'>
       <FieldGroup>
-        <FieldSet className="flex flex-row items-center gap-2">
+        <FieldSet className='flex flex-row items-center gap-2'>
           {itemType === 'name' && (
             <Field>
-              <Input className="bg-opacity-0" aria-label="participant name" {...register('name')} />
+              <Input className='bg-opacity-0' aria-label='participant name' {...register('name')} />
             </Field>
           )}
           {itemType === 'jurisdiction' && (
@@ -95,19 +89,19 @@ export default function UpdateInvestorForm({
           {itemType === 'externalId' && (
             <Field>
               <Input
-                className="bg-opacity-0"
-                aria-label="participant external id"
+                className='bg-opacity-0'
+                aria-label='participant external id'
                 {...register('externalId')}
               />
             </Field>
           )}
 
-          <Button onClick={onSubmit} disabled={isSubmitting} variant="default">
+          <Button onClick={onSubmit} disabled={isSubmitting} variant='default'>
             Save
           </Button>
           <Button
-            type="button"
-            variant="secondary"
+            type='button'
+            variant='secondary'
             onClick={() => {
               setSpecEditOn('none');
               reset(defaultValues);

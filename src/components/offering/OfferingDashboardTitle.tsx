@@ -97,25 +97,25 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
     };
 
     return (
-      <form onSubmit={handleSubmit(onSubmit)} className="flex items-center gap-2">
-        <Field className="flex-1">
+      <form onSubmit={handleSubmit(onSubmit)} className='flex items-center gap-2'>
+        <Field className='flex-1'>
           <FieldContent>
             <Input
               {...register('name', {
                 required: 'Please name this syndication.'
               })}
-              type="text"
-              placeholder="Cosy Apartments"
+              type='text'
+              placeholder='Cosy Apartments'
               required
             />
             {errors.name && <FieldError errors={[{ message: errors.name.message }]} />}
           </FieldContent>
         </Field>
-        <Button type="submit" disabled={isSubmitting}>
+        <Button type='submit' disabled={isSubmitting}>
           Save
         </Button>
         <Button
-          variant="secondary"
+          variant='secondary'
           onClick={e => {
             e.preventDefault();
             setNameEditOn(false);
@@ -131,7 +131,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
 
   const [showVisibilitySettings, setShowVisibilitySettings] = useState<boolean>(false);
   const visibilitySettings = (
-    <div className="absolute right-4 top-1 flex min-w-max items-center">
+    <div className='absolute right-4 top-1 flex min-w-max items-center'>
       {showVisibilitySettings ? (
         <>
           {isOfferingManager && profileVisibility && (
@@ -143,7 +143,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             />
           )}
           {isOfferingManager && (
-            <div className="min-w-max">
+            <div className='min-w-max'>
               <ProfileVisibilityToggle
                 profileVisibility={profileVisibility}
                 handleToggle={handleToggle}
@@ -152,20 +152,20 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           )}
         </>
       ) : (
-        <Button variant="outline" size="sm" onClick={() => setShowVisibilitySettings(true)}>
+        <Button variant='outline' size='sm' onClick={() => setShowVisibilitySettings(true)}>
           Set profile visibility
         </Button>
       )}
       {profileVisibility && (
-        <a href={`/portal/${organizationId}/${offeringId}`} target="_blank" rel="noreferrer">
-          <SquareArrowOutUpRight className="text-lg ml-2" />
+        <a href={`/portal/${organizationId}/${offeringId}`} target='_blank' rel='noreferrer'>
+          <SquareArrowOutUpRight className='text-lg ml-2' />
         </a>
       )}
     </div>
   );
 
   return (
-    <div className="flex justify-between">
+    <div className='flex justify-between'>
       <div>
         {nameEditOn ? (
           nameChangeForm
@@ -183,12 +183,12 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
             {offeringName}
           </h1>
         )}
-        <div className="flex items-center text-sm text-gray-700">
+        <div className='flex items-center text-sm text-gray-700'>
           Copy investor portal link
           <Button
-            className="text-sm text-gray-700 border-0 shadow-none"
-            variant="outline"
-            size="sm"
+            className='text-sm text-gray-700 border-0 shadow-none'
+            variant='outline'
+            size='sm'
             onClick={e => {
               e.stopPropagation();
               navigator.clipboard.writeText(
@@ -204,7 +204,7 @@ const OfferingDashboardTitle: FC<OfferingDashboardTitleProps> = ({
           </Button>
         </div>
       </div>
-      <div className="relative flex p-2 items-center font-semibold text-gray-600 gap-2">
+      <div className='relative flex p-2 items-center font-semibold text-gray-600 gap-2'>
         {visibilitySettings}
       </div>
     </div>

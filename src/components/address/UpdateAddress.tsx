@@ -121,13 +121,13 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, setModal }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 relative">
+    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4 relative'>
       <Field>
         <FieldLabel>Address label</FieldLabel>
         <FieldContent>
           <Input
             {...register('addressLabel', { required: 'Please include a label.' })}
-            placeholder="e.g. HQ"
+            placeholder='e.g. HQ'
           />
           {errors.addressLabel && (
             <FieldError errors={[{ message: errors.addressLabel.message }]} />
@@ -143,13 +143,13 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, setModal }) => {
             setAddress={setSelectedAddress}
             searchInput={searchInput}
             setSearchInput={setSearchInput}
-            dialogTitle="Update Address"
+            dialogTitle='Update Address'
           />
         </FieldContent>
       </Field>
 
       {hasCoordinates && (
-        <div className="mt-4">
+        <div className='mt-4'>
           <GoogleMap
             mapContainerStyle={{ height: '300px', width: '100%' }}
             center={latLang}
@@ -160,7 +160,7 @@ const UpdateAddress: FC<UpdateAddressType> = ({ address, setModal }) => {
         </div>
       )}
 
-      <Button type="submit" disabled={isSubmitting}>
+      <Button type='submit' disabled={isSubmitting}>
         {isSubmitting ? 'Updating...' : `Update ${address?.line1 ?? 'address'}`}
       </Button>
     </form>

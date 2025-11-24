@@ -55,13 +55,13 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
 
   const getChainLogo = (chainId: number | null) => {
     return (
-      <div className="flex">
+      <div className='flex'>
         only:{' '}
         {MatchSupportedChains(chainId)?.icon ? (
           <div>
             <img
               src={MatchSupportedChains(chainId)?.icon}
-              className="ml-1 h-6"
+              className='ml-1 h-6'
               alt={name as string}
             />{' '}
           </div>
@@ -93,8 +93,8 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
 
   return (
     <div className={cn(withEdit && 'grid grid-cols-9 gap-3 items-center')}>
-      <div className="p-3 border-2 rounded-lg col-span-8">
-        <div className="flex justify-between">
+      <div className='p-3 border-2 rounded-lg col-span-8'>
+        <div className='flex justify-between'>
           {name}{' '}
           {type === CryptoAddressType.CONTRACT ? (
             getChainLogo(chain_id)
@@ -102,50 +102,50 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
             <div> all EVM chains</div>
           )}{' '}
           {withEdit && (
-            <div className="items-center">
+            <div className='items-center'>
               <MarkPublic isPublic={is_public} />
             </div>
           )}
         </div>
-        <div className="md:w-auto mt-3">
+        <div className='md:w-auto mt-3'>
           <FormattedCryptoAddress
             chainId={chain_id}
             address={address}
-            className="text-large font-bold"
+            className='text-large font-bold'
             withCopy
             showFull
           />
         </div>
-        {description && <div className="mt-1 text-sm text-gray-700">{description}</div>}
+        {description && <div className='mt-1 text-sm text-gray-700'>{description}</div>}
 
         {editOn && (
-          <div className="bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6">
-            <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-              <div className="grid grid-cols-4 gap-3 md:gap-8 items-center">
-                <Field className="col-span-3">
+          <div className='bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6'>
+            <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
+              <div className='grid grid-cols-4 gap-3 md:gap-8 items-center'>
+                <Field className='col-span-3'>
                   <FieldLabel htmlFor={`wallet-name-${id}`}>Name</FieldLabel>
                   <FieldContent>
                     <Input
                       id={`wallet-name-${id}`}
-                      placeholder="Personal"
+                      placeholder='Personal'
                       aria-invalid={Boolean(errors.name)}
                       {...register('name')}
                     />
                     <FieldError errors={errors.name ? [errors.name] : undefined} />
                   </FieldContent>
                 </Field>
-                <Field className="col-span-1">
+                <Field className='col-span-1'>
                   <FieldLabel htmlFor={`wallet-public-${id}`}>Public</FieldLabel>
                   <FieldContent>
                     <Controller
                       control={control}
-                      name="isPublic"
+                      name='isPublic'
                       render={({ field }) => (
                         <Checkbox
                           id={`wallet-public-${id}`}
                           checked={field.value}
                           onCheckedChange={checked => field.onChange(Boolean(checked))}
-                          aria-label="toggle wallet visibility"
+                          aria-label='toggle wallet visibility'
                         />
                       )}
                     />
@@ -154,9 +154,9 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                 </Field>
               </div>
               <button
-                type="submit"
+                type='submit'
                 disabled={isSubmitting}
-                className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4 rounded p-2"
+                className='bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4 rounded p-2'
               >
                 Save
               </button>
@@ -170,7 +170,7 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                   'font-bold uppercase mt-4 rounded p-2 w-full'
                 )}
                 disabled={userWalletAddress === wallet.address}
-                aria-label="remove wallet from account"
+                aria-label='remove wallet from account'
                 onClick={handleDeleteCryptoAddress}
               >
                 {userWalletAddress === wallet.address
@@ -182,12 +182,12 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
         )}
       </div>
       {withEdit && (
-        <div className="flex col-span-1 justify-center">
-          <button aria-label="edit address info" onClick={() => setEditOn(!editOn)}>
+        <div className='flex col-span-1 justify-center'>
+          <button aria-label='edit address info' onClick={() => setEditOn(!editOn)}>
             {editOn ? (
-              <X className="text-xl text-gray-600 mr-2" />
+              <X className='text-xl text-gray-600 mr-2' />
             ) : (
-              <Pencil className="text-xl text-gray-600 mr-2" />
+              <Pencil className='text-xl text-gray-600 mr-2' />
             )}
           </button>
         </div>

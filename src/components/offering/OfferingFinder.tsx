@@ -14,16 +14,16 @@ const OfferingFinder: FC = () => {
 
   return (
     <form
-      className="w-full md:grid grid-cols-3 gap-2 items-center"
+      className='w-full md:grid grid-cols-3 gap-2 items-center'
       onSubmit={handleSubmit(values => router.push(`/offerings/${values.offeringId}`))}
     >
-      <div className="col-span-2">
+      <div className='col-span-2'>
         <Input {...register('offeringId')} />
       </div>
       <Button
-        type="submit"
+        type='submit'
         disabled={formState.isSubmitting}
-        className="bg-cLightBlue hover:bg-blue-800 text-white font-bold text-sm uppercase mt-4 md:mt-0 rounded p-4 w-full "
+        className='bg-cLightBlue hover:bg-blue-800 text-white font-bold text-sm uppercase mt-4 md:mt-0 rounded p-4 w-full '
       >
         Find Offering
       </Button>

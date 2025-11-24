@@ -14,7 +14,7 @@ const DashboardCard: FC<DashboardCardProps> = ({ children, onClick, ...rest }) =
   const { className, style, ...props } = rest;
   return (
     <div
-      data-test="component-card"
+      data-test='component-card'
       className={cn(`${className} bg-white shadow-box rounded-xl p-6`)}
       style={style}
       onClick={onClick}

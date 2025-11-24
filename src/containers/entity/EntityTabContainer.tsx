@@ -65,24 +65,24 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({
       </div>
       <div>
         {activeTab === 'offerings' && (
-          <div className="mt-8">
+          <div className='mt-8'>
             <OfferingsList offerings={offerings} organizationId={organizationId} />
           </div>
         )}{' '}
         {activeTab === 'properties' && properties && (
-          <div className="mt-8">
-            <h1 className="text-cDarkBlue text-2xl font-medium   mb-6 ">Properties</h1>
+          <div className='mt-8'>
+            <h1 className='text-cDarkBlue text-2xl font-medium   mb-6 '>Properties</h1>
             <PropertyCardList properties={properties} operatingCurrency={operatingCurrency} />
           </div>
         )}
         {activeTab === 'subsidiaries' && (
-          <div className="mt-8">
+          <div className='mt-8'>
             <EntitiesList entities={subsidiaries} organizationId={organizationId} />
           </div>
         )}
         {activeTab === 'documents' && (
-          <div className="mt-8">
-            <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Documents</h2>
+          <div className='mt-8'>
+            <h2 className='text-cDarkBlue text-xl font-bold  mb-3 '>Documents</h2>
             <DocumentList documents={documents || []} isOfferingManager={false} hideUpload />
           </div>
         )}

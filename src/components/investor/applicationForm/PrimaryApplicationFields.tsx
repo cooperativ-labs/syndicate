@@ -28,22 +28,22 @@ const PrimaryApplicationFields = () => {
     return (
       <>
         <SelectField
-          name="purchaseMethod"
-          label="How are these units being purchased?"
-          placeholder="Select purchase method"
+          name='purchaseMethod'
+          label='How are these units being purchased?'
+          placeholder='Select purchase method'
           required
           options={purchaseMethodOptions}
         />
         <TextField
-          name="purchaserEntityManager"
-          label="Name of purchasing entity manager"
-          placeholder="e.g. Moritz Zimmerman"
+          name='purchaserEntityManager'
+          label='Name of purchasing entity manager'
+          placeholder='e.g. Moritz Zimmerman'
           required
         />
         <TextField
-          name="purchaserEntityManagerTitle"
-          label="Title of manager"
-          placeholder="e.g. President"
+          name='purchaserEntityManagerTitle'
+          label='Title of manager'
+          placeholder='e.g. President'
           required
         />
       </>
@@ -52,9 +52,9 @@ const PrimaryApplicationFields = () => {
 
   return (
     <TextField
-      name="purchaserTaxState"
-      label="In which state, if any, do you pay income tax?"
-      placeholder="e.g. Florida"
+      name='purchaserTaxState'
+      label='In which state, if any, do you pay income tax?'
+      placeholder='e.g. Florida'
       required
     />
   );

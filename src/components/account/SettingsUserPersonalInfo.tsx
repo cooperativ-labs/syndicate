@@ -50,17 +50,17 @@ const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ profile }) 
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col">
+    <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col'>
       <FieldGroup>
-        <FieldLegend variant="label">Personal Information</FieldLegend>
+        <FieldLegend variant='label'>Personal Information</FieldLegend>
         <FieldSet>
           <Controller
             control={form.control}
-            name="name"
+            name='name'
             render={({ field }) => (
               <Field>
                 <FieldLabel>Full name *</FieldLabel>
-                <Input type="text" placeholder="e.g. Moritz Zimmermann" {...field} />
+                <Input type='text' placeholder='e.g. Moritz Zimmermann' {...field} />
                 <FieldError
                   errors={form.formState.errors.name ? [form.formState.errors.name] : undefined}
                 />
@@ -69,13 +69,13 @@ const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ profile }) 
           />
           <Controller
             control={form.control}
-            name="image"
+            name='image'
             render={({ field }) => (
               <Field>
                 <FieldLabel>Profile image</FieldLabel>
                 <Input
-                  type="text"
-                  placeholder="e.g. https://source.com/your-picture"
+                  type='text'
+                  placeholder='e.g. https://source.com/your-picture'
                   {...field}
                   value={field.value || ''}
                 />
@@ -87,15 +87,15 @@ const SettingUserPersonalInfo: FC<SettingUserPersonalInfoProps> = ({ profile }) 
           />
         </FieldSet>
         <LoadingButton
-          type="submit"
+          type='submit'
           disabled={form.formState.isSubmitting}
-          className="w-full"
+          className='w-full'
           buttonState={buttonState}
           setButtonState={setButtonState}
-          text="Save"
-          loadingText="Saving"
-          successText="Saved"
-          errorText="Failed to save"
+          text='Save'
+          loadingText='Saving'
+          successText='Saved'
+          errorText='Failed to save'
           reset
         />{' '}
       </FieldGroup>

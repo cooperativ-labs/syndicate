@@ -11,7 +11,7 @@ const Admin = async ({ params }: { params: Promise<{ offeringId: string }> }) =>
   }
 
   return (
-    <div data-test="component-create-project-page" className="h-full flex">
+    <div data-test='component-create-project-page' className='h-full flex'>
       <FormCard center>
         <></>
       </FormCard>

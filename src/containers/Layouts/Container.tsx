@@ -16,7 +16,7 @@ const Container: React.FunctionComponent<ContainerProps> = ({
 }) => {
   return (
     <div
-      data-test="atom-container"
+      data-test='atom-container'
       className={cn(className, 'w-full h-full flex items-center m-auto')}
       style={{ maxWidth: fullWidth ? '100%' : constrain }}
     >

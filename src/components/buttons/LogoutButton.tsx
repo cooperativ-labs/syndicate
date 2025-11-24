@@ -21,7 +21,7 @@ const LogoutButton: FC = () => {
   }
   return (
     <Button
-      variant="outline"
+      variant='outline'
       className={cn(outlinedClass, 'text-xs p-1 px-3 font-semibold rounded-full relative mr-2')}
       onClick={() => handleDisconnect()}
     >

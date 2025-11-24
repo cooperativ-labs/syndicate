@@ -54,9 +54,9 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering, realEstat
 
   return (
     <div>
-      <div className="py-8 md:py-0">
-        <div className="absolute md:relative left-0 right-0 ">
-          <nav className="overflow-x-scroll whitespace-nowrap">
+      <div className='py-8 md:py-0'>
+        <div className='absolute md:relative left-0 right-0 '>
+          <nav className='overflow-x-scroll whitespace-nowrap'>
             {tabSectionOptions.map((tab, i) => {
               return (
                 <Tab
@@ -71,17 +71,17 @@ const ProfileTabContainer: FC<ProfileTabContainerProps> = ({ offering, realEstat
           </nav>
         </div>
       </div>
-      <div className="p-2 mt-10">
+      <div className='p-2 mt-10'>
         {activeTab === OfferingTabSection.DETAILS && (
           <div>
             {!!offering.primary_video && (
-              <div className="mb-10">
+              <div className='mb-10'>
                 <h1 className={contentSectionHeader}>Featured video</h1>
                 <iframe
                   width={isMobile ? '350' : '560'}
                   height={isMobile ? '200' : '315'}
                   src={offering.primary_video}
-                  allow="accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allow='accelerometer; clipboard-write; encrypted-media; gyroscope; picture-in-picture'
                   allowFullScreen
                 ></iframe>
               </div>

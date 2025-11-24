@@ -27,8 +27,8 @@ const EntityDashboard: FC = () => {
               explainerText="In order to create a business, we first need some personal information"
             >
               <> */}
-        <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
-        <hr className="my-6" />
+        <div className='text-cLightBlue font-bold text-lg'>Create a legal business entity.</div>
+        <hr className='my-6' />
         <CreateEntity actionOnCompletion={() => router.back()} />
         {/* </> */}
         {/* </EnsureProfileCompletion> */}
@@ -37,14 +37,14 @@ const EntityDashboard: FC = () => {
   }
 
   return (
-    <div data-test="component-dashboard" className="flex flex-col w-full h-full">
-      <div className=" ">
+    <div data-test='component-dashboard' className='flex flex-col w-full h-full'>
+      <div className=' '>
         <EntitiesList entities={entities} organizationId={organizationId as string} />
         {isEditorOrAdmin && (
           <AddItemButton
             onClick={() => router.push(`/manager/${organizationId}/create-entity`)}
-            classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
-            text="Add Entity"
+            classNames='p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5'
+            text='Add Entity'
           />
         )}
       </div>

@@ -32,13 +32,13 @@ export default async function InvestorApplicationPage({ params }: Params) {
     properties?.flatMap((property: RealEstatePropertyWithAssets) => property.images) ?? [];
 
   return (
-    <div data-test="investor-application" className="w-screen h-full pb-10 md:pb-20">
+    <div data-test='investor-application' className='w-screen h-full pb-10 md:pb-20'>
       <Header offering={offering} small offeringPropertyImages={propertyImages} />
-      <div className="flex z-30 md:z-10 min-h-full ">
-        <div className="md:mx-6 w-full">
-          <div className="grow h-full z-10">
-            <div className="h-full px-2 py-2 md:mt-4">
-              <div className="mx-auto min-h-full">
+      <div className='flex z-30 md:z-10 min-h-full '>
+        <div className='md:mx-6 w-full'>
+          <div className='grow h-full z-10'>
+            <div className='h-full px-2 py-2 md:mt-4'>
+              <div className='mx-auto min-h-full'>
                 <InvestorApplicationForm offering={offering} />
               </div>
             </div>

@@ -82,22 +82,22 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
   const watchedAddress = form.watch('address');
 
   return (
-    <form className="flex flex-col gap relative">
+    <form className='flex flex-col gap relative'>
       <FieldGroup>
         <FieldSet>
-          <div className="md:grid grid-cols-12 gap-3">
-            <div className="col-span-6">
+          <div className='md:grid grid-cols-12 gap-3'>
+            <div className='col-span-6'>
               <Controller
                 control={form.control}
-                name="address"
+                name='address'
                 render={({ field }) => (
                   <Field>
                     <FieldLabel>
-                      Wallet address <span className="text-destructive">*</span>
+                      Wallet address <span className='text-destructive'>*</span>
                     </FieldLabel>
                     <Input
-                      type="text"
-                      placeholder="0x531518975607FE8867fd5F39e9a3754F1fc38276"
+                      type='text'
+                      placeholder='0x531518975607FE8867fd5F39e9a3754F1fc38276'
                       {...field}
                     />
                     <FieldError
@@ -109,14 +109,14 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
                 )}
               />
             </div>
-            <div className="col-span-3">
+            <div className='col-span-3'>
               <Controller
                 control={form.control}
-                name="name"
+                name='name'
                 render={({ field }) => (
                   <Field>
                     <FieldLabel>Name</FieldLabel>
-                    <Input type="text" placeholder="Lisa Novak" {...field} />
+                    <Input type='text' placeholder='Lisa Novak' {...field} />
                     <FieldError
                       errors={form.formState.errors.name ? [form.formState.errors.name] : undefined}
                     />
@@ -124,14 +124,14 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
                 )}
               />
             </div>
-            <div className="col-span-3">
+            <div className='col-span-3'>
               <Controller
                 control={form.control}
-                name="externalId"
+                name='externalId'
                 render={({ field }) => (
                   <Field>
                     <FieldLabel>external ID</FieldLabel>
-                    <Input type="text" placeholder="934834 (optional)" {...field} />
+                    <Input type='text' placeholder='934834 (optional)' {...field} />
                     <FieldError
                       errors={
                         form.formState.errors.externalId
@@ -149,10 +149,10 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
             disabled={form.formState.isSubmitting || buttonStep === 'step1'}
             state={buttonStep}
             idleText={`Approve ${watchedAddress || ''}`}
-            step1Text="Adding member to whitelist..."
-            confirmedText="Added!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
+            step1Text='Adding member to whitelist...'
+            confirmedText='Added!'
+            failedText='Transaction failed'
+            rejectedText='You rejected the transaction. Click here to try again.'
           />
         </FieldSet>
       </FieldGroup>

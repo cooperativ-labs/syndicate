@@ -152,8 +152,8 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
         title={`${isExistingShares ? 'Sell' : 'Offer new'} shares of ${offeringName}`}
       >
         <Button
-          variant="outline"
-          size="sm"
+          variant='outline'
+          size='sm'
           onClick={() => setIsExistingShares(!isExistingShares)}
         >{`${
           isExistingShares
@@ -210,8 +210,8 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
   );
 
   const ActionPanel = (
-    <div className=" relative mt-4 bg-gray-100 p-4 rounded-md">
-      <div className="absolute -top-1 right-0 z-40">
+    <div className=' relative mt-4 bg-gray-100 p-4 rounded-md'>
+      <div className='absolute -top-1 right-0 z-40'>
         <CloseButton
           onClick={() => {
             setShowActionPanel(false);
@@ -236,12 +236,12 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
   );
 
   const ButtonPanel = (
-    <div className="flex flex-col w-full gap-3">
+    <div className='flex flex-col w-full gap-3'>
       {isOfferingManager ? (
         <>
           <Button
-            variant="default"
-            className="p-3"
+            variant='default'
+            className='p-3'
             onClick={() => setManagerModal('smartContractsSettings')}
           >
             Configure shares & trading
@@ -270,9 +270,9 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
               buttonState={claimProceedsButton}
               setButtonState={setClaimProceedsButton}
               text={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-              loadingText="Claiming Proceeds..."
-              successText="Proceeds Claimed!"
-              errorText="Transaction failed"
+              loadingText='Claiming Proceeds...'
+              successText='Proceeds Claimed!'
+              errorText='Transaction failed'
               reset
               onClick={handleClaimProceeds}
             />
@@ -287,13 +287,13 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
   const NoContract = isOfferingManager ? (
     <>
       {(issueReachingContract.share || issueReachingContract.swap) && !!shareContractAddress && (
-        <div className="text-sm text-red-700 font-semibold mb-2">
+        <div className='text-sm text-red-700 font-semibold mb-2'>
           There was an issue reaching the contract. Please contact your administrator.
         </div>
       )}
       <Button
-        variant="default"
-        className="p-3"
+        variant='default'
+        className='p-3'
         onClick={() => setManagerModal('smartContractsSettings')}
       >
         Configure shares & trading
@@ -309,14 +309,14 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
     <>
       {FormModals}
       {retrievalIssue ? (
-        <RetrievalIssue className="mt-10" />
+        <RetrievalIssue className='mt-10' />
       ) : loading ? (
-        <div className="flex justify-center self-center">
+        <div className='flex justify-center self-center'>
           <Loading />
         </div>
       ) : (
         <>
-          <div className="">
+          <div className=''>
             {!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}
           </div>
           {hasOrders && paymentTokenAddress && (

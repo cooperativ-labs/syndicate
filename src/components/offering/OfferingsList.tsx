@@ -17,10 +17,10 @@ const OfferingsList: FC<OfferingsListProps> = ({ offerings, organizationId }) =>
     return <div>Organization not found</div>;
   }
   return (
-    <div className="flex flex-col md:flex-row md:flex-wrap justify-start gap-4">
+    <div className='flex flex-col md:flex-row md:flex-wrap justify-start gap-4'>
       {offerings.map((offering, i: number) => {
         return (
-          <div className="grow mb-4" key={i}>
+          <div className='grow mb-4' key={i}>
             <OfferingCard
               offering={offering}
               organizationId={organizationId}

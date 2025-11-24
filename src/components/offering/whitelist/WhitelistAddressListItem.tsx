@@ -71,29 +71,29 @@ const WhitelistAddressListItem: FC<WhitelistAddressListItemProps> = ({
         setSelectedParticipant(participant.id);
       }}
     >
-      <div className="col-span-6 z-10">
+      <div className='col-span-6 z-10'>
         <FormattedCryptoAddress
           chainId={1}
           address={participant.wallet_address}
           withCopy
-          className="font-bold text-base "
+          className='font-bold text-base '
           userName={participant.name}
           isYou={isYou}
         />
-        <div className="text-sm">{`Shares: ${numberWithCommas(numShares)}`}</div>
+        <div className='text-sm'>{`Shares: ${numberWithCommas(numShares)}`}</div>
       </div>
 
-      <div className="col-span-2 mt-3 md:mt-0">
-        <div className="text-sm">External ID:</div>
-        <div className="md:w-auto  font-medium ">{participant.external_id}</div>
+      <div className='col-span-2 mt-3 md:mt-0'>
+        <div className='text-sm'>External ID:</div>
+        <div className='md:w-auto  font-medium '>{participant.external_id}</div>
       </div>
-      <div className="col-span-3 mt-3 md:mt-0 flex justify-end">
+      <div className='col-span-3 mt-3 md:mt-0 flex justify-end'>
         {isWhitelisted ? (
-          <div className="font-bold text-emerald-700 uppercase center self-center mr-4">
+          <div className='font-bold text-emerald-700 uppercase center self-center mr-4'>
             approved
           </div>
         ) : (
-          <div className="font-bold text-red-700 uppercase center self-center mr-4">unapproved</div>
+          <div className='font-bold text-red-700 uppercase center self-center mr-4'>unapproved</div>
         )}
       </div>
     </div>

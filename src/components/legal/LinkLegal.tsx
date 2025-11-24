@@ -1,6 +1,7 @@
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { GenerateLegalLink } from '@src/utils/helpersAgreement';
 import { getAvailableContracts } from '@src/utils/helpersContracts';
+import { capitalizeFirstLetter } from '@src/utils/helpersText';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import axios from 'axios';
 import React, { useState } from 'react';
@@ -13,7 +14,6 @@ import CreateShareContract from '../offering/CreateShareContract';
 import UnestablishedContractCard from '../offering/UnestablishedContractCard';
 
 import LinkLegalForm from './LinkLegalForm';
-import { capitalizeFirstLetter } from '@src/utils/helpersText';
 
 export type AgreementContentType = {
   signature: string;
@@ -79,19 +79,19 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
   );
 
   return (
-    <div className="flex flex-col gap h-full">
-      <h1 className="font-semibold text-lg">Create shares of {orgLegalName}</h1>
+    <div className='flex flex-col gap h-full'>
+      <h1 className='font-semibold text-lg'>Create shares of {orgLegalName}</h1>
       {!availableContract ? (
-        <div className="mt-5">
+        <div className='mt-5'>
           <CreateShareContract
             contractCreatorId={legalEntity.id.toString()}
             offeringId={offering.id.toString()}
           />
         </div>
       ) : (
-        <div className="my-3 h-full w-full">
+        <div className='my-3 h-full w-full'>
           <UnestablishedContractCard unestablishedContract={availableContract} />
-          <div className="mt-4 ">
+          <div className='mt-4 '>
             <LinkLegalForm
               setAgreementContent={setAgreementContent}
               availableContract={availableContract}

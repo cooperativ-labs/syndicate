@@ -6,8 +6,8 @@ type BannerImageProps = {
 
 const BannerImage: FC<BannerImageProps> = ({ imageUrl }) => {
   return (
-    <div className="h-36 md:h-64 bg-gray-500">
-      <img src={imageUrl} className="h-36 md:h-64 w-full object-cover" />
+    <div className='h-36 md:h-64 bg-gray-500'>
+      <img src={imageUrl} className='h-36 md:h-64 w-full object-cover' />
     </div>
   );
 };

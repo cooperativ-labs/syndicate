@@ -73,7 +73,7 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
 
   const swapApproval = (
     <div className={toggleClass}>
-      <div className="text-sm font-medium text-gray-700 mr-2">Listings require approval</div>
+      <div className='text-sm font-medium text-gray-700 mr-2'>Listings require approval</div>
       <LoadingToggle
         isLoading={isLoading === 'listing'}
         toggleSubject={swapApprovalsEnabled}
@@ -84,7 +84,7 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
 
   const txnApproval = (
     <div className={toggleClass}>
-      <div className="text-sm font-medium text-gray-700 mr-2">
+      <div className='text-sm font-medium text-gray-700 mr-2'>
         Each transaction requires approval
       </div>
       <LoadingToggle
@@ -106,12 +106,12 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
         />
       )}
       {swapContractAddress && (
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <h1 className="font-semibold text-lg">Trading contract: </h1>
+        <div className='flex flex-col gap-3'>
+          <div className='flex flex-col gap-1'>
+            <h1 className='font-semibold text-lg'>Trading contract: </h1>
             <FormattedCryptoAddress
               chainId={chainId}
-              className="text-sm text-gray-500 font-medium"
+              className='text-sm text-gray-500 font-medium'
               showFull
               withCopy
               address={swapContractAddress}
@@ -119,21 +119,21 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
           </div>
 
           <SectionBlock
-            className="border rounded-lg p-3"
+            className='border rounded-lg p-3'
             sectionTitle={'Trade approval settings'}
             mini
             startOpen
             asAccordion
           >
             {noLiveOrders ? (
-              <div className="flex flex-col mt-4 ml-6">
+              <div className='flex flex-col mt-4 ml-6'>
                 {swapApproval}
-                <hr className="my-4" />
+                <hr className='my-4' />
                 {txnApproval}
               </div>
             ) : (
-              <div className="flex flex-col my-4 ml-10">
-                <div className="text-sm font-medium text-gray-700 mr-2">
+              <div className='flex flex-col my-4 ml-10'>
+                <div className='text-sm font-medium text-gray-700 mr-2'>
                   Please complete or cancel all orders before changing approval settings.
                 </div>
               </div>

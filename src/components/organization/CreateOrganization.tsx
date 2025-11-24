@@ -115,33 +115,33 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
   };
 
   return (
-    <form className="flex flex-col gap-4">
+    <form className='flex flex-col gap-4'>
       <FieldSet>
         {!noTitle && <FieldLegend>Create Organization</FieldLegend>}
-        <div className="grid md:grid-cols-2 gap-4">
-          <FieldGroup className="col-span-1 flex flex-col gap-4">
+        <div className='grid md:grid-cols-2 gap-4'>
+          <FieldGroup className='col-span-1 flex flex-col gap-4'>
             <Controller
               control={control}
-              name="name"
+              name='name'
               render={({ field }) => (
                 <Field>
                   <FieldLabel>Organization's name *</FieldLabel>
-                  <Input type="text" placeholder="Alphabet Inc." {...field} />
+                  <Input type='text' placeholder='Alphabet Inc.' {...field} />
                   <FieldError errors={errors.name ? [errors.name] : undefined} />
                 </Field>
               )}
             />
             <Controller
               control={control}
-              name="country"
+              name='country'
               render={({ field }) => (
                 <Field>
                   <FieldLabel>Country of operation</FieldLabel>
                   <Select {...field} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a country" />
+                      <SelectValue placeholder='Select a country' />
                     </SelectTrigger>
-                    <SelectContent position="item-aligned">
+                    <SelectContent position='item-aligned'>
                       {countries.map((country, i) => (
                         <SelectItem key={i} value={country.isoCode}>
                           {country.name}
@@ -156,7 +156,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
           </FieldGroup>
 
           <ImageUpload
-            title="Add logo"
+            title='Add logo'
             onSubmit={handleLogoUpload}
             accept={['image/jpeg', 'image/png', 'image/svg+xml']}
             selectedImageUrl={logoUrl}
@@ -167,23 +167,23 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
         <FieldGroup>
           <Controller
             control={control}
-            name="website"
+            name='website'
             render={({ field }) => (
               <Field>
                 <FieldLabel>Organization's website</FieldLabel>
-                <Input type="text" placeholder="e.g. https://www.cooperativ.io" {...field} />
+                <Input type='text' placeholder='e.g. https://www.cooperativ.io' {...field} />
                 <FieldError errors={errors.website ? [errors.website] : undefined} />
               </Field>
             )}
           />
           <Controller
             control={control}
-            name="shortDescription"
+            name='shortDescription'
             render={({ field }) => (
               <Field>
                 <FieldLabel>Short description of the organization</FieldLabel>
                 <Textarea
-                  placeholder="e.g. Creates and invests in companies that are changing the world."
+                  placeholder='e.g. Creates and invests in companies that are changing the world.'
                   {...field}
                 />
                 <FieldError
@@ -200,9 +200,9 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
           buttonState={buttonState}
           setButtonState={setButtonState}
           text={`Create ${watchedName}`}
-          loadingText="Creating organization..."
-          successText="Organization created!"
-          errorText="Failed to create organization"
+          loadingText='Creating organization...'
+          successText='Organization created!'
+          errorText='Failed to create organization'
           reset
         />
       </FieldSet>

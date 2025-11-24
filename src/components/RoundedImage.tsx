@@ -24,7 +24,7 @@ const RoundedImage: React.FunctionComponent<RoundedImageProps> = ({
 }) => {
   return (
     <div
-      data-test="component-rounded-image"
+      data-test='component-rounded-image'
       className={cn(
         className,
         !!onClick && 'hover:cursor-pointer relative',
@@ -34,16 +34,16 @@ const RoundedImage: React.FunctionComponent<RoundedImageProps> = ({
     >
       <Image
         src={src}
-        className="h-full absolute"
+        className='h-full absolute'
         fill={fill}
         alt={alt || 'image'}
         width={width}
         height={height}
-        objectPosition="center"
+        objectPosition='center'
         unoptimized={process.env.NODE_ENV === 'development'}
       />
       {!!onClick && (
-        <div className="flex backdrop-opacity-10 hover:backdrop-invert w-full h-full text-white hover:bg-gray-800/50 items-center justify-center opacity-0 hover:opacity-100">
+        <div className='flex backdrop-opacity-10 hover:backdrop-invert w-full h-full text-white hover:bg-gray-800/50 items-center justify-center opacity-0 hover:opacity-100'>
           <Pencil size={16} />
         </div>
       )}

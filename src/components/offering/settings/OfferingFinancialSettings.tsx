@@ -196,18 +196,18 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col relative">
+    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col relative'>
       <FieldGroup>
         <FieldSet>
           <Field>
-            <FieldLabel htmlFor="stage">Offering stage</FieldLabel>
+            <FieldLabel htmlFor='stage'>Offering stage</FieldLabel>
             <Controller
               control={control}
-              name="stage"
+              name='stage'
               render={({ field }) => (
                 <Select value={field.value ?? ''} onValueChange={field.onChange}>
-                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                    <SelectValue placeholder="Select stage" />
+                  <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                    <SelectValue placeholder='Select stage' />
                   </SelectTrigger>
                   <SelectContent>
                     {StageOptions.map((option, i) => (
@@ -220,15 +220,15 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               )}
             />
           </Field>
-          <div className="md:grid grid-cols-2 gap-3">
+          <div className='md:grid grid-cols-2 gap-3'>
             <Field>
-              <FieldLabel htmlFor="minRaise">
+              <FieldLabel htmlFor='minRaise'>
                 {`Minimum raise (${investment_currency && getCurrencyOption(investment_currency)?.symbol})`}
               </FieldLabel>
               <Input
-                id="minRaise"
-                type="number"
-                placeholder="e.g. 2000000"
+                id='minRaise'
+                type='number'
+                placeholder='e.g. 2000000'
                 {...register('minRaise', {
                   valueAsNumber: true,
                   validate: value => {
@@ -238,15 +238,15 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
                     return true;
                   }
                 })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
               {errors.minRaise && (
-                <div className="text-sm text-red-500 mt-1">{errors.minRaise.message}</div>
+                <div className='text-sm text-red-500 mt-1'>{errors.minRaise.message}</div>
               )}
             </Field>
 
             <NonInput
-              className="col-span-1 pl-1"
+              className='col-span-1 pl-1'
               labelText={`Maximum raise (${investment_currency && getCurrencyOption(investment_currency)?.symbol})`}
             >
               {price_start ? (
@@ -255,86 +255,86 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
                   investment_currency && getCurrencyOption(investment_currency)?.symbol
                 }`
               ) : (
-                <span className="text-sm text-gray-500">Calculated from first share price</span>
+                <span className='text-sm text-gray-500'>Calculated from first share price</span>
               )}
             </NonInput>
 
             <Field>
-              <FieldLabel htmlFor="minUnitsPerInvestor">Minimum shares per investor</FieldLabel>
+              <FieldLabel htmlFor='minUnitsPerInvestor'>Minimum shares per investor</FieldLabel>
               <Input
-                id="minUnitsPerInvestor"
-                type="number"
-                placeholder="e.g. 10"
+                id='minUnitsPerInvestor'
+                type='number'
+                placeholder='e.g. 10'
                 {...register('minUnitsPerInvestor', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="maxUnitsPerInvestor">Maximum shares per investor</FieldLabel>
+              <FieldLabel htmlFor='maxUnitsPerInvestor'>Maximum shares per investor</FieldLabel>
               <Input
-                id="maxUnitsPerInvestor"
-                type="number"
-                placeholder="e.g. 99"
+                id='maxUnitsPerInvestor'
+                type='number'
+                placeholder='e.g. 99'
                 {...register('maxUnitsPerInvestor', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
               {' '}
-              <FieldLabel htmlFor="maxUnitsPerInvestor">Maximum shares per investor</FieldLabel>
+              <FieldLabel htmlFor='maxUnitsPerInvestor'>Maximum shares per investor</FieldLabel>
               <Input
-                id="maxUnitsPerInvestor"
-                type="number"
-                placeholder="e.g. 99"
+                id='maxUnitsPerInvestor'
+                type='number'
+                placeholder='e.g. 99'
                 {...register('maxUnitsPerInvestor', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="minInvestors">Minimum number of investors</FieldLabel>
+              <FieldLabel htmlFor='minInvestors'>Minimum number of investors</FieldLabel>
               <Input
-                id="minInvestors"
-                type="number"
-                placeholder="e.g. 120"
+                id='minInvestors'
+                type='number'
+                placeholder='e.g. 120'
                 {...register('minInvestors', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="maxInvestors">Maximum number of investors</FieldLabel>
+              <FieldLabel htmlFor='maxInvestors'>Maximum number of investors</FieldLabel>
               <Input
-                id="maxInvestors"
-                type="number"
-                placeholder="e.g. 99"
+                id='maxInvestors'
+                type='number'
+                placeholder='e.g. 99'
                 {...register('maxInvestors', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
 
-            <Field className="col-span-1">
-              <FieldLabel htmlFor="raiseStart">Fundraising start date</FieldLabel>
+            <Field className='col-span-1'>
+              <FieldLabel htmlFor='raiseStart'>Fundraising start date</FieldLabel>
               <Controller
                 control={control}
-                name="raiseStart"
+                name='raiseStart'
                 render={({ field }) => (
                   <Popover>
                     <PopoverTrigger asChild>
                       <Button
-                        variant="outline"
-                        id="date"
-                        className="w-48 justify-between font-normal"
+                        variant='outline'
+                        id='date'
+                        className='w-48 justify-between font-normal'
                       >
                         {field.value ? field.value.toLocaleDateString() : 'Select date'}
                         <ChevronDownIcon />
                       </Button>
                     </PopoverTrigger>
-                    <PopoverContent className="overflow-hidden p-0" align="start">
+                    <PopoverContent className='overflow-hidden p-0' align='start'>
                       <Calendar
-                        mode="single"
-                        className="w-full"
+                        mode='single'
+                        className='w-full'
                         selected={field.value ?? undefined}
-                        captionLayout="dropdown"
+                        captionLayout='dropdown'
                         onSelect={date => {
                           field.onChange(date);
                         }}
@@ -345,35 +345,35 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="raisePeriod">Fundraising period in days</FieldLabel>
+              <FieldLabel htmlFor='raisePeriod'>Fundraising period in days</FieldLabel>
               <Input
-                id="raisePeriod"
-                type="number"
-                placeholder="e.g. 120"
+                id='raisePeriod'
+                type='number'
+                placeholder='e.g. 120'
                 {...register('raisePeriod', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="distributionFrequency">Distributions every</FieldLabel>
+              <FieldLabel htmlFor='distributionFrequency'>Distributions every</FieldLabel>
               <Input
-                id="distributionFrequency"
-                type="number"
+                id='distributionFrequency'
+                type='number'
                 {...register('distributionFrequency', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="distributionPeriod">Period *</FieldLabel>
+              <FieldLabel htmlFor='distributionPeriod'>Period *</FieldLabel>
               <Controller
                 control={control}
-                name="distributionPeriod"
+                name='distributionPeriod'
                 render={({ field }) => (
                   <Select value={field.value ?? ''} onValueChange={field.onChange}>
-                    <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                      <SelectValue placeholder="Select period" />
+                    <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                      <SelectValue placeholder='Select period' />
                     </SelectTrigger>
                     <SelectContent>
                       {distributionPeriodOptions.map((type, i) => (
@@ -388,111 +388,111 @@ const OfferingFinancialSettings: FC<OfferingFinancialSettingsProps> = ({ offerin
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="projectedIrr">Projected IRR (%)</FieldLabel>
+              <FieldLabel htmlFor='projectedIrr'>Projected IRR (%)</FieldLabel>
               <Input
-                id="projectedIrr"
-                type="number"
+                id='projectedIrr'
+                type='number'
                 {...register('projectedIrr', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="projectedIrrMax">Max Projected IRR (% - Optional)</FieldLabel>
+              <FieldLabel htmlFor='projectedIrrMax'>Max Projected IRR (% - Optional)</FieldLabel>
               <Input
-                id="projectedIrrMax"
-                type="number"
+                id='projectedIrrMax'
+                type='number'
                 {...register('projectedIrrMax', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="targetEquityMultiple">Target equity multiple (x)</FieldLabel>
+              <FieldLabel htmlFor='targetEquityMultiple'>Target equity multiple (x)</FieldLabel>
               <Input
-                id="targetEquityMultiple"
-                type="number"
+                id='targetEquityMultiple'
+                type='number'
                 {...register('targetEquityMultiple', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="targetEquityMultipleMax">
+              <FieldLabel htmlFor='targetEquityMultipleMax'>
                 Target equity multiple Max (x - Optional)
               </FieldLabel>
               <Input
-                id="targetEquityMultipleMax"
-                type="number"
+                id='targetEquityMultipleMax'
+                type='number'
                 {...register('targetEquityMultipleMax', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="preferredReturn">Preferred Return (%)</FieldLabel>
+              <FieldLabel htmlFor='preferredReturn'>Preferred Return (%)</FieldLabel>
               <Input
-                id="preferredReturn"
-                type="number"
+                id='preferredReturn'
+                type='number'
                 {...register('preferredReturn', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="cocReturn">CoC return (%)</FieldLabel>
+              <FieldLabel htmlFor='cocReturn'>CoC return (%)</FieldLabel>
               <Input
-                id="cocReturn"
-                type="number"
+                id='cocReturn'
+                type='number'
                 {...register('cocReturn', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="projectedAppreciation">Projected appreciation (%)</FieldLabel>
+              <FieldLabel htmlFor='projectedAppreciation'>Projected appreciation (%)</FieldLabel>
               <Input
-                id="projectedAppreciation"
-                type="number"
+                id='projectedAppreciation'
+                type='number'
                 {...register('projectedAppreciation', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
             <Field>
-              <FieldLabel htmlFor="capRate">Cap rate (%)</FieldLabel>
+              <FieldLabel htmlFor='capRate'>Cap rate (%)</FieldLabel>
               <Input
-                id="capRate"
-                type="number"
+                id='capRate'
+                type='number'
                 {...register('capRate', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
 
             <Field>
-              <FieldLabel htmlFor="adminExpense">
+              <FieldLabel htmlFor='adminExpense'>
                 {`Administrative Expenses (${getCurrencyOption(operatingCurrency)?.symbol})`}
               </FieldLabel>
               <Input
-                id="adminExpense"
-                type="number"
+                id='adminExpense'
+                type='number'
                 {...register('adminExpense', { valueAsNumber: true })}
-                className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+                className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               />
             </Field>
           </div>
           <Field>
-            <FieldLabel htmlFor="additionalInfo">Additional Information</FieldLabel>
+            <FieldLabel htmlFor='additionalInfo'>Additional Information</FieldLabel>
             <Textarea
-              id="additionalInfo"
-              placeholder="e.g. Resale Horizon: 4-10 years."
+              id='additionalInfo'
+              placeholder='e.g. Resale Horizon: 4-10 years.'
               {...register('additionalInfo')}
-              className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+              className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
             />
           </Field>
         </FieldSet>
         <LoadingButtonChain
-          size="lg"
-          type="submit"
+          size='lg'
+          type='submit'
           disabled={isSubmitting || buttonStep === 'step1'}
           state={buttonStep}
           idleText={`Update ${offering.name}`}
-          step1Text="Saving"
+          step1Text='Saving'
           confirmedText={`${offering.name} updated!`}
-          failedText="Oops. Something went wrong"
+          failedText='Oops. Something went wrong'
         />
       </FieldGroup>
     </form>

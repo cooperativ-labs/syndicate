@@ -43,14 +43,14 @@ const UserSearch: FC<UserSearchProps> = ({ fieldClass, buttonClass, fullWidth })
     >
       <Input
         className={cn(fieldClass ? fieldClass : 'h-10 md:h-14 w-56 md:w-96 border-0')}
-        type="text"
-        placeholder="  Search by name, email, or username"
-        aria-label="Search"
+        type='text'
+        placeholder='  Search by name, email, or username'
+        aria-label='Search'
         {...register('searchText')}
       />
 
       <Button
-        type="submit"
+        type='submit'
         disabled={formState.isSubmitting}
         className={cn(
           buttonClass

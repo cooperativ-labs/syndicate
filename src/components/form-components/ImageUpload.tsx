@@ -80,15 +80,15 @@ const ImageUpload: FC<ImageUploadProps> = ({
   return (
     <div className={cn('flex flex-col', classNames)}>
       {isProcessing ? (
-        <div className="flex items-center justify-center h-40">
-          <Loader2 className="size-6 animate-spin" />
+        <div className='flex items-center justify-center h-40'>
+          <Loader2 className='size-6 animate-spin' />
         </div>
       ) : selectedImageUrl && onDelete ? (
-        <div className="relative">
-          <div className="absolute -right-2 -top-2">
+        <div className='relative'>
+          <div className='absolute -right-2 -top-2'>
             <DeleteButton onDelete={onDelete} />
           </div>
-          <img className="h-40 object-scale-down" src={selectedImageUrl} />
+          <img className='h-40 object-scale-down' src={selectedImageUrl} />
         </div>
       ) : (
         <DragAndDrop

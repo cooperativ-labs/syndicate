@@ -226,7 +226,7 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
 
   return (
     <Dialog open={open} onOpenChange={setOpen}>
-      <DialogTitle className="sr-only">{dialogTitle}</DialogTitle>
+      <DialogTitle className='sr-only'>{dialogTitle}</DialogTitle>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -234,123 +234,123 @@ export default function AddressDialog(props: React.PropsWithChildren<AddressDial
         </DialogHeader>
 
         {isLoading ? (
-          <div className="h-52 flex items-center justify-center">
-            <Loader2 className="size-6 animate-spin" />
+          <div className='h-52 flex items-center justify-center'>
+            <Loader2 className='size-6 animate-spin' />
           </div>
         ) : (
           <form onSubmit={handleSave}>
-            <div className="space-y-4 py-7">
-              <div className="space-y-0.5">
-                <Label htmlFor="address1">Address line 1</Label>
+            <div className='space-y-4 py-7'>
+              <div className='space-y-0.5'>
+                <Label htmlFor='address1'>Address line 1</Label>
                 <Input
                   value={address1}
                   onChange={e => setAddress1(e.currentTarget.value)}
                   disabled={address?.address1 === ''}
-                  id="address1"
-                  name="address1"
-                  placeholder="Address line 1"
+                  id='address1'
+                  name='address1'
+                  placeholder='Address line 1'
                 />
                 {errorMap.address1 && (
                   <FormMessages
-                    type="error"
-                    className="pt-1 text-sm"
+                    type='error'
+                    className='pt-1 text-sm'
                     messages={[errorMap.address1]}
                   />
                 )}
               </div>
 
-              <div className="space-y-0.5">
-                <Label htmlFor="address2">
+              <div className='space-y-0.5'>
+                <Label htmlFor='address2'>
                   Address line 2{' '}
-                  <span className="text-xs text-secondary-foreground">(Optional)</span>
+                  <span className='text-xs text-secondary-foreground'>(Optional)</span>
                 </Label>
                 <Input
                   value={address2}
                   onChange={e => setAddress2(e.currentTarget.value)}
                   disabled={address?.address1 === ''}
-                  id="address2"
-                  name="address2"
-                  placeholder="Address line 2"
+                  id='address2'
+                  name='address2'
+                  placeholder='Address line 2'
                 />
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex-1 space-y-0.5">
-                  <Label htmlFor="city">City</Label>
+              <div className='flex gap-4'>
+                <div className='flex-1 space-y-0.5'>
+                  <Label htmlFor='city'>City</Label>
                   <Input
                     value={city}
                     onChange={e => setCity(e.currentTarget.value)}
                     disabled={address?.city === ''}
-                    id="city"
-                    name="city"
-                    placeholder="City"
+                    id='city'
+                    name='city'
+                    placeholder='City'
                   />
                   {errorMap.city && (
                     <FormMessages
-                      type="error"
-                      className="pt-1 text-sm"
+                      type='error'
+                      className='pt-1 text-sm'
                       messages={[errorMap.city]}
                     />
                   )}
                 </div>
-                <div className="flex-1 space-y-0.5">
-                  <Label htmlFor="region">State / Province / Region</Label>
+                <div className='flex-1 space-y-0.5'>
+                  <Label htmlFor='region'>State / Province / Region</Label>
                   <Input
                     value={region}
                     onChange={e => setRegion(e.currentTarget.value)}
                     disabled={address?.region === ''}
-                    id="region"
-                    name="region"
-                    placeholder="Region"
+                    id='region'
+                    name='region'
+                    placeholder='Region'
                   />
                   {errorMap.region && (
                     <FormMessages
-                      type="error"
-                      className="pt-1 text-sm"
+                      type='error'
+                      className='pt-1 text-sm'
                       messages={[errorMap.region]}
                     />
                   )}
                 </div>
               </div>
 
-              <div className="flex gap-4">
-                <div className="flex-1 space-y-0.5">
-                  <Label htmlFor="postalCode">Postal Code</Label>
+              <div className='flex gap-4'>
+                <div className='flex-1 space-y-0.5'>
+                  <Label htmlFor='postalCode'>Postal Code</Label>
                   <Input
                     value={postalCode}
                     onChange={e => setPostalCode(e.currentTarget.value)}
                     disabled={address?.postalCode === ''}
-                    id="postalCode"
-                    name="postalCode"
-                    placeholder="Postal Code"
+                    id='postalCode'
+                    name='postalCode'
+                    placeholder='Postal Code'
                   />
                   {errorMap.postalCode && (
                     <FormMessages
-                      type="error"
-                      className="pt-1 text-sm"
+                      type='error'
+                      className='pt-1 text-sm'
                       messages={[errorMap.postalCode]}
                     />
                   )}
                 </div>
-                <div className="flex-1 space-y-0.5">
-                  <Label htmlFor="country">Country</Label>
+                <div className='flex-1 space-y-0.5'>
+                  <Label htmlFor='country'>Country</Label>
                   <Input
                     value={address?.country}
-                    id="country"
+                    id='country'
                     disabled
-                    name="country"
-                    placeholder="Country"
+                    name='country'
+                    placeholder='Country'
                   />
                 </div>
               </div>
             </div>
 
             <DialogFooter>
-              <Button type="reset" onClick={() => setOpen(false)} variant={'outline'}>
+              <Button type='reset' onClick={() => setOpen(false)} variant={'outline'}>
                 Cancel
               </Button>
               <Button
-                type="submit"
+                type='submit'
                 onClick={e => {
                   e.stopPropagation();
                 }}

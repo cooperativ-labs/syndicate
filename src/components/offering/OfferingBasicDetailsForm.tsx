@@ -27,7 +27,7 @@ export default function OfferingBasicDetailsForm({
     <>
       {isOfferingManager &&
         (!userWalletAddress ? (
-          <div className="flex mt-4">
+          <div className='flex mt-4'>
             <ChooseConnectorButton buttonText={'Connect wallet to continue'} large />
           </div>
         ) : (
@@ -35,7 +35,7 @@ export default function OfferingBasicDetailsForm({
         ))}
       <Dialog open={!!isOfferingManager && !!userWalletAddress}>
         <DialogContent
-          data-test="component-form-modal"
+          data-test='component-form-modal'
           className={cn('max-w-[600px] min-w-[600px]')}
         >
           <DialogHeader>

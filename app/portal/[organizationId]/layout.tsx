@@ -20,15 +20,15 @@ const OrganizationLayout = async ({
   return (
     <UserProvider user={null}>
       <OrganizationsProvider organizations={[organization]}>
-        <div className="flex">
-          <div className="flex z-30 md:z-10 min-h-screen">
+        <div className='flex'>
+          <div className='flex z-30 md:z-10 min-h-screen'>
             {/* <PortalSideBar organizations={[organization]} />{' '} */}
           </div>
-          <div className="w-full">
+          <div className='w-full'>
             <NavBar orgLogo={organization?.logo} orgName={organization.name} />
 
-            <div className="grow z-10">
-              <div className="mx-auto ">{children}</div>
+            <div className='grow z-10'>
+              <div className='mx-auto '>{children}</div>
             </div>
           </div>
         </div>

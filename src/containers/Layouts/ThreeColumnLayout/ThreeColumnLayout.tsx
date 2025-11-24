@@ -14,12 +14,12 @@ const ThreeColumnLayout: React.FunctionComponent<ThreeColumnLayoutProps> = ({
   const rightColumn = children[2];
 
   return (
-    <div data-test="layout-two-column" className="flex">
-      <div data-test="left-column">{leftColumn}</div>
-      <div data-test="center-column" className="grow">
+    <div data-test='layout-two-column' className='flex'>
+      <div data-test='left-column'>{leftColumn}</div>
+      <div data-test='center-column' className='grow'>
         {centerColumn}
       </div>
-      <div data-test="right-column">{rightColumn}</div>
+      <div data-test='right-column'>{rightColumn}</div>
     </div>
   );
 };

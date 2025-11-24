@@ -42,7 +42,7 @@ const TwoColumnCard: React.FunctionComponent<TwoColumnCardProps> = ({
   }, [orientation]);
   return (
     <Card
-      data-test="organism-two-column-Card"
+      data-test='organism-two-column-Card'
       className={cn(className, cardDynamicClasses(), 'flex p-4 md:p-8 rounded-xl')}
       {...rest}
     >

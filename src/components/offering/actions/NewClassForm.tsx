@@ -53,22 +53,22 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col relative">
+    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col relative'>
       <FieldGroup>
         <FieldSet>
           <Field>
             <FieldLabel>New class name *</FieldLabel>
-            <Input id="partition" type="text" placeholder="Class A" {...register('partition')} />
+            <Input id='partition' type='text' placeholder='Class A' {...register('partition')} />
           </Field>
           <LoadingButtonChain
-            type="submit"
+            type='submit'
             disabled={isSubmitting || buttonStep === 'step1'}
             state={buttonStep}
             idleText={`Add new share class`}
-            step1Text="Sending shares..."
-            confirmedText="Confirmed!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
+            step1Text='Sending shares...'
+            confirmedText='Confirmed!'
+            failedText='Transaction failed'
+            rejectedText='You rejected the transaction. Click here to try again.'
           />
         </FieldSet>
       </FieldGroup>

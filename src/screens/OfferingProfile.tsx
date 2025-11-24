@@ -106,25 +106,25 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
   const OrgLogo = logo ? logo : '/assets/images/logos/company-placeholder.jpeg';
 
   return (
-    <div data-test="layout-project" className="w-full h-full pb-10 md:pb-20">
+    <div data-test='layout-project' className='w-full h-full pb-10 md:pb-20'>
       <Header offering={offering} offeringPropertyImages={offeringPropertyImages} />
       {/* <div className="w-full bg-white border-gray-200 border-b-2 ">
         <section className="w-full flex py-4 mx-8 md:px-8 lg:px-16">
           {stage && <Progress brandColor={brandColor ?? '#275A8F'} lightBrand={false} stage={stage} className="flex" />}
         </section>
       </div> */}
-      <div className="absolute right-4 top-4 flex justify-end ">
-        <div className="flex items-center justify-center rounded-full bg-slate-50 shadow-sm">
+      <div className='absolute right-4 top-4 flex justify-end '>
+        <div className='flex items-center justify-center rounded-full bg-slate-50 shadow-sm'>
           <ChooseConnectorButton buttonText={'Connect Wallet'} />
         </div>
       </div>
       {/* <WalletChooserModal /> */}
-      <Container className="flex flex-col px-2 md:px-8 z-40 relative">
-        <TwoColumnLayout twoThirdsLayout className="lg:-mt-24">
+      <Container className='flex flex-col px-2 md:px-8 z-40 relative'>
+        <TwoColumnLayout twoThirdsLayout className='lg:-mt-24'>
           {/* Slot 1 */}
-          <div className="grow flex flex-col justify-center z-10">
+          <div className='grow flex flex-col justify-center z-10'>
             <h1 className={cn(['mt-24 text-3xl ubuntu font-bold text-gray-800'])}>
-              <span className="flex items-center">
+              <span className='flex items-center'>
                 {offeringName}
 
                 {/* <button
@@ -140,21 +140,21 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
               </span>
             </h1>
             <div
-              className="flex text-sm text-gray-800 my-3 bg-white  rounded-full drop-shadow-md hover:drop-shadow-xl hover:cursor-pointer items-center max-w-max "
+              className='flex text-sm text-gray-800 my-3 bg-white  rounded-full drop-shadow-md hover:drop-shadow-xl hover:cursor-pointer items-center max-w-max '
               onClick={() => router.push(`/${orgId}/portal`)}
             >
               <img
-                className="h-10 w-10 bg-slate-400 border border-slate-400 rounded-full"
+                className='h-10 w-10 bg-slate-400 border border-slate-400 rounded-full'
                 src={OrgLogo}
               />{' '}
-              <span className="pl-2 pr-4 font-semibold">{orgName}</span>
+              <span className='pl-2 pr-4 font-semibold'>{orgName}</span>
             </div>
             {legalEntity?.addresses?.map((address, i) => (
-              <AddressDisplay address={address} key={i} className="text-sm" />
+              <AddressDisplay address={address} key={i} className='text-sm' />
             ))}
             {website && (
-              <a href={website} target="_blank" rel="noreferrer">
-                <div className="text-sm text-gray-800"> {website} </div>
+              <a href={website} target='_blank' rel='noreferrer'>
+                <div className='text-sm text-gray-800'> {website} </div>
               </a>
             )}
           </div>
@@ -163,7 +163,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
               <div>{details && <OfferingDetailsPublic offeringDetails={details} brandColor={brandColor} />}</div>
             </section> */}
           {/* Slot 2 */}
-          <div className="">
+          <div className=''>
             <ShareOfferPanel
               offering={offering}
               currentUser={userWalletAddress}
@@ -172,8 +172,8 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
             />
           </div>
           {/* Slot 1 */}
-          <div className="mt-4 ">
-            <div className="flex">
+          <div className='mt-4 '>
+            <div className='flex'>
               <ProfileTabContainer
                 offering={offering}
                 realEstateProperties={realEstateProperties}
@@ -182,7 +182,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
           </div>
           {/* Slot 2 */}
           <>
-            <h2 className="text-gray-800 font-bold mb-3">Offering Documents</h2>
+            <h2 className='text-gray-800 font-bold mb-3'>Offering Documents</h2>
             <DocumentList
               documents={getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT)}
               isOfferingManager={false}
@@ -194,7 +194,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
           {/* Slot 4 */}
           <div>
             <div>
-              <h2 className="text-gray-800 font-bold mb-3">Distribution History</h2>
+              <h2 className='text-gray-800 font-bold mb-3'>Distribution History</h2>
 
               <DistributionList
                 distributionContractAddress={distributionContractAddress}
@@ -205,7 +205,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
             </div>
           </div>
         </TwoColumnLayout>
-        <div className="w-full">
+        <div className='w-full'>
           <h1 className={contentSectionHeader}>Properties</h1>
           <OfferingProperties
             properties={realEstateProperties}

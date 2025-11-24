@@ -32,9 +32,9 @@ const ManagerLayout = async ({ children }: { children: React.ReactNode }) => {
       <UserProvider userProfile={userProfile} user={user}>
         <OrganizationsProvider organizations={organizations} userId={user?.id}>
           <WithAuthentication>
-            <div className="flex">
+            <div className='flex'>
               {user?.id && (
-                <div className="flex z-30 md:z-10 min-h-screen">
+                <div className='flex z-30 md:z-10 min-h-screen'>
                   <ManagerSideBar />{' '}
                 </div>
               )}

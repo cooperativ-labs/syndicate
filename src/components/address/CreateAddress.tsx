@@ -91,17 +91,17 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
   const latLang = { lat: inputAddress.lat, lng: inputAddress.lng };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-6 relative">
+    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-6 relative'>
       <div>
-        <Field className="mb-4">
+        <Field className='mb-4'>
           <FieldLabel>Address label</FieldLabel>
           <Input
             {...register('addressLabel')}
-            placeholder="e.g. Home address"
+            placeholder='e.g. Home address'
             className={errors.addressLabel ? 'border-destructive' : ''}
           />
           {errors.addressLabel && (
-            <p className="text-sm text-destructive mt-1">{errors.addressLabel.message}</p>
+            <p className='text-sm text-destructive mt-1'>{errors.addressLabel.message}</p>
           )}
         </Field>
 
@@ -112,12 +112,12 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
             setAddress={setInputAddress}
             searchInput={searchInput}
             setSearchInput={setSearchInput}
-            dialogTitle="Confirm Address"
+            dialogTitle='Confirm Address'
           />
         </Field>
 
         {inputAddress.lat !== 0 && (
-          <div className="mt-4">
+          <div className='mt-4'>
             <GoogleMap
               mapContainerStyle={{ height: '300px', width: '100%' }}
               center={latLang}
@@ -128,8 +128,8 @@ const CreateAddress: FC<CreateAddressType> = ({ entity, actionOnCompletion }) =>
           </div>
         )}
       </div>
-      <hr className="mt-6" />
-      <Button type="submit" disabled={isSubmitting}>
+      <hr className='mt-6' />
+      <Button type='submit' disabled={isSubmitting}>
         Create Address
       </Button>
     </form>

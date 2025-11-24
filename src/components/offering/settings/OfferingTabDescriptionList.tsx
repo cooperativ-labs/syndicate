@@ -97,11 +97,11 @@ export default function TabDescriptionList({ offering, tab }: TabDescriptionList
       modifiers={[restrictToVerticalAxis, restrictToParentElement]}
       onDragEnd={onDragEnd}
       sensors={sensors}
-      id="task-table"
+      id='task-table'
     >
       {list && (
         <SortableContext items={listIds} strategy={verticalListSortingStrategy}>
-          <Accordion type="single" collapsible className="flex flex-col gap-2">
+          <Accordion type='single' collapsible className='flex flex-col gap-2'>
             {list.map((description: OfferingDescriptionText, i: number) => {
               return (
                 <OfferingDescriptionItem

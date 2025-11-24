@@ -27,51 +27,51 @@ const UserMenu: FC = () => {
   return (
     <>
       {open && (
-        <div className="absolute top-0 bottom-0 left-0 right-0 " onClick={() => setOpen(!open)} />
+        <div className='absolute top-0 bottom-0 left-0 right-0 ' onClick={() => setOpen(!open)} />
       )}
-      <div className="relative flex flex-col items-center ">
+      <div className='relative flex flex-col items-center '>
         <Button
-          variant="outline"
+          variant='outline'
           className={`p-0 border-gray-300 hover:border-gray-500
               border-2 focus:outline-none pr-2 flex items-center rounded-full font-semibold text-xs text-gray-700`}
           aria-label={open ? 'expand section' : 'collapse section'}
           onClick={() => setOpen(!open)}
         >
-          <div className="pr-2">
+          <div className='pr-2'>
             <img
               src={profileImg}
-              referrerPolicy="no-referrer"
-              className="w-8 h-8 border-2 border-white rounded-full"
+              referrerPolicy='no-referrer'
+              className='w-8 h-8 border-2 border-white rounded-full'
             />
           </div>
           {userWalletAddress && `Wallet: ${userWalletAddress.slice(-4)}`}
-          <div className="p-1 pl-2">
+          <div className='p-1 pl-2'>
             <ChevronDown size={16} />
           </div>
         </Button>
 
         {open && (
-          <div className="absolute top-0 bottom-0 left-0 right-0 z-40">
-            <Card className="absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 bg-white rounded-xl shadow-lg">
+          <div className='absolute top-0 bottom-0 left-0 right-0 z-40'>
+            <Card className='absolute top-10 md:top-12 right-0 p-3 pt-5 w-56 bg-white rounded-xl shadow-lg'>
               {userWalletAddress ? (
-                <div className="flex flex-col justify-center">
-                  <div className="flex items-center justify-center">
+                <div className='flex flex-col justify-center'>
+                  <div className='flex items-center justify-center'>
                     {networkImage !== undefined ? (
-                      <img src={networkImage} className="p-2 w-8 h-8 bg-gray-200 rounded-full" />
+                      <img src={networkImage} className='p-2 w-8 h-8 bg-gray-200 rounded-full' />
                     ) : (
-                      <div className="py-2 pl-2">
+                      <div className='py-2 pl-2'>
                         <NetworkIndicatorDot chainId={chainId} walletAddress={userWalletAddress} />
                       </div>
                     )}
 
-                    <div className="mx-1" />
+                    <div className='mx-1' />
                     <FormattedCryptoAddress
                       chainId={chainId}
                       address={userWalletAddress}
                       withCopy
                     />
                   </div>
-                  <div className="hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
+                  <div className='hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg'>
                     <DisconnectButton />
                   </div>
                 </div>
@@ -80,13 +80,13 @@ const UserMenu: FC = () => {
               )}
               {isAuthenticated && (
                 <div>
-                  <hr className="my-5" />
+                  <hr className='my-5' />
 
-                  <div className="flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
-                    <Link href="/account/">Account Settings</Link>
+                  <div className='flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg'>
+                    <Link href='/account/'>Account Settings</Link>
                   </div>
 
-                  <div className="hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg">
+                  <div className='hidden md:flex flex-col items-center my-1 p-2 justify-center text-sm text-gray-500 hover:bg-gray-200 rounded-lg'>
                     <LogoutButton />
                   </div>
                 </div>

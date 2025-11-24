@@ -110,10 +110,10 @@ const OrganizationChangeForm: FC<OrganizationChangeFormProps> = ({
         'flex flex-col  grid-cols-5 w-full items-center gap-2 my-4'
       )}
     >
-      <div className="w-full md:col-span-3">
+      <div className='w-full md:col-span-3'>
         {itemType === 'country' && (
           <Input
-            className=" bg-opacity-0"
+            className=' bg-opacity-0'
             required
             aria-invalid={errors.country ? 'true' : 'false'}
             {...register('country', { required: true })}
@@ -122,19 +122,19 @@ const OrganizationChangeForm: FC<OrganizationChangeFormProps> = ({
         {itemType === 'name' && (
           <>
             <Input
-              className=" bg-opacity-0"
+              className=' bg-opacity-0'
               required
               aria-invalid={errors.name ? 'true' : 'false'}
               {...register('name', {
                 required: 'Please include the name of this organization.'
               })}
             />
-            {errors.name && <p className="text-sm text-red-500 mt-1">{errors.name.message}</p>}
+            {errors.name && <p className='text-sm text-red-500 mt-1'>{errors.name.message}</p>}
           </>
         )}
         {itemType === 'description' && (
           <Textarea
-            className=" bg-opacity-0"
+            className=' bg-opacity-0'
             required
             aria-invalid={errors.description ? 'true' : 'false'}
             {...register('description', { required: true })}
@@ -142,7 +142,7 @@ const OrganizationChangeForm: FC<OrganizationChangeFormProps> = ({
         )}
         {itemType === 'shortDescription' && (
           <Textarea
-            className=" bg-opacity-0 w-full"
+            className=' bg-opacity-0 w-full'
             required
             aria-invalid={errors.shortDescription ? 'true' : 'false'}
             {...register('shortDescription', { required: true })}
@@ -151,14 +151,14 @@ const OrganizationChangeForm: FC<OrganizationChangeFormProps> = ({
       </div>
       <LoadingButton
         disabled={isSubmitting}
-        className=" bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
+        className=' bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full'
         onClick={handleSubmit(onSubmit)}
         buttonState={buttonState}
-        text="Save changes"
+        text='Save changes'
       />
 
       <Button
-        className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
+        className='border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full'
         onClick={e => {
           e.preventDefault();
           setEditOn('none');
@@ -212,39 +212,39 @@ const OrganizationSpecifications: FC<OrganizationSpecificationsProps> = ({
   return (
     <>
       <ClickToEditItem
-        label="Name"
+        label='Name'
         currentValue={name}
         form={changeForm('name', organization, setEditOn, handleChange)}
         editOn={editOn}
-        itemType="name"
+        itemType='name'
         isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="Country"
+        label='Country'
         currentValue={Country.getCountryByCode(country as string)?.name}
         form={changeForm('country', organization, setEditOn, handleChange)}
         editOn={editOn}
-        itemType="country"
+        itemType='country'
         isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="Description"
+        label='Description'
         currentValue={description}
         form={changeForm('description', organization, setEditOn, handleChange)}
         editOn={editOn}
-        itemType="description"
+        itemType='description'
         isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />
 
       <ClickToEditItem
-        label="Short Description (160 characters max)"
+        label='Short Description (160 characters max)'
         currentValue={short_description}
         form={changeForm('shortDescription', organization, setEditOn, handleChange)}
         editOn={editOn}
-        itemType="shortDescription"
+        itemType='shortDescription'
         isManager={isOrganizationManager}
         setEditOn={setEditOn}
       />

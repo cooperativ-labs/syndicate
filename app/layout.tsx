@@ -46,13 +46,13 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   const initialState = config ? cookieToInitialState(config, wagmiState) : undefined;
 
   return (
-    <html lang="en">
+    <html lang='en'>
       <head>
-        <link rel="preconnect" href="https://fonts.gstatic.com" />
-        <link href="/dist/output.css" rel="stylesheet" />
+        <link rel='preconnect' href='https://fonts.gstatic.com' />
+        <link href='/dist/output.css' rel='stylesheet' />
         <link
-          href="https://fonts.googleapis.com/css2?family=Inter&family=Ubuntu:wght@400;700&display=swap"
-          rel="stylesheet"
+          href='https://fonts.googleapis.com/css2?family=Inter&family=Ubuntu:wght@400;700&display=swap'
+          rel='stylesheet'
         />
       </head>
       <body>
@@ -70,7 +70,7 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <Script
           async
           src={`https://maps.googleapis.com/maps/api/js?key=${process.env.NEXT_PUBLIC_MAPS_API_KEY}&libraries=places`}
-          strategy="afterInteractive"
+          strategy='afterInteractive'
         />
       </body>
     </html>

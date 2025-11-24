@@ -96,16 +96,16 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
   return (
     <form>
       <FieldGroup>
-        <FieldSet className="md:grid md:grid-cols-2 gap-3">
+        <FieldSet className='md:grid md:grid-cols-2 gap-3'>
           <Field>
             <FieldLabel>Offering type *</FieldLabel>
             <Controller
               control={control}
-              name="offeringType"
+              name='offeringType'
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                    <SelectValue placeholder="Select offering type" />
+                  <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                    <SelectValue placeholder='Select offering type' />
                   </SelectTrigger>
                   <SelectContent>
                     {investmentOfferingTypeOptions.map(
@@ -126,11 +126,11 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
             <FieldLabel>Distributions will be paid in *</FieldLabel>
             <Controller
               control={control}
-              name="investmentCurrencyCode"
+              name='investmentCurrencyCode'
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                    <SelectValue placeholder="Select distribution currency" />
+                  <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                    <SelectValue placeholder='Select distribution currency' />
                   </SelectTrigger>
                   <SelectContent>
                     {chainBacs.map((option, i) => (
@@ -152,22 +152,22 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
               {`Initial unit price (${getCurrencyOption(operatingCurrency)?.symbol})`} *
             </FieldLabel>
             <Input
-              id="initialPrice"
-              type="number"
-              placeholder="e.g. 1300"
+              id='initialPrice'
+              type='number'
+              placeholder='e.g. 1300'
               {...register('initialPrice')}
-              className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+              className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
             />
             <FieldError errors={errors.initialPrice ? [errors.initialPrice] : undefined} />
           </Field>
           <Field>
             <FieldLabel>Total number of shares *</FieldLabel>
             <Input
-              id="numUnits"
-              type="number"
-              placeholder="e.g. 1000"
+              id='numUnits'
+              type='number'
+              placeholder='e.g. 1000'
               {...register('numUnits')}
-              className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+              className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
             />
             <FieldError errors={errors.numUnits ? [errors.numUnits] : undefined} />
           </Field>
@@ -187,13 +187,13 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
           <LoadingButton
             onClick={handleSubmit(onSubmit)}
             disabled={isSubmitting}
-            size="lg"
+            size='lg'
             buttonState={buttonState}
             setButtonState={setButtonState}
-            text="Save"
-            loadingText="Saving"
-            successText="Saved"
-            errorText="Oops. Something went wrong"
+            text='Save'
+            loadingText='Saving'
+            successText='Saved'
+            errorText='Oops. Something went wrong'
             reset
           />
         </FieldSet>

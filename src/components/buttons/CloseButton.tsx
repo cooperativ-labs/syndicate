@@ -12,9 +12,9 @@ type CloseButtonProps = {
 const CloseButton: FC<CloseButtonProps> = ({ className, onClick }) => {
   return (
     <Button
-      id="close-button"
-      variant="ghost"
-      size="icon"
+      id='close-button'
+      variant='ghost'
+      size='icon'
       onClick={e => {
         e.preventDefault();
         onClick();

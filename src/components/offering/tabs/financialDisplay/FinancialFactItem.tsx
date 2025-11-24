@@ -25,8 +25,8 @@ const FinancialFactItem: FC<FinancialFactItemProps> = ({
 }) => {
   return (
     <>
-      <div className="flex justify-between px-4 lg:px-8">
-        <div className="font-bold">{label} </div>
+      <div className='flex justify-between px-4 lg:px-8'>
+        <div className='font-bold'>{label} </div>
         <div>
           {amount && numberWithCommas(amount)}{' '}
           {amount && currency && `(${getCurrencyOption(currency)?.symbol})`}
@@ -41,7 +41,7 @@ const FinancialFactItem: FC<FinancialFactItemProps> = ({
           )}
         </div>
       </div>
-      <hr className="my-6 last:hidden" />
+      <hr className='my-6 last:hidden' />
     </>
   );
 };

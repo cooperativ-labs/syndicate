@@ -64,10 +64,10 @@ const CreateAccount: FC = () => {
   const magicLinkForm = (
     <form onSubmit={handleSubmit(onSubmit)}>
       <FieldGroup>
-        <Field orientation="horizontal">
+        <Field orientation='horizontal'>
           <FieldContent>
             <Input
-              type="email"
+              type='email'
               {...register('email')}
               className={cn([errors.email ? 'border-red-400' : 'border-cLightBlue', 'h-12'])}
             />
@@ -83,7 +83,7 @@ const CreateAccount: FC = () => {
                 touched.email && errors.email ? 'border-red-400' : 'border-cLightBlue'
               } focus:no-outline focus:ring-2 focus:ring-blue-400`}
             /> */}
-        <Button type="submit" disabled={isSubmitting} size="lg" className=" w-full">
+        <Button type='submit' disabled={isSubmitting} size='lg' className=' w-full'>
           Continue with email
         </Button>{' '}
       </FieldGroup>
@@ -92,36 +92,36 @@ const CreateAccount: FC = () => {
 
   return (
     <>
-      <div className="flex justify-center mb-10">
+      <div className='flex justify-center mb-10'>
         <PlatformLogo />
       </div>
       {loading ? (
-        <div className="flex justify-center items-center ">
+        <div className='flex justify-center items-center '>
           <img
-            src="/assets/images/loading-circle.png"
-            aria-label="loading"
-            className="h-6 mr-1 animate-spin bg-white rounded-full"
+            src='/assets/images/loading-circle.png'
+            aria-label='loading'
+            className='h-6 mr-1 animate-spin bg-white rounded-full'
           />
           <span>Loading your account</span>
         </div>
       ) : (
-        <div className="mt-4">
+        <div className='mt-4'>
           {magicLinkForm}
-          <div className="flex items-center">
-            <hr className="my-4 w-full border-gray-500" />
-            <div className="m-4">or</div> <hr className="my-4 w-full border-gray-500" />
+          <div className='flex items-center'>
+            <hr className='my-4 w-full border-gray-500' />
+            <div className='m-4'>or</div> <hr className='my-4 w-full border-gray-500' />
           </div>
           <GoogleButton redirectTo={currentPath} />
         </div>
       )}
       {/* <div>{testCredentials}</div> */}
-      <div className="flex text-sm text-cGold text-center mt-10 justify-center">
+      <div className='flex text-sm text-cGold text-center mt-10 justify-center'>
         <Link href={`${process.env.NEXT_PUBLIC_TERMS_URL}`}>
-          <div className="w-max">Terms of Service</div>
+          <div className='w-max'>Terms of Service</div>
         </Link>
-        <div className="mx-4">|</div>
+        <div className='mx-4'>|</div>
         <Link href={`${process.env.NEXT_PUBLIC_PRIVACY_URL}`}>
-          <div className="w-max">Privacy Policy</div>
+          <div className='w-max'>Privacy Policy</div>
         </Link>
       </div>
     </>

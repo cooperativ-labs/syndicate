@@ -9,7 +9,7 @@ const OrganizationPage = async ({ params }: { params: Promise<{ organizationId: 
     return <OrganizationNotFound backHref={`/portal/${organizationId}`} />;
   }
   return (
-    <div data-test="page-overview">
+    <div data-test='page-overview'>
       <OrganizationOverview organization={organization} />
     </div>
   );

@@ -29,7 +29,7 @@ export function Draggable({
   return (
     <div
       className={className}
-      data-slot="draggable-row"
+      data-slot='draggable-row'
       key={draggableId}
       ref={setNodeRef}
       style={style}

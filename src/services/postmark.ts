@@ -1,7 +1,9 @@
-var postmark = require('postmark');
+import postmark from 'postmark';
 
 // Send an email:
-export const postmarkClient = new postmark.ServerClient(process.env.NEXT_PUBLIC_POSTMARK_API_KEY);
+export const postmarkClient = new postmark.ServerClient(
+  process.env.NEXT_PUBLIC_POSTMARK_API_KEY ?? ''
+);
 
 type MessageStreamOptions = 'outbound' | 'magic-link-stream' | 'notifications';
 

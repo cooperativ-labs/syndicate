@@ -1,4 +1,5 @@
 import { SmartContractsSettingsProps } from '@src/components/investor/tradingForms/offering-actions-types';
+import LinkLegal from '@src/components/legal/LinkLegal';
 import React, { FC } from 'react';
 
 import { OfferingFull } from '@/types';
@@ -6,7 +7,6 @@ import { OfferingFull } from '@/types';
 import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings from './ShareContractSettings';
 import SwapContractSettings from './SwapContractSettings';
-import LinkLegal from '@src/components/legal/LinkLegal';
 
 const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: OfferingFull }> = ({
   contractSet,
@@ -27,7 +27,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: Offer
   return (
     <>
       <ShareContractSettings shareContract={shareContract} partitions={partitions} />
-      <hr className="my-5" />
+      <hr className='my-5' />
       <SwapContractSettings
         refetchMainContracts={refetchMainContracts}
         swapApprovalsEnabled={swapApprovalsEnabled}
@@ -36,7 +36,7 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: Offer
         investmentCurrency={investmentCurrency}
         noLiveOrders={noLiveOrders}
       />
-      <hr className="my-5" />
+      <hr className='my-5' />
       <DistributionContractSettings
         investmentCurrency={investmentCurrency}
         contractSet={contractSet}

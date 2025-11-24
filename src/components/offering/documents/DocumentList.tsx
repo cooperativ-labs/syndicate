@@ -21,8 +21,8 @@ const DocumentList: FC<DocumentListProps> = ({
   entityId
 }) => {
   return (
-    <div className="col-span-2">
-      <div className="flex flex-wrap">
+    <div className='col-span-2'>
+      <div className='flex flex-wrap'>
         {documents?.map((document, i) => (
           <DocumentListItem
             key={i}

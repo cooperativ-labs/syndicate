@@ -48,9 +48,9 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
 
   if (ProfilePrivateModalOn) {
     return (
-      <div data-test="component-payment-send" className="">
+      <div data-test='component-payment-send' className=''>
         <div
-          id="dialog-curtain"
+          id='dialog-curtain'
           className={cn(
             // noModal
             //   ? 'absolute top-0 bottom-0 right-0 left-0 md:relative'
@@ -59,14 +59,14 @@ const ProfilePrivateModal: FC<ProfilePrivateModalProps> = ({ offeringId, accessC
           )}
         >
           <Card
-            className="mx-4 p-6 absolute right-0 left-0 top-32 md:top-0 md:relative flex-col md:w-96  rounded-xl md:rounded-lg shadow-modal"
+            className='mx-4 p-6 absolute right-0 left-0 top-32 md:top-0 md:relative flex-col md:w-96  rounded-xl md:rounded-lg shadow-modal'
             style={{ overflow: 'smooth' }}
           >
             <div>
-              <div className="">
-                <div className="flex flex-col md:flex-row items-center">
+              <div className=''>
+                <div className='flex flex-col md:flex-row items-center'>
                   <div>
-                    <div className="ml-1 font-bold text-cDarkBlue md:text-xl animate-pulse mb-3 ">
+                    <div className='ml-1 font-bold text-cDarkBlue md:text-xl animate-pulse mb-3 '>
                       Enter your access code.
                     </div>
                   </div>

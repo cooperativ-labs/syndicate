@@ -15,10 +15,10 @@ const LinkedAccountsList: FC<LinkedAccountsListProps> = ({
 }) => {
   const isAccounts = linkedAccounts?.length && linkedAccounts.length > 0;
   return (
-    <div className="w-full">
+    <div className='w-full'>
       {linkedAccounts?.map((account, i) => {
         return (
-          <div className="mb-3" key={i}>
+          <div className='mb-3' key={i}>
             <LinkedAccountListItem
               account={account}
               isOrganizationManager={isOrganizationManager}
@@ -26,7 +26,7 @@ const LinkedAccountsList: FC<LinkedAccountsListProps> = ({
           </div>
         );
       })}
-      {isAccounts && <hr className="mt-6 mb-8 md:mb-4" />}
+      {isAccounts && <hr className='mt-6 mb-8 md:mb-4' />}
     </div>
   );
 };

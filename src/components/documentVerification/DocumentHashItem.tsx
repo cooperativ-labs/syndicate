@@ -15,13 +15,13 @@ const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
   return (
     <div>
       <Button
-        className="mt-1 mb-4"
-        variant="outline"
+        className='mt-1 mb-4'
+        variant='outline'
         onClick={() => text && DownloadFile(text, 'agreement-text.md')}
       >
         Download Agreement
       </Button>
-      <span className="mb-1 mr-2">{`Agreement Hash: ${hash.slice(0, 7)}...${hash.slice(-7)}`}</span>
+      <span className='mb-1 mr-2'>{`Agreement Hash: ${hash.slice(0, 7)}...${hash.slice(-7)}`}</span>
 
       <span>
         <button

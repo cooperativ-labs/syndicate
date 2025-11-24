@@ -64,7 +64,6 @@ const AddPropertyInfo: FC = () => {
 
   const { offering } = useOffering();
   const offeringId = offering.id;
-  const entityId = offering.legalEntity.id;
   const entityOperatingCurrency = offering.investment_currency;
   const [address, setAddress] = useState<AddressType>({
     address1: '',
@@ -118,7 +117,7 @@ const AddPropertyInfo: FC = () => {
         lenderFees: values.lenderFees,
         closingCosts: values.closingCosts,
         revalidationPath: {
-          path: `/manager/[organizationId]/entities/${entityId}`,
+          path: `/manager/[organizationId]/offerings/${offeringId.toString()}`,
           type: 'page'
         }
       });
@@ -140,7 +139,7 @@ const AddPropertyInfo: FC = () => {
         lng: address.lng,
         addressLabel: 'Property Address',
         revalidationPath: {
-          path: `/manager/[organizationId]/entities/${entityId}`,
+          path: `/manager/[organizationId]/offerings/${offeringId.toString()}`,
           type: 'page'
         }
       });
@@ -155,7 +154,7 @@ const AddPropertyInfo: FC = () => {
   };
 
   return (
-    <form className="space-y-6 w-full">
+    <form className='space-y-6 w-full'>
       <FieldGroup>
         <FieldLegend>Add a real estate property</FieldLegend>
 
@@ -166,11 +165,11 @@ const AddPropertyInfo: FC = () => {
             <FieldContent>
               <Controller
                 control={control}
-                name="investmentStatus"
+                name='investmentStatus'
                 render={({ field }) => (
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a status" />
+                      <SelectValue placeholder='Select a status' />
                     </SelectTrigger>
                     <SelectContent>
                       {assetStatusOptions.map((type, i) => (
@@ -191,11 +190,11 @@ const AddPropertyInfo: FC = () => {
             <FieldContent>
               <Controller
                 control={control}
-                name="propertyType"
+                name='propertyType'
                 render={({ field }) => (
                   <Select onValueChange={field.onChange} defaultValue={field.value}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a property type" />
+                      <SelectValue placeholder='Select a property type' />
                     </SelectTrigger>
                     <SelectContent>
                       {propertyTypeOptions.map((type, i) => (
@@ -215,7 +214,7 @@ const AddPropertyInfo: FC = () => {
             <FieldLabel>Describe this property generally</FieldLabel>
             <FieldContent>
               <Input
-                placeholder="e.g. Super sweet home with super sweet views"
+                placeholder='e.g. Super sweet home with super sweet views'
                 {...register('description')}
               />
             </FieldContent>
@@ -226,7 +225,7 @@ const AddPropertyInfo: FC = () => {
             <FieldLabel>Describe this property's amenities</FieldLabel>
             <FieldContent>
               <Input
-                placeholder="e.g. swimming pool, 3 parking spaces"
+                placeholder='e.g. swimming pool, 3 parking spaces'
                 {...register('amenitiesDescription')}
               />
             </FieldContent>
@@ -238,7 +237,7 @@ const AddPropertyInfo: FC = () => {
               Down payment ({getCurrencyOption(entityOperatingCurrency)?.symbol})
             </FieldLabel>
             <FieldContent>
-              <Input type="number" {...register('downPayment')} />
+              <Input type='number' {...register('downPayment')} />
             </FieldContent>
             <FieldError errors={[errors.downPayment]} />
           </Field>
@@ -248,7 +247,7 @@ const AddPropertyInfo: FC = () => {
               Lender's fees ({getCurrencyOption(entityOperatingCurrency)?.symbol})
             </FieldLabel>
             <FieldContent>
-              <Input type="number" {...register('lenderFees')} />
+              <Input type='number' {...register('lenderFees')} />
             </FieldContent>
             <FieldError errors={[errors.lenderFees]} />
           </Field>
@@ -258,20 +257,20 @@ const AddPropertyInfo: FC = () => {
               Closing costs ({getCurrencyOption(entityOperatingCurrency)?.symbol})
             </FieldLabel>
             <FieldContent>
-              <Input type="number" {...register('closingCosts')} />
+              <Input type='number' {...register('closingCosts')} />
             </FieldContent>
             <FieldError errors={[errors.closingCosts]} />
           </Field>
 
           <div>
-            <hr className="my-6" />
-            <h3 className="text-md md:mt-8 text-blue-900 font-semibold mb-4">{`This property's address`}</h3>
+            <hr className='my-6' />
+            <h3 className='text-md md:mt-8 text-blue-900 font-semibold mb-4'>{`This property's address`}</h3>
             <AddressAutoComplete
               address={address}
               setAddress={setAddress}
               searchInput={searchInput}
               setSearchInput={setSearchInput}
-              dialogTitle="Select Address"
+              dialogTitle='Select Address'
             />
             {/* {address.lat !== 0 && (
               <div className="mt-4">
@@ -289,9 +288,9 @@ const AddPropertyInfo: FC = () => {
         <LoadingButton
           onClick={handleSubmit(onSubmit)}
           disabled={isSubmitting}
-          className="w-full bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
+          className='w-full bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4'
           text={`Create ${address.address1 ? address.address1 : address.city ? `${address.city}, ${address.region}` : 'Property'}`}
-          loadingText="Creating Property..."
+          loadingText='Creating Property...'
           buttonState={buttonState}
         />
       </FieldGroup>

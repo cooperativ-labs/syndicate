@@ -43,7 +43,7 @@ const UserSettings: FC<{ profile: Profile }> = ({ profile }) => {
   // }
 
   return (
-    <div data-test="component-landing" className="flex flex-col w-full h-full mt-4">
+    <div data-test='component-landing' className='flex flex-col w-full h-full mt-4'>
       <div>
         <LimitedWidthSection center>
           <SettingsUserPersonalInfo profile={profile} />

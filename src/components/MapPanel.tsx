@@ -54,16 +54,12 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
     [address]
   );
 
-  const onUnmount = React.useCallback(function callback(map: any) {}, [
-    address,
-    setLatLang,
-    latLang
-  ]);
+  const onUnmount = React.useCallback(function callback(map: google.maps.Map) {}, []);
 
   return true ? (
     <div>
       {showTextAddress && address?.line1 && (
-        <div className="text-sm font-medium">{`${address?.line1}, ${address?.city}, ${address?.state_province} ${address?.postal_code}`}</div>
+        <div className='text-sm font-medium'>{`${address?.line1}, ${address?.city}, ${address?.state_province} ${address?.postal_code}`}</div>
       )}
       <GoogleMap
         mapContainerStyle={containerStyle}

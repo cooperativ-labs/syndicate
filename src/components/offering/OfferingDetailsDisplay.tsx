@@ -49,8 +49,8 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
   const totalValue = num_units && currentSalePrice ? num_units * currentSalePrice : undefined;
   return (
     <div className={className}>
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-        <OfferingDetailDashboardItem title="Deal size">
+      <div className='grid grid-cols-2 lg:grid-cols-4 gap-3'>
+        <OfferingDetailDashboardItem title='Deal size'>
           <MoneyDisplay
             amount={totalValue}
             paymentToken={paymentToken}
@@ -62,7 +62,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
         <div className="bg-gray-300 h-16 w-1" />
       </div> */}
 
-        <OfferingDetailDashboardItem title="Share price">
+        <OfferingDetailDashboardItem title='Share price'>
           <MoneyDisplay
             amount={currentSalePrice}
             paymentToken={paymentToken}
@@ -71,17 +71,17 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
         </OfferingDetailDashboardItem>
 
         {isOfferingManager ? (
-          <OfferingDetailDashboardItem title="Shares allocated">
+          <OfferingDetailDashboardItem title='Shares allocated'>
             <MoneyDisplay amount={sharesOutstanding} />
           </OfferingDetailDashboardItem>
         ) : (
-          <OfferingDetailDashboardItem title="My shares">
+          <OfferingDetailDashboardItem title='My shares'>
             <MoneyDisplay amount={myShareQty} />
           </OfferingDetailDashboardItem>
         )}
 
         {isOfferingManager ? (
-          <OfferingDetailDashboardItem title="Funds Distributed">
+          <OfferingDetailDashboardItem title='Funds Distributed'>
             <MoneyDisplay
               amount={totalDistributed}
               paymentToken={paymentToken}
@@ -89,7 +89,7 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
             />
           </OfferingDetailDashboardItem>
         ) : (
-          <OfferingDetailDashboardItem title="Share value">
+          <OfferingDetailDashboardItem title='Share value'>
             <MoneyDisplay
               amount={currentSalePrice && myShareQty ? currentSalePrice * myShareQty : undefined}
               paymentToken={paymentToken}
@@ -103,21 +103,21 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
         preferred_return ||
         target_equity_multiple ||
         coc_return ||
-        cap_rate) && <div className=" mt-10" />}
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 ">
+        cap_rate) && <div className=' mt-10' />}
+      <div className='grid grid-cols-2 lg:grid-cols-4 gap-3 '>
         {projected_appreciation ? (
-          <OfferingDetailDashboardItem title="Projected Appreciation">
-            <PercentageDisplay className="text-gray-900" percent={projected_appreciation} />
+          <OfferingDetailDashboardItem title='Projected Appreciation'>
+            <PercentageDisplay className='text-gray-900' percent={projected_appreciation} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>
         )}
 
         {projected_irr ? (
-          <OfferingDetailDashboardItem title="Projected IRR">
+          <OfferingDetailDashboardItem title='Projected IRR'>
             <div>
               <PercentageDisplay
-                className=" text-gray-900"
+                className=' text-gray-900'
                 percent={projected_irr}
                 secondPercent={projected_irr_max}
               />
@@ -129,19 +129,19 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
 
         {preferred_return ? (
           <OfferingDetailDashboardItem
-            title="Preferred Return"
-            note="(Cumulative, Non-Compounding)"
+            title='Preferred Return'
+            note='(Cumulative, Non-Compounding)'
           >
-            <PercentageDisplay className="text-gray-900" percent={preferred_return} />
+            <PercentageDisplay className='text-gray-900' percent={preferred_return} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>
         )}
 
         {target_equity_multiple ? (
-          <OfferingDetailDashboardItem title="Target Equity Multiple">
+          <OfferingDetailDashboardItem title='Target Equity Multiple'>
             <PercentageDisplay
-              className="text-gray-900"
+              className='text-gray-900'
               multiple={target_equity_multiple}
               secondMultiple={target_equity_multiple_max}
             />
@@ -150,15 +150,15 @@ const OfferingDetailsDisplay: FC<OfferingDetailsDisplayProps> = ({
           <></>
         )}
         {coc_return ? (
-          <OfferingDetailDashboardItem title="CoC Return">
-            <PercentageDisplay className="text-gray-900" percent={coc_return} />
+          <OfferingDetailDashboardItem title='CoC Return'>
+            <PercentageDisplay className='text-gray-900' percent={coc_return} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>
         )}
         {cap_rate ? (
-          <OfferingDetailDashboardItem title="Cap Rate">
-            <PercentageDisplay className="text-gray-900" percent={cap_rate} />
+          <OfferingDetailDashboardItem title='Cap Rate'>
+            <PercentageDisplay className='text-gray-900' percent={cap_rate} />
           </OfferingDetailDashboardItem>
         ) : (
           <></>

@@ -10,7 +10,7 @@ type LoadingToggleProps = {
 const LoadingToggle: FC<LoadingToggleProps> = ({ toggleSubject, isLoading, onClick }) => {
   return (
     <button
-      className=" border-2 border-grey-100 shadow-inner rounded-full w-12 bg-white "
+      className=' border-2 border-grey-100 shadow-inner rounded-full w-12 bg-white '
       onClick={e => {
         e.preventDefault();
         onClick && onClick();
@@ -18,9 +18,9 @@ const LoadingToggle: FC<LoadingToggleProps> = ({ toggleSubject, isLoading, onCli
     >
       {isLoading ? (
         <img
-          src="/assets/images/loading-circle.png"
-          aria-label="loading"
-          className="h-6 mr-1 animate-spin bg-white rounded-full"
+          src='/assets/images/loading-circle.png'
+          aria-label='loading'
+          className='h-6 mr-1 animate-spin bg-white rounded-full'
         />
       ) : (
         <div

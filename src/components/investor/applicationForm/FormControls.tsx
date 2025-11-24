@@ -124,13 +124,13 @@ export function CheckboxField({
       name={name}
       control={control}
       render={({ field }) => (
-        <Field orientation="horizontal" data-disabled={disabled}>
+        <Field orientation='horizontal' data-disabled={disabled}>
           <Checkbox
             disabled={disabled}
             checked={field.value === trueValue}
             onCheckedChange={checked => field.onChange(checked ? trueValue : falseValue)}
           />
-          <FieldContent className="!ml-0">
+          <FieldContent className='!ml-0'>
             <FieldTitle>{label}</FieldTitle>
             {description && <FieldDescription>{description}</FieldDescription>}
           </FieldContent>

@@ -100,38 +100,38 @@ const DistributionListItem: FC<
         <LoadingButtonChain
           state={buttonStep}
           idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
-          step1Text="Claiming..."
-          confirmedText="Clamed!"
-          failedText="Transaction failed"
-          rejectedText="You rejected the transaction. Click here to try again."
+          step1Text='Claiming...'
+          confirmedText='Clamed!'
+          failedText='Transaction failed'
+          rejectedText='You rejected the transaction. Click here to try again.'
         />
       </Button>
     ) : isMyDistribution && claimedAmount ? (
-      <div className="p-3"> {numberWithCommas(claimedAmount, 2)} claimed</div>
+      <div className='p-3'> {numberWithCommas(claimedAmount, 2)} claimed</div>
     ) : (
-      <div className="p-3"> {numberWithCommas(amountToClaim, 2)} to claim</div>
+      <div className='p-3'> {numberWithCommas(amountToClaim, 2)} to claim</div>
     );
 
   return (
-    <div className="relative bg-white shadow-md md:grid grid-cols-8 gap-3 items-center pl-3 p-1 rounded-lg ">
-      <div className="col-span-2">
-        <div className="font-bold text-base ">{recordDate && getHumanDate(recordDate)}</div>
+    <div className='relative bg-white shadow-md md:grid grid-cols-8 gap-3 items-center pl-3 p-1 rounded-lg '>
+      <div className='col-span-2'>
+        <div className='font-bold text-base '>{recordDate && getHumanDate(recordDate)}</div>
       </div>
       {!hideTransactionId && (
-        <div className="col-span-2 mt-3 md:mt-0">
-          <div className="md:w-auto font-medium ">
-            <FormattedCryptoAddress chainId={chainId} address={transaction_hash} lookupType="tx" />
+        <div className='col-span-2 mt-3 md:mt-0'>
+          <div className='md:w-auto font-medium '>
+            <FormattedCryptoAddress chainId={chainId} address={transaction_hash} lookupType='tx' />
           </div>
         </div>
       )}
-      <div className="col-span-2 mt-3 md:mt-0">
-        <div className="md:w-auto font-medium ">
+      <div className='col-span-2 mt-3 md:mt-0'>
+        <div className='md:w-auto font-medium '>
           {dividendAmount} {getCurrencyById(payoutTokenAddress)?.symbol}
         </div>
       </div>
 
-      <div className="col-span-2 flex mt-3 md:mt-0 justify-end">
-        {isBeforePayoutDate ? <div className="p-3"> pending... </div> : setButtonItem}
+      <div className='col-span-2 flex mt-3 md:mt-0 justify-end'>
+        {isBeforePayoutDate ? <div className='p-3'> pending... </div> : setButtonItem}
       </div>
     </div>
   );

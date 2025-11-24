@@ -23,17 +23,17 @@ const Offerings: FC<{
   const hasOfferings = offerings && offerings.length > 0;
 
   return (
-    <div data-test="component-dashboard" className="flex flex-col w-full h-full">
-      <div className="flex">
+    <div data-test='component-dashboard' className='flex flex-col w-full h-full'>
+      <div className='flex'>
         <section>
           {hasOfferings ? (
             <>
               <OfferingsList offerings={offerings} organizationId={chosenOrganizationId} />
               {entityFormOpen ? (
-                <DashboardCard className="mt-5">
-                  <div className="flex justify-between">
-                    <h2 className="text-2xl font-medium text-cDarkBlue">Add Offering</h2>
-                    <CloseButton onClick={() => setEntityFormOpen(false)} className="self-end" />
+                <DashboardCard className='mt-5'>
+                  <div className='flex justify-between'>
+                    <h2 className='text-2xl font-medium text-cDarkBlue'>Add Offering</h2>
+                    <CloseButton onClick={() => setEntityFormOpen(false)} className='self-end' />
                   </div>
                   <CreateOffering legalEntities={legalEntities} />
                 </DashboardCard>
@@ -41,8 +41,8 @@ const Offerings: FC<{
                 isEditorOrAdmin && (
                   <AddItemButton
                     onClick={() => setEntityFormOpen(true)}
-                    classNames="p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5"
-                    text="Add Offering"
+                    classNames='p-5 border-gray-500 text-gray-500 hover:border-gray-700 hover:text-gray-700 mt-5'
+                    text='Add Offering'
                   />
                 )
               )}

@@ -45,7 +45,7 @@ const WhitelistTransactionItem: FC<WhitelistTransactionItemProps> = ({ chainId, 
   const type = types.find(t => t.type === transaction?.type)?.name + ' ';
 
   return (
-    <div className="flex gap-2 p-2 my-2 text-sm ">
+    <div className='flex gap-2 p-2 my-2 text-sm '>
       {type} on {blockTime ? getHumanDate(blockTime) : ''} by
       <FormattedCryptoAddress
         className={'text-sm font-medium flex col-span-1 '}
@@ -57,8 +57,8 @@ const WhitelistTransactionItem: FC<WhitelistTransactionItemProps> = ({ chainId, 
         className={'text-sm font-medium flex col-span-1 '}
         chainId={chainId}
         address={transactionHash}
-        label="Transaction: "
-        lookupType="tx"
+        label='Transaction: '
+        lookupType='tx'
         withCopy
       />
       )

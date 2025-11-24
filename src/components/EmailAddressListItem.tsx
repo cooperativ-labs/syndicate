@@ -28,32 +28,32 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
 
   return (
     <div className={cn(withEdit && 'grid grid-cols-9 gap-3 items-center')}>
-      <div className="p-3 border-2 rounded-lg col-span-8">
-        <div className="md:w-auto ">
-          <div className="text-large font-bold flex justify-between">
+      <div className='p-3 border-2 rounded-lg col-span-8'>
+        <div className='md:w-auto '>
+          <div className='text-large font-bold flex justify-between'>
             {address}
             {withEdit && (
-              <div className="flex justify-between">
-                <div className="hidden md:flex">
+              <div className='flex justify-between'>
+                <div className='hidden md:flex'>
                   <MarkPublic isPublic={is_public} />
                 </div>
-                <div className="ml-6 w-5">
+                <div className='ml-6 w-5'>
                   <EditButton toggle={editOn} setToggle={setEditOn} />
                 </div>
               </div>
             )}
           </div>
-          {name && <div className="flex justify-between">{name}</div>}
+          {name && <div className='flex justify-between'>{name}</div>}
           {withEdit && (
-            <div className="md:hidden">
+            <div className='md:hidden'>
               <MarkPublic isPublic={is_public} />{' '}
             </div>
           )}
         </div>
-        {description && <div className="mt-1 text-sm text-gray-700">{description}</div>}
+        {description && <div className='mt-1 text-sm text-gray-700'>{description}</div>}
 
         {editOn && (
-          <div className="bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6">
+          <div className='bg-cLightBlue bg-opacity-10 rounded-lg p-4 mt-6'>
             <EmailEditForm
               email={email}
               organizationId={organizationId}
@@ -64,9 +64,9 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
         )}
       </div>
       {withEdit && (
-        <div className="flex col-span-1 justify-center">
+        <div className='flex col-span-1 justify-center'>
           <button
-            aria-label="delete email address"
+            aria-label='delete email address'
             onClick={async () => {
               if (confirm('Are you sure you want to delete this email address?')) {
                 try {
@@ -81,7 +81,7 @@ const EmailAddressListItem: FC<EmailAddressListItemProps> = ({ email, withEdit }
               }
             }}
           >
-            <Trash className="text-lg text-gray-600 mr-2" />
+            <Trash className='text-lg text-gray-600 mr-2' />
           </button>
         </div>
       )}
@@ -126,24 +126,24 @@ const EmailEditForm: FC<EmailEditFormProps> = ({ email, organizationId, onSave, 
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col">
-      <div className="grid grid-cols-4 gap-3 md:gap-8 items-center">
-        <Field className="col-span-3">
+    <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col'>
+      <div className='grid grid-cols-4 gap-3 md:gap-8 items-center'>
+        <Field className='col-span-3'>
           <FieldLabel>Label</FieldLabel>
           <FieldContent>
-            <Input {...register('name')} placeholder="e.g. Personal" />
+            <Input {...register('name')} placeholder='e.g. Personal' />
             {errors.name && <FieldError errors={[{ message: errors.name.message }]} />}
           </FieldContent>
         </Field>
 
-        <Field orientation="horizontal" className="col-span-1">
+        <Field orientation='horizontal' className='col-span-1'>
           <Controller
-            name="isPublic"
+            name='isPublic'
             control={control}
             render={({ field }) => (
               <>
                 <Checkbox checked={field.value} onCheckedChange={field.onChange} />
-                <FieldContent className="ml-0!">
+                <FieldContent className='ml-0!'>
                   <FieldTitle>Public</FieldTitle>
                 </FieldContent>
               </>
@@ -152,9 +152,9 @@ const EmailEditForm: FC<EmailEditFormProps> = ({ email, organizationId, onSave, 
         </Field>
       </div>
       <Button
-        type="submit"
+        type='submit'
         disabled={isSubmitting}
-        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4"
+        className='bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-4'
       >
         Save
       </Button>

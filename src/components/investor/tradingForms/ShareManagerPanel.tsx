@@ -160,7 +160,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     <>
       {!!minPurchase && <div>Minimum purchase: {numberWithCommas(minPurchase)} shares</div>}
       {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} shares</div>}
-      {!!maxPurchase && <hr className="my-4" />}
+      {!!maxPurchase && <hr className='my-4' />}
     </>
   );
 
@@ -177,11 +177,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     >
       <LoadingButtonChain
         state={cancelButtonStep}
-        idleText="Cancel Remaining Offer"
-        step1Text="Canceling Sale..."
-        confirmedText="Sale Cancelled!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        idleText='Cancel Remaining Offer'
+        step1Text='Canceling Sale...'
+        confirmedText='Sale Cancelled!'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </Button>
   );
@@ -211,10 +211,10 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       <LoadingButtonChain
         state={approveButtonStep}
         idleText={`${transactionIsAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'}`}
-        step1Text="Approving..."
-        confirmedText="Approved"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        step1Text='Approving...'
+        confirmedText='Approved'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </Button>
   );
@@ -228,10 +228,10 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       <LoadingButtonChain
         state={disapproveButtonStep}
         idleText={`Disapprove ${transactionIsAccepted ? 'Trade' : 'Listing'}`}
-        step1Text="Disapproving..."
-        confirmedText="Disapproved"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        step1Text='Disapproving...'
+        confirmedText='Disapproved'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </Button>
   );
@@ -244,11 +244,11 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   );
 
   const requestStatementText = (
-    <span className="flex mt-2">
+    <span className='flex mt-2'>
       <FormattedCryptoAddress
         chainId={chainId}
         address={isAskOrder ? recipientAddress : senderAddress}
-        className="text-base"
+        className='text-base'
       />
       &nbsp;
       {`${
@@ -262,19 +262,19 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       <FormattedCryptoAddress
         chainId={chainId}
         address={isAskOrder ? senderAddress : recipientAddress}
-        className="text-base"
+        className='text-base'
       />{' '}
       &nbsp; for {numberWithCommas(price)} {getCurrencyById(paymentTokenAddress)?.symbol} per share.
     </span>
   );
 
   return (
-    <div className="flex flex-col mb-2">
+    <div className='flex flex-col mb-2'>
       {minMaxSection}
       {isContractOwner && !isCancelled && !isFilled ? (
         <>
           {isAccepted && (
-            <div className="pl-1 mb-2 font-semibold text-cDarkBlue">{requestStatementText} </div>
+            <div className='pl-1 mb-2 font-semibold text-cDarkBlue'>{requestStatementText} </div>
           )}
           <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
             {(swapApprovalsEnabled || txnApprovalsEnabled) && (
@@ -293,7 +293,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 
           {isAccepted && (
             <>
-              <hr className="my-4" />
+              <hr className='my-4' />
               <OrderVisibilityToggle
                 orderVisibility={order.visible}
                 orderId={order.id}
@@ -306,7 +306,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         baseInitiatorButtonSet
       )}
       {(isCancelled || isFilled) && proceeds !== 0 && (
-        <div className="flex">
+        <div className='flex'>
           {isContractOwner && (isFilled || isCancelled) && (
             <OrderVisibilityToggle
               orderVisibility={order.visible}

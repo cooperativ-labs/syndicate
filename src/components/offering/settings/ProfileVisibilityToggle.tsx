@@ -10,8 +10,8 @@ const ProfileVisibilityToggle: FC<ProfileVisibilityToggleProps> = ({
   handleToggle
 }) => {
   return (
-    <div className="flex align-middle justify-between items-center ">
-      <div className="text-sm font-medium text-gray-700 mr-2">
+    <div className='flex align-middle justify-between items-center '>
+      <div className='text-sm font-medium text-gray-700 mr-2'>
         {profileVisibility ? '' : 'Make visible to investors'}
       </div>
       <Switch checked={profileVisibility || false} onCheckedChange={handleToggle} />

@@ -64,18 +64,18 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
   };
 
   return (
-    <form className="flex flex-col">
+    <form className='flex flex-col'>
       <FieldGroup>
-        <div className="flex gap-2">
+        <div className='flex gap-2'>
           <Field>
             <FieldContent>
               <Controller
                 control={control}
-                name="emailAddress"
+                name='emailAddress'
                 render={({ field }) => (
                   <Input
                     {...field}
-                    placeholder="e.g moritz@bonuslife.com"
+                    placeholder='e.g moritz@bonuslife.com'
                     aria-invalid={!!errors.emailAddress}
                   />
                 )}
@@ -83,15 +83,15 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
               <FieldError errors={errors.emailAddress ? [errors.emailAddress] : undefined} />
             </FieldContent>
           </Field>
-          <Field className="flex-1">
+          <Field className='flex-1'>
             <FieldContent>
               <Controller
                 control={control}
-                name="permission"
+                name='permission'
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="--Role--" />
+                      <SelectValue placeholder='--Role--' />
                     </SelectTrigger>
                     <SelectContent>
                       {organizationPermissionOptions.map(option => (
@@ -112,10 +112,10 @@ const SettingsAddTeamMember: FC<SettingsAddTeamMemberProps> = ({ organizationId 
           onClick={handleSubmit(onSubmit)}
           buttonState={buttonState}
           setButtonState={setButtonState}
-          text="Add member"
-          loadingText="Adding member..."
-          successText="Member added!"
-          errorText="Failed to add member"
+          text='Add member'
+          loadingText='Adding member...'
+          successText='Member added!'
+          errorText='Failed to add member'
           reset
         />
       </FieldGroup>

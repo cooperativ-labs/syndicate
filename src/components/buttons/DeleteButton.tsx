@@ -17,7 +17,7 @@ const DeleteButton: FC<DeleteButtonProps> = ({ iconColor, bgColor, onDelete }) =
         e.preventDefault();
         onDelete();
       }}
-      variant="destructive"
+      variant='destructive'
       className={cn(
         `bg-${bgColor}`,
         `text-${iconColor}`,

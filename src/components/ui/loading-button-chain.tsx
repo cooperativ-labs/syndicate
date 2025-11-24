@@ -1,9 +1,9 @@
+import { cn } from '@src/lib/utils';
 import { type VariantProps } from 'class-variance-authority';
 import { Check, Loader2Icon } from 'lucide-react';
 import * as React from 'react';
 
 import { Button, buttonVariants } from './button';
-import { cn } from '@src/lib/utils';
 export type LoadingButtonStateType =
   | 'idle'
   | 'step1'
@@ -75,9 +75,9 @@ const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChai
           return (
             <>
               <img
-                src="/assets/images/loading-circle.png"
-                aria-label="loading"
-                className="h-6 mr-1 animate-spin bg-white rounded-full"
+                src='/assets/images/loading-circle.png'
+                aria-label='loading'
+                className='h-6 mr-1 animate-spin bg-white rounded-full'
               />
               <span>{step1Text}</span>
             </>
@@ -86,9 +86,9 @@ const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChai
           return (
             <>
               <img
-                src="/assets/images/loading-circle.png"
-                aria-label="loading"
-                className="h-6 mr-1 animate-spin bg-white rounded-full"
+                src='/assets/images/loading-circle.png'
+                aria-label='loading'
+                className='h-6 mr-1 animate-spin bg-white rounded-full'
               />
               <span>{step2Text}</span>
             </>
@@ -97,9 +97,9 @@ const LoadingButtonChain = React.forwardRef<HTMLButtonElement, LoadingButtonChai
           return (
             <>
               <img
-                src="/assets/images/loading-circle.png"
-                aria-label="loading"
-                className="h-6 mr-1 animate-spin bg-white rounded-full"
+                src='/assets/images/loading-circle.png'
+                aria-label='loading'
+                className='h-6 mr-1 animate-spin bg-white rounded-full'
               />
               <span>{step3Text}</span>
             </>

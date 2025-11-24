@@ -27,13 +27,13 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   const presentCurrency = getCurrencyById(paymentTokenAddress)?.symbol;
   return (
     <div className={className}>
-      <span className="font-semibold text-xl">{` ${numberWithCommas(price, 2)} ${presentCurrency}`}</span>
-      <span className="text-sm">
+      <span className='font-semibold text-xl'>{` ${numberWithCommas(price, 2)} ${presentCurrency}`}</span>
+      <span className='text-sm'>
         {' '}
         per {partition && stringFromBytes32(partition as String0x)} share
       </span>
 
-      <div className="mt-2">
+      <div className='mt-2'>
         {numberWithCommas(shareQtyRemaining)} of {numberWithCommas(shareQtyOffered)} remaining
       </div>
     </div>

@@ -130,9 +130,9 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
       </div>
       <div>
         {activeTab === 'properties' && (
-          <div className="mt-8">
-            <div className="mb-6">
-              <h1 className="text-cDarkBlue text-2xl font-medium  ">Properties</h1>
+          <div className='mt-8'>
+            <div className='mb-6'>
+              <h1 className='text-cDarkBlue text-2xl font-medium  '>Properties</h1>
             </div>
             <OfferingProperties
               offeringEntity={offeringEntity as LegalEntity}
@@ -143,11 +143,11 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
           </div>
         )}
         {activeTab === 'investors' && (
-          <div className="mt-8">
+          <div className='mt-8'>
             {shareContractAddress ? (
               <div>
-                <div className="flex justify-between items-center mb-6">
-                  <h1 className="text-cDarkBlue text-2xl font-medium ">Investors</h1>
+                <div className='flex justify-between items-center mb-6'>
+                  <h1 className='text-cDarkBlue text-2xl font-medium '>Investors</h1>
                 </div>
                 <WhitelistAddressList
                   offeringParticipants={offeringParticipants}
@@ -162,7 +162,7 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   triggerInvestorListRefresh={triggerInvestorListRefresh}
                   refetchContracts={refetchContracts}
                 />
-                <Separator className="my-4 mt-5" />
+                <Separator className='my-4 mt-5' />
                 <AddWhitelistAddress
                   shareContractAddress={shareContractAddress}
                   offeringId={offeringId}
@@ -175,15 +175,15 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
           </div>
         )}
         {activeTab === 'distributions' && (
-          <div className="mt-8">
-            <div className="flex justify-between items-center mb-6">
-              <h1 className="text-cDarkBlue text-2xl font-medium ">Distributions</h1>
+          <div className='mt-8'>
+            <div className='flex justify-between items-center mb-6'>
+              <h1 className='text-cDarkBlue text-2xl font-medium '>Distributions</h1>
               {contractManagerMatches && isContractOwner && !!distributionContractAddress && (
                 <Button
                   onClick={() => {
                     setSubmitDistributionModal(true);
                   }}
-                  className="h-12 bg-cLightBlue p-3 font-semibold text-white rounded-md"
+                  className='h-12 bg-cLightBlue p-3 font-semibold text-white rounded-md'
                 >
                   Submit Distribution
                 </Button>

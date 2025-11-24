@@ -36,15 +36,15 @@ const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
   };
 
   return (
-    <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-      <div className="grid md:grid-cols-4 gap-4">
+    <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
+      <div className='grid md:grid-cols-4 gap-4'>
         <Field className={`${fieldDiv} w-full md:col-span-3`}>
-          <FieldLabel htmlFor="settings-add-email">Address</FieldLabel>
+          <FieldLabel htmlFor='settings-add-email'>Address</FieldLabel>
           <FieldContent>
             <Input
-              id="settings-add-email"
-              placeholder="e.g moritz@bonuslife.com"
-              type="email"
+              id='settings-add-email'
+              placeholder='e.g moritz@bonuslife.com'
+              type='email'
               aria-invalid={Boolean(errors.address)}
               {...register('address')}
             />
@@ -53,9 +53,9 @@ const SettingsAddEmail: FC<SettingsAddEmailProps> = ({ completionUrl }) => {
         </Field>
       </div>
       <button
-        type="submit"
+        type='submit'
         disabled={isSubmitting}
-        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
+        className='bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4'
       >
         Add Email
       </button>

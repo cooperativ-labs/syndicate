@@ -111,6 +111,13 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
     refetchOrders();
   };
 
+  const { value: propertiesData } = useAsync(async () => {
+    const properties = await getRealEstatePropertiesFromOffering(offering.id.toString());
+    return properties;
+  }, [offering.id]);
+
+  const realEstateProperties = propertiesData ?? [];
+
   const offeringParticipant = participants?.find((participant: OfferingParticipant) => {
     return (
       userWalletAddress &&
@@ -120,21 +127,21 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
 
   if (!offeringParticipant) {
     return (
-      <div className="w-screen h-screen flex justify-center items-center pb-32">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">You are not a participant of this offering.</h1>
-          <p className="text-lg">Please contact the fund manager for more information.</p>
+      <div className='w-screen h-screen flex justify-center items-center pb-32'>
+        <div className='text-center'>
+          <h1 className='text-2xl font-bold'>You are not a participant of this offering.</h1>
+          <p className='text-lg'>Please contact the fund manager for more information.</p>
         </div>
       </div>
     );
   }
 
   const whitelistError = (
-    <div className="w-screen h-screen flex justify-center items-center pb-32">
-      <div className="flex justify-center items-center">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold">Error retrieving allowlist status.</h1>
-          <p className="text-lg">
+    <div className='w-screen h-screen flex justify-center items-center pb-32'>
+      <div className='flex justify-center items-center'>
+        <div className='text-center'>
+          <h1 className='text-2xl font-bold'>Error retrieving allowlist status.</h1>
+          <p className='text-lg'>
             Please make sure your wallet is set to the same network as this offering.
           </p>
         </div>
@@ -143,26 +150,19 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
   );
 
   const removedFromWhitelist = (
-    <div className="flex justify-center items-center">
-      <div className="text-center">
-        <h1 className="text-2xl font-bold">You have been removed from this offering.</h1>
-        <p className="text-lg">Please contact the fund manager for more information.</p>
+    <div className='flex justify-center items-center'>
+      <div className='text-center'>
+        <h1 className='text-2xl font-bold'>You have been removed from this offering.</h1>
+        <p className='text-lg'>Please contact the fund manager for more information.</p>
       </div>
     </div>
   );
-
-  const { value: propertiesData } = useAsync(async () => {
-    const properties = await getRealEstatePropertiesFromOffering(offering.id.toString());
-    return properties;
-  }, [offering.id]);
-
-  const realEstateProperties = propertiesData ?? [];
 
   if (isWhitelistError) {
     return whitelistError;
   } else if (!isWhitelisted) {
     return (
-      <div className="w-screen h-screen flex justify-center items-center pb-32">
+      <div className='w-screen h-screen flex justify-center items-center pb-32'>
         {removedFromWhitelist}
       </div>
     );
@@ -170,8 +170,8 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
 
   return (
     <div
-      data-test="component-PortalOffering"
-      className="flex flex-col w-full h-full mx-auto px-4 pt-10"
+      data-test='component-PortalOffering'
+      className='flex flex-col w-full h-full mx-auto px-4 pt-10'
     >
       <FormModal
         formOpen={managerModal === 'saleForm'}
@@ -198,9 +198,9 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
       </FormModal>
 
       <Container>
-        <h2 className="text-4xl  text-blue-900 font-semibold mb-4">{offeringName}</h2>
+        <h2 className='text-4xl  text-blue-900 font-semibold mb-4'>{offeringName}</h2>
       </Container>
-      <Container className="flex flex-col">
+      <Container className='flex flex-col'>
         <TwoColumnLayout>
           <DashboardCard>
             {isWhitelisted ? (
@@ -226,7 +226,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
           </DashboardCard>
           <DashboardCard>
             <OfferingDetailsDisplay
-              className="my-6"
+              className='my-6'
               offering={offering}
               currentSalePrice={currentSalePrice}
               isOfferingManager={false}
@@ -237,22 +237,22 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
                 paymentToken: paymentTokenAddress
               }}
             />
-            <hr className="mt-6 mb-4" />
-            <div className="flex text-xs font-medium uppercase">
+            <hr className='mt-6 mb-4' />
+            <div className='flex text-xs font-medium uppercase'>
               {`Your wallet balance: ${floatWithCommas(myBacBalance as string, 2)} ${bacSymbol}
                `}
             </div>
           </DashboardCard>
         </TwoColumnLayout>
         <TwoColumnLayout twoThirdsLayout>
-          <div className="mt-4 ">
+          <div className='mt-4 '>
             <DistributionList
               distributionContractAddress={distributionContractAddress}
               distributions={offering?.distributions}
               walletAddress={userWalletAddress as String0x}
             />
 
-            <div className="mt-20 flex">
+            <div className='mt-20 flex'>
               <ProfileTabContainer
                 offering={offering}
                 realEstateProperties={realEstateProperties}
@@ -260,13 +260,13 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
             </div>
           </div>
           <div>
-            <h1 className="text-cDarkBlue text-xl font-bold  mb-3  ">Offering documents</h1>
+            <h1 className='text-cDarkBlue text-xl font-bold  mb-3  '>Offering documents</h1>
             <DocumentList
               documents={offeringDocs}
               isOfferingManager={false}
               offeringId={offering.id.toString()}
             />{' '}
-            <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-16 ">Token agreement</h1>
+            <h1 className='text-cDarkBlue text-xl font-bold  mb-3 mt-16 '>Token agreement</h1>
             {legalLinkTexts &&
               smartContractDocuments &&
               legalLinkTexts?.length > 0 &&

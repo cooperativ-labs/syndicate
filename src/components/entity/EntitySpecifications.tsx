@@ -123,16 +123,16 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
         'flex flex-col grid-cols-5 w-full items-center gap-2 my-4'
       )}
     >
-      <div className="w-full md:col-span-3">
+      <div className='w-full md:col-span-3'>
         {itemType === 'displayName' && (
           <Controller
-            name="displayName"
+            name='displayName'
             control={control}
             render={({ field }) => (
               <Field>
                 <FieldLabel>Display Name</FieldLabel>
                 <FieldContent>
-                  <Input {...field} value={field.value || ''} placeholder="Enter display name" />
+                  <Input {...field} value={field.value || ''} placeholder='Enter display name' />
                   {errors.displayName && <FieldError errors={[errors.displayName]} />}
                 </FieldContent>
               </Field>
@@ -142,13 +142,13 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
 
         {itemType === 'legalName' && (
           <Controller
-            name="legalName"
+            name='legalName'
             control={control}
             render={({ field }) => (
               <Field>
                 <FieldLabel>Legal Name *</FieldLabel>
                 <FieldContent>
-                  <Input {...field} value={field.value || ''} placeholder="Enter legal name" />
+                  <Input {...field} value={field.value || ''} placeholder='Enter legal name' />
                   {errors.legalName && <FieldError errors={[errors.legalName]} />}
                 </FieldContent>
               </Field>
@@ -157,7 +157,7 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
         )}
 
         {itemType === 'jurisdiction' && (
-          <div className="w-full">
+          <div className='w-full'>
             <JurisdictionSelect
               values={{
                 jurCountry: entity.jurisdiction?.country || '',
@@ -165,14 +165,14 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
               }}
               errors={errors}
               setValue={setValue}
-              labelText="Jurisdiction"
+              labelText='Jurisdiction'
             />
           </div>
         )}
 
         {itemType === 'currency' && (
           <Controller
-            name="operatingCurrencyCode"
+            name='operatingCurrencyCode'
             control={control}
             render={({ field }) => (
               <Field>
@@ -180,7 +180,7 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
                 <FieldContent>
                   <Select value={field.value || ''} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select a currency" />
+                      <SelectValue placeholder='Select a currency' />
                     </SelectTrigger>
                     <SelectContent>
                       {currencyOptionsExcludeCredits.map((option, i) => (
@@ -201,13 +201,13 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
 
         {itemType === 'taxId' && (
           <Controller
-            name="taxId"
+            name='taxId'
             control={control}
             render={({ field }) => (
               <Field>
                 <FieldLabel>Tax ID</FieldLabel>
                 <FieldContent>
-                  <Input {...field} value={field.value || ''} placeholder="Tax ID" />
+                  <Input {...field} value={field.value || ''} placeholder='Tax ID' />
                   {errors.taxId && <FieldError errors={[errors.taxId]} />}
                 </FieldContent>
               </Field>
@@ -217,7 +217,7 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
 
         {itemType === 'purpose' && (
           <Controller
-            name="purpose"
+            name='purpose'
             control={control}
             render={({ field }) => (
               <Field>
@@ -226,8 +226,8 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
                   <Textarea
                     {...field}
                     value={field.value || ''}
-                    placeholder="Describe the entity purpose"
-                    className="w-full"
+                    placeholder='Describe the entity purpose'
+                    className='w-full'
                   />
                   {errors.purpose && <FieldError errors={[errors.purpose]} />}
                 </FieldContent>
@@ -241,14 +241,14 @@ const EntityEditForm: FC<EntityFormProps> = ({ itemType, entity, setEditOn }) =>
         onClick={handleSubmit(onSubmit)}
         disabled={isSubmitting}
         buttonState={buttonState}
-        text="Save"
-        loadingText="Saving..."
+        text='Save'
+        loadingText='Saving...'
       />
 
       <Button
-        type="button"
+        type='button'
         disabled={isSubmitting}
-        className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
+        className='border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full'
         onClick={(e: React.MouseEvent<HTMLButtonElement>) => {
           e.preventDefault();
           setEditOn('none');
@@ -280,56 +280,56 @@ const EntitySpecifications: FC<EntitySpecificationsProps> = ({ entity, isManager
   return (
     <>
       <ClickToEditItem
-        label="Legal name"
+        label='Legal name'
         currentValue={legalName}
-        form={<EntityEditForm itemType="legalName" entity={entity} setEditOn={setEditOn} />}
+        form={<EntityEditForm itemType='legalName' entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
-        itemType="legalName"
+        itemType='legalName'
         isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="d/b/a"
+        label='d/b/a'
         currentValue={displayName}
-        form={<EntityEditForm itemType="displayName" entity={entity} setEditOn={setEditOn} />}
+        form={<EntityEditForm itemType='displayName' entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
-        itemType="displayName"
+        itemType='displayName'
         isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="Jurisdiction"
+        label='Jurisdiction'
         currentValue={entity.jurisdiction_id || 'Not set'}
-        form={<EntityEditForm itemType="jurisdiction" entity={entity} setEditOn={setEditOn} />}
+        form={<EntityEditForm itemType='jurisdiction' entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
-        itemType="jurisdiction"
+        itemType='jurisdiction'
         isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="Currency"
+        label='Currency'
         currentValue={operatingCurrency}
-        form={<EntityEditForm itemType="currency" entity={entity} setEditOn={setEditOn} />}
+        form={<EntityEditForm itemType='currency' entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
-        itemType="currency"
+        itemType='currency'
         isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="Tax ID"
+        label='Tax ID'
         currentValue={taxId}
-        form={<EntityEditForm itemType="taxId" entity={entity} setEditOn={setEditOn} />}
+        form={<EntityEditForm itemType='taxId' entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
-        itemType="taxId"
+        itemType='taxId'
         isManager={isManager}
         setEditOn={setEditOn}
       />
       <ClickToEditItem
-        label="Entity purpose"
+        label='Entity purpose'
         currentValue={purpose}
-        form={<EntityEditForm itemType="purpose" entity={entity} setEditOn={setEditOn} />}
+        form={<EntityEditForm itemType='purpose' entity={entity} setEditOn={setEditOn} />}
         editOn={editOn}
-        itemType="purpose"
+        itemType='purpose'
         isManager={isManager}
         setEditOn={setEditOn}
       />

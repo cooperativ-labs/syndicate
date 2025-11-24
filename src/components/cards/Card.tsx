@@ -13,7 +13,7 @@ const Card: FC<CardProps> = ({ children, onClick, ...rest }) => {
   const { className, style, ...props } = rest;
   return (
     <div
-      data-test="component-card"
+      data-test='component-card'
       className={cn(className, onClick && 'hover:pointer-cursor')}
       style={style}
       onClick={onClick}

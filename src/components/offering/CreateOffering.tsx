@@ -92,19 +92,19 @@ const CreateOffering: FC<CreateOfferingType> = ({ refetch, legalEntities }) => {
         <CreateEntity actionOnCompletion={entitySubmissionCompletion} />
       </FormModal>
       <form>
-        <FieldGroup className="w-full">
+        <FieldGroup className='w-full'>
           <FieldSet>
-            <FieldLegend variant="label">In which entity are you offering shares?</FieldLegend>
-            <div className="md:flex flex-col gap-4">
-              <div className="flex items-center gap-3 mt-1">
+            <FieldLegend variant='label'>In which entity are you offering shares?</FieldLegend>
+            <div className='md:flex flex-col gap-4'>
+              <div className='flex items-center gap-3 mt-1'>
                 <Field>
                   <Controller
                     control={control}
-                    name="offeringEntityId"
+                    name='offeringEntityId'
                     render={({ field }) => (
                       <Select value={field.value} onValueChange={field.onChange}>
                         <SelectTrigger>
-                          <SelectValue placeholder="Select an entity" />
+                          <SelectValue placeholder='Select an entity' />
                         </SelectTrigger>
                         <SelectContent>
                           {entitiesWithoutOfferings.map(entity => (
@@ -118,18 +118,18 @@ const CreateOffering: FC<CreateOfferingType> = ({ refetch, legalEntities }) => {
                   />
                 </Field>
                 <Button
-                  variant="outline"
+                  variant='outline'
                   onClick={e => {
                     e.preventDefault();
                     setEntityModal(true);
                   }}
-                  type="button"
+                  type='button'
                 >
                   Add New Entity
                 </Button>
               </div>
               {formState.errors.offeringEntityId && (
-                <div className="text-sm text-red-500 mt-1">
+                <div className='text-sm text-red-500 mt-1'>
                   {formState.errors.offeringEntityId.message}
                 </div>
               )}
@@ -138,12 +138,12 @@ const CreateOffering: FC<CreateOfferingType> = ({ refetch, legalEntities }) => {
             <Field>
               <FieldLabel>What do you call this offering</FieldLabel>
               <Input
-                placeholder="e.g. First Fund"
-                aria-label="Offering name"
+                placeholder='e.g. First Fund'
+                aria-label='Offering name'
                 {...register('name')}
               />
               {formState.errors.name && (
-                <div className="text-sm text-red-500 mt-1">{formState.errors.name.message}</div>
+                <div className='text-sm text-red-500 mt-1'>{formState.errors.name.message}</div>
               )}
             </Field>
           </FieldSet>
@@ -154,10 +154,10 @@ const CreateOffering: FC<CreateOfferingType> = ({ refetch, legalEntities }) => {
               setButtonState={setButtonState}
               text={`Create ${watchedName}`}
               loadingText={`Creating ${watchedName}`}
-              successText="Created!"
-              errorText="Oops. Something went wrong"
+              successText='Created!'
+              errorText='Oops. Something went wrong'
               reset
-              className="w-full"
+              className='w-full'
             />
           </FieldSet>
         </FieldGroup>

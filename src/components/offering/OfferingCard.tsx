@@ -105,18 +105,18 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
         router.push(pushLink);
       }}
     >
-      <Card className="md:mr-5 md:w-96 rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer">
-        <img src={imageUrl ?? undefined} className="object-cover w-full h-24 absolute" />
-        <div className="backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30" />
-        <div className="p-4">
-          <div className="text-lg font-bold">{name}</div>
+      <Card className='md:mr-5 md:w-96 rounded-lg drop-shadow-md hover:drop-shadow-lg bg-white text-gray-700 overflow-hidden relative hover:cursor-pointer'>
+        <img src={imageUrl ?? undefined} className='object-cover w-full h-24 absolute' />
+        <div className='backdrop-opacity-10 backdrop-invert h-24 bg-gray-800/30' />
+        <div className='p-4'>
+          <div className='text-lg font-bold'>{name}</div>
         </div>
-        <div className="p-4">
-          <div className="grid grid-cols-3">
+        <div className='p-4'>
+          <div className='grid grid-cols-3'>
             {currentPrice ? (
-              <OfferingDetailDashboardItem title="Price">
+              <OfferingDetailDashboardItem title='Price'>
                 <MoneyDisplay
-                  className="text-center"
+                  className='text-center'
                   amount={currentPrice}
                   currency={operatingCurrency as CurrencyCodeType}
                 />
@@ -125,21 +125,21 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
               <></>
             )}
             {projected_appreciation ? (
-              <OfferingDetailDashboardItem title="Projected Appreciation">
+              <OfferingDetailDashboardItem title='Projected Appreciation'>
                 <PercentageDisplay percent={projected_appreciation} />
               </OfferingDetailDashboardItem>
             ) : (
               <></>
             )}
             {projected_irr ? (
-              <OfferingDetailDashboardItem title="Projected IRR">
+              <OfferingDetailDashboardItem title='Projected IRR'>
                 <PercentageDisplay percent={projected_irr} secondPercent={projected_irr_max} />
               </OfferingDetailDashboardItem>
             ) : (
               <></>
             )}
             {preferred_return ? (
-              <OfferingDetailDashboardItem title="Preferred Return">
+              <OfferingDetailDashboardItem title='Preferred Return'>
                 <PercentageDisplay percent={preferred_return} />
               </OfferingDetailDashboardItem>
             ) : (

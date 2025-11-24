@@ -63,18 +63,18 @@ const InvestmentCurrencyForm: FC<InvestmentCurrencyFormProps> = ({ offeringId })
   return (
     <form>
       <FieldGroup>
-        <FieldSet className="gap-2">
+        <FieldSet className='gap-2'>
           <Field>
             <FieldLabel>In which currency will distributions be paid?</FieldLabel>
             <Controller
               control={control}
-              name="investmentCurrencyCode"
+              name='investmentCurrencyCode'
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
                   <SelectTrigger>
-                    <SelectValue placeholder="Select currency" />
+                    <SelectValue placeholder='Select currency' />
                   </SelectTrigger>
-                  <SelectContent position="item-aligned">
+                  <SelectContent position='item-aligned'>
                     {currencyOptions.map((option, i) => (
                       <SelectItem key={i} value={option.value}>
                         {option.symbol} ({chain?.name})
@@ -87,15 +87,15 @@ const InvestmentCurrencyForm: FC<InvestmentCurrencyFormProps> = ({ offeringId })
           </Field>
           <LoadingButton
             onClick={handleSubmit(onSubmit)}
-            variant="outline"
+            variant='outline'
             buttonState={buttonState}
             setButtonState={setButtonState}
             text={`Set investment currency`}
             loadingText={`Setting ...`}
-            successText="Set!"
-            errorText="Oops. Something went wrong"
+            successText='Set!'
+            errorText='Oops. Something went wrong'
             reset
-            className="w-full"
+            className='w-full'
           />
         </FieldSet>
       </FieldGroup>
@@ -134,9 +134,9 @@ export default function OfferingActionsContainer({
 }: OfferingActionsContainerProps) {
   return (
     <DashboardCard>
-      <div className="min-w-[200px]">
-        <div className="font-xl font-semibold">Smart contract actions</div>
-        <div className="mt-4">
+      <div className='min-w-[200px]'>
+        <div className='font-xl font-semibold'>Smart contract actions</div>
+        <div className='mt-4'>
           {!userWalletAddress ? (
             <ChooseConnectorButton buttonText={'Connect Wallet'} />
           ) : !investmentCurrency ? (

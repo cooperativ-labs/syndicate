@@ -21,11 +21,11 @@ const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({
   };
 
   return (
-    <div className="flex items-center">
-      <div className="flex align-middle justify-between min-w-max">
-        <span className="mr-2"> Visible to investors </span>
+    <div className='flex items-center'>
+      <div className='flex align-middle justify-between min-w-max'>
+        <span className='mr-2'> Visible to investors </span>
         <button
-          className=" border-2 border-grey-50 rounded-full w-12 bg-white  mr-10"
+          className=' border-2 border-grey-50 rounded-full w-12 bg-white  mr-10'
           onClick={e => {
             e.preventDefault();
             handleToggle();

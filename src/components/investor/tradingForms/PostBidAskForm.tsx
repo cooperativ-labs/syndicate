@@ -258,40 +258,40 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   return (
     <>
       <Button
-        type="button"
-        className="w-full p-2 border-2 rounded-md"
+        type='button'
+        className='w-full p-2 border-2 rounded-md'
         onClick={() => setIsAsk(!isAsk)}
       >
         {`Switch to ${isAsk ? 'Bid' : 'Ask'}`}
       </Button>
 
       <form onSubmit={handleSubmit(onSubmit)}>
-        <div className="mt-4 mb-2">
+        <div className='mt-4 mb-2'>
           <FieldLabel>{`${isAsk ? 'Selling' : 'Buying'} wallet:`}</FieldLabel>
           <FormattedCryptoAddress
             chainId={chainId}
             address={walletAddress}
-            className="font-semibold"
+            className='font-semibold'
           />
         </div>
-        <hr className="my-6" />
+        <hr className='my-6' />
         {!isContractOwner && myShareQty && myShareQty < 1 && isAsk ? (
           <div>You do not have any shares to sell </div>
         ) : (
           <>
-            <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">{`${
+            <h2 className='text-xl md:mt-8 text-blue-900 font-semibold'>{`${
               isAsk ? 'Sale' : 'Purchase'
             }`}</h2>
-            <div className="md:grid grid-cols-3 gap-3">
+            <div className='md:grid grid-cols-3 gap-3'>
               <Field className={cn(defaultFieldDiv, 'col-span-2')}>
-                <FieldLabel htmlFor="numUnits">{`How many shares would you like to ${
+                <FieldLabel htmlFor='numUnits'>{`How many shares would you like to ${
                   isAsk ? `sell? ${showSharesAvailable}` : 'buy?'
                 }`}</FieldLabel>
                 <FieldContent>
                   <Input
-                    id="numUnits"
-                    type="number"
-                    placeholder="e.g. 80"
+                    id='numUnits'
+                    type='number'
+                    placeholder='e.g. 80'
                     aria-invalid={Boolean(errors.numUnits)}
                     {...register('numUnits')}
                   />
@@ -299,14 +299,14 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                 </FieldContent>
               </Field>
               <Field className={cn(defaultFieldDiv, 'col-span-2')}>
-                <FieldLabel htmlFor="price">{`At what price per share? (${
+                <FieldLabel htmlFor='price'>{`At what price per share? (${
                   investmentCurrency && getCurrencyOption(investmentCurrency)?.symbol
                 })`}</FieldLabel>
                 <FieldContent>
                   <Input
-                    id="price"
-                    type="number"
-                    placeholder="e.g. 2000"
+                    id='price'
+                    type='number'
+                    placeholder='e.g. 2000'
                     aria-invalid={Boolean(errors.price)}
                     {...register('price')}
                   />
@@ -326,17 +326,17 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                 </>
               </NonInput>
             </div>
-            <hr className="my-6 mt-8" />
+            <hr className='my-6 mt-8' />
             {isContractOwner && (
               <div>
-                <div className="grid md:grid-cols-2 gap-3 my-6">
+                <div className='grid md:grid-cols-2 gap-3 my-6'>
                   <Field className={`${defaultFieldDiv} col-span-1`}>
-                    <FieldLabel htmlFor="minUnits">Minimum purchase in shares</FieldLabel>
+                    <FieldLabel htmlFor='minUnits'>Minimum purchase in shares</FieldLabel>
                     <FieldContent>
                       <Input
-                        id="minUnits"
-                        type="number"
-                        placeholder="e.g. 10"
+                        id='minUnits'
+                        type='number'
+                        placeholder='e.g. 10'
                         aria-invalid={Boolean(errors.minUnits)}
                         {...register('minUnits')}
                       />
@@ -344,12 +344,12 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     </FieldContent>
                   </Field>
                   <Field className={`${defaultFieldDiv} col-span-1`}>
-                    <FieldLabel htmlFor="maxUnits">Maximum purchase in shares</FieldLabel>
+                    <FieldLabel htmlFor='maxUnits'>Maximum purchase in shares</FieldLabel>
                     <FieldContent>
                       <Input
-                        id="maxUnits"
-                        type="number"
-                        placeholder="e.g. 120"
+                        id='maxUnits'
+                        type='number'
+                        placeholder='e.g. 120'
                         aria-invalid={Boolean(errors.maxUnits)}
                         {...register('maxUnits')}
                       />
@@ -357,37 +357,37 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     </FieldContent>
                   </Field>
                 </div>
-                <hr className="my-6 mt-8" />
+                <hr className='my-6 mt-8' />
               </div>
             )}
 
             {!isContractOwner && (
               <>
-                <div className="mb-3">
+                <div className='mb-3'>
                   <Field>
                     <FieldContent>
                       <Controller
                         control={control}
-                        name="toc"
+                        name='toc'
                         render={({ field }) => (
-                          <div className="flex items-start gap-3">
+                          <div className='flex items-start gap-3'>
                             <Checkbox
-                              id="toc"
+                              id='toc'
                               checked={field.value}
                               onCheckedChange={checked => field.onChange(Boolean(checked))}
                               aria-invalid={Boolean(errors.toc)}
                             />
                             <button
-                              className="text-sm text-gray-700 hover:underline text-left"
-                              aria-label="review application"
+                              className='text-sm text-gray-700 hover:underline text-left'
+                              aria-label='review application'
                               onClick={e => {
                                 e.preventDefault();
                                 setTocOpen(!tocOpen);
                               }}
                             >
-                              <div className="flex text-left">
+                              <div className='flex text-left'>
                                 {`I accept this offering's Terms and Conditions`}
-                                <div className="ml-2">
+                                <div className='ml-2'>
                                   {tocOpen ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
                                 </div>
                               </div>
@@ -400,12 +400,12 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                   </Field>
                 </div>
                 {tocOpen && documents && (
-                  <div className="my-2 p-4 rounded-md bg-slate-100">
+                  <div className='my-2 p-4 rounded-md bg-slate-100'>
                     <PresentLegalText text={documents[0].text} />
-                    <div className="flex">
+                    <div className='flex'>
                       <Button
-                        variant="outline"
-                        className="mt-5"
+                        variant='outline'
+                        className='mt-5'
                         onClick={e => {
                           e.preventDefault();
                           DownloadFile(
@@ -417,8 +417,8 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                         Download Terms & Conditions
                       </Button>
                       <Button
-                        variant="outline"
-                        className="md:ml-3 mt-5"
+                        variant='outline'
+                        className='md:ml-3 mt-5'
                         onClick={e => {
                           e.preventDefault();
                           setTocOpen(false);
@@ -429,21 +429,21 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     </div>
                   </div>
                 )}
-                <div className="mb-5">
+                <div className='mb-5'>
                   <Field>
                     <FieldContent>
                       <Controller
                         control={control}
-                        name="approvalRequired"
+                        name='approvalRequired'
                         render={({ field }) => (
-                          <div className="flex items-start gap-3">
+                          <div className='flex items-start gap-3'>
                             <Checkbox
-                              id="approvalRequired"
+                              id='approvalRequired'
                               checked={field.value}
                               onCheckedChange={checked => field.onChange(Boolean(checked))}
                               aria-invalid={Boolean(errors.approvalRequired)}
                             />
-                            <label htmlFor="approvalRequired" className="text-sm text-gray-700">
+                            <label htmlFor='approvalRequired' className='text-sm text-gray-700'>
                               {`I understand that this ${isAsk ? 'sale' : 'purchase'} requires approval from ${offering.legalEntity.legal_name}.`}
                             </label>
                           </div>
@@ -459,7 +459,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
             )}
 
             <LoadingButtonChain
-              type="submit"
+              type='submit'
               disabled={isSubmitting || buttonStep === 'step1'}
               state={buttonStep}
               idleText={`${
@@ -473,10 +473,10 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     } `
                   : ''
               }`}
-              step1Text="Creating sale..."
-              confirmedText="Confirmed!"
-              failedText="Transaction failed"
-              rejectedText="You rejected the transaction. Click here to try again."
+              step1Text='Creating sale...'
+              confirmedText='Confirmed!'
+              failedText='Transaction failed'
+              rejectedText='You rejected the transaction. Click here to try again.'
             />
           </>
         )}

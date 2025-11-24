@@ -50,39 +50,39 @@ const FileUpload: FC<FileUploadProps> = ({
   };
 
   return (
-    <div className="flex flex-col">
+    <div className='flex flex-col'>
       {imagePreview ? (
-        <div className="relative">
-          <div className="absolute -right-2 -top-2">
+        <div className='relative'>
+          <div className='absolute -right-2 -top-2'>
             {setImagePreview && <DeleteButton onDelete={() => setImagePreview('')} />}
           </div>
-          <img className="h-40 object-scale-down" src={imagePreview} />
+          <img className='h-40 object-scale-down' src={imagePreview} />
         </div>
       ) : (
         <DragAndDrop
           acceptedFileTypes={accept.join(', ')}
           acceptedMimeTypes={accept}
-          title="Drag and drop or click"
-          description="Chose a file to upload."
+          title='Drag and drop or click'
+          description='Chose a file to upload.'
           progressAmt={progressAmt}
           onSelect={handleOnSelect}
         />
       )}
       {selectedFile && (
-        <div className="flex justify-end w-full">
+        <div className='flex justify-end w-full'>
           <LoadingButton
             buttonState={uploadButtonState}
             onClick={() => handleUploadFile(selectedFile)}
-            className="gap-2"
+            className='gap-2'
             text={
-              <span className="flex items-center gap-2">
-                <Upload className="h-4 w-4" />
+              <span className='flex items-center gap-2'>
+                <Upload className='h-4 w-4' />
                 {uploaderText}
               </span>
             }
-            loadingText="Uploading..."
-            successText="Uploaded!"
-            errorText="Upload failed"
+            loadingText='Uploading...'
+            successText='Uploaded!'
+            errorText='Upload failed'
           />
         </div>
       )}

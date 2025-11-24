@@ -36,11 +36,11 @@ const DistributionContractSettings: FC<DistributionContractSettingsProps> = ({
           contractOwnerEntityId={legalEntity?.id.toString()}
         />
       ) : (
-        <div className="flex flex-col gap-1">
-          <h1 className="font-semibold text-lg">Distribution contract:</h1>
+        <div className='flex flex-col gap-1'>
+          <h1 className='font-semibold text-lg'>Distribution contract:</h1>
           <FormattedCryptoAddress
             chainId={chainId}
-            className="text-sm text-gray-500 font-medium"
+            className='text-sm text-gray-500 font-medium'
             showFull
             withCopy
             address={distributionContractAddress}

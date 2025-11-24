@@ -17,25 +17,25 @@ const AdvisorFields: FC<AdvisorFieldsProps> = ({ register, errors }) => {
       <Field>
         <FieldContent>
           <FieldLabel>Full Name</FieldLabel>
-          <Input type="text" placeholder="" required {...register('advisorFullName')} />
+          <Input type='text' placeholder='' required {...register('advisorFullName')} />
           <FieldError errors={errors.advisorFullName ? [errors.advisorFullName] : undefined} />
         </FieldContent>
       </Field>
       <Field>
         <FieldContent>
           <FieldLabel>Email</FieldLabel>
-          <Input type="text" placeholder="" required {...register('advisorEmail')} />
+          <Input type='text' placeholder='' required {...register('advisorEmail')} />
           <FieldError errors={errors.advisorEmail ? [errors.advisorEmail] : undefined} />
         </FieldContent>
       </Field>
       <Field>
         <FieldContent>
           <FieldLabel>Phone</FieldLabel>
-          <Input type="text" placeholder="" required {...register('advisorPhone')} />
+          <Input type='text' placeholder='' required {...register('advisorPhone')} />
           <FieldError errors={errors.advisorPhone ? [errors.advisorPhone] : undefined} />
         </FieldContent>
       </Field>
-      <AddressFields fieldNameModifier="advisor_" excludeAddressLabel />
+      <AddressFields fieldNameModifier='advisor_' excludeAddressLabel />
     </FieldGroup>
   );
 };

@@ -34,8 +34,8 @@ const Header: React.FunctionComponent<HeaderProps> = ({
     windowSize.width && windowSize.width < 768 ? mobileHeight : desktopHeight;
 
   return (
-    <header data-test="molecule-header" className={cn('w-full relative overflow-hidden')}>
-      <Container fullWidth className="bg-slate-500 object-cover w-full absolute ">
+    <header data-test='molecule-header' className={cn('w-full relative overflow-hidden')}>
+      <Container fullWidth className='bg-slate-500 object-cover w-full absolute '>
         {banner_image ? (
           <div className={cn(imageBannerHeight, 'flex overflow-hidden w-full')}>
             <img className={'object-cover object-center w-full'} src={banner_image} />
@@ -59,7 +59,7 @@ const Header: React.FunctionComponent<HeaderProps> = ({
             })}
           </div>
         ) : (
-          <div className="h-32 " />
+          <div className='h-32 ' />
         )}
       </Container>
       <div

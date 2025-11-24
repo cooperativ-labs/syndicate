@@ -142,9 +142,9 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   };
 
   const specificationSection = (
-    <div className="flex flex-col text-sm font-medium text-gray-500 gap-2 max-w-[350px]">
+    <div className='flex flex-col text-sm font-medium text-gray-500 gap-2 max-w-[350px]'>
       <ClickToEditItem
-        label="Name"
+        label='Name'
         currentValue={participant?.name}
         form={
           <UpdateInvestorForm
@@ -154,13 +154,13 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
           />
         }
         editOn={specEditOn}
-        itemType="name"
+        itemType='name'
         isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
-        className="justify-start"
+        className='justify-start'
       />
       <ClickToEditItem
-        label="Jurisdiction"
+        label='Jurisdiction'
         currentValue={jurisdiction?.country ? renderJurisdiction(jurisdiction) : null}
         form={
           <UpdateInvestorForm
@@ -170,13 +170,13 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
           />
         }
         editOn={specEditOn}
-        itemType="jurisdiction"
+        itemType='jurisdiction'
         isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
-        className="justify-start"
+        className='justify-start'
       />
       <ClickToEditItem
-        label="External ID"
+        label='External ID'
         currentValue={participantExternalId}
         form={
           <UpdateInvestorForm
@@ -186,35 +186,35 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
           />
         }
         editOn={specEditOn}
-        itemType="externalId"
+        itemType='externalId'
         isManager={isOfferingManager}
         setEditOn={setSpecEditOn}
-        className="justify-start"
+        className='justify-start'
       />
     </div>
   );
 
   const tradesSection = (
     <div>
-      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Distributions</h1>
+      <h1 className='text-cDarkBlue text-xl font-bold  mb-3 mt-10 '>Distributions</h1>
       <DistributionList
         distributionContractAddress={distributionContractAddress}
         distributions={distributions}
         isDistributor
         walletAddress={participantWallet}
       />
-      <h1 className="text-cDarkBlue text-xl font-bold  mb-3 mt-10 ">Trades & Transfers</h1>
+      <h1 className='text-cDarkBlue text-xl font-bold  mb-3 mt-10 '>Trades & Transfers</h1>
       <TransferEventList transferEvents={transferEvents} />
     </div>
   );
 
   const buttonSection = (
     <>
-      <div className="flex gap-3">
+      <div className='flex gap-3'>
         {investorApplicationText && (
           <Button
-            className="bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full"
-            aria-label="review application"
+            className='bg-cLightBlue hover:bg-cDarkBlue text-white font-bold uppercase mt-2 rounded p-2 w-full'
+            aria-label='review application'
             onClick={() => DownloadFile(investorApplicationText, `${name} - application.md`)}
           >
             Review Investor Application
@@ -222,34 +222,34 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         )}
         {isWhitelisted ? (
           <LoadingButtonChain
-            aria-label="remove wallet from whitelist"
-            className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
+            aria-label='remove wallet from whitelist'
+            className='bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full'
             onClick={() => updateWhitelistMember(WhitelistTransactionType.REMOVE)}
             state={buttonStep}
-            idleText="Remove this investor from the whitelist"
-            step1Text="Removing..."
-            confirmedText="Updated!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
+            idleText='Remove this investor from the whitelist'
+            step1Text='Removing...'
+            confirmedText='Updated!'
+            failedText='Transaction failed'
+            rejectedText='You rejected the transaction. Click here to try again.'
           />
         ) : (
           <LoadingButtonChain
             onClick={() => updateWhitelistMember(WhitelistTransactionType.ADD)}
-            className="bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full"
-            aria-label="approve investor"
+            className='bg-emerald-600 hover:bg-emerald-800  text-white font-bold uppercase mt-2 rounded p-2 w-full'
+            aria-label='approve investor'
             state={buttonStep}
-            idleText="Approve Investor"
-            step1Text="Approving..."
-            confirmedText="Updated!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
+            idleText='Approve Investor'
+            step1Text='Approving...'
+            confirmedText='Updated!'
+            failedText='Transaction failed'
+            rejectedText='You rejected the transaction. Click here to try again.'
           />
         )}
       </div>
       {!!shareBalanceData && shareBalanceData > 0 && (
-        <div className="mt-4 border-2 rounded-md px-2">
+        <div className='mt-4 border-2 rounded-md px-2'>
           <SectionBlock
-            className="font-bold"
+            className='font-bold'
             sectionTitle={'Force transfer or clawback'}
             mini
             asAccordion
@@ -268,18 +268,18 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
   );
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       <FormattedCryptoAddress
         withCopy
         address={participantWallet}
         chainId={participantChainId}
-        className="font-bold text-lg"
+        className='font-bold text-lg'
         showFull
       />
 
-      <div className="flex flex-col mb-4 gap-2">
+      <div className='flex flex-col mb-4 gap-2'>
         <div>{`Shares:  ${numberWithCommas(numShares)} `}</div>
-        <SectionBlock sectionTitle="Review approvals" mini className="border-2 rounded-md p-2">
+        <SectionBlock sectionTitle='Review approvals' mini className='border-2 rounded-md p-2'>
           {whitelistTransactions?.map((transaction, i) => (
             <WhitelistTransactionItem
               key={i}

@@ -43,8 +43,8 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
           <FieldContent>
             <FieldLabel>Operator Address</FieldLabel>
             <Input
-              type="text"
-              placeholder="Operator Address"
+              type='text'
+              placeholder='Operator Address'
               value={operatorAddress}
               onBlur={(e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
                 setOperatorAddress(e.target.value as String0x)
@@ -55,16 +55,16 @@ const SetOperatorButton: React.FC<SetOperatorButtonProps> = ({
         </Field>
       )}
       <Button
-        className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
+        className='rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium'
         onClick={e => handleSetOperator(e)}
       >
         <LoadingButtonChain
           state={buttonStep}
           idleText={`You must first set yourself as an operator for the contract`}
-          step1Text="Setting operator..."
-          confirmedText="Confirmed!"
-          failedText="Transaction failed"
-          rejectedText="You rejected the transaction. Click here to try again."
+          step1Text='Setting operator...'
+          confirmedText='Confirmed!'
+          failedText='Transaction failed'
+          rejectedText='You rejected the transaction. Click here to try again.'
         />
       </Button>
     </>

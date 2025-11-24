@@ -49,18 +49,18 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
   };
 
   return (
-    <form onSubmit={handleSubmit(onSubmit)} className="grid grid-cols-5 gap-3 relative">
-      <Field className="col-span-2">
+    <form onSubmit={handleSubmit(onSubmit)} className='grid grid-cols-5 gap-3 relative'>
+      <Field className='col-span-2'>
         <FieldLabel>Platform</FieldLabel>
         <FieldContent>
           <Controller
-            name="type"
+            name='type'
             control={control}
             rules={{ required: 'Please select a platform.' }}
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
                 <SelectTrigger>
-                  <SelectValue placeholder="Select a platform" />
+                  <SelectValue placeholder='Select a platform' />
                 </SelectTrigger>
                 <SelectContent>
                   {socialAccountOptions.map(option => (
@@ -76,22 +76,22 @@ const SettingsUserSocial: FC<SettingsSocialProps> = ({ organization }) => {
         </FieldContent>
       </Field>
 
-      <Field className="col-span-2">
+      <Field className='col-span-2'>
         <FieldLabel>URL</FieldLabel>
         <FieldContent>
           <Input
             {...register('url', { required: 'Please include a url.' })}
-            type="url"
-            placeholder="https://example.com"
+            type='url'
+            placeholder='https://example.com'
           />
           {errors.url && <FieldError errors={[{ message: errors.url.message }]} />}
         </FieldContent>
       </Field>
 
       <Button
-        type="submit"
+        type='submit'
         disabled={isSubmitting}
-        className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4"
+        className='bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase my-8 rounded p-4'
       >
         {isSubmitting ? 'Adding...' : 'Add'}
       </Button>

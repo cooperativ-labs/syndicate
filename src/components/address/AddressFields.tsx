@@ -20,8 +20,8 @@ const AddressFields: FC<AddressFieldsProps> = ({ excludeAddressLabel, fieldNameM
               <Input
                 required
                 name={`${modifier}addressLabel`}
-                type="text"
-                placeholder="e.g. Home address"
+                type='text'
+                placeholder='e.g. Home address'
               />
             </FieldContent>
           </Field>
@@ -32,20 +32,20 @@ const AddressFields: FC<AddressFieldsProps> = ({ excludeAddressLabel, fieldNameM
             <Input
               required
               name={`${modifier}addressLine1`}
-              type="text"
-              placeholder="e.g. 155 Easy Ave."
+              type='text'
+              placeholder='e.g. 155 Easy Ave.'
             />
           </FieldContent>
         </Field>
         <Field>
           <FieldContent>
             <FieldLabel>Address line 2</FieldLabel>
-            <Input name={`${modifier}addressLine2`} type="text" placeholder="" />
+            <Input name={`${modifier}addressLine2`} type='text' placeholder='' />
           </FieldContent>
         </Field>
         <Field>
           <FieldContent>
-            <Input name={`${modifier}addressLine3`} type="text" placeholder="" />
+            <Input name={`${modifier}addressLine3`} type='text' placeholder='' />
           </FieldContent>
         </Field>
 
@@ -55,8 +55,8 @@ const AddressFields: FC<AddressFieldsProps> = ({ excludeAddressLabel, fieldNameM
             <Input
               required
               name={`${modifier}country`}
-              type="text"
-              placeholder="e.g. United States"
+              type='text'
+              placeholder='e.g. United States'
             />
           </FieldContent>
         </Field>

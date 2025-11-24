@@ -53,14 +53,14 @@ const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({ property, 
     try {
       await UpdateRePropertyFinancials({
         rePropertyId: property.id,
-        assetValue: values.assetValue ? parseInt(values.assetValue) : null,
+        assetValue: values.assetValue ? parseInt(values.assetValue, 10) : null,
         assetValueNote: values.assetValueNote,
-        downPayment: values.downPayment ? parseInt(values.downPayment) : null,
-        lenderFees: values.lenderFees ? parseInt(values.lenderFees) : null,
-        closingCosts: values.closingCosts ? parseInt(values.closingCosts) : null,
-        loanAmount: values.loanAmount ? parseInt(values.loanAmount) : null,
+        downPayment: values.downPayment ? parseInt(values.downPayment, 10) : null,
+        lenderFees: values.lenderFees ? parseInt(values.lenderFees, 10) : null,
+        closingCosts: values.closingCosts ? parseInt(values.closingCosts, 10) : null,
+        loanAmount: values.loanAmount ? parseInt(values.loanAmount, 10) : null,
         revalidationPath: {
-          path: `/manager/[organizationId]/entities/${property.owner_id}`,
+          path: `/manager/[organizationId]/offerings/${property.offering_id.toString()}`,
           type: 'page'
         }
       });
@@ -75,54 +75,54 @@ const UpdatePropertyFinancials: FC<UpdatePropertyFinancialsType> = ({ property, 
     `${field} (${getCurrencyOption(entityOperatingCurrency)?.symbol ?? ''})`;
 
   return (
-    <form className="flex flex-col gap relative" onSubmit={handleSubmit(onSubmit)}>
-      <hr className="my-6" />
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="assetValue">{currencyLabel('Asset value')}</FieldLabel>
+    <form className='flex flex-col gap relative' onSubmit={handleSubmit(onSubmit)}>
+      <hr className='my-6' />
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='assetValue'>{currencyLabel('Asset value')}</FieldLabel>
         <FieldContent>
-          <Input id="assetValue" type="number" {...register('assetValue')} />
+          <Input id='assetValue' type='number' {...register('assetValue')} />
         </FieldContent>
       </Field>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="assetValueNote">Note about how this value is calculated</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='assetValueNote'>Note about how this value is calculated</FieldLabel>
         <FieldContent>
-          <Input id="assetValueNote" {...register('assetValueNote')} />
+          <Input id='assetValueNote' {...register('assetValueNote')} />
         </FieldContent>
       </Field>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="loanAmount">{currencyLabel('Loan amount')}</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='loanAmount'>{currencyLabel('Loan amount')}</FieldLabel>
         <FieldContent>
-          <Input id="loanAmount" type="number" {...register('loanAmount')} />
+          <Input id='loanAmount' type='number' {...register('loanAmount')} />
         </FieldContent>
       </Field>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="downPayment">{currencyLabel('Down payment')}</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='downPayment'>{currencyLabel('Down payment')}</FieldLabel>
         <FieldContent>
-          <Input id="downPayment" type="number" {...register('downPayment')} />
+          <Input id='downPayment' type='number' {...register('downPayment')} />
         </FieldContent>
       </Field>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="lenderFees">{currencyLabel("Lender's fees")}</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='lenderFees'>{currencyLabel("Lender's fees")}</FieldLabel>
         <FieldContent>
-          <Input id="lenderFees" type="number" {...register('lenderFees')} />
+          <Input id='lenderFees' type='number' {...register('lenderFees')} />
         </FieldContent>
       </Field>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="closingCosts">{currencyLabel('Closing costs')}</FieldLabel>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='closingCosts'>{currencyLabel('Closing costs')}</FieldLabel>
         <FieldContent>
-          <Input id="closingCosts" type="number" {...register('closingCosts')} />
+          <Input id='closingCosts' type='number' {...register('closingCosts')} />
         </FieldContent>
       </Field>
       <LoadingButton
-        type="submit"
+        type='submit'
         buttonState={buttonState}
         setButtonState={setButtonState}
         text={`Update ${property.address?.line1}`}
-        loadingText="Updating property..."
-        successText="Property updated!"
-        errorText="Failed to update property"
+        loadingText='Updating property...'
+        successText='Property updated!'
+        errorText='Failed to update property'
         reset
-        className="mt-8"
+        className='mt-8'
       />
     </form>
   );

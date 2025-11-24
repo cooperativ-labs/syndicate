@@ -3,7 +3,7 @@ import AddPropertyInfo from '@src/components/offering/AddPropertyInfo';
 
 const AddProperty = async () => {
   return (
-    <div data-test="component-create-project-page" className="h-full flex">
+    <div data-test='component-create-project-page' className='h-full flex'>
       <AddPropertyInfo />
     </div>
   );

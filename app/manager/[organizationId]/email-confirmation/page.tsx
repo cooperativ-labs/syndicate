@@ -42,8 +42,8 @@ const ConfirmEmail = () => {
   }, [storedEmail, hashStoredEmail, token, orgId]);
 
   return (
-    <div className="p-4 mx-auto max-w-xl bg-white rounded-xl shadow-lg">
-      <h1 className="text-lg font-bold">Email Confirmed</h1>
+    <div className='p-4 mx-auto max-w-xl bg-white rounded-xl shadow-lg'>
+      <h1 className='text-lg font-bold'>Email Confirmed</h1>
       <p>
         Thank you! Your email address <strong>{storedEmail}</strong> has been successfully
         confirmed.

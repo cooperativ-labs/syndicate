@@ -108,25 +108,25 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
       {showOrder && (
         <div className={'relative items-center shadow-md hover:shadow-lg rounded-md my-5 '}>
           <div
-            className="rounded-md bg-slate-100 items-center hover:cursor-pointer"
+            className='rounded-md bg-slate-100 items-center hover:cursor-pointer'
             onClick={() => {
               setOpen(!open);
               refetchMainContracts();
             }}
           >
-            <div className="flex flex-col">
+            <div className='flex flex-col'>
               {currentUserInitiator && (
-                <div className="flex justify-end items-center pr-3 border-b-2 border-green-600 text-green-600 text-xs uppercase font-semibold rounded-t-md ">
-                  <div className="">{`Your ${isAskOrder ? 'sell' : 'purchase'} offer`}</div>
+                <div className='flex justify-end items-center pr-3 border-b-2 border-green-600 text-green-600 text-xs uppercase font-semibold rounded-t-md '>
+                  <div className=''>{`Your ${isAskOrder ? 'sell' : 'purchase'} offer`}</div>
                 </div>
               )}
               {isDisapproved && (
-                <div className="flex justify-end items-center pr-3 border-b-2 border-red-700 text-red-700 text-xs uppercase font-semibold rounded-t-md ">
+                <div className='flex justify-end items-center pr-3 border-b-2 border-red-700 text-red-700 text-xs uppercase font-semibold rounded-t-md '>
                   {`Manager rejected your proposal to purchase ${disapprovedTransferEvent?.amount} shares`}
                 </div>
               )}
-              <div className="grid grid-cols-12 p-3">
-                <div className="flex col-span-8">
+              <div className='grid grid-cols-12 p-3'>
+                <div className='flex col-span-8'>
                   <OfferingSummaryPanel
                     isAskOrder={isAskOrder}
                     initiator={initiator}
@@ -137,13 +137,13 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                     paymentTokenAddress={paymentTokenAddress}
                   />
                 </div>
-                <div className="flex col-span-3 justify-end items-center">
+                <div className='flex col-span-3 justify-end items-center'>
                   <div className={`p-2  rounded-md text-${status.color} text-sm uppercase`}>
                     {status.name}
                   </div>
                 </div>
 
-                <div className="flex items-center p-1 justify-end">
+                <div className='flex items-center p-1 justify-end'>
                   {!open ? <ChevronDown size={16} /> : <ChevronUp size={16} />}
                 </div>
               </div>
@@ -151,12 +151,12 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
           </div>
           {open && (
             <div>
-              <div className="flex items-center border-b-2 bg-slate-200">
-                <div className=" p-1 pl-3 flex justify-between text-sm w-full">
-                  <div className="flex items-center">
+              <div className='flex items-center border-b-2 bg-slate-200'>
+                <div className=' p-1 pl-3 flex justify-between text-sm w-full'>
+                  <div className='flex items-center'>
                     {`${isAskOrder ? 'Seller' : 'Buyer'}`}
                     <FormattedCryptoAddress
-                      className="ml-1"
+                      className='ml-1'
                       chainId={chainId}
                       address={initiator}
                       withCopy
@@ -168,7 +168,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                 </div>
               </div>
 
-              <div className="p-2 pt-4 bg-slate-100">
+              <div className='p-2 pt-4 bg-slate-100'>
                 {(currentUserInitiator || isContractOwner) && (
                   <SaleManagerPanel
                     currentUserFiller={currentUserFiller}

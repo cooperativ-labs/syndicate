@@ -15,9 +15,9 @@ const WalletActionStep: FC<{
   const icon =
     stepStatus === 'pending' ? (
       <img
-        src="/assets/images/loading-circle.png"
-        aria-label="loading"
-        className="h-10 mr-1 animate-spin bg-white rounded-full"
+        src='/assets/images/loading-circle.png'
+        aria-label='loading'
+        className='h-10 mr-1 animate-spin bg-white rounded-full'
       />
     ) : stepStatus === 'success' ? (
       <Check />
@@ -36,10 +36,10 @@ const WalletActionStep: FC<{
         'grid grid-cols-8 p-3 border-2 rounded-lg items-center '
       )}
     >
-      <div className="flex justify-center col-span-1 text-2xl">{icon}</div>
+      <div className='flex justify-center col-span-1 text-2xl'>{icon}</div>
       <div className={'col-span-7'}>
-        <div className="font-semibold text-lg mb-1">{message}</div>
-        {subMessage && <div className="font-medium text-sm">{subMessage}</div>}
+        <div className='font-semibold text-lg mb-1'>{message}</div>
+        {subMessage && <div className='font-medium text-sm'>{subMessage}</div>}
       </div>
     </div>
   );
@@ -92,7 +92,7 @@ const WalletActionIndicator: FC<WalletActionIndicatorProps> = ({
   };
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className='flex flex-col gap-4'>
       <WalletActionStep stepStatus={step1Status()} message={step1Text} subMessage={step1SubText} />
       {!!step2Text && (
         <WalletActionStep

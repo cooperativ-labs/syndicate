@@ -64,11 +64,11 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
     >
       <LoadingButtonChain
         state={cancelButtonStep}
-        idleText="Cancel Request"
-        step1Text="Canceling..."
-        confirmedText="Request Cancelled!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        idleText='Cancel Request'
+        step1Text='Canceling...'
+        confirmedText='Request Cancelled!'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </Button>
   );

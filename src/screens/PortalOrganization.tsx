@@ -19,13 +19,13 @@ const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organi
 
   return (
     <div
-      data-test="component-PortalOrganization"
-      className="flex flex-col w-full h-full mx-auto px-4"
+      data-test='component-PortalOrganization'
+      className='flex flex-col w-full h-full mx-auto px-4'
     >
       <TwoColumnLayout twoThirdsLayout>
         {participantOfferings && (
           <div>
-            <h2 className="text-xl md:mt-8 mb-5 text-blue-900 font-semibold">Your investments: </h2>
+            <h2 className='text-xl md:mt-8 mb-5 text-blue-900 font-semibold'>Your investments: </h2>
             <OfferingsList offerings={participantOfferings} organizationId={organizationId} />
           </div>
         )}

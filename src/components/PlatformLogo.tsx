@@ -15,12 +15,12 @@ const PlatformLogo: FC<PlatformLogoProps> = ({ onlySymbol }) => {
 
   const isSmall = windowSize.width < 768 || onlySymbol;
   return (
-    <Link href="/">
+    <Link href='/'>
       <img
         src={isSmall ? symbolLogo : logo}
-        alt="logo"
+        alt='logo'
         width={isSmall ? '40' : '140'}
-        className="mr-4"
+        className='mr-4'
       />
     </Link>
   );

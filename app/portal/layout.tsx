@@ -7,9 +7,9 @@ const BackgroundGradient = 'bg-linear-to-b from-gray-100 to-blue-50';
 const PortalLayout = ({ children }: { children: React.ReactNode }) => {
   return (
     <div className={cn(BackgroundGradient, 'w-screen min-h-screen')}>
-      <AlertPopup text="This is an alpha version. Please use with caution." />
+      <AlertPopup text='This is an alpha version. Please use with caution.' />
       <EnsureCompatibleNetwork>{children}</EnsureCompatibleNetwork>
-      <Footer color="bg-gray-200" />
+      <Footer color='bg-gray-200' />
     </div>
   );
 };

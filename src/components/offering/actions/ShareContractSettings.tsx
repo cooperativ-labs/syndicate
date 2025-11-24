@@ -19,12 +19,12 @@ const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ shareContract, 
 
   const shareContractAddress = shareContract?.crypto_address_id as String0x;
   return (
-    <div className="flex flex-col gap-3">
-      <div className="flex flex-col gap-1">
-        <h1 className="font-semibold text-lg">Share contract:</h1>
+    <div className='flex flex-col gap-3'>
+      <div className='flex flex-col gap-1'>
+        <h1 className='font-semibold text-lg'>Share contract:</h1>
         <FormattedCryptoAddress
           chainId={chainId}
-          className="text-sm text-gray-500 font-medium"
+          className='text-sm text-gray-500 font-medium'
           showFull
           withCopy
           address={shareContractAddress}
@@ -32,18 +32,18 @@ const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ shareContract, 
       </div>
 
       <SectionBlock
-        className="border rounded-lg p-3"
+        className='border rounded-lg p-3'
         sectionTitle={'Share classes'}
         mini
         asAccordion
       >
         {partitions?.map(partition => (
-          <div key={partition} className="flex items-center">
+          <div key={partition} className='flex items-center'>
             - {stringFromBytes32(partition)} (
-            <FormattedCryptoAddress address={partition} chainId={chainId} label="id: " withCopy />)
+            <FormattedCryptoAddress address={partition} chainId={chainId} label='id: ' withCopy />)
           </div>
         ))}
-        {partitions?.length > 0 && <hr className="my-3" />}
+        {partitions?.length > 0 && <hr className='my-3' />}
         <NewClassForm shareContractId={shareContract.id} />
       </SectionBlock>
     </div>

@@ -46,9 +46,9 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
   const executor = transactionData?.from;
 
   return (
-    <div className="relative md:grid grid-cols-7 gap-3 items-center p-3 border-b-2 ">
-      <div className="flex col-span-1 justify-start">
-        <div className="font-medium text-base ">{blockTime ? getHumanDate(blockTime) : ''}</div>
+    <div className='relative md:grid grid-cols-7 gap-3 items-center p-3 border-b-2 '>
+      <div className='flex col-span-1 justify-start'>
+        <div className='font-medium text-base '>{blockTime ? getHumanDate(blockTime) : ''}</div>
       </div>
 
       <FormattedCryptoAddress
@@ -63,8 +63,8 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
         address={recipient_address}
       />
 
-      <div className="flex col-span-1 justify-center">
-        <div className="font-medium ">
+      <div className='flex col-span-1 justify-center'>
+        <div className='font-medium '>
           {amount} ({stringFromBytes32(partition as String0x)})
         </div>
       </div>
@@ -73,7 +73,7 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
         className={'font-medium flex col-span-1 justify-center '}
         chainId={chainId}
         address={transaction_hash}
-        lookupType="tx"
+        lookupType='tx'
       />
 
       <div
@@ -81,7 +81,7 @@ const TransferEvent: FC<{ transferEvent: ShareTransferEvent }> = ({ transferEven
       >
         <div className={`font-medium`}>{type}</div>
       </div>
-      <div className="flex col-span-1 justify-center">
+      <div className='flex col-span-1 justify-center'>
         <div className={`font-medium`}>{price ? numberWithCommas(humanPrice, 2) : 'N/A'}</div>
       </div>
     </div>

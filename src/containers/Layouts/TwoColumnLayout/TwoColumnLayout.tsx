@@ -18,12 +18,12 @@ const TwoColumnLayout: React.FunctionComponent<TwoColumnLayoutProps> = ({
   const rightChildren = children.filter((child, index) => index % 2 !== 0);
 
   const mobileLayout = (
-    <div className="flex md:hidden ">
-      <div data-test="mobile-center-column" className="grow">
+    <div className='flex md:hidden '>
+      <div data-test='mobile-center-column' className='grow'>
         {children.map((child, index) => {
           if (child) {
             return (
-              <div key={index} className="mb-4">
+              <div key={index} className='mb-4'>
                 {child}
               </div>
             );
@@ -45,18 +45,18 @@ const TwoColumnLayout: React.FunctionComponent<TwoColumnLayoutProps> = ({
         {leftChildren.map((child, index) => {
           if (child) {
             return (
-              <div key={index} className="mr-2 md:mr-2 mb-8 lg:mr-4 lg:mb-16">
+              <div key={index} className='mr-2 md:mr-2 mb-8 lg:mr-4 lg:mb-16'>
                 {child}
               </div>
             );
           }
         })}
       </div>
-      <div className="my-5">
+      <div className='my-5'>
         {rightChildren.map((child, index) => {
           if (child) {
             return (
-              <div key={index} className="mr-2 mb-2 md:ml-2 md:mb-8 lg:ml-4 lg:mb-16 ">
+              <div key={index} className='mr-2 mb-2 md:ml-2 md:mb-8 lg:ml-4 lg:mb-16 '>
                 {child}
               </div>
             );
@@ -67,7 +67,7 @@ const TwoColumnLayout: React.FunctionComponent<TwoColumnLayoutProps> = ({
   );
 
   return (
-    <div data-test="layout-two-column" className={cn(className, 'pt-2 md:mt-4 w-full')}>
+    <div data-test='layout-two-column' className={cn(className, 'pt-2 md:mt-4 w-full')}>
       <div>
         {mobileLayout}
         {desktopLayout}

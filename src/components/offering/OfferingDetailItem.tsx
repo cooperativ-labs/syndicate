@@ -9,7 +9,7 @@ type OfferingDetailItemProps = {
 
 const OfferingDetailItem: FC<OfferingDetailItemProps> = ({ title, children, brandColor }) => {
   return (
-    <div className="border-2 border-gray-200 p-2 rounded-md">
+    <div className='border-2 border-gray-200 p-2 rounded-md'>
       <div
         className={cn(
           brandColor ? '' : 'text-green-600',
@@ -19,7 +19,7 @@ const OfferingDetailItem: FC<OfferingDetailItemProps> = ({ title, children, bran
       >
         {children}
       </div>
-      <div className="flex justify-center">{title}</div>
+      <div className='flex justify-center'>{title}</div>
     </div>
   );
 };

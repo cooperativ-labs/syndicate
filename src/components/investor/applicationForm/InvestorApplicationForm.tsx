@@ -275,25 +275,25 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
     <FormProvider {...form}>
       <form
         onSubmit={handleSubmit(handleApplicationSubmit)}
-        className="flex md:grid grid-cols-2 gap-4 relative"
+        className='flex md:grid grid-cols-2 gap-4 relative'
       >
-        <div className="col-span-1">
+        <div className='col-span-1'>
           <FormCard>
-            <h1 className="text-2xl font-medium">Apply to invest in {offering.name}</h1>
-            <h2 className="text-xl md:mt-8 text-blue-900 font-semibold">Purchaser Information</h2>
+            <h1 className='text-2xl font-medium'>Apply to invest in {offering.name}</h1>
+            <h2 className='text-xl md:mt-8 text-blue-900 font-semibold'>Purchaser Information</h2>
 
-            <div className="mt-4 mb-2">
-              <Field orientation="horizontal">
+            <div className='mt-4 mb-2'>
+              <Field orientation='horizontal'>
                 <FieldLabel>Your wallet:</FieldLabel>
                 <FieldContent>
                   {userWalletAddress ? (
                     <FormattedCryptoAddress
                       chainId={chainId}
                       address={userWalletAddress}
-                      className="font-semibold"
+                      className='font-semibold'
                     />
                   ) : (
-                    <ChooseConnectorButton buttonText="Connect Wallet to Apply" />
+                    <ChooseConnectorButton buttonText='Connect Wallet to Apply' />
                   )}
                 </FieldContent>
               </Field>
@@ -302,13 +302,13 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
             <FieldGroup>
               <FieldSet>
                 <TextField
-                  name="purchaserEntityName"
+                  name='purchaserEntityName'
                   label="Purchaser's full legal name"
-                  placeholder="e.g. Idris Elba"
+                  placeholder='e.g. Idris Elba'
                   required
                 />
                 <CheckboxField
-                  name="isCompany"
+                  name='isCompany'
                   label={`${purchaserEntityName || 'Purchaser'} is a company`}
                 />
                 <PrimaryApplicationFields />
@@ -325,12 +325,12 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
                         searchInput={searchInput}
                         setSearchInput={setSearchInput}
                         dialogTitle="Purchaser's address"
-                        placeholder="Search for an address"
+                        placeholder='Search for an address'
                       />
                     </FieldContent>
                   </Field>
                   {latLng && (
-                    <div className="mt-4">
+                    <div className='mt-4'>
                       <GoogleMap
                         mapContainerStyle={{ height: '300px', width: '100%' }}
                         center={latLng}
@@ -342,23 +342,23 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
                   )}
 
                   <TextField
-                    name="purchaserEmail"
+                    name='purchaserEmail'
                     label="Purchaser's email address"
-                    placeholder="e.g. moritz@bonuslife.com"
+                    placeholder='e.g. moritz@bonuslife.com'
                     required
                   />
                   <TextField
-                    name="purchaserPhone"
+                    name='purchaserPhone'
                     label="Purchaser's phone number"
-                    placeholder="e.g. 401-494-5555"
+                    placeholder='e.g. 401-494-5555'
                     required
                   />
 
                   <AdditionalApplicationFields offeringEntityName={offering.name} />
 
                   {workingWithAdvisor && (
-                    <div className="bg-gray-100 rounded-lg p-3 mt-6">
-                      <h2 className="text-xl mt-3 text-blue-900 font-semibold">
+                    <div className='bg-gray-100 rounded-lg p-3 mt-6'>
+                      <h2 className='text-xl mt-3 text-blue-900 font-semibold'>
                         Advisor Information
                       </h2>
                       <AdvisorFields register={register} errors={errors} />
@@ -368,11 +368,11 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
               )}
             </FieldGroup>
 
-            <div className="md:hidden">
-              <hr className="mb-6 mt-10" />
-              <h2 className="text-xl text-blue-900 font-semibold">Summary</h2>
+            <div className='md:hidden'>
+              <hr className='mb-6 mt-10' />
+              <h2 className='text-xl text-blue-900 font-semibold'>Summary</h2>
               {purchaserEntityName && (
-                <div className="bg-gray-100 rounded-lg p-3 mt-6">
+                <div className='bg-gray-100 rounded-lg p-3 mt-6'>
                   <PurchaserSummaryDisplay
                     summary={ApplicationText.ApplicationSummary}
                     suitabilityAttestation={ApplicationText.ApplicationSuitability}
@@ -382,49 +382,49 @@ const InvestorApplicationForm: React.FC<InvestorApplicationFormProps> = ({ offer
               )}
             </div>
 
-            <hr className="mb-6 mt-10" />
+            <hr className='mb-6 mt-10' />
             <InvestorApplicationPledgeFields
               offering={offering}
               saleAmountString={saleAmountString}
             />
 
-            <hr className="mb-6 mt-10" />
-            <div className="md:grid grid-cols-3 gap-3">
+            <hr className='mb-6 mt-10' />
+            <div className='md:grid grid-cols-3 gap-3'>
               <TextField
-                name="signature"
-                label="Signature"
-                placeholder="Type your full legal name to sign"
+                name='signature'
+                label='Signature'
+                placeholder='Type your full legal name to sign'
                 required
               />
               <TextField
-                name="dateSigned"
-                label="Signing Date"
-                type="date"
+                name='dateSigned'
+                label='Signing Date'
+                type='date'
                 required
                 inputProps={{ min: new Date().toISOString().split('T')[0] }}
               />
             </div>
 
-            <hr className="mb-6 mt-10" />
+            <hr className='mb-6 mt-10' />
             {userWalletAddress ? (
               <LoadingButtonChain
-                type="submit"
+                type='submit'
                 disabled={isSubmitting || buttonStep === 'step1'}
                 state={buttonStep}
                 idleText={`Apply to become a ${legalEntity.legal_name} investor`}
-                step1Text="Applying..."
-                step2Text="Setting distribution token..."
-                confirmedText="Confirmed!"
-                failedText="Transaction failed"
-                rejectedText="You rejected the transaction. Click here to try again."
+                step1Text='Applying...'
+                step2Text='Setting distribution token...'
+                confirmedText='Confirmed!'
+                failedText='Transaction failed'
+                rejectedText='You rejected the transaction. Click here to try again.'
               />
             ) : (
-              <ChooseConnectorButton buttonText="Connect Wallet to Apply" />
+              <ChooseConnectorButton buttonText='Connect Wallet to Apply' />
             )}
           </FormCard>
         </div>
 
-        <div className="hidden md:flex col-span-1">
+        <div className='hidden md:flex col-span-1'>
           {purchaserEntityName && (
             <PurchaserSummaryDisplay
               summary={ApplicationText.ApplicationSummary}

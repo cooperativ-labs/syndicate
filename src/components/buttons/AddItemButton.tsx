@@ -16,8 +16,8 @@ const AddItemButton: React.FC<AddItemButtonProps> = ({ classNames, onClick, text
       )}
       onClick={onClick}
     >
-      <span className="text-xl font-bold">+</span>
-      {text && <span className="ml-2">{text}</span>}
+      <span className='text-xl font-bold'>+</span>
+      {text && <span className='ml-2'>{text}</span>}
     </button>
   );
 };

@@ -25,22 +25,22 @@ const EntityCard: React.FC<EntityCardProps> = ({ entity, organizationId }) => {
         router.push(`/manager/${organizationId}/entities/${id}`);
       }}
     >
-      <Card className="rounded-lg hover:shadow-xl cursor-pointer md:w-96">
-        <div className=" p-6 flex items-center">
+      <Card className='rounded-lg hover:shadow-xl cursor-pointer md:w-96'>
+        <div className=' p-6 flex items-center'>
           <div>
-            <h1 className="text-lg font-bold">{display_name}</h1>
+            <h1 className='text-lg font-bold'>{display_name}</h1>
           </div>
         </div>
 
-        <div className="flex border-t-2 border-gray-200 rounded-b-lg px-6 py-2 h-10 justify-between">
+        <div className='flex border-t-2 border-gray-200 rounded-b-lg px-6 py-2 h-10 justify-between'>
           <div>
             {isOfferingEntity && (
-              <div className="text-sm font-bold text-gray-700">This is an offering SPV</div>
+              <div className='text-sm font-bold text-gray-700'>This is an offering SPV</div>
             )}
           </div>
           <div>
             {jurisdiction && (
-              <div className="text-sm font-medium text-gray-500">
+              <div className='text-sm font-medium text-gray-500'>
                 {renderJurisdiction(jurisdiction)}
               </div>
             )}

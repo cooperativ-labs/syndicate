@@ -28,12 +28,12 @@ const SectionBlock: React.FC<SectionBlockProps> = ({
 }) => {
   return (
     <Accordion
-      type="single"
+      type='single'
       collapsible
       defaultValue={startOpen ? 'item' : undefined}
       className={className}
     >
-      <AccordionItem value="item" className="border-none">
+      <AccordionItem value='item' className='border-none'>
         <AccordionTrigger
           className={cn(
             mini ? 'text-sm text-grey-600' : 'text-xl font-bold',

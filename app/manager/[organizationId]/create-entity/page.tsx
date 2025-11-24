@@ -10,11 +10,11 @@ const CreateEntityPage = async ({ params }: { params: Promise<{ organizationId: 
     return <div>Organization not found</div>;
   }
   return (
-    <div data-test="component-create-project-page" className="h-full flex">
+    <div data-test='component-create-project-page' className='h-full flex'>
       <WithAuthentication>
         <LimitedWidthSection center>
-          <div className="text-cLightBlue font-bold text-lg">Create a legal business entity.</div>
-          <hr className="my-6" />
+          <div className='text-cLightBlue font-bold text-lg'>Create a legal business entity.</div>
+          <hr className='my-6' />
           <CreateEntity />
         </LimitedWidthSection>
       </WithAuthentication>

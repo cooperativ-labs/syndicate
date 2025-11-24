@@ -14,12 +14,12 @@ const siteUrl = process.env.NEXT_PUBLIC_DOMAIN;
 
 const CookieBanner: FC<{ handleAnalyticsApproval: () => void }> = ({ handleAnalyticsApproval }) => {
   return (
-    <div className="fixed bottom-0 md:bottom-4 md:right-10 md:left-10 z-40 mx-auto w-full md:w-auto bg-neutral-400 p-3 shadow-xl md:rounded-xl cursor-pointer">
-      <div className="flex font-medium text-white text-xs md:text-base mx-auto px-2 justify-between items-center">
-        <span className="mr-3">
+    <div className='fixed bottom-0 md:bottom-4 md:right-10 md:left-10 z-40 mx-auto w-full md:w-auto bg-neutral-400 p-3 shadow-xl md:rounded-xl cursor-pointer'>
+      <div className='flex font-medium text-white text-xs md:text-base mx-auto px-2 justify-between items-center'>
+        <span className='mr-3'>
           We use cookies to improve our services. Using this website means you agree to this.{' '}
           <Link href={`${siteUrl}/privacy`}>
-            <span className="underline decoration-cLightBlue">Privacy Policy</span>
+            <span className='underline decoration-cLightBlue'>Privacy Policy</span>
           </Link>
         </span>
         <Button

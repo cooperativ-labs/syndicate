@@ -140,52 +140,52 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
   };
 
   return (
-    <div data-test="component-dashboard" className="flex flex-col w-full h-full">
+    <div data-test='component-dashboard' className='flex flex-col w-full h-full'>
       <Dialog open={imageModal} onOpenChange={setImageModal}>
-        <DialogContent className="md:max-w-[800px] max-h-[90vh] ">
+        <DialogContent className='md:max-w-[800px] max-h-[90vh] '>
           <DialogHeader>
             <DialogTitle>Edit your organization's logo and banner image</DialogTitle>
           </DialogHeader>
-          <div className=" grid grid-cols-3 gap-4">
-            <div className="flex flex-col col-span-1 justify-center">
+          <div className=' grid grid-cols-3 gap-4'>
+            <div className='flex flex-col col-span-1 justify-center'>
               <ImageUpload
                 onSubmit={addLogoToDB}
                 accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
                 selectedImageUrl={logoImageUrl}
                 setSelectedImageUrl={setLogoImageUrl}
                 onDelete={deleteLogoFromDb}
-                title="Logo"
-                description="Choose file."
+                title='Logo'
+                description='Choose file.'
               />
             </div>
-            <div className="col-span-2">
+            <div className='col-span-2'>
               <ImageUpload
                 onSubmit={addBannerImageToDb}
                 accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
                 selectedImageUrl={bannerImageUrl}
                 setSelectedImageUrl={setBannerImageUrl}
                 onDelete={deleteBannerImageFromDb}
-                title="Banner Image"
+                title='Banner Image'
               />
             </div>
           </div>
         </DialogContent>
       </Dialog>
 
-      <div className="flex items-center relative">
+      <div className='flex items-center relative'>
         {banner_image && (
           <Image
             src={banner_image as string}
-            className="object-cover h-64 w-full absolute"
+            className='object-cover h-64 w-full absolute'
             fill
-            alt="Organization banner image"
+            alt='Organization banner image'
             unoptimized={process.env.NODE_ENV === 'development'}
           />
         )}
-        <div className="flex backdrop-opacity-10 backdrop-invert w-full h-64 bg-gray-800/50 items-center">
-          <div className="ml-4 flex items-center ">
+        <div className='flex backdrop-opacity-10 backdrop-invert w-full h-64 bg-gray-800/50 items-center'>
+          <div className='ml-4 flex items-center '>
             <RoundedImage
-              className="h-40 w-40 bg-gray-800 backdrop-opacity-10  border-2 border-gray-100 mr-4"
+              className='h-40 w-40 bg-gray-800 backdrop-opacity-10  border-2 border-gray-100 mr-4'
               src={logo as string}
               onClick={() => isEditorOrAdmin && setImageModal(true)}
             />
@@ -195,7 +195,7 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
                 changeForm('name', organization, setNameEditOn, handleNameChange)
               ) : (
                 <div
-                  className="font-ubuntu text-3xl text-white font-semibold hover:cursor-pointer"
+                  className='font-ubuntu text-3xl text-white font-semibold hover:cursor-pointer'
                   onClick={() => isEditorOrAdmin && setNameEditOn('name')}
                 >
                   {name}
@@ -204,22 +204,22 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
             </div>
           </div>
           <button
-            className="absolute right-4 bottom-4 text-white"
+            className='absolute right-4 bottom-4 text-white'
             onClick={() => isEditorOrAdmin && setImageModal(true)}
-            aria-label="edit banner image"
-            name="Edit banner image"
+            aria-label='edit banner image'
+            name='Edit banner image'
           >
             <Pencil size={16} />
           </button>
         </div>
       </div>
-      <hr className="my-5 w-0" />
+      <hr className='my-5 w-0' />
       <TwoColumnLayout twoThirdsLayout>
         <div>
           <DashboardCard>
-            <div className="flex justify-between">
-              <div className="font-semibold">Set as public profile:</div>
-              <div className="flex items-center">
+            <div className='flex justify-between'>
+              <div className='font-semibold'>Set as public profile:</div>
+              <div className='flex items-center'>
                 {isEditorOrAdmin && (
                   <ProfileVisibilityToggle
                     profileVisibility={is_public}
@@ -228,22 +228,22 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
                 )}
                 <a
                   href={`/portal/${organization.id}`}
-                  target="_blank"
-                  rel="noreferrer"
-                  className="ml-2"
+                  target='_blank'
+                  rel='noreferrer'
+                  className='ml-2'
                 >
-                  <SquareArrowOutUpRight className="text-lg " />
+                  <SquareArrowOutUpRight className='text-lg ' />
                 </a>
               </div>
             </div>
-            <hr className="my-4" />
+            <hr className='my-4' />
             <OrganizationSpecifications
               organization={organization}
               isOrganizationManager={isEditorOrAdmin}
             />
 
             <div>
-              <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
+              <div className='mt-3 rounded-lg p-3 border-2 border-gray-200'>
                 <SectionBlock asAccordion sectionTitle={'Email addresses'}>
                   <EmailAddressList
                     emailAddresses={emailAddresses}
@@ -256,7 +256,7 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
                 </SectionBlock>
               </div>
 
-              <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
+              <div className='mt-3 rounded-lg p-3 border-2 border-gray-200'>
                 <SectionBlock asAccordion sectionTitle={'Socials'}>
                   <LinkedAccountsList
                     linkedAccounts={linkedAccounts}
@@ -269,25 +269,25 @@ const OrganizationSettings: FC<OrganizationSettingsProps> = ({
           </DashboardCard>
         </div>
         <>
-          <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Team</h2>
+          <h2 className='text-cDarkBlue text-xl font-bold  mb-3 '>Team</h2>
           <TeamMemberList
             teamMembers={organization.organizationUsers}
             organizationId={organization.id.toString()}
             isAdmin={isAdmin ?? false}
           />
-          <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
-            <SectionBlock className="font-bold " sectionTitle={'Add team members'} mini asAccordion>
+          <div className='mt-3 rounded-lg p-1 px-2 border-2 border-gray-200'>
+            <SectionBlock className='font-bold ' sectionTitle={'Add team members'} mini asAccordion>
               <SettingsAddTeamMember organizationId={organization.id.toString()} />
             </SectionBlock>
           </div>
         </>
         <></>
         <>
-          <h2 className="text-cDarkBlue text-xl font-bold  mb-3 ">Email Notifications</h2>
+          <h2 className='text-cDarkBlue text-xl font-bold  mb-3 '>Email Notifications</h2>
           <NotificationConfigList organizationUser={organizationUser} />
-          <div className="mt-3 rounded-lg p-1 px-2 border-2 border-gray-200">
+          <div className='mt-3 rounded-lg p-1 px-2 border-2 border-gray-200'>
             <SectionBlock
-              className="font-bold "
+              className='font-bold '
               sectionTitle={'Add Notification Rule'}
               mini
               asAccordion

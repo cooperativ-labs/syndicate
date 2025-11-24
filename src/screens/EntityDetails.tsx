@@ -84,7 +84,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   // };
 
   return (
-    <div data-test="component-dashboard" className="flex flex-col w-full h-full">
+    <div data-test='component-dashboard' className='flex flex-col w-full h-full'>
       <FormModal
         formOpen={addOwnerModal}
         onClose={() => setAddOwnerModal(false)}
@@ -92,23 +92,23 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       >
         <CreateAddress entity={entity} actionOnCompletion={() => setAddOwnerModal(false)} />
       </FormModal>
-      <div className="flex items-center">
+      <div className='flex items-center'>
         <div>
           {nameEditOn === 'displayName' ? (
             <form>
-              <Input type="text" required onChange={e => setDisplayName(e.target.value)} />
+              <Input type='text' required onChange={e => setDisplayName(e.target.value)} />
               <LoadingButton
-                className=" bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full"
+                className=' bg-cLightBlue hover:bg-cLightBlue text-white font-semibold uppercase h-11 rounded w-full'
                 onClick={e => {
                   e.preventDefault();
                   handleDisplayNameChange();
                 }}
                 buttonState={buttonState}
-                text="Save changes"
+                text='Save changes'
               />
 
               <Button
-                className="border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full"
+                className='border-2 border-cLightBlue hover:bg-cLightBlue text-cLightBlue hover:text-white font-medium uppercase h-11 rounded w-full'
                 onClick={e => {
                   e.preventDefault();
                   setNameEditOn('none');
@@ -119,7 +119,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
             </form>
           ) : (
             <div
-              className="font-ubuntu text-3xl text-cDarkBlue font-semibold hover:cursor-pointer"
+              className='font-ubuntu text-3xl text-cDarkBlue font-semibold hover:cursor-pointer'
               onClick={() => setNameEditOn('displayName')}
             >
               {display_name}
@@ -133,17 +133,17 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
           <EntitySpecifications entity={entity} isManager={isEditorOrAdmin} />
 
           <div>
-            <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
+            <div className='mt-3 rounded-lg p-3 border-2 border-gray-200'>
               <SectionBlock asAccordion sectionTitle={'Locations'}>
-                <div className="flex flex-col md:flex-row md:flex-wrap gap-4">
+                <div className='flex flex-col md:flex-row md:flex-wrap gap-4'>
                   {addresses?.map((address, i) => {
                     return (
-                      <div key={i} className="p-3 bg-slate-100 rounded-md relative">
-                        <div className="mr-10">
+                      <div key={i} className='p-3 bg-slate-100 rounded-md relative'>
+                        <div className='mr-10'>
                           <AddressDisplay address={address} withCountry withLabel />{' '}
                         </div>
                         {address && (
-                          <div className="absolute -right-1 -top-1">
+                          <div className='absolute -right-1 -top-1'>
                             <DeleteButton
                               onDelete={() => handleDeleteAddress(address.id)}
                               iconColor={'gray-800'}
@@ -157,7 +157,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                 </div>
                 {isEditorOrAdmin && (
                   <Button
-                    className="mt-4 rounded-md bg-cLightBlue p-2 px-4 text-white font-semibold"
+                    className='mt-4 rounded-md bg-cLightBlue p-2 px-4 text-white font-semibold'
                     onClick={() => setAddOwnerModal(true)}
                   >
                     Add Address
@@ -165,15 +165,15 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                 )}
               </SectionBlock>
             </div>
-            <div className="mt-3 rounded-lg p-3 border-2 border-gray-200">
+            <div className='mt-3 rounded-lg p-3 border-2 border-gray-200'>
               <SectionBlock asAccordion sectionTitle={'Owners'}>
-                <div className="flex flex-col md:flex-row md:flex-wrap gap-4 mt-4">
+                <div className='flex flex-col md:flex-row md:flex-wrap gap-4 mt-4'>
                   {owners?.map((owner, i) => {
                     return (
-                      <div key={i} className="p-3 bg-slate-100 rounded-md relative">
-                        <div className="mr-10">{owner?.legal_name}</div>
+                      <div key={i} className='p-3 bg-slate-100 rounded-md relative'>
+                        <div className='mr-10'>{owner?.legal_name}</div>
                         {isAdmin && owner && (
-                          <div className="absolute -right-1 -top-1">
+                          <div className='absolute -right-1 -top-1'>
                             <DeleteButton
                               onDelete={() => handleRemoveOwner(owner.id.toString())}
                               iconColor={'gray-800'}
@@ -185,7 +185,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
                     );
                   })}
                 </div>
-                <hr className="my-4" />
+                <hr className='my-4' />
                 {isAdmin && <AddOwningEntity ownedEntityId={entity.id} />}
               </SectionBlock>
             </div>

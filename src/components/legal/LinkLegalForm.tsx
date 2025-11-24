@@ -1,5 +1,6 @@
 'use client';
 
+import { useOrganizations } from '@contexts/OrganizationsContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
@@ -30,7 +31,6 @@ import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
 import { Input } from '../ui/input';
 
 import PresentLegalText from './PresentLegalText';
-import { useOrganizations } from '@contexts/OrganizationsContext';
 
 type LinkLegalFormProps = {
   setAgreementContent: any;
@@ -132,36 +132,36 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
   };
 
   return (
-    <div className="bg-gray-100 pt-8 p-4 md:p-8 min-h-max mb-6 md:mb-10 md:rounded-lg bg-opacity-100 ">
-      <form className="flex flex-col" onSubmit={handleSubmit(onSubmit)}>
-        <div className="mb-5">
+    <div className='bg-gray-100 pt-8 p-4 md:p-8 min-h-max mb-6 md:mb-10 md:rounded-lg bg-opacity-100 '>
+      <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
+        <div className='mb-5'>
           <PresentLegalText text={agreement} />
         </div>
-        <Field className="pt-3 bg-opacity-0">
-          <FieldLabel htmlFor="link-legal-signature">Signature</FieldLabel>
+        <Field className='pt-3 bg-opacity-0'>
+          <FieldLabel htmlFor='link-legal-signature'>Signature</FieldLabel>
           <FieldContent>
             <Input
-              id="link-legal-signature"
-              placeholder="e.g. Type your full legal name to sign"
+              id='link-legal-signature'
+              placeholder='e.g. Type your full legal name to sign'
               aria-invalid={Boolean(errors.signature)}
               {...register('signature')}
             />
             <FieldError errors={errors.signature ? [errors.signature] : undefined} />
           </FieldContent>
         </Field>
-        <div className="text-sm text-blue-900 font-semibold text-opacity-80 mt-4">
+        <div className='text-sm text-blue-900 font-semibold text-opacity-80 mt-4'>
           Agreement Hash (Keccak-256)
         </div>
-        <div className="text-sm break-all">{agreementHash}</div>
+        <div className='text-sm break-all'>{agreementHash}</div>
         <LoadingButtonChain
-          type="submit"
+          type='submit'
           disabled={isSubmitting}
-          className="bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-8 rounded p-4"
+          className='bg-blue-900 hover:bg-blue-800 text-white font-bold uppercase mt-8 rounded p-4'
           state={buttonStep}
-          idleText="Sign"
-          step1Text="Signing (check status in your wallet)"
-          confirmedText="Confirmed!"
-          rejectedText="You rejected the transaction. Click here to try again."
+          idleText='Sign'
+          step1Text='Signing (check status in your wallet)'
+          confirmedText='Confirmed!'
+          rejectedText='You rejected the transaction. Click here to try again.'
         />
       </form>
     </div>

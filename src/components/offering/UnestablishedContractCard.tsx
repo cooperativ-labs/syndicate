@@ -32,9 +32,9 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
   };
 
   return (
-    <div className="bg-gray-100 p-2 rounded-md ">
-      <div className="flex justify-between items-center">
-        <div className="text-gray-600 font-semibold">Available Contract</div>
+    <div className='bg-gray-100 p-2 rounded-md '>
+      <div className='flex justify-between items-center'>
+        <div className='text-gray-600 font-semibold'>Available Contract</div>
         <div
           className={cn(
             'text-xs  rounded-md max-w-min px-1 h-5 border-2',
@@ -44,8 +44,8 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
           {chain?.name}
         </div>
       </div>
-      <hr className="border-t-2 mt-1 mb-2 border-gray-300" />
-      <div className="flex justify-between items-center">
+      <hr className='border-t-2 mt-1 mb-2 border-gray-300' />
+      <div className='flex justify-between items-center'>
         <div>
           <FormattedCryptoAddress
             address={cryptoAddress.address}
@@ -54,7 +54,7 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
             showFull
             label={'Address: '}
           />
-          <div className="text-sm text-gray-700">
+          <div className='text-sm text-gray-700'>
             {/* Shares authorized: {numberWithCommas(numTokensAuthorized)} */}
             {backing_token && (
               <div> Distribution currency: {getCurrencyOption(backing_token)?.symbol} </div>

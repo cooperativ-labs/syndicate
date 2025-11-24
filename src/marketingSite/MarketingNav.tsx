@@ -11,20 +11,20 @@ const MarketingNav: FC = () => {
   const windowSize = useWindowSize();
   return (
     <div
-      className="py-2 px-2 pr-4 mt-2 md:mt-4 h-14 z-30 flex mx-auto justify-between self-center items-center "
+      className='py-2 px-2 pr-4 mt-2 md:mt-4 h-14 z-30 flex mx-auto justify-between self-center items-center '
       style={{ maxWidth: '1580px' }}
     >
-      <div className="ml-1 justify-start flex items-center">
+      <div className='ml-1 justify-start flex items-center'>
         <img
-          src="/assets/images/branding/symbol_dark_blue.svg"
-          alt="logo"
+          src='/assets/images/branding/symbol_dark_blue.svg'
+          alt='logo'
           width={windowSize.width < 768 ? '50' : '70'}
         />
       </div>
-      <div className="flex justify-end items-center">
-        <NavLink link="https://medium.com/cooperativ" external text="Blog" />
-        <span className="flex items-center">
-          <Link href="/">
+      <div className='flex justify-end items-center'>
+        <NavLink link='https://medium.com/cooperativ' external text='Blog' />
+        <span className='flex items-center'>
+          <Link href='/'>
             <div
               className={cn(
                 standardClass,

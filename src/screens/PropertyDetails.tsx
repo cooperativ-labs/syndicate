@@ -64,7 +64,7 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
   };
 
   return (
-    <div className="flex min-h-full mx-auto px-4 md:px-8 md:mt-8" style={{ maxWidth: '1280px' }}>
+    <div className='flex min-h-full mx-auto px-4 md:px-8 md:mt-8' style={{ maxWidth: '1280px' }}>
       {address && (
         <FormModal
           formOpen={addressModal}
@@ -93,29 +93,29 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
       >
         <UpdatePropertyFinancials property={property} setModal={() => setFinancialsModal(false)} />
       </FormModal>
-      <div className=" z-10 md:z-10 min-h-screen w-full">
-        <h1 className="text-2xl mb-5 md:text-3xl font-bold text-gray-700">{address?.line1}</h1>
+      <div className=' z-10 md:z-10 min-h-screen w-full'>
+        <h1 className='text-2xl mb-5 md:text-3xl font-bold text-gray-700'>{address?.line1}</h1>
         <Progress
           brandColor={'#275A8F'}
           lightBrand={false}
           propertyInvestmentStage={investment_status}
-          className="flex mb-4"
+          className='flex mb-4'
         />
 
         <div>
-          <span className="font-semibold">Property type: </span>
+          <span className='font-semibold'>Property type: </span>
           {getPropertyTypeOption(property_type)?.name}
         </div>
         <div>
-          <span className="font-semibold">Description: </span>
+          <span className='font-semibold'>Description: </span>
           {description}
         </div>
 
-        <hr className="my-4" />
+        <hr className='my-4' />
 
         <div>
-          <h2 className="font-bold text-gray-700">Images</h2>
-          <div className="flex">
+          <h2 className='font-bold text-gray-700'>Images</h2>
+          <div className='flex'>
             {images?.map((image, i) => {
               return (
                 <PropertyImage key={i} image={image} propertyId={id} isOwner={isEditorOrAdmin} />
@@ -130,10 +130,10 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             />
           )}
         </div>
-        <hr className="my-4" />
-        <div className="flex justify-between">
+        <hr className='my-4' />
+        <div className='flex justify-between'>
           <div>
-            <h2 className="font-bold text-gray-700">Address</h2>
+            <h2 className='font-bold text-gray-700'>Address</h2>
             <AddressDisplay address={address} withCountry />
           </div>
           {isEditorOrAdmin && (
@@ -142,10 +142,10 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
             </Button>
           )}
         </div>
-        <hr className="my-4" />
-        <div className="flex justify-between">
+        <hr className='my-4' />
+        <div className='flex justify-between'>
           <div>
-            <h2 className="font-bold text-gray-700">Amenities</h2> {amenities_description}
+            <h2 className='font-bold text-gray-700'>Amenities</h2> {amenities_description}
           </div>
           {isEditorOrAdmin && (
             <Button onClick={() => setDetailsModal(true)}>
@@ -154,11 +154,11 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
           )}
         </div>
 
-        <hr className="my-4" />
+        <hr className='my-4' />
 
-        <div className="flex justify-between">
+        <div className='flex justify-between'>
           <div>
-            <h2 className="font-bold text-gray-700">Financials</h2>{' '}
+            <h2 className='font-bold text-gray-700'>Financials</h2>{' '}
             <div>
               Asset value: {numberWithCommas(asset_value)}{' '}
               {asset_value_note && `(${asset_value_note})`}
@@ -177,11 +177,11 @@ const PropertyDetails: FC<PropertyDetailsProps> = ({ property }) => {
 
         {isEditorOrAdmin && (
           <>
-            <hr className="my-4" />
-            <div className="flex col-span-1 justify-center">
+            <hr className='my-4' />
+            <div className='flex col-span-1 justify-center'>
               <button
-                className="bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full"
-                aria-label="Delete this property"
+                className='bg-red-900 hover:bg-red-800 text-white font-bold uppercase mt-2 rounded p-2 w-full'
+                aria-label='Delete this property'
                 onClick={() =>
                   removeReProperty({
                     propertyId: property.id,

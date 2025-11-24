@@ -14,7 +14,7 @@ const ChooseConnectorButton: FC<ChooseConnectorButtonProps> = ({ buttonText, lar
   const { setModalOpen } = useWalletContext();
   return (
     <Button
-      variant="outline"
+      variant='outline'
       className={cn(
         large ? 'p-2 px-4' : 'text-xs p-1 px-3',
         'font-semibold rounded-full relative  w-full'

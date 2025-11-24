@@ -194,7 +194,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   };
 
   return (
-    <div className="flex flex-col w-full gap-3">
+    <div className='flex flex-col w-full gap-3'>
       <OrderStatusBar
         isApproved={isApproved}
         isFilled={isFilled}
@@ -211,8 +211,8 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
 
       {showRequestForm && (
         <>
-          <hr className="border-gray-300 my-2" />
-          <div className="p-3 border-2 rounded-lg ">
+          <hr className='border-gray-300 my-2' />
+          <div className='p-3 border-2 rounded-lg '>
             {` ${firstStepTitle()}`}
             <SharePurchaseSaleRequest
               txnApprovalsEnabled={txnApprovalsEnabled}
@@ -236,7 +236,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
       )} */}
 
       {showTradeExecutionForm && (
-        <div className="p-3 border-2 rounded-lg">
+        <div className='p-3 border-2 rounded-lg'>
           <ShareCompleteSwap
             isTradeExecutionStep={isTradeExecutionStep}
             acceptedOrderQty={acceptedOrderQty as number}

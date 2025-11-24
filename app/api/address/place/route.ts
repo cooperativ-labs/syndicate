@@ -30,7 +30,7 @@ export async function GET(req: NextRequest) {
     const data = await response.json();
 
     const dataFinderRegx = (c: string) => {
-      const regx = new RegExp(`<span class="${c}">([^<]+)<\/span>`);
+      const regx = new RegExp(`<span class="${c}">([^<]+)</span>`);
       const match = data.adrFormatAddress.match(regx);
       return match ? match[1] : '';
     };

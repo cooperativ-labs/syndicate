@@ -13,7 +13,7 @@ type NotificationConfigListProps = {
 const NotificationConfigList: FC<NotificationConfigListProps> = ({ organizationUser }) => {
   if (!organizationUser) return null;
   return (
-    <div className="w-full">
+    <div className='w-full'>
       {organizationUser.notificationConfigurations.map(notificationConfig => (
         <NotificationConfigItem
           key={notificationConfig.id}

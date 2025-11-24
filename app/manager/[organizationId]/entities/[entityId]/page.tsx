@@ -11,7 +11,7 @@ export default async function EntityLayout({ params }: { params: Promise<{ entit
   }
 
   return (
-    <div data-test="page-entity" className="h-full flex">
+    <div data-test='page-entity' className='h-full flex'>
       <EntityDetails entity={entity} />
     </div>
   );

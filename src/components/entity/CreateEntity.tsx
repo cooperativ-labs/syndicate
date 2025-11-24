@@ -179,19 +179,19 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
 
   return (
     <Form {...form}>
-      <form className="flex flex-col gap relative">
+      <form className='flex flex-col gap relative'>
         {/* Type of entity */}
-        <div className="pt-3 bg-opacity-0">
-          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+        <div className='pt-3 bg-opacity-0'>
+          <Label className='text-sm text-blue-900 font-semibold text-opacity-80'>
             Type of entity *
           </Label>
           <Controller
             control={control}
-            name="type"
+            name='type'
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                  <SelectValue placeholder="Select entity type" />
+                <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                  <SelectValue placeholder='Select entity type' />
                 </SelectTrigger>
                 <SelectContent>
                   {entityTypeOptions.map((type, i) => (
@@ -203,43 +203,43 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
               </Select>
             )}
           />
-          {errors.type && <div className="text-sm text-red-500 mt-1">{errors.type.message}</div>}
+          {errors.type && <div className='text-sm text-red-500 mt-1'>{errors.type.message}</div>}
         </div>
 
         {/* Legal name */}
-        <div className="pt-3 bg-opacity-0">
+        <div className='pt-3 bg-opacity-0'>
           <Label
-            htmlFor="legalName"
-            className="text-sm text-blue-900 font-semibold text-opacity-80"
+            htmlFor='legalName'
+            className='text-sm text-blue-900 font-semibold text-opacity-80'
           >
             Organization's legal name *
           </Label>
           <Input
-            id="legalName"
+            id='legalName'
             {...register('legalName')}
-            type="text"
-            placeholder="Alphabet Inc."
-            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+            type='text'
+            placeholder='Alphabet Inc.'
+            className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
           />
           {errors.legalName && (
-            <div className="text-sm text-red-500 mt-1">{errors.legalName.message}</div>
+            <div className='text-sm text-red-500 mt-1'>{errors.legalName.message}</div>
           )}
         </div>
 
         {/* Operating currency */}
-        <div className="pt-3 bg-opacity-0">
-          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+        <div className='pt-3 bg-opacity-0'>
+          <Label className='text-sm text-blue-900 font-semibold text-opacity-80'>
             Operating currency *
           </Label>
           <Controller
             control={control}
-            name="operatingCurrency"
+            name='operatingCurrency'
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                  <SelectValue placeholder="Select currency" />
+                <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                  <SelectValue placeholder='Select currency' />
                 </SelectTrigger>
-                <SelectContent position="item-aligned">
+                <SelectContent position='item-aligned'>
                   {currencyOptionsExcludeCredits.map((option, i) => (
                     <SelectItem key={i} value={option.value}>
                       {option.symbol}
@@ -250,24 +250,24 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
             )}
           />
           {errors.operatingCurrency && (
-            <div className="text-sm text-red-500 mt-1">{errors.operatingCurrency.message}</div>
+            <div className='text-sm text-red-500 mt-1'>{errors.operatingCurrency.message}</div>
           )}
         </div>
 
         {/* Jurisdiction */}
-        <div className="pt-3 bg-opacity-0">
-          <Label className="text-sm text-blue-900 font-semibold text-opacity-80">
+        <div className='pt-3 bg-opacity-0'>
+          <Label className='text-sm text-blue-900 font-semibold text-opacity-80'>
             Jurisdiction *
           </Label>
           <Controller
             control={control}
-            name="jurCountry"
+            name='jurCountry'
             render={({ field }) => (
               <Select value={field.value} onValueChange={field.onChange}>
-                <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
-                  <SelectValue placeholder="Select a country" />
+                <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
+                  <SelectValue placeholder='Select a country' />
                 </SelectTrigger>
-                <SelectContent position="item-aligned">
+                <SelectContent position='item-aligned'>
                   {countries.map((country, i) => (
                     <SelectItem key={i} value={country.isoCode}>
                       {country.name}
@@ -278,18 +278,18 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
             )}
           />
           {errors.jurCountry && (
-            <div className="text-sm text-red-500 mt-1">{errors.jurCountry.message}</div>
+            <div className='text-sm text-red-500 mt-1'>{errors.jurCountry.message}</div>
           )}
           {hasStates && (
             <Controller
               control={control}
-              name="jurProvince"
+              name='jurProvince'
               render={({ field }) => (
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none mt-2">
-                    <SelectValue placeholder="Select a state" />
+                  <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none mt-2'>
+                    <SelectValue placeholder='Select a state' />
                   </SelectTrigger>
-                  <SelectContent position="item-aligned">
+                  <SelectContent position='item-aligned'>
                     {states.map((state, i) => (
                       <SelectItem key={i} value={state.isoCode}>
                         {state.name}
@@ -303,32 +303,32 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
         </div>
 
         {/* Purpose */}
-        <div className="pt-3 bg-opacity-0">
+        <div className='pt-3 bg-opacity-0'>
           <Label
-            htmlFor="entityPurpose"
-            className="text-sm text-blue-900 font-semibold text-opacity-80"
+            htmlFor='entityPurpose'
+            className='text-sm text-blue-900 font-semibold text-opacity-80'
           >
             Purpose of this entity
           </Label>
           <Textarea
-            id="entityPurpose"
+            id='entityPurpose'
             {...register('entityPurpose')}
-            placeholder="Short description of the purpose of this entity."
-            className="h-24"
+            placeholder='Short description of the purpose of this entity.'
+            className='h-24'
           />
         </div>
 
-        <hr className="my-6" />
-        <div className="text-cLightBlue font-bold text-lg mb-4">Operating address</div>
+        <hr className='my-6' />
+        <div className='text-cLightBlue font-bold text-lg mb-4'>Operating address</div>
         <AddressAutoComplete
           address={inputAddress}
           setAddress={setInputAddress}
           searchInput={searchInput}
           setSearchInput={setSearchInput}
-          dialogTitle="Confirm Address"
+          dialogTitle='Confirm Address'
         />
         {errors.addressAutocomplete && (
-          <div className="text-sm text-red-500 mt-1">{errors.addressAutocomplete.message}</div>
+          <div className='text-sm text-red-500 mt-1'>{errors.addressAutocomplete.message}</div>
         )}
 
         <LoadingButton
@@ -336,11 +336,11 @@ const CreateEntity: FC<CreateEntityType> = ({ defaultLogo, actionOnCompletion })
           onClick={handleSubmit(onSubmit)}
           setButtonState={setButtonState}
           text={`Create ${watchedLegalName || 'Entity'}`}
-          loadingText="Creating entity..."
-          successText="Entity created!"
-          errorText="Failed to create entity"
+          loadingText='Creating entity...'
+          successText='Entity created!'
+          errorText='Failed to create entity'
           reset
-          className="mt-8"
+          className='mt-8'
         />
       </form>
     </Form>

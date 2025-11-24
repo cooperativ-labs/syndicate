@@ -26,15 +26,15 @@ const SheetButtonRight: FC<SheetButtonRightProps> = ({
   return (
     <Sheet onOpenChange={open => (open ? onOpen?.() : onClose?.())}>
       <SheetTrigger asChild>
-        <Button variant="outline"> {buttonText} </Button>
+        <Button variant='outline'> {buttonText} </Button>
       </SheetTrigger>
 
-      <SheetContent className="sm:max-w-2/3 p-6 overflow-y-scroll ">
+      <SheetContent className='sm:max-w-2/3 p-6 overflow-y-scroll '>
         <SheetHeader>
           <SheetTitle>{title} </SheetTitle>
         </SheetHeader>
 
-        <div className="mb-5 px-2 pr-4 md:pr-10 md:mt-4">{children}</div>
+        <div className='mb-5 px-2 pr-4 md:pr-10 md:mt-4'>{children}</div>
       </SheetContent>
     </Sheet>
   );

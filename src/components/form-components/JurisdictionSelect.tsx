@@ -49,7 +49,7 @@ const JurisdictionSelect = <T extends FieldValues>({
     <div className={cn(className, 'flex gap-2')}>
       {labelText && (
         <label
-          htmlFor="jurCountry"
+          htmlFor='jurCountry'
           className={cn(
             fieldLabelClass
               ? fieldLabelClass
@@ -70,9 +70,9 @@ const JurisdictionSelect = <T extends FieldValues>({
           }}
         >
           <SelectTrigger>
-            <SelectValue placeholder="Select a country" />
+            <SelectValue placeholder='Select a country' />
           </SelectTrigger>
-          <SelectContent position="item-aligned">
+          <SelectContent position='item-aligned'>
             {countries.map((country, i) => (
               <SelectItem key={i} value={country.isoCode}>
                 {country.name}
@@ -93,9 +93,9 @@ const JurisdictionSelect = <T extends FieldValues>({
             }}
           >
             <SelectTrigger>
-              <SelectValue placeholder="Select a state" />
+              <SelectValue placeholder='Select a state' />
             </SelectTrigger>
-            <SelectContent position="item-aligned">
+            <SelectContent position='item-aligned'>
               {states.map((state, i) => (
                 <SelectItem key={i} value={state.isoCode}>
                   {state.name}

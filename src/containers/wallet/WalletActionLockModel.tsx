@@ -16,9 +16,9 @@ const WalletActionLockModel: FC<WalletActionLockModelProps> = ({ noModal }) => {
 
   return (
     <Dialog open={walletActionLockModalOpen}>
-      <DialogTitle className="sr-only">Wallet Action Lock</DialogTitle>
+      <DialogTitle className='sr-only'>Wallet Action Lock</DialogTitle>
       <DialogContent
-        data-test="component-payment-send"
+        data-test='component-payment-send'
         showCloseButton={false}
         className={cn(
           'mx-4 p-6 max-w-[500px] rounded-xl md:rounded-lg shadow-modal bg-white',

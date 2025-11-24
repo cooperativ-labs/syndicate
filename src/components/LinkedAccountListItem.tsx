@@ -26,9 +26,9 @@ const LinkedAccountListItem: FC<LinkedAccountListProps> = ({ account, isOrganiza
   };
 
   return (
-    <div className="grid grid-cols-3">
-      <div className="col-span-1">{getSocialAccountOption(type)?.name}</div>{' '}
-      <div className="col-span-1">{url}</div>
+    <div className='grid grid-cols-3'>
+      <div className='col-span-1'>{getSocialAccountOption(type)?.name}</div>{' '}
+      <div className='col-span-1'>{url}</div>
       {isOrganizationManager && (
         <button
           onClick={() => {

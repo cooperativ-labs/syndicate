@@ -47,10 +47,10 @@ const EntitySelector: FC<EntitySelectorProps> = ({
   };
   return (
     <div className={cn(className ? className : 'md:grid grid-cols-5 gap-4')}>
-      <div className="col-span-3 align-end ">
+      <div className='col-span-3 align-end '>
         <Select required value={fieldName} onValueChange={value => {}}>
           <SelectTrigger>
-            <SelectValue placeholder="Select an entity" />
+            <SelectValue placeholder='Select an entity' />
           </SelectTrigger>
           <SelectContent>
             {entities.map((entity, i) => {
@@ -65,11 +65,11 @@ const EntitySelector: FC<EntitySelectorProps> = ({
         {createEntityList(entities)}
       </div>
       {withAdd && (
-        <div className="flex flex-col col-span-2 justify-end">
+        <div className='flex flex-col col-span-2 justify-end'>
           <>
             {!setModal && alert('a modal must be set for this button to work')}
             <Button
-              className="p-1 px-3 border-2 border-gray-400 rounded-lg mb-3"
+              className='p-1 px-3 border-2 border-gray-400 rounded-lg mb-3'
               onClick={e => {
                 e.preventDefault();
                 setModal(true);

@@ -24,8 +24,8 @@ const OfferingDetailDashboardItem: FC<OfferingDetailDashboardItemProps> = ({
       >
         {children}
       </div>
-      <div className="text-center text-sm text-gray-800">{title}</div>
-      <div className="text-center text-xs">{note}</div>
+      <div className='text-center text-sm text-gray-800'>{title}</div>
+      <div className='text-center text-xs'>{note}</div>
     </div>
   );
 };

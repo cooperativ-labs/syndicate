@@ -12,7 +12,7 @@ export default function ModalsAndAlerts() {
       {/* {PageIsLoading && <LoadingModal />} */}
       <Toaster />
       <ChainCompatibilityAlert />
-      <AlertPopup text="This is an alpha version. Please use with caution." />
+      <AlertPopup text='This is an alpha version. Please use with caution.' />
     </>
   );
 }

@@ -10,9 +10,9 @@ type TextSectionProps = {
 
 const TextSection: FC<TextSectionProps> = ({ title, text }) => {
   return (
-    <div className="my-10 first:mt-0">
+    <div className='my-10 first:mt-0'>
       <h1 className={contentSectionHeader}>{title}</h1>
-      <div className="prose text-sm md:text-base break-normal">
+      <div className='prose text-sm md:text-base break-normal'>
         <ReactMarkdown>{text}</ReactMarkdown>
       </div>
     </div>

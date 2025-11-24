@@ -130,16 +130,16 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
       <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
         <WalletActionIndicator
           step={buttonStep}
-          step1Text="Deploying swap contract"
-          step1SubText="The swap contract will allow you to manage trades between investors."
-          step2Text="Setting contract operator"
-          step2SubText="This allows the swap contract to transfer shares."
+          step1Text='Deploying swap contract'
+          step1SubText='The swap contract will allow you to manage trades between investors.'
+          step2Text='Setting contract operator'
+          step2SubText='This allows the swap contract to transfer shares.'
         />
       </WalletActionModal>
 
       <div>
-        <h1 className="font-semibold text-lg">Deploy trading contract</h1>
-        <p className="text-sm text-gray-500">
+        <h1 className='font-semibold text-lg'>Deploy trading contract</h1>
+        <p className='text-sm text-gray-500'>
           This contract will allow you to sell shares and to manage trading amongst your whitelisted
           investors.
         </p>
@@ -206,19 +206,19 @@ const DeploySwapForm: FC<DeploySwapFormProps> = ({
   };
 
   return (
-    <form className="flex flex-col gap relative" onSubmit={handleSubmit(submitHandler)}>
-      <Field className="pt-3 bg-opacity-0">
-        <FieldLabel htmlFor="investmentCurrencyAddress">
+    <form className='flex flex-col gap relative' onSubmit={handleSubmit(submitHandler)}>
+      <Field className='pt-3 bg-opacity-0'>
+        <FieldLabel htmlFor='investmentCurrencyAddress'>
           Payment for shares will be accepted in
         </FieldLabel>
         <FieldContent>
           <select
-            id="investmentCurrencyAddress"
-            className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+            id='investmentCurrencyAddress'
+            className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
             aria-invalid={Boolean(errors.investmentCurrencyAddress)}
             {...register('investmentCurrencyAddress')}
           >
-            <option value="">Select currency</option>
+            <option value=''>Select currency</option>
             {chainBacs.map(option => (
               <option key={option.address} value={option.address}>
                 {option.symbol}
@@ -233,15 +233,15 @@ const DeploySwapForm: FC<DeploySwapFormProps> = ({
         </FieldContent>
       </Field>
       <LoadingButtonChain
-        type="submit"
+        type='submit'
         disabled={isSubmitting}
         state={buttonStep}
         idleText={`Publish trading contract on ${chainName}`}
-        step1Text="Deploying (check status in your wallet)"
-        step2Text="Setting contract operator"
-        confirmedText="Confirmed!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        step1Text='Deploying (check status in your wallet)'
+        step2Text='Setting contract operator'
+        confirmedText='Confirmed!'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </form>
   );

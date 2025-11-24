@@ -62,13 +62,13 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, refetchOuter
         <CreateEntity actionOnCompletion={() => submissionCompletion(setEntityModal)} />
       </FormModal>
 
-      <form onSubmit={handleSubmit(onSubmit)} className="flex flex-col gap-4 relative">
+      <form onSubmit={handleSubmit(onSubmit)} className='flex flex-col gap-4 relative'>
         {entities && entities.length > 0 && (
-          <Field className="flex flex-col">
+          <Field className='flex flex-col'>
             <FieldLabel>Add a General Partner</FieldLabel>
             <FieldContent>
               <Controller
-                name="addEntityOwner"
+                name='addEntityOwner'
                 control={control}
                 rules={{
                   required: 'Please select an entity.'
@@ -76,7 +76,7 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, refetchOuter
                 render={({ field }) => (
                   <Select value={field.value} onValueChange={field.onChange}>
                     <SelectTrigger>
-                      <SelectValue placeholder="Select an entity" />
+                      <SelectValue placeholder='Select an entity' />
                     </SelectTrigger>
                     <SelectContent>
                       {entities.map(entity => (
@@ -95,21 +95,21 @@ const AddOwningEntity: FC<AddOwningEntityProps> = ({ ownedEntityId, refetchOuter
           </Field>
         )}
 
-        <div className="flex justify-end">
+        <div className='flex justify-end'>
           <Button
-            type="button"
-            variant="outline"
+            type='button'
+            variant='outline'
             onClick={() => setEntityModal(true)}
-            className="w-full md:w-auto"
+            className='w-full md:w-auto'
           >
             Add New Entity
           </Button>
         </div>
 
         <Button
-          type="submit"
+          type='submit'
           disabled={formState.isSubmitting}
-          className="bg-cLightBlue hover:bg-blue-800 text-white font-bold text-sm uppercase mt-2 rounded p-4 w-full"
+          className='bg-cLightBlue hover:bg-blue-800 text-white font-bold text-sm uppercase mt-2 rounded p-4 w-full'
         >
           {formState.isSubmitting ? 'Adding...' : 'Add Owner'}
         </Button>

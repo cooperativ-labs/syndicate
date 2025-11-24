@@ -14,11 +14,11 @@ type AddressSelectorProps = {
 
 const AddressSelector: FC<AddressSelectorProps> = ({ addresses, fieldName, setModal, label }) => {
   return (
-    <div className="md:grid grid-cols-5 gap-4">
-      <div className="col-span-3 align-end ">
+    <div className='md:grid grid-cols-5 gap-4'>
+      <div className='col-span-3 align-end '>
         <Select required value={fieldName} onValueChange={value => {}}>
           <SelectTrigger>
-            <SelectValue placeholder="Select an address" />
+            <SelectValue placeholder='Select an address' />
           </SelectTrigger>
           <SelectContent>
             {addresses.map((address, i) => {
@@ -32,9 +32,9 @@ const AddressSelector: FC<AddressSelectorProps> = ({ addresses, fieldName, setMo
         </Select>
       </div>
 
-      <div className="flex flex-col col-span-2 justify-end">
+      <div className='flex flex-col col-span-2 justify-end'>
         <Button
-          className="p-1 px-3 border-2 border-gray-400 rounded-lg my-5"
+          className='p-1 px-3 border-2 border-gray-400 rounded-lg my-5'
           onClick={e => {
             e.preventDefault();
             setModal(true);

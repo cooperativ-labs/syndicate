@@ -23,7 +23,7 @@ export function Account() {
 
   return (
     <div>
-      {ensAvatar && <img alt="ENS Avatar" src={ensAvatar} />}
+      {ensAvatar && <img alt='ENS Avatar' src={ensAvatar} />}
       {address && <div>{ensName ? `${ensName} (${address})` : address}</div>}
       <button onClick={() => disconnect()}>Disconnect</button>
     </div>
@@ -54,7 +54,7 @@ function WalletOption({ connector, onClick }: { connector: Connector; onClick: (
   }, [connector]);
 
   return (
-    <Item onClick={onClick} variant="outline" className="cursor-pointer hover:shadow-md">
+    <Item onClick={onClick} variant='outline' className='cursor-pointer hover:shadow-md'>
       <ItemContent>
         <ItemTitle>{connector.name}</ItemTitle>
         {/* <ItemDescription>{connector.description}</ItemDescription> */}

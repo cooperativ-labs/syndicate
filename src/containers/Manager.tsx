@@ -9,10 +9,10 @@ type ManagerProps = {
 
 const Manager: FC<ManagerProps> = ({ children }) => {
   return (
-    <div className=" w-full">
+    <div className=' w-full'>
       <NavBar />
-      <div className="grow z-10">
-        <div className="mx-auto ">
+      <div className='grow z-10'>
+        <div className='mx-auto '>
           <ErrorBoundary>{children}</ErrorBoundary>
         </div>
         {/* <div className={'mx-auto min-h-full p-10'} style={{ maxWidth: '1580px' }}>

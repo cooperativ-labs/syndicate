@@ -28,46 +28,46 @@ const InvestorApplicationPledgeFields: React.FC<InvestorApplicationPledgeFieldsP
   const currencySymbol = investment_currency && getCurrencyOption(investment_currency)?.symbol;
 
   return (
-    <div className="space-y-4">
-      <div className="text-xs font-semibold uppercase space-y-1">
+    <div className='space-y-4'>
+      <div className='text-xs font-semibold uppercase space-y-1'>
         <div>
           Price per share:{' '}
-          <span className="font-normal">
+          <span className='font-normal'>
             {numberWithCommas(min_units_per_investor)} {currencySymbol}
           </span>
         </div>
         <div>
           Minimum purchase:{' '}
-          <span className="font-normal">{numberWithCommas(price_start)} shares</span>
+          <span className='font-normal'>{numberWithCommas(price_start)} shares</span>
         </div>
       </div>
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className='grid gap-4 md:grid-cols-2'>
         <div>
           <TextField
-            name="minPledge"
+            name='minPledge'
             label="Min shares you'd purchase"
-            placeholder="e.g. 10"
-            type="number"
+            placeholder='e.g. 10'
+            type='number'
             required
             inputProps={{ min: 0 }}
           />
           {minPledge && price_start && (
-            <FieldDescription className="mt-1">
+            <FieldDescription className='mt-1'>
               {saleAmountString(minPledge.toString(), price_start)} {currencySymbol}
             </FieldDescription>
           )}
         </div>
         <div>
           <TextField
-            name="maxPledge"
+            name='maxPledge'
             label="Max shares you'd purchase"
-            placeholder="e.g. 150"
-            type="number"
+            placeholder='e.g. 150'
+            type='number'
             required
             inputProps={{ min: 0 }}
           />
           {maxPledge && price_start && (
-            <FieldDescription className="mt-1">
+            <FieldDescription className='mt-1'>
               {saleAmountString(maxPledge.toString(), price_start)} {currencySymbol}
             </FieldDescription>
           )}

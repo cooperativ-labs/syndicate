@@ -16,7 +16,7 @@ export default async function PropertyPage({
   }
 
   return (
-    <div data-test="component-landing" className="h-full flex">
+    <div data-test='component-landing' className='h-full flex'>
       <PropertyDetails property={property} />
     </div>
   );

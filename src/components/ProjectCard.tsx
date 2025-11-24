@@ -23,11 +23,11 @@ const ProjectCard: React.FC<ProjectCardProps> = ({ ...props }) => {
         router.push(`/syndications/${id}`);
       }}
     >
-      <Card className="p-6 rounded-lg hover:shadow-xl cursor-pointer md:w-96">
-        <h1 className="text-lg font-bold">{projectName}</h1>
-        <div className="text-xs text-gray-600 mb-4">Role: {title}</div>
-        <div className="mb-6">
-          <div className="text-sm font-bold text-gray-800">{shortDescription}</div>
+      <Card className='p-6 rounded-lg hover:shadow-xl cursor-pointer md:w-96'>
+        <h1 className='text-lg font-bold'>{projectName}</h1>
+        <div className='text-xs text-gray-600 mb-4'>Role: {title}</div>
+        <div className='mb-6'>
+          <div className='text-sm font-bold text-gray-800'>{shortDescription}</div>
         </div>
       </Card>
     </div>

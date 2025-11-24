@@ -54,15 +54,15 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
 
   return (
     <span className={cn('flex', [className ? className : 'text-sm text-gray-700'])}>
-      <a target="_blank" rel="noreferrer" href={formURL(chainId, lookupType)}>
+      <a target='_blank' rel='noreferrer' href={formURL(chainId, lookupType)}>
         {label}
-        <span className="hover:underline whitespace-nowrap">
+        <span className='hover:underline whitespace-nowrap'>
           {showFull ? defaultAddress : presentedAddress}
         </span>
       </a>
       {withCopy && address && (
         <button
-          className="ml-2"
+          className='ml-2'
           onClick={e => {
             e.stopPropagation();
             navigator.clipboard.writeText(address);
@@ -72,7 +72,7 @@ const FormattedCryptoAddress: FC<FormattedCryptoAddressProps> = ({
             }, 1000);
           }}
         >
-          {copied ? <CheckIcon className="w-4 h-4" /> : <CopyIcon className="w-4 h-4" />}
+          {copied ? <CheckIcon className='w-4 h-4' /> : <CopyIcon className='w-4 h-4' />}
         </button>
       )}
     </span>

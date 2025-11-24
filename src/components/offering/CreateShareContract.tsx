@@ -71,10 +71,10 @@ const CreateShareContract: FC<CreateShareContractProps> = ({ contractCreatorId, 
             onClick={() => deploy()}
             state={buttonStep}
             idleText={`Create share smart contract on ${chainName}`}
-            step1Text="Deploying (check status in your wallet)"
-            confirmedText="Confirmed!"
-            failedText="Transaction failed"
-            rejectedText="You rejected the transaction. Click here to try again."
+            step1Text='Deploying (check status in your wallet)'
+            confirmedText='Confirmed!'
+            failedText='Transaction failed'
+            rejectedText='You rejected the transaction. Click here to try again.'
           />
         )}
       </div>

@@ -36,14 +36,14 @@ const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({
   } = offering;
 
   return (
-    <div className="grid grid-cols-2 md:grid-cols-3 items-center gap-3">
-      <OfferingDetailItem brandColor={brandColor} title="Deal size">{` ${
+    <div className='grid grid-cols-2 md:grid-cols-3 items-center gap-3'>
+      <OfferingDetailItem brandColor={brandColor} title='Deal size'>{` ${
         num_units && numberWithCommas(currentSharePrice * num_units)
       } ${getCurrencyOption(investment_currency)?.symbol}`}</OfferingDetailItem>
 
       <OfferingDetailItem
         brandColor={brandColor}
-        title="Share price"
+        title='Share price'
       >{` ${numberWithCommas(currentSharePrice)} ${
         getCurrencyOption(investment_currency)?.symbol
       }`}</OfferingDetailItem>
@@ -51,22 +51,22 @@ const OfferingDetailsPublic: FC<OfferingDetailsPublicProps> = ({
       {distribution_period && (
         <OfferingDetailItem
           brandColor={brandColor}
-          title="Distribution period"
+          title='Distribution period'
         >{`  Every ${distribution_frequency} ${getDistributionPeriod(distribution_period)}`}</OfferingDetailItem>
       )}
       {max_investors && (
-        <OfferingDetailItem brandColor={brandColor} title="Maximum investors">
+        <OfferingDetailItem brandColor={brandColor} title='Maximum investors'>
           {' '}
           {`${numberWithCommas(max_investors)}`}
         </OfferingDetailItem>
       )}
       {min_investors && (
-        <OfferingDetailItem brandColor={brandColor} title="Minimum investors">{`${numberWithCommas(
+        <OfferingDetailItem brandColor={brandColor} title='Minimum investors'>{`${numberWithCommas(
           min_investors
         )}`}</OfferingDetailItem>
       )}
       {raise_start && (
-        <OfferingDetailItem brandColor={brandColor} title="Offering Opens">{`${getHumanDate(
+        <OfferingDetailItem brandColor={brandColor} title='Offering Opens'>{`${getHumanDate(
           raise_start
         )}`}</OfferingDetailItem>
       )}

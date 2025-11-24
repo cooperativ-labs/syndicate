@@ -64,17 +64,17 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
       <LoadingButtonChain
         state={claimProceedsButton}
         idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-        step1Text="Claiming Proceeds..."
-        confirmedText="Proceeds Claimed!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        step1Text='Claiming Proceeds...'
+        confirmedText='Proceeds Claimed!'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </Button>
   );
 
   const saleButton = (
     <Button
-      className="p-3 shadow-md hover:shadow-xl disabled:shadow-none rounded-md bg-slate-600 text-white text-sm  uppercase font-medium disabled:bg-gray-400"
+      className='p-3 shadow-md hover:shadow-xl disabled:shadow-none rounded-md bg-slate-600 text-white text-sm  uppercase font-medium disabled:bg-gray-400'
       onClick={() => {
         setModal('saleForm');
       }}
@@ -86,18 +86,18 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   const refreshButton = (
     <Button
-      className=" text-blue-800 text-xl "
+      className=' text-blue-800 text-xl '
       onClick={() => {
         refetchOfferingInfo();
         refetchMainContracts();
       }}
     >
-      <RefreshCw className="mr-2" />
+      <RefreshCw className='mr-2' />
     </Button>
   );
 
   if (orders && orders.length < 1) {
-    return <div className="w-full">{saleButton}</div>;
+    return <div className='w-full'>{saleButton}</div>;
   }
 
   const currentOrders = orders?.filter(order => !order?.archived);
@@ -105,9 +105,9 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   return (
     <>
-      <div className="flex flex-row justify-between items-center">
-        <h2 className="text-xl text-blue-900 font-semibold ">{`Offers`}</h2>
-        <div className="flex gap-3">
+      <div className='flex flex-row justify-between items-center'>
+        <h2 className='text-xl text-blue-900 font-semibold '>{`Offers`}</h2>
+        <div className='flex gap-3'>
           {saleButton}
           {proceedsButton}
           {refreshButton}
@@ -135,13 +135,13 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
         );
       })}
       {archivedOrders?.length !== 0 && (
-        <div className="w-full mt-4 border-2 border-slate-600 rounded-md">
+        <div className='w-full mt-4 border-2 border-slate-600 rounded-md'>
           <SectionBlock
             className={'p-3 bg-slate-600 text-white rounded-sm w-full font-semibold  '}
             sectionTitle={'Archived offers'}
             mini
           >
-            <div className=" items-center px-3 w-full">
+            <div className=' items-center px-3 w-full'>
               {archivedOrders?.map((order, i) => {
                 return (
                   <ShareSaleListItem

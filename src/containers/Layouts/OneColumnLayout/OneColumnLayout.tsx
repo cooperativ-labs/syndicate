@@ -10,7 +10,7 @@ const OneColumnLayout: React.FunctionComponent<OneColumnLayoutProps> = ({
   children
 }) => {
   return (
-    <div data-test="layout-one-column" className="w-full">
+    <div data-test='layout-one-column' className='w-full'>
       {children}
     </div>
   );

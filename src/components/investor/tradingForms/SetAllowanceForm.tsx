@@ -45,16 +45,16 @@ const SetAllowanceForm: React.FC<SetAllowanceFormProps> = ({
 
   return (
     <Button
-      className="rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium"
+      className='rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium'
       onClick={e => handleAllowance(e)}
     >
       <LoadingButtonChain
         state={buttonStep}
         idleText={`First permit the smart contract access your funds`}
-        step1Text="Setting allowance..."
-        confirmedText="Confirmed!"
-        failedText="Transaction failed"
-        rejectedText="You rejected the transaction. Click here to try again."
+        step1Text='Setting allowance...'
+        confirmedText='Confirmed!'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
       />
     </Button>
   );

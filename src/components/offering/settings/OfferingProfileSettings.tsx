@@ -142,24 +142,24 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
   };
 
   return (
-    <div className="flex md:grid-span-2 gap-12">
-      <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col w-full relative">
+    <div className='flex md:grid-span-2 gap-12'>
+      <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col w-full relative'>
         <FieldGroup>
           <Controller
             control={form.control}
-            name="shortDescription"
+            name='shortDescription'
             render={({ field }) => (
               <Field>
-                <FieldLabel htmlFor="shortDescription">
-                  Short Description (160 Characters) <span className="text-destructive">*</span>
+                <FieldLabel htmlFor='shortDescription'>
+                  Short Description (160 Characters) <span className='text-destructive'>*</span>
                 </FieldLabel>
                 <FieldContent>
                   <Textarea
-                    id="shortDescription"
-                    placeholder=""
+                    id='shortDescription'
+                    placeholder=''
                     {...field}
                     value={field.value || ''}
-                    className="min-h-[60px]"
+                    className='min-h-[60px]'
                   />
                   <FieldError
                     errors={
@@ -173,19 +173,19 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             )}
           />
 
-          <div className="md:grid grid-cols-7 gap-4">
-            <div className="col-span-3">
+          <div className='md:grid grid-cols-7 gap-4'>
+            <div className='col-span-3'>
               <Controller
                 control={form.control}
-                name="brandColor"
+                name='brandColor'
                 render={({ field }) => (
                   <Field>
-                    <FieldLabel htmlFor="brandColor">Brand color</FieldLabel>
+                    <FieldLabel htmlFor='brandColor'>Brand color</FieldLabel>
                     <FieldContent>
                       <Input
-                        id="brandColor"
-                        type="text"
-                        placeholder="#d3d3d3"
+                        id='brandColor'
+                        type='text'
+                        placeholder='#d3d3d3'
                         {...field}
                         value={field.value || ''}
                       />
@@ -201,30 +201,30 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
                 )}
               />
             </div>
-            <div className="col-span-1 self-center md:mt-8">
+            <div className='col-span-1 self-center md:mt-8'>
               <div
-                className="h-2 md:h-11 md:w-11 rounded-full border"
+                className='h-2 md:h-11 md:w-11 rounded-full border'
                 style={{ backgroundColor: watchedBrandColor ?? '#d3d3d3' }}
               />
             </div>
-            <div className="col-span-3">
+            <div className='col-span-3'>
               <Controller
                 control={form.control}
-                name="lightBrand"
+                name='lightBrand'
                 render={({ field }) => (
-                  <Field orientation="horizontal">
+                  <Field orientation='horizontal'>
                     <Checkbox
-                      id="lightBrand"
+                      id='lightBrand'
                       checked={field.value ?? false}
                       onCheckedChange={checked => {
                         field.onChange(checked === true);
                       }}
                     />
-                    <FieldLabel htmlFor="lightBrand" className="font-normal">
+                    <FieldLabel htmlFor='lightBrand' className='font-normal'>
                       Light brand
                     </FieldLabel>
                     {form.formState.errors.lightBrand && (
-                      <FieldError errors={[form.formState.errors.lightBrand]} className="w-full" />
+                      <FieldError errors={[form.formState.errors.lightBrand]} className='w-full' />
                     )}
                   </Field>
                 )}
@@ -234,15 +234,15 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
 
           <Controller
             control={form.control}
-            name="website"
+            name='website'
             render={({ field }) => (
               <Field>
-                <FieldLabel htmlFor="website">External website</FieldLabel>
+                <FieldLabel htmlFor='website'>External website</FieldLabel>
                 <FieldContent>
                   <Input
-                    id="website"
-                    type="text"
-                    placeholder="https://www.awesome.com"
+                    id='website'
+                    type='text'
+                    placeholder='https://www.awesome.com'
                     {...field}
                     value={field.value || ''}
                   />
@@ -258,15 +258,15 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
 
           <Controller
             control={form.control}
-            name="primaryVideo"
+            name='primaryVideo'
             render={({ field }) => (
               <Field>
-                <FieldLabel htmlFor="primaryVideo">Primary video</FieldLabel>
+                <FieldLabel htmlFor='primaryVideo'>Primary video</FieldLabel>
                 <FieldContent>
                   <Input
-                    id="primaryVideo"
-                    type="text"
-                    placeholder="https://www.youtube.com/embed/FbPODl0eyVQ"
+                    id='primaryVideo'
+                    type='text'
+                    placeholder='https://www.youtube.com/embed/FbPODl0eyVQ'
                     {...field}
                     value={field.value || ''}
                   />
@@ -292,15 +292,15 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             disabled={form.formState.isSubmitting}
             buttonState={buttonState}
             text={`Update ${watchedName || 'Offering'}`}
-            loadingText="Saving"
+            loadingText='Saving'
             successText={`${watchedName || 'Offering'} updated!`}
-            errorText="Oops. Something went wrong"
-            className="mt-4"
+            errorText='Oops. Something went wrong'
+            className='mt-4'
           />
         </FieldGroup>
       </form>
 
-      <div className="flex flex-col min-w-max gap-3">
+      <div className='flex flex-col min-w-max gap-3'>
         <div>
           {/* <div className="h-36">
             <img src={banner_image as string} className="object-cover h-36" />
@@ -311,8 +311,8 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             selectedImageUrl={bannerImageUrl}
             setSelectedImageUrl={setBannerImageUrl}
             onDelete={handleDeleteBannerImage}
-            title="Banner Image"
-            classNames="max-w-56"
+            title='Banner Image'
+            classNames='max-w-56'
           />
         </div>
         <div>
@@ -325,8 +325,8 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
             selectedImageUrl={logoImageUrl}
             setSelectedImageUrl={setLogoImageUrl}
             onDelete={handleDeleteLogo}
-            title="Logo"
-            description="Choose file."
+            title='Logo'
+            description='Choose file.'
           />
         </div>
       </div>

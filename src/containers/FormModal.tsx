@@ -21,13 +21,13 @@ const FormModal: FC<FormModalProps> = ({ formOpen, title, subTitle, onClose, chi
   return (
     <Dialog open={formOpen} onOpenChange={open => !open && onClose()}>
       <DialogContent
-        data-test="component-form-modal"
+        data-test='component-form-modal'
         className={cn('min-w-[600px] sm:max-w-[900px] w-full max-h-[90vh] overflow-y-auto')}
       >
         <DialogHeader>
           <DialogTitle className={cn(!title && 'sr-only')}>{title}</DialogTitle>
           {subTitle && title && <DialogDescription>{subTitle}</DialogDescription>}
-          <hr className="my-4" />
+          <hr className='my-4' />
         </DialogHeader>
 
         {children}

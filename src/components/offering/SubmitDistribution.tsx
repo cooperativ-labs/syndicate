@@ -116,40 +116,40 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
       <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
         <WalletActionIndicator
           step={buttonStep}
-          step1Text="Permitting the contract to spend your tokens"
-          step1SubText="This will permit the contract to create a distribution"
-          step2Text="Submitting distribution"
-          step2SubText="This will submit the distribution to the contract"
+          step1Text='Permitting the contract to spend your tokens'
+          step1SubText='This will permit the contract to create a distribution'
+          step2Text='Submitting distribution'
+          step2SubText='This will submit the distribution to the contract'
         />
       </WalletActionModal>
 
       <form
-        className="flex flex-col gap relative"
+        className='flex flex-col gap relative'
         onSubmit={handleSubmit(handleSubmitDistribution)}
       >
-        <Field className="pt-3 bg-opacity-0">
-          <FieldLabel htmlFor="distribution-amount">Amount to distribute</FieldLabel>
+        <Field className='pt-3 bg-opacity-0'>
+          <FieldLabel htmlFor='distribution-amount'>Amount to distribute</FieldLabel>
           <FieldContent>
             <Input
-              id="distribution-amount"
-              type="number"
-              placeholder="2000"
+              id='distribution-amount'
+              type='number'
+              placeholder='2000'
               aria-invalid={Boolean(errors.amount)}
               {...register('amount')}
             />
             <FieldError errors={errors.amount ? [errors.amount] : undefined} />
           </FieldContent>
         </Field>
-        <Field className="mt-3">
-          <FieldLabel htmlFor="distribution-partition">Share class</FieldLabel>
+        <Field className='mt-3'>
+          <FieldLabel htmlFor='distribution-partition'>Share class</FieldLabel>
           <FieldContent>
             <select
-              id="distribution-partition"
-              className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
+              id='distribution-partition'
+              className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
               aria-invalid={Boolean(errors.partition)}
               {...register('partition')}
             >
-              <option value="">Select class</option>
+              <option value=''>Select class</option>
               {partitions.map((partition, i) => (
                 <option key={partition ?? i} value={partition}>
                   {stringFromBytes32(partition)}
@@ -159,16 +159,16 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
             <FieldError errors={errors.partition ? [errors.partition] : undefined} />
           </FieldContent>
         </Field>
-        <div className="mt-4" />
+        <div className='mt-4' />
         <LoadingButtonChain
-          type="submit"
+          type='submit'
           disabled={isSubmitting || buttonStep === 'step1'}
           state={buttonStep}
           idleText={`Distribute funds to shareholders`}
-          step1Text="Submitting..."
-          confirmedText="Confirmed!"
-          failedText="Transaction failed"
-          rejectedText="You rejected the transaction. Click here to try again."
+          step1Text='Submitting...'
+          confirmedText='Confirmed!'
+          failedText='Transaction failed'
+          rejectedText='You rejected the transaction. Click here to try again.'
         />
       </form>
     </>
