@@ -1,14 +1,14 @@
-import { getCurrencyById } from "@src/utils/enumConverters";
-import { useState } from "react";
-import { useAsync } from "react-use";
-import { Block } from "viem";
-import { useChainId, usePublicClient, useReadContract } from "wagmi";
-import { getPublicClient } from "wagmi/actions";
+import { getCurrencyById } from '@src/utils/enumConverters';
+import { useState } from 'react';
+import { useAsync } from 'react-use';
+import { Block } from 'viem';
+import { useChainId, usePublicClient, useReadContract } from 'wagmi';
+import { getPublicClient } from 'wagmi/actions';
 
-import { dividendContractABI } from "../generated";
-import { String0x } from "../helpersChain";
-import { shareContractDecimals, toNormalNumber } from "../util";
-import { getWagmiConfig } from "../wagmi";
+import { dividendContractABI } from '../generated';
+import { String0x } from '../helpersChain';
+import { shareContractDecimals, toNormalNumber } from '../util';
+import { getWagmiConfig } from '../wagmi';
 
 export type DistributionDetailsType = {
   // currentBlock: Block | undefined;
@@ -29,12 +29,10 @@ export type DistributionDetailsType = {
 
 export const useDistributionDetails = (
   dividendContactAddress: String0x,
-  contractIndex: number,
+  contractIndex: number
 ): DistributionDetailsType => {
   const publicClient = usePublicClient();
-  const [currentBlock, setCurrentBlock] = useState<Block | undefined>(
-    undefined,
-  );
+  const [currentBlock, setCurrentBlock] = useState<Block | undefined>(undefined);
   const chainId = useChainId();
   const config = getWagmiConfig();
   useAsync(async () => {
@@ -46,12 +44,12 @@ export const useDistributionDetails = (
     data,
     error,
     isLoading,
-    refetch: refetchDistributionDetails,
+    refetch: refetchDistributionDetails
   } = useReadContract({
     address: dividendContactAddress,
     abi: dividendContractABI,
-    functionName: "dividends",
-    args: [BigInt(contractIndex)],
+    functionName: 'dividends',
+    args: [BigInt(contractIndex)]
   });
 
   const dividendPartition = data ? data[0] : undefined;
@@ -63,9 +61,7 @@ export const useDistributionDetails = (
   const dividendAmount = data
     ? toNormalNumber(data[5], getCurrencyById(payoutTokenAddress)?.decimals)
     : undefined;
-  const totalSupplyOfShares = data
-    ? toNormalNumber(data[6], shareContractDecimals)
-    : undefined;
+  const totalSupplyOfShares = data ? toNormalNumber(data[6], shareContractDecimals) : undefined;
   const isErc20Payout = data ? data[8] : undefined;
   const amountRemaining = data
     ? toNormalNumber(data[9], getCurrencyById(payoutTokenAddress)?.decimals)
@@ -85,6 +81,6 @@ export const useDistributionDetails = (
     amountRemaining,
     error,
     isLoading,
-    refetchDistributionDetails,
+    refetchDistributionDetails
   };
 };

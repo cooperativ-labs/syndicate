@@ -1,36 +1,29 @@
-"use server";
+'use server';
 
-import { createClient } from "@supabase/utils/server";
-import { revalidatePath } from "next/cache";
+import { createClient } from '@supabase/utils/server';
+import { revalidatePath } from 'next/cache';
 
 import {
   RealEstatePropertyWithAddress,
   RealEstatePropertyWithAssets,
-  RevalidationPath,
-} from "@/types";
-import {
-  Address,
-  Image,
-  InvestmentStatusType,
-  RealEstatePropertyTypes,
-} from "@/types";
+  RevalidationPath
+} from '@/types';
+import { Address, Image, InvestmentStatusType, RealEstatePropertyTypes } from '@/types';
 
-import { addAddress } from "./addressActions";
-import { getFilesFromFolder, getPublicUrl } from "./storageActions";
+import { addAddress } from './addressActions';
+import { getFilesFromFolder, getPublicUrl } from './storageActions';
 
 // =========== RE PROPERTY ================
 
-export async function getReProperty(
-  id: string,
-): Promise<RealEstatePropertyWithAssets | null> {
+export async function getReProperty(id: string): Promise<RealEstatePropertyWithAssets | null> {
   const supabase = createClient();
 
   const { data: property, error } = await supabase
-    .from("real_estate_property")
+    .from('real_estate_property')
     .select(
-      "id, property_type, investment_status, address_id, amenities_description, description, asset_value, asset_value_note, loan, down_payment, lender_fees, closing_costs, offering_id, address:address(*)",
+      'id, property_type, investment_status, address_id, amenities_description, description, asset_value, asset_value_note, loan, down_payment, lender_fees, closing_costs, offering_id, address:address(*)'
     )
-    .eq("id", id)
+    .eq('id', id)
     .limit(1)
     .single();
 
@@ -43,45 +36,44 @@ export async function getReProperty(
   }
   const { images } = await getRePropertyAssets({
     offeringId: property.offering_id.toString(),
-    rePropertyId: property.id,
+    rePropertyId: property.id
   });
 
   const propertyWithAssets = {
     ...property,
     // documents: documents,
-    images: images,
+    images: images
   } as RealEstatePropertyWithAssets;
 
   return propertyWithAssets;
 }
 
 export async function getRealEstatePropertiesFromOffering(
-  offeringId: string,
+  offeringId: string
 ): Promise<RealEstatePropertyWithAssets[]> {
   const supabase = createClient();
 
   const { data: propertiesData, error: propertiesError } = await supabase
-    .from("real_estate_property")
-    .select(["*", "address:address(*)"].join(", "))
-    .eq("offering_id", Number(offeringId));
+    .from('real_estate_property')
+    .select(['*', 'address:address(*)'].join(', '))
+    .eq('offering_id', Number(offeringId));
   if (propertiesError) {
     throw propertiesError;
   }
 
-  const properties =
-    propertiesData as unknown as RealEstatePropertyWithAddress[];
+  const properties = propertiesData as unknown as RealEstatePropertyWithAddress[];
 
   const propertiesWithAssets = await Promise.all(
     properties.map(async (property: RealEstatePropertyWithAddress) => {
       const { images } = await getRePropertyAssets({
         offeringId: offeringId,
-        rePropertyId: property.id.toString(),
+        rePropertyId: property.id.toString()
       });
       return {
         ...property,
-        images: images,
+        images: images
       } as RealEstatePropertyWithAssets;
-    }),
+    })
   );
 
   return propertiesWithAssets;
@@ -101,12 +93,12 @@ type AddRePropertyInfoParams = {
 
 export async function addRePropertyInfo(
   params: AddRePropertyInfoParams,
-  revalidationPath?: RevalidationPath,
+  revalidationPath?: RevalidationPath
 ): Promise<string | null> {
   const supabase = createClient();
 
   const { data, error } = await supabase
-    .from("real_estate_property")
+    .from('real_estate_property')
     .insert(
       {
         offering_id: Number(params.offeringId),
@@ -116,11 +108,11 @@ export async function addRePropertyInfo(
         description: params.description ?? null,
         down_payment: params.downPayment ?? null,
         lender_fees: params.lenderFees ?? null,
-        closing_costs: params.closingCosts ?? null,
+        closing_costs: params.closingCosts ?? null
       },
-      { count: "exact" },
+      { count: 'exact' }
     )
-    .select("id")
+    .select('id')
     .single();
 
   if (error) {
@@ -139,7 +131,7 @@ export async function updateRePropertyDescription({
   investmentStatus,
   amenitiesDescription,
   description,
-  revalidationPath,
+  revalidationPath
 }: {
   rePropertyId: string;
   propertyType: RealEstatePropertyTypes;
@@ -151,14 +143,14 @@ export async function updateRePropertyDescription({
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("real_estate_property")
+    .from('real_estate_property')
     .update({
       property_type: propertyType,
       investment_status: investmentStatus,
       amenities_description: amenitiesDescription ?? null,
-      description: description ?? null,
+      description: description ?? null
     })
-    .eq("id", rePropertyId);
+    .eq('id', rePropertyId);
 
   if (error) {
     throw error;
@@ -177,7 +169,7 @@ export async function UpdateRePropertyFinancials({
   lenderFees,
   closingCosts,
   loanAmount,
-  revalidationPath,
+  revalidationPath
 }: {
   rePropertyId: string;
   assetValue?: number | null;
@@ -191,16 +183,16 @@ export async function UpdateRePropertyFinancials({
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("real_estate_property")
+    .from('real_estate_property')
     .update({
       asset_value: assetValue ?? null,
       asset_value_note: assetValueNote ?? null,
       down_payment: downPayment ?? null,
       lender_fees: lenderFees ?? null,
       closing_costs: closingCosts ?? null,
-      loan: loanAmount ?? null,
+      loan: loanAmount ?? null
     })
-    .eq("id", rePropertyId);
+    .eq('id', rePropertyId);
 
   if (error) {
     throw error;
@@ -213,7 +205,7 @@ export async function UpdateRePropertyFinancials({
 
 export async function removeReProperty({
   propertyId,
-  revalidationPath,
+  revalidationPath
 }: {
   propertyId: string;
   revalidationPath?: RevalidationPath;
@@ -221,10 +213,10 @@ export async function removeReProperty({
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("real_estate_property")
-    .delete({ count: "exact" })
-    .eq("id", propertyId)
-    .select("id");
+    .from('real_estate_property')
+    .delete({ count: 'exact' })
+    .eq('id', propertyId)
+    .select('id');
 
   if (error) {
     throw error;
@@ -239,22 +231,22 @@ export const uploadRePropertyAsset = async ({
   rePropertyId,
   assetFile,
   assetName,
-  assetType,
+  assetType
 }: {
   offeringId: string | number;
   rePropertyId: string;
   assetFile: File;
   assetName: string; //using file.name = "blob"
-  assetType: "image" | "document";
+  assetType: 'image' | 'document';
   revalidationPath?: RevalidationPath;
 }): Promise<void> => {
   const supabase = createClient();
 
   let assetPath = `${offeringId}/re/${rePropertyId}/${assetType}/${assetName}`;
   const { error: assetError } = await supabase.storage
-    .from("offering-assets")
+    .from('offering-assets')
     .upload(assetPath, assetFile, {
-      upsert: true,
+      upsert: true
     });
 
   if (assetError) {
@@ -264,7 +256,7 @@ export const uploadRePropertyAsset = async ({
 
 export const getRePropertyAssets = async ({
   offeringId,
-  rePropertyId,
+  rePropertyId
 }: {
   offeringId: string | number;
   rePropertyId: string;
@@ -275,21 +267,19 @@ export const getRePropertyAssets = async ({
 
   const [images] = await Promise.all([
     getFilesFromFolder({
-      bucket: "offering-assets",
-      folderPath: imagesPath,
-    }),
+      bucket: 'offering-assets',
+      folderPath: imagesPath
+    })
   ]);
 
   let errors: Error[] = [];
   const imageItems = await Promise.all(
-    images.map(async (image) => {
-      const { data: publicUrlData, error: publicUrlError } = await getPublicUrl(
-        {
-          bucket: "offering-assets",
-          path: `${imagesPath}/${image.name}`,
-          source: "rePropertyAssets",
-        },
-      );
+    images.map(async image => {
+      const { data: publicUrlData, error: publicUrlError } = await getPublicUrl({
+        bucket: 'offering-assets',
+        path: `${imagesPath}/${image.name}`,
+        source: 'rePropertyAssets'
+      });
       if (publicUrlError) {
         errors.push(new Error(publicUrlError.message));
       }
@@ -300,7 +290,7 @@ export const getRePropertyAssets = async ({
           id: image.id,
           label: image.name,
           url: null,
-          created_at: image.created_at,
+          created_at: image.created_at
         };
       }
 
@@ -310,17 +300,17 @@ export const getRePropertyAssets = async ({
         url: publicUrlData,
         created_at: image.created_at,
         updated_at: image.updated_at,
-        metadata: image.metadata,
+        metadata: image.metadata
       };
-    }),
+    })
   );
 
   if (errors.length > 0) {
-    throw new Error(errors.map((error) => error.message).join(", "));
+    throw new Error(errors.map(error => error.message).join(', '));
   }
 
   return {
-    images: imageItems as Image[],
+    images: imageItems as Image[]
   };
 };
 
@@ -344,23 +334,21 @@ type AddPropertyAddressParams = {
 
 type AddPropertyAddressResult = {
   affectedCount: number;
-  records: Pick<Address, "id" | "label" | "line1">[];
+  records: Pick<Address, 'id' | 'label' | 'line1'>[];
 };
 
-export async function addPropertyAddress(
-  params: AddPropertyAddressParams,
-): Promise<void> {
+export async function addPropertyAddress(params: AddPropertyAddressParams): Promise<void> {
   const supabase = createClient();
 
   // Get the legal_entity_id from the offering
   const { data: offering, error: offeringError } = await supabase
-    .from("offering")
-    .select("offering_entity_id")
-    .eq("id", Number(params.offeringId))
+    .from('offering')
+    .select('offering_entity_id')
+    .eq('id', Number(params.offeringId))
     .single();
 
   if (offeringError || !offering) {
-    throw new Error("Failed to fetch offering entity");
+    throw new Error('Failed to fetch offering entity');
   }
 
   const addressId = await addAddress({
@@ -374,14 +362,14 @@ export async function addPropertyAddress(
     line3: params.addressLine3,
     lng: params.lng ?? null,
     postal_code: params.postalCode ?? null,
-    state_province: params.stateProvince ?? null,
+    state_province: params.stateProvince ?? null
   });
   // Update property's address_id if address was created successfully
   if (addressId) {
     await supabase
-      .from("real_estate_property")
+      .from('real_estate_property')
       .update({ address_id: addressId })
-      .eq("id", params.propertyId);
+      .eq('id', params.propertyId);
   }
 
   if (params.revalidationPath) {
@@ -391,27 +379,27 @@ export async function addPropertyAddress(
 
 type RemovePropertyAddressResult = {
   affectedCount: number;
-  records: Pick<Address, "id">[];
+  records: Pick<Address, 'id'>[];
 };
 
 export async function removePropertyAddress(
-  geoAddressId: string,
+  geoAddressId: string
 ): Promise<RemovePropertyAddressResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
-    .from("address")
-    .delete({ count: "exact" })
-    .eq("id", geoAddressId)
-    .select("id");
+    .from('address')
+    .delete({ count: 'exact' })
+    .eq('id', geoAddressId)
+    .select('id');
 
   if (error) {
     throw error;
   }
 
   return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as RemovePropertyAddressResult["records"],
+    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
+    records: (data ?? []) as RemovePropertyAddressResult['records']
   };
 }
 
@@ -421,20 +409,16 @@ type RemovePropertyImageResult = {
   success: boolean;
 };
 
-export async function removePropertyImage(
-  imageId: string,
-): Promise<RemovePropertyImageResult> {
+export async function removePropertyImage(imageId: string): Promise<RemovePropertyImageResult> {
   const supabase = createClient();
 
-  const { data, error } = await supabase.storage
-    .from("offering-assets")
-    .remove([imageId]);
+  const { data, error } = await supabase.storage.from('offering-assets').remove([imageId]);
 
   if (error) {
     throw error;
   }
 
   return {
-    success: true,
+    success: true
   };
 }
