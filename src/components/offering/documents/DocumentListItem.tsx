@@ -1,6 +1,5 @@
 import { removeOfferingDocument } from '@src/utils/actions/documentActions';
 import { getDocFormatOption } from '@src/utils/enumConverters';
-import { currentDate } from '@src/utils/graphQueries/gqlUtils';
 import { File as FileIcon, FileSpreadsheet, FileText, Github, Play, Trash } from 'lucide-react';
 import React, { FC } from 'react';
 
@@ -11,8 +10,6 @@ const DocumentListItem: FC<{
   offeringId?: string;
   deleteButton?: boolean | undefined;
 }> = ({ document, offeringId, deleteButton }) => {
-  // const [deleteDocument, { error: deleteError }] = useMutation(REMOVE_OFFERING_DOCUMENT);
-
   const deleteDocument = async ({
     offeringId,
     documentId
@@ -58,8 +55,8 @@ const DocumentListItem: FC<{
 
   return (
     <div
-      data-test='component-document-chip'
-      className='bg-white flex my-2 p-1 max-h-16 items-center w-full rounded-xl justify-between shadow-lg border-2 border-gray-100'
+      data-test='component-document-item'
+      className='bg-white flex my-2 p-1 max-h-16 items-center w-full rounded-xl justify-between shadow-lg border-2 border-gray-100 '
     >
       <a
         href={url as string}
@@ -67,7 +64,7 @@ const DocumentListItem: FC<{
         rel='noreferrer'
         className='flex items-center shrink-0'
       >
-        <div className='ml-2 w-10 h-10 text-3xl text-blue-900'>
+        <div className='px-2  text-blue-900'>
           {(() => {
             const iconName = getDocFormatOption(format)?.icon;
             switch (iconName) {
@@ -91,15 +88,16 @@ const DocumentListItem: FC<{
           })()}
         </div>
         <div className='d-block'>
-          <h1 className='font-bold text-sm truncate w:42  '>{title}</h1>
+          <h1 className='font-bold text-sm w-42 truncate'>{title}</h1>
           <h2 className='text-gray-500 text-xs font-bold'>
             {getDocFormatOption(format)?.subtitle}
           </h2>
         </div>
       </a>
+
       {deleteButton && offeringId && (
         <button aria-label='delete-document' onClick={handleDelete}>
-          <Trash className='text-lg text-gray-600 mr-2' />
+          <Trash size={20} className=' text-gray-600 mr-2' />
         </button>
       )}
     </div>

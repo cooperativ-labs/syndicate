@@ -14,7 +14,6 @@ import DeleteButton from '../buttons/DeleteButton';
 import DragAndDrop from '../DndFiles';
 
 type ImageUploadProps = {
-  accept: string[];
   title?: string;
   description?: string;
   allowMultiple?: boolean;
@@ -26,7 +25,6 @@ type ImageUploadProps = {
 };
 
 const ImageUpload: FC<ImageUploadProps> = ({
-  accept,
   title = 'Drag and drop or click',
   description = 'Chose a file to upload.',
   allowMultiple,
@@ -93,11 +91,10 @@ const ImageUpload: FC<ImageUploadProps> = ({
       ) : (
         <DragAndDrop
           onSelect={handleUploadFile}
-          setSelectedImageUrl={setSelectedImageUrl ?? undefined}
           multiple={allowMultiple}
           isImage={true}
-          acceptedFileTypes={accept.join(', ')}
-          acceptedMimeTypes={accept}
+          acceptedFileTypes={['.jpg', '.jpeg', '.png', '.svg']}
+          acceptedMimeTypes={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
           title={title}
           description={description}
           progressAmt={progressAmt}

@@ -24,7 +24,7 @@ import {
 type OfferingDetailsProps = {
   price_start: number | undefined | null;
   investment_currency: CurrencyCodeType | undefined | null;
-  offeringId: string;
+  offeringId: number | string;
   isOfferingManager: boolean;
   documents?: Document[];
   contractSet: OfferingSmartContractSet | null;

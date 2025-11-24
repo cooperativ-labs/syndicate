@@ -1,20 +1,20 @@
-'use server';
+"use server";
 
-import { createClient } from '@supabase/utils/server';
-import { revalidatePath } from 'next/cache';
+import { createClient } from "@supabase/utils/server";
+import { revalidatePath } from "next/cache";
 
-import { Document, DocumentFormatType } from '@/types';
+import { Document, DocumentFormatType } from "@/types";
 
-import { getFileFormat } from '../helpersDocuments';
+import { getFileFormat } from "../helpersServer";
 
 export async function getOfferingDocumentsById(
-  offeringId: string | number
+  offeringId: string | number,
 ): Promise<Document[] | null> {
   const supabase = createClient();
   const { data: documents, error } = await supabase
-    .from('document')
-    .select('*')
-    .eq('offering_id', Number(offeringId));
+    .from("document")
+    .select("*")
+    .eq("offering_id", Number(offeringId));
   if (error) {
     throw error;
   }
@@ -22,13 +22,13 @@ export async function getOfferingDocumentsById(
 }
 
 export async function getEntityDocumentsById(
-  entityId: string | number
+  entityId: string | number,
 ): Promise<Document[] | null> {
   const supabase = createClient();
   const { data: documents, error } = await supabase
-    .from('document')
-    .select('*')
-    .eq('owner_id', Number(entityId));
+    .from("document")
+    .select("*")
+    .eq("owner_id", Number(entityId));
   if (error) {
     throw error;
   }
@@ -36,7 +36,9 @@ export async function getEntityDocumentsById(
 }
 
 // Get document editors based on file_id
-export async function getDocumentEditors({ fileId }: { fileId: string }): Promise<{
+export async function getDocumentEditors(
+  { fileId }: { fileId: string },
+): Promise<{
   records: {
     legal_entity: {
       organization: {
@@ -52,9 +54,9 @@ export async function getDocumentEditors({ fileId }: { fileId: string }): Promis
 
   // Get documents with file_id and their owner (legal_entity)
   const { data: documents, error: docsError } = await supabase
-    .from('document')
-    .select('owner_id')
-    .eq('file_id', fileId);
+    .from("document")
+    .select("owner_id")
+    .eq("file_id", fileId);
 
   if (docsError) throw docsError;
   if (!documents || documents.length === 0) {
@@ -62,7 +64,9 @@ export async function getDocumentEditors({ fileId }: { fileId: string }): Promis
   }
 
   // Get unique legal entity IDs
-  const entityIds = [...new Set(documents.map((doc: any) => doc.owner_id).filter(Boolean))];
+  const entityIds = [
+    ...new Set(documents.map((doc: any) => doc.owner_id).filter(Boolean)),
+  ];
 
   if (entityIds.length === 0) {
     return { records: [] };
@@ -70,9 +74,9 @@ export async function getDocumentEditors({ fileId }: { fileId: string }): Promis
 
   // Get legal entities with their organization_id
   const { data: entities, error: entitiesError } = await supabase
-    .from('legal_entity')
-    .select('id, organization_id')
-    .in('id', entityIds);
+    .from("legal_entity")
+    .select("id, organization_id")
+    .in("id", entityIds);
 
   if (entitiesError) throw entitiesError;
   if (!entities || entities.length === 0) {
@@ -80,7 +84,9 @@ export async function getDocumentEditors({ fileId }: { fileId: string }): Promis
   }
 
   // Get organization IDs
-  const organizationIds = [...new Set(entities.map((e: any) => e.organization_id).filter(Boolean))];
+  const organizationIds = [
+    ...new Set(entities.map((e: any) => e.organization_id).filter(Boolean)),
+  ];
 
   if (organizationIds.length === 0) {
     return { records: [] };
@@ -88,9 +94,9 @@ export async function getDocumentEditors({ fileId }: { fileId: string }): Promis
 
   // Get organization users for these organizations
   const { data: orgUsers, error: usersError } = await supabase
-    .from('organization_user')
-    .select('user_id, permissions, organization_id')
-    .in('organization_id', organizationIds);
+    .from("organization_user")
+    .select("user_id, permissions, organization_id")
+    .in("organization_id", organizationIds);
 
   if (usersError) throw usersError;
 
@@ -102,14 +108,14 @@ export async function getDocumentEditors({ fileId }: { fileId: string }): Promis
       return {
         legal_entity: {
           organization: {
-            organization_user: []
-          }
-        }
+            organization_user: [],
+          },
+        },
       };
     }
 
     const usersForOrg = (orgUsers || []).filter(
-      (ou: any) => ou.organization_id === entity.organization_id
+      (ou: any) => ou.organization_id === entity.organization_id,
     );
 
     return {
@@ -117,10 +123,10 @@ export async function getDocumentEditors({ fileId }: { fileId: string }): Promis
         organization: {
           organization_user: usersForOrg.map((ou: any) => ({
             user_id: ou.user_id,
-            permissions: ou.permissions
-          }))
-        }
-      }
+            permissions: ou.permissions,
+          })),
+        },
+      },
     };
   });
 
@@ -133,7 +139,7 @@ export async function linkOfferingDocument({
   title,
   format,
   docUrl,
-  offeringUniqueId
+  offeringUniqueId,
 }: {
   offeringId: string;
   entityId: string;
@@ -143,40 +149,31 @@ export async function linkOfferingDocument({
   offeringUniqueId: string;
 }): Promise<void> {
   const supabase = createClient();
-
+  const fullDocUrl =
+    `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${docUrl}`;
   // Insert document
   const {
     data: docData,
     error: docError,
-    count: docCount
+    count: docCount,
   } = await supabase
-    .from('document')
+    .from("document")
     .insert(
       {
         title,
-        url: docUrl,
+        url: fullDocUrl,
         offering_unique_id: offeringUniqueId,
-        type: 'OFFERING_DOCUMENT',
+        type: "OFFERING_DOCUMENT",
         format,
         offering_id: Number(offeringId),
-        owner_id: Number(entityId)
+        owner_id: Number(entityId),
       },
-      { count: 'exact' }
-    )
-    .select(
-      'id, title, file_id, date, format, type, text, url, thumbnail_image_id, owner_id, access, offering_id, offering_unique_id'
+      { count: "exact" },
     );
 
   if (docError) throw docError;
 
-  // Update offering's updated_at timestamp
-  const { error: offeringError } = await supabase
-    .from('offering')
-    .update({ updated_at: new Date().toISOString() })
-    .eq('id', Number(offeringId));
-
-  if (offeringError) throw offeringError;
-  revalidatePath(`/${offeringId}`, 'page');
+  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, "layout");
 }
 
 // Add offering document
@@ -185,7 +182,7 @@ export async function uploadOfferingDocument({
   title,
   offeringId,
   entityId,
-  offeringUniqueId
+  offeringUniqueId,
 }: {
   file: File;
   title: string;
@@ -194,33 +191,43 @@ export async function uploadOfferingDocument({
   offeringUniqueId: string;
 }): Promise<void> {
   const supabase = createClient();
+  const normalizedFileName = file.name.normalize("NFD").replace(
+    /[\u0300-\u036f]/g,
+    "",
+  ).replace(/[^a-zA-Z0-9]/g, "-");
   try {
     const { data, error } = await supabase.storage
-      .from('offering-documents')
-      .upload(`${offeringId}/docs/${file.name}`, file as File);
+      .from("offering-assets")
+      .upload(`${offeringId}/docs/${normalizedFileName}`, file as File, {
+        upsert: true,
+      });
 
-    if (error) throw error;
-    if (!data) throw new Error('Failed to upload file');
+    if (error) throw `Failed to upload file: ${error.message}`;
+    if (!data) throw `no data for file: ${file.name}`;
     const fileUrl = data.fullPath;
+
+    const format = await getFileFormat(file);
 
     await linkOfferingDocument({
       offeringId,
       offeringUniqueId,
       entityId,
       title,
-      format: getFileFormat(file),
-      docUrl: fileUrl
+      format,
+      docUrl: fileUrl,
     });
   } catch (error) {
     console.error(error);
-    throw new Error('Failed to upload file');
+    throw `Failed to upload file: ${
+      error instanceof Error ? error.message : "Unknown error"
+    }`;
   }
 }
 
 // Remove offering document
 export async function removeOfferingDocument({
   offeringId,
-  documentId
+  documentId,
 }: {
   offeringId: string;
   documentId: string;
@@ -242,33 +249,34 @@ export async function removeOfferingDocument({
   const {
     data: offeringData,
     error: offeringError,
-    count: offeringCount
+    count: offeringCount,
   } = await supabase
-    .from('offering')
+    .from("offering")
     .update({ updated_at: new Date().toISOString() })
-    .eq('id', Number(offeringId))
-    .select('id, updated_at');
+    .eq("id", Number(offeringId))
+    .select("id, updated_at");
 
   if (offeringError) throw offeringError;
 
   // Delete document
   const { error: docError, count: docCount } = await supabase
-    .from('document')
+    .from("document")
     .delete()
-    .in('id', [documentId]);
+    .in("id", [documentId]);
 
   if (docError) throw docError;
 
-  revalidatePath('/', 'page');
+  revalidatePath("/", "page");
 
   return {
     offeringResult: {
-      affectedCount:
-        typeof offeringCount === 'number' ? offeringCount : (offeringData?.length ?? 0),
-      records: (offeringData ?? []) as any
+      affectedCount: typeof offeringCount === "number"
+        ? offeringCount
+        : (offeringData?.length ?? 0),
+      records: (offeringData ?? []) as any,
     },
     documentResult: {
-      affectedCount: typeof docCount === 'number' ? docCount : 0
-    }
+      affectedCount: typeof docCount === "number" ? docCount : 0,
+    },
   };
 }

@@ -13,7 +13,7 @@ const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
   const [copied, setCopied] = useState<boolean>(false);
 
   return (
-    <div>
+    <div className='flex flex-col'>
       <Button
         className='mt-1 mb-4'
         variant='outline'
@@ -21,20 +21,22 @@ const DocumentHashItem: FC<DocumentHashItemProps> = ({ hash, text }) => {
       >
         Download Agreement
       </Button>
-      <span className='mb-1 mr-2'>{`Agreement Hash: ${hash.slice(0, 7)}...${hash.slice(-7)}`}</span>
+      <span className='flex items-center'>
+        <span className='mb-1 mr-2'>{`Agreement Hash: ${hash.slice(0, 7)}...${hash.slice(-7)}`}</span>
 
-      <span>
-        <button
-          onClick={() => {
-            navigator.clipboard.writeText(hash[0]);
-            setCopied(true);
-            setTimeout(() => {
-              setCopied(false);
-            }, 1000);
-          }}
-        >
-          {copied ? <Check /> : <Copy />}
-        </button>
+        <span>
+          <button
+            onClick={() => {
+              navigator.clipboard.writeText(hash[0]);
+              setCopied(true);
+              setTimeout(() => {
+                setCopied(false);
+              }, 1000);
+            }}
+          >
+            {copied ? <Check /> : <Copy />}
+          </button>
+        </span>
       </span>
     </div>
   );

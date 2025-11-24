@@ -9,7 +9,7 @@ import { toast } from 'sonner';
 
 interface DragAndDropProps {
   onSelect: (file: File | null) => Promise<void>;
-  acceptedFileTypes?: string;
+  acceptedFileTypes?: string[];
   acceptedMimeTypes?: string[];
   title?: string;
   description?: string;
@@ -17,11 +17,11 @@ interface DragAndDropProps {
   progressAmt?: number;
   multiple?: boolean;
   isImage?: boolean;
-  setSelectedImageUrl?: (imageUrl: string | null) => void;
+  onClear?: () => void;
 }
 
 export default function DragAndDrop({
-  acceptedFileTypes = '.csv,text/csv',
+  acceptedFileTypes = ['.csv'],
   acceptedMimeTypes = ['text/csv'],
   title = 'Choose or drag and drop a file',
   description = 'Files only.',
@@ -30,12 +30,11 @@ export default function DragAndDrop({
   multiple = false,
   isImage = false,
   onSelect,
-  setSelectedImageUrl
+  onClear
 }: DragAndDropProps) {
   const [isDragOver, setIsDragOver] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
   const handleFileButtonClick = (e: React.MouseEvent<HTMLDivElement>) => {
     e.preventDefault();
     if (fileInputRef.current !== null) {
@@ -89,8 +88,8 @@ export default function DragAndDrop({
   };
 
   const clearSelectedFile = () => {
-    onSelect(null);
-    setSelectedImageUrl?.(null);
+    onClear && onClear();
+    setSelectedFile(null);
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
@@ -124,7 +123,7 @@ export default function DragAndDrop({
         type='file'
         multiple={multiple}
         ref={fileInputRef}
-        accept={acceptedFileTypes}
+        accept={acceptedMimeTypes.join(',')}
         className='hidden'
         onChange={handleFileChange}
       />

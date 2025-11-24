@@ -35,10 +35,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
 
   const { min_units_per_investor, name: offeringName, id: offeringId, participants } = offering;
 
-  const offeringDocs = documents
-    ? getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT)
-    : [];
-
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
   const {
     shareContractAddress,
@@ -60,13 +56,17 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
     refetchTransactionHistory,
     transferEvents
   } = useOfferingDetails({
-    offeringId: offering.id.toString(),
+    offeringId: offeringId,
     isOfferingManager: false,
     price_start: offering.price_start,
     investment_currency: offering.investment_currency,
-    documents: offeringDocs,
+    documents: documents,
     contractSet: offering.offeringSmartContracts
   });
+
+  const offeringDocs = documents
+    ? getDocumentsOfType(documents, DocumentType.OFFERING_DOCUMENT)
+    : [];
 
   const sharedContractSpecs = {
     address: shareContractAddress,

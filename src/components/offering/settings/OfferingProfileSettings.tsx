@@ -302,12 +302,8 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
 
       <div className='flex flex-col min-w-max gap-3'>
         <div>
-          {/* <div className="h-36">
-            <img src={banner_image as string} className="object-cover h-36" />
-          </div> */}
           <ImageUpload
             onSubmit={handleAddBannerImage}
-            accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
             selectedImageUrl={bannerImageUrl}
             setSelectedImageUrl={setBannerImageUrl}
             onDelete={handleDeleteBannerImage}
@@ -316,12 +312,8 @@ const OfferingProfileSettings: FC<OfferingProfileSettingsProps> = ({ offering, u
           />
         </div>
         <div>
-          {/* <div className="h-36">
-            <img src={offering.image as string} className="object-cover h-36" />
-          </div> */}
           <ImageUpload
             onSubmit={handleAddLogo}
-            accept={['image/jpg', 'image/jpeg', 'image/png', 'image/svg+xml']}
             selectedImageUrl={logoImageUrl}
             setSelectedImageUrl={setLogoImageUrl}
             onDelete={handleDeleteLogo}
