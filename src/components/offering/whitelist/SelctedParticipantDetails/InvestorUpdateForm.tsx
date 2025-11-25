@@ -61,7 +61,7 @@ export default function UpdateInvestorForm({
       jurProvince: values.jurProvince,
       externalId: values.externalId,
       revalidationPath: {
-        path: '[organizationId]/offering/[offeringId]',
+        path: '/manager/[organizationId]/offering/[offeringId]',
         type: 'page'
       }
     });

@@ -99,9 +99,8 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
           type: SmartContractType.SWAP,
           protocol: protocol,
           ownerId: contractOwnerEntityId,
-          contractSetId: contractSet.id,
           revalidationPath: {
-            path: '[organizationId]/offering/[offeringId]',
+            path: '/manager/[organizationId]/offering/[offeringId]',
             type: 'page'
           }
         });

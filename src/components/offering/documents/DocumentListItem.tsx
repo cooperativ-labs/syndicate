@@ -27,29 +27,14 @@ const DocumentListItem: FC<{
 
   if (!document) return <></>;
 
-  const { url, id, format, title, file_id } = document;
+  const { url, id, format, title } = document;
 
   const handleDelete = async () => {
     if (!offeringId) return;
-    if (url?.includes('cooperativ-filestore.storage.googleapis')) {
-      try {
-        const response = await fetch(`/api/file/${file_id}`, {
-          method: 'DELETE'
-        });
-
-        if (!response.ok) {
-          const error = await response.text();
-          if (error.includes('No such object')) {
-            deleteDocument({ offeringId: offeringId, documentId: id });
-          }
-          throw new Error(error);
-        }
-        deleteDocument({ offeringId: offeringId, documentId: id });
-      } catch (error: any) {
-        throw new Error('Error details:', error);
-      }
-    } else {
-      deleteDocument({ offeringId: offeringId, documentId: id });
+    try {
+      await deleteDocument({ offeringId: offeringId, documentId: id });
+    } catch (error: any) {
+      throw new Error('Error deleting document:', error);
     }
   };
 

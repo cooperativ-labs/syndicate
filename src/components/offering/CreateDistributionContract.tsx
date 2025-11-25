@@ -16,15 +16,8 @@ import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
 import { useChainId, useConnection } from 'wagmi';
 
-import { ApplicationStoreProps, store } from '@/contexts/store';
 import { useWalletContext } from '@/contexts/WalletContext';
-import {
-  CurrencyCode,
-  CurrencyCodeType,
-  OfferingSmartContractSet,
-  Protocol,
-  SmartContractType
-} from '@/types';
+import { CurrencyCodeType, OfferingSmartContractSet, Protocol, SmartContractType } from '@/types';
 
 type FormData = {
   investmentCurrencyAddress: string | undefined;
@@ -115,11 +108,11 @@ const CreateDistributionContract: FC<CreateDistributionContractProps> = ({
           cryptoAddress: contract.contractAddress,
           type: SmartContractType.DISTRIBUTION,
           ownerId: contractOwnerEntityId,
-          contractSetId: contractSet.id,
+          offeringId: contractSet.offeringId,
           protocol: protocol as Protocol,
           chainId: chainId,
           revalidationPath: {
-            path: '[organizationId]/offering/[offeringId]',
+            path: '/manager/[organizationId]/offering/[offeringId]',
             type: 'page'
           }
         });

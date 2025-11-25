@@ -42,7 +42,7 @@ const NewClassForm: FC<NewClassFormProps> = ({ shareContractId }) => {
         smartContractId: shareContractId,
         partition: bytes32FromString(data.partition),
         revalidationPath: {
-          path: '[organizationId]/offering/[offeringId]',
+          path: '/manager/[organizationId]/offering/[offeringId]',
           type: 'page'
         }
       });

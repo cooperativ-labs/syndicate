@@ -162,7 +162,7 @@ export async function createSmartContract({
       },
       { count: "exact" },
     )
-    .select("id")
+    .select("crypto_address_id")
     .single();
 
   if (error) {
@@ -173,7 +173,7 @@ export async function createSmartContract({
     throw new Error("createSmartContract: Failed to create smart contract");
   }
 
-  return data.id;
+  return data.crypto_address_id;
 }
 
 export type AddContractPartitionParams = {
@@ -182,23 +182,18 @@ export type AddContractPartitionParams = {
   revalidationPath?: RevalidationPath;
 };
 
-export type AddContractPartitionResult = {
-  affectedCount: number;
-  records: Pick<SmartContract, "id" | "partitions" | "owner_id">[];
-};
-
 export async function addContractPartition({
   smartContractId,
   partition,
   revalidationPath,
-}: AddContractPartitionParams): Promise<AddContractPartitionResult> {
+}: AddContractPartitionParams): Promise<void> {
   const supabase = createClient();
 
   // First, fetch the current partitions
   const { data: contract, error: fetchError } = await supabase
     .from("smart_contract")
     .select("partitions")
-    .eq("id", smartContractId)
+    .eq("crypto_address_id", smartContractId)
     .single();
 
   if (fetchError || !contract) {
@@ -212,8 +207,7 @@ export async function addContractPartition({
   const { data, error, count } = await supabase
     .from("smart_contract")
     .update({ partitions: updatedPartitions })
-    .eq("id", smartContractId)
-    .select("id, partitions, owner_id");
+    .eq("crypto_address_id", smartContractId);
 
   if (error) {
     throw error;
@@ -222,47 +216,31 @@ export async function addContractPartition({
   if (revalidationPath) {
     revalidatePath(revalidationPath.path, revalidationPath.type);
   }
-
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as AddContractPartitionResult["records"],
-  };
 }
 
 export type CreateContractSetParams = {
   offeringId: string | number;
-  shareContractId: string;
-};
-
-export type CreateContractSetResult = {
-  affectedCount: number;
-  records: Pick<OfferingSmartContractSet, "id">[];
+  shareContractAddress: string;
 };
 
 export async function createContractSet({
   offeringId,
-  shareContractId,
-}: CreateContractSetParams): Promise<CreateContractSetResult> {
+  shareContractAddress,
+}: CreateContractSetParams): Promise<void> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
     .from("offering_smart_contract_set")
     .insert({
       offering_id: Number(offeringId),
-      share_contract_id: shareContractId,
-    })
-    .select("id");
+      share_contract_address: shareContractAddress,
+    });
 
   if (error) {
     throw new Error(
       `createContractSet: Failed to insert contract set: ${error.message}`,
     );
   }
-
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as CreateContractSetResult["records"],
-  };
 }
 
 type CreateShareContractParams = {
@@ -289,7 +267,7 @@ export async function createShareContract({
     throw new Error("createShareContract: ownerId must be numeric");
   }
 
-  const contractId = await createCryptoAddress({
+  const address = await createCryptoAddress({
     address: cryptoAddress,
     type: "CONTRACT",
 
@@ -299,41 +277,41 @@ export async function createShareContract({
     revalidationPath: revalidationPath,
   });
 
-  const smartContractId = await createSmartContract({
-    cryptoAddressId: contractId,
+  const shareContractAddress = await createSmartContract({
+    cryptoAddressId: address,
     ownerId: ownerEntityId,
     type: type,
   });
 
-  if (!smartContractId) {
+  if (!shareContractAddress) {
     throw new Error("createShareContract: Failed to create smart contract");
   }
 
   await createContractSet({
     offeringId: offeringId,
-    shareContractId: smartContractId,
+    shareContractAddress: shareContractAddress,
   });
 
   if (revalidationPath) {
     revalidatePath(revalidationPath.path, revalidationPath.type);
   }
 
-  return contractId;
+  return shareContractAddress;
 }
 
 type UpdateUnestablishedSmartContractParams = {
-  id: string;
+  cryptoAddressId: string;
   established?: boolean | null;
   revalidationPath?: RevalidationPath;
 };
 
 type UpdateUnestablishedSmartContractResult = {
   affectedCount: number;
-  records: Pick<SmartContract, "id" | "owner_id">[];
+  records: Pick<SmartContract, "crypto_address_id" | "owner_id">[];
 };
 
 export async function updateUnestablishedSmartContract({
-  id,
+  cryptoAddressId,
   established,
   revalidationPath,
 }: UpdateUnestablishedSmartContractParams): Promise<
@@ -346,8 +324,8 @@ export async function updateUnestablishedSmartContract({
     .update({
       established: established ?? null,
     })
-    .eq("id", id)
-    .select("id, owner_id");
+    .eq("crypto_address_id", cryptoAddressId)
+    .select("crypto_address_id, owner_id");
 
   if (error) {
     throw error;
@@ -377,9 +355,10 @@ export async function getOfferingSmartContractSet({
       .select(
         [
           "*",
-          "swapContract:smart_contract!offering_smart_contract_set_swap_contract_id_fkey(*, crypto_address(*))",
-          "distributionContract:smart_contract!offering_smart_contract_set_distribution_contract_id_fkey(*, crypto_address(*))",
-          "shareContract:smart_contract!offering_smart_contract_set_share_contract_id_fkey(*, crypto_address(*))",
+          "offeringId:offering_id",
+          "shareContract:smart_contract!offering_smart_contract_set_share_contract_address_fkey(*, crypto_address(*))",
+          "swapContract:smart_contract!offering_smart_contract_set_swap_contract_address_fkey(*, crypto_address(*))",
+          "distributionContract:smart_contract!offering_smart_contract_set_distribution_contract_address_fkey(*, crypto_address(*))",
         ].join(", "),
       )
       .eq("offering_id", Number(offeringId))
@@ -411,7 +390,8 @@ export async function getOfferingSmartContractSet({
     };
 
     const result = {
-      id: (row as unknown as OfferingSmartContractSet).id,
+      offeringId: (row as unknown as OfferingSmartContractSet).offeringId
+        .toString(),
       swapContract: transformContract(
         (row as unknown as OfferingSmartContractSet).swapContract,
       ),
@@ -434,19 +414,10 @@ type CreateSwapContractParams = {
   ownerId: string;
   offeringId: string;
   type: SmartContractTypes;
-  contractSetId: string;
   backingToken: CurrencyCodeType;
   protocol: Protocol;
   chainId: number;
   revalidationPath?: RevalidationPath;
-};
-
-type CreateSwapContractResult = {
-  affectedCount: number;
-  records: Pick<
-    SmartContract,
-    "id" | "owner_id" | "crypto_address_id" | "type" | "established"
-  >[];
 };
 
 export async function createSwapContract({
@@ -454,7 +425,6 @@ export async function createSwapContract({
   ownerId,
   offeringId,
   type,
-  contractSetId,
   protocol,
   chainId,
   revalidationPath,
@@ -466,7 +436,7 @@ export async function createSwapContract({
     throw new Error("createSwapContract: ownerId must be numeric");
   }
 
-  const contractId = await createCryptoAddress({
+  const address = await createCryptoAddress({
     address: cryptoAddress,
     type: "CONTRACT",
     chainId: chainId,
@@ -474,24 +444,22 @@ export async function createSwapContract({
     ownerId: ownerEntityId,
   });
 
-  const smartContractId = await createSmartContract({
-    cryptoAddressId: contractId,
+  const swapContractAddress = await createSmartContract({
+    cryptoAddressId: address,
     ownerId: ownerEntityId,
     type: type,
   });
-  console.log("smartContractId", smartContractId);
 
-  if (!smartContractId) {
+  if (!swapContractAddress) {
     throw new Error("createSwapContract: Failed to create smart contract");
   }
 
   const { error: updateError } = await supabase
     .from("offering_smart_contract_set")
     .update({
-      swap_contract_id: smartContractId,
-      offering_id: Number(offeringId),
+      swap_contract_address: swapContractAddress,
     })
-    .eq("id", contractSetId);
+    .eq("offering_id", Number(offeringId));
 
   if (updateError) {
     throw `createSwapContract(offering_smart_contract_set): ${updateError.message}`;
@@ -501,38 +469,28 @@ export async function createSwapContract({
     revalidatePath(revalidationPath.path, revalidationPath.type);
   }
 
-  return smartContractId;
+  return swapContractAddress;
 }
 
 export type CreateDistributionContractParams = {
   cryptoAddress: string;
   ownerId: string;
   type: SmartContractTypes;
-  contractSetId: string;
+  offeringId: string | number;
   protocol: Protocol;
   chainId: number;
   revalidationPath?: RevalidationPath;
-};
-
-type CreateDistributionContractResult = {
-  affectedCount: number;
-  records: Pick<
-    SmartContract,
-    "id" | "owner_id" | "crypto_address_id" | "type" | "established"
-  >[];
 };
 
 export async function createDistributionContract({
   cryptoAddress,
   ownerId,
   type,
-  contractSetId,
+  offeringId,
   protocol,
   chainId,
   revalidationPath,
-}: CreateDistributionContractParams): Promise<
-  CreateDistributionContractResult
-> {
+}: CreateDistributionContractParams): Promise<string> {
   const supabase = createClient();
 
   const ownerEntityId = Number(ownerId);
@@ -540,7 +498,7 @@ export async function createDistributionContract({
     throw new Error("createDistributionContract: ownerId must be numeric");
   }
 
-  const contractId = await createCryptoAddress({
+  const address = await createCryptoAddress({
     address: cryptoAddress,
     type: "CONTRACT",
     chainId: chainId,
@@ -548,30 +506,20 @@ export async function createDistributionContract({
     ownerId: ownerEntityId,
     revalidationPath: revalidationPath,
   });
-  const { data, error, count } = await supabase
-    .from("smart_contract")
-    .insert({
-      crypto_address_id: contractId,
-      owner_id: ownerEntityId,
-      type: type,
-      established: false,
-    })
-    .select("id, owner_id, crypto_address_id, type, established");
+  const distributionContractAddress = await createSmartContract({
+    cryptoAddressId: address,
+    ownerId: ownerEntityId,
+    type: type,
+  });
 
-  if (error) {
-    throw error;
-  }
   await supabase
     .from("offering_smart_contract_set")
-    .update({ distribution_contract_id: data[0].id })
-    .eq("id", contractSetId);
+    .update({ distribution_contract_address: distributionContractAddress })
+    .eq("offering_id", Number(offeringId));
 
   if (revalidationPath) {
     revalidatePath(revalidationPath.path, revalidationPath.type);
   }
 
-  return {
-    affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
-    records: (data ?? []) as CreateDistributionContractResult["records"],
-  };
+  return distributionContractAddress;
 }

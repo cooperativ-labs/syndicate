@@ -11,10 +11,7 @@ import { useAsync } from 'react-use';
 
 import {
   CurrencyCodeType,
-  LegalEntity,
   LegalEntityWithJurisdiction,
-  Offering,
-  RealEstateProperty,
   RealEstatePropertyWithAddress
 } from '@/types';
 
@@ -22,7 +19,7 @@ type EntityTabContainerProps = {
   operatingCurrency: CurrencyCodeType | null;
   organizationId: string | number;
   properties?: RealEstatePropertyWithAddress[];
-  offerings: OfferingListOfferingType[];
+  // offerings: OfferingListOfferingType[];
   subsidiaries: LegalEntityWithJurisdiction[] | null;
   entityId: string | number;
 };
@@ -36,7 +33,7 @@ const TabOptions = [
 const EntityTabContainer: FC<EntityTabContainerProps> = ({
   properties,
   organizationId,
-  offerings,
+  // offerings,
   subsidiaries,
   entityId,
   operatingCurrency
@@ -64,11 +61,11 @@ const EntityTabContainer: FC<EntityTabContainerProps> = ({
         })}
       </div>
       <div>
-        {activeTab === 'offerings' && (
+        {/* {activeTab === 'offerings' && (
           <div className='mt-8'>
             <OfferingsList offerings={offerings} organizationId={organizationId} />
           </div>
-        )}{' '}
+        )}{' '} */}
         {activeTab === 'properties' && properties && (
           <div className='mt-8'>
             <h1 className='text-cDarkBlue text-2xl font-medium   mb-6 '>Properties</h1>

@@ -174,13 +174,13 @@ export async function updateContractIndex(
 // =========== SMART CONTRACT ================
 
 type UpdateContractStatusParams = {
-  smartshareContractId: string;
+  smartContractAddress: string;
   established?: boolean | null;
 };
 
 type UpdateContractStatusResult = {
   affectedCount: number;
-  records: Pick<SmartContract, "id" | "established">[];
+  records: Pick<SmartContract, "crypto_address_id" | "established">[];
 };
 
 export async function updateContractStatus(
@@ -191,8 +191,8 @@ export async function updateContractStatus(
   const { data, error, count } = await supabase
     .from("smart_contract")
     .update({ established: params.established ?? null })
-    .eq("id", params.smartshareContractId)
-    .select("id, established");
+    .eq("crypto_address_id", params.smartContractAddress)
+    .select("crypto_address_id, established");
 
   if (error) {
     throw error;

@@ -56,7 +56,7 @@ export type SmartContractWithCryptoAddress = SmartContract & {
   cryptoAddress: CryptoAddress;
 };
 export type OfferingSmartContractSet = {
-  id: string;
+  offeringId: string;
   swapContract: SmartContractWithCryptoAddress;
   distributionContract: SmartContractWithCryptoAddress;
   shareContract: SmartContractWithCryptoAddress;

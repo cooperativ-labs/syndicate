@@ -87,7 +87,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     swapContractMatches,
     contractMatchesCurrentChain,
     shareContractAddress,
-    contractOrders,
+    orders,
     transferEvents,
     partitions,
     legalLinkTexts,
@@ -110,7 +110,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
   } = useOfferingDetails({
     price_start: offering.price_start,
     investment_currency: offering.investment_currency,
-    offeringId: offering.id.toString(),
     isOfferingManager,
     documents: documents || [],
     contractSet: offeringSmartContracts
@@ -230,7 +229,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
             retrievalIssue={false}
             hasContract={hasContract}
             loading={isLoading}
-            orders={contractOrders}
+            orders={orders}
             offering={offering}
             contractSet={offeringSmartContracts}
             issueReachingContract={issueReachingContract}

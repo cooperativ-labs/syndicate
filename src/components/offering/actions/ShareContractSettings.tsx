@@ -44,7 +44,7 @@ const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ shareContract, 
           </div>
         ))}
         {partitions?.length > 0 && <hr className='my-3' />}
-        <NewClassForm shareContractId={shareContract.id} />
+        <NewClassForm shareContractId={shareContract.crypto_address_id} />
       </SectionBlock>
     </div>
   );

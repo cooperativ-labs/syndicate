@@ -32,12 +32,9 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
   const [nameEditOn, setNameEditOn] = useState<EditEntitySelectionType>('none');
 
   const {
-    id,
     display_name,
-    legal_name,
     subsidiaries,
     offerings,
-    jurisdiction_id,
     operating_currency,
     owners,
     organization_id,
@@ -195,7 +192,7 @@ const EntityDetails: FC<EntityDetailsProps> = ({ entity }) => {
       </TwoColumnLayout>
       <EntityTabContainer
         subsidiaries={subsidiaries}
-        offerings={offeringWithOperatingCurrency}
+        // offerings={offeringWithOperatingCurrency}
         entityId={entity.id}
         operatingCurrency={operating_currency}
         organizationId={organization_id}

@@ -32,7 +32,7 @@ const updateWalletSchema = z.object({
 type WalletFormValues = z.infer<typeof updateWalletSchema>;
 
 const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdit }) => {
-  const { legal_entity_id, id, name, type, chain_id, address, description, is_public } = wallet;
+  const { name, type, chain_id, address, description, is_public } = wallet;
   const [editOn, setEditOn] = useState<boolean>(false);
   const { address: userWalletAddress } = useConnection();
   const {

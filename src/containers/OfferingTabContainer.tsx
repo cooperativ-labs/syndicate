@@ -19,10 +19,8 @@ import { useConnection } from 'wagmi';
 import {
   CurrencyCodeType,
   EnrichedOfferingParticipant,
-  Jurisdiction,
   LegalEntity,
   OfferingDistribution,
-  OfferingParticipant,
   OfferingSmartContractSet,
   ShareTransferEvent
 } from '@/types';

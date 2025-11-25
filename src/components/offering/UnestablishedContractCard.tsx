@@ -17,7 +17,7 @@ interface UnestablishedContractCardProps {
 const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
   unestablishedContract
 }) => {
-  const { cryptoAddress, id, backing_token } = unestablishedContract;
+  const { cryptoAddress, crypto_address_id, backing_token } = unestablishedContract;
 
   if (!cryptoAddress) {
     return null;
@@ -26,7 +26,10 @@ const UnestablishedContractCard: React.FC<UnestablishedContractCardProps> = ({
 
   const markUsed = async () => {
     if (window.confirm('Are you sure you want to mark this contract as used?')) {
-      await updateUnestablishedSmartContract({ id: id, established: true });
+      await updateUnestablishedSmartContract({
+        cryptoAddressId: crypto_address_id,
+        established: true
+      });
       window.location.reload();
     }
   };

@@ -73,7 +73,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
       externalId: values.externalId,
       type: WhitelistTransactionType.ADD,
       revalidationPath: {
-        path: '[organizationId]/offering/[offeringId]',
+        path: '/manager/[organizationId]/offering/[offeringId]',
         type: 'page'
       }
     });

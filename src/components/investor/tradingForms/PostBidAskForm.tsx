@@ -161,10 +161,9 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
     offeringSmartContracts
   } = offering;
 
-  if (!offeringSmartContracts?.shareContract?.id) {
+  if (!offeringSmartContracts?.shareContract?.crypto_address_id) {
     throw new Error('Share contract is required (PostBidAskForm)');
   }
-  const shareContractId = offeringSmartContracts.shareContract.id;
 
   const showSharesAvailable = `(${myShareQty} available)`;
   const sharesUnissued = getAmountRemaining({ x: sharesIssued, minus: sharesOutstanding });
@@ -230,7 +229,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
     }
     await submitSwap({
       userWalletAddress,
-      shareContractId: shareContractId.toString(),
+      shareContractId: offeringSmartContracts.shareContract.crypto_address_id,
       numShares: values.numUnits,
       price: values.price,
       partition: values.partition as String0x,

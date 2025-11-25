@@ -40,7 +40,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
     shareContractAddress,
     swapContractAddress,
     distributionContractAddress,
-    contractOrders,
+    orders,
     legalLinkTexts,
     currentSalePrice,
     myShareQty,
@@ -56,7 +56,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
     refetchTransactionHistory,
     transferEvents
   } = useOfferingDetails({
-    offeringId: offeringId,
     isOfferingManager: false,
     price_start: offering.price_start,
     investment_currency: offering.investment_currency,
@@ -212,7 +211,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
             {isWhitelisted ? (
               <ShareSaleList
                 offering={offering}
-                orders={contractOrders}
+                orders={orders}
                 swapContractAddress={swapContractAddress}
                 isContractOwner={false}
                 setModal={setManagerModal}

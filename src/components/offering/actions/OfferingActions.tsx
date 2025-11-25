@@ -72,7 +72,7 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
   } = offering;
 
   const { address: userWalletAddress } = useConnection();
-  const shareContractId = contractSet?.shareContract?.id as string;
+  const shareContractId = contractSet?.shareContract?.crypto_address_id as string;
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
 

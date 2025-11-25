@@ -1,7 +1,7 @@
 import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
-import { getCurrentPrice, getOrderArrayFromContract, liveOrders } from '@src/utils/helpersOrder';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
+import { getCurrentPrice, getOrderArrayFromContract, liveOrders } from '@src/utils/helpersOrder';
 import { dividendContractABI } from '@src/web3/generated';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
@@ -23,7 +23,6 @@ import {
 type OfferingDetailsProps = {
   price_start: number | undefined | null;
   investment_currency: CurrencyCodeType | undefined | null;
-  offeringId: number | string;
   isOfferingManager: boolean;
   documents?: Document[];
   contractSet: OfferingSmartContractSet | null;
@@ -32,7 +31,6 @@ type OfferingDetailsProps = {
 const useOfferingDetails = ({
   price_start,
   investment_currency,
-  offeringId,
   isOfferingManager,
   documents,
   contractSet

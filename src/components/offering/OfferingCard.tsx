@@ -1,9 +1,11 @@
 'use client';
 
 import { useUserContext } from '@contexts/UserContext';
-
+import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
 import { getPublicUrl } from '@src/utils/actions/storageActions';
 import { getCurrencyByCode } from '@src/utils/enumConverters';
+import { getCurrentPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
+import { String0x } from '@src/web3/helpersChain';
 import { useRouter } from 'next/navigation';
 import React, { useMemo } from 'react';
 import { useAsync } from 'react-use';
@@ -16,9 +18,6 @@ import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
 
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
-import { getCurrentPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
-import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
-import { String0x } from '@src/web3/helpersChain';
 
 // In-memory cache for public URLs
 const publicUrlCache = new Map<string, { data: string | null; error: Error | null }>();

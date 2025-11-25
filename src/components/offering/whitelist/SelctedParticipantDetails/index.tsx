@@ -132,7 +132,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         externalId: participantExternalId,
         type,
         revalidationPath: {
-          path: '[organizationId]/offering/[offeringId]',
+          path: '/manager/[organizationId]/offering/[offeringId]',
           type: 'page'
         }
       });
