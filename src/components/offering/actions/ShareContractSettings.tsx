@@ -17,7 +17,7 @@ type ShareContractSettingsLocal = {
 const ShareContractSettings: FC<ShareContractSettingsLocal> = ({ shareContract, partitions }) => {
   const chainId = useChainId();
 
-  const shareContractAddress = shareContract?.crypto_address_id as String0x;
+  const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
   return (
     <div className='flex flex-col gap-3'>
       <div className='flex flex-col gap-1'>

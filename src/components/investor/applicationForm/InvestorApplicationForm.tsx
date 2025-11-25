@@ -16,7 +16,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react';
 import { FormProvider, useForm, useWatch } from 'react-hook-form';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import type { Offering, OfferingWithLegalEntity } from '@/types';
 

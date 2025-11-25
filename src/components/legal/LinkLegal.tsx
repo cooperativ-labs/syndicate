@@ -6,7 +6,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import axios from 'axios';
 import React, { useState } from 'react';
 import { useAsync } from 'react-use';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import { OfferingFull, SmartContractWithCryptoAddress } from '@/types';
 

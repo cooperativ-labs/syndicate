@@ -5,7 +5,7 @@ import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import React, { FC } from 'react';
 import { useConnection } from 'wagmi';
 
-import { OfferingWithLegalEntity, OrganizationComplete } from '@/types';
+import { OfferingSmartContractSet, OfferingWithLegalEntity, OrganizationComplete } from '@/types';
 
 const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organization }) => {
   const { address: userWalletAddress } = useConnection();
@@ -15,7 +15,7 @@ const PortalOrganization: FC<{ organization: OrganizationComplete }> = ({ organi
     .flatMap(entity => entity.offerings)
     .filter(offering =>
       offering.participants.some(participant => participant.walletAddress === userWalletAddress)
-    ) as OfferingWithLegalEntity[];
+    ) as (OfferingWithLegalEntity & { offeringSmartContracts: OfferingSmartContractSet | null })[];
 
   return (
     <div

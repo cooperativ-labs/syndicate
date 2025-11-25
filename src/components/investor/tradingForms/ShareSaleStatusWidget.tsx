@@ -5,7 +5,7 @@ import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import React, { FC } from 'react';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 

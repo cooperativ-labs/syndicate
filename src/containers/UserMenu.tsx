@@ -8,7 +8,7 @@ import { Button } from '@src/components/ui/button';
 import { ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import React, { FC, useState } from 'react';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import ChooseConnectorButton from './wallet/ChooseConnectorButton';
 

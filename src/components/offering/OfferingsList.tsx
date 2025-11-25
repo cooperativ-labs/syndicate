@@ -1,10 +1,10 @@
 import React, { FC } from 'react';
 
-import { CurrencyCodeType, LegalEntity, Offering } from '@/types';
+import { CurrencyCodeType, OfferingWithySmartContracts } from '@/types';
 
 import OfferingCard from './OfferingCard';
 
-export type OfferingListOfferingType = Offering & {
+export type OfferingListOfferingType = OfferingWithySmartContracts & {
   legalEntity: { operating_currency: CurrencyCodeType | null };
 };
 

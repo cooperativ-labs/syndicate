@@ -12,7 +12,7 @@ import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
-import { useConnection, useChainId, useReadContract } from 'wagmi';
+import { useChainId, useConnection, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 

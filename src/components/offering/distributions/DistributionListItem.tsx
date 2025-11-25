@@ -14,7 +14,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { useDistributionDetails } from '@src/web3/hooks/useDistributionDetails';
 import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useEffect } from 'react';
-import { useConnection, useChainId, useReadContract, useReadContracts } from 'wagmi';
+import { useChainId, useConnection, useReadContract, useReadContracts } from 'wagmi';
 
 import { OfferingDistribution } from '@/types';
 

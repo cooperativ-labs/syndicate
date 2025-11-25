@@ -7,7 +7,7 @@ import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
 

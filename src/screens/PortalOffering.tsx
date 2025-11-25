@@ -20,8 +20,8 @@ import { shareContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
 import { useAsync } from 'react-use';
-import { useConnection, useReadContract, useReadContracts } from 'wagmi';
 import { erc20Abi, formatUnits } from 'viem';
+import { useConnection, useReadContract, useReadContracts } from 'wagmi';
 
 import { Document, DocumentType, OfferingFull, OfferingParticipant } from '@/types';
 

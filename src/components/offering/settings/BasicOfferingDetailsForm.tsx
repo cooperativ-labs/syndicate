@@ -27,6 +27,7 @@ import { CurrencyCode, CurrencyCodeType, OfferingType, OfferingTypes } from '@/t
 type BasicOfferingDetailsFormProps = {
   offeringId: string;
   operatingCurrency: CurrencyCodeType | undefined;
+  refetchShareContract: () => void;
 };
 
 const schema = z.object({
@@ -50,7 +51,8 @@ type FormData = z.infer<typeof schema>;
 
 const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
   offeringId,
-  operatingCurrency
+  operatingCurrency,
+  refetchShareContract
 }) => {
   const [buttonState, setButtonState] = useState<ButtonLoadingState>('default');
   const chainId = useChainId();
@@ -88,6 +90,7 @@ const BasicOfferingDetailsForm: FC<BasicOfferingDetailsFormProps> = ({
         maxRaise: parseInt(data.numUnits, 10) * parseInt(data.initialPrice, 10)
       });
       setButtonState('success');
+      refetchShareContract();
     } catch (error) {
       setButtonState('error');
     }

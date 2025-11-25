@@ -38,7 +38,7 @@ export type Database = {
         Row: {
           city: string | null
           country: string
-          created_at: string | null
+          created_at: string
           id: string
           label: string | null
           lat: number | null
@@ -54,7 +54,7 @@ export type Database = {
         Insert: {
           city?: string | null
           country: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           label?: string | null
           lat?: number | null
@@ -70,7 +70,7 @@ export type Database = {
         Update: {
           city?: string | null
           country?: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           label?: string | null
           lat?: number | null
@@ -97,9 +97,8 @@ export type Database = {
         Row: {
           address: string
           chain_id: number | null
-          created_at: string | null
+          created_at: string
           description: string | null
-          id: string
           is_public: boolean | null
           legal_entity_id: number
           name: string | null
@@ -112,9 +111,8 @@ export type Database = {
         Insert: {
           address: string
           chain_id?: number | null
-          created_at?: string | null
+          created_at?: string
           description?: string | null
-          id?: string
           is_public?: boolean | null
           legal_entity_id: number
           name?: string | null
@@ -127,9 +125,8 @@ export type Database = {
         Update: {
           address?: string
           chain_id?: number | null
-          created_at?: string | null
+          created_at?: string
           description?: string | null
-          id?: string
           is_public?: boolean | null
           legal_entity_id?: number
           name?: string | null
@@ -152,9 +149,8 @@ export type Database = {
       document: {
         Row: {
           access: Database["public"]["Enums"]["document_access_type"] | null
-          created_at: string | null
+          created_at: string
           date: string | null
-          file_id: string | null
           format: Database["public"]["Enums"]["document_format"] | null
           id: string
           offering_id: number | null
@@ -170,9 +166,8 @@ export type Database = {
         }
         Insert: {
           access?: Database["public"]["Enums"]["document_access_type"] | null
-          created_at?: string | null
+          created_at?: string
           date?: string | null
-          file_id?: string | null
           format?: Database["public"]["Enums"]["document_format"] | null
           id?: string
           offering_id?: number | null
@@ -188,9 +183,8 @@ export type Database = {
         }
         Update: {
           access?: Database["public"]["Enums"]["document_access_type"] | null
-          created_at?: string | null
+          created_at?: string
           date?: string | null
-          file_id?: string | null
           format?: Database["public"]["Enums"]["document_format"] | null
           id?: string
           offering_id?: number | null
@@ -224,7 +218,7 @@ export type Database = {
       document_signatory: {
         Row: {
           archived: boolean | null
-          created_at: string | null
+          created_at: string
           date: string | null
           document_id: string
           id: string
@@ -235,7 +229,7 @@ export type Database = {
         }
         Insert: {
           archived?: boolean | null
-          created_at?: string | null
+          created_at?: string
           date?: string | null
           document_id: string
           id?: string
@@ -246,7 +240,7 @@ export type Database = {
         }
         Update: {
           archived?: boolean | null
-          created_at?: string | null
+          created_at?: string
           date?: string | null
           document_id?: string
           id?: string
@@ -275,7 +269,7 @@ export type Database = {
       email_address: {
         Row: {
           address: string
-          created_at: string | null
+          created_at: string
           description: string | null
           id: string
           is_public: boolean | null
@@ -285,7 +279,7 @@ export type Database = {
         }
         Insert: {
           address: string
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           id?: string
           is_public?: boolean | null
@@ -295,7 +289,7 @@ export type Database = {
         }
         Update: {
           address?: string
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           id?: string
           is_public?: boolean | null
@@ -316,21 +310,21 @@ export type Database = {
       investor_application: {
         Row: {
           application_doc_id: string
-          created_at: string | null
+          created_at: string
           id: string
           offering_participant_id: string
           updated_at: string | null
         }
         Insert: {
           application_doc_id: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           offering_participant_id: string
           updated_at?: string | null
         }
         Update: {
           application_doc_id?: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           offering_participant_id?: string
           updated_at?: string | null
@@ -355,21 +349,21 @@ export type Database = {
       jurisdiction: {
         Row: {
           country: string
-          created_at: string | null
+          created_at: string
           id: string
           province: string | null
           updated_at: string | null
         }
         Insert: {
           country: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           province?: string | null
           updated_at?: string | null
         }
         Update: {
           country?: string
-          created_at?: string | null
+          created_at?: string
           id?: string
           province?: string | null
           updated_at?: string | null
@@ -378,7 +372,7 @@ export type Database = {
       }
       legal_entity: {
         Row: {
-          created_at: string | null
+          created_at: string
           display_name: string | null
           id: number
           jurisdiction_id: string | null
@@ -393,7 +387,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           display_name?: string | null
           id?: never
           jurisdiction_id?: string | null
@@ -408,7 +402,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           display_name?: string | null
           id?: never
           jurisdiction_id?: string | null
@@ -442,21 +436,21 @@ export type Database = {
       legal_entity_relationship: {
         Row: {
           child_entity_id: number
-          created_at: string | null
+          created_at: string
           id: string
           parent_entity_id: number
           relationship_type: string
         }
         Insert: {
           child_entity_id: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           parent_entity_id: number
           relationship_type: string
         }
         Update: {
           child_entity_id?: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           parent_entity_id?: number
           relationship_type?: string
@@ -481,7 +475,7 @@ export type Database = {
       linked_account: {
         Row: {
           account_provided_id: string | null
-          created_at: string | null
+          created_at: string
           hidden: boolean | null
           id: string
           organization_id: number
@@ -493,7 +487,7 @@ export type Database = {
         }
         Insert: {
           account_provided_id?: string | null
-          created_at?: string | null
+          created_at?: string
           hidden?: boolean | null
           id?: string
           organization_id: number
@@ -505,7 +499,7 @@ export type Database = {
         }
         Update: {
           account_provided_id?: string | null
-          created_at?: string | null
+          created_at?: string
           hidden?: boolean | null
           id?: string
           organization_id?: number
@@ -527,7 +521,7 @@ export type Database = {
       }
       notification_configuration: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
           notification_method: Database["public"]["Enums"]["notification_method"]
           notification_recipient_type: Database["public"]["Enums"]["notification_recipient_type"]
@@ -536,7 +530,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           notification_method: Database["public"]["Enums"]["notification_method"]
           notification_recipient_type: Database["public"]["Enums"]["notification_recipient_type"]
@@ -545,7 +539,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           notification_method?: Database["public"]["Enums"]["notification_method"]
           notification_recipient_type?: Database["public"]["Enums"]["notification_recipient_type"]
@@ -572,7 +566,7 @@ export type Database = {
           brand_color: string | null
           cap_rate: number | null
           coc_return: number | null
-          created_at: string | null
+          created_at: string
           custom_onboarding_link: string | null
           distribution_currency:
             | Database["public"]["Enums"]["currency_code"]
@@ -625,7 +619,7 @@ export type Database = {
           brand_color?: string | null
           cap_rate?: number | null
           coc_return?: number | null
-          created_at?: string | null
+          created_at?: string
           custom_onboarding_link?: string | null
           distribution_currency?:
             | Database["public"]["Enums"]["currency_code"]
@@ -678,7 +672,7 @@ export type Database = {
           brand_color?: string | null
           cap_rate?: number | null
           coc_return?: number | null
-          created_at?: string | null
+          created_at?: string
           custom_onboarding_link?: string | null
           distribution_currency?:
             | Database["public"]["Enums"]["currency_code"]
@@ -735,7 +729,7 @@ export type Database = {
       }
       offering_description_text: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
           offering_id: number
           order: number
@@ -745,7 +739,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           offering_id: number
           order: number
@@ -755,7 +749,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           offering_id?: number
           order?: number
@@ -777,7 +771,7 @@ export type Database = {
       offering_distribution: {
         Row: {
           contract_index: number
-          created_at: string | null
+          created_at: string
           id: string
           offering_id: number | null
           transaction_hash: string
@@ -785,7 +779,7 @@ export type Database = {
         }
         Insert: {
           contract_index: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           offering_id?: number | null
           transaction_hash: string
@@ -793,7 +787,7 @@ export type Database = {
         }
         Update: {
           contract_index?: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           offering_id?: number | null
           transaction_hash?: string
@@ -813,7 +807,7 @@ export type Database = {
         Row: {
           address_offering_id: string
           chain_id: number
-          created_at: string | null
+          created_at: string
           email_address: string | null
           external_id: string | null
           id: string
@@ -829,7 +823,7 @@ export type Database = {
         Insert: {
           address_offering_id: string
           chain_id: number
-          created_at?: string | null
+          created_at?: string
           email_address?: string | null
           external_id?: string | null
           id?: string
@@ -845,7 +839,7 @@ export type Database = {
         Update: {
           address_offering_id?: string
           chain_id?: number
-          created_at?: string | null
+          created_at?: string
           email_address?: string | null
           external_id?: string | null
           id?: string
@@ -877,7 +871,7 @@ export type Database = {
       }
       offering_smart_contract_set: {
         Row: {
-          created_at: string | null
+          created_at: string
           distribution_contract_id: string | null
           id: string
           offering_id: number
@@ -886,7 +880,7 @@ export type Database = {
           updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           distribution_contract_id?: string | null
           id?: string
           offering_id: number
@@ -895,7 +889,7 @@ export type Database = {
           updated_at?: string | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           distribution_contract_id?: string | null
           id?: string
           offering_id?: number
@@ -939,7 +933,7 @@ export type Database = {
           banner_image: string | null
           brand_color: string | null
           country: string | null
-          created_at: string | null
+          created_at: string
           creation_date: string | null
           description: string | null
           id: number
@@ -956,7 +950,7 @@ export type Database = {
           banner_image?: string | null
           brand_color?: string | null
           country?: string | null
-          created_at?: string | null
+          created_at?: string
           creation_date?: string | null
           description?: string | null
           id?: never
@@ -973,7 +967,7 @@ export type Database = {
           banner_image?: string | null
           brand_color?: string | null
           country?: string | null
-          created_at?: string | null
+          created_at?: string
           creation_date?: string | null
           description?: string | null
           id?: never
@@ -991,7 +985,7 @@ export type Database = {
       organization_user: {
         Row: {
           account_email: string | null
-          created_at: string | null
+          created_at: string
           id: string
           organization_id: number
           permissions:
@@ -1002,7 +996,7 @@ export type Database = {
         }
         Insert: {
           account_email?: string | null
-          created_at?: string | null
+          created_at?: string
           id?: string
           organization_id: number
           permissions?:
@@ -1013,7 +1007,7 @@ export type Database = {
         }
         Update: {
           account_email?: string | null
-          created_at?: string | null
+          created_at?: string
           id?: string
           organization_id?: number
           permissions?:
@@ -1041,21 +1035,21 @@ export type Database = {
       }
       profile: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
           image: string | null
           name: string | null
           updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id: string
           image?: string | null
           name?: string | null
           updated_at?: string | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           image?: string | null
           name?: string | null
@@ -1070,7 +1064,7 @@ export type Database = {
           asset_value: number | null
           asset_value_note: string | null
           closing_costs: number | null
-          created_at: string | null
+          created_at: string
           description: string | null
           down_payment: number | null
           id: string
@@ -1087,7 +1081,7 @@ export type Database = {
           asset_value?: number | null
           asset_value_note?: string | null
           closing_costs?: number | null
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           down_payment?: number | null
           id?: string
@@ -1104,7 +1098,7 @@ export type Database = {
           asset_value?: number | null
           asset_value_note?: string | null
           closing_costs?: number | null
-          created_at?: string | null
+          created_at?: string
           description?: string | null
           down_payment?: number | null
           id?: string
@@ -1134,17 +1128,17 @@ export type Database = {
       }
       real_estate_property_image: {
         Row: {
-          created_at: string | null
+          created_at: string
           id: string
           property_id: string
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           property_id: string
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           id?: string
           property_id?: string
         }
@@ -1162,7 +1156,7 @@ export type Database = {
         Row: {
           archived: boolean | null
           contract_index: number
-          created_at: string | null
+          created_at: string
           id: string
           initiator: string
           max_units: number | null
@@ -1175,7 +1169,7 @@ export type Database = {
         Insert: {
           archived?: boolean | null
           contract_index: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           initiator: string
           max_units?: number | null
@@ -1188,7 +1182,7 @@ export type Database = {
         Update: {
           archived?: boolean | null
           contract_index?: number
-          created_at?: string | null
+          created_at?: string
           id?: string
           initiator?: string
           max_units?: number | null
@@ -1204,7 +1198,7 @@ export type Database = {
         Row: {
           amount: number
           archived: boolean | null
-          created_at: string | null
+          created_at: string
           currency_code: Database["public"]["Enums"]["currency_code"] | null
           id: string
           order_index: number | null
@@ -1220,7 +1214,7 @@ export type Database = {
         Insert: {
           amount: number
           archived?: boolean | null
-          created_at?: string | null
+          created_at?: string
           currency_code?: Database["public"]["Enums"]["currency_code"] | null
           id?: string
           order_index?: number | null
@@ -1236,7 +1230,7 @@ export type Database = {
         Update: {
           amount?: number
           archived?: boolean | null
-          created_at?: string | null
+          created_at?: string
           currency_code?: Database["public"]["Enums"]["currency_code"] | null
           id?: string
           order_index?: number | null
@@ -1254,7 +1248,7 @@ export type Database = {
       smart_contract: {
         Row: {
           backing_token: Database["public"]["Enums"]["currency_code"] | null
-          created_at: string | null
+          created_at: string
           crypto_address_id: string
           document_id: string | null
           established: boolean | null
@@ -1269,7 +1263,7 @@ export type Database = {
         }
         Insert: {
           backing_token?: Database["public"]["Enums"]["currency_code"] | null
-          created_at?: string | null
+          created_at?: string
           crypto_address_id: string
           document_id?: string | null
           established?: boolean | null
@@ -1284,7 +1278,7 @@ export type Database = {
         }
         Update: {
           backing_token?: Database["public"]["Enums"]["currency_code"] | null
-          created_at?: string | null
+          created_at?: string
           crypto_address_id?: string
           document_id?: string | null
           established?: boolean | null
@@ -1303,7 +1297,7 @@ export type Database = {
             columns: ["crypto_address_id"]
             isOneToOne: false
             referencedRelation: "crypto_address"
-            referencedColumns: ["id"]
+            referencedColumns: ["address"]
           },
           {
             foreignKeyName: "smart_contract_document_id_fkey"
@@ -1323,21 +1317,21 @@ export type Database = {
       }
       whitelist_transaction: {
         Row: {
-          created_at: string | null
+          created_at: string
           offering_participant_id: string
           transaction_hash: string
           type: Database["public"]["Enums"]["whitelist_transaction_type"]
           updated_at: string | null
         }
         Insert: {
-          created_at?: string | null
+          created_at?: string
           offering_participant_id: string
           transaction_hash: string
           type: Database["public"]["Enums"]["whitelist_transaction_type"]
           updated_at?: string | null
         }
         Update: {
-          created_at?: string | null
+          created_at?: string
           offering_participant_id?: string
           transaction_hash?: string
           type?: Database["public"]["Enums"]["whitelist_transaction_type"]
@@ -1358,22 +1352,40 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      create_organization_with_admin: {
-        Args: {
-          p_country?: string
-          p_logo?: string
-          p_name: string
-          p_short_description?: string
-          p_slug?: string
-          p_user_id: string
-          p_website?: string
-        }
-        Returns: {
-          organization_id: number
-          organization_slug: string
-          organization_user_id: string
-        }[]
-      }
+      create_organization_with_admin:
+        | {
+            Args: {
+              p_country?: string
+              p_logo?: string
+              p_name: string
+              p_short_description?: string
+              p_slug?: string
+              p_user_id: string
+              p_website?: string
+            }
+            Returns: {
+              organization_id: number
+              organization_slug: string
+              organization_user_id: string
+            }[]
+          }
+        | {
+            Args: {
+              p_country?: string
+              p_is_public?: boolean
+              p_logo?: string
+              p_name: string
+              p_short_description?: string
+              p_slug?: string
+              p_user_id: string
+              p_website?: string
+            }
+            Returns: {
+              organization_id: number
+              organization_slug: string
+              organization_user_id: string
+            }[]
+          }
       is_any_organization_admin: {
         Args: { p_user_id: string }
         Returns: boolean

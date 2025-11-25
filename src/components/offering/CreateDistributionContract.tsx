@@ -14,7 +14,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import { ApplicationStoreProps, store } from '@/contexts/store';
 import { useWalletContext } from '@/contexts/WalletContext';

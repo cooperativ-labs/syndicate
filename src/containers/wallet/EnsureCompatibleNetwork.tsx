@@ -2,7 +2,7 @@
 import Card from '@src/components/cards/Card';
 import { MatchSupportedChains, SupportedChains } from '@src/web3/wagmi';
 import React, { FC } from 'react';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import ChooseConnectorButton from './ChooseConnectorButton';
 

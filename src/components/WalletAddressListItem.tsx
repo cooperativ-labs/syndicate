@@ -3,7 +3,10 @@ import { Checkbox } from '@src/components/ui/checkbox';
 import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
 import { cn } from '@src/lib/utils';
-import { deleteCryptoAddressById, updateCryptoAddress } from '@src/utils/actions/cryptoActions';
+import {
+  deleteCryptoAddressByAddress,
+  updateCryptoAddress
+} from '@src/utils/actions/cryptoActions';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import { Pencil, X } from 'lucide-react';
 import React, { FC, useEffect, useState } from 'react';
@@ -73,15 +76,15 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
   };
 
   const handleDeleteCryptoAddress = async () => {
-    await deleteCryptoAddressById({
-      id: id,
+    await deleteCryptoAddressByAddress({
+      address: address,
       revalidationPath: { path: '/profile', type: 'layout' }
     });
   };
 
   const onSubmit = async (values: WalletFormValues) => {
     await updateCryptoAddress({
-      id: id,
+      address: address,
       name: values.name,
       isPublic: values.isPublic,
       revalidationPath: {
@@ -123,10 +126,10 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
             <form className='flex flex-col' onSubmit={handleSubmit(onSubmit)}>
               <div className='grid grid-cols-4 gap-3 md:gap-8 items-center'>
                 <Field className='col-span-3'>
-                  <FieldLabel htmlFor={`wallet-name-${id}`}>Name</FieldLabel>
+                  <FieldLabel htmlFor={`wallet-name-${address}`}>Name</FieldLabel>
                   <FieldContent>
                     <Input
-                      id={`wallet-name-${id}`}
+                      id={`wallet-name-${address}`}
                       placeholder='Personal'
                       aria-invalid={Boolean(errors.name)}
                       {...register('name')}
@@ -135,14 +138,14 @@ const WalletAddressListItem: FC<WalletAddressListItemProps> = ({ wallet, withEdi
                   </FieldContent>
                 </Field>
                 <Field className='col-span-1'>
-                  <FieldLabel htmlFor={`wallet-public-${id}`}>Public</FieldLabel>
+                  <FieldLabel htmlFor={`wallet-public-${address}`}>Public</FieldLabel>
                   <FieldContent>
                     <Controller
                       control={control}
                       name='isPublic'
                       render={({ field }) => (
                         <Checkbox
-                          id={`wallet-public-${id}`}
+                          id={`wallet-public-${address}`}
                           checked={field.value}
                           onCheckedChange={checked => field.onChange(Boolean(checked))}
                           aria-label='toggle wallet visibility'

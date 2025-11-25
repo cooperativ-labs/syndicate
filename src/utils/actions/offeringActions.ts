@@ -1,23 +1,16 @@
 "use server";
 
-import { ContractOrder } from "@src/components/investor/tradingForms/offering-actions-types";
 import { String0x } from "@src/web3/helpersChain";
 import { createClient } from "@supabase/utils/server";
 import { revalidatePath } from "next/cache";
 
 import {
-  Document,
   OfferingFull,
-  OfferingParticipant,
   RevalidationPath,
   WhitelistTransactionType,
 } from "@/types";
 
-import { getOrderArrayFromContract } from "../helpersOrder";
-import { getLowestOrderPrice } from "../helpersOrder";
-
 import { getOfferingSmartContractSet } from "./cryptoActions";
-import { retrieveOrders } from "./orderActions";
 import { getPublicUrl } from "./storageActions";
 
 type AddOfferingParams = {
@@ -437,38 +430,4 @@ export async function removeWhitelistObject(
     affectedCount: typeof count === "number" ? count : (data?.length ?? 0),
     records: (data ?? []) as any,
   };
-}
-
-export async function getCurrentOrdersAndPrice({
-  offeringId,
-  paymentTokenDecimals,
-  priceStart,
-}: {
-  offeringId: number | string;
-  paymentTokenDecimals: number;
-  priceStart: number;
-}): Promise<{ currentPrice: number; contractSaleList: ContractOrder[] | [] }> {
-  try {
-    const smartContracts = await getOfferingSmartContractSet({
-      offeringId: offeringId,
-    });
-    const swapContractAddress = smartContracts?.swapContract?.cryptoAddress
-      .address as String0x;
-    const orders = await retrieveOrders(swapContractAddress);
-    const contractSaleList = paymentTokenDecimals && orders && orders.length > 0
-      ? await getOrderArrayFromContract(
-        orders,
-        swapContractAddress,
-        paymentTokenDecimals,
-      )
-      : [];
-
-    const currentPrice = contractSaleList
-      ? getLowestOrderPrice(contractSaleList, priceStart)
-      : 0;
-
-    return { currentPrice, contractSaleList };
-  } catch (error: any) {
-    throw `getCurrentOrdersAndPrice: ${error.message}`;
-  }
 }

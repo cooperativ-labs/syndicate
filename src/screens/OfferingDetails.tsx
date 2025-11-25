@@ -183,6 +183,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
                 offering={offering}
                 isOfferingManager={isOfferingManager}
                 legalEntity={legalEntity}
+                refetchShareContract={refetchShareContract}
               />
             ) : (
               <OfferingDetailsDisplay

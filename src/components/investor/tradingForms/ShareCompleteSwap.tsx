@@ -9,7 +9,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 // import { isMetaMask } from '@src/web3/wagmi';
 import { String0x } from '@src/web3/helpersChain';
 import React, { FC, useState } from 'react';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 type ShareCompleteSwapProps = {
   acceptedOrderQty: number;

@@ -15,7 +15,7 @@ const CookieBanner: FC<{ handleAnalyticsApproval: () => void }> = ({ handleAnaly
       <div className='flex font-medium text-white text-xs md:text-base mx-auto px-2 justify-between items-center'>
         <span className='mr-3'>
           We use cookies to improve our services. Using this website means you agree to this.{' '}
-          <Link href={`${process.env.NEXT_PUBLIC_PRIVACY_POLICY_URL}`}>
+          <Link href={`${process.env.NEXT_PUBLIC_PRIVACY_URL}`}>
             <span className='underline decoration-cLightBlue'>Privacy Policy</span>
           </Link>
         </span>

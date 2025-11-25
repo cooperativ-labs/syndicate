@@ -1,7 +1,7 @@
 'use client';
 
 import { useUserContext } from '@contexts/UserContext';
-import { getCurrentOrdersAndPrice } from '@src/utils/actions/offeringActions';
+
 import { getPublicUrl } from '@src/utils/actions/storageActions';
 import { getCurrencyByCode } from '@src/utils/enumConverters';
 import { useRouter } from 'next/navigation';
@@ -9,13 +9,16 @@ import React, { useMemo } from 'react';
 import { useAsync } from 'react-use';
 import { useConnection } from 'wagmi';
 
-import { CurrencyCodeType, Offering } from '@/types';
+import { CurrencyCodeType, Offering, OfferingWithySmartContracts } from '@/types';
 
 import Card from '../cards/Card';
 import MoneyDisplay from '../MoneyDisplay';
 import PercentageDisplay from '../PercentageDisplay';
 
 import OfferingDetailDashboardItem from './OfferingDetailDashboardItem';
+import { getCurrentPrice, getOrderArrayFromContract } from '@src/utils/helpersOrder';
+import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
+import { String0x } from '@src/web3/helpersChain';
 
 // In-memory cache for public URLs
 const publicUrlCache = new Map<string, { data: string | null; error: Error | null }>();
@@ -41,7 +44,7 @@ const getCachedPublicUrl = async (
 export type OfferingCardProps = {
   organizationId: string | number;
   operatingCurrency: string | null;
-  offering: Offering;
+  offering: OfferingWithySmartContracts;
 };
 
 const OfferingCard: React.FC<OfferingCardProps> = ({
@@ -52,6 +55,12 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
   const { address: userWalletAddress } = useConnection();
   const { userId } = useUserContext();
   const router = useRouter();
+
+  const swapContractAddress = offering.offeringSmartContracts?.swapContract?.cryptoAddress
+    .address as String0x;
+
+  const shareContractAddress = offering.offeringSmartContracts?.shareContract?.cryptoAddress
+    .address as String0x;
 
   const cacheKey = useMemo(
     () => (offering.image ? `offering-assets:${offering.image}` : null),
@@ -84,10 +93,18 @@ const OfferingCard: React.FC<OfferingCardProps> = ({
     if (!paymentTokenDecimals) {
       return 0;
     }
-    const { currentPrice } = await getCurrentOrdersAndPrice({
-      offeringId: offering.id.toString(),
-      paymentTokenDecimals: paymentTokenDecimals ?? 0,
-      priceStart: offering.price_start ?? 0
+    const orders = await retrieveOrders(swapContractAddress);
+    const transferEvents = await retrieveTransferEvents(shareContractAddress);
+    const contractOrders = await getOrderArrayFromContract(
+      orders,
+      swapContractAddress,
+      paymentTokenDecimals
+    );
+    const currentPrice = getCurrentPrice({
+      paymentTokenDecimals: paymentTokenDecimals,
+      priceStart: offering.price_start,
+      contractOrders: contractOrders,
+      transferEvents: transferEvents
     });
     return currentPrice;
   }, [offering.id]);

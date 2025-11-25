@@ -2,7 +2,7 @@ import { cn } from '@src/lib/utils';
 import { String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useContext } from 'react';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 
 import { Button } from '../ui/button';
 

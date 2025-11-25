@@ -1,5 +1,5 @@
-"use server";
-import { createClient } from "@supabase/utils/server";
+'use server';
+import { createClient } from '@supabase/utils/server';
 
 // export async function uploadFile({
 //   bucket,
@@ -30,25 +30,25 @@ export type StorageObject = {
 async function deleteFile({
   bucket,
   url,
-  folderPath,
+  folderPath
 }: {
   bucket: string;
   url: string;
   folderPath: string;
 }) {
-  const fileName = url.split("/").pop();
+  const fileName = url.split('/').pop();
   const path = `${folderPath}/${fileName}`;
   const supabase = createClient();
   const { data, error } = await supabase.storage.from(bucket).remove([path]);
   if (error) {
-    throw new Error("Failed to delete image");
+    throw new Error('Failed to delete image');
   }
   return data;
 }
 
 export async function getFilesFromFolder({
   bucket,
-  folderPath,
+  folderPath
 }: {
   bucket: string;
   folderPath: string;
@@ -58,12 +58,12 @@ export async function getFilesFromFolder({
     limit: 100,
     offset: 0,
     sortBy: {
-      column: "created_at",
-      order: "desc",
-    },
+      column: 'created_at',
+      order: 'desc'
+    }
   });
   if (error) {
-    throw new Error("Failed to get files from folder");
+    throw new Error('Failed to get files from folder');
   }
   return data;
 }
@@ -71,7 +71,7 @@ export async function getFilesFromFolder({
 export async function getSignedUrl({
   bucket,
   path,
-  source,
+  source
 }: {
   bucket: string;
   path: string | null;
@@ -79,14 +79,14 @@ export async function getSignedUrl({
 }) {
   const supabase = createClient();
   if (!path) {
-    console.error("getSignedUrl Error", { path, source });
-    return { data: null, error: new Error("Path is required") };
+    console.error('getSignedUrl Error', { path, source });
+    return { data: null, error: new Error('Path is required') };
   }
   const { data, error } = await supabase.storage
     .from(bucket)
     .createSignedUrl(path, 60 * 60 * 24 * 30);
   if (error) {
-    console.error("getSignedUrl Error", { error, source });
+    console.error('getSignedUrl Error', { error, source });
   }
   return { data, error };
 }
@@ -94,7 +94,7 @@ export async function getSignedUrl({
 export async function getPublicUrl({
   bucket,
   path,
-  source,
+  source
 }: {
   bucket: string;
   path: string | null;
@@ -102,8 +102,8 @@ export async function getPublicUrl({
 }) {
   const supabase = createClient();
   if (!path) {
-    console.error("getPublicUrl Error", { path, source });
-    return { data: null, error: new Error("Path is required") };
+    console.error('getPublicUrl Error', { path, source });
+    return { data: null, error: new Error('Path is required') };
   }
   const { data } = supabase.storage.from(bucket).getPublicUrl(path);
   return { data: data.publicUrl, error: null };

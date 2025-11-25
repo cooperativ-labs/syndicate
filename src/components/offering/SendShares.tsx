@@ -21,7 +21,7 @@ import { addressWithoutEns, String0x, stringFromBytes32 } from '@src/web3/helper
 import React, { FC, useState } from 'react';
 import { Controller, useForm } from 'react-hook-form';
 import toast from 'react-hot-toast';
-import { useConnection, useChainId, useReadContract } from 'wagmi';
+import { useChainId, useConnection, useReadContract } from 'wagmi';
 import { z } from 'zod';
 
 import { CurrencyCode, CurrencyCodeType, OfferingParticipant } from '@/types';
@@ -390,6 +390,7 @@ const SendShares: FC<SendSharesProps> = ({
             <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
           ) : (
             <LoadingButtonChain
+              className='h-fit'
               wrapText={true}
               type='submit'
               disabled={form.formState.isSubmitting || buttonStep === 'step1'}

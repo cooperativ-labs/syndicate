@@ -13,8 +13,8 @@ import { ChevronRightIcon } from 'lucide-react';
 import React, { FC, useContext } from 'react';
 import {
   Connector,
-  useConnection,
   useConnect,
+  useConnection,
   useDisconnect,
   useEnsAvatar,
   useEnsName

@@ -1,7 +1,7 @@
-import { useReadContracts } from "wagmi";
+import { useReadContracts } from 'wagmi';
 
-import { dividendContractABI } from "../generated";
-import { String0x } from "../helpersChain";
+import { dividendContractABI } from '../generated';
+import { String0x } from '../helpersChain';
 
 export type DividendContractInfoType = {
   shareTokenAddress: String0x | undefined;
@@ -12,11 +12,11 @@ export type DividendContractInfoType = {
 };
 
 export const useDividendContractInfo = (
-  dividendContactAddress: String0x,
+  dividendContactAddress: String0x
 ): DividendContractInfoType | undefined => {
   const baseContractInfo = {
     address: dividendContactAddress,
-    abi: dividendContractABI,
+    abi: dividendContractABI
   };
 
   const {
@@ -24,13 +24,13 @@ export const useDividendContractInfo = (
     isLoading,
     isError,
     error,
-    refetch: refetchSwapContract,
+    refetch: refetchSwapContract
   } = useReadContracts({
     contracts: [
-      { ...baseContractInfo, functionName: "sharesToken" },
-      { ...baseContractInfo, functionName: "reclaim_time" },
-      { ...baseContractInfo, functionName: "contractVersion" },
-    ],
+      { ...baseContractInfo, functionName: 'sharesToken' },
+      { ...baseContractInfo, functionName: 'reclaim_time' },
+      { ...baseContractInfo, functionName: 'contractVersion' }
+    ]
   });
 
   const shareTokenAddress = data ? (data[0].result as String0x) : undefined;
@@ -42,6 +42,6 @@ export const useDividendContractInfo = (
     reclaimTime,
     dividendContractVersion,
     isLoading,
-    refetchSwapContract,
+    refetchSwapContract
   };
 };

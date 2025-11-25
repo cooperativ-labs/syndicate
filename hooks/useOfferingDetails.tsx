@@ -1,8 +1,7 @@
-import { getCurrentOrdersAndPrice } from '@src/utils/actions/offeringActions';
 import { retrieveOrders, retrieveTransferEvents } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
+import { getCurrentPrice, getOrderArrayFromContract, liveOrders } from '@src/utils/helpersOrder';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
-import { confirmNoLiveOrders } from '@src/utils/helpersOrder';
 import { dividendContractABI } from '@src/web3/generated';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useShareContractInfo } from '@src/web3/hooks/useShareContractInfo';
@@ -10,7 +9,7 @@ import { useSwapContractInfo } from '@src/web3/hooks/useSwapContractInfo';
 import { toNormalNumber } from '@src/web3/util';
 import { useCallback, useRef, useState } from 'react';
 import { useAsync } from 'react-use';
-import { useConnection, useChainId, useReadContract } from 'wagmi';
+import { useChainId, useConnection, useReadContract } from 'wagmi';
 
 import {
   CurrencyCodeType,
@@ -50,9 +49,9 @@ const useOfferingDetails = ({
   const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = swapContract?.cryptoAddress?.address as String0x;
   const distributionContractAddress = distributionContract?.cryptoAddress?.address as String0x;
-
+  console.log('USE OFFERING DETAILS');
   useAsync(async () => {
-    if (!swapContractAddress || !shareContractAddress || isManualRefetchRef.current) {
+    if ((!swapContractAddress && !shareContractAddress) || isManualRefetchRef.current) {
       return;
     }
     const [ordersData, transferEventsData] = await Promise.all([
@@ -126,27 +125,21 @@ const useOfferingDetails = ({
 
   const totalDistributed = toNormalNumber(distributionData, defaultPaymentTokenDecimals);
 
-  const { value: currentOrdersAndPrice } = useAsync(async () => {
-    if (!_paymentTokenDecimals) {
-      return { currentPrice: 0, noLiveOrders: true };
+  const { value: contractOrders } = useAsync(async () => {
+    if (!_paymentTokenDecimals || !orders || !swapContractAddress) {
+      return [];
     }
-    const { currentPrice, contractSaleList } = await getCurrentOrdersAndPrice({
-      offeringId: offeringId,
-      paymentTokenDecimals: _paymentTokenDecimals,
-      priceStart: price_start ?? 0
-    });
-    const result = { currentPrice, noLiveOrders: confirmNoLiveOrders(contractSaleList) };
-    return result;
-  }, [offeringId]);
+    return await getOrderArrayFromContract(orders, swapContractAddress, _paymentTokenDecimals);
+  }, [_paymentTokenDecimals, orders, swapContractAddress]);
 
-  const { currentPrice, noLiveOrders } = currentOrdersAndPrice ?? {
-    currentPrice: 0,
-    noLiveOrders: true
-  };
-
-  const contractOrders = orders?.filter((order: ShareOrder) => {
-    return order?.swap_contract_address === swapContractAddress;
+  const currentPrice = getCurrentPrice({
+    paymentTokenDecimals: _paymentTokenDecimals,
+    priceStart: price_start ?? 0,
+    transferEvents,
+    contractOrders: contractOrders ?? []
   });
+
+  const noLiveOrders = liveOrders(contractOrders).length === 0;
 
   const hasContract = !!contractOwner;
 

@@ -44,7 +44,7 @@ export async function createCryptoAddress({
       protocol: protocol,
       legal_entity_id: ownerId,
     })
-    .select("id")
+    .select("address")
     .single();
 
   if (error) {
@@ -53,24 +53,24 @@ export async function createCryptoAddress({
   if (revalidationPath) {
     revalidatePath(revalidationPath.path, revalidationPath.type);
   }
-  return data.id;
+  return data.address;
 }
 
 type UpdateCryptoAddressResult = {
   affectedCount: number;
   records: Pick<
     CryptoAddress,
-    "id" | "name" | "address" | "is_public" | "description" | "legal_entity_id"
+    "name" | "address" | "is_public" | "description" | "legal_entity_id"
   >[];
 };
 
 export async function updateCryptoAddress({
-  id,
+  address,
   name,
   isPublic,
   revalidationPath,
 }: {
-  id: string;
+  address: string;
   name?: string | null;
   isPublic?: boolean | null;
   revalidationPath?: RevalidationPath;
@@ -92,8 +92,8 @@ export async function updateCryptoAddress({
   const { data, error, count } = await supabase
     .from("crypto_address")
     .update(updateData)
-    .eq("id", id)
-    .select("id, name, address, is_public, description, legal_entity_id");
+    .eq("address", address)
+    .select("name, address, is_public, description, legal_entity_id");
 
   if (error) {
     throw error;
@@ -108,17 +108,20 @@ export async function updateCryptoAddress({
   };
 }
 
-export async function deleteCryptoAddressById({
-  id,
+export async function deleteCryptoAddressByAddress({
+  address,
   revalidationPath,
 }: {
-  id: string;
+  address: string;
   revalidationPath?: RevalidationPath;
 }): Promise<void> {
   const supabase = createClient();
-  const { error } = await supabase.from("crypto_address").delete().eq("id", id);
+  const { error } = await supabase.from("crypto_address").delete().eq(
+    "address",
+    address,
+  );
   if (error) {
-    throw `deleteCryptoAddressById: ${error.message}` as string;
+    throw `deleteCryptoAddressByAddress: ${error.message}` as string;
   }
   if (revalidationPath) {
     revalidatePath(revalidationPath.path, revalidationPath.type);

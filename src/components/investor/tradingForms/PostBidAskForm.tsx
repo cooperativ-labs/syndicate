@@ -17,7 +17,7 @@ import { String0x } from '@src/web3/helpersChain';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, Resolver, useForm } from 'react-hook-form';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 import { z } from 'zod';
 
 import { Document, OfferingFull } from '@/types';

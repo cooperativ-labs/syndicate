@@ -15,7 +15,7 @@ import { MatchSupportedChains } from '@src/web3/wagmi';
 import React, { FC, useEffect, useMemo, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAsyncFn } from 'react-use';
-import { useConnection, useChainId } from 'wagmi';
+import { useChainId, useConnection } from 'wagmi';
 import { z } from 'zod';
 
 import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';

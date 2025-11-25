@@ -9,9 +9,9 @@ import { cookies } from 'next/headers';
 import React from 'react';
 import { cookieToInitialState } from 'wagmi';
 
+import { conditionalMetadata } from './metadata';
 import ModalsAndAlerts from './modals';
 import Providers from './providers';
-import { conditionalMetadata } from './metadata';
 
 export const metadata: Metadata = conditionalMetadata;
 

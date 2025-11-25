@@ -12,13 +12,14 @@ import BasicOfferingDetailsForm from './settings/BasicOfferingDetailsForm';
 type OfferingBasicDetailsFormProps = {
   offering: OfferingFull;
   isOfferingManager: boolean;
-
   legalEntity: LegalEntityWithAddresses;
+  refetchShareContract: () => void;
 };
 export default function OfferingBasicDetailsForm({
   offering,
   isOfferingManager,
-  legalEntity
+  legalEntity,
+  refetchShareContract
 }: OfferingBasicDetailsFormProps) {
   const { address: userWalletAddress } = useConnection();
   const { id } = offering;
@@ -46,6 +47,7 @@ export default function OfferingBasicDetailsForm({
           <BasicOfferingDetailsForm
             offeringId={id.toString()}
             operatingCurrency={legalEntity?.operating_currency as CurrencyCodeType}
+            refetchShareContract={refetchShareContract}
           />
         </DialogContent>
       </Dialog>

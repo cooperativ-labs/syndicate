@@ -92,6 +92,10 @@ export type EnrichedOfferingParticipant = OfferingParticipant & {
 
 // =========== OFFERING ================
 
+export type OfferingWithySmartContracts = Offering & {
+  offeringSmartContracts: OfferingSmartContractSet | null;
+};
+
 export type OfferingWithParticipants = Offering & {
   participants: (OfferingParticipant & {
     walletAddress?: string;
@@ -105,12 +109,11 @@ export type OfferingWithLegalEntity = OfferingWithParticipants & {
 };
 
 export type OfferingFull =
+  & OfferingWithySmartContracts
   & OfferingWithParticipants
   & OfferingWithLegalEntity
   & {
-    // images: Image[];
     descriptions: OfferingDescriptionText[];
-    offeringSmartContracts: OfferingSmartContractSet | null;
     distributions: OfferingDistribution[];
     participants: EnrichedOfferingParticipant[];
   };
