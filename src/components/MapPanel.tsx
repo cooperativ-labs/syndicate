@@ -56,7 +56,7 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
 
   const onUnmount = React.useCallback(function callback(map: google.maps.Map) {}, []);
 
-  return true ? (
+  return (
     <div>
       {showTextAddress && address?.line1 && (
         <div className='text-sm font-medium'>{`${address?.line1}, ${address?.city}, ${address?.state_province} ${address?.postal_code}`}</div>
@@ -71,8 +71,6 @@ const MapPanel: FC<MapPanelProps> = ({ address, height, width, showTextAddress }
         <Marker position={center} />
       </GoogleMap>
     </div>
-  ) : (
-    <></>
   );
 };
 
