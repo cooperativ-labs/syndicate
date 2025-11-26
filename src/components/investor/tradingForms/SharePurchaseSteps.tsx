@@ -9,12 +9,13 @@ import React, { Dispatch, FC, SetStateAction } from 'react';
 import { erc20Abi, formatUnits } from 'viem';
 import { useConnection, useReadContract } from 'wagmi';
 
+import { OfferingFull } from '@/types';
+
 import OrderStatusBar from './OrderStatusBar';
 import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseSaleRequest, {
   SharePurchaseSaleRequestProps
 } from './SharePurchaseSaleRequest';
-import { OfferingFull } from '@/types';
 
 type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   offering: OfferingFull;

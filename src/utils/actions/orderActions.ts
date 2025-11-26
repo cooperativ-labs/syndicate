@@ -1,10 +1,10 @@
 'use server';
 
 import { createClient } from '@supabase/utils/server';
-
-import { Database } from '@/types/database.types';
 import { revalidatePath } from 'next/cache';
+
 import { RevalidationPath } from '@/types';
+import { Database } from '@/types/database.types';
 
 type ShareTransferEvent = Database['public']['Tables']['share_transfer_event']['Row'];
 type ShareOrder = Database['public']['Tables']['share_order']['Row'];

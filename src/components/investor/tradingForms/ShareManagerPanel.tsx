@@ -32,9 +32,9 @@ As the Investor
 
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
-import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import { cn } from '@src/lib/utils';
 import { updateOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -43,13 +43,13 @@ import { approveRejectSwap, cancelSwap } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { shareContractDecimals, toNormalNumber } from '@src/web3/util';
+import { usePathname } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { useChainId, useConnection, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 
 import { SaleMangerPanelProps } from './offering-actions-types';
-import { usePathname } from 'next/navigation';
 
 type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
   currentUserFiller: boolean | undefined;

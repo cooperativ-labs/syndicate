@@ -8,6 +8,7 @@ import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import { useChainId, useConnection } from 'wagmi';
+
 import { OfferingFull } from '@/types';
 import { ShareOrder } from '@/types';
 

@@ -13,6 +13,7 @@ import Container from '@src/containers/Layouts/Container';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import ProfileTabContainer from '@src/containers/ProfileTabContainer';
 import { getRealEstatePropertiesFromOffering } from '@src/utils/actions/rePropertyActions';
+import { getCurrencyOption } from '@src/utils/enumConverters';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { floatWithCommas } from '@src/utils/helpersMoney';
 import { ManagerModalType } from '@src/utils/helpersOffering';
@@ -24,7 +25,6 @@ import { erc20Abi, formatUnits } from 'viem';
 import { useConnection, useReadContract, useReadContracts } from 'wagmi';
 
 import { Document, DocumentType, OfferingFull, OfferingParticipant } from '@/types';
-import { getCurrencyOption } from '@src/utils/enumConverters';
 
 type PortalOfferingProps = {
   offering: OfferingFull;

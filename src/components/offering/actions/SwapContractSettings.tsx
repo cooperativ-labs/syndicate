@@ -57,7 +57,7 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
         setIsLoading('');
       }
     }
-  }, [swapTransactionData]);
+  }, [swapTransactionData, toggleStates]);
 
   useEffect(() => {
     if (txnTransactionData) {
@@ -72,7 +72,7 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
         setIsLoading('');
       }
     }
-  }, [txnTransactionData]);
+  }, [txnTransactionData, toggleStates]);
 
   const handleSwapToggle = async () => {
     setIsLoading('listing');
