@@ -241,7 +241,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
             isContractOwner={isContractOwner}
             noLiveOrders={noLiveOrders}
             partitions={partitions}
-            refetchMainContracts={refetchMainContracts}
             refetchOfferingInfo={refetchOfferingInfo}
             currentSalePrice={currentSalePrice}
             myShareQty={myShareQty}
@@ -249,6 +248,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
             documents={offeringDocs}
             userWalletAddress={userWalletAddress}
             investmentCurrency={investment_currency}
+            refetchMainContracts={refetchMainContracts}
           />
         </TwoColumnLayout>
         <hr className='border-t-2 border-gray-100 mb-12' />

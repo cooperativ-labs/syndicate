@@ -79,7 +79,7 @@ const LinkLegalForm: FC<LinkLegalFormProps> = ({
           offeringId: offeringId,
           entityId: entityId,
           agreementText: agreement,
-          smartContractId: availableContract.crypto_address_id,
+          smartContractAddress: availableContract.crypto_address_id,
           agreementTitle: docTitle
         });
         await addOfferingParticipant({

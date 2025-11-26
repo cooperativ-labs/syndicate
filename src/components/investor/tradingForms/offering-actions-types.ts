@@ -6,7 +6,6 @@ import {
   CurrencyCodeType,
   Document,
   OfferingFull,
-  OfferingParticipant,
   OfferingSmartContractSet,
   ShareOrder,
   ShareTransferEvent
@@ -25,60 +24,13 @@ export type ContractOrder = {
   filler: String0x | null;
 };
 
-type BaseProps = {
-  paymentTokenDecimals: number | undefined;
-  sharesOutstanding: number | undefined;
-  partitions: String0x[];
-};
-
-export type PostBidAskFormProps = BaseProps & {
-  offering: OfferingFull;
-  swapApprovalsEnabled: boolean;
-  myShareQty: number | undefined;
-  isContractOwner: boolean;
-  currentSalePrice: number;
-  refetchOfferingInfo: () => void;
-};
-
-export type PostInitialSaleProps = BaseProps & {
-  paymentTokenAddress: String0x | undefined;
-  refetchOfferingInfo: () => void;
-};
-
-export type SwapContractSettingsProps = {
-  swapApprovalsEnabled: boolean | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-  contractSet: OfferingSmartContractSet | null;
-
-  noLiveOrders: boolean;
-  investmentCurrency: CurrencyCodeType | null;
-  refetchMainContracts: () => void;
-};
-
-export type SendSharesProps = {
-  sharesIssued: number | undefined | null;
-  sharesOutstanding: number | undefined;
-  shareContractId: string;
-  shareContractAddress: String0x;
-  participants: OfferingParticipant[] | undefined | null;
-  partitions: String0x[];
-  myShareQty: number | undefined;
-  investmentCurrency: CurrencyCodeType | null;
-  currentSalePrice: number | undefined;
-  refetchMainContracts: () => void;
-};
-
-export type SmartContractsSettingsProps = SwapContractSettingsProps & {
-  partitions: String0x[];
-};
-
 export type ShareContractInfoType = {
-  contractOwner: string | undefined;
+  contractOwner: String0x | undefined;
   isManager: boolean;
   isWhitelisted: boolean;
-  myShareQty: number | undefined;
+  myShareQty: number;
   sharesOutstanding: number | undefined;
-  smartContractDocuments: any | undefined;
+  smartContractDocuments: any;
   firstPartition: String0x | undefined;
   shareContractVersion: string | undefined;
   isLoading: boolean;
@@ -86,28 +38,57 @@ export type ShareContractInfoType = {
   refetchShareContract: () => void;
 };
 
-export type OrderStatusType = {
-  isApproved: boolean;
-  isDisapproved: boolean;
-  isAccepted: boolean;
-  isCancelled: boolean;
-};
-export type SaleMangerPanelProps = {
-  swapContractAddress: String0x | undefined;
+export type CoreOfferingActionsProps = {
+  offering: OfferingFull;
+  contractSet: OfferingSmartContractSet | null;
+
+  // Contract Data
+  sharesOutstanding: number | undefined;
+  myShareQty: number | undefined;
+  partitions: String0x[];
+  currentSalePrice: number;
+
+  // Payment Token Info
   paymentTokenAddress: String0x | undefined;
   paymentTokenDecimals: number | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-  swapApprovalsEnabled: boolean | undefined;
+
+  // Permissions / Status
   isContractOwner: boolean;
+  swapApprovalsEnabled: boolean | undefined;
+  txnApprovalsEnabled: boolean | undefined;
+
+  // Callbacks
+  refetchMainContracts: () => void;
   refetchOfferingInfo: () => void;
 };
+
+export type PostBidAskFormProps = CoreOfferingActionsProps;
+
+export type PostInitialSaleProps = CoreOfferingActionsProps;
+
+export type SwapContractSettingsProps = {
+  refetchMainContracts: () => void;
+  noLiveOrders: boolean;
+  investmentCurrency: CurrencyCodeType | null;
+  swapApprovalsEnabled: boolean | undefined;
+  txnApprovalsEnabled: boolean | undefined;
+  contractSet: OfferingSmartContractSet | null;
+};
+
+export type SendSharesProps = CoreOfferingActionsProps;
+
+export type SmartContractsSettingsProps = SwapContractSettingsProps & {
+  noLiveOrders: boolean;
+  investmentCurrency: CurrencyCodeType | null;
+  offering: OfferingFull;
+  partitions: String0x[];
+};
+
+export type SaleMangerPanelProps = CoreOfferingActionsProps;
+
 export type ShareSaleListItemProps = SaleMangerPanelProps & {
   offering: OfferingFull;
-  shareContractAddress: String0x | undefined;
-  myShareQty: number | undefined;
   transferEvents: ShareTransferEvent[] | undefined;
-  setModal: (value: ManagerModalType) => void;
-  refetchMainContracts: () => void;
 };
 
 export type ShareSaleListProps = ShareSaleListItemProps & {
@@ -115,14 +96,16 @@ export type ShareSaleListProps = ShareSaleListItemProps & {
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
 };
 
-export type AllOfferingActionsProps = SmartContractsSettingsProps &
-  PostBidAskFormProps &
-  PostInitialSaleProps & {
-    orders: ShareOrder[] | undefined;
-    hasContract: boolean;
-    loading: boolean | undefined;
-    retrievalIssue: boolean;
-    issueReachingContract: { share: boolean; swap: boolean };
-    transferEvents: ShareTransferEvent[] | undefined;
-    documents: Document[];
-  };
+export type AllOfferingActionsProps = CoreOfferingActionsProps & {
+  orders: ShareOrder[] | undefined;
+  hasContract: boolean;
+  loading: boolean | undefined;
+  retrievalIssue: boolean;
+  issueReachingContract: { share: boolean; swap: boolean };
+  transferEvents: ShareTransferEvent[] | undefined;
+  documents: Document[];
+
+  // From SwapContractSettingsProps
+  noLiveOrders: boolean;
+  investmentCurrency: CurrencyCodeType | null;
+};

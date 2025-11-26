@@ -8,7 +8,7 @@ import DistributionContractSettings from './DistributionContractSettings';
 import ShareContractSettings from './ShareContractSettings';
 import SwapContractSettings from './SwapContractSettings';
 
-const SmartContractsSettings: FC<SmartContractsSettingsProps & { offering: OfferingFull }> = ({
+const SmartContractsSettings: FC<SmartContractsSettingsProps> = ({
   contractSet,
   swapApprovalsEnabled,
   txnApprovalsEnabled,

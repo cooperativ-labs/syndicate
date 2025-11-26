@@ -21,7 +21,7 @@ type OrderStatusBarProps = {
   isFilled: boolean | undefined;
   swapContractAddress: String0x;
   contractIndex: number;
-  refetchAllContracts: () => void;
+  refetchOrderAndContracts: () => void;
 };
 
 const OrderStatusBar: FC<OrderStatusBarProps> = ({
@@ -35,7 +35,7 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   isFilled,
   swapContractAddress,
   contractIndex,
-  refetchAllContracts
+  refetchOrderAndContracts
 }) => {
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
   const manOfAction = isAskOrder ? currentUserFiller : currentUserInitiator;
@@ -52,26 +52,9 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
       swapContractAddress,
       contractIndex,
       setButtonStep: setCancelButtonStep,
-      refetchAllContracts
+      refetchOrderAndContracts
     });
   };
-
-  const cancelAcceptanceButton = (
-    <Button
-      className={buttonClass}
-      onClick={() => handleCancelAcceptance()}
-      disabled={cancelButtonStep === 'step1'}
-    >
-      <LoadingButtonChain
-        state={cancelButtonStep}
-        idleText='Cancel Request'
-        step1Text='Canceling...'
-        confirmedText='Request Cancelled!'
-        failedText='Transaction failed'
-        rejectedText='You rejected the transaction. Click here to try again.'
-      />
-    </Button>
-  );
 
   const cases = () => {
     if (currentUserPending) {
@@ -107,7 +90,19 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
 
   return cases() ? (
     <div className={className}>
-      {text} {(currentUserPending || currentUserApproved) && cancelAcceptanceButton}
+      {text}{' '}
+      {(currentUserPending || currentUserApproved) && (
+        <LoadingButtonChain
+          onClick={() => handleCancelAcceptance()}
+          disabled={cancelButtonStep === 'step1'}
+          state={cancelButtonStep}
+          idleText='Cancel Request'
+          step1Text='Canceling...'
+          confirmedText='Request Cancelled!'
+          failedText='Transaction failed'
+          rejectedText='You rejected the transaction. Click here to try again.'
+        />
+      )}
     </div>
   ) : (
     <></>

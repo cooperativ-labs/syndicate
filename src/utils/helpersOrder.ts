@@ -116,7 +116,8 @@ export function getCurrentPrice({
   if (!priceStart) {
     return NaN;
   }
-  if (!paymentTokenDecimals || !transferEvents || !contractOrders) {
+
+  if (!paymentTokenDecimals || !transferEvents.length || !contractOrders.length) {
     return priceStart;
   }
   try {
@@ -149,13 +150,15 @@ export const liveOrders = (
 export const getDisapprovedTransferEvents = (
   transferEvents: ShareTransferEvent[] | undefined,
   order: ShareOrder,
-  userWalletAddress: String0x | undefined
+  userWalletAddress: String0x | undefined,
+  isContractOwner: boolean | undefined
 ) =>
   transferEvents?.filter(transferEvent => {
     const { order_index, recipient_address, sender_address, type } = transferEvent;
+    const contractOwnerOrRecipient = isContractOwner || recipient_address === userWalletAddress;
     if (
       order_index === order.contract_index &&
-      recipient_address === userWalletAddress &&
+      contractOwnerOrRecipient &&
       type === ShareTransferEventType.DISAPPROVAL
     ) {
       return transferEvent;

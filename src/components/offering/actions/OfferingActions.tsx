@@ -104,6 +104,27 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
     });
   };
 
+  const refetchAllContracts = () => {
+    refetchMainContracts();
+    refetchOfferingInfo();
+  };
+
+  const coreProps = {
+    offering,
+    contractSet,
+    sharesOutstanding,
+    myShareQty,
+    partitions,
+    currentSalePrice,
+    paymentTokenAddress,
+    paymentTokenDecimals,
+    isContractOwner,
+    swapApprovalsEnabled,
+    txnApprovalsEnabled,
+    refetchMainContracts,
+    refetchOfferingInfo
+  };
+
   const FormModals = (
     <>
       <FormModal
@@ -113,20 +134,11 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
       >
         {userWalletAddress && (
           <ShareSaleList
-            offering={offering}
+            {...coreProps}
             orders={orders}
-            swapContractAddress={swapContractAddress}
-            paymentTokenAddress={paymentTokenAddress}
-            paymentTokenDecimals={paymentTokenDecimals}
-            isContractOwner={isContractOwner === !!isOfferingManager}
             setModal={setManagerModal}
-            refetchMainContracts={refetchMainContracts}
-            txnApprovalsEnabled={txnApprovalsEnabled}
-            swapApprovalsEnabled={swapApprovalsEnabled}
-            shareContractAddress={shareContractAddress}
-            refetchOfferingInfo={refetchOfferingInfo}
-            myShareQty={myShareQty}
             transferEvents={transferEvents}
+            refetchMainContracts={refetchMainContracts}
           />
         )}
       </FormModal>
@@ -136,14 +148,9 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
         title={`Smart contract settings`}
       >
         <SmartContractsSettings
-          offering={offering}
-          partitions={partitions}
-          contractSet={contractSet}
+          {...coreProps}
           noLiveOrders={noLiveOrders}
           investmentCurrency={investmentCurrency as CurrencyCodeType}
-          swapApprovalsEnabled={swapApprovalsEnabled}
-          txnApprovalsEnabled={txnApprovalsEnabled}
-          refetchMainContracts={refetchMainContracts}
         />
       </FormModal>
       <FormModal
@@ -162,37 +169,14 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
         }`}</Button>
         {isExistingShares ? (
           <PostBidAskForm
-            offering={offering}
+            {...coreProps}
             documents={documents}
-            offeringMin={offeringMin}
-            sharesOutstanding={sharesOutstanding}
             walletAddress={userWalletAddress as String0x}
-            myShareQty={myShareQty}
-            swapContractAddress={swapContractAddress}
-            isContractOwner={isContractOwner === !!isOfferingManager}
-            currentSalePrice={currentSalePrice}
             setModal={setManagerModal}
-            partitions={partitions}
-            paymentTokenDecimals={paymentTokenDecimals}
-            refetchAllContracts={refetchMainContracts}
-            refetchOfferingInfo={refetchOfferingInfo}
-            swapApprovalsEnabled={swapApprovalsEnabled}
+            refetchAllContracts={refetchAllContracts}
           />
         ) : (
-          <PostInitialSale
-            sharesIssued={sharesIssued}
-            sharesOutstanding={sharesOutstanding}
-            offeringId={offering.id.toString()}
-            priceStart={priceStart}
-            swapContractAddress={swapContractAddress}
-            shareContractId={shareContractId}
-            partitions={partitions}
-            paymentTokenAddress={paymentTokenAddress}
-            paymentTokenDecimals={paymentTokenDecimals}
-            setModal={setManagerModal}
-            refetchAllContracts={refetchMainContracts}
-            refetchOfferingInfo={refetchOfferingInfo}
-          />
+          <PostInitialSale {...coreProps} setModal={setManagerModal} />
         )}
       </FormModal>
       {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${offeringName}`}>
@@ -218,20 +202,7 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
           }}
         />
       </div>
-      {showActionPanel === 'send' && (
-        <SendShares
-          investmentCurrency={investmentCurrency as CurrencyCodeType}
-          currentSalePrice={currentSalePrice}
-          sharesIssued={sharesIssued}
-          sharesOutstanding={sharesOutstanding}
-          shareContractAddress={shareContractAddress}
-          shareContractId={shareContractId}
-          participants={participants}
-          partitions={partitions}
-          myShareQty={myShareQty}
-          refetchMainContracts={refetchMainContracts}
-        />
-      )}
+      {showActionPanel === 'send' && <SendShares {...coreProps} />}
     </div>
   );
 

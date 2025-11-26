@@ -146,11 +146,10 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
           {!userWalletAddress ? (
             <ChooseConnectorButton buttonText={'Connect Wallet'} />
           ) : (
-            <DeploySwapForm
+            <DeploySwapButton
               buttonStep={buttonStep}
-              chainBacs={chainBacs}
               chainName={chainName}
-              defaultCurrencyAddress={defaultCurrencyAddress}
+              investmentCurrencyAddress={defaultCurrencyAddress as String0x}
               onSubmit={async currency => {
                 await deploy(currency);
               }}
@@ -164,76 +163,28 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
 
 export default CreateSwapContract;
 
-type DeploySwapFormProps = {
+type DeploySwapButtonProps = {
   buttonStep: LoadingButtonStateType;
-  chainBacs: ChainCurrencyOption[];
   chainName?: string;
-  defaultCurrencyAddress: string;
-  onSubmit: (currency: string) => Promise<void>;
+  investmentCurrencyAddress: String0x;
+  onSubmit: (currency: String0x) => Promise<void>;
 };
 
-const DeploySwapForm: FC<DeploySwapFormProps> = ({
+const DeploySwapButton: FC<DeploySwapButtonProps> = ({
   buttonStep,
-  chainBacs,
   chainName,
-  defaultCurrencyAddress,
+  investmentCurrencyAddress,
   onSubmit
 }) => {
-  const {
-    handleSubmit,
-    register,
-    formState: { errors, isSubmitting },
-    reset
-  } = useForm<DeployFormValues>({
-    resolver: zodResolver(deploySchema),
-    defaultValues: {
-      investmentCurrencyAddress: defaultCurrencyAddress
-    }
-  });
-
-  useEffect(() => {
-    reset({ investmentCurrencyAddress: defaultCurrencyAddress });
-  }, [defaultCurrencyAddress, reset]);
-
-  const submitHandler = async (values: DeployFormValues) => {
-    if (values.investmentCurrencyAddress !== defaultCurrencyAddress) {
-      window.confirm(
-        `Note that changing the currency here will also change it on the offering's profile.`
-      );
-    }
-    await onSubmit(values.investmentCurrencyAddress);
-  };
-
+  const currency = getCurrencyById(investmentCurrencyAddress);
   return (
-    <form className='flex flex-col gap relative' onSubmit={handleSubmit(submitHandler)}>
-      <Field className='pt-3 bg-opacity-0'>
-        <FieldLabel htmlFor='investmentCurrencyAddress'>
-          Payment for shares will be accepted in
-        </FieldLabel>
-        <FieldContent>
-          <select
-            id='investmentCurrencyAddress'
-            className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
-            aria-invalid={Boolean(errors.investmentCurrencyAddress)}
-            {...register('investmentCurrencyAddress')}
-          >
-            <option value=''>Select currency</option>
-            {chainBacs.map(option => (
-              <option key={option.address} value={option.address}>
-                {option.symbol}
-              </option>
-            ))}
-          </select>
-          <FieldError
-            errors={
-              errors.investmentCurrencyAddress ? [errors.investmentCurrencyAddress] : undefined
-            }
-          />
-        </FieldContent>
-      </Field>
+    <div className='flex flex-col gap-3 mt-5'>
+      <span className='flex items-center gap-1'>
+        Payment for shares will be accepted in{' '}
+        <img src={currency?.logo} alt={currency?.symbol} className='w-5 h-5' /> {currency?.symbol}
+      </span>
       <LoadingButtonChain
-        type='submit'
-        disabled={isSubmitting}
+        onClick={() => onSubmit(investmentCurrencyAddress)}
         state={buttonStep}
         idleText={`Publish trading contract on ${chainName}`}
         step1Text='Deploying (check status in your wallet)'
@@ -242,6 +193,80 @@ const DeploySwapForm: FC<DeploySwapFormProps> = ({
         failedText='Transaction failed'
         rejectedText='You rejected the transaction. Click here to try again.'
       />
-    </form>
+    </div>
   );
 };
+
+// const DeploySwapForm: FC<DeploySwapFormProps> = ({
+//   buttonStep,
+//   chainBacs,
+//   chainName,
+//   defaultCurrencyAddress,
+//   onSubmit
+// }) => {
+//   const {
+//     handleSubmit,
+//     register,
+//     formState: { errors, isSubmitting },
+//     reset
+//   } = useForm<DeployFormValues>({
+//     resolver: zodResolver(deploySchema),
+//     defaultValues: {
+//       investmentCurrencyAddress: defaultCurrencyAddress
+//     }
+//   });
+
+//   useEffect(() => {
+//     reset({ investmentCurrencyAddress: defaultCurrencyAddress });
+//   }, [defaultCurrencyAddress, reset]);
+
+//   const submitHandler = async (values: DeployFormValues) => {
+//     if (values.investmentCurrencyAddress !== defaultCurrencyAddress) {
+//       window.confirm(
+//         `Note that changing the currency here will also change it on the offering's profile.`
+//       );
+//     }
+//     await onSubmit(values.investmentCurrencyAddress);
+//   };
+
+//   return (
+//     <form className='flex flex-col gap relative' onSubmit={handleSubmit(submitHandler)}>
+//       <Field className='pt-3 bg-opacity-0'>
+//         <FieldLabel htmlFor='investmentCurrencyAddress'>
+//           Payment for shares will be accepted in
+//         </FieldLabel>
+//         <FieldContent>
+//           <select
+//             id='investmentCurrencyAddress'
+//             className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
+//             aria-invalid={Boolean(errors.investmentCurrencyAddress)}
+//             {...register('investmentCurrencyAddress')}
+//           >
+//             <option value=''>Select currency</option>
+//             {chainBacs.map(option => (
+//               <option key={option.address} value={option.address}>
+//                 {option.symbol}
+//               </option>
+//             ))}
+//           </select>
+//           <FieldError
+//             errors={
+//               errors.investmentCurrencyAddress ? [errors.investmentCurrencyAddress] : undefined
+//             }
+//           />
+//         </FieldContent>
+//       </Field>
+//       <LoadingButtonChain
+//         type='submit'
+//         disabled={isSubmitting}
+//         state={buttonStep}
+//         idleText={`Publish trading contract on ${chainName}`}
+//         step1Text='Deploying (check status in your wallet)'
+//         step2Text='Setting contract operator'
+//         confirmedText='Confirmed!'
+//         failedText='Transaction failed'
+//         rejectedText='You rejected the transaction. Click here to try again.'
+//       />
+//     </form>
+//   );
+// };

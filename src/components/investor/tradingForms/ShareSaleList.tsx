@@ -10,7 +10,7 @@ import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
 import { toNormalNumber } from '@src/web3/util';
 import { RefreshCw } from 'lucide-react';
-import React, { Dispatch, FC, SetStateAction, useState } from 'react';
+import React, { FC, useState } from 'react';
 import { useConnection, useReadContract } from 'wagmi';
 
 import { ShareOrder } from '@/types';
@@ -20,10 +20,9 @@ import ShareSaleListItem from './ShareSaleListItem';
 
 const ShareSaleList: FC<ShareSaleListProps> = ({
   offering,
+  contractSet,
   orders,
   myShareQty,
-  swapContractAddress,
-  shareContractAddress,
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
@@ -32,8 +31,12 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
   transferEvents,
   setModal,
   refetchMainContracts,
-  refetchOfferingInfo
+  refetchOfferingInfo,
+  sharesOutstanding,
+  partitions,
+  currentSalePrice
 }) => {
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
   const { address: userWalletAddress } = useConnection();
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
   const { data: contractData } = useReadContract({
@@ -51,30 +54,25 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
     await claimProceeds({
       swapContractAddress,
       setButtonStep: setClaimProceedsButton,
-      refetchAllContracts: refetchMainContracts
+      refetchOrderAndContracts: refetchMainContracts
     });
   };
 
   const proceedsButton = proceeds !== 0 && (
-    <Button
-      className={'p-3 shadow-md rounded-md bg-blue-600 text-white text-sm uppercase font-medium'}
+    <LoadingButtonChain
       onClick={handleClaimProceeds}
       disabled={claimProceedsButton === 'step1'}
-    >
-      <LoadingButtonChain
-        state={claimProceedsButton}
-        idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-        step1Text='Claiming Proceeds...'
-        confirmedText='Proceeds Claimed!'
-        failedText='Transaction failed'
-        rejectedText='You rejected the transaction. Click here to try again.'
-      />
-    </Button>
+      state={claimProceedsButton}
+      idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
+      step1Text='Claiming Proceeds...'
+      confirmedText='Proceeds Claimed!'
+      failedText='Transaction failed'
+      rejectedText='You rejected the transaction. Click here to try again.'
+    />
   );
 
   const saleButton = (
     <Button
-      className='p-3 shadow-md hover:shadow-xl disabled:shadow-none rounded-md bg-slate-600 text-white text-sm  uppercase font-medium disabled:bg-gray-400'
       onClick={() => {
         setModal('saleForm');
       }}
@@ -86,7 +84,7 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   const refreshButton = (
     <Button
-      className=' text-blue-800 text-xl '
+      variant='ghost'
       onClick={() => {
         refetchOfferingInfo();
         refetchMainContracts();
@@ -118,26 +116,27 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
           <ShareSaleListItem
             key={i}
             offering={offering}
+            contractSet={contractSet}
             order={order as ShareOrder}
             myShareQty={myShareQty}
-            swapContractAddress={swapContractAddress}
             paymentTokenAddress={paymentTokenAddress}
             txnApprovalsEnabled={txnApprovalsEnabled}
             swapApprovalsEnabled={swapApprovalsEnabled}
             isContractOwner={isContractOwner}
-            setModal={setModal}
             refetchMainContracts={refetchMainContracts}
             paymentTokenDecimals={paymentTokenDecimals}
-            shareContractAddress={shareContractAddress}
             refetchOfferingInfo={refetchOfferingInfo}
             transferEvents={transferEvents}
+            sharesOutstanding={sharesOutstanding}
+            partitions={partitions}
+            currentSalePrice={currentSalePrice}
           />
         );
       })}
       {archivedOrders?.length !== 0 && (
-        <div className='w-full mt-4 border-2 border-slate-600 rounded-md'>
+        <div className='w-full mt-4 border border-gray-300 rounded-md'>
           <SectionBlock
-            className={'p-3 bg-slate-600 text-white rounded-sm w-full font-semibold  '}
+            className={'p-3 bg-slate-100 text-gray-800 rounded-sm w-full font-semibold  '}
             sectionTitle={'Archived offers'}
             mini
           >
@@ -147,19 +146,20 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
                   <ShareSaleListItem
                     key={i}
                     offering={offering}
+                    contractSet={contractSet}
                     order={order as ShareOrder}
                     myShareQty={myShareQty}
-                    swapContractAddress={swapContractAddress}
                     paymentTokenAddress={paymentTokenAddress}
                     txnApprovalsEnabled={txnApprovalsEnabled}
                     swapApprovalsEnabled={swapApprovalsEnabled}
                     isContractOwner={isContractOwner}
-                    setModal={setModal}
                     refetchMainContracts={refetchMainContracts}
                     paymentTokenDecimals={paymentTokenDecimals}
-                    shareContractAddress={shareContractAddress}
                     refetchOfferingInfo={refetchOfferingInfo}
                     transferEvents={transferEvents}
+                    sharesOutstanding={sharesOutstanding}
+                    partitions={partitions}
+                    currentSalePrice={currentSalePrice}
                   />
                 );
               })}

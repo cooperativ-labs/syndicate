@@ -15,11 +15,14 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
   txnApprovalsEnabled,
   contractSet,
   investmentCurrency,
-  noLiveOrders,
-  refetchMainContracts
+  noLiveOrders
 }) => {
   const chainId = useChainId();
   const [isLoading, setIsLoading] = useState<'txn' | 'listing' | ''>('');
+  const [toggleStates, setToggleStates] = useState<{ txn: boolean; listing: boolean }>({
+    txn: txnApprovalsEnabled || false,
+    listing: swapApprovalsEnabled || false
+  });
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
 
@@ -43,17 +46,33 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
 
   useEffect(() => {
     if (swapTransactionData) {
-      refetchMainContracts();
-      setIsLoading('');
+      if (swapTransactionData?.status === 'success') {
+        setToggleStates({
+          txn: toggleStates.txn,
+          listing: !toggleStates.listing
+        });
+        setIsLoading('');
+      } else {
+        alert('Setting change failed');
+        setIsLoading('');
+      }
     }
-  }, [swapTransactionData, refetchMainContracts]);
+  }, [swapTransactionData]);
 
   useEffect(() => {
     if (txnTransactionData) {
-      refetchMainContracts();
-      setIsLoading('');
+      if (txnTransactionData?.status === 'success') {
+        setToggleStates({
+          txn: !toggleStates.txn,
+          listing: toggleStates.listing
+        });
+        setIsLoading('');
+      } else {
+        alert('Setting change failed');
+        setIsLoading('');
+      }
     }
-  }, [txnTransactionData, refetchMainContracts]);
+  }, [txnTransactionData]);
 
   const handleSwapToggle = async () => {
     setIsLoading('listing');
@@ -76,7 +95,7 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
       <div className='text-sm font-medium text-gray-700 mr-2'>Listings require approval</div>
       <LoadingToggle
         isLoading={isLoading === 'listing'}
-        toggleSubject={swapApprovalsEnabled}
+        toggleSubject={toggleStates.listing}
         onClick={() => handleSwapToggle()}
       />
     </div>
@@ -89,7 +108,7 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
       </div>
       <LoadingToggle
         isLoading={isLoading === 'txn'}
-        toggleSubject={txnApprovalsEnabled}
+        toggleSubject={toggleStates.txn}
         onClick={() => handleTxnToggle()}
       />
     </div>

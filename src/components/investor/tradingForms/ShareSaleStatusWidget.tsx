@@ -9,8 +9,6 @@ import { useChainId, useConnection } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 
-import SaleManagerPanel from './ShareManagerPanel';
-
 type ShareOrderStatusItemProps = {
   order: ShareOrder | undefined;
   swapContractAddress: String0x | undefined;
@@ -51,7 +49,7 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
 
   const statusColor = status?.color;
   return (
-    <div className='flex justify-between items-center p-1 px-2 border-2 rounded-md my-1'>
+    <div className='flex flex-col p-1 px-2 border-2 rounded-md my-2 gap-1'>
       <div className='text-sm font-bold'>
         <FormattedCryptoAddress chainId={chainId} address={initiator} />{' '}
       </div>

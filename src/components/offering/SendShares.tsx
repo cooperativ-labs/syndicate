@@ -31,17 +31,19 @@ import { SendSharesProps } from '../investor/tradingForms/offering-actions-types
 import SetOperatorButton from './actions/SetOperatorButton';
 
 const SendShares: FC<SendSharesProps> = ({
-  sharesIssued,
+  offering,
+  contractSet,
   sharesOutstanding,
-  shareContractAddress,
-  shareContractId,
-  participants,
   partitions,
   myShareQty,
-  investmentCurrency,
   currentSalePrice,
   refetchMainContracts
 }) => {
+  const sharesIssued = offering.num_units;
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+  const shareContractId = contractSet?.shareContract?.crypto_address_id as string;
+  const participants = offering.participants;
+  const investmentCurrency = offering.investment_currency;
   const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');

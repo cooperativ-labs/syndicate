@@ -1,15 +1,15 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
-import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { getDisapprovedTransferEvents } from '@src/utils/helpersOrder';
 import { normalizeEthAddress, String0x } from '@src/web3/helpersChain';
 import { useOrderDetails } from '@src/web3/hooks/useOrderDetails';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useState } from 'react';
 import { useChainId, useConnection } from 'wagmi';
-
-import { OfferingFull, ShareOrder, ShareTransferEvent } from '@/types';
+import { OfferingFull } from '@/types';
+import { ShareOrder } from '@/types';
 
 import { ShareSaleListItemProps } from './offering-actions-types';
 import OfferingSummaryPanel from './OfferingSummaryPanel';
@@ -17,25 +17,29 @@ import SaleManagerPanel from './ShareManagerPanel';
 import SharePurchaseSteps from './SharePurchaseSteps';
 
 type AdditionalShareSaleListItemProps = ShareSaleListItemProps & {
+  offering: OfferingFull;
   order: ShareOrder;
 };
 
 const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
   offering,
+  contractSet,
   order,
   myShareQty,
-  swapContractAddress,
-  shareContractAddress,
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
   swapApprovalsEnabled,
   isContractOwner,
   transferEvents,
-  setModal,
   refetchMainContracts,
-  refetchOfferingInfo
+  refetchOfferingInfo,
+  sharesOutstanding,
+  partitions,
+  currentSalePrice
 }) => {
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
   const [open, setOpen] = useState<boolean>(false);
@@ -58,15 +62,11 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
     isFilled,
     isCancelled,
     isAccepted,
-    isShareIssuance,
     isAskOrder,
-    isErc20Payment,
-    isLoading,
-
     refetchOrderDetails
   } = useOrderDetails(swapContractAddress, order.contract_index, paymentTokenDecimals);
 
-  function refetchAllContracts() {
+  function refetchOrderAndContracts() {
     refetchMainContracts();
     refetchOrderDetails();
   }
@@ -91,10 +91,16 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
       isVisible: order?.visible ?? false
     });
 
+  console.log({
+    order,
+    transferEvents,
+    userWalletAddress
+  });
   const disapprovedTransferEvents = getDisapprovedTransferEvents(
     transferEvents,
     order,
-    userWalletAddress
+    userWalletAddress,
+    isContractOwner
   );
   const isDisapproved = !isAccepted && disapprovedTransferEvents?.length ? true : false;
   const disapprovedTransferEvent = disapprovedTransferEvents?.slice(-1)[0];
@@ -128,8 +134,6 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
               <div className='grid grid-cols-12 p-3'>
                 <div className='flex col-span-8'>
                   <OfferingSummaryPanel
-                    isAskOrder={isAskOrder}
-                    initiator={initiator}
                     shareQtyRemaining={shareQtyRemaining}
                     shareQtyOffered={amount}
                     partition={partition}
@@ -171,11 +175,13 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
               <div className='p-2 pt-4 bg-slate-100'>
                 {(currentUserInitiator || isContractOwner) && (
                   <SaleManagerPanel
+                    offering={offering}
+                    contractSet={contractSet}
                     currentUserFiller={currentUserFiller}
                     currentUserInitiator={currentUserInitiator}
                     isContractOwner={isContractOwner}
-                    offeringId={offering.id.toString()}
                     isApproved={isApproved}
+                    isDisapproved={isDisapproved}
                     isAccepted={isAccepted}
                     isCancelled={isCancelled}
                     isFilled={isFilled}
@@ -185,15 +191,17 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                     order={order}
                     amount={amount}
                     price={price}
-                    shareContractAddress={shareContractAddress}
                     partition={partition}
-                    swapContractAddress={swapContractAddress}
                     txnApprovalsEnabled={txnApprovalsEnabled}
                     swapApprovalsEnabled={swapApprovalsEnabled}
                     paymentTokenAddress={paymentTokenAddress}
                     paymentTokenDecimals={paymentTokenDecimals}
-                    refetchAllContracts={refetchAllContracts}
+                    sharesOutstanding={sharesOutstanding}
+                    partitions={partitions}
+                    currentSalePrice={currentSalePrice}
+                    myShareQty={myShareQty}
                     refetchOfferingInfo={refetchOfferingInfo}
+                    refetchMainContracts={refetchMainContracts}
                   />
                 )}
                 {showPurchaseSteps && (
@@ -204,7 +212,7 @@ const ShareSaleListItem: FC<AdditionalShareSaleListItemProps> = ({
                     price={price as number}
                     swapContractAddress={swapContractAddress as String0x}
                     isAskOrder={isAskOrder as boolean}
-                    refetchAllContracts={refetchAllContracts as () => void}
+                    refetchOrderAndContracts={refetchOrderAndContracts}
                     isApproved={isApproved as boolean}
                     isFilled={isFilled as boolean}
                     isCancelled={isCancelled as boolean}

@@ -3,6 +3,8 @@
 import { createClient } from '@supabase/utils/server';
 
 import { Database } from '@/types/database.types';
+import { revalidatePath } from 'next/cache';
+import { RevalidationPath } from '@/types';
 
 type ShareTransferEvent = Database['public']['Tables']['share_transfer_event']['Row'];
 type ShareOrder = Database['public']['Tables']['share_order']['Row'];
@@ -262,33 +264,32 @@ type UpdateOrderParams = {
   orderId: string;
   visible: boolean;
   archived: boolean;
+  revalidationPath?: RevalidationPath;
 };
 
-type UpdateOrderResult = {
-  affectedCount: number;
-  records: Pick<ShareOrder, 'id' | 'visible' | 'archived'>[];
-};
-
-export async function updateOrder(params: UpdateOrderParams): Promise<UpdateOrderResult> {
+export async function updateOrder({
+  orderId,
+  visible,
+  archived,
+  revalidationPath
+}: UpdateOrderParams): Promise<void> {
   const supabase = createClient();
 
-  const { data, error, count } = await supabase
+  const { error } = await supabase
     .from('share_order')
     .update({
-      archived: params.archived,
-      visible: params.visible
+      archived,
+      visible
     })
-    .eq('id', params.orderId)
-    .select('id, visible, archived');
+    .eq('id', orderId);
 
   if (error) {
     throw error;
   }
 
-  return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as UpdateOrderResult['records']
-  };
+  if (revalidationPath) {
+    revalidatePath(revalidationPath.path, revalidationPath.type);
+  }
 }
 
 type DeleteOrderResult = {

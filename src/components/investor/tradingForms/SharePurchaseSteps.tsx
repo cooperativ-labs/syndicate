@@ -14,8 +14,10 @@ import ShareCompleteSwap from './ShareCompleteSwap';
 import SharePurchaseSaleRequest, {
   SharePurchaseSaleRequestProps
 } from './SharePurchaseSaleRequest';
+import { OfferingFull } from '@/types';
 
 type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
+  offering: OfferingFull;
   isApproved: boolean;
   isFilled: boolean;
   isCancelled: boolean;
@@ -30,7 +32,7 @@ type SharePurchaseStepsProps = SharePurchaseSaleRequestProps & {
   paymentTokenAddress: String0x;
   paymentTokenDecimals: number;
   txnApprovalsEnabled: boolean;
-  refetchAllContracts: () => void;
+  refetchOrderAndContracts: () => void;
 };
 
 const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
@@ -52,7 +54,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   filler,
   initiator,
   myShareQty,
-  refetchAllContracts
+  refetchOrderAndContracts
 }) => {
   const { address: userWalletAddress } = useConnection();
 
@@ -76,7 +78,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   });
 
   const refetchAllPlusAccepted = () => {
-    refetchAllContracts();
+    refetchOrderAndContracts();
     refetch();
   };
 
@@ -211,7 +213,7 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         isAskOrder={isAskOrder}
         swapContractAddress={swapContractAddress}
         contractIndex={order.contract_index}
-        refetchAllContracts={refetchAllContracts}
+        refetchOrderAndContracts={refetchOrderAndContracts}
       />
 
       {showRequestForm && (

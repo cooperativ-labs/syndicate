@@ -4,8 +4,6 @@ import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
 import React, { FC } from 'react';
 
 type OfferingSummaryPanelProps = {
-  isAskOrder: boolean | undefined;
-  initiator: String0x | undefined | '';
   shareQtyRemaining: number | undefined;
   shareQtyOffered: number | undefined;
   partition: String0x | undefined | '';
@@ -15,8 +13,6 @@ type OfferingSummaryPanelProps = {
 };
 
 const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
-  isAskOrder,
-  initiator,
   price,
   shareQtyRemaining,
   shareQtyOffered,
@@ -28,8 +24,7 @@ const OfferingSummaryPanel: FC<OfferingSummaryPanelProps> = ({
   return (
     <div className={className}>
       <span className='font-semibold text-xl'>{` ${numberWithCommas(price, 2)} ${presentCurrency}`}</span>
-      <span className='text-sm'>
-        {' '}
+      <span className='ml-1 text-sm'>
         per {partition && stringFromBytes32(partition as String0x)} share
       </span>
 

@@ -47,7 +47,7 @@ type SubmitSwapProps = {
   createOrder: (params: CreateOrderParams) => Promise<CreateOrderResult>;
   setModal?: Dispatch<SetStateAction<boolean>>;
   addPartition?: (params: AddContractPartitionParams) => Promise<void>;
-  refetchAllContracts: () => void;
+  refetchMainContracts: () => void;
   refetchOfferingInfo: () => void;
 };
 
@@ -72,7 +72,7 @@ export const submitSwap = async ({
   setButtonStep,
   createOrder,
   addPartition,
-  refetchAllContracts,
+  refetchMainContracts,
   refetchOfferingInfo
 }: SubmitSwapProps) => {
   setButtonStep('step1');
@@ -118,7 +118,7 @@ export const submitSwap = async ({
         visible: visible,
         transactionHash: transactionReceipt.transactionHash
       });
-      refetchAllContracts();
+      refetchMainContracts();
       refetchOfferingInfo();
       setButtonStep('confirmed');
       toast.success(`You have offered ${!isAsk ? 'to purchase ' : ''}${numShares} shares.`);
@@ -249,7 +249,7 @@ type ApproveRejectSwapProps = {
   isDisapprove: boolean;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
-  refetchAllContracts: () => void;
+  refetchMainContracts: () => void;
 };
 export const approveRejectSwap = async ({
   transferEventArgs,
@@ -258,7 +258,7 @@ export const approveRejectSwap = async ({
   contractIndex,
   isDisapprove,
   setButtonStep,
-  refetchAllContracts,
+  refetchMainContracts,
   setModal
 }: ApproveRejectSwapProps) => {
   setButtonStep('step1');
@@ -305,7 +305,7 @@ export const approveRejectSwap = async ({
       }
       setButtonStep('confirmed');
       toast.success(`You have ${isDisapprove ? 'disapproved' : 'approved'} the swap.`);
-      refetchAllContracts();
+      refetchMainContracts();
       setModal && setModal(false);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
@@ -320,7 +320,7 @@ type CancelOrderProps = {
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   handleArchive: (archive: boolean) => Promise<any>;
   setModal?: Dispatch<SetStateAction<boolean>>;
-  refetchAllContracts: () => void;
+  refetchMainContracts: () => void;
 };
 
 export const cancelSwap = async ({
@@ -329,7 +329,7 @@ export const cancelSwap = async ({
   setButtonStep,
   handleArchive,
   setModal,
-  refetchAllContracts
+  refetchMainContracts
 }: CancelOrderProps) => {
   setButtonStep('step1');
   const config = getWagmiConfig();
@@ -352,7 +352,7 @@ export const cancelSwap = async ({
       setButtonStep('confirmed');
       toast.success(`You have cancelled your sale.`);
       setModal && setModal(false);
-      refetchAllContracts();
+      refetchMainContracts();
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -365,7 +365,7 @@ type CancelAcceptanceProps = {
   contractIndex: number;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   setModal?: Dispatch<SetStateAction<boolean>>;
-  refetchAllContracts: () => void;
+  refetchOrderAndContracts: () => void;
 };
 
 export const cancelAcceptance = async ({
@@ -373,7 +373,7 @@ export const cancelAcceptance = async ({
   contractIndex,
   setButtonStep,
   setModal,
-  refetchAllContracts
+  refetchOrderAndContracts
 }: CancelAcceptanceProps) => {
   setButtonStep('step1');
   const config = getWagmiConfig();
@@ -395,7 +395,7 @@ export const cancelAcceptance = async ({
       setButtonStep('confirmed');
       toast.success(`You have cancelled your offer.`);
       setModal && setModal(false);
-      refetchAllContracts();
+      refetchOrderAndContracts();
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -406,13 +406,13 @@ export const cancelAcceptance = async ({
 type ClaimProceedsProps = {
   swapContractAddress: String0x | undefined;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  refetchAllContracts?: () => void;
+  refetchOrderAndContracts?: () => void;
 };
 
 export const claimProceeds = async ({
   swapContractAddress,
   setButtonStep,
-  refetchAllContracts
+  refetchOrderAndContracts
 }: ClaimProceedsProps) => {
   const config = getWagmiConfig();
   const call = async () => {
@@ -431,7 +431,7 @@ export const claimProceeds = async ({
         hash
       });
       setButtonStep('confirmed');
-      refetchAllContracts && refetchAllContracts();
+      refetchOrderAndContracts && refetchOrderAndContracts();
       toast.success(`You have claimed your proceeds.`);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);

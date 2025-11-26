@@ -31,8 +31,6 @@ import { PostBidAskFormProps } from './offering-actions-types';
 
 type WithAdditionalProps = PostBidAskFormProps & {
   walletAddress: string;
-  swapContractAddress: String0x;
-  offeringMin: number | null;
   documents: Document[] | undefined;
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
   refetchAllContracts: () => void;
@@ -132,8 +130,8 @@ const buildBidAskSchema = ({
 
 const PostBidAskForm: FC<WithAdditionalProps> = ({
   offering,
+  contractSet,
   walletAddress,
-  swapContractAddress,
   swapApprovalsEnabled,
   partitions,
   paymentTokenDecimals,
@@ -143,9 +141,11 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
   currentSalePrice,
   documents,
   setModal,
-  refetchAllContracts,
+  refetchMainContracts,
   refetchOfferingInfo
 }) => {
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
+  const offeringMin = offering.min_units_per_investor;
   if (!paymentTokenDecimals) {
     throw new Error('Payment token decimals are required (PostBidAskForm)');
   }
@@ -237,16 +237,14 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
       maxUnits: values.maxUnits,
       swapContractAddress: swapContractAddress,
       visible: !swapApprovalsEnabled,
-      toc: values.toc,
       paymentTokenDecimals: paymentTokenDecimals as number,
-      offeringId: offering.id.toString(),
       isContractOwner: isContractOwner,
       isAsk: isAsk,
       isIssuance: isIssuance,
       isErc20Payment: isErc20Payment,
       setButtonStep: setButtonStep,
       createOrder: createOrder,
-      refetchAllContracts,
+      refetchMainContracts,
       refetchOfferingInfo
     });
     setModal('shareSaleList');

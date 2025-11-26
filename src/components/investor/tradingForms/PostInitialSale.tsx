@@ -20,13 +20,7 @@ import { z } from 'zod';
 import { PostInitialSaleProps } from './offering-actions-types';
 
 type WithAdditionalProps = PostInitialSaleProps & {
-  sharesIssued: number | null;
-  priceStart: number | null;
-  offeringId: string;
-  shareContractId: string;
-  swapContractAddress: String0x;
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
-  refetchAllContracts: () => void;
 };
 
 const optionalPositiveInt = z
@@ -81,19 +75,21 @@ const postInitialSaleSchema = z
 type PostInitialSaleFormValues = z.infer<typeof postInitialSaleSchema>;
 
 const PostInitialSale: FC<WithAdditionalProps> = ({
-  sharesIssued,
+  offering,
+  contractSet,
   sharesOutstanding,
-  offeringId,
-  priceStart,
-  swapContractAddress,
-  shareContractId,
   paymentTokenAddress,
   paymentTokenDecimals,
   partitions,
   setModal,
-  refetchAllContracts,
+  refetchMainContracts,
   refetchOfferingInfo
 }) => {
+  const sharesIssued = offering.num_units;
+  const priceStart = offering.price_start;
+  const offeringId = offering.id.toString();
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
+  const shareContractId = contractSet?.shareContract?.crypto_address_id as string;
   const { address: userWalletAddress } = useConnection();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
 
@@ -199,7 +195,6 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
       swapContractAddress: swapContractAddress,
       shareContractId: shareContractId,
       paymentTokenDecimals: paymentTokenDecimals as number,
-      offeringId: offeringId,
       isContractOwner: isContractOwner,
       isAsk: isAsk,
       isIssuance: isIssuance,
@@ -207,7 +202,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
       setButtonStep: setButtonStep,
       createOrder: handleCreateOrder,
       addPartition: handleAddPartition,
-      refetchAllContracts,
+      refetchMainContracts,
       refetchOfferingInfo
     });
     setModal('shareSaleList');

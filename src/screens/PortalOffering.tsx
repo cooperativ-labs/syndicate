@@ -24,6 +24,7 @@ import { erc20Abi, formatUnits } from 'viem';
 import { useConnection, useReadContract, useReadContracts } from 'wagmi';
 
 import { Document, DocumentType, OfferingFull, OfferingParticipant } from '@/types';
+import { getCurrencyOption } from '@src/utils/enumConverters';
 
 type PortalOfferingProps = {
   offering: OfferingFull;
@@ -97,7 +98,6 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
     query: { enabled: Boolean(userWalletAddress && paymentTokenAddress) }
   });
   const myBacBalance = bacBalanceData ? formatUnits(bacBalanceData, tokenDecimals) : undefined;
-  const bacSymbol = offering.investment_currency;
 
   const partitions = data?.[0].result;
   const isWhitelistError = data?.[1].error;
@@ -185,18 +185,20 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
       >
         <PostBidAskForm
           offering={offering}
-          offeringMin={min_units_per_investor}
+          contractSet={offering.offeringSmartContracts}
           sharesOutstanding={sharesOutstanding}
           walletAddress={userWalletAddress as String0x}
           myShareQty={myShareQty}
-          swapContractAddress={swapContractAddress}
           swapApprovalsEnabled={swapApprovalsEnabled}
+          txnApprovalsEnabled={txnApprovalsEnabled}
           isContractOwner={false}
           currentSalePrice={currentSalePrice}
           setModal={setManagerModal}
           partitions={partitions as String0x[]}
+          paymentTokenAddress={paymentTokenAddress}
           paymentTokenDecimals={paymentTokenDecimals}
           refetchOfferingInfo={refetchOfferingInfo}
+          refetchMainContracts={refetchMainContracts}
           refetchAllContracts={refetchMainContracts}
           documents={offeringDocs}
         />
@@ -211,8 +213,8 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
             {isWhitelisted ? (
               <ShareSaleList
                 offering={offering}
+                contractSet={offering.offeringSmartContracts}
                 orders={orders}
-                swapContractAddress={swapContractAddress}
                 isContractOwner={false}
                 setModal={setManagerModal}
                 refetchMainContracts={refetchMainContracts}
@@ -220,10 +222,12 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
                 paymentTokenDecimals={paymentTokenDecimals}
                 txnApprovalsEnabled={txnApprovalsEnabled}
                 swapApprovalsEnabled={swapApprovalsEnabled}
-                shareContractAddress={shareContractAddress}
                 refetchOfferingInfo={refetchOfferingInfo}
                 myShareQty={myShareQty}
                 transferEvents={transferEvents}
+                sharesOutstanding={sharesOutstanding}
+                partitions={partitions as String0x[]}
+                currentSalePrice={currentSalePrice}
               />
             ) : (
               removedFromWhitelist
@@ -244,7 +248,7 @@ const PortalOffering: FC<PortalOfferingProps> = ({ offering, documents }) => {
             />
             <hr className='mt-6 mb-4' />
             <div className='flex text-xs font-medium uppercase'>
-              {`Your wallet balance: ${floatWithCommas(myBacBalance as string, 2)} ${bacSymbol}
+              {`Your wallet balance: ${floatWithCommas(myBacBalance as string, 2)} ${getCurrencyOption(offering.investment_currency)?.symbol}
                `}
             </div>
           </DashboardCard>

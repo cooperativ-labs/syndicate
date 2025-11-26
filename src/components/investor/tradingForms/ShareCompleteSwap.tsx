@@ -38,7 +38,6 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
   const chainId = useChainId();
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const { connector } = useConnection();
-
   const handleClick = async () => {
     await callFillOrder({
       amount: acceptedOrderQty,
@@ -72,19 +71,15 @@ const ShareCompleteSwap: FC<ShareCompleteSwapProps> = ({
 
         <div className={'flex flex-col'}>
           <div className='flex flex-col'>{saleStatementText}</div>
-          <Button
-            className='rounded-lg p-3 bg-blue-500 hover:bg-blue-700 text-white font-medium'
+          <LoadingButtonChain
             onClick={handleClick}
-          >
-            <LoadingButtonChain
-              state={buttonStep}
-              idleText={formButtonText}
-              step1Text={'Executing...'}
-              confirmedText={'Confirmed!'}
-              failedText='Transaction failed'
-              rejectedText='You rejected the transaction. Click here to try again.'
-            />
-          </Button>
+            state={buttonStep}
+            idleText={formButtonText}
+            step1Text={'Executing...'}
+            confirmedText={'Confirmed!'}
+            failedText='Transaction failed'
+            rejectedText='You rejected the transaction. Click here to try again.'
+          />
         </div>
       </>
     );

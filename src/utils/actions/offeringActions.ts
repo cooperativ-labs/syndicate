@@ -98,14 +98,14 @@ export async function addLegalShareLink({
   offeringId,
   entityId,
   agreementText,
-  smartContractId,
+  smartContractAddress,
   agreementTitle
 }: {
   documentOfferingUniqueId: string;
   offeringId: string;
   entityId: string;
   agreementText: string;
-  smartContractId: string;
+  smartContractAddress: string;
   agreementTitle: string;
   // signature: string;
 }): Promise<void> {
@@ -118,14 +118,7 @@ export async function addLegalShareLink({
     .eq('id', Number(offeringId));
   if (updateOfferingError) throw updateOfferingError;
 
-  // 2) Insert smart contract set
-  const { error: scError } = await supabase.from('offering_smart_contract_set').insert({
-    offering_id: Number(offeringId),
-    share_contract_id: smartContractId
-  });
-  if (scError) throw scError;
-
-  // 3) Insert document
+  // 2) Insert document
   const { error: docError } = await supabase.from('document').insert({
     title: agreementTitle,
     text: agreementText,
@@ -142,7 +135,7 @@ export async function addLegalShareLink({
   const { error: updateScError } = await supabase
     .from('smart_contract')
     .update({ established: true })
-    .eq('id', smartContractId);
+    .eq('id', smartContractAddress);
   if (updateScError) throw updateScError;
 
   revalidatePath('/', 'page');

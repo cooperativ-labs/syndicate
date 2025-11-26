@@ -77,7 +77,6 @@ const createSharePurchaseSaleRequestSchema = (shareQtyRemaining: number, order: 
   });
 
 export type SharePurchaseSaleRequestProps = {
-  offering: OfferingFull;
   order: ShareOrder;
   isAskOrder: boolean;
   price: number;
@@ -87,6 +86,7 @@ export type SharePurchaseSaleRequestProps = {
 };
 
 type AdditionalSharePurchaseSaleRequestProps = SharePurchaseSaleRequestProps & {
+  offering: OfferingFull;
   myBacBalance: string | undefined;
   callFillOrder: (args: {
     amount: number;
@@ -109,10 +109,12 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
   const investmentCurrency = offering.investment_currency as CurrencyCodeType;
-  const standardSaleDisclosures = `/assets/order/disclosures.md`;
+  const standardSaleDisclosures = `/assets/subscription-agreement/risks-disclosure.md`;
+
   const getStandardSaleDisclosuresText = async (): Promise<string> =>
     axios.get(standardSaleDisclosures).then(resp => resp.data);
   const { value: standardSaleDisclosuresText } = useAsync(getStandardSaleDisclosuresText, []);
+
   const documents: Document[] = [];
 
   const purchaseCalculator = (numUnits: number) => {

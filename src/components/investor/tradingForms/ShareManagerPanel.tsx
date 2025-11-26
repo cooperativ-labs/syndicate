@@ -1,8 +1,40 @@
+/* Panel scenarios
+As the Manager: 
+  - SwapApprovals are not enabled
+    - If the order is not filled or cancelled, show the cancel button
+    - If the order is filled or cancelled, show the archive button
+  - SwapApprovals are enabled
+    - If the order is not approved, show the "Approve Listing" button (replaces visibility toggle)
+    - If the order is approved, show the disapprove button
+    - If the order is filled or cancelled, show the archive button
+  - TxnApprovals are enabled
+    - If swapApprovals are enabled, show the "Approve Listing" ( just toggles visibility ) and "Disapprove" buttons 
+    - If swapApprovals are not enabled, show visibility toggle
+    - If the order is filled or cancelled, show the archive button
+As the Initiator:
+  - SwapApprovals are not enabled
+    - If the order is not filled or cancelled, show the cancel button
+    - If the order is filled or cancelled, show the archive button
+  - SwapApprovals are enabled
+    - Show cancel button
+    - If the order is filled or cancelled, show the archive button
+  - TxnApprovals are enabled
+    - if not approved, show "Awaiting approval"
+    - if approved, show cancel button
+As the Investor
+  - SwapApprovals are not enabled
+    - show purchase form
+  - SwapApprovals are enabled
+    - item does not appear
+  - TxnApprovals are enabled
+    - show purchase steps
+*/
+
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
-import { Button } from '@src/components/ui/button';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
+import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
 import { cn } from '@src/lib/utils';
 import { updateOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -17,13 +49,13 @@ import { useChainId, useConnection, useReadContract } from 'wagmi';
 import { ShareOrder } from '@/types';
 
 import { SaleMangerPanelProps } from './offering-actions-types';
+import { usePathname } from 'next/navigation';
 
 type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
   currentUserFiller: boolean | undefined;
   currentUserInitiator: boolean | undefined;
-  offeringId: string;
   isApproved: boolean | undefined;
-
+  isDisapproved: boolean | undefined;
   isAccepted: boolean | undefined;
   isCancelled: boolean | undefined;
   isAskOrder: boolean | undefined;
@@ -35,13 +67,13 @@ type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
   price: number | undefined;
   partition: String0x | undefined | '';
   small?: boolean;
-  shareContractAddress: String0x | undefined;
-  refetchAllContracts: () => void;
 };
 
 const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
+  contractSet,
   currentUserInitiator,
   isApproved,
+  isDisapproved,
   isAccepted,
   isCancelled,
   isAskOrder,
@@ -52,24 +84,24 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   amount,
   price,
   partition,
-  shareContractAddress,
-  swapContractAddress,
   paymentTokenAddress,
   paymentTokenDecimals,
   txnApprovalsEnabled,
   swapApprovalsEnabled,
   isContractOwner,
   small,
-  refetchAllContracts,
+  refetchMainContracts,
   refetchOfferingInfo
 }) => {
+  const [archiveButtonStatus, setArchiveButtonStatus] = useState<ButtonLoadingState>('default');
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const { address: userWalletAddress } = useConnection();
   const chainId = useChainId();
 
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
-  const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
 
   const { data: contractData } = useReadContract({
     address: swapContractAddress,
@@ -94,6 +126,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
   const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
   const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
+  const pathname = usePathname();
 
   const transferEventArgs = {
     shareContractAddress,
@@ -115,34 +148,50 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     await updateOrder({
       orderId: order.id,
       visible: !isDisapprove,
-      archived: order.archived ?? false
+      archived: order.archived ?? false,
+      revalidationPath: {
+        path: pathname,
+        type: 'page'
+      }
     });
   };
 
   const handleApprove = async ({ isDisapprove }: { isDisapprove: boolean }) => {
-    if (allowContractApproveDisapprove) {
-      await approveRejectSwap({
-        transferEventArgs: transferEventArgs,
-        swapContractAddress,
-        paymentTokenDecimals,
-        contractIndex: order.contract_index,
-        isDisapprove: isDisapprove,
-        setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
-        refetchAllContracts
-      });
+    if (transactionIsAccepted || !txnApprovalsEnabled) {
+      if (allowContractApproveDisapprove) {
+        await approveRejectSwap({
+          transferEventArgs: transferEventArgs,
+          swapContractAddress,
+          paymentTokenDecimals,
+          contractIndex: order.contract_index,
+          isDisapprove: isDisapprove,
+          setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
+          refetchMainContracts
+        });
+      }
     }
     if (allowVisibilityApproveDisapprove) {
       await updateListingVisibility(isDisapprove);
     }
   };
 
-  const handleArchive = async (archive: boolean) => {
-    await updateOrder({
-      orderId: order.id,
-      visible: order.visible ?? false,
-      archived: archive
-    });
-    refetchOfferingInfo();
+  const handleArchive = async () => {
+    try {
+      setArchiveButtonStatus('loading');
+      await updateOrder({
+        orderId: order.id,
+        visible: !order.archived,
+        archived: !order.archived,
+        revalidationPath: {
+          path: pathname,
+          type: 'page'
+        }
+      });
+      setArchiveButtonStatus('success');
+    } catch (error) {
+      console.error('Error archiving order:', error);
+      setArchiveButtonStatus('error');
+    }
   };
 
   const handleCancel = async () => {
@@ -151,7 +200,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
       contractIndex: order.contract_index ?? 0,
       setButtonStep: setCancelButtonStep,
       handleArchive,
-      refetchAllContracts
+      refetchMainContracts
     });
     refetchOfferingInfo();
   };
@@ -170,70 +219,57 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
 
   const cancelButton = (
-    <Button
-      className={buttonClass}
+    <LoadingButtonChain
       onClick={() => handleCancel()}
       disabled={cancelButtonStep === 'step1'}
-    >
-      <LoadingButtonChain
-        state={cancelButtonStep}
-        idleText='Cancel Remaining Offer'
-        step1Text='Canceling Sale...'
-        confirmedText='Sale Cancelled!'
-        failedText='Transaction failed'
-        rejectedText='You rejected the transaction. Click here to try again.'
-      />
-    </Button>
+      state={cancelButtonStep}
+      idleText='Cancel Remaining Offer'
+      step1Text='Canceling Sale...'
+      confirmedText='Sale Cancelled!'
+      failedText='Transaction failed'
+      rejectedText='You rejected the transaction. Click here to try again.'
+    />
   );
 
   const archiveButton = (
-    <Button
-      className={buttonClass}
-      onClick={() => handleArchive(!order.archived)}
-      disabled={claimProceedsButton === 'step1'}
-    >
-      {order.archived ? 'Unarchive' : `Archive completed swap`}
-    </Button>
+    <LoadingButton
+      onClick={handleArchive}
+      buttonState={archiveButtonStatus}
+      setButtonState={setArchiveButtonStatus}
+      text={order.archived ? 'Unarchive' : 'Archive completed swap'}
+      loadingText={order.archived ? 'Unarchiving...' : 'Archiving...'}
+      successText={order.archived ? 'Unarchived!' : 'Archived!'}
+      errorText='Error'
+      reset
+    />
   );
 
   const approveButton = (
-    <Button
-      className={buttonClass}
-      onClick={() =>
-        transactionIsAccepted || !txnApprovalsEnabled
-          ? handleApprove({ isDisapprove: false })
-          : listingIsApproved
-            ? updateListingVisibility(true)
-            : updateListingVisibility(false)
-      }
+    <LoadingButtonChain
+      onClick={() => handleApprove({ isDisapprove: false })}
       disabled={approveButtonStep === 'step1'}
-    >
-      <LoadingButtonChain
-        state={approveButtonStep}
-        idleText={`${transactionIsAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'}`}
-        step1Text='Approving...'
-        confirmedText='Approved'
-        failedText='Transaction failed'
-        rejectedText='You rejected the transaction. Click here to try again.'
-      />
-    </Button>
+      state={approveButtonStep}
+      idleText={`${transactionIsAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'}`}
+      step1Text='Approving...'
+      confirmedText='Approved'
+      failedText='Transaction failed'
+      rejectedText='You rejected the transaction. Click here to try again.'
+    />
   );
 
-  const disapproveButton = (
-    <Button
-      className={buttonClass}
+  const disapproveButton = !isDisapproved ? (
+    <LoadingButtonChain
       onClick={() => handleApprove({ isDisapprove: true })}
       disabled={approveButtonStep === 'step1'}
-    >
-      <LoadingButtonChain
-        state={disapproveButtonStep}
-        idleText={`Disapprove ${transactionIsAccepted ? 'Trade' : 'Listing'}`}
-        step1Text='Disapproving...'
-        confirmedText='Disapproved'
-        failedText='Transaction failed'
-        rejectedText='You rejected the transaction. Click here to try again.'
-      />
-    </Button>
+      state={disapproveButtonStep}
+      idleText={`Disapprove ${transactionIsAccepted ? 'Trade' : 'Listing'}`}
+      step1Text='Disapproving...'
+      confirmedText='Disapproved'
+      failedText='Transaction failed'
+      rejectedText='You rejected the transaction. Click here to try again.'
+    />
+  ) : (
+    <span className='text-red-800 flex justify-center'>This offer has been disapproved</span>
   );
 
   const baseInitiatorButtonSet = (
@@ -323,35 +359,3 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
 };
 
 export default SaleManagerPanel;
-
-/* Panel scenarios
-As the Manager: 
-  - SwapApprovals are not enabled
-    - If the order is not filled or cancelled, show the cancel button
-    - If the order is filled or cancelled, show the archive button
-  - SwapApprovals are enabled
-    - If the order is not approved, show the "Approve Listing" button (replaces visibility toggle)
-    - If the order is approved, show the disapprove button
-    - If the order is filled or cancelled, show the archive button
-  - TxnApprovals are enabled
-    - If swapApprovals are enabled, show the "Approve Listing" ( just toggles visibility ) and "Disapprove" buttons 
-    - If swapApprovals are not enabled, show visibility toggle
-    - If the order is filled or cancelled, show the archive button
-As the Initiator:
-  - SwapApprovals are not enabled
-    - If the order is not filled or cancelled, show the cancel button
-    - If the order is filled or cancelled, show the archive button
-  - SwapApprovals are enabled
-    - Show cancel button
-    - If the order is filled or cancelled, show the archive button
-  - TxnApprovals are enabled
-    - if not approved, show "Awaiting approval"
-    - if approved, show cancel button
-As the Investor
-  - SwapApprovals are not enabled
-    - show purchase form
-  - SwapApprovals are enabled
-    - item does not appear
-  - TxnApprovals are enabled
-    - show purchase steps
-*/
