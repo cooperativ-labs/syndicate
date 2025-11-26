@@ -10,7 +10,7 @@ import reactHooksPlugin from 'eslint-plugin-react-hooks';
 export default [
   js.configs.recommended,
   {
-    ignores: ['.netlify/**', '.next/**', 'node_modules/**', 'dist/**', 'build/**', 'coverage/**'],
+    ignores: ['.next/**', 'node_modules/**', 'dist/**', 'build/**', 'coverage/**'],
     files: ['**/*.ts', '**/*.tsx'],
     languageOptions: {
       parser: tsParser,

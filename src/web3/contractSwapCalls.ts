@@ -34,11 +34,9 @@ type SubmitSwapProps = {
   minUnits?: number;
   maxUnits?: number;
   visible: boolean;
-  toc?: boolean;
   swapContractAddress: String0x;
   shareContractId: string;
   paymentTokenDecimals: number;
-  offeringId: string;
   userWalletAddress: String0x;
   isContractOwner: boolean;
   isAsk: boolean;
@@ -61,12 +59,10 @@ export const submitSwap = async ({
   minUnits,
   maxUnits,
   visible,
-  toc,
   swapContractAddress,
   shareContractId,
   paymentTokenDecimals,
   userWalletAddress,
-  offeringId,
   isContractOwner,
   isAsk,
   isIssuance,
@@ -88,7 +84,6 @@ export const submitSwap = async ({
       if (!isContractOwner && numShares > myShareQty!) {
         toast.error('You do not have enough shares to sell.');
       }
-
       const { request, result } = await simulateContract(config, {
         address: swapContractAddress as String0x,
         abi: swapContractABI,

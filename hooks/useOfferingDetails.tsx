@@ -47,7 +47,6 @@ const useOfferingDetails = ({
   const shareContractAddress = shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = swapContract?.cryptoAddress?.address as String0x;
   const distributionContractAddress = distributionContract?.cryptoAddress?.address as String0x;
-  console.log('USE OFFERING DETAILS');
   useAsync(async () => {
     if ((!swapContractAddress && !shareContractAddress) || isManualRefetchRef.current) {
       return;

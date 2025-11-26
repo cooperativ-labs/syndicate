@@ -3,7 +3,7 @@ import { parseUnits } from 'viem';
 
 import { CurrencyCodeType } from '@/types';
 
-export const shareContractDecimals = 10;
+export const shareContractDecimals = 6;
 
 export type Decimals = number;
 
