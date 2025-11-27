@@ -8,7 +8,6 @@ import { getPublicClient } from 'wagmi/actions';
 import { dividendContractABI } from '../generated';
 import { String0x } from '../helpersChain';
 import { shareContractDecimals, toNormalNumber } from '../util';
-import { getWagmiConfig } from '../wagmi';
 
 export type DistributionDetailsType = {
   // currentBlock: Block | undefined;
@@ -31,14 +30,13 @@ export const useDistributionDetails = (
   dividendContactAddress: String0x,
   contractIndex: number
 ): DistributionDetailsType => {
-  const publicClient = usePublicClient();
-  const [currentBlock, setCurrentBlock] = useState<Block | undefined>(undefined);
-  const chainId = useChainId();
-  const config = getWagmiConfig();
-  useAsync(async () => {
-    const block = await publicClient?.getBlock();
-    setCurrentBlock(block);
-  }, [getPublicClient, setCurrentBlock]);
+  // const publicClient = usePublicClient();
+  // const [currentBlock, setCurrentBlock] = useState<Block | undefined>(undefined);
+
+  // useAsync(async () => {
+  //   const block = await publicClient?.getBlock();
+  //   setCurrentBlock(block);
+  // }, [getPublicClient, setCurrentBlock]);
 
   const {
     data,
@@ -51,7 +49,6 @@ export const useDistributionDetails = (
     functionName: 'dividends',
     args: [BigInt(contractIndex)]
   });
-
   const dividendPartition = data ? data[0] : undefined;
   const blockTimestamp = data ? data[1] : undefined;
   const exDividendDate = data ? new Date(Number(data[2]) * 1000) : undefined;

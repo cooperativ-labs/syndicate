@@ -35,7 +35,6 @@ type UpsertMemberProps = {
   shareContractAddress: String0x;
   offeringId: string | number;
   walletAddress: String0x;
-  organizationId: string | number;
   chainId: number;
   name?: string | null;
   externalId?: string | null;
@@ -48,7 +47,7 @@ export const upsertMember = async ({
   shareContractAddress,
   offeringId,
   walletAddress,
-  organizationId,
+
   chainId,
   name,
   externalId,
@@ -91,8 +90,12 @@ export const upsertMember = async ({
     await waitForTransactionReceipt(config, {
       hash
     });
-
-    await addToDb(hash);
+    try {
+      await addToDb(hash);
+    } catch (e) {
+      console.error({ e, transactionHash: hash });
+      alert(`Error adding whitelist member to DB: ${e}`);
+    }
     // await handleWhitelistUpdateNotification({
     //   organizationId: organizationId,
     //   completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
@@ -223,22 +226,32 @@ export const sendShares = async ({
         hash
       });
       transactionDetails = details;
-      await addIssuance({
-        shareContractAddress: shareContractAddress,
-        recipientAddress: recipient,
-        senderAddress: sender,
-        amount: numShares,
-        currencyCode,
-        price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
-        transactionHash: transactionDetails.transactionHash,
-        partition: setPartition,
-        type: isIssuance ? ShareTransferEventType.ISSUANCE : ShareTransferEventType.TRANSFER
-      });
-      if (partition === '0xNew') {
-        await addPartition({
-          smartContractId: shareContractId,
-          partition: setPartition
+      try {
+        await addIssuance({
+          shareContractAddress: shareContractAddress,
+          recipientAddress: recipient,
+          senderAddress: sender,
+          amount: numShares,
+          currencyCode,
+          price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
+          transactionHash: transactionDetails.transactionHash,
+          partition: setPartition,
+          type: isIssuance ? ShareTransferEventType.ISSUANCE : ShareTransferEventType.TRANSFER
         });
+      } catch (e) {
+        console.error({ e, transactionDetails: details });
+        alert(`Error adding issuance to DB: ${e}`);
+      }
+      if (partition === '0xNew') {
+        try {
+          await addPartition({
+            smartContractId: shareContractId,
+            partition: setPartition
+          });
+        } catch (e) {
+          console.error({ e, transactionDetails: details });
+          alert(`Error adding partition to DB: ${e}`);
+        }
       }
       refetchMainContracts();
       toast.success(
@@ -322,17 +335,22 @@ export const forceTransfer = async ({
     const details = await waitForTransactionReceipt(config, {
       hash
     });
-    await addTransferEvent({
-      shareContractAddress: shareContractAddress,
-      recipientAddress: recipient,
-      senderAddress: target,
-      amount: amount,
-      transactionHash: details.transactionHash,
-      partition: partition,
-      type: ShareTransferEventType.FORCED
-    });
-    refetchContracts();
-    setButtonStep('confirmed');
+    try {
+      await addTransferEvent({
+        shareContractAddress: shareContractAddress,
+        recipientAddress: recipient,
+        senderAddress: target,
+        amount: amount,
+        transactionHash: details.transactionHash,
+        partition: partition,
+        type: ShareTransferEventType.FORCED
+      });
+      refetchContracts();
+      setButtonStep('confirmed');
+    } catch (e) {
+      console.error({ e, transactionDetails: details });
+      alert(`Error adding transfer event to DB: ${e}`);
+    }
   } catch (e) {
     StandardChainErrorHandling(e, setButtonStep);
   }

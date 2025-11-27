@@ -3,15 +3,14 @@ import { getOfferingDocumentsById } from '@src/utils/actions/documentActions';
 import { getOfferingById } from '@src/utils/actions/offeringActions';
 import { getOrganizationUsers } from '@src/utils/actions/organizationActions';
 
-export default async function OfferingPage({
+const PortalOfferingLayout = async ({
   params,
   children
 }: {
-  params: Promise<{ offeringId: string; organizationId: string }>;
+  params: Promise<{ organizationId: string; offeringId: string }>;
   children: React.ReactNode;
-}) {
-  const { offeringId, organizationId } = await params;
-
+}) => {
+  const { organizationId, offeringId } = await params;
   const [organizationUsers, offering, documents] = await Promise.all([
     getOrganizationUsers({ organizationId }),
     getOfferingById(offeringId),
@@ -27,4 +26,6 @@ export default async function OfferingPage({
       {children}
     </OfferingContextProvider>
   );
-}
+};
+
+export default PortalOfferingLayout;

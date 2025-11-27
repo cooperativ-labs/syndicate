@@ -1,7 +1,6 @@
 'use client';
 import { useOffering } from '@contexts/OfferingContext';
 import { useUserContext } from '@contexts/UserContext';
-import useOfferingDetails from '@hooks/useOfferingDetails';
 import AlertBanner from '@src/components/alerts/AlertBanner';
 import DashboardCard from '@src/components/cards/DashboardCard';
 import HashInstructions from '@src/components/documentVerification/HashInstructions';
@@ -11,31 +10,52 @@ import OfferingBasicDetailsForm from '@src/components/offering/OfferingBasicDeta
 import OfferingDashboardTitle from '@src/components/offering/OfferingDashboardTitle';
 import OfferingDetailsDisplay from '@src/components/offering/OfferingDetailsDisplay';
 import FullTransactionHistory from '@src/components/offering/sales/FullTransactionHistory';
-import BasicOfferingDetailsForm from '@src/components/offering/settings/BasicOfferingDetailsForm';
 import OfferingDescriptionSettings from '@src/components/offering/settings/OfferingDescriptionSettings';
 import OfferingFinancialSettings from '@src/components/offering/settings/OfferingFinancialSettings';
 import OfferingProfileSettings from '@src/components/offering/settings/OfferingProfileSettings';
 import TwoColumnLayout from '@src/containers/Layouts/TwoColumnLayout';
 import OfferingTabContainer from '@src/containers/OfferingTabContainer';
 import SheetButtonRight from '@src/containers/sideBar/SheetButtonRight';
-import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import { getDocumentsOfType } from '@src/utils/helpersDocuments';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import React, { FC, useState } from 'react';
+import React, { FC } from 'react';
 import { useConnection } from 'wagmi';
 
-import { CurrencyCodeType, Document, DocumentType, OfferingFull } from '@/types';
+import { CurrencyCodeType, DocumentType } from '@/types';
 
-type OfferingDetailsProps = {
-  offering: OfferingFull;
-  documents: Document[] | null;
-};
-
-const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
+const OfferingDetails: FC = () => {
   const { address: userWalletAddress } = useConnection();
   const { user } = useUserContext();
-  const { isOfferingManager, legalEntity } = useOffering();
   const userId = user?.id;
+
+  const {
+    offering,
+    documents,
+    isOfferingManager,
+    legalEntity,
+    hasContract,
+    isContractOwner,
+    contractManagerMatches,
+    swapContractMatches,
+    contractMatchesCurrentChain,
+    shareContractAddress,
+    transferEvents,
+    partitions,
+    legalLinkTexts,
+    currentSalePrice,
+    myShareQty,
+    sharesOutstanding,
+    smartContractDocuments,
+    isLoading,
+    paymentTokenAddress,
+    totalDistributed,
+    refetchShareContract,
+    refetchTransactionHistory,
+    refetchMainContracts,
+    investorListRefreshTrigger,
+    triggerInvestorListRefresh
+  } = useOffering();
+
   const {
     id,
     name,
@@ -47,7 +67,6 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     distribution_period,
     stage,
     additional_info,
-    investment_currency,
     offeringSmartContracts
   } = offering;
 
@@ -80,59 +99,8 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
     distributionAttachments: documents
   };
 
-  const {
-    hasContract,
-    isContractOwner,
-    contractManagerMatches,
-    swapContractMatches,
-    contractMatchesCurrentChain,
-    shareContractAddress,
-    orders,
-    transferEvents,
-    partitions,
-    legalLinkTexts,
-    currentSalePrice,
-    myShareQty,
-    sharesOutstanding,
-    smartContractDocuments,
-    isLoading,
-    paymentTokenAddress,
-    paymentTokenDecimals,
-    swapApprovalsEnabled,
-    txnApprovalsEnabled,
-    totalDistributed,
-    noLiveOrders,
-    issueReachingContract,
-    refetchShareContract,
-    refetchSwapContract,
-    refetchOrders,
-    refetchTransactionHistory
-  } = useOfferingDetails({
-    price_start: offering.price_start,
-    investment_currency: offering.investment_currency,
-    isOfferingManager,
-    documents: documents || [],
-    contractSet: offeringSmartContracts
-  });
-
-  const [investorListRefreshTrigger, setInvestorListRefreshTrigger] = useState<number>(0); //this seems extremely hackish, but I can't figure out any other way to get the contract hooks in WhitelistAddressListItem to refresh.
-  const triggerInvestorListRefresh = () => {
-    setInvestorListRefreshTrigger(investorListRefreshTrigger + 1);
-  };
-
-  const refetchMainContracts = () => {
-    refetchShareContract();
-    refetchSwapContract();
-    refetchTransactionHistory();
-    triggerInvestorListRefresh();
-  };
-
-  const refetchOfferingInfo = () => {
-    refetchTransactionHistory();
-    refetchOrders();
-  };
   const showBasicOfferingDetailsForm =
-    !details.priceStart && !details.numUnits && !details.investmentCurrency;
+    !details.priceStart && !details.numUnits && !paymentTokenAddress;
 
   return (
     <div className='flex flex-col h-full'>
@@ -161,7 +129,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
         />
         {/* MAIN CONTENT  */}
 
-        <TwoColumnLayout twoThirdsLayout gap='12'>
+        <TwoColumnLayout twoThirdsLayout gap='6'>
           {/* Slot 1 */}
           <DashboardCard>
             <OfferingDashboardTitle
@@ -171,7 +139,7 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
               accessCode={access_code || ''}
               offeringName={name}
               isOfferingManager={isOfferingManager}
-              shareContractAddress={shareContractAddress}
+              shareContractAddress={shareContractAddress ?? ('0x0' as `0x${string}`)}
               chainId={offeringSmartContracts?.shareContract.cryptoAddress.chain_id || undefined}
             />
             {/* <EntityAddressPanel offeringEntity={offeringEntity} owners={owners} /> */}
@@ -225,35 +193,11 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
           </DashboardCard>
           {/* Slot 2 */}
 
-          <OfferingActionsContainer
-            retrievalIssue={false}
-            hasContract={hasContract}
-            loading={isLoading}
-            orders={orders}
-            offering={offering}
-            contractSet={offeringSmartContracts}
-            issueReachingContract={issueReachingContract}
-            paymentTokenAddress={paymentTokenAddress}
-            paymentTokenDecimals={paymentTokenDecimals}
-            swapApprovalsEnabled={swapApprovalsEnabled}
-            txnApprovalsEnabled={txnApprovalsEnabled}
-            sharesOutstanding={sharesOutstanding}
-            isContractOwner={isContractOwner}
-            noLiveOrders={noLiveOrders}
-            partitions={partitions}
-            refetchOfferingInfo={refetchOfferingInfo}
-            currentSalePrice={currentSalePrice}
-            myShareQty={myShareQty}
-            transferEvents={transferEvents}
-            documents={offeringDocs}
-            userWalletAddress={userWalletAddress}
-            investmentCurrency={investment_currency}
-            refetchMainContracts={refetchMainContracts}
-          />
+          <OfferingActionsContainer userWalletAddress={userWalletAddress} />
         </TwoColumnLayout>
         <hr className='border-t-2 border-gray-100 mb-12' />
 
-        <TwoColumnLayout twoThirdsLayout gap='12'>
+        <TwoColumnLayout twoThirdsLayout gap='6'>
           {/* Slot 3 */}
           <div>
             {offering && (
@@ -287,13 +231,16 @@ const OfferingDetails: FC<OfferingDetailsProps> = ({ offering, documents }) => {
               entityId={legalEntity.id.toString()}
             />
             <h1 className='text-cDarkBlue text-xl font-bold  mb-3 mt-16 '>Token agreement</h1>
-            {legalLinkTexts && legalLinkTexts.length > 0 && smartContractDocuments?.length > 0 && (
-              <HashInstructions
-                contractDocuments={smartContractDocuments}
-                agreementTexts={legalLinkTexts}
-                shareContractAddress={shareContractAddress}
-              />
-            )}
+            {legalLinkTexts &&
+              legalLinkTexts.length > 0 &&
+              smartContractDocuments?.length > 0 &&
+              shareContractAddress && (
+                <HashInstructions
+                  contractDocuments={smartContractDocuments}
+                  agreementTexts={legalLinkTexts}
+                  shareContractAddress={shareContractAddress}
+                />
+              )}
           </>
 
           <></>

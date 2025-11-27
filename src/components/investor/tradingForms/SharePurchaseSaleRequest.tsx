@@ -1,3 +1,4 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
 import { Button } from '@src/components/ui/button';
@@ -13,7 +14,6 @@ import { getCurrencyOption } from '@src/utils/enumConverters';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { floatWithCommas, numberWithCommas } from '@src/utils/helpersMoney';
 import { capitalizeFirstLetter } from '@src/utils/helpersText';
-// import { isMetaMask } from '@src/web3/wagmi';
 import axios from 'axios';
 import { ChevronDown, ChevronUp } from 'lucide-react';
 import React, { FC, useMemo, useState } from 'react';
@@ -21,7 +21,7 @@ import { Controller, SubmitHandler, useForm } from 'react-hook-form';
 import { useAsync } from 'react-use';
 import { z } from 'zod';
 
-import { CurrencyCodeType, Document, Offering, OfferingFull, ShareOrder } from '@/types';
+import { CurrencyCodeType, Document, ShareOrder } from '@/types';
 
 import NonInput, { defaultFieldDiv } from '../../form-components/NonInput';
 
@@ -80,13 +80,7 @@ export type SharePurchaseSaleRequestProps = {
   order: ShareOrder;
   isAskOrder: boolean;
   price: number;
-  txnApprovalsEnabled: boolean;
   shareQtyRemaining: number;
-  myShareQty: number | undefined;
-};
-
-type AdditionalSharePurchaseSaleRequestProps = SharePurchaseSaleRequestProps & {
-  offering: OfferingFull;
   myBacBalance: string | undefined;
   callFillOrder: (args: {
     amount: number;
@@ -94,17 +88,16 @@ type AdditionalSharePurchaseSaleRequestProps = SharePurchaseSaleRequestProps & {
   }) => Promise<void>;
 };
 
-const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
-  offering,
+const SharePurchaseSaleRequest: FC<SharePurchaseSaleRequestProps> = ({
   isAskOrder,
   order,
   price,
   myBacBalance,
-  txnApprovalsEnabled,
   shareQtyRemaining,
-  myShareQty,
   callFillOrder
 }) => {
+  const { offering, txnApprovalsRequired, myShareQty } = useOffering();
+
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disclosuresOpen, setDisclosuresOpen] = useState<boolean>(false);
   const [tocOpen, setTocOpen] = useState<boolean>(false);
@@ -160,7 +153,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
 
   const formButtonText = (numUnitsPurchase: string) => {
     const action = isAskOrder ? 'purchase' : 'sell';
-    const mainText = txnApprovalsEnabled
+    const mainText = txnApprovalsRequired
       ? `Request to ${action}`
       : `${capitalizeFirstLetter(action)}`;
 
@@ -173,7 +166,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
 
   return (
     <>
-      {!txnApprovalsEnabled && (
+      {!txnApprovalsRequired && (
         <WalletActionModal open={buttonStep === 'step1' || buttonStep === 'step2'}>
           <WalletActionIndicator
             step={buttonStep}
@@ -369,7 +362,7 @@ const SharePurchaseSaleRequest: FC<AdditionalSharePurchaseSaleRequestProps> = ({
           disabled={isSubmitting || buttonStep === 'step1'}
           state={buttonStep}
           idleText={formButtonText(watchedNumUnitsPurchase)}
-          step1Text={txnApprovalsEnabled ? 'Submitting request' : 'Setting contract allowance...'}
+          step1Text={txnApprovalsRequired ? 'Submitting request' : 'Setting contract allowance...'}
           step2Text='Executing transaction...'
           confirmedText='Executed!'
           failedText='Transaction failed'

@@ -12,23 +12,12 @@ import { deploySwapContract } from '@src/web3/contractFactory';
 import { setContractOperator } from '@src/web3/contractShareCalls';
 import { StandardChainErrorHandling, String0x } from '@src/web3/helpersChain';
 import { MatchSupportedChains } from '@src/web3/wagmi';
-import React, { FC, useEffect, useMemo, useState } from 'react';
-import { useForm } from 'react-hook-form';
+import React, { FC, useMemo, useState } from 'react';
 import { useAsyncFn } from 'react-use';
 import { useChainId, useConnection } from 'wagmi';
-import { z } from 'zod';
 
 import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
 
-import { Field, FieldContent, FieldError, FieldLabel } from '../ui/field';
-const deploySchema = z.object({
-  investmentCurrencyAddress: z
-    .string()
-    .min(1, 'You must choose a currency to use for buying and selling shares')
-});
-
-type DeployFormValues = z.infer<typeof deploySchema>;
-type ChainCurrencyOption = (typeof bacOptions)[number];
 import { createSwapContract } from '@src/utils/actions/cryptoActions';
 
 type CreateSwapContractProps = {
@@ -57,7 +46,6 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
   );
 
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
-  const chainBacs = bacOptions.filter(bac => bac.chainId === chainId);
   const chainName = MatchSupportedChains(chainId)?.name;
 
   const [, deploy] = useAsyncFn(
@@ -114,6 +102,7 @@ const CreateSwapContract: FC<CreateSwapContractProps> = ({
         }
         setButtonStep('confirmed');
       } catch (e) {
+        setButtonStep('failed');
         StandardChainErrorHandling(e, setButtonStep);
         console.error(`Error creating swap contract: ${e}`);
       }

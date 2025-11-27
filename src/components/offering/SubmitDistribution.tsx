@@ -3,7 +3,7 @@ import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain'
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-import { addDistribution } from '@src/utils/actions/orderActions';
+
 // import { isMetaMask } from '@src/web3/wagmi';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { setAllowance } from '@src/web3/contractSwapCalls';
@@ -68,8 +68,7 @@ const SubmitDistribution: FC<SubmitDistributionProps> = ({
         distributionTokenAddress,
         partition: partition as String0x,
         offeringId: offeringId,
-        setButtonStep,
-        addDistribution
+        setButtonStep
       });
     };
 

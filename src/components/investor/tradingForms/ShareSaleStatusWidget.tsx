@@ -1,3 +1,4 @@
+import { useOffering } from '@contexts/OfferingContext';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import { cn } from '@src/lib/utils';
 import { getSwapStatusOption } from '@src/utils/enumConverters';
@@ -9,25 +10,24 @@ import { useChainId, useConnection } from 'wagmi';
 
 import { ShareOrder } from '@/types';
 
+import { ShareSaleStatusWidgetProps } from './offering-actions-types';
+
 type ShareOrderStatusItemProps = {
   order: ShareOrder | undefined;
   swapContractAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-  swapApprovalsEnabled: boolean | undefined;
+  paymentTokenDecimals: number;
+  txnApprovalsRequired: boolean | undefined;
+  listingApprovalsRequired: boolean | undefined;
 };
 
 const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   order,
   swapContractAddress,
   paymentTokenDecimals,
-  txnApprovalsEnabled,
-  swapApprovalsEnabled
+  txnApprovalsRequired,
+  listingApprovalsRequired
 }) => {
   const contractIndex = order ? order?.contract_index : 0;
-  if (!paymentTokenDecimals) {
-    throw new Error('Payment token decimals are required (ShareOrderStatusItem)');
-  }
   const { initiator, amount, filledAmount, isApproved, isCancelled, isAccepted, isFilled, filler } =
     useOrderDetails(swapContractAddress, contractIndex, paymentTokenDecimals);
   const chainId = useChainId();
@@ -42,22 +42,21 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
       isFilled,
       isCancelled,
       isAccepted,
-      txnApprovalsEnabled,
-      swapApprovalsEnabled,
+      txnApprovalsRequired,
+      listingApprovalsRequired,
       isVisible: order?.visible ?? false
     });
 
   const statusColor = status?.color;
   return (
-    <div className='flex flex-col p-1 px-2 border-2 rounded-md my-2 gap-1'>
-      <div className='text-sm font-bold'>
+    <div className="flex flex-col p-1 px-2 border-2 rounded-md my-2 gap-1">
+      <div className="text-sm font-bold">
         <FormattedCryptoAddress chainId={chainId} address={initiator} />{' '}
       </div>
       <div
         className={cn(
           'text-xs font-semibold rounded-md max-w-min px-1 h-5 border-2 min-w-max',
           `text-${statusColor}`,
-          // 'text-white font-semibold',
           `border-${statusColor}`
         )}
       >
@@ -67,25 +66,23 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
   );
 };
 
-type ShareSaleStatusWidgetProps = {
-  orders: ShareOrder[] | undefined;
-  swapContractAddress: String0x | undefined;
-  paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-  swapApprovalsEnabled: boolean | undefined;
-  isContractOwner: boolean;
-};
+const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = () => {
+  const {
+    orders,
+    contractSet,
+    paymentTokenDecimals,
+    txnApprovalsRequired,
+    listingApprovalsRequired,
+    isContractOwner
+  } = useOffering();
 
-const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
-  orders,
-  txnApprovalsEnabled,
-  swapApprovalsEnabled,
-  paymentTokenDecimals,
-  swapContractAddress,
-  isContractOwner
-}) => {
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
   const { address: userWalletAddress } = useConnection();
+
+  if (!paymentTokenDecimals) {
+    return null;
+  }
+
   const myOrders =
     orders && orders?.filter(order => order?.initiator === userWalletAddress || isContractOwner);
 
@@ -97,8 +94,8 @@ const ShareSaleStatusWidget: FC<ShareSaleStatusWidgetProps> = ({
           order={order}
           swapContractAddress={swapContractAddress}
           paymentTokenDecimals={paymentTokenDecimals}
-          txnApprovalsEnabled={txnApprovalsEnabled}
-          swapApprovalsEnabled={swapApprovalsEnabled}
+          txnApprovalsRequired={txnApprovalsRequired}
+          listingApprovalsRequired={listingApprovalsRequired}
         />
       ))}
     </>

@@ -101,37 +101,27 @@ export async function addTransferEvent(
 type AddDistributionParams = {
   transactionHash: string;
   contractIndex: number;
+  offeringId: string | number;
 };
 
-type AddDistributionResult = {
-  affectedCount: number;
-  records: Pick<OfferingDistribution, 'id' | 'transaction_hash' | 'contract_index'>[];
-};
-
-export async function addDistribution(
-  params: AddDistributionParams
-): Promise<AddDistributionResult> {
+export async function addDistribution({
+  transactionHash,
+  contractIndex,
+  offeringId
+}: AddDistributionParams): Promise<void> {
   const supabase = createClient();
 
-  const { data, error, count } = await supabase
-    .from('offering_distribution')
-    .insert(
-      {
-        transaction_hash: params.transactionHash,
-        contract_index: params.contractIndex
-      },
-      { count: 'exact' }
-    )
-    .select('id, transaction_hash, contract_index');
+  const { error } = await supabase.from('offering_distribution').insert({
+    transaction_hash: transactionHash,
+    contract_index: contractIndex,
+    offering_id: Number(offeringId)
+  });
 
   if (error) {
     throw error;
   }
 
-  return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as AddDistributionResult['records']
-  };
+  revalidatePath(`/manager/[organizationId]/offerings/[offeringId]`, 'layout');
 }
 
 type UpdateContractIndexParams = {
@@ -172,14 +162,7 @@ type UpdateContractStatusParams = {
   established?: boolean | null;
 };
 
-type UpdateContractStatusResult = {
-  affectedCount: number;
-  records: Pick<SmartContract, 'crypto_address_id' | 'established'>[];
-};
-
-export async function updateContractStatus(
-  params: UpdateContractStatusParams
-): Promise<UpdateContractStatusResult> {
+export async function updateContractStatus(params: UpdateContractStatusParams): Promise<void> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
@@ -192,10 +175,7 @@ export async function updateContractStatus(
     throw error;
   }
 
-  return {
-    affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
-    records: (data ?? []) as UpdateContractStatusResult['records']
-  };
+  revalidatePath(`/manager/[organizationId]/offerings/[offeringId]`, 'layout');
 }
 
 // =========== ORDER ================
@@ -208,6 +188,7 @@ export type CreateOrderParams = {
   visible: boolean;
   initiator: string;
   transactionHash: string;
+  revalidationPath?: RevalidationPath;
 };
 
 export type CreateOrderResult = {
@@ -215,25 +196,38 @@ export type CreateOrderResult = {
   records: Pick<ShareOrder, 'id' | 'contract_index' | 'initiator' | 'transaction_hash'>[];
 };
 
-export async function createOrder(params: CreateOrderParams): Promise<CreateOrderResult> {
+export async function createOrder({
+  contractIndex,
+  swapContractAddress,
+  minUnits,
+  maxUnits,
+  visible,
+  initiator,
+  transactionHash,
+  revalidationPath
+}: CreateOrderParams): Promise<CreateOrderResult> {
   const supabase = createClient();
 
   const { data, error, count } = await supabase
     .from('share_order')
     .insert(
       {
-        contract_index: params.contractIndex,
-        swap_contract_address: params.swapContractAddress,
-        min_units: params.minUnits ?? null,
-        max_units: params.maxUnits ?? null,
-        visible: params.visible,
-        initiator: params.initiator,
-        transaction_hash: params.transactionHash,
+        contract_index: contractIndex,
+        swap_contract_address: swapContractAddress,
+        min_units: minUnits ?? null,
+        max_units: maxUnits ?? null,
+        visible: visible,
+        initiator: initiator,
+        transaction_hash: transactionHash,
         archived: false
       },
       { count: 'exact' }
     )
     .select('id, contract_index, initiator, transaction_hash');
+
+  if (revalidationPath) {
+    revalidatePath(revalidationPath.path, revalidationPath.type);
+  }
 
   if (error) {
     throw error;
@@ -256,7 +250,6 @@ export async function retrieveOrders(swapContractAddress: string): Promise<Share
   if (error) {
     throw error;
   }
-
   return data;
 }
 

@@ -125,7 +125,6 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         shareContractAddress,
         offeringId,
         walletAddress: participantWallet,
-        organizationId: organizationId,
         setButtonStep,
         chainId: chainId,
         name: participant?.name,
@@ -133,7 +132,7 @@ const SelectedParticipantDetails: FC<SelectedParticipantFormPropsLocal> = ({
         type,
         revalidationPath: {
           path: '/manager/[organizationId]/offering/[offeringId]',
-          type: 'page'
+          type: 'layout'
         }
       });
     } catch (e) {

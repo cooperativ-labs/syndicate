@@ -39,6 +39,9 @@ export const useOrderDetails = (
     functionName: 'orders',
     args: [BigInt(contractIndex)]
   });
+  if (isError) {
+    console.error('Error fetching order details:', error);
+  }
 
   const adjustTokenDecimalsForShareContract = paymentTokenDecimals - shareContractDecimals;
   const initiator = data && data[0];

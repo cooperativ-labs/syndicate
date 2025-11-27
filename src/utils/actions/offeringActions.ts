@@ -135,10 +135,10 @@ export async function addLegalShareLink({
   const { error: updateScError } = await supabase
     .from('smart_contract')
     .update({ established: true })
-    .eq('id', smartContractAddress);
+    .eq('crypto_address_id', smartContractAddress);
   if (updateScError) throw updateScError;
 
-  revalidatePath('/', 'page');
+  revalidatePath('/manager/[organizationId]/offerings/[offeringId]', 'layout');
 }
 
 // export async function getOfferingParticipant({
@@ -180,7 +180,7 @@ export async function addOfferingParticipant({
     })
     .select('id, name, offering_id');
   if (error) throw error;
-  revalidatePath(`/manager/[organizationId]/offerings/${offeringId}`, 'page');
+  revalidatePath(`/manager/[organizationId]/offerings/[offeringId]`, 'layout');
 }
 
 export async function addOfferingParticipantWithApplication({
@@ -266,7 +266,7 @@ export async function addOfferingParticipantWithApplication({
   });
   if (sigErr) throw sigErr;
 
-  revalidatePath('/', 'page');
+  revalidatePath(`/manager/[organizationId]/offerings/[offeringId]`, 'layout');
 }
 
 export type UpsertWhitelistMemberParams = {
@@ -405,7 +405,7 @@ export async function removeWhitelistObject({ participantId }: { participantId: 
     .eq('id', participantId)
     .select('id');
   if (error) throw error;
-  revalidatePath('/', 'page');
+  revalidatePath(`/manager/[organizationId]/offerings/[offeringId]`, 'layout');
   return {
     affectedCount: typeof count === 'number' ? count : (data?.length ?? 0),
     records: (data ?? []) as any

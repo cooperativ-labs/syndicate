@@ -323,8 +323,8 @@ type SwapStatusOptionProps = {
   amount: number | undefined;
   filledAmount: number | undefined;
   isFiller: boolean | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-  swapApprovalsEnabled: boolean | undefined;
+  txnApprovalsRequired: boolean | undefined;
+  listingApprovalsRequired: boolean | undefined;
   isVisible: boolean | undefined;
 };
 
@@ -337,8 +337,8 @@ export const getSwapStatusOption = ({
   amount,
   filledAmount,
   isFiller,
-  txnApprovalsEnabled,
-  swapApprovalsEnabled
+  txnApprovalsRequired,
+  listingApprovalsRequired
 }: SwapStatusOptionProps) => {
   const disapproved = false; // needs logic from DB
   const cancelled = isCancelled && !isFilled;
@@ -347,10 +347,10 @@ export const getSwapStatusOption = ({
   const ended = fullyFilled || cancelled || disapproved;
 
   const awaitingListingApproval =
-    (swapApprovalsEnabled && txnApprovalsEnabled && !isVisible && !isApproved && !ended) ||
-    (swapApprovalsEnabled && !txnApprovalsEnabled && !isApproved && !ended);
-  const awaitingTxnApproval = txnApprovalsEnabled && isAccepted && !isApproved && !ended;
-  const awaitingExecution = txnApprovalsEnabled && isApproved && isFiller && !ended;
+    (listingApprovalsRequired && txnApprovalsRequired && !isVisible && !isApproved && !ended) ||
+    (listingApprovalsRequired && !txnApprovalsRequired && !isApproved && !ended);
+  const awaitingTxnApproval = txnApprovalsRequired && isAccepted && !isApproved && !ended;
+  const awaitingExecution = txnApprovalsRequired && isApproved && isFiller && !ended;
   const filledLessThanAmount = !ended && filledAmount && amount ? filledAmount < amount : false;
   const partiallyFilled = filledAmount && filledAmount > 0 && filledLessThanAmount && !ended;
 

@@ -14,7 +14,6 @@ import { z } from 'zod';
 import { WhitelistTransactionType } from '@/types';
 
 export type AddWhitelistAddressProps = {
-  organizationId: string | number;
   shareContractAddress: String0x;
   offeringId: string | number;
 };
@@ -46,8 +45,7 @@ type WhitelistFormData = z.infer<typeof whitelistSchema>;
 
 const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
   shareContractAddress,
-  offeringId,
-  organizationId
+  offeringId
 }) => {
   const [buttonStep, setButtonStep] = useState<LoadingButtonStateType>('idle');
   const chainId = useChainId();
@@ -66,7 +64,6 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
       shareContractAddress,
       offeringId,
       walletAddress: address as String0x,
-      organizationId: organizationId,
       setButtonStep,
       chainId: chainId,
       name: values.name,
@@ -74,7 +71,7 @@ const AddWhitelistAddress: FC<AddWhitelistAddressProps> = ({
       type: WhitelistTransactionType.ADD,
       revalidationPath: {
         path: '/manager/[organizationId]/offering/[offeringId]',
-        type: 'page'
+        type: 'layout'
       }
     });
     form.reset();

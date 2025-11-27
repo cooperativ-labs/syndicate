@@ -1,5 +1,4 @@
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
-import { Button } from '@src/components/ui/button';
 import {
   LoadingButtonChain,
   LoadingButtonStateType
@@ -42,17 +41,10 @@ const DistributionListItem: FC<
 
   const [buttonStep, setButtonStep] = React.useState<LoadingButtonStateType>('idle');
 
-  const {
-    dividendPartition,
-    blockTimestamp,
-    exDividendDate,
-    recordDate,
-    payoutDate,
-    dividendAmount,
-    payoutTokenAddress,
-    isErc20Payout,
-    amountRemaining
-  } = useDistributionDetails(distributionContractAddress, contract_index);
+  const { recordDate, payoutDate, dividendAmount, payoutTokenAddress } = useDistributionDetails(
+    distributionContractAddress,
+    contract_index
+  );
 
   const { data, refetch } = useReadContract({
     address: distributionContractAddress,
@@ -90,22 +82,17 @@ const DistributionListItem: FC<
 
   const setButtonItem =
     amountToClaim && isMyDistribution ? (
-      <Button
+      <LoadingButtonChain
         onClick={() => handleClaim()}
         disabled={!isMyDistribution}
-        className={cn(
-          `text-cLightBlue hover:text-white bg-opacity-100 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white text-sm p-3 px-6 font-semibold rounded-md relative`
-        )}
-      >
-        <LoadingButtonChain
-          state={buttonStep}
-          idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
-          step1Text='Claiming...'
-          confirmedText='Clamed!'
-          failedText='Transaction failed'
-          rejectedText='You rejected the transaction. Click here to try again.'
-        />
-      </Button>
+        variant='outline'
+        state={buttonStep}
+        idleText={`Claim ${numberWithCommas(amountToClaim, 2)}`}
+        step1Text='Claiming...'
+        confirmedText='Clamed!'
+        failedText='Transaction failed'
+        rejectedText='You rejected the transaction. Click here to try again.'
+      />
     ) : isMyDistribution && claimedAmount ? (
       <div className='p-3'> {numberWithCommas(claimedAmount, 2)} claimed</div>
     ) : (

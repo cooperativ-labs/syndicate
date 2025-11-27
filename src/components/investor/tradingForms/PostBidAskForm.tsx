@@ -1,3 +1,4 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import PresentLegalText from '@src/components/legal/PresentLegalText';
@@ -11,16 +12,15 @@ import { createOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyOption } from '@src/utils/enumConverters';
 import { DownloadFile } from '@src/utils/helpersAgreement';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { String0x } from '@src/web3/helpersChain';
 import { ChevronDown, ChevronUp } from 'lucide-react';
-import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useRef, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import React, { FC, useEffect, useMemo, useRef, useState } from 'react';
 import { Controller, Resolver, useForm } from 'react-hook-form';
 import { useChainId, useConnection } from 'wagmi';
 import { z } from 'zod';
-
-import { Document, OfferingFull } from '@/types';
 
 import NonInput from '../../form-components/NonInput';
 import { Checkbox } from '../../ui/checkbox';
@@ -28,13 +28,6 @@ import { Field, FieldContent, FieldError, FieldLabel } from '../../ui/field';
 import { Input } from '../../ui/input';
 
 import { PostBidAskFormProps } from './offering-actions-types';
-
-type WithAdditionalProps = PostBidAskFormProps & {
-  walletAddress: string;
-  documents: Document[] | undefined;
-  setModal: Dispatch<SetStateAction<ManagerModalType>>;
-  refetchAllContracts: () => void;
-};
 
 const optionalPositiveInt = z
   .preprocess(value => {
@@ -128,24 +121,27 @@ const buildBidAskSchema = ({
     }
   });
 
-const PostBidAskForm: FC<WithAdditionalProps> = ({
-  offering,
-  contractSet,
+const PostBidAskForm: FC<PostBidAskFormProps> = ({
   walletAddress,
-  swapApprovalsEnabled,
-  partitions,
-  paymentTokenDecimals,
-  myShareQty,
-  isContractOwner,
-  sharesOutstanding,
-  currentSalePrice,
-  documents,
   setModal,
-  refetchMainContracts,
-  refetchOfferingInfo
+  refetchAllContracts
 }) => {
+  const {
+    offering,
+    documents,
+    contractSet,
+    listingApprovalsRequired,
+    partitions,
+    paymentTokenDecimals,
+    myShareQty,
+    isContractOwner,
+    sharesOutstanding,
+    currentSalePrice,
+    refetchMainContracts,
+    refetchOfferingInfo
+  } = useOffering();
+
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
-  const offeringMin = offering.min_units_per_investor;
   if (!paymentTokenDecimals) {
     throw new Error('Payment token decimals are required (PostBidAskForm)');
   }
@@ -220,7 +216,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
 
   const watchedNumUnits = watch('numUnits');
   const watchedPrice = watch('price');
-
+  const pathname = usePathname();
   const onSubmit = async (values: BidAskFormValues) => {
     const isIssuance = false;
     const isErc20Payment = true;
@@ -236,7 +232,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
       minUnits: values.minUnits,
       maxUnits: values.maxUnits,
       swapContractAddress: swapContractAddress,
-      visible: !swapApprovalsEnabled,
+      visible: !listingApprovalsRequired,
       paymentTokenDecimals: paymentTokenDecimals as number,
       isContractOwner: isContractOwner,
       isAsk: isAsk,
@@ -245,12 +241,16 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
       setButtonStep: setButtonStep,
       createOrder: createOrder,
       refetchMainContracts,
-      refetchOfferingInfo
+      refetchOfferingInfo,
+      revalidationPath: { path: pathname, type: 'layout' }
     });
     setModal('shareSaleList');
   };
 
   const defaultFieldDiv = 'pt-2 my-2 bg-opacity-0';
+
+  // Get offering documents for terms
+  const offeringDocs = documents;
 
   return (
     <>
@@ -396,9 +396,9 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                     </FieldContent>
                   </Field>
                 </div>
-                {tocOpen && documents && (
+                {tocOpen && offeringDocs && offeringDocs.length > 0 && (
                   <div className='my-2 p-4 rounded-md bg-slate-100'>
-                    <PresentLegalText text={documents[0].text} />
+                    <PresentLegalText text={offeringDocs[0].text} />
                     <div className='flex'>
                       <Button
                         variant='outline'
@@ -406,7 +406,7 @@ const PostBidAskForm: FC<WithAdditionalProps> = ({
                         onClick={e => {
                           e.preventDefault();
                           DownloadFile(
-                            documents[0]?.text as string,
+                            offeringDocs[0]?.text as string,
                             `${name} - Terms & Conditions.md`
                           );
                         }}

@@ -20,7 +20,7 @@ import toast from 'react-hot-toast';
 import { erc20Abi } from 'viem';
 import { simulateContract, waitForTransactionReceipt, writeContract } from 'wagmi/actions';
 
-import { CurrencyCodeType, ShareTransferEventType } from '@/types';
+import { CurrencyCodeType, RevalidationPath, ShareTransferEventType } from '@/types';
 
 import { swapContractABI } from './generated';
 import { bytes32FromString, StandardChainErrorHandling, String0x } from './helpersChain';
@@ -43,6 +43,7 @@ type SubmitSwapProps = {
   isIssuance: boolean;
   isErc20Payment: boolean;
   myShareQty?: number;
+  revalidationPath?: RevalidationPath;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
   createOrder: (params: CreateOrderParams) => Promise<CreateOrderResult>;
   setModal?: Dispatch<SetStateAction<boolean>>;
@@ -68,6 +69,7 @@ export const submitSwap = async ({
   isIssuance,
   isErc20Payment,
   myShareQty,
+  revalidationPath,
   setModal,
   setButtonStep,
   createOrder,
@@ -116,7 +118,8 @@ export const submitSwap = async ({
         maxUnits: maxUnits,
         initiator: userWalletAddress as string,
         visible: visible,
-        transactionHash: transactionReceipt.transactionHash
+        transactionHash: transactionReceipt.transactionHash,
+        revalidationPath: revalidationPath
       });
       refetchMainContracts();
       refetchOfferingInfo();
@@ -177,11 +180,11 @@ export const acceptOrder = async ({
       await waitForTransactionReceipt(config, {
         hash
       });
-      await handleOfferingRequestNotification({
-        organizationId,
-        completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText: 'Someone has applied to purchase shares in your offering.'
-      });
+      // await handleOfferingRequestNotification({
+      //   organizationId,
+      //   completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
+      //   notificationText: 'Someone has applied to purchase shares in your offering.'
+      // });
       refetchAllContracts();
       setButtonStep('confirmed');
       toast.success(`You have applied to ${isAskOrder ? 'purchase' : 'sell'} shares.`);
@@ -290,23 +293,30 @@ export const approveRejectSwap = async ({
           partition
         } = transferEventArgs;
 
-        await addTransferEvent({
-          shareContractAddress: shareContractAddress as string,
-          orderIndex: contractIndex,
-          recipientAddress: recipientAddress as string,
-          senderAddress: senderAddress as string,
-          amount: numShares as number,
-          price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
-          currencyCode: currencyCode,
-          transactionHash: transactionDetails.transactionHash,
-          partition: partition as string,
-          type: isDisapprove ? ShareTransferEventType.DISAPPROVAL : ShareTransferEventType.APPROVAL
-        });
+        try {
+          await addTransferEvent({
+            shareContractAddress: shareContractAddress as string,
+            orderIndex: contractIndex,
+            recipientAddress: recipientAddress as string,
+            senderAddress: senderAddress as string,
+            amount: numShares as number,
+            price: toContractNumber(price as number, paymentTokenDecimals as number).toString(),
+            currencyCode: currencyCode,
+            transactionHash: transactionDetails.transactionHash,
+            partition: partition as string,
+            type: isDisapprove
+              ? ShareTransferEventType.DISAPPROVAL
+              : ShareTransferEventType.APPROVAL
+          });
+          setButtonStep('confirmed');
+          toast.success(`You have ${isDisapprove ? 'disapproved' : 'approved'} the swap.`);
+          refetchMainContracts();
+          setModal && setModal(false);
+        } catch (e) {
+          console.error({ e, transactionDetails: transactionDetails });
+          alert(`Error adding transfer event to DB: ${e}`);
+        }
       }
-      setButtonStep('confirmed');
-      toast.success(`You have ${isDisapprove ? 'disapproved' : 'approved'} the swap.`);
-      refetchMainContracts();
-      setModal && setModal(false);
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }
@@ -497,29 +507,34 @@ export const fillOrder = async ({
       const transactionDetails = await waitForTransactionReceipt(config, {
         hash
       });
-      await addTrade({
-        shareContractAddress: shareContractAddress as string,
-        recipientAddress: recipient as string,
-        senderAddress: sender as string,
-        amount: amount as number,
-        price: contractPrice.toString(),
-        currencyCode: getCurrencyById(paymentTokenAddress)?.value,
-        transactionHash: transactionDetails.transactionHash,
-        partition: partition as string,
-        type: ShareTransferEventType.TRADE
-      });
-      await handleTradeExecutionNotification({
-        organizationId,
-        completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
-        notificationText: `${sender} has sold ${amount} shares to ${recipient} at ${numberWithCommas(
-          price,
-          2
-        )} per share. The transaction hash is ${transactionDetails.transactionHash}.`
-      });
+      try {
+        await addTrade({
+          shareContractAddress: shareContractAddress as string,
+          recipientAddress: recipient as string,
+          senderAddress: sender as string,
+          amount: amount as number,
+          price: contractPrice.toString(),
+          currencyCode: getCurrencyById(paymentTokenAddress)?.value,
+          transactionHash: transactionDetails.transactionHash,
+          partition: partition as string,
+          type: ShareTransferEventType.TRADE
+        });
+        // await handleTradeExecutionNotification({
+        //   organizationId,
+        //   completionUrl: `${getBaseUrl()}/offerings/${offeringId}`,
+        //   notificationText: `${sender} has sold ${amount} shares to ${recipient} at ${numberWithCommas(
+        //     price,
+        //     2
+        //   )} per share. The transaction hash is ${transactionDetails.transactionHash}.`
+        // });
 
-      toast.success(`You have completed the swap.`);
-      refetchAllContracts();
-      setButtonStep('confirmed');
+        toast.success(`You have completed the swap.`);
+        refetchAllContracts();
+        setButtonStep('confirmed');
+      } catch (e) {
+        console.error({ e, transactionDetails: transactionDetails });
+        alert(`Error adding trade event to DB: ${e}`);
+      }
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }

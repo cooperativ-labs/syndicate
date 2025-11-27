@@ -3,13 +3,15 @@ import { useReadContract, useReadContracts } from 'wagmi';
 
 import { swapContractABI } from '../generated';
 import { String0x } from '../helpersChain';
+import { CurrencyCodeType } from '@/types';
+import { getCurrencyOption } from '@src/utils/enumConverters';
 
 export type SwapContractInfoType = {
   shareTokenAddress: String0x | undefined;
   paymentTokenAddress: String0x | undefined;
   paymentTokenDecimals: number | undefined;
-  swapApprovalsEnabled: boolean;
-  txnApprovalsEnabled: boolean;
+  listingApprovalsRequired: boolean;
+  txnApprovalsRequired: boolean;
   nextOrderId: number | undefined;
   swapContractVersion: string | undefined;
   isLoading: boolean | undefined;
@@ -17,11 +19,18 @@ export type SwapContractInfoType = {
   refetchSwapContract: () => void;
 };
 
-export const useSwapContractInfo = (swapContractAddress: String0x): SwapContractInfoType => {
+export const useSwapContractInfo = (
+  swapContractAddress: String0x,
+  investment_currency: CurrencyCodeType | undefined | null
+): SwapContractInfoType => {
   const baseContractInfo = {
     address: swapContractAddress,
     abi: swapContractABI
   };
+
+  const paymentToken = investment_currency ? getCurrencyOption(investment_currency) : undefined;
+  const defaultPaymentTokenAddress = paymentToken?.address as String0x;
+  const defaultPaymentTokenDecimals = paymentToken ? paymentToken.decimals : 18;
 
   const {
     data,
@@ -41,9 +50,9 @@ export const useSwapContractInfo = (swapContractAddress: String0x): SwapContract
   });
 
   const shareTokenAddress = data ? (data[0].result as String0x) : undefined;
-  const paymentTokenAddress = data ? (data[1].result as String0x) : undefined;
-  const swapApprovalsEnabled = data ? (data[2].result as boolean) : undefined;
-  const txnApprovalsEnabled = data ? (data[3].result as boolean) : undefined;
+  const paymentTokenAddress = data ? (data[1].result as String0x) : defaultPaymentTokenAddress;
+  const listingApprovalsRequired = data ? (data[2].result as boolean) : undefined;
+  const txnApprovalsRequired = data ? (data[3].result as boolean) : undefined;
   const nextOrderId = data ? Number(data[4].result) : undefined;
   const swapContractVersion = data ? (data[5].result as string) : undefined;
   const issueReachingSwapContract = !!swapContractAddress && !swapContractVersion;
@@ -57,9 +66,9 @@ export const useSwapContractInfo = (swapContractAddress: String0x): SwapContract
   return {
     shareTokenAddress,
     paymentTokenAddress,
-    paymentTokenDecimals,
-    swapApprovalsEnabled: swapApprovalsEnabled ?? false,
-    txnApprovalsEnabled: txnApprovalsEnabled ?? false,
+    paymentTokenDecimals: paymentTokenDecimals ?? defaultPaymentTokenDecimals,
+    listingApprovalsRequired: listingApprovalsRequired ?? false,
+    txnApprovalsRequired: txnApprovalsRequired ?? false,
     nextOrderId,
     swapContractVersion,
     isLoading,

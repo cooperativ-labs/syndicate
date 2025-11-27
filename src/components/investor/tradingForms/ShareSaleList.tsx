@@ -1,10 +1,10 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { Button } from '@src/components/ui/button';
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import SectionBlock from '@src/containers/SectionBlock';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { ManagerModalType } from '@src/utils/helpersOffering';
 import { claimProceeds } from '@src/web3/contractSwapCalls';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
@@ -18,24 +18,16 @@ import { ShareOrder } from '@/types';
 import { ShareSaleListProps } from './offering-actions-types';
 import ShareSaleListItem from './ShareSaleListItem';
 
-const ShareSaleList: FC<ShareSaleListProps> = ({
-  offering,
-  contractSet,
-  orders,
-  myShareQty,
-  paymentTokenAddress,
-  paymentTokenDecimals,
-  txnApprovalsEnabled,
-  swapApprovalsEnabled,
-  isContractOwner,
-  transferEvents,
-  setModal,
-  refetchMainContracts,
-  refetchOfferingInfo,
-  sharesOutstanding,
-  partitions,
-  currentSalePrice
-}) => {
+const ShareSaleList: FC<ShareSaleListProps> = ({ setModal }) => {
+  const {
+    contractSet,
+    orders,
+    paymentTokenAddress,
+    paymentTokenDecimals,
+    refetchMainContracts,
+    refetchOfferingInfo
+  } = useOffering();
+
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
   const { address: userWalletAddress } = useConnection();
   const [claimProceedsButton, setClaimProceedsButton] = useState<LoadingButtonStateType>('idle');
@@ -64,10 +56,10 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
       disabled={claimProceedsButton === 'step1'}
       state={claimProceedsButton}
       idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-      step1Text='Claiming Proceeds...'
-      confirmedText='Proceeds Claimed!'
-      failedText='Transaction failed'
-      rejectedText='You rejected the transaction. Click here to try again.'
+      step1Text="Claiming Proceeds..."
+      confirmedText="Proceeds Claimed!"
+      failedText="Transaction failed"
+      rejectedText="You rejected the transaction. Click here to try again."
     />
   );
 
@@ -84,18 +76,18 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   const refreshButton = (
     <Button
-      variant='ghost'
+      variant="ghost"
       onClick={() => {
         refetchOfferingInfo();
         refetchMainContracts();
       }}
     >
-      <RefreshCw className='mr-2' />
+      <RefreshCw className="mr-2" />
     </Button>
   );
 
   if (orders && orders.length < 1) {
-    return <div className='w-full'>{saleButton}</div>;
+    return <div className="w-full">{saleButton}</div>;
   }
 
   const currentOrders = orders?.filter(order => !order?.archived);
@@ -103,65 +95,27 @@ const ShareSaleList: FC<ShareSaleListProps> = ({
 
   return (
     <>
-      <div className='flex flex-row justify-between items-center'>
-        <h2 className='text-xl text-blue-900 font-semibold '>{`Offers`}</h2>
-        <div className='flex gap-3'>
+      <div className="flex flex-row justify-between items-center">
+        <h2 className="text-xl text-blue-900 font-semibold ">{`Offers`}</h2>
+        <div className="flex gap-3">
           {saleButton}
           {proceedsButton}
           {refreshButton}
         </div>
       </div>
       {currentOrders?.map((order, i) => {
-        return (
-          <ShareSaleListItem
-            key={i}
-            offering={offering}
-            contractSet={contractSet}
-            order={order as ShareOrder}
-            myShareQty={myShareQty}
-            paymentTokenAddress={paymentTokenAddress}
-            txnApprovalsEnabled={txnApprovalsEnabled}
-            swapApprovalsEnabled={swapApprovalsEnabled}
-            isContractOwner={isContractOwner}
-            refetchMainContracts={refetchMainContracts}
-            paymentTokenDecimals={paymentTokenDecimals}
-            refetchOfferingInfo={refetchOfferingInfo}
-            transferEvents={transferEvents}
-            sharesOutstanding={sharesOutstanding}
-            partitions={partitions}
-            currentSalePrice={currentSalePrice}
-          />
-        );
+        return <ShareSaleListItem key={i} order={order as ShareOrder} />;
       })}
       {archivedOrders?.length !== 0 && (
-        <div className='w-full mt-4 border border-gray-300 rounded-md'>
+        <div className="w-full mt-4 border border-gray-300 rounded-md">
           <SectionBlock
             className={'p-3 bg-slate-100 text-gray-800 rounded-sm w-full font-semibold  '}
             sectionTitle={'Archived offers'}
             mini
           >
-            <div className=' items-center px-3 w-full'>
+            <div className=" items-center px-3 w-full">
               {archivedOrders?.map((order, i) => {
-                return (
-                  <ShareSaleListItem
-                    key={i}
-                    offering={offering}
-                    contractSet={contractSet}
-                    order={order as ShareOrder}
-                    myShareQty={myShareQty}
-                    paymentTokenAddress={paymentTokenAddress}
-                    txnApprovalsEnabled={txnApprovalsEnabled}
-                    swapApprovalsEnabled={swapApprovalsEnabled}
-                    isContractOwner={isContractOwner}
-                    refetchMainContracts={refetchMainContracts}
-                    paymentTokenDecimals={paymentTokenDecimals}
-                    refetchOfferingInfo={refetchOfferingInfo}
-                    transferEvents={transferEvents}
-                    sharesOutstanding={sharesOutstanding}
-                    partitions={partitions}
-                    currentSalePrice={currentSalePrice}
-                  />
-                );
+                return <ShareSaleListItem key={i} order={order as ShareOrder} />;
               })}
             </div>
           </SectionBlock>

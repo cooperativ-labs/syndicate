@@ -1,7 +1,7 @@
 import { useOffering } from '@contexts/OfferingContext';
 import RetrievalIssue from '@src/components/alerts/ContractRetrievalIssue';
 import CloseButton from '@src/components/buttons/CloseButton';
-import { AllOfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
+import { OfferingActionsProps } from '@src/components/investor/tradingForms/offering-actions-types';
 import PostBidAskForm from '@src/components/investor/tradingForms/PostBidAskForm';
 import PostInitialSale from '@src/components/investor/tradingForms/PostInitialSale';
 import ShareSaleList from '@src/components/investor/tradingForms/ShareSaleList';
@@ -9,6 +9,7 @@ import ShareSaleStatusWidget from '@src/components/investor/tradingForms/ShareSa
 import Loading from '@src/components/loading/Loading';
 import { Button } from '@src/components/ui/button';
 import { LoadingButton } from '@src/components/ui/loading-button';
+import { Popover, PopoverContent, PopoverTrigger } from '@src/components/ui/popover';
 import FormModal from '@src/containers/FormModal';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
@@ -20,59 +21,40 @@ import { toNormalNumber } from '@src/web3/util';
 import React, { FC, useState } from 'react';
 import { useConnection, useReadContract } from 'wagmi';
 
-import { CurrencyCodeType } from '@/types';
-
 import SendShares from '../SendShares';
 
 import SmartContractsSettings from './SmartContractsSettings';
 
 export const standardClass = `text-white hover:shadow-md bg-cLightBlue hover:bg-cDarkBlue text-sm p-3 px-6 font-semibold rounded-md relative mt-3'`;
-export type ActionPanelActionsProps = boolean | 'send' | 'distribute' | 'sale';
 
-const OfferingActions: FC<AllOfferingActionsProps> = ({
-  retrievalIssue,
-  hasContract,
-  issueReachingContract,
-  loading,
-  offering,
-  paymentTokenAddress,
-  paymentTokenDecimals,
-  swapApprovalsEnabled,
-  txnApprovalsEnabled,
-  sharesOutstanding,
-  orders,
-  contractSet,
-  isContractOwner,
-  noLiveOrders,
-  partitions,
-  transferEvents,
-  refetchMainContracts,
-  refetchOfferingInfo,
-  currentSalePrice,
-  myShareQty,
-  documents
-}) => {
+const OfferingActions: FC<OfferingActionsProps> = () => {
+  const {
+    offering,
+    documents,
+    isOfferingManager,
+    hasContract,
+    isContractOwner,
+    contractSet,
+    orders,
+    noLiveOrders,
+    paymentTokenAddress,
+    paymentTokenDecimals,
+    issueReachingContract,
+    isLoading,
+    refetchMainContracts,
+    refetchOfferingInfo
+  } = useOffering();
+
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
-  const { isOfferingManager } = useOffering();
   const [isExistingShares, setIsExistingShares] = useState<boolean>(false);
   const [claimProceedsButton, setClaimProceedsButton] = useState<
     'default' | 'disabled' | 'loading' | 'success' | 'error'
   >('default');
-  const [showActionPanel, setShowActionPanel] = useState<ActionPanelActionsProps>(false);
+  const [isSendPopoverOpen, setIsSendPopoverOpen] = useState<boolean>(false);
 
-  // const [updateDistribution, { data: updateDistributionData }] = useMutation(UPDATE_DISTRIBUTION);
-
-  const {
-    name: offeringName,
-    participants,
-    price_start: priceStart,
-    min_units_per_investor: offeringMin,
-    num_units: sharesIssued,
-    investment_currency: investmentCurrency
-  } = offering;
+  const { name: offeringName } = offering;
 
   const { address: userWalletAddress } = useConnection();
-  const shareContractId = contractSet?.shareContract?.crypto_address_id as string;
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
 
@@ -109,22 +91,6 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
     refetchOfferingInfo();
   };
 
-  const coreProps = {
-    offering,
-    contractSet,
-    sharesOutstanding,
-    myShareQty,
-    partitions,
-    currentSalePrice,
-    paymentTokenAddress,
-    paymentTokenDecimals,
-    isContractOwner,
-    swapApprovalsEnabled,
-    txnApprovalsEnabled,
-    refetchMainContracts,
-    refetchOfferingInfo
-  };
-
   const FormModals = (
     <>
       <FormModal
@@ -132,26 +98,14 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
         onClose={() => setManagerModal('none')}
         title={`Manage shares of ${offeringName}`}
       >
-        {userWalletAddress && (
-          <ShareSaleList
-            {...coreProps}
-            orders={orders}
-            setModal={setManagerModal}
-            transferEvents={transferEvents}
-            refetchMainContracts={refetchMainContracts}
-          />
-        )}
+        {userWalletAddress && <ShareSaleList setModal={setManagerModal} />}
       </FormModal>
       <FormModal
         formOpen={managerModal === 'smartContractsSettings'}
         onClose={() => setManagerModal('none')}
         title={`Smart contract settings`}
       >
-        <SmartContractsSettings
-          {...coreProps}
-          noLiveOrders={noLiveOrders}
-          investmentCurrency={investmentCurrency as CurrencyCodeType}
-        />
+        <SmartContractsSettings />
       </FormModal>
       <FormModal
         formOpen={managerModal === 'saleForm'}
@@ -169,41 +123,15 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
         }`}</Button>
         {isExistingShares ? (
           <PostBidAskForm
-            {...coreProps}
-            documents={documents}
-            walletAddress={userWalletAddress as String0x}
+            walletAddress={userWalletAddress as string}
             setModal={setManagerModal}
             refetchAllContracts={refetchAllContracts}
           />
         ) : (
-          <PostInitialSale {...coreProps} setModal={setManagerModal} />
+          <PostInitialSale setModal={setManagerModal} />
         )}
       </FormModal>
-      {/* <FormModal formOpen={bidFormModel} onClose={() => setBidFormModel(false)} title={`Bid for shares of ${offeringName}`}>
-  <ShareBidForm
-    offering={offering}
-    walletAddress={userWalletAddress}
-    offeringMin={details?.minUnitsPerInvestor}
-    shareContractAddress={shareContractAddress}
-    permittedEntity={permittedEntity}
-    setModal={setBidFormModel}
-    setRecallContract={setRecallContract}
-  />
-</FormModal> */}
     </>
-  );
-
-  const ActionPanel = (
-    <div className=' relative mt-4 bg-gray-100 p-4 rounded-md'>
-      <div className='absolute -top-1 right-0 z-40'>
-        <CloseButton
-          onClick={() => {
-            setShowActionPanel(false);
-          }}
-        />
-      </div>
-      {showActionPanel === 'send' && <SendShares {...coreProps} />}
-    </div>
   );
 
   const ButtonPanel = (
@@ -218,13 +146,19 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
             Configure shares & trading
           </Button>
 
-          <Button
-            onClick={() => {
-              setShowActionPanel('send');
-            }}
-          >
-            Send shares
-          </Button>
+          <Popover open={isSendPopoverOpen} onOpenChange={setIsSendPopoverOpen}>
+            <PopoverTrigger asChild>
+              <Button>Send shares</Button>
+            </PopoverTrigger>
+            <PopoverContent className='w-[300px] max-w-[90vw] p-0 rounded-md'>
+              <div className='relative  p-4 rounded-md'>
+                <div className='absolute -top-1 right-0 z-40'>
+                  <CloseButton onClick={() => setIsSendPopoverOpen(false)} />
+                </div>
+                <SendShares />
+              </div>
+            </PopoverContent>
+          </Popover>
           {swapContractAddress ? (
             <Button
               onClick={() => {
@@ -274,33 +208,17 @@ const OfferingActions: FC<AllOfferingActionsProps> = ({
     <>The offeror has not yet created shares or your wallet is not connected.</>
   );
 
-  const myOrder = orders && orders?.find(order => order?.initiator === userWalletAddress);
-
   return (
     <>
       {FormModals}
-      {retrievalIssue ? (
-        <RetrievalIssue className='mt-10' />
-      ) : loading ? (
+      {isLoading ? (
         <div className='flex justify-center self-center'>
           <Loading />
         </div>
       ) : (
         <>
-          <div className=''>
-            {!hasContract ? NoContract : showActionPanel ? ActionPanel : ButtonPanel}
-          </div>
-          {hasOrders && paymentTokenAddress && (
-            <ShareSaleStatusWidget
-              orders={orders}
-              swapContractAddress={swapContractAddress}
-              paymentTokenAddress={paymentTokenAddress}
-              paymentTokenDecimals={paymentTokenDecimals}
-              txnApprovalsEnabled={txnApprovalsEnabled}
-              swapApprovalsEnabled={swapApprovalsEnabled}
-              isContractOwner={isContractOwner}
-            />
-          )}
+          <div className=''>{!hasContract ? NoContract : ButtonPanel}</div>
+          {hasOrders && paymentTokenAddress && <ShareSaleStatusWidget />}
         </>
       )}
     </>

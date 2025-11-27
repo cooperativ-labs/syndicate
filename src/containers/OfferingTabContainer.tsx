@@ -164,7 +164,6 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                 <AddWhitelistAddress
                   shareContractAddress={shareContractAddress}
                   offeringId={offeringId}
-                  organizationId={legalEntity.organization_id}
                 />
               </div>
             ) : (
@@ -181,7 +180,6 @@ const OfferingTabContainer: FC<OfferingTabContainerProps> = ({
                   onClick={() => {
                     setSubmitDistributionModal(true);
                   }}
-                  className='h-12 bg-cLightBlue p-3 font-semibold text-white rounded-md'
                 >
                   Submit Distribution
                 </Button>

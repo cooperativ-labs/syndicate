@@ -1,3 +1,4 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import NonInput, { defaultFieldDiv } from '@src/components/form-components/NonInput';
 import { Field, FieldContent, FieldError, FieldLabel } from '@src/components/ui/field';
@@ -9,19 +10,16 @@ import { addContractPartition, AddContractPartitionParams } from '@src/utils/act
 import { createOrder, CreateOrderParams, CreateOrderResult } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
-import { getAmountRemaining, ManagerModalType } from '@src/utils/helpersOffering';
+import { getAmountRemaining } from '@src/utils/helpersOffering';
 import { submitSwap } from '@src/web3/contractSwapCalls';
 import { String0x, stringFromBytes32 } from '@src/web3/helpersChain';
-import React, { Dispatch, FC, SetStateAction, useEffect, useMemo, useState } from 'react';
+import { usePathname } from 'next/navigation';
+import React, { FC, useEffect, useMemo, useState } from 'react';
 import { Resolver, useForm } from 'react-hook-form';
 import { useConnection } from 'wagmi';
 import { z } from 'zod';
 
 import { PostInitialSaleProps } from './offering-actions-types';
-
-type WithAdditionalProps = PostInitialSaleProps & {
-  setModal: Dispatch<SetStateAction<ManagerModalType>>;
-};
 
 const optionalPositiveInt = z
   .preprocess(value => {
@@ -74,20 +72,20 @@ const postInitialSaleSchema = z
 
 type PostInitialSaleFormValues = z.infer<typeof postInitialSaleSchema>;
 
-const PostInitialSale: FC<WithAdditionalProps> = ({
-  offering,
-  contractSet,
-  sharesOutstanding,
-  paymentTokenAddress,
-  paymentTokenDecimals,
-  partitions,
-  setModal,
-  refetchMainContracts,
-  refetchOfferingInfo
-}) => {
+const PostInitialSale: FC<PostInitialSaleProps> = ({ setModal }) => {
+  const {
+    offering,
+    contractSet,
+    sharesOutstanding,
+    paymentTokenAddress,
+    paymentTokenDecimals,
+    partitions,
+    refetchMainContracts,
+    refetchOfferingInfo
+  } = useOffering();
+
   const sharesIssued = offering.num_units;
   const priceStart = offering.price_start;
-  const offeringId = offering.id.toString();
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
   const shareContractId = contractSet?.shareContract?.crypto_address_id as string;
   const { address: userWalletAddress } = useConnection();
@@ -174,7 +172,7 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
       100
     ).toFixed(2)}%) for sale`;
   };
-
+  const pathname = usePathname();
   const onSubmit = async (values: PostInitialSaleFormValues) => {
     const isContractOwner = true;
     const isAsk = true;
@@ -203,7 +201,8 @@ const PostInitialSale: FC<WithAdditionalProps> = ({
       createOrder: handleCreateOrder,
       addPartition: handleAddPartition,
       refetchMainContracts,
-      refetchOfferingInfo
+      refetchOfferingInfo,
+      revalidationPath: { path: pathname, type: 'layout' }
     });
     setModal('shareSaleList');
   };

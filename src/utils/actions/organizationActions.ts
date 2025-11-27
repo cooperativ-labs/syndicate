@@ -5,14 +5,11 @@ import { nanoid } from 'nanoid';
 import { revalidatePath } from 'next/cache';
 
 import {
-  LegalEntity,
   LinkedAccountTypes,
   NotificationConfiguration,
-  Organization,
   OrganizationComplete,
   OrganizationUser,
   OrganizationUserPermissionTypes,
-  OrganizationWithLegalEntities,
   OrganizationWithUsers
 } from '@/types';
 

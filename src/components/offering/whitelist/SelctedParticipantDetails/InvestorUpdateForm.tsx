@@ -62,7 +62,7 @@ export default function UpdateInvestorForm({
       externalId: values.externalId,
       revalidationPath: {
         path: '/manager/[organizationId]/offering/[offeringId]',
-        type: 'page'
+        type: 'layout'
       }
     });
     setSpecEditOn('none');

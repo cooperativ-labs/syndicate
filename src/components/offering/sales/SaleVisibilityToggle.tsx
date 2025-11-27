@@ -1,6 +1,6 @@
-import { cn } from '@src/lib/utils';
+import { Switch } from '@src/components/ui/switch';
 import { updateOrder } from '@src/utils/actions/orderActions';
-import React, { FC } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 
 type OrderVisibilityToggleProps = {
   orderVisibility: boolean | undefined | null;
@@ -12,33 +12,43 @@ const OrderVisibilityToggle: FC<OrderVisibilityToggleProps> = ({
   orderArchived,
   orderId
 }) => {
-  const handleToggle = () => {
-    updateOrder({
-      orderId: orderId,
-      visible: !orderVisibility,
-      archived: orderArchived ?? false
-    });
+  const [optimisticVisibility, setOptimisticVisibility] = useState<boolean>(
+    orderVisibility ?? false
+  );
+
+  useEffect(() => {
+    setOptimisticVisibility(orderVisibility ?? false);
+  }, [orderVisibility]);
+
+  const handleToggle = async (nextVisibility: boolean) => {
+    setOptimisticVisibility(nextVisibility);
+    try {
+      await updateOrder({
+        orderId,
+        visible: nextVisibility,
+        archived: orderArchived ?? false,
+        revalidationPath: {
+          path: '/manager/[organizationId]/offerings/[offeringId]',
+          type: 'layout'
+        }
+      });
+    } catch (error) {
+      console.error('Failed to update order visibility', error);
+      setOptimisticVisibility(prev => !prev);
+    }
   };
 
   return (
-    <div className='flex items-center'>
-      <div className='flex align-middle justify-between min-w-max'>
-        <span className='mr-2'> Visible to investors </span>
-        <button
-          className=' border-2 border-grey-50 rounded-full w-12 bg-white  mr-10'
-          onClick={e => {
-            e.preventDefault();
-            handleToggle();
-          }}
-        >
-          <div
-            className={cn(
-              [orderVisibility ? ' ml-5 bg-emerald-600' : 'bg-gray-400'],
-              'h-6 w-6 rounded-full '
-            )}
-          />
-        </button>
-      </div>
+    <div className='flex items-center justify-between min-w-max'>
+      <span className='mr-2 text-sm font-medium text-gray-700'>Visible to investors</span>
+      <Switch
+        checked={optimisticVisibility}
+        onCheckedChange={checked => {
+          void handleToggle(checked);
+        }}
+        aria-label='Toggle investor visibility'
+        className='mr-10'
+      />
     </div>
   );
 };

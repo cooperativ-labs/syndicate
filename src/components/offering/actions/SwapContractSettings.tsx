@@ -5,39 +5,42 @@ import { SwapContractSettingsProps } from '@src/components/investor/tradingForms
 import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
-import React, { Dispatch, FC, SetStateAction, useEffect, useState } from 'react';
+import React, { FC, useEffect, useState } from 'react';
 import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 import CreateSwapContract from '../CreateSwapContract';
 
-const SwapContractSettings: FC<SwapContractSettingsProps> = ({
-  swapApprovalsEnabled,
-  txnApprovalsEnabled,
-  contractSet,
-  investmentCurrency,
-  noLiveOrders
-}) => {
+const SwapContractSettings: FC<SwapContractSettingsProps> = () => {
+  const {
+    offering,
+    legalEntity,
+    contractSet,
+    listingApprovalsRequired,
+    txnApprovalsRequired,
+    noLiveOrders
+  } = useOffering();
+
+  const investmentCurrency = offering.investment_currency;
   const chainId = useChainId();
   const [isLoading, setIsLoading] = useState<'txn' | 'listing' | ''>('');
   const [toggleStates, setToggleStates] = useState<{ txn: boolean; listing: boolean }>({
-    txn: txnApprovalsEnabled || false,
-    listing: swapApprovalsEnabled || false
+    txn: txnApprovalsRequired || false,
+    listing: listingApprovalsRequired || false
   });
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
 
-  const { legalEntity, offering } = useOffering();
   const organizationId = legalEntity?.organization_id;
   const toggleClass = 'flex align-middle justify-between items-center ';
 
   const sharedContractInfo = { address: swapContractAddress, abi: swapContractABI };
 
-  const { writeContract: writeSwapApproval, data: swapApprovalData } = useWriteContract();
+  const { writeContract: writeListingToggle, data: listingToggleData } = useWriteContract();
 
   const { writeContract: writeTxnApproval, data: txnApprovalData } = useWriteContract();
 
   const { data: swapTransactionData } = useWaitForTransactionReceipt({
-    hash: swapApprovalData
+    hash: listingToggleData
   });
 
   const { data: txnTransactionData } = useWaitForTransactionReceipt({
@@ -74,9 +77,9 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
     }
   }, [txnTransactionData, toggleStates]);
 
-  const handleSwapToggle = async () => {
+  const handleListingToggle = async () => {
     setIsLoading('listing');
-    writeSwapApproval({
+    writeListingToggle({
       ...sharedContractInfo,
       functionName: 'toggleSwapApprovals'
     });
@@ -92,18 +95,18 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
 
   const swapApproval = (
     <div className={toggleClass}>
-      <div className='text-sm font-medium text-gray-700 mr-2'>Listings require approval</div>
+      <div className="text-sm font-medium text-gray-700 mr-2">Listings require approval</div>
       <LoadingToggle
         isLoading={isLoading === 'listing'}
         toggleSubject={toggleStates.listing}
-        onClick={() => handleSwapToggle()}
+        onClick={() => handleListingToggle()}
       />
     </div>
   );
 
   const txnApproval = (
     <div className={toggleClass}>
-      <div className='text-sm font-medium text-gray-700 mr-2'>
+      <div className="text-sm font-medium text-gray-700 mr-2">
         Each transaction requires approval
       </div>
       <LoadingToggle
@@ -125,12 +128,12 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
         />
       )}
       {swapContractAddress && (
-        <div className='flex flex-col gap-3'>
-          <div className='flex flex-col gap-1'>
-            <h1 className='font-semibold text-lg'>Trading contract: </h1>
+        <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
+            <h1 className="font-semibold text-lg">Trading contract: </h1>
             <FormattedCryptoAddress
               chainId={chainId}
-              className='text-sm text-gray-500 font-medium'
+              className="text-sm text-gray-500 font-medium"
               showFull
               withCopy
               address={swapContractAddress}
@@ -138,21 +141,21 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = ({
           </div>
 
           <SectionBlock
-            className='border rounded-lg p-3'
+            className="border rounded-lg p-3"
             sectionTitle={'Trade approval settings'}
             mini
             startOpen
             asAccordion
           >
             {noLiveOrders ? (
-              <div className='flex flex-col mt-4 ml-6'>
+              <div className="flex flex-col mt-4 ml-6">
                 {swapApproval}
-                <hr className='my-4' />
+                <hr className="my-4" />
                 {txnApproval}
               </div>
             ) : (
-              <div className='flex flex-col my-4 ml-10'>
-                <div className='text-sm font-medium text-gray-700 mr-2'>
+              <div className="flex flex-col my-4 ml-10">
+                <div className="text-sm font-medium text-gray-700 mr-2">
                   Please complete or cancel all orders before changing approval settings.
                 </div>
               </div>

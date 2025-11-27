@@ -13,7 +13,7 @@ const buttonClass =
 type OrderStatusBarProps = {
   isAccepted: boolean | undefined;
   acceptedOrderQty: number | undefined;
-  txnApprovalsEnabled: boolean | undefined;
+  txnApprovalsRequired: boolean | undefined;
   currentUserFiller: boolean | undefined;
   currentUserInitiator: boolean | undefined;
   isAskOrder: boolean | undefined;
@@ -27,7 +27,7 @@ type OrderStatusBarProps = {
 const OrderStatusBar: FC<OrderStatusBarProps> = ({
   isAccepted,
   acceptedOrderQty,
-  txnApprovalsEnabled,
+  txnApprovalsRequired,
   currentUserFiller,
   currentUserInitiator,
   isAskOrder,
@@ -41,9 +41,9 @@ const OrderStatusBar: FC<OrderStatusBarProps> = ({
   const manOfAction = isAskOrder ? currentUserFiller : currentUserInitiator;
   const currentUserPending =
     isAccepted && (currentUserFiller || currentUserInitiator) && !isApproved && !isFilled;
-  const currentUserApproved = txnApprovalsEnabled && isAccepted && isApproved && manOfAction;
-  const currentUserDisapproved = txnApprovalsEnabled && manOfAction && false;
-  const otherOrderPending = txnApprovalsEnabled && isAccepted && !manOfAction;
+  const currentUserApproved = txnApprovalsRequired && isAccepted && isApproved && manOfAction;
+  const currentUserDisapproved = txnApprovalsRequired && manOfAction && false;
+  const otherOrderPending = txnApprovalsRequired && isAccepted && !manOfAction;
 
   //check transaction events for disapproval
 

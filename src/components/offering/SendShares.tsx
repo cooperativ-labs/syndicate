@@ -1,3 +1,4 @@
+import { useOffering } from '@contexts/OfferingContext';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { Field, FieldError, FieldGroup, FieldLabel, FieldSet } from '@src/components/ui/field';
 import { Input } from '@src/components/ui/input';
@@ -24,21 +25,23 @@ import toast from 'react-hot-toast';
 import { useChainId, useConnection, useReadContract } from 'wagmi';
 import { z } from 'zod';
 
-import { CurrencyCode, CurrencyCodeType, OfferingParticipant } from '@/types';
+import { CurrencyCode, CurrencyCodeType } from '@/types';
 
 import { SendSharesProps } from '../investor/tradingForms/offering-actions-types';
 
 import SetOperatorButton from './actions/SetOperatorButton';
 
-const SendShares: FC<SendSharesProps> = ({
-  offering,
-  contractSet,
-  sharesOutstanding,
-  partitions,
-  myShareQty,
-  currentSalePrice,
-  refetchMainContracts
-}) => {
+const SendShares: FC<SendSharesProps> = () => {
+  const {
+    offering,
+    contractSet,
+    sharesOutstanding,
+    partitions,
+    myShareQty,
+    currentSalePrice,
+    refetchMainContracts
+  } = useOffering();
+
   const sharesIssued = offering.num_units;
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
   const shareContractId = contractSet?.shareContract?.crypto_address_id as string;
@@ -157,9 +160,7 @@ const SendShares: FC<SendSharesProps> = ({
       toast.error('Please select a currency');
       return;
     }
-    const currencyCode = (
-      isIssuance ? values.currencyCode : investmentCurrency
-    ) as CurrencyCodeType;
+    const currencyCode = (isIssuance ? values.currencyCode : investmentCurrency) as CurrencyCodeType;
     const paymentTokenDecimals = getCurrencyByCode(currencyCode)?.decimals;
     try {
       await sendShares({
@@ -185,23 +186,23 @@ const SendShares: FC<SendSharesProps> = ({
   };
 
   return (
-    <form onSubmit={form.handleSubmit(onSubmit)} className='flex flex-col gap relative'>
+    <form onSubmit={form.handleSubmit(onSubmit)} className="flex flex-col gap relative">
       <FieldGroup>
         <FieldSet>
           {myShareQty ? (
             <Controller
               control={form.control}
-              name='isIssuance'
+              name="isIssuance"
               render={({ field }) => (
                 <Field>
                   <FieldLabel>Send type</FieldLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
-                      <SelectValue placeholder='Select send type' />
+                    <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                      <SelectValue placeholder="Select send type" />
                     </SelectTrigger>
                     <SelectContent>
-                      <SelectItem value='yes'>Issue new shares</SelectItem>
-                      <SelectItem value='no'>Transfer held shares</SelectItem>
+                      <SelectItem value="yes">Issue new shares</SelectItem>
+                      <SelectItem value="no">Transfer held shares</SelectItem>
                     </SelectContent>
                   </Select>
                   <FieldError
@@ -218,13 +219,13 @@ const SendShares: FC<SendSharesProps> = ({
 
           <Controller
             control={form.control}
-            name='recipient'
+            name="recipient"
             render={({ field }) => (
               <Field>
                 <FieldLabel>Investor&apos;s wallet address</FieldLabel>
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
-                    <SelectValue placeholder='Select recipient' />
+                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                    <SelectValue placeholder="Select recipient" />
                   </SelectTrigger>
                   <SelectContent>
                     {participants?.map((participant, i) => {
@@ -253,13 +254,13 @@ const SendShares: FC<SendSharesProps> = ({
 
           <Controller
             control={form.control}
-            name='partition'
+            name="partition"
             render={({ field }) => (
               <Field>
                 <FieldLabel>Share class</FieldLabel>
                 <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
-                    <SelectValue placeholder='Select class' />
+                  <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                    <SelectValue placeholder="Select class" />
                   </SelectTrigger>
                   <SelectContent>
                     {partitions.map((partition, i) => {
@@ -269,7 +270,7 @@ const SendShares: FC<SendSharesProps> = ({
                         </SelectItem>
                       );
                     })}
-                    <SelectItem value='0xNew'>+ Add new class</SelectItem>
+                    <SelectItem value="0xNew">+ Add new class</SelectItem>
                   </SelectContent>
                 </Select>
                 <FieldError
@@ -284,15 +285,15 @@ const SendShares: FC<SendSharesProps> = ({
           {watchedPartition === '0xNew' && (
             <Controller
               control={form.control}
-              name='newPartition'
+              name="newPartition"
               render={({ field }) => (
                 <Field>
                   <FieldLabel>New class name</FieldLabel>
                   <Input
-                    type='text'
-                    placeholder='Class A'
+                    type="text"
+                    placeholder="Class A"
                     {...field}
-                    className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
+                    className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
                   />
                   <FieldError
                     errors={
@@ -308,17 +309,17 @@ const SendShares: FC<SendSharesProps> = ({
 
           <Controller
             control={form.control}
-            name='price'
+            name="price"
             render={({ field }) => (
               <Field>
                 <FieldLabel>Price per share</FieldLabel>
                 <Input
-                  type='number'
-                  placeholder='100'
+                  type="number"
+                  placeholder="100"
                   {...field}
                   value={field.value || ''}
                   onChange={e => field.onChange(parseFloat(e.target.value) || 0)}
-                  className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
+                  className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
                 />
                 <FieldError
                   errors={form.formState.errors.price ? [form.formState.errors.price] : undefined}
@@ -330,13 +331,13 @@ const SendShares: FC<SendSharesProps> = ({
           {watchedIsIssuance === 'yes' && (
             <Controller
               control={form.control}
-              name='currencyCode'
+              name="currencyCode"
               render={({ field }) => (
                 <Field>
                   <FieldLabel>Currency</FieldLabel>
                   <Select value={field.value} onValueChange={field.onChange}>
-                    <SelectTrigger className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'>
-                      <SelectValue placeholder='Currency used for purchase' />
+                    <SelectTrigger className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none">
+                      <SelectValue placeholder="Currency used for purchase" />
                     </SelectTrigger>
                     <SelectContent>
                       {purchaseCurrencyOptions.map((option, i) => {
@@ -362,7 +363,7 @@ const SendShares: FC<SendSharesProps> = ({
 
           <Controller
             control={form.control}
-            name='numShares'
+            name="numShares"
             render={({ field }) => (
               <Field>
                 <FieldLabel>
@@ -373,10 +374,10 @@ const SendShares: FC<SendSharesProps> = ({
                   available)
                 </FieldLabel>
                 <Input
-                  type='number'
-                  placeholder='40'
+                  type="number"
+                  placeholder="40"
                   {...field}
-                  className='text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none'
+                  className="text-sm bg-opacity-0 my-1 p-3 border-2 border-gray-200 rounded-md focus:border-blue-900 focus:outline-none"
                 />
                 <FieldError
                   errors={
@@ -387,21 +388,21 @@ const SendShares: FC<SendSharesProps> = ({
             )}
           />
 
-          <hr className='bg-grey-600 my-3 mb-4' />
+          <hr className="bg-grey-600 my-3 mb-4" />
           {!isOperator && watchedIsIssuance === 'no' ? (
             <SetOperatorButton shareContractAddress={shareContractAddress} refetch={refetch} />
           ) : (
             <LoadingButtonChain
-              className='h-fit'
+              className="h-fit"
               wrapText={true}
-              type='submit'
+              type="submit"
               disabled={form.formState.isSubmitting || buttonStep === 'step1'}
               state={buttonStep}
               idleText={formButtonText()}
-              step1Text='Sending shares...'
-              confirmedText='Sent!'
-              failedText='Transaction failed'
-              rejectedText='You rejected the transaction. Click here to try again.'
+              step1Text="Sending shares..."
+              confirmedText="Sent!"
+              failedText="Transaction failed"
+              rejectedText="You rejected the transaction. Click here to try again."
             />
           )}
         </FieldSet>

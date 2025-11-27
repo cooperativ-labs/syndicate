@@ -105,7 +105,7 @@ const CreateOrganization: FC<CreateOrganizationType> = ({
         logoFileName: logoFile?.name || ''
       });
       setButtonState('success');
-      //     organizationChangeServer(id);
+      organizationChangeServer(orgData.organization_id);
       router.push(`/manager/${orgData.organization_id}/overview`);
       actionOnCompletion && actionOnCompletion();
     } catch (error: any) {

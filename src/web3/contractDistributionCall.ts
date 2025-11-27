@@ -4,6 +4,7 @@ import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getWagmiConfig } from '@src/web3/wagmi';
 import { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
+import { addDistribution } from '@src/utils/actions/orderActions';
 // Apollo types are intentionally not imported to avoid version-specific generics
 import {
   getPublicClient,
@@ -24,7 +25,6 @@ type SubmitDistributionProps = {
   partition: String0x;
   offeringId: string;
   setButtonStep: Dispatch<SetStateAction<LoadingButtonStateType>>;
-  addDistribution: (options?: any) => Promise<any>;
 };
 
 export const submitDistribution = async ({
@@ -34,8 +34,7 @@ export const submitDistribution = async ({
   distributionTokenAddress,
   partition,
   offeringId,
-  setButtonStep,
-  addDistribution
+  setButtonStep
 }: SubmitDistributionProps) => {
   const call = async () => {
     const config = getWagmiConfig();
@@ -76,15 +75,18 @@ export const submitDistribution = async ({
         hash
       });
       const contractIndex = Number(result);
-      await addDistribution({
-        variables: {
-          offeringId: offeringId,
+      try {
+        await addDistribution({
           transactionHash: transaction.transactionHash,
-          contractIndex: contractIndex
-        }
-      });
-      setButtonStep('confirmed');
-      toast.success(`${numberWithCommas(amount)} ${payoutTokenSymbol} has been distributed`);
+          contractIndex: contractIndex,
+          offeringId: offeringId
+        });
+        setButtonStep('confirmed');
+        toast.success(`${numberWithCommas(amount)} ${payoutTokenSymbol} has been distributed`);
+      } catch (e) {
+        console.error({ e, transactionHash: transaction.transactionHash, contractIndex });
+        alert(`Error adding distribution to DB: ${e}`);
+      }
     } catch (e) {
       StandardChainErrorHandling(e, setButtonStep);
     }

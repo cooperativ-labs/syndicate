@@ -1,40 +1,22 @@
-/* Panel scenarios
-As the Manager: 
-  - SwapApprovals are not enabled
-    - If the order is not filled or cancelled, show the cancel button
-    - If the order is filled or cancelled, show the archive button
-  - SwapApprovals are enabled
-    - If the order is not approved, show the "Approve Listing" button (replaces visibility toggle)
-    - If the order is approved, show the disapprove button
-    - If the order is filled or cancelled, show the archive button
-  - TxnApprovals are enabled
-    - If swapApprovals are enabled, show the "Approve Listing" ( just toggles visibility ) and "Disapprove" buttons 
-    - If swapApprovals are not enabled, show visibility toggle
-    - If the order is filled or cancelled, show the archive button
-As the Initiator:
-  - SwapApprovals are not enabled
-    - If the order is not filled or cancelled, show the cancel button
-    - If the order is filled or cancelled, show the archive button
-  - SwapApprovals are enabled
-    - Show cancel button
-    - If the order is filled or cancelled, show the archive button
-  - TxnApprovals are enabled
-    - if not approved, show "Awaiting approval"
-    - if approved, show cancel button
-As the Investor
-  - SwapApprovals are not enabled
-    - show purchase form
-  - SwapApprovals are enabled
-    - item does not appear
-  - TxnApprovals are enabled
-    - show purchase steps
-*/
+/**
+ * ShareManagerPanel
+ *
+ * Displays action buttons and status for managing share orders.
+ * Uses a two-layer approval system:
+ *   - Layer 1: Listing Approval (listingApprovalsRequired) - controls visibility
+ *   - Layer 2: Transaction Approval (txnApprovalsRequired) - controls individual trades
+ *
+ * @see ai/ai-sale-manager-interface.md for full documentation of UI scenarios
+ */
 
+import { useOffering } from '@contexts/OfferingContext';
 import FormattedCryptoAddress from '@src/components/FormattedCryptoAddress';
 import OrderVisibilityToggle from '@src/components/offering/sales/SaleVisibilityToggle';
 import { ButtonLoadingState, LoadingButton } from '@src/components/ui/loading-button';
-import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
-import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
+import {
+  LoadingButtonChain,
+  LoadingButtonStateType
+} from '@src/components/ui/loading-button-chain';
 import { cn } from '@src/lib/utils';
 import { updateOrder } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
@@ -47,30 +29,24 @@ import { usePathname } from 'next/navigation';
 import React, { FC, useState } from 'react';
 import { useChainId, useConnection, useReadContract } from 'wagmi';
 
-import { ShareOrder } from '@/types';
+import { SaleManagerPanelProps } from './offering-actions-types';
+import { useSharePanelUI } from './useSharePanelUI';
 
-import { SaleMangerPanelProps } from './offering-actions-types';
+// ═══════════════════════════════════════════════════════════════════════════════
+// TYPES
+// ═══════════════════════════════════════════════════════════════════════════════
 
-type AdditionalSaleMangerPanelProps = SaleMangerPanelProps & {
-  currentUserFiller: boolean | undefined;
-  currentUserInitiator: boolean | undefined;
-  isApproved: boolean | undefined;
-  isDisapproved: boolean | undefined;
-  isAccepted: boolean | undefined;
-  isCancelled: boolean | undefined;
-  isAskOrder: boolean | undefined;
-  isFilled: boolean | undefined;
-  filler: String0x | '' | undefined;
-  initiator: String0x | '';
-  order: ShareOrder;
-  amount: number | undefined;
-  price: number | undefined;
-  partition: String0x | undefined | '';
+type ShareManagerPanelProps = SaleManagerPanelProps & {
   small?: boolean;
 };
 
-const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
-  contractSet,
+// ═══════════════════════════════════════════════════════════════════════════════
+// COMPONENT
+// ═══════════════════════════════════════════════════════════════════════════════
+
+const SaleManagerPanel: FC<ShareManagerPanelProps> = ({
+  order,
+  currentUserFiller,
   currentUserInitiator,
   isApproved,
   isDisapproved,
@@ -80,29 +56,41 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
   isFilled,
   filler,
   initiator,
-  order,
   amount,
   price,
   partition,
-  paymentTokenAddress,
-  paymentTokenDecimals,
-  txnApprovalsEnabled,
-  swapApprovalsEnabled,
-  isContractOwner,
-  small,
-  refetchMainContracts,
-  refetchOfferingInfo
+  small
 }) => {
-  const [archiveButtonStatus, setArchiveButtonStatus] = useState<ButtonLoadingState>('default');
-  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
-  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
-  const { address: userWalletAddress } = useConnection();
-  const chainId = useChainId();
+  const {
+    contractSet,
+    paymentTokenAddress,
+    paymentTokenDecimals,
+    txnApprovalsRequired,
+    listingApprovalsRequired,
+    isContractOwner,
+    refetchMainContracts,
+    refetchOfferingInfo
+  } = useOffering();
 
+  // ─────────────────────────────────────────────────────────────────────────────
+  // State & Hooks
+  // ─────────────────────────────────────────────────────────────────────────────
+  const [archiveButtonStatus, setArchiveButtonStatus] = useState<ButtonLoadingState>('default');
   const [approveButtonStep, setApproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [disapproveButtonStep, setDisapproveButtonStep] = useState<LoadingButtonStateType>('idle');
   const [cancelButtonStep, setCancelButtonStep] = useState<LoadingButtonStateType>('idle');
 
+  const { address: userWalletAddress } = useConnection();
+  const chainId = useChainId();
+  const pathname = usePathname();
+
+  // Contract addresses
+  const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
+  const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Contract Data
+  // ─────────────────────────────────────────────────────────────────────────────
   const { data: contractData } = useReadContract({
     address: swapContractAddress,
     abi: swapContractABI,
@@ -117,16 +105,21 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     args: [filler as String0x, BigInt(order.contract_index)]
   });
 
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Derived Values
+  // ─────────────────────────────────────────────────────────────────────────────
   const acceptedOrderQty = acceptedQty && toNormalNumber(acceptedQty, shareContractDecimals);
-  const rawProceeds = contractData && contractData[1]; // Note: contractData[0] is eth, contractData[1] is erc20
+  const rawProceeds = contractData && contractData[1]; // [0] = eth, [1] = erc20
   const proceeds =
     paymentTokenDecimals && rawProceeds ? toNormalNumber(rawProceeds, paymentTokenDecimals) : 0;
+
+  const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
   const minPurchase = order.min_units;
   const maxPurchase = order.max_units;
-  const recipientAddress = txnApprovalsEnabled ? (isAskOrder ? filler : initiator) : initiator;
-  const senderAddress = txnApprovalsEnabled ? (isAskOrder ? initiator : filler) : filler;
-  const numShares = acceptedOrderQty && acceptedOrderQty > 0 ? acceptedOrderQty : amount;
-  const pathname = usePathname();
+
+  // Determine sender/recipient based on order type and approval mode
+  const recipientAddress = txnApprovalsRequired ? (isAskOrder ? filler : initiator) : initiator;
+  const senderAddress = txnApprovalsRequired ? (isAskOrder ? initiator : filler) : filler;
 
   const transferEventArgs = {
     shareContractAddress,
@@ -138,41 +131,66 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     partition
   };
 
-  const listingIsApproved = isApproved || (txnApprovalsEnabled && order.visible);
-  const transactionIsAccepted = txnApprovalsEnabled && isAccepted;
+  // ─────────────────────────────────────────────────────────────────────────────
+  // UI Configuration (from hook)
+  // ─────────────────────────────────────────────────────────────────────────────
+  const ui = useSharePanelUI({
+    isApproved,
+    isDisapproved,
+    isAccepted,
+    isCancelled,
+    isFilled,
+    listingApprovalsRequired,
+    txnApprovalsRequired,
+    isContractOwner,
+    currentUserInitiator,
+    currentUserFiller,
+    proceeds
+  });
 
-  const allowVisibilityApproveDisapprove = transactionIsAccepted ? false : true; // dont change visibility if transaction if Txn on and accepted, don't change visiblity of Txn off and
-  const allowContractApproveDisapprove = !isFilled || !isCancelled;
-
-  const updateListingVisibility = async (isDisapprove: boolean) => {
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Handlers
+  // ─────────────────────────────────────────────────────────────────────────────
+  const handleApproveListing = async () => {
     await updateOrder({
       orderId: order.id,
-      visible: !isDisapprove,
+      visible: true,
       archived: order.archived ?? false,
-      revalidationPath: {
-        path: pathname,
-        type: 'page'
-      }
+      revalidationPath: { path: pathname, type: 'layout' }
     });
   };
 
-  const handleApprove = async ({ isDisapprove }: { isDisapprove: boolean }) => {
-    if (transactionIsAccepted || !txnApprovalsEnabled) {
-      if (allowContractApproveDisapprove) {
-        await approveRejectSwap({
-          transferEventArgs: transferEventArgs,
-          swapContractAddress,
-          paymentTokenDecimals,
-          contractIndex: order.contract_index,
-          isDisapprove: isDisapprove,
-          setButtonStep: isDisapprove ? setDisapproveButtonStep : setApproveButtonStep,
-          refetchMainContracts
-        });
-      }
-    }
-    if (allowVisibilityApproveDisapprove) {
-      await updateListingVisibility(isDisapprove);
-    }
+  const handleDisapproveListing = async () => {
+    await updateOrder({
+      orderId: order.id,
+      visible: false,
+      archived: order.archived ?? false,
+      revalidationPath: { path: pathname, type: 'layout' }
+    });
+  };
+
+  const handleApproveTxn = async () => {
+    await approveRejectSwap({
+      transferEventArgs,
+      swapContractAddress,
+      paymentTokenDecimals,
+      contractIndex: order.contract_index,
+      isDisapprove: false,
+      setButtonStep: setApproveButtonStep,
+      refetchMainContracts
+    });
+  };
+
+  const handleDisapproveTxn = async () => {
+    await approveRejectSwap({
+      transferEventArgs,
+      swapContractAddress,
+      paymentTokenDecimals,
+      contractIndex: order.contract_index,
+      isDisapprove: true,
+      setButtonStep: setDisapproveButtonStep,
+      refetchMainContracts
+    });
   };
 
   const handleArchive = async () => {
@@ -182,10 +200,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
         orderId: order.id,
         visible: !order.archived,
         archived: !order.archived,
-        revalidationPath: {
-          path: pathname,
-          type: 'page'
-        }
+        revalidationPath: { path: pathname, type: 'layout' }
       });
       setArchiveButtonStatus('success');
     } catch (error) {
@@ -205,22 +220,124 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     refetchOfferingInfo();
   };
 
-  const minMaxSection = (
+  // ─────────────────────────────────────────────────────────────────────────────
+  // UI Components
+  // ─────────────────────────────────────────────────────────────────────────────
+  const currencySymbol = getCurrencyById(paymentTokenAddress)?.symbol;
+
+  const MinMaxSection = () => (
     <>
       {!!minPurchase && <div>Minimum purchase: {numberWithCommas(minPurchase)} shares</div>}
       {!!maxPurchase && <div>Maximum purchase: {numberWithCommas(maxPurchase)} shares</div>}
-      {!!maxPurchase && <hr className='my-4' />}
+      {(!!minPurchase || !!maxPurchase) && <hr className='my-4' />}
     </>
   );
 
-  // Buttons ==========================================================================================================
+  const RequestStatement = () => (
+    <div className='pl-1 mb-2 font-semibold text-cDarkBlue'>
+      <span className='flex mt-2 flex-wrap items-center'>
+        <FormattedCryptoAddress
+          chainId={chainId}
+          address={isAskOrder ? recipientAddress : senderAddress}
+          className='text-base'
+        />
+        <span className='mx-1'>
+          {txnApprovalsRequired
+            ? isAskOrder
+              ? 'is requesting to purchase'
+              : 'is offering to sell'
+            : 'is offering to sell'}
+        </span>
+        <span className='font-bold'>{numShares} shares</span>
+        <span className='mx-1'>to</span>
+        <FormattedCryptoAddress
+          chainId={chainId}
+          address={isAskOrder ? senderAddress : recipientAddress}
+          className='text-base'
+        />
+        <span className='ml-1'>
+          for {numberWithCommas(price)} {currencySymbol} per share.
+        </span>
+      </span>
+    </div>
+  );
 
-  const buttonClass =
-    'text-sm p-3 px-6 text-cLightBlue hover:text-white bg-white bg-opacity-50 hover:bg-opacity-1 hover:bg-cDarkBlue border-2 border-cLightBlue hover:border-white font-semibold rounded-md relative w-full';
+  const AwaitingApprovalMessage = ({ type }: { type: 'listing' | 'transaction' }) => (
+    <div className='p-3 bg-amber-50 border border-amber-200 rounded-md text-amber-800 text-center'>
+      Awaiting {type} approval from manager
+    </div>
+  );
 
-  const cancelButton = (
+  const DisapprovedMessage = () => (
+    <div className='p-3 bg-red-50 border border-red-200 rounded-md text-red-800 text-center'>
+      This offer has been disapproved
+    </div>
+  );
+
+  const ClaimProceedsMessage = () => (
+    <div className='p-3 bg-green-50 border border-green-200 rounded-md text-green-800'>
+      Completed swap. Please claim proceeds.
+    </div>
+  );
+
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Button Components
+  // ─────────────────────────────────────────────────────────────────────────────
+  const ApproveListingButton = () => (
     <LoadingButtonChain
-      onClick={() => handleCancel()}
+      onClick={handleApproveListing}
+      disabled={approveButtonStep === 'step1'}
+      state={approveButtonStep}
+      idleText='Approve Listing'
+      step1Text='Approving...'
+      confirmedText='Listing Approved'
+      failedText='Failed'
+      rejectedText='Click to retry'
+    />
+  );
+
+  const DisapproveListingButton = () => (
+    <LoadingButtonChain
+      onClick={handleDisapproveListing}
+      disabled={disapproveButtonStep === 'step1'}
+      state={disapproveButtonStep}
+      idleText='Hide Listing'
+      step1Text='Hiding...'
+      confirmedText='Listing Hidden'
+      failedText='Failed'
+      rejectedText='Click to retry'
+    />
+  );
+
+  const ApproveTxnButton = () => (
+    <LoadingButtonChain
+      onClick={handleApproveTxn}
+      disabled={approveButtonStep === 'step1'}
+      state={approveButtonStep}
+      idleText='Approve Trade'
+      step1Text='Approving...'
+      confirmedText='Trade Approved'
+      failedText='Transaction failed'
+      rejectedText='You rejected the transaction. Click here to try again.'
+    />
+  );
+
+  const DisapproveTxnButton = () => (
+    <LoadingButtonChain
+      onClick={handleDisapproveTxn}
+      disabled={disapproveButtonStep === 'step1'}
+      state={disapproveButtonStep}
+      idleText='Disapprove Trade'
+      step1Text='Disapproving...'
+      confirmedText='Trade Disapproved'
+      failedText='Transaction failed'
+      rejectedText='You rejected the transaction. Click here to try again.'
+    />
+  );
+
+  const CancelButton = () => (
+    <LoadingButtonChain
+      onClick={handleCancel}
       disabled={cancelButtonStep === 'step1'}
       state={cancelButtonStep}
       idleText='Cancel Remaining Offer'
@@ -231,7 +348,7 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     />
   );
 
-  const archiveButton = (
+  const ArchiveButton = () => (
     <LoadingButton
       onClick={handleArchive}
       buttonState={archiveButtonStatus}
@@ -244,116 +361,56 @@ const SaleManagerPanel: FC<AdditionalSaleMangerPanelProps> = ({
     />
   );
 
-  const approveButton = (
-    <LoadingButtonChain
-      onClick={() => handleApprove({ isDisapprove: false })}
-      disabled={approveButtonStep === 'step1'}
-      state={approveButtonStep}
-      idleText={`${transactionIsAccepted ? 'Approve Trade' : listingIsApproved ? 'Hide Listing' : 'Approve Listing'}`}
-      step1Text='Approving...'
-      confirmedText='Approved'
-      failedText='Transaction failed'
-      rejectedText='You rejected the transaction. Click here to try again.'
+  const VisibilityToggle = () => (
+    <OrderVisibilityToggle
+      orderVisibility={order.visible}
+      orderId={order.id}
+      orderArchived={order.archived}
     />
   );
 
-  const disapproveButton = !isDisapproved ? (
-    <LoadingButtonChain
-      onClick={() => handleApprove({ isDisapprove: true })}
-      disabled={approveButtonStep === 'step1'}
-      state={disapproveButtonStep}
-      idleText={`Disapprove ${transactionIsAccepted ? 'Trade' : 'Listing'}`}
-      step1Text='Disapproving...'
-      confirmedText='Disapproved'
-      failedText='Transaction failed'
-      rejectedText='You rejected the transaction. Click here to try again.'
-    />
-  ) : (
-    <span className='text-red-800 flex justify-center'>This offer has been disapproved</span>
-  );
-
-  const baseInitiatorButtonSet = (
-    <>
-      {!isCancelled && !isFilled && currentUserInitiator && cancelButton}
-      {(isFilled || isCancelled) && isContractOwner && archiveButton}
-    </>
-  );
-
-  const requestStatementText = (
-    <span className='flex mt-2'>
-      <FormattedCryptoAddress
-        chainId={chainId}
-        address={isAskOrder ? recipientAddress : senderAddress}
-        className='text-base'
-      />
-      &nbsp;
-      {`${
-        txnApprovalsEnabled
-          ? isAskOrder
-            ? 'is requesting to purchase'
-            : 'is offering to sell'
-          : 'is offering to sell'
-      } `}
-      {numShares} shares to &nbsp;
-      <FormattedCryptoAddress
-        chainId={chainId}
-        address={isAskOrder ? senderAddress : recipientAddress}
-        className='text-base'
-      />{' '}
-      &nbsp; for {numberWithCommas(price)} {getCurrencyById(paymentTokenAddress)?.symbol} per share.
-    </span>
-  );
+  // ─────────────────────────────────────────────────────────────────────────────
+  // Render
+  // ─────────────────────────────────────────────────────────────────────────────
+  const buttonGridClass = cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3');
 
   return (
-    <div className='flex flex-col mb-2'>
-      {minMaxSection}
-      {isContractOwner && !isCancelled && !isFilled ? (
-        <>
-          {isAccepted && (
-            <div className='pl-1 mb-2 font-semibold text-cDarkBlue'>{requestStatementText} </div>
-          )}
-          <div className={cn(small ? 'flex flex-col gap-2' : 'grid grid-cols-2 gap-3')}>
-            {(swapApprovalsEnabled || txnApprovalsEnabled) && (
-              <>
-                {!isApproved ? (
-                  <>
-                    {approveButton} {allowContractApproveDisapprove && disapproveButton}
-                  </>
-                ) : (
-                  disapproveButton
-                )}
-              </>
-            )}
-            {baseInitiatorButtonSet}
-          </div>
+    <div className='flex flex-col mb-2 gap-3'>
+      <MinMaxSection />
 
-          {isAccepted && (
-            <>
-              <hr className='my-4' />
-              <OrderVisibilityToggle
-                orderVisibility={order.visible}
-                orderId={order.id}
-                orderArchived={order.archived}
-              />
-            </>
-          )}
+      {/* Request Statement (when txn is pending approval) */}
+      {ui.showRequestStatement && <RequestStatement />}
+
+      {/* Status Messages */}
+      {ui.showAwaitingListingApproval && <AwaitingApprovalMessage type='listing' />}
+      {ui.showAwaitingTxnApproval && <AwaitingApprovalMessage type='transaction' />}
+      {isDisapproved && <DisapprovedMessage />}
+
+      {/* Action Buttons */}
+      <div className={buttonGridClass}>
+        {/* Listing Layer Buttons */}
+        {ui.showApproveListingButton && <ApproveListingButton />}
+        {ui.showDisapproveListingButton && !isDisapproved && <DisapproveListingButton />}
+
+        {/* Transaction Layer Buttons */}
+        {ui.showApproveTxnButton && <ApproveTxnButton />}
+        {ui.showDisapproveTxnButton && !isDisapproved && <DisapproveTxnButton />}
+
+        {/* Universal Buttons */}
+        {ui.showCancelButton && <CancelButton />}
+        {ui.showArchiveButton && <ArchiveButton />}
+      </div>
+
+      {/* Visibility Toggle */}
+      {ui.showListingVisibilityToggle && (
+        <>
+          <hr className='my-2' />
+          <VisibilityToggle />
         </>
-      ) : (
-        baseInitiatorButtonSet
       )}
-      {(isCancelled || isFilled) && proceeds !== 0 && (
-        <div className='flex'>
-          {isContractOwner && (isFilled || isCancelled) && (
-            <OrderVisibilityToggle
-              orderVisibility={order.visible}
-              orderId={order.id}
-              orderArchived={order.archived}
-            />
-          )}
-          Completed swap. Please claim proceeds.
-        </div>
-      )}
-      {/* <OrderVisibilityToggle orderVisibility={order.visible} orderId={order.id} orderArchived={order.archived} /> */}
+
+      {/* Claim Proceeds Notice */}
+      {ui.showClaimProceeds && <ClaimProceedsMessage />}
     </div>
   );
 };

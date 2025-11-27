@@ -2,15 +2,9 @@ import { ManagerModalType } from '@src/utils/helpersOffering';
 import { String0x } from '@src/web3/helpersChain';
 import { Dispatch, SetStateAction } from 'react';
 
-import {
-  CurrencyCodeType,
-  Document,
-  OfferingFull,
-  OfferingSmartContractSet,
-  ShareOrder,
-  ShareTransferEvent
-} from '@/types';
+import { ShareOrder } from '@/types';
 
+// Contract order type used for on-chain order data
 export type ContractOrder = {
   orderId: string | undefined;
   contractIndex: number | undefined;
@@ -24,6 +18,7 @@ export type ContractOrder = {
   filler: String0x | null;
 };
 
+// Share contract info type - used by useShareContractInfo hook
 export type ShareContractInfoType = {
   contractOwner: String0x | undefined;
   isManager: boolean;
@@ -38,74 +33,85 @@ export type ShareContractInfoType = {
   refetchShareContract: () => void;
 };
 
-export type CoreOfferingActionsProps = {
-  offering: OfferingFull;
-  contractSet: OfferingSmartContractSet | null;
+// =============================================================================
+// SIMPLIFIED COMPONENT PROPS - Most data now comes from OfferingContext
+// =============================================================================
 
-  // Contract Data
-  sharesOutstanding: number | undefined;
-  myShareQty: number | undefined;
-  partitions: String0x[];
-  currentSalePrice: number;
-
-  // Payment Token Info
-  paymentTokenAddress: String0x | undefined;
-  paymentTokenDecimals: number | undefined;
-
-  // Permissions / Status
-  isContractOwner: boolean;
-  swapApprovalsEnabled: boolean | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-
-  // Callbacks
-  refetchMainContracts: () => void;
-  refetchOfferingInfo: () => void;
-};
-
-export type PostBidAskFormProps = CoreOfferingActionsProps;
-
-export type PostInitialSaleProps = CoreOfferingActionsProps;
-
-export type SwapContractSettingsProps = {
-  refetchMainContracts: () => void;
-  noLiveOrders: boolean;
-  investmentCurrency: CurrencyCodeType | null;
-  swapApprovalsEnabled: boolean | undefined;
-  txnApprovalsEnabled: boolean | undefined;
-  contractSet: OfferingSmartContractSet | null;
-};
-
-export type SendSharesProps = CoreOfferingActionsProps;
-
-export type SmartContractsSettingsProps = SwapContractSettingsProps & {
-  noLiveOrders: boolean;
-  investmentCurrency: CurrencyCodeType | null;
-  offering: OfferingFull;
-  partitions: String0x[];
-};
-
-export type SaleMangerPanelProps = CoreOfferingActionsProps;
-
-export type ShareSaleListItemProps = SaleMangerPanelProps & {
-  offering: OfferingFull;
-  transferEvents: ShareTransferEvent[] | undefined;
-};
-
-export type ShareSaleListProps = ShareSaleListItemProps & {
-  orders: ShareOrder[] | undefined;
+// Props for ShareSaleList - needs modal control and callback to open sale form
+export type ShareSaleListProps = {
   setModal: Dispatch<SetStateAction<ManagerModalType>>;
 };
 
-export type AllOfferingActionsProps = CoreOfferingActionsProps & {
-  orders: ShareOrder[] | undefined;
-  hasContract: boolean;
-  loading: boolean | undefined;
-  retrievalIssue: boolean;
-  issueReachingContract: { share: boolean; swap: boolean };
-  transferEvents: ShareTransferEvent[] | undefined;
-  documents: Document[];
+// Props for ShareSaleListItem - needs the specific order being displayed
+export type ShareSaleListItemProps = {
+  order: ShareOrder;
+};
 
-  // From SwapContractSettingsProps
-  noLiveOrders: boolean;
-  investmentCurrency: CurrencyCodeType | null;
+// Props for PostBidAskForm - needs wallet address and modal callback
+export type PostBidAskFormProps = {
+  walletAddress: string;
+  setModal: Dispatch<SetStateAction<ManagerModalType>>;
+  refetchAllContracts: () => void;
+};
+
+// Props for PostInitialSale - needs modal callback
+export type PostInitialSaleProps = {
+  setModal: Dispatch<SetStateAction<ManagerModalType>>;
+};
+
+// Props for SaleManagerPanel - needs order-specific data
+export type SaleManagerPanelProps = {
+  order: ShareOrder;
+  // Order state from useOrderDetails
+  currentUserFiller: boolean;
+  currentUserInitiator: boolean;
+  isApproved: boolean | undefined;
+  isDisapproved: boolean;
+  isAccepted: boolean | undefined;
+  isCancelled: boolean | undefined;
+  isFilled: boolean | undefined;
+  isAskOrder: boolean | undefined;
+  filler: String0x | undefined;
+  initiator: String0x;
+  amount: number | undefined;
+  price: number | undefined;
+  partition: String0x | undefined;
+};
+
+// Props for SharePurchaseSteps - needs order-specific data
+export type SharePurchaseStepsProps = {
+  order: ShareOrder;
+  shareQtyRemaining: number;
+  price: number;
+  isAskOrder: boolean;
+  refetchOrderAndContracts: () => void;
+  // Order state from useOrderDetails
+  isApproved: boolean;
+  isFilled: boolean;
+  isCancelled: boolean;
+  isAccepted: boolean;
+  filledAmount: number;
+  filler: String0x;
+  partition: String0x;
+  initiator: String0x;
+};
+
+// Props for SmartContractsSettings - no additional props needed (all from context)
+export type SmartContractsSettingsProps = Record<string, never>;
+
+// Props for SwapContractSettings - no additional props needed (all from context)
+export type SwapContractSettingsProps = Record<string, never>;
+
+// Props for SendShares - no additional props needed (all from context)
+export type SendSharesProps = Record<string, never>;
+
+// Props for ShareSaleStatusWidget - no additional props needed (all from context)
+export type ShareSaleStatusWidgetProps = Record<string, never>;
+
+// Props for OfferingActions - no additional props needed (all from context)
+export type OfferingActionsProps = Record<string, never>;
+
+// Props for OfferingActionsContainer - needs wallet address check
+export type OfferingActionsContainerProps = {
+  userWalletAddress: string | undefined;
 };

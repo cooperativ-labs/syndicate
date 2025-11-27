@@ -78,7 +78,6 @@ const LinkLegal: React.FC<LinkLegalProps> = ({ offering, shareContracts }) => {
     },
     standardAgreementText ?? ''
   );
-
   return (
     <div className='flex flex-col gap h-full'>
       <h1 className='font-semibold text-lg'>Create shares of {orgLegalName}</h1>

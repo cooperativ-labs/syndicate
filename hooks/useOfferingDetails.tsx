@@ -99,38 +99,32 @@ const useOfferingDetails = ({
     shareTokenAddress,
     paymentTokenAddress,
     paymentTokenDecimals,
-    swapApprovalsEnabled,
-    txnApprovalsEnabled,
+    listingApprovalsRequired,
+    txnApprovalsRequired,
     nextOrderId,
     issueReachingSwapContract,
     isLoading: swapIsLoading,
     refetchSwapContract
-  } = useSwapContractInfo(swapContractAddress);
-
-  const paymentToken = getCurrencyOption(investment_currency);
-  const defaultPaymentTokenAddress = paymentToken?.address as String0x;
-  const defaultPaymentTokenDecimals = paymentToken ? paymentToken.decimals : 18;
-  const _paymentTokenAddress = paymentTokenAddress ?? defaultPaymentTokenAddress;
-  const _paymentTokenDecimals = paymentTokenDecimals ?? defaultPaymentTokenDecimals;
+  } = useSwapContractInfo(swapContractAddress, investment_currency);
 
   const { data: distributionData } = useReadContract({
     address: distributionContractAddress,
     abi: dividendContractABI,
     functionName: 'balances',
-    args: [defaultPaymentTokenAddress as String0x]
+    args: [paymentTokenAddress as String0x]
   });
 
-  const totalDistributed = toNormalNumber(distributionData, defaultPaymentTokenDecimals);
+  const totalDistributed = toNormalNumber(distributionData, paymentTokenDecimals);
 
   const { value: contractOrders } = useAsync(async () => {
-    if (!_paymentTokenDecimals || !orders || !swapContractAddress) {
+    if (!paymentTokenDecimals || !orders || !swapContractAddress) {
       return [];
     }
-    return await getOrderArrayFromContract(orders, swapContractAddress, _paymentTokenDecimals);
-  }, [_paymentTokenDecimals, orders, swapContractAddress]);
+    return await getOrderArrayFromContract(orders, swapContractAddress, paymentTokenDecimals);
+  }, [paymentTokenDecimals, orders, swapContractAddress]);
 
   const currentPrice = getCurrentPrice({
-    paymentTokenDecimals: _paymentTokenDecimals,
+    paymentTokenDecimals: paymentTokenDecimals,
     priceStart: price_start ?? 0,
     transferEvents,
     contractOrders: contractOrders ?? []
@@ -170,9 +164,6 @@ const useOfferingDetails = ({
     swapContract,
     swapContractAddress,
     distributionContractAddress,
-    distributionPaymentToken: paymentToken,
-    distributionPaymentTokenAddress: _paymentTokenAddress,
-    distributionPaymentTokenDecimals: _paymentTokenDecimals,
     orders,
     contractOrders,
     transferEvents,
@@ -188,8 +179,8 @@ const useOfferingDetails = ({
     shareTokenAddress,
     paymentTokenAddress,
     paymentTokenDecimals,
-    swapApprovalsEnabled,
-    txnApprovalsEnabled,
+    listingApprovalsRequired,
+    txnApprovalsRequired,
     nextOrderId,
     totalDistributed,
     issueReachingContract,
