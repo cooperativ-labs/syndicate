@@ -5,7 +5,7 @@ import { SwapContractSettingsProps } from '@src/components/investor/tradingForms
 import SectionBlock from '@src/containers/SectionBlock';
 import { swapContractABI } from '@src/web3/generated';
 import { String0x } from '@src/web3/helpersChain';
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import { useChainId, useWaitForTransactionReceipt, useWriteContract } from 'wagmi';
 
 import CreateSwapContract from '../CreateSwapContract';
@@ -17,18 +17,19 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = () => {
     contractSet,
     listingApprovalsRequired,
     txnApprovalsRequired,
-    noLiveOrders
+    noLiveOrders,
+    refetchSwapContract
   } = useOffering();
 
   const investmentCurrency = offering.investment_currency;
   const chainId = useChainId();
   const [isLoading, setIsLoading] = useState<'txn' | 'listing' | ''>('');
-  const [toggleStates, setToggleStates] = useState<{ txn: boolean; listing: boolean }>({
-    txn: txnApprovalsRequired || false,
-    listing: listingApprovalsRequired || false
-  });
+
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress?.address as String0x;
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress?.address as String0x;
+
+  const processedSwapHash = useRef<string | null>(null);
+  const processedTxnHash = useRef<string | null>(null);
 
   const organizationId = legalEntity?.organization_id;
   const toggleClass = 'flex align-middle justify-between items-center ';
@@ -48,34 +49,38 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = () => {
   });
 
   useEffect(() => {
-    if (swapTransactionData) {
-      if (swapTransactionData?.status === 'success') {
-        setToggleStates({
-          txn: toggleStates.txn,
-          listing: !toggleStates.listing
-        });
-        setIsLoading('');
-      } else {
-        alert('Setting change failed');
-        setIsLoading('');
+    if (swapTransactionData && listingToggleData) {
+      const currentHash = listingToggleData;
+      // Only process if this is a new transaction hash
+      if (processedSwapHash.current !== currentHash) {
+        processedSwapHash.current = currentHash;
+        if (swapTransactionData?.status === 'success') {
+          refetchSwapContract();
+          setIsLoading('');
+        } else {
+          alert('Setting change failed');
+          setIsLoading('');
+        }
       }
     }
-  }, [swapTransactionData, toggleStates]);
+  }, [swapTransactionData, listingToggleData, refetchSwapContract]);
 
   useEffect(() => {
-    if (txnTransactionData) {
-      if (txnTransactionData?.status === 'success') {
-        setToggleStates({
-          txn: !toggleStates.txn,
-          listing: toggleStates.listing
-        });
-        setIsLoading('');
-      } else {
-        alert('Setting change failed');
-        setIsLoading('');
+    if (txnTransactionData && txnApprovalData) {
+      const currentHash = txnApprovalData;
+      // Only process if this is a new transaction hash
+      if (processedTxnHash.current !== currentHash) {
+        processedTxnHash.current = currentHash;
+        if (txnTransactionData?.status === 'success') {
+          refetchSwapContract();
+          setIsLoading('');
+        } else {
+          alert('Setting change failed');
+          setIsLoading('');
+        }
       }
     }
-  }, [txnTransactionData, toggleStates]);
+  }, [txnTransactionData, txnApprovalData, refetchSwapContract]);
 
   const handleListingToggle = async () => {
     setIsLoading('listing');
@@ -95,10 +100,10 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = () => {
 
   const swapApproval = (
     <div className={toggleClass}>
-      <div className="text-sm font-medium text-gray-700 mr-2">Listings require approval</div>
+      <div className='text-sm font-medium text-gray-700 mr-2'>Listings require approval</div>
       <LoadingToggle
         isLoading={isLoading === 'listing'}
-        toggleSubject={toggleStates.listing}
+        toggleSubject={listingApprovalsRequired || false}
         onClick={() => handleListingToggle()}
       />
     </div>
@@ -106,12 +111,12 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = () => {
 
   const txnApproval = (
     <div className={toggleClass}>
-      <div className="text-sm font-medium text-gray-700 mr-2">
+      <div className='text-sm font-medium text-gray-700 mr-2'>
         Each transaction requires approval
       </div>
       <LoadingToggle
         isLoading={isLoading === 'txn'}
-        toggleSubject={toggleStates.txn}
+        toggleSubject={txnApprovalsRequired || false}
         onClick={() => handleTxnToggle()}
       />
     </div>
@@ -128,12 +133,12 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = () => {
         />
       )}
       {swapContractAddress && (
-        <div className="flex flex-col gap-3">
-          <div className="flex flex-col gap-1">
-            <h1 className="font-semibold text-lg">Trading contract: </h1>
+        <div className='flex flex-col gap-3'>
+          <div className='flex flex-col gap-1'>
+            <h1 className='font-semibold text-lg'>Trading contract: </h1>
             <FormattedCryptoAddress
               chainId={chainId}
-              className="text-sm text-gray-500 font-medium"
+              className='text-sm text-gray-500 font-medium'
               showFull
               withCopy
               address={swapContractAddress}
@@ -141,21 +146,21 @@ const SwapContractSettings: FC<SwapContractSettingsProps> = () => {
           </div>
 
           <SectionBlock
-            className="border rounded-lg p-3"
+            className='border rounded-lg p-3'
             sectionTitle={'Trade approval settings'}
             mini
             startOpen
             asAccordion
           >
             {noLiveOrders ? (
-              <div className="flex flex-col mt-4 ml-6">
+              <div className='flex flex-col mt-4 ml-6'>
                 {swapApproval}
-                <hr className="my-4" />
+                <hr className='my-4' />
                 {txnApproval}
               </div>
             ) : (
-              <div className="flex flex-col my-4 ml-10">
-                <div className="text-sm font-medium text-gray-700 mr-2">
+              <div className='flex flex-col my-4 ml-10'>
+                <div className='text-sm font-medium text-gray-700 mr-2'>
                   Please complete or cancel all orders before changing approval settings.
                 </div>
               </div>

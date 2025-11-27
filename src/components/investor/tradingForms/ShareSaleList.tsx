@@ -56,10 +56,10 @@ const ShareSaleList: FC<ShareSaleListProps> = ({ setModal }) => {
       disabled={claimProceedsButton === 'step1'}
       state={claimProceedsButton}
       idleText={`Claim ${numberWithCommas(proceeds)} ${getCurrencyById(paymentTokenAddress)?.symbol}`}
-      step1Text="Claiming Proceeds..."
-      confirmedText="Proceeds Claimed!"
-      failedText="Transaction failed"
-      rejectedText="You rejected the transaction. Click here to try again."
+      step1Text='Claiming Proceeds...'
+      confirmedText='Proceeds Claimed!'
+      failedText='Transaction failed'
+      rejectedText='You rejected the transaction. Click here to try again.'
     />
   );
 
@@ -76,18 +76,18 @@ const ShareSaleList: FC<ShareSaleListProps> = ({ setModal }) => {
 
   const refreshButton = (
     <Button
-      variant="ghost"
+      variant='ghost'
       onClick={() => {
         refetchOfferingInfo();
         refetchMainContracts();
       }}
     >
-      <RefreshCw className="mr-2" />
+      <RefreshCw className='mr-2' />
     </Button>
   );
 
   if (orders && orders.length < 1) {
-    return <div className="w-full">{saleButton}</div>;
+    return <div className='w-full'>{saleButton}</div>;
   }
 
   const currentOrders = orders?.filter(order => !order?.archived);
@@ -95,9 +95,9 @@ const ShareSaleList: FC<ShareSaleListProps> = ({ setModal }) => {
 
   return (
     <>
-      <div className="flex flex-row justify-between items-center">
-        <h2 className="text-xl text-blue-900 font-semibold ">{`Offers`}</h2>
-        <div className="flex gap-3">
+      <div className='flex flex-row justify-between items-center'>
+        <h2 className='text-xl text-blue-900 font-semibold '>{`Offers`}</h2>
+        <div className='flex gap-3'>
           {saleButton}
           {proceedsButton}
           {refreshButton}
@@ -107,13 +107,13 @@ const ShareSaleList: FC<ShareSaleListProps> = ({ setModal }) => {
         return <ShareSaleListItem key={i} order={order as ShareOrder} />;
       })}
       {archivedOrders?.length !== 0 && (
-        <div className="w-full mt-4 border border-gray-300 rounded-md">
+        <div className='w-full mt-4 border border-gray-300 rounded-md'>
           <SectionBlock
             className={'p-3 bg-slate-100 text-gray-800 rounded-sm w-full font-semibold  '}
             sectionTitle={'Archived offers'}
             mini
           >
-            <div className=" items-center px-3 w-full">
+            <div className=' items-center px-3 w-full'>
               {archivedOrders?.map((order, i) => {
                 return <ShareSaleListItem key={i} order={order as ShareOrder} />;
               })}

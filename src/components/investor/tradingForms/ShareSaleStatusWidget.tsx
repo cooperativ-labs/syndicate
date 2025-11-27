@@ -49,8 +49,8 @@ const ShareOrderStatusItem: FC<ShareOrderStatusItemProps> = ({
 
   const statusColor = status?.color;
   return (
-    <div className="flex flex-col p-1 px-2 border-2 rounded-md my-2 gap-1">
-      <div className="text-sm font-bold">
+    <div className='flex flex-col p-1 px-2 border-2 rounded-md my-2 gap-1'>
+      <div className='text-sm font-bold'>
         <FormattedCryptoAddress chainId={chainId} address={initiator} />{' '}
       </div>
       <div

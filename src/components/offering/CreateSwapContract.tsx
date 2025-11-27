@@ -6,6 +6,7 @@ import {
 import ChooseConnectorButton from '@src/containers/wallet/ChooseConnectorButton';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
+import { createSwapContract } from '@src/utils/actions/cryptoActions';
 import { updateInvestmentCurrency } from '@src/utils/actions/offeringProfileActions';
 import { bacOptions, getCurrencyById, getCurrencyOption } from '@src/utils/enumConverters';
 import { deploySwapContract } from '@src/web3/contractFactory';
@@ -17,8 +18,6 @@ import { useAsyncFn } from 'react-use';
 import { useChainId, useConnection } from 'wagmi';
 
 import { CurrencyCodeType, OfferingSmartContractSet, SmartContractType } from '@/types';
-
-import { createSwapContract } from '@src/utils/actions/cryptoActions';
 
 type CreateSwapContractProps = {
   contractSet: OfferingSmartContractSet | null;

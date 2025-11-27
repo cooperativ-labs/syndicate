@@ -1,10 +1,10 @@
 import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain';
+import { addDistribution } from '@src/utils/actions/orderActions';
 import { getCurrencyById } from '@src/utils/enumConverters';
 import { numberWithCommas } from '@src/utils/helpersMoney';
 import { getWagmiConfig } from '@src/web3/wagmi';
 import { Dispatch, SetStateAction } from 'react';
 import toast from 'react-hot-toast';
-import { addDistribution } from '@src/utils/actions/orderActions';
 // Apollo types are intentionally not imported to avoid version-specific generics
 import {
   getPublicClient,

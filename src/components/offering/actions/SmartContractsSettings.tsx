@@ -19,9 +19,9 @@ const SmartContractsSettings: FC<SmartContractsSettingsProps> = () => {
   return (
     <>
       <ShareContractSettings shareContract={shareContract} partitions={partitions} />
-      <hr className="my-5" />
+      <hr className='my-5' />
       <SwapContractSettings />
-      <hr className="my-5" />
+      <hr className='my-5' />
       <DistributionContractSettings />
     </>
   );

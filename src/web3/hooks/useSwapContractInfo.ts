@@ -1,10 +1,11 @@
+import { getCurrencyOption } from '@src/utils/enumConverters';
 import { erc20Abi } from 'viem';
 import { useReadContract, useReadContracts } from 'wagmi';
 
+import { CurrencyCodeType } from '@/types';
+
 import { swapContractABI } from '../generated';
 import { String0x } from '../helpersChain';
-import { CurrencyCodeType } from '@/types';
-import { getCurrencyOption } from '@src/utils/enumConverters';
 
 export type SwapContractInfoType = {
   shareTokenAddress: String0x | undefined;

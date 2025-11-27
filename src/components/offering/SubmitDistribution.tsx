@@ -3,7 +3,6 @@ import { LoadingButtonStateType } from '@src/components/ui/loading-button-chain'
 import { LoadingButtonChain } from '@src/components/ui/loading-button-chain';
 import WalletActionIndicator from '@src/containers/wallet/WalletActionIndicator';
 import WalletActionModal from '@src/containers/wallet/WalletActionModal';
-
 // import { isMetaMask } from '@src/web3/wagmi';
 import { submitDistribution } from '@src/web3/contractDistributionCall';
 import { setAllowance } from '@src/web3/contractSwapCalls';
