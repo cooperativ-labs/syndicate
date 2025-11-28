@@ -27,17 +27,10 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
   isAccepted,
   isCancelled,
   filler,
-  initiator,
-  filledAmount
+  initiator
 }) => {
-  const {
-    offering,
-    contractSet,
-    paymentTokenAddress,
-    paymentTokenDecimals,
-    txnApprovalsRequired,
-    myShareQty
-  } = useOffering();
+  const { offering, contractSet, paymentTokenAddress, paymentTokenDecimals, txnApprovalsRequired } =
+    useOffering();
 
   const swapContractAddress = contractSet?.swapContract?.cryptoAddress.address as String0x;
   const shareContractAddress = contractSet?.shareContract?.cryptoAddress.address as String0x;
@@ -120,6 +113,12 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
         setButtonStep: setButtonStep
       });
     } else {
+      if (!price) {
+        throw new Error('Price is required');
+      }
+      if (!paymentTokenDecimals) {
+        throw new Error('Payment token decimals are required');
+      }
       const allowance = toNormalNumber(allowanceData, paymentTokenDecimals);
       const allowanceRequiredForPurchase = amount * price;
       const isAllowanceSufficient = getIsAllowanceSufficient(
@@ -222,20 +221,23 @@ const SharePurchaseSteps: FC<SharePurchaseStepsProps> = ({
 
       {showTradeExecutionForm && (
         <div className='p-3 border-2 rounded-lg'>
-          <ShareCompleteSwap
-            isTradeExecutionStep={isTradeExecutionStep}
-            acceptedOrderQty={acceptedOrderQty as number}
-            callFillOrder={callFillOrder}
-            sender={sender}
-            recipient={recipient}
-            isAskOrder={isAskOrder}
-            price={price}
-            paymentTokenAddress={paymentTokenAddress}
-          />
+          {!price || !paymentTokenAddress ? (
+            <p>Price and payment token address are required to execute a trade.</p>
+          ) : (
+            <ShareCompleteSwap
+              isTradeExecutionStep={isTradeExecutionStep}
+              acceptedOrderQty={acceptedOrderQty as number}
+              callFillOrder={callFillOrder}
+              sender={sender}
+              recipient={recipient}
+              isAskOrder={isAskOrder}
+              price={price}
+              paymentTokenAddress={paymentTokenAddress}
+            />
+          )}
         </div>
       )}
     </div>
   );
 };
-
 export default SharePurchaseSteps;
