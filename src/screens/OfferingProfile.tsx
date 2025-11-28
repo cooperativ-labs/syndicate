@@ -52,7 +52,8 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
     offeringSmartContracts,
     legalEntity,
     price_start,
-    distributions
+    distributions,
+    investment_currency
   } = offering;
 
   const [contractSaleList, setContractSaleList] = useState<ContractOrder[]>([]);
@@ -73,7 +74,7 @@ const OfferingProfile: FC<OfferingProfileProps> = ({ offering, organization }) =
 
   const shareURL = `${getBaseUrl()}/${offeringId}`;
 
-  const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress);
+  const { paymentTokenDecimals } = useSwapContractInfo(swapContractAddress, investment_currency);
 
   useAsync(async () => {
     const orders = await retrieveOrders(swapContractAddress);

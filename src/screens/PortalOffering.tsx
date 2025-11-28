@@ -34,7 +34,6 @@ const PortalOffering: FC = () => {
     documents,
     shareContractAddress,
     distributionContractAddress,
-    orders,
     legalLinkTexts,
     currentSalePrice,
     myShareQty,
@@ -42,11 +41,10 @@ const PortalOffering: FC = () => {
     smartContractDocuments,
     paymentTokenAddress,
     paymentTokenDecimals,
-    refetchMainContracts,
-    refetchOfferingInfo
+    refetchMainContracts
   } = useOffering();
 
-  const { min_units_per_investor, name: offeringName, id: offeringId, participants } = offering;
+  const { name: offeringName, participants } = offering;
 
   const [managerModal, setManagerModal] = useState<ManagerModalType>('none');
 
